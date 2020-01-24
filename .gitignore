@@ -1,3 +1,5 @@
 # Intellij config
 .idea
 
+# Node modules
+node_modules
