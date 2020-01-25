@@ -6,11 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently \"nodemon server\" \"cd front && npm start\"",
-	"start": "node server.js"
+    "start": "node server.js"
   },
   "author": "TUNI Project Team",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "concurrently": "^5.0.2",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.2"
   }
 }
