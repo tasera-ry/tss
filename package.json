@@ -9,7 +9,7 @@
     "start": "node server.js"
   },
   "author": "TUNI Project Team",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "concurrently": "^5.0.2",
     "express": "^4.17.1",
