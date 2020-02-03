@@ -46,10 +46,4 @@ router.post("/login", [
   }
 });
 
-router.get('/ping', async (req, res) => {
-	  res.status(200).json({
-      pong: "Server here"
-    });
-});
-
 module.exports = router;
