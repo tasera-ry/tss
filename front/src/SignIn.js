@@ -27,7 +27,30 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function SignIn() {
+  
+  //call backend login function
+  const login = async () => {
     
+    //TODO clear version for this
+    //TODO name and pass from fields
+    
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      body: new URLSearchParams({
+        'name': 'test',
+        'password': 'test'
+      })
+    });
+    const body = await response.json();
+    
+    console.log(response);
+    if (response.status !== 200) {
+      throw Error(body.message) 
+    }
+    console.log(body);
+    return body;
+  };
+  
   const classes = useStyles();
 
   return (
@@ -63,6 +86,7 @@ export default function SignIn() {
 
         <Link style={{textDecoration: 'none'}} to='/'>
           <Button
+            onClick={login}
             type="submit"
             fullWidth
             variant="contained"
