@@ -5,6 +5,34 @@ const jwt = require("jsonwebtoken");
 const { check, validationResult } = require('express-validator');
 
 /*
+*  Authorization requires jwt token given by login
+*  in the body of the request
+*/
+//TODO authorization for different ranks
+authorize = function(req, res, next) {
+  const token = req.body.token;
+  console.log("AUTHORIZATION token: "+token);
+  if (token) {
+    //auth part
+    jwt.verify(token, "secret", function(err, decoded) {
+      if(err || decoded.auth !== true){
+        console.log(err);
+        res.status(401).json({
+          auth: false,
+          err: "Unauthorized"
+        });
+      }
+      else next();
+    });
+  } else {
+    res.status(401).json({
+      auth: false,
+      err: "Unauthorized"
+    });
+  }
+}
+
+/*
 *  Login with post
 *  requires body fields: name, password
 */
@@ -38,26 +66,31 @@ router.post("/login", [
   bcrypt.compare(password, dbPassword, function(err, result) {
     if(result === true){
       
-      /* jsonwebtoken for authenticating session
+      /* jsonwebtoken for authenticating api calls
       *  contains 3 values: succesful login, who logged in and when the token was made
-      *  sending this token back is required for logged in functions
+      *  sending this token back is required for admin functions
+      */
+      /* example token for test test:
+      *  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoIjp0cnVlLCJuYW1lIjoidGVzdCIsImlhdCI6MTU4MTMwNDQ3OH0.8Y5jez2_XBSc7ob0KCjz0FGeuJ5pT3nr7jC1rPUZONE
       */
       //TODO better secret
       jwt.sign({ auth: true, name: name }, "secret", function(err, token) {
-        console.log(token);
-        console.log(err);
+        //succesful login
+        if(!err){
+          console.log("LOGIN token: "+token);
+          res.status(200).json({
+            login: true,
+            token: token        
+          });
+        } else {
+          console.log(err);
+          res.status(401).json({
+            login: false,
+            err: "Login failed"
+          });
+        } 
       });
-      
-      //auth part
-      let token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoIjp0cnVlLCJuYW1lIjoidGVzdCIsImlhdCI6MTU4MTMwNDQ3OH0.8Y5jez2_XBSc7ob0KCjz0FGeuJ5pT3nr7jC1rPUZONE";
-      jwt.verify(token, "secret", function(err, decoded) {
-        console.log(decoded)
-      });
-      
-      res.status(200).json({
-        login: true,
-        token: token        
-      });
+
     } else {
       res.status(401).json({
         login: false,
@@ -67,12 +100,11 @@ router.post("/login", [
   });
 });
 
-//TODO requires auth
 /*
 *  Register with post
 *  requires body fields: name, password
 */
-router.post("/register", [
+router.post("/register", authorize,[
   // validate syntax
   check('name').exists()
                     .custom((value) => (value == value.match(/[A-ZÖÄÅa-zöäå0-9 ]+/)))
@@ -98,7 +130,7 @@ router.post("/register", [
   bcrypt.genSalt(10, function(err, salt) {
       bcrypt.hash(password, salt, function(err, hash) {
           //TODO Store hash in your password DB.
-          console.log(hash);
+          console.log("REGISTER hash: "+hash);
           
           //TODO act according to db response
           if(!err){
