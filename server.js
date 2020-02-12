@@ -11,6 +11,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 //server calls are all in the routes
 app.use("/api", router);
+
+// Rendering the front-end react app
 app.use("/", express.static("front/build/"))
 
 app.listen(port, () => {
