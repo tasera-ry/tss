@@ -7,13 +7,12 @@ import SignIn from './SignIn'
 import Nav from './Nav';
 import Dayview from './Dayview';
 import Weekview from './Weekview';
-import Monthlyview from './Monthlyview'; 
 import Home from './Home';
 import {BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 class App extends Component {
   state = {
-    
+
   };
 
   render() {
@@ -27,7 +26,6 @@ class App extends Component {
         <Route path="/signin" component={SignIn} />
         <Route path="/dayview" component={Dayview} />
         <Route path="/weekview" component={Weekview} />
-        <Route path="/monthlyview" component={Monthlyview} />
       </Switch>
       </header>
 		</div>
