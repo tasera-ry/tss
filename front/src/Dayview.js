@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 
 
 function Dayview() {
@@ -30,46 +31,76 @@ function Dayview() {
         alignItems="center"
       >
         {/* Date header */}
-        <Grid item xs={6}>
-            Maanantai {Date.now()}
+        <Grid
+          container
+          direction="row"
+          justify="space-around"
+          alignItems="center"
+        >
+            <div>Prev</div>
+            <div>Maanantai</div> 
+            <div>{Date.now()}</div>
+            <div>Next</div>
         </Grid>
         {/* Range info */}
         <Grid
           container
           direction="row"
-          justify="space-evenly"
+          justify="center"
           alignItems="center"
         >
-          <Grid item xs={12} sm={12}>
-            <Paper className={classes.paper}>Päävalvoja paikalla</Paper>
+          <Grid item xs={12}>
+            <Box style={{background:'green'}}>Päävalvoja paikalla</Box>
           </Grid>
-          <Grid item xs={1} sm={1}>
-            <Paper className={classes.paper}>1</Paper>
-            <Paper className={classes.paper}>a</Paper>
+        </Grid>
+        <Grid
+          container
+          direction="row"
+          justify="space-around"
+          alignItems="center"
+          style={{background:'cyan'}}
+        >
+          <Grid item sm>
+            <div style={{background:'gray',border:'solid 1px black'}}>
+              <p>Rata 1</p>
+              <Box style={{background:'green',padding:'50px'}}>a</Box>
+            </div>
           </Grid>
-          <Grid item xs={1} sm={1}>
-            <Paper className={classes.paper}>1</Paper>
-            <Paper className={classes.paper}>a</Paper>
+          <Grid item sm>
+            <div>
+              <p>1</p>
+              <Box style={{background:'red'}}>a</Box>
+            </div>
           </Grid>
-          <Grid item xs={1} sm={1}>
-            <Paper className={classes.paper}>1</Paper>
-            <Paper className={classes.paper}>a</Paper>
+          <Grid item sm>
+            <div>
+              <p>1</p>
+              <Box style={{background:'red'}}>a</Box>
+            </div>
           </Grid>
-          <Grid item xs={1} sm={1}>
-            <Paper className={classes.paper}>1</Paper>
-            <Paper className={classes.paper}>a</Paper>
+          <Grid item sm>
+            <div>
+              <p>1</p>
+              <Box style={{background:'red'}}>a</Box>
+            </div>
           </Grid>
-          <Grid item xs={1} sm={1}>
-            <Paper className={classes.paper}>1</Paper>
-            <Paper className={classes.paper}>a</Paper>
+          <Grid item sm>
+            <div>
+              <p>1</p>
+              <Box style={{background:'red'}}>a</Box>
+            </div>
           </Grid>
-          <Grid item xs={1} sm={1}>
-            <Paper className={classes.paper}>1</Paper>
-            <Paper className={classes.paper}>a</Paper>
+          <Grid item sm>
+            <div>
+              <p>1</p>
+              <Box style={{background:'red'}}>a</Box>
+            </div>
           </Grid>
-          <Grid item xs={1} sm={1}>
-            <Paper className={classes.paper}>1</Paper>
-            <Paper className={classes.paper}>a</Paper>
+          <Grid item sm>
+            <div>
+              <p>1</p>
+              <Box style={{background:'red'}}>a</Box>
+            </div>
           </Grid>
         </Grid>
         {/* Other info */}
@@ -77,15 +108,24 @@ function Dayview() {
           container
           direction="row"
           justify="flex-start"
-          alignItems="center"
+          alignItems="flex-start"
         >
           <Grid item xs={3} sm={3}>
-            <Paper className={classes.paper}>Aukiolo: 16-20</Paper>
+            <div>Aukiolo: 16-20</div>
           </Grid>
           <Grid item xs={3} sm={3}>
-            <Paper className={classes.paper}>Avoinna</Paper>
-            <Paper className={classes.paper}>Suljettu</Paper>
-            <Paper className={classes.paper}>Ei valvojaa</Paper>
+            <div>
+              <Box style={{background:'green',border:'solid 1px black',width:'20px',margin:'0 5px 0 0', display:'inline-block'}}>&nbsp;</Box>
+              <div style={{display:'inline-block'}}>Avoinna</div>
+            </div>
+            <div>
+              <Box style={{background:'red',border:'solid 1px black',width:'20px',margin:'0 5px 0 0', display:'inline-block'}}>&nbsp;</Box>
+              <div style={{display:'inline-block'}}>Suljettu</div>
+            </div>
+            <div>
+              <Box style={{background:'white',border:'solid 1px black',width:'20px',margin:'0 5px 0 0', display:'inline-block'}}>&nbsp;</Box>
+              <div style={{display:'inline-block'}}>Ei valvojaa</div>
+            </div>
           </Grid>
         </Grid>
       </Grid>
