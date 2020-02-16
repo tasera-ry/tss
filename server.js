@@ -5,8 +5,7 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const router = require("./routes");
-const config = require("./config/config");
-const port = process.env.PORT || config.server.port; //azure gives port as an environment variable
+const port = process.env.PORT || 8000; //azure gives port as an environment variable
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
