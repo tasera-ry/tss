@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {Link} from 'react-router-dom';
+import {callApi} from './helper.js';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -27,8 +28,28 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function SignIn() {
-    
+  
   const classes = useStyles();
+
+  //function component hook as a quick and dirty? way to handle state
+  //other end: value={name} onInput={e => setName(e.target.value)}
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  
+  const login = (e) => {
+    e.preventDefault();
+    console.log({name, password})
+    //call backend login function
+    const params = {name: name, password: password};
+    callApi("login","POST",params)
+      .then(res => {
+        console.log(res)
+        //TODO real login redirection
+        window.location = "/";
+      })
+      .catch(err => console.log(err));
+
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -48,6 +69,8 @@ export default function SignIn() {
             name="email"
             autoComplete="sähköposti"
             autoFocus
+            value={name}
+            onInput={e => setName(e.target.value)}
           />
           <TextField
             variant="outlined"
@@ -59,10 +82,13 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            value={password}
+            onInput={e => setPassword(e.target.value)}
           />
 
         <Link style={{textDecoration: 'none'}} to='/'>
           <Button
+            onClick={login}
             type="submit"
             fullWidth
             variant="contained"
