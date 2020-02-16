@@ -1,0 +1,36 @@
+.container {
+  padding: 8;
+  background-color: "#ffffff";
+}
+.rowContainer {
+  display: flex;
+  flex-direction: "row";
+}
+.link {
+  padding-right: 8px;
+  margin-right: 10px;
+  color: black;
+}
+.infoBox {
+  /* component: span; */
+  background-color: white;
+  outline: 2px solid black;
+  color: black;
+  border: 1px;
+  width: 30vw;
+  height: 10vh;
+  padding: 1px;
+  overflow-y: auto;
+}
+.goDown {
+  position: relative;
+  margin-top: auto;
+}
+
+.rataInfo {
+  padding-left: 50px;
+}
+
+.inline {
+  display: inline;
+}
