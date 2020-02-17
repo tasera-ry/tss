@@ -1,28 +1,16 @@
 import React from 'react';
-import './App.css';
+//import './App.css';
+import './Dayview.css';
 import {Link} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 
 
 function Dayview() {
   
-  const useStyles = makeStyles(theme => ({
-    root: {
-      flexGrow: 1,
-    },
-    paper: {
-      padding: theme.spacing(2),
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-    },
-  }));
-  const classes = useStyles();
-  
   return (
-    <div className={classes.root}>
+    <div class="container">
       {/* Whole view */}
       <Grid
         container
@@ -50,7 +38,7 @@ function Dayview() {
           alignItems="center"
         >
           <Grid item xs={12}>
-            <Box style={{background:'green'}}>Päävalvoja paikalla</Box>
+            <Box class="info">Päävalvoja paikalla</Box>
           </Grid>
         </Grid>
         <Grid
@@ -61,73 +49,75 @@ function Dayview() {
           style={{background:'cyan'}}
         >
           <Grid item sm>
-            <div style={{background:'gray',border:'solid 1px black'}}>
+            <div class="track">
               <p>Rata 1</p>
-              <Box style={{background:'green',padding:'50px'}}>a</Box>
+              <Box class="clickableBox" >a</Box>
             </div>
           </Grid>
           <Grid item sm>
-            <div>
+            <div class="track">
               <p>1</p>
-              <Box style={{background:'red'}}>a</Box>
+              <Box class="clickableBox" style={{background:'red'}}>a</Box>
             </div>
           </Grid>
           <Grid item sm>
-            <div>
+            <div class="track">
               <p>1</p>
-              <Box style={{background:'red'}}>a</Box>
+              <Box class="clickableBox" style={{background:'red'}}>a</Box>
             </div>
           </Grid>
           <Grid item sm>
-            <div>
+            <div class="track">
               <p>1</p>
-              <Box style={{background:'red'}}>a</Box>
+              <Box class="clickableBox" style={{background:'red'}}>a</Box>
             </div>
           </Grid>
           <Grid item sm>
-            <div>
+            <div class="track">
               <p>1</p>
-              <Box style={{background:'red'}}>a</Box>
+              <Box class="clickableBox" style={{background:'red'}}>a</Box>
             </div>
           </Grid>
           <Grid item sm>
-            <div>
+            <div class="track">
               <p>1</p>
-              <Box style={{background:'red'}}>a</Box>
+              <Box class="clickableBox" style={{background:'red'}}>a</Box>
             </div>
           </Grid>
           <Grid item sm>
-            <div>
+            <div class="track">
               <p>1</p>
-              <Box style={{background:'red'}}>a</Box>
+              <Box class="clickableBox" style={{background:'red'}}>a</Box>
             </div>
           </Grid>
         </Grid>
         {/* Other info */}
-        <Grid
-          container
-          direction="row"
-          justify="flex-start"
-          alignItems="flex-start"
-        >
-          <Grid item xs={3} sm={3}>
-            <div>Aukiolo: 16-20</div>
+        <div class="otherInfo">
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
+            <Grid item xs={3} sm={3}>
+              <div class="colorInfo">Aukiolo: 16-20</div>
+            </Grid>
+            <Grid item xs={3} sm={3}>
+              <div class="colorInfo">
+                <Box class="excolor greenB">&nbsp;</Box>
+                <div class="excolorText">Avoinna</div>
+              </div>
+              <div class="colorInfo">
+                <Box class="excolor redB">&nbsp;</Box>
+                <div class="excolorText">Suljettu</div>
+              </div>
+              <div class="colorInfo">
+                <Box class="excolor whiteB">&nbsp;</Box>
+                <div class="excolorText">Ei valvojaa</div>
+              </div>
+            </Grid>
           </Grid>
-          <Grid item xs={3} sm={3}>
-            <div>
-              <Box style={{background:'green',border:'solid 1px black',width:'20px',margin:'0 5px 0 0', display:'inline-block'}}>&nbsp;</Box>
-              <div style={{display:'inline-block'}}>Avoinna</div>
-            </div>
-            <div>
-              <Box style={{background:'red',border:'solid 1px black',width:'20px',margin:'0 5px 0 0', display:'inline-block'}}>&nbsp;</Box>
-              <div style={{display:'inline-block'}}>Suljettu</div>
-            </div>
-            <div>
-              <Box style={{background:'white',border:'solid 1px black',width:'20px',margin:'0 5px 0 0', display:'inline-block'}}>&nbsp;</Box>
-              <div style={{display:'inline-block'}}>Ei valvojaa</div>
-            </div>
-          </Grid>
-        </Grid>
+        </div>
       </Grid>
       <Link style={{color: 'black'}} to='/weekview'>
         <p>Viikkonäkymään</p>

@@ -1,0 +1,49 @@
+.container {
+  padding:10vh;
+}
+
+.info {
+  background:lightgreen;
+}
+
+.track {
+  background:lightgray;
+  border:solid 1px black;
+}
+
+.clickableBox {
+  background:white;
+  padding:50% 5% 10% 50%;
+}
+
+.otherInfo {
+  width:100%;
+  margin-top:1vh;
+}
+
+.colorInfo {
+  margin-top:1vh;
+}
+
+.excolor {
+  border:solid 1px black;
+  width:20px;
+  margin:0 5px 0 0;
+  display:inline-block;
+}
+
+.excolorText {
+  display:inline-block;
+}
+
+.greenB {
+  background:green;
+}
+
+.redB {
+  background:red;
+}
+
+.whiteB {
+  background:white;
+}
