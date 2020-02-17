@@ -37,15 +37,7 @@ function Trackview() {
         <p>Lisätietoja:</p>
         <Box class="infoBox">
           Hirvitaulu rikki overflow: auto (or overflow-y: auto) is the correct
-          way to go. The problem is that your text area is taller than your div.
-          The div ends up cutting off the textbox, so even though it looks like
-          it should start scrolling when the text is taller than 159px it won't
-          start scrolling until the text is taller than 400px which is the
-          height of the textbox. Try this: http://jsfiddle.net/G9rfq/1/ I set
-          overflow:auto on the text box, and made the textbox the same size as
-          the div. Also I don't believe it's valid to have a div inside a label,
-          the browser will render it, but it might cause some funky stuff to
-          happen. Also your div isn't closed.
+          way to go.
         </Box>
       </container>
       <Link class="link" to="/dayview">
