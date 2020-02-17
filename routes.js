@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const config = require("./config/config");
 const { check, validationResult } = require('express-validator');
 
 /*
@@ -15,7 +14,7 @@ authorize = function(req, res, next) {
   console.log("AUTHORIZATION token: "+token);
   if (token) {
     //auth part
-    jwt.verify(token, config.jwt.secret, function(err, decoded) {
+    jwt.verify(token, "secret", function(err, decoded) {
       if(err || decoded.auth !== true){
         console.log(err);
         res.status(401).json({
@@ -62,25 +61,20 @@ router.post("/login", [
   //TODO compare with db
   let dbPassword = "$2a$10$qfTq4eSuU7vTIRBVwCzDyeLlYPwLTiB7jLwXmmsXwUC2hR7YQj3a."
   let dbName = "test"
-  let dbRank = "99"
   
   //checks password vs the hash from db
   bcrypt.compare(password, dbPassword, function(err, result) {
     if(result === true){
       
       /* jsonwebtoken for authenticating api calls
-      *  contains 3 values: succesful login, rank and when the token was made
+      *  contains 3 values: succesful login, who logged in and when the token was made
       *  sending this token back is required for admin functions
-      *
-      *  JWTs payload is readable by anyone that gets their hands on it. But the third last part
-      *  provides tamper protection so even if the same payload is sent by someone malicious
-      *  nothing happens
       */
       /* example token for test test:
-      *  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoIjp0cnVlLCJyYW5rIjoiOTkiLCJpYXQiOjE1ODE1NTUyOTh9.XzHAP9EJ5dL-DXK24OPYbFTLp_6KFnw4BVoQrblkBtE
+      *  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoIjp0cnVlLCJuYW1lIjoidGVzdCIsImlhdCI6MTU4MTMwNDQ3OH0.8Y5jez2_XBSc7ob0KCjz0FGeuJ5pT3nr7jC1rPUZONE
       */
       //TODO better secret
-      jwt.sign({ auth: true, rank: dbRank }, config.jwt.secret, function(err, token) {
+      jwt.sign({ auth: true, name: name }, "secret", function(err, token) {
         //succesful login
         if(!err){
           console.log("LOGIN token: "+token);
