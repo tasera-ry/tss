@@ -3,7 +3,7 @@
   background-color: "#ffffff";
 }
 .rowContainer {
-  display: flex;
+  display: grid;
   flex-direction: "row";
 }
 .link {
@@ -12,25 +12,42 @@
   color: black;
 }
 .infoBox {
-  /* component: span; */
   background-color: white;
   outline: 2px solid black;
   color: black;
+  width: 40vw;
   border: 1px;
-  width: 30vw;
   height: 10vh;
-  padding: 1px;
+  margin: 0 auto;
   overflow-y: auto;
 }
+
 .goDown {
   position: relative;
   margin-top: auto;
 }
 
 .rataInfo {
-  padding-left: 50px;
+  text-align: center;
+  align-items: center;
 }
 
 .inline {
   display: inline;
+}
+
+.ggbox {
+  background-color: green;
+  color: black;
+  padding: 12px;
+  text-align: center;
+  width: 40vw;
+}
+
+.maingrid {
+  /* container */
+  direction: column;
+  /*   justify: center;
+  alignitems: left;*/
+  border-spacing: 10px;
 }

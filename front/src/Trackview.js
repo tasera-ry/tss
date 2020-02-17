@@ -10,35 +10,31 @@ import { Container } from "@material-ui/core";
 function Trackview() {
   return (
     <div class="rataInfo">
-      <div class="container rowContainer">
-        <h1>Rata 1</h1>
+      <div class="rataInfo container rowContainer">
+        <h1 class="rataInfo">Rata 1</h1>
         <h3 class="rataInfo goDown"> Kivääri 200m</h3>
       </div>
-      <h2>Maanantai 01.01.2020</h2>
+      <h2>{Date.now()}</h2>
       <Grid
         container
         direction="column"
         justify="center"
-        alignItems="left"
+        alignItems="center"
         spacing={1}
       >
         <Grid item xs={1} sm={6}>
-          <Box bgcolor="green" color="black" p={2}>
-            Päävalvoja Paikalla
-          </Box>
+          <Box class="ggbox">Päävalvoja Paikalla</Box>
         </Grid>
         <Grid item xs={1} sm={6}>
-          <Box bgcolor="green" color="black" p={2}>
-            Ratavalvoja Paikalla
-          </Box>
+          <Box class="ggbox">Ratavalvoja Paikalla</Box>
         </Grid>
       </Grid>
       <container>
         <p>Lisätietoja:</p>
-        <Box class="infoBox">
+        <div class="infoBox">
           Hirvitaulu rikki overflow: auto (or overflow-y: auto) is the correct
           way to go.
-        </Box>
+        </div>
       </container>
       <Link class="link" to="/dayview">
         <p style={{ fontSize: "medium" }}>
