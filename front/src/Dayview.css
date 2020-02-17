@@ -11,9 +11,26 @@
   border:solid 1px black;
 }
 
+@media (max-width: 600px) {
+  .track {
+    max-height:100px;
+    border:solid 1px black;
+  }
+  .track > p {
+    background:pink;
+  }
+}
+
 .clickableBox {
   background:white;
   padding:50% 5% 10% 50%;
+}
+
+@media (max-width: 600px) {
+  .clickableBox {
+    background:white;
+    padding:2vh;
+  }
 }
 
 .otherInfo {

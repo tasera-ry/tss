@@ -48,43 +48,43 @@ function Dayview() {
           alignItems="center"
           style={{background:'cyan'}}
         >
-          <Grid item sm>
+          <Grid item xs={12} sm>
             <div class="track">
               <p>Rata 1</p>
               <Box class="clickableBox" >a</Box>
             </div>
           </Grid>
-          <Grid item sm>
+          <Grid item xs={12} sm>
             <div class="track">
               <p>1</p>
               <Box class="clickableBox" style={{background:'red'}}>a</Box>
             </div>
           </Grid>
-          <Grid item sm>
+          <Grid item xs={12} sm>
             <div class="track">
               <p>1</p>
               <Box class="clickableBox" style={{background:'red'}}>a</Box>
             </div>
           </Grid>
-          <Grid item sm>
+          <Grid item xs={12} sm>
             <div class="track">
               <p>1</p>
               <Box class="clickableBox" style={{background:'red'}}>a</Box>
             </div>
           </Grid>
-          <Grid item sm>
+          <Grid item xs={12} sm>
             <div class="track">
               <p>1</p>
               <Box class="clickableBox" style={{background:'red'}}>a</Box>
             </div>
           </Grid>
-          <Grid item sm>
+          <Grid item xs={12} sm>
             <div class="track">
               <p>1</p>
               <Box class="clickableBox" style={{background:'red'}}>a</Box>
             </div>
           </Grid>
-          <Grid item sm>
+          <Grid item xs={12} sm>
             <div class="track">
               <p>1</p>
               <Box class="clickableBox" style={{background:'red'}}>a</Box>
@@ -99,10 +99,10 @@ function Dayview() {
             justify="flex-start"
             alignItems="flex-start"
           >
-            <Grid item xs={3} sm={3}>
+            <Grid item xs={6} sm={3}>
               <div class="colorInfo">Aukiolo: 16-20</div>
             </Grid>
-            <Grid item xs={3} sm={3}>
+            <Grid item xs={6} sm={3}>
               <div class="colorInfo">
                 <Box class="excolor greenB">&nbsp;</Box>
                 <div class="excolorText">Avoinna</div>
