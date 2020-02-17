@@ -1,33 +1,114 @@
 import React from 'react';
 import './App.css';
+import './Weekview.css'
 import {Link} from 'react-router-dom';
 
+function test() {
+    alert("function executed on clicking div");
+  }
+
 function Weekview() {
+
+    var dateNow = 1
+    var monthNow = 1
+    var yearNow = 2020
+
+    var dayParams = "?q=" + dateNow + monthNow + yearNow;
+    var dayUrl = "/dayview" + dayParams;
+
     return (
         <div>
             <h1 class="week-header">Viikko 5, 2020</h1>
 
             <div>
             <div class="flex-container2">
-                <div>Ma 2.1</div>
-                <div>Ti 3.1</div>
-                <div>Ke 4.1</div>  
-                <div>To 5.1</div>
-                <div>Pe 6.1</div>
-                <div>La 7.1</div>  
-                <div>Su 8.1</div>
+                <Link class="link" to={dayUrl}>
+                <p style={{ fontSize: "medium" }}>
+                Ma {dateNow}.{monthNow}
+                </p>
+                </Link>
+
+                <Link class="link" to="/dayview">
+                <p style={{ fontSize: "medium" }}>
+                Ti {dateNow + 1}.{monthNow}
+                </p>
+                </Link>
+
+                <Link class="link" to="/dayview">
+                <p style={{ fontSize: "medium" }}>
+                Ke {dateNow + 2}.{monthNow}
+                </p>
+                </Link>
+
+                <Link class="link" to="/dayview">
+                <p style={{ fontSize: "medium" }}>
+                To {dateNow + 3}.{monthNow}
+                </p>
+                </Link>
+
+                <Link class="link" to="/dayview">
+                <p style={{ fontSize: "medium" }}>
+                Pe {dateNow + 4}.{monthNow}
+                </p>
+                </Link>
+
+                <Link class="link" to="/dayview">
+                <p style={{ fontSize: "medium" }}>
+                La {dateNow + 5}.{monthNow}
+                </p>    
+                </Link>
+
+                <Link class="link" to="/dayview">
+                <p style={{ fontSize: "medium" }}>
+                Su {dateNow + 6}.{monthNow}
+                </p>
+                </Link>
             </div>
             </div>
 
             <div>
             <div class="flex-container">
-                <div>&nbsp;</div>
-                <div></div>
-                <div></div>  
-                <div></div>
-                <div></div>
-                <div></div>  
-                <div></div>
+                <Link style={{ backgroundColor: "orange" }} class="link" to="/dayview">
+                <p>
+                &nbsp;
+                </p>
+                </Link>
+
+                <Link style={{ backgroundColor: "green" }} class="link" to="/dayview">
+                <p style={{ fontSize: "medium" }}>
+                &nbsp;
+                </p>
+                </Link>
+
+                <Link style={{ backgroundColor: "red" }} class="link" to="/dayview">
+                <p style={{ fontSize: "medium" }}>
+                &nbsp;
+                </p>
+                </Link>
+
+                <Link style={{ backgroundColor: "green" }} class="link" to="/dayview">
+                <p style={{ fontSize: "medium" }}>
+                &nbsp;
+                </p>
+                </Link>
+
+                <Link style={{ backgroundColor: "white" }} class="link" to="/dayview">
+                <p style={{ fontSize: "medium" }}>
+                &nbsp;
+                </p>
+                </Link>
+
+                <Link style={{ backgroundColor: "green" }} class="link" to="/dayview">
+                <p style={{ fontSize: "medium" }}>
+                &nbsp;
+                </p>
+                </Link>
+
+                <Link style={{ backgroundColor: "red" }} class="link" to="/dayview">
+                <p style={{ fontSize: "medium" }}>
+                &nbsp;
+                </p>
+                </Link>
             </div>
             </div>
 
@@ -50,11 +131,6 @@ function Weekview() {
             &nbsp;Ei tietoa 
             </div>
             </div>
-
-
-            <Link style={{color: 'black'}} to='/monthlyview'>
-                <p>Kuukausinäkymään</p>
-            </Link>
         </div>
     );
 }
