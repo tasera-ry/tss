@@ -3,7 +3,9 @@ const connection_config = {
     user: 'tssuser',
     password: undefined,
     database: 'tss',
-    search_path: 'testing'
+    search_path: 'testing',
+    debug: false
+    
 }
 
 exports.connection_config = connection_config
