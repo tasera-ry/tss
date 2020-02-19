@@ -17,12 +17,12 @@ const port = process.env.PORT || 8000; //azure gives port as an environment vari
 const db = knex({
     client: 'pg',
     connection: {
-        host: process.env.PG_HOST || pg.host
-        user: process.env.PG_USER || pg.user
+        host: process.env.PG_HOST || pg.host,
+        user: process.env.PG_USER || pg.user,
         // Confirm you've set this environment variable, no password will be
         // pushed to github, but it can be found in
         // /root/tietokannan-tiedot.txt on the server
-        password: process.env.PG_PASSWORD || pg.password
+        password: process.env.PG_PASSWORD || pg.password,
         database: process.env.PG_DATABASE || pg.database
     },
     searchPath: [process.env.PG_SEARCH_PATH || pg.search_path],
