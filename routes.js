@@ -9,24 +9,39 @@ const { check, validationResult } = require('express-validator');
 *  Authorization requires jwt token given by login
 *  in the body of the request
 */
-//TODO authorization for different ranks
 authorize = function(req, res, next) {
   const token = req.body.token;
-  console.log("AUTHORIZATION token: "+token);
-  if (token) {
-    //auth part
+  let auth = false;
+
+  if (token && res.locals.rank) {
+    console.log("AUTHORIZATION token: "+token);
+
+    //auth part, decode token
     jwt.verify(token, config.jwt.secret, function(err, decoded) {
-      if(err || decoded.auth !== true){
+      //decoding error
+      if(err) {
         console.log(err);
-        res.status(401).json({
-          auth: false,
-          err: "Unauthorized"
-        });
       }
-      else next();
+      //logged in
+      else if(decoded.auth !== true){
+        console.log("AUTHORIZATION login false")
+      }
+      //rank matches route requirement
+      else if(!res.locals.rank.includes(parseInt(decoded.rank))){
+        console.log("AUTHORIZATION Given rank: "+decoded.rank+" Required rank: "+res.locals.rank);
+      }
+      //authorization success
+      else {
+        console.log("AUTHORIZATION success");
+        auth = true;
+        next();
+      }
     });
-  } else {
-    res.status(401).json({
+  }
+
+  if(!auth){
+    console.log("AUTHORIZATION failed")
+    return res.status(401).json({
       auth: false,
       err: "Unauthorized"
     });
@@ -62,7 +77,7 @@ router.post("/login", [
   //TODO compare with db
   let dbPassword = "$2a$10$qfTq4eSuU7vTIRBVwCzDyeLlYPwLTiB7jLwXmmsXwUC2hR7YQj3a."
   let dbName = "test"
-  let dbRank = "99"
+  let dbRank = "1"
   
   //checks password vs the hash from db
   bcrypt.compare(password, dbPassword, function(err, result) {
@@ -77,9 +92,8 @@ router.post("/login", [
       *  nothing happens
       */
       /* example token for test test:
-      *  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoIjp0cnVlLCJyYW5rIjoiOTkiLCJpYXQiOjE1ODE1NTUyOTh9.XzHAP9EJ5dL-DXK24OPYbFTLp_6KFnw4BVoQrblkBtE
+      *  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoIjp0cnVlLCJyYW5rIjoiMSIsImlhdCI6MTU4MjA4MzAzMX0.ly57wkYEUC5qWF5Bob-55H_7DL8G7lnJNboP7NTCT7o
       */
-      //TODO better secret
       jwt.sign({ auth: true, rank: dbRank }, config.jwt.secret, function(err, token) {
         //succesful login
         if(!err){
@@ -110,7 +124,10 @@ router.post("/login", [
 *  Register with post
 *  requires body fields: name, password
 */
-router.post("/register", authorize,[
+router.post("/register", function(req,res,next){
+  res.locals.rank = [1,2];
+  next();
+}, authorize, [
   // validate syntax
   check('name').exists()
                     .custom((value) => (value == value.match(/[A-ZÖÄÅa-zöäå0-9 ]+/)))

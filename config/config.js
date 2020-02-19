@@ -4,11 +4,6 @@ const config = {
   },
   jwt: {
     secret: 'example-secret'
-  },
-  db: {
-    host: '???',
-    port: 0000,
-    name: '???'
   }
 };
 
