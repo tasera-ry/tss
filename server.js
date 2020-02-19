@@ -10,8 +10,10 @@ const { connection_config: pg } = require("./config/pg")
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser")
 const router = require("./routes");
-const port = process.env.PORT || 8000; //azure gives port as an environment variable
+const config = require("./config/config");
+const port = process.env.PORT || config.server.port; //azure gives port as an environment variable
 
 // Database connection initialization
 const db = knex({
@@ -37,6 +39,8 @@ const db = knex({
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cookieParser());
+
 //server calls are all in the routes
 app.use("/api", router);
 
