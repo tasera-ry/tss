@@ -12,7 +12,7 @@ const user = require('./controllers/user');
 *  in the body of the request
 */
 authorize = function(req, res, next) {
-  const token = req.body.token;
+  const token = req.body.token || req.cookies.access;
   let auth = false;
 
   if (token && res.locals.rank) {

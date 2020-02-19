@@ -45,9 +45,9 @@ exports.login = async (req, res) => {
         //succesful login
         if(!err){
           console.log("LOGIN token: "+token);
-          res.status(200).json({
+          res.status(200).cookie("access",token).json({
             login: true,
-            token: token        
+            token: token
           });
         } else {
           console.log(err);
@@ -77,7 +77,7 @@ exports.register = async (req, res) => {
   //syntax fail
   if (!errors.isEmpty()) {
     return res.status(422).json({
-      login: false,
+      register: false,
       err: errors.array() 
     });
   }
