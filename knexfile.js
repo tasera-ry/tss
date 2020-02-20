@@ -14,10 +14,10 @@ module.exports = {
         debug: true,
 
         migrations: {
-            directory: path.join(__dirname, 'knex' + 'migrations')
+            directory: path.join(__dirname, 'knex', 'migrations')
         },
         seeds: {
-            directory: path.join(__dirname, 'knex' + 'seeds')
+            directory: path.join(__dirname, 'knex', 'seeds')
         }
     },
 
