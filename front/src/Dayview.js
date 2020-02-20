@@ -2,7 +2,7 @@ import React from 'react';
 //import './App.css';
 import './Dayview.css';
 import {Link} from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 
@@ -48,48 +48,48 @@ function Dayview() {
           direction="row"
           justify="flex-start"
           alignItems="flex-start"
-          style={{background:''}}
+          style={{border:'solid 1px black'}}
         >
           <Grid item xs={12} sm={2}>
             <div class="track hoverHand">
               <p>Rata 1</p>
-              <Box class="clickableBox" >a</Box>
+              <Box class="clickableBox" >&nbsp;</Box>
             </div>
           </Grid>
           <Grid item xs={12} sm={2}>
             <div class="track hoverHand">
-              <p>1</p>
-              <Box class="clickableBox" style={{background:'red'}}>a</Box>
+              <p>2</p>
+              <Box class="clickableBox" style={{background:'red'}}>&nbsp;</Box>
             </div>
           </Grid>
           <Grid item xs={12} sm={2}>
             <div class="track hoverHand">
-              <p>1</p>
-              <Box class="clickableBox" style={{background:'red'}}>a</Box>
+              <p>3</p>
+              <Box class="clickableBox" style={{background:'red'}}>&nbsp;</Box>
             </div>
           </Grid>
           <Grid item xs={12} sm={2}>
             <div class="track hoverHand">
-              <p>1</p>
-              <Box class="clickableBox" style={{background:'red'}}>a</Box>
+              <p>4</p>
+              <Box class="clickableBox" style={{background:'red'}}>&nbsp;</Box>
             </div>
           </Grid>
                     <Grid item xs={12} sm={2}>
             <div class="track hoverHand">
-              <p>1</p>
-              <Box class="clickableBox" style={{background:'red'}}>a</Box>
+              <p>5</p>
+              <Box class="clickableBox" style={{background:'red'}}>&nbsp;</Box>
             </div>
           </Grid>
                     <Grid item xs={12} sm={2}>
             <div class="track hoverHand">
-              <p>1</p>
-              <Box class="clickableBox" style={{background:'red'}}>a</Box>
+              <p>6</p>
+              <Box class="clickableBox" style={{background:'red'}}>&nbsp;</Box>
             </div>
           </Grid>
                     <Grid item xs={12} sm={2}>
             <div class="track hoverHand">
-              <p>1</p>
-              <Box class="clickableBox" style={{background:'red'}}>a</Box>
+              <p>7</p>
+              <Box class="clickableBox" style={{background:'red'}}>&nbsp;</Box>
             </div>
           </Grid>
         </Grid>
@@ -121,8 +121,8 @@ function Dayview() {
           </Grid>
         </div>
       </Grid>
-      <Link class="arrow-left" style={{color: 'black'}} to='/weekview'>
-        <p>Viikkonäkymään</p>
+      <Link style={{color: 'black'}} to='/weekview'>
+        <p class="back"><ArrowBackIcon />Viikkonäkymään</p>
       </Link>
     </div>
   );

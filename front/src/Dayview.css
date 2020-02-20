@@ -48,7 +48,6 @@ h2 {
 @media (max-width: 600px) {
   .track {
     max-height:100px;
-    border:solid 1px black;
   }
   .track > p {
     background:pink;
@@ -105,7 +104,6 @@ h2 {
 }
 
 .arrow-right {
-  display:inline-block;
   width: 0; 
   height: 0; 
   border-top: 20px solid transparent;
@@ -130,8 +128,9 @@ h2 {
   align-items: center;
 }
 
-.arrow-left > p {
-  margin-left:30px;
+.back > svg {
+  margin-bottom:-7px;
+  margin-right:5px;
 }
 
 .hoverHand:hover {
