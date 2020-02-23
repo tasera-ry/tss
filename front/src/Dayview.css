@@ -47,7 +47,7 @@ h2 {
 
 @media (max-width: 600px) {
   .track {
-    max-height:100px;
+      /* max-height:100px; */
   }
   .track > p {
     background:pink;
