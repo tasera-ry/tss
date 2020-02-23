@@ -14,10 +14,10 @@ module.exports = {
         debug: true,
 
         migrations: {
-            directory: path.join(__dirname, 'knex', 'migrations')
+            directory: path.join(__dirname, 'knex', 'unstable', 'migrations')
         },
         seeds: {
-            directory: path.join(__dirname, 'knex', 'seeds')
+            directory: path.join(__dirname, 'knex', 'unstable', 'seeds')
         }
     },
 
@@ -29,6 +29,15 @@ module.exports = {
             password: process.env.PG_PASSWORD,
             database: 'development',
             charset: 'utf8'
+        },
+
+        debug: false,
+
+        migrations: {
+            directory: path.join(__dirname, 'knex', 'development', 'migrations')
+        },
+        seeds: {
+            directory: path.join(__dirname, 'knex', 'development', 'seeds')
         }
     }
 }
