@@ -1,3 +1,4 @@
+
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
@@ -11,6 +12,7 @@ const user = require('./controllers/user');
 *  Authorization requires jwt token given by login
 *  in the body of the request
 */
+
 authorize = function(req, res, next) {
   const token = req.body.token || req.cookies.access;
   let auth = false;
@@ -51,13 +53,13 @@ authorize = function(req, res, next) {
 }
 
 /*
-*  Login with post
-*  requires body fields: name, password
-*/
+ *  Login with post
+ *  requires body fields: name, password
+ */
 router.post("/login", [
   check('name').exists()
-                    .custom((value) => (value == value.match(/[A-ZÖÄÅa-zöäå0-9 ]+/)))
-                    .isLength({ min: 4, max: 30 }),
+    .custom((value) => (value == value.match(/[A-ZÖÄÅa-zöäå0-9 ]+/)))
+    .isLength({ min: 4, max: 30 }),
   check('password').exists()
                     .isAlphanumeric()
                     .isLength({ min: 4, max: 30 })
@@ -76,12 +78,14 @@ router.post("/register", function(req,res,next){
   res.locals.rank = [1,2];
   next();
 }, authorize, [
+
   check('name').exists()
-                    .custom((value) => (value == value.match(/[A-ZÖÄÅa-zöäå0-9 ]+/)))
-                    .isLength({ min: 4, max: 30 }),
+    .custom((value) => (value == value.match(/[A-ZÖÄÅa-zöäå0-9 ]+/)))
+    .isLength({ min: 4, max: 30 }),
   check('password').exists()
                     .isAlphanumeric()
                     .isLength({ min: 4, max: 30 })
 ], user.register);
+
 
 module.exports = router;
