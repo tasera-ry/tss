@@ -35,6 +35,21 @@ h2 {
   background:lightgreen;
 }
 
+.sevenGrid {
+  border:solid 1px black;
+}
+
+/* To have 7 boxes force size 100 / 7 = 14.28571428571429 */
+.sevenGrid > div {
+  max-width:14.28571428571429%;
+}
+
+@media (max-width: 600px) {
+  .sevenGrid > div {
+    max-width:100%;
+  }
+}
+
 .track {
   background:lightgray;
   border:solid 1px black;
@@ -43,15 +58,6 @@ h2 {
 
 .track > p {
   padding-left:2vh;
-}
-
-@media (max-width: 600px) {
-  .track {
-      /* max-height:100px; */
-  }
-  .track > p {
-    background:pink;
-  }
 }
 
 .clickableBox {
@@ -69,22 +75,23 @@ h2 {
 }
 
 .otherInfo {
-  width:100%;
-  margin-top:1vh;
+  margin-top:2vh;
 }
 
 .colorInfo {
-  margin-top:1vh;
+  margin-bottom:1vh;
 }
 
 .excolor {
   border:solid 1px black;
   width:20px;
-  margin:0 5px 0 0;
+  margin-right:5px;
   display:inline-block;
 }
 
-.excolorText {
+.colorInfo > p {
+  margin:0;
+  padding:0;
   display:inline-block;
 }
 

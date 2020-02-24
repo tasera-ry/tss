@@ -1,5 +1,4 @@
 import React from 'react';
-//import './App.css';
 import './Dayview.css';
 import {Link} from 'react-router-dom';
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
@@ -27,10 +26,10 @@ function Dayview() {
           justify="space-around"
           alignItems="center"
         >
-            <div className="hoverHand arrow-left"></div>
-            <h1>Maanantai</h1> 
-            <div>{date.toString()}</div>
-            <div className="hoverHand arrow-right"></div>
+          <div className="hoverHand arrow-left"></div>
+          <h1>Maanantai</h1> 
+          <div>{date.toString()}</div>
+          <div className="hoverHand arrow-right"></div>
         </Grid>
         {/* Range info */}
         <Grid
@@ -43,86 +42,72 @@ function Dayview() {
             <h2 className="info greenB">Päävalvoja paikalla</h2>
           </Grid>
         </Grid>
+        {/* MUI grid */}
         <Grid
           container
           direction="row"
           justify="flex-start"
           alignItems="flex-start"
-          style={{border:'solid 1px black'}}
+          className="sevenGrid"
         >
-          <Grid item xs={12} sm={2}>
-            <div className="track hoverHand">
-              <p>Rata 1</p>
-              <Box className="clickableBox" >&nbsp;</Box>
-            </div>
+          <Grid item className="track hoverHand" xs={12} sm={2}>
+            <p>Rata 1</p>
+            <Box className="clickableBox" >&nbsp;</Box>
           </Grid>
-          <Grid item xs={12} sm={2}>
-            <div className="track hoverHand">
-              <p>2</p>
-              <Box className="clickableBox" style={{background:'red'}}>&nbsp;</Box>
-            </div>
+          <Grid item className="track hoverHand" xs={12} sm={2}>
+            <p>Rata 2</p>
+            <Box className="clickableBox greenB" >&nbsp;</Box>
           </Grid>
-          <Grid item xs={12} sm={2}>
-            <div className="track hoverHand">
-              <p>3</p>
-              <Box className="clickableBox" style={{background:'red'}}>&nbsp;</Box>
-            </div>
+          <Grid item className="track hoverHand" xs={12} sm={2}>
+            <p>Rata 3</p>
+            <Box className="clickableBox redB" >&nbsp;</Box>
           </Grid>
-          <Grid item xs={12} sm={2}>
-            <div className="track hoverHand">
-              <p>4</p>
-              <Box className="clickableBox" style={{background:'red'}}>&nbsp;</Box>
-            </div>
+          <Grid item className="track hoverHand" xs={12} sm={2}>
+            <p>Rata 4</p>
+            <Box className="clickableBox redB" >&nbsp;</Box>
           </Grid>
-                    <Grid item xs={12} sm={2}>
-            <div className="track hoverHand">
-              <p>5</p>
-              <Box className="clickableBox" style={{background:'red'}}>&nbsp;</Box>
-            </div>
+          <Grid item className="track hoverHand" xs={12} sm={2}>
+            <p>Rata 5</p>
+            <Box className="clickableBox redB" >&nbsp;</Box>
           </Grid>
-                    <Grid item xs={12} sm={2}>
-            <div className="track hoverHand">
-              <p>6</p>
-              <Box className="clickableBox" style={{background:'red'}}>&nbsp;</Box>
-            </div>
+          <Grid item className="track hoverHand" xs={12} sm={2}>
+            <p>Rata 6</p>
+            <Box className="clickableBox redB" >&nbsp;</Box>
           </Grid>
-                    <Grid item xs={12} sm={2}>
-            <div className="track hoverHand">
-              <p>7</p>
-              <Box className="clickableBox" style={{background:'red'}}>&nbsp;</Box>
-            </div>
+          <Grid item className="track hoverHand" xs={12} sm={2}>
+            <p>Rata 7</p>
+            <Box className="clickableBox redB" >&nbsp;</Box>
           </Grid>
         </Grid>
         {/* Other info */}
-        <div className="otherInfo">
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
-            <Grid item xs={6} sm={3}>
-              <div className="colorInfo">Aukiolo: 16-20</div>
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <div className="colorInfo">
-                <Box className="excolor greenB">&nbsp;</Box>
-                <div className="excolorText">Avoinna</div>
-              </div>
-              <div className="colorInfo">
-                <Box className="excolor redB">&nbsp;</Box>
-                <div className="excolorText">Suljettu</div>
-              </div>
-              <div className="colorInfo">
-                <Box className="excolor whiteB">&nbsp;</Box>
-                <div className="excolorText">Ei valvojaa</div>
-              </div>
-            </Grid>
+        <Grid
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="flex-start"
+          className="otherInfo"
+        >
+          <Grid item xs={6} sm={3}>
+            Aukiolo: 16-20
           </Grid>
-        </div>
+          <Grid item xs={6} sm={3}>
+            <div className="colorInfo">
+              <Box className="excolor greenB">&nbsp;</Box>
+              <p>Avoinna</p>
+            </div>
+            <div className="colorInfo">
+              <Box className="excolor redB">&nbsp;</Box>
+              <p>Suljettu</p>
+            </div>
+            <div className="colorInfo">
+              <Box className="excolor whiteB">&nbsp;</Box>
+              <p>Ei valvojaa</p>
+            </div>
+          </Grid>
+        </Grid>
       </Grid>
-      <Link style={{color: 'black'}} to='/weekview'>
-        <p className="back"><ArrowBackIcon />Viikkonäkymään</p>
+      <Link className="back" style={{color: 'black'}} to='/weekview'>
+        <ArrowBackIcon />Viikkonäkymään
       </Link>
     </div>
   );
