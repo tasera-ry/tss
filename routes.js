@@ -3,14 +3,20 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 <<<<<<< HEAD
+<<<<<<< HEAD
 const { check, validationResult } = require('express-validator');
 =======
+=======
+>>>>>>> 42e76646ad613199552e4e92a322b060be73f385
 const config = require("./config/config");
 const { check } = require('express-validator');
 
 //require controller
 const user = require('./controllers/user');
+<<<<<<< HEAD
 >>>>>>> develop
+=======
+>>>>>>> 42e76646ad613199552e4e92a322b060be73f385
 
 /*
 *  Authorization requires jwt token given by login
@@ -19,6 +25,7 @@ const user = require('./controllers/user');
 
 authorize = function(req, res, next) {
 <<<<<<< HEAD
+<<<<<<< HEAD
   const token = req.body.token;
   console.log("AUTHORIZATION token: "+token);
   if (token) {
@@ -26,6 +33,8 @@ authorize = function(req, res, next) {
     jwt.verify(token, "secret", function(err, decoded) {
       if(err || decoded.auth !== true){
 =======
+=======
+>>>>>>> 42e76646ad613199552e4e92a322b060be73f385
   const token = req.body.token || req.cookies.access;
   let auth = false;
 
@@ -36,7 +45,10 @@ authorize = function(req, res, next) {
     jwt.verify(token, config.jwt.secret, function(err, decoded) {
       //decoding error
       if(err) {
+<<<<<<< HEAD
 >>>>>>> develop
+=======
+>>>>>>> 42e76646ad613199552e4e92a322b060be73f385
         console.log(err);
       }
       //logged in
@@ -76,6 +88,7 @@ router.post("/login", [
   check('password').exists()
                     .isAlphanumeric()
                     .isLength({ min: 4, max: 30 })
+<<<<<<< HEAD
 <<<<<<< HEAD
 ], async (req, res) => {
   const errors = validationResult(req);
@@ -135,6 +148,9 @@ router.post("/login", [
 =======
 ], user.login);
 >>>>>>> develop
+=======
+], user.login);
+>>>>>>> 42e76646ad613199552e4e92a322b060be73f385
 
 /*
 *  Register with post

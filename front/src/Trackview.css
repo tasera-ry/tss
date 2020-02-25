@@ -7,9 +7,9 @@
   flex-direction: "row";
 }
 .link {
-  padding-right: 8px;
-  margin-right: 10px;
   color: black;
+  margin-bottom: -7px;
+  margin-right: 5px;
 }
 .infoBox {
   background-color: white;
@@ -27,7 +27,7 @@
   margin-top: auto;
 }
 
-.rataInfo {
+.centerIt {
   text-align: center;
   align-items: center;
 }
