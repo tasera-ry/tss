@@ -6,11 +6,7 @@
   display: grid;
   flex-direction: "row";
 }
-.link {
-  color: black;
-  margin-bottom: -7px;
-  margin-right: 5px;
-}
+
 .infoBox {
   background-color: white;
   outline: 2px solid black;
@@ -20,6 +16,7 @@
   height: 10vh;
   margin: 0 auto;
   overflow-y: auto;
+  margin-bottom: 15px;
 }
 
 .goDown {
@@ -36,8 +33,16 @@
   display: inline;
 }
 
-.ggbox {
+.isAvaivable {
   background-color: green;
+  color: black;
+  padding: 12px;
+  text-align: center;
+  width: 40vw;
+}
+
+.isUnavaivable {
+  background-color: red;
   color: black;
   padding: 12px;
   text-align: center;
@@ -50,4 +55,9 @@
   /*   justify: center;
   alignitems: left;*/
   border-spacing: 10px;
+}
+
+.back > svg {
+  margin-bottom: -7px;
+  margin-right: 5px;
 }

@@ -7,6 +7,9 @@ import Grid from "@material-ui/core/Grid";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { Container } from "@material-ui/core";
 
+/*
+ ** Returns finnish weekday according to integer parameter
+ */
 function dayToString(i) {
   if (i == 1) {
     return "Maanantai";
@@ -31,6 +34,37 @@ function dayToString(i) {
   }
 }
 
+/*
+ ** Returns red or green box according to if rangeofficer is avaivable
+ */
+function rangeAvaivability(binar) {
+  if (binar == 1) {
+    let returnable = <Box class="isAvaivable">Päävalvoja Paikalla</Box>;
+    return returnable;
+  }
+  if (binar == 0) {
+    let returnable = <Box class="isUnavaivable">Päävalvoja ei paikalla</Box>;
+    return returnable;
+  }
+}
+
+/*
+ ** Returns red or green box according to if trackofficer is avaivable
+ */
+function trackAvaivability(binar) {
+  if (binar == 1) {
+    let returnable = <Box class="isAvaivable">Ratavalvoja Paikalla</Box>;
+    return returnable;
+  }
+  if (binar == 0) {
+    let returnable = <Box class="isUnavaivable">Ratavalvoja ei paikalla</Box>;
+    return returnable;
+  }
+}
+
+/*
+ ** Main function
+ */
 function Trackview() {
   let date = new Date(Date.now());
 
@@ -59,10 +93,10 @@ function Trackview() {
         spacing={1}
       >
         <Grid item xs={1} sm={6}>
-          <Box class="ggbox">Päävalvoja Paikalla</Box>
+          {rangeAvaivability(1)}
         </Grid>
         <Grid item xs={1} sm={6}>
-          <Box class="ggbox">Ratavalvoja Paikalla</Box>
+          {trackAvaivability(1)}
         </Grid>
       </Grid>
 
@@ -70,18 +104,16 @@ function Trackview() {
       <container>
         <p>Lisätietoja:</p>
         <div class="infoBox">
-          Hirvitaulu rikki overflow: auto (or overflow-y: auto) is the correct
-          way to go. asdassdasdfopjwqefjpwdsjfjöldfdfjsjwfwn fdsa adfs sdf sdfds
-          f adfa sdf
+          Did you know octopuses don’t have tentacles; they have arms. A
+          tentacle only has suckers at its end, while a cephalopod arm has
+          suckers for most of its length.
         </div>
       </container>
 
       {/*    Linkki taaksepäin  */}
-      <Link class="link" to="/dayview">
-        <p style={{ fontSize: "medium" }}>
-          <ArrowBackIcon />
-          Päivänäkymään
-        </p>
+      <Link className="back" style={{ color: "black" }} to="/dayview">
+        <ArrowBackIcon />
+        Päivänäkymään
       </Link>
     </div>
   );
