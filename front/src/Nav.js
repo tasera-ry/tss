@@ -11,7 +11,7 @@ function Nav() {
     textDecoration: "none",
     height: "100%",
     width: "60%",
-    display: "inline-block"
+    display: "block"
   };
 
   var icon = (
