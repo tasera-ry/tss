@@ -7,6 +7,30 @@ import Grid from "@material-ui/core/Grid";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { Container } from "@material-ui/core";
 
+function dayToString(i) {
+  if (i == 1) {
+    return "Maanantai";
+  }
+  if (i == 2) {
+    return "Tiistai";
+  }
+  if (i == 3) {
+    return "Keskiviikko";
+  }
+  if (i == 4) {
+    return "Torstai";
+  }
+  if (i == 5) {
+    return "Perjantai";
+  }
+  if (i == 6) {
+    return "Lauantai";
+  }
+  if (i == 7) {
+    return "Sunnuntai";
+  }
+}
+
 function Trackview() {
   let date = new Date(Date.now());
 
@@ -20,7 +44,11 @@ function Trackview() {
       </div>
 
       {/*    Päivämäärä */}
-      <div>{date.toLocaleDateString()}</div>
+      <div>
+        <h2 class="centerIt">
+          {dayToString(date.getDay())} {date.toLocaleDateString()}
+        </h2>
+      </div>
 
       {/*    Päävalvojan ja ratavalvojan status  */}
       <Grid
@@ -43,7 +71,8 @@ function Trackview() {
         <p>Lisätietoja:</p>
         <div class="infoBox">
           Hirvitaulu rikki overflow: auto (or overflow-y: auto) is the correct
-          way to go.
+          way to go. asdassdasdfopjwqefjpwdsjfjöldfdfjsjwfwn fdsa adfs sdf sdfds
+          f adfa sdf
         </div>
       </container>
 
