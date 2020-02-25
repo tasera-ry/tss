@@ -5,6 +5,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 
+import { dayToString } from "./utils/Utils";
 
 function Dayview() {
 
@@ -27,8 +28,8 @@ function Dayview() {
           alignItems="center"
         >
           <div className="hoverHand arrow-left"></div>
-          <h1>Maanantai</h1> 
-          <div>{date.toString()}</div>
+          <h1>{dayToString(date.getDay())}</h1> 
+          <div>{date.toLocaleDateString()}</div>
           <div className="hoverHand arrow-right"></div>
         </Grid>
         {/* Range info */}
@@ -109,6 +110,7 @@ function Dayview() {
       <Link className="back" style={{color: 'black'}} to='/weekview'>
         <ArrowBackIcon />Viikkonäkymään
       </Link>
+      <Link className="hoverHand arrow-right" to="/trackview">Ratanäkymä</Link>
     </div>
   );
 }
