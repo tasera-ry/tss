@@ -8,13 +8,21 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { Container } from "@material-ui/core";
 
 function Trackview() {
+  let date = new Date(Date.now());
+
   return (
-    <div class="rataInfo">
-      <div class="rataInfo container rowContainer">
-        <h1 class="rataInfo">Rata 1</h1>
-        <h3 class="rataInfo goDown"> Kivääri 200m</h3>
+    /*    Whole view */
+    <div class="centerIt">
+      {/*    Radan nimi ja kuvaus  */}
+      <div class="centerIt container rowContainer">
+        <h1 class="centerIt">Rata 1</h1>
+        <h3 class="centerIt goDown"> Kivääri 200m</h3>
       </div>
-      <h2>{Date.now()}</h2>
+
+      {/*    Päivämäärä */}
+      <div>{date.toLocaleDateString()}</div>
+
+      {/*    Päävalvojan ja ratavalvojan status  */}
       <Grid
         container
         direction="column"
@@ -29,6 +37,8 @@ function Trackview() {
           <Box class="ggbox">Ratavalvoja Paikalla</Box>
         </Grid>
       </Grid>
+
+      {/*    Infobox  */}
       <container>
         <p>Lisätietoja:</p>
         <div class="infoBox">
@@ -36,6 +46,8 @@ function Trackview() {
           way to go.
         </div>
       </container>
+
+      {/*    Linkki taaksepäin  */}
       <Link class="link" to="/dayview">
         <p style={{ fontSize: "medium" }}>
           <ArrowBackIcon />
