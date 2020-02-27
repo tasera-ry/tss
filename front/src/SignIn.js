@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {Link} from 'react-router-dom';
-import {callApi} from './helper.js';
+import {callApi} from './utils/helper.js';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -41,7 +41,7 @@ export default function SignIn() {
     console.log({name, password})
     //call backend login function
     const params = {name: name, password: password};
-    callApi("login","POST",params)
+    callApi("POST","login",params)
       .then(res => {
         console.log(res)
         //TODO real login redirection
