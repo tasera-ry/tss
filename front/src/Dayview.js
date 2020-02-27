@@ -34,6 +34,22 @@ class Dayview extends Component {
   }
   
   render() {
+    function TrackBox(props) {
+      let color;
+      
+      if(props.state === "open"){
+        color = "greenB"
+      }
+      else if (props.state === "closed"){
+        color = "redB"
+      }
+      
+      return(<Grid item className="track hoverHand" xs={12} sm={2}>
+              <p>{props.name}</p>
+              <Box className={"clickableBox " + color} >&nbsp;</Box>
+            </Grid>);
+    }
+    
     return (
       <div className="container">
         {/* Whole view */}
@@ -74,34 +90,13 @@ class Dayview extends Component {
             alignItems="flex-start"
             className="sevenGrid"
           >
-            <Grid item className="track hoverHand" xs={12} sm={2}>
-              <p>Rata 1</p>
-              <Box className="clickableBox" >&nbsp;</Box>
-            </Grid>
-            <Grid item className="track hoverHand" xs={12} sm={2}>
-              <p>Rata 2</p>
-              <Box className="clickableBox greenB" >&nbsp;</Box>
-            </Grid>
-            <Grid item className="track hoverHand" xs={12} sm={2}>
-              <p>Rata 3</p>
-              <Box className="clickableBox redB" >&nbsp;</Box>
-            </Grid>
-            <Grid item className="track hoverHand" xs={12} sm={2}>
-              <p>Rata 4</p>
-              <Box className="clickableBox redB" >&nbsp;</Box>
-            </Grid>
-            <Grid item className="track hoverHand" xs={12} sm={2}>
-              <p>Rata 5</p>
-              <Box className="clickableBox redB" >&nbsp;</Box>
-            </Grid>
-            <Grid item className="track hoverHand" xs={12} sm={2}>
-              <p>Rata 6</p>
-              <Box className="clickableBox redB" >&nbsp;</Box>
-            </Grid>
-            <Grid item className="track hoverHand" xs={12} sm={2}>
-              <p>Rata 7</p>
-              <Box className="clickableBox redB" >&nbsp;</Box>
-            </Grid>
+            <TrackBox name="Kivääri" state="open"/>
+            <TrackBox name="Kivääri" state="closed"/>
+            <TrackBox name="Kivääri" />
+            <TrackBox name="Kivääri" />
+            <TrackBox name="Kivääri" state="open"/>
+            <TrackBox name="Kivääri" state="open"/>
+            <TrackBox name="Kivääri" state="open"/>
           </Grid>
           {/* Other info */}
           <Grid
