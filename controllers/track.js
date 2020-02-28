@@ -13,7 +13,7 @@ exports.tracks = async (req, res) => {
     //TODO get tracks from db with date
     //select track.name, track.availability from tracks where date=?
     
-    var trackListObj = {name:"???",date:date,tracks:{"Kivääri":1,"rata2":2,"rata3":1,"rata4":0}};
+    var trackListObj = {name:"???",date:date,tracks:{"Kivääri":1,"rata2":2,"rata3":1,"rata4":0,"rata5":0,"rata6":0,"rata7":0}};
   }
   else{
     date = Date.now()

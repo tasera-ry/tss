@@ -12,8 +12,18 @@ class Dayview extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      date: new Date(Date.now())
+      date: new Date(Date.now()),
+      opens: 16,
+      closes: 20,
+      rangeOfficer: false,
+      tracks: {}
     };
+    
+    //required for "this" to work in callback
+    //alternative way without binding in constructor: 
+    //public class fields syntax a.k.a. nextDayClick = (newObject) => {
+    this.previousDayClick = this.previousDayClick.bind(this);
+    this.nextDayClick = this.nextDayClick.bind(this);
   }
 
   componentDidMount(){
@@ -23,31 +33,97 @@ class Dayview extends Component {
     callApi("GET","tracks/"+ (date ? date : ""))
       .then(res => {
         console.log(res)
-        
+
         //async joten tietoa päivittäessä voi välähtää Date.now antama
         //ennen haluttua tietoa
         this.setState({
-          date: new Date(res.date)
+          date: new Date(res.date),
+          tracks: res.tracks
         });
       })
       .catch(err => console.log(err));
   }
+
+  //TODO ComponentDidUpdate? päivän vaihdon jälkeen uutta tietoa varten
   
-  render() {
+  previousDayClick(e) {
+    e.preventDefault();
+    let date=new Date(this.state.date.setDate(this.state.date.getDate() - 1));
+    this.props.history.push("/dayview/"+date.toISOString());
+    this.setState({
+      date: date
+    });
+  }
+  
+  nextDayClick(e) {
+    e.preventDefault();
+    let date=new Date(this.state.date.setDate(this.state.date.getDate() + 1));
+    this.props.history.push("/dayview/"+date.toISOString());
+    this.setState({
+      date: date
+    });
+  }
+  
+  render() {    
+    function OfficerBanner(props){
+      let text;
+      let color;
+      
+      if(props.available){
+        text="Päävalvoja paikalla";
+        color="greenB";
+      }
+      else{
+        text="Päävalvoja ei ole paikalla";
+        color="redB";
+      }
+
+      return(<h2 className={"info "+color}>{text}</h2>)
+    }
+    
+    //builds tracklist with grid
+    function TrackList(props){
+      let items = []
+      for (var key in props.tracks) {
+        console.log(key)
+        items.push(
+            <TrackBox key={key} name={key} 
+              state={props.tracks[key]}
+              to={"/trackview/date?/"+key}
+            />
+        );
+      }
+
+      return(<Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="flex-start"
+        className="sevenGrid"
+      >
+        {items}
+      </Grid>);
+    }
+    
+    //single track
     function TrackBox(props) {
       let color;
       
-      if(props.state === "open"){
+      if(props.state === 1){ //open
         color = "greenB"
       }
-      else if (props.state === "closed"){
+      else if (props.state === 2){ //closed
         color = "redB"
       }
       
-      return(<Grid item className="track hoverHand" xs={12} sm={2}>
-              <p>{props.name}</p>
-              <Box className={"clickableBox " + color} >&nbsp;</Box>
-            </Grid>);
+      return(
+        <Grid item className="track hoverHand" xs={12} sm={2}>
+          <Link className="trackBoxLink" to={props.to}>
+            <p>{props.name}</p>
+            <Box className={"clickableBox " + color} >&nbsp;</Box>
+          </Link>
+        </Grid>
+      );
     }
     
     return (
@@ -66,10 +142,10 @@ class Dayview extends Component {
             justify="space-around"
             alignItems="center"
           >
-            <div className="hoverHand arrow-left"></div>
+            <div className="hoverHand arrow-left" onClick={this.previousDayClick}></div>
             <h1>{dayToString(this.state.date.getDay())}</h1> 
             <div>{this.state.date.toLocaleDateString()}</div>
-            <div className="hoverHand arrow-right"></div>
+            <div className="hoverHand arrow-right" onClick={this.nextDayClick}></div>
           </Grid>
           {/* Range info */}
           <Grid
@@ -79,25 +155,11 @@ class Dayview extends Component {
             alignItems="center"
           >
             <Grid item xs={12}>
-              <h2 className="info greenB">Päävalvoja paikalla</h2>
+              <OfficerBanner available={this.state.rangeOfficer}/>
             </Grid>
           </Grid>
           {/* MUI grid */}
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-            className="sevenGrid"
-          >
-            <TrackBox name="Kivääri" state="open"/>
-            <TrackBox name="Kivääri" state="closed"/>
-            <TrackBox name="Kivääri" />
-            <TrackBox name="Kivääri" />
-            <TrackBox name="Kivääri" state="open"/>
-            <TrackBox name="Kivääri" state="open"/>
-            <TrackBox name="Kivääri" state="open"/>
-          </Grid>
+          <TrackList tracks={this.state.tracks}/>
           {/* Other info */}
           <Grid
             container
@@ -107,7 +169,7 @@ class Dayview extends Component {
             className="otherInfo"
           >
             <Grid item xs={6} sm={3}>
-              Aukiolo: 16-20
+              Aukiolo: {this.state.opens}-{this.state.closes}
             </Grid>
             <Grid item xs={6} sm={3}>
               <div className="colorInfo">
