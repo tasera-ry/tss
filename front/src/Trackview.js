@@ -67,7 +67,7 @@ function Trackview() {
       {/*    Päivämäärä */}
       <div>
         <h2>
-          {dayToString(date.getDay())} {date.toLocaleDateString()}
+          {dayToString(date.getDay())} {date.toLocaleDateString("fi-FI")}
         </h2>
       </div>
 
