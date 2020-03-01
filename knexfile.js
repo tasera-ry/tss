@@ -45,7 +45,8 @@ module.exports = {
     // Personal environment is for development purposes. The running database
     // server should have a database matching your unix username, which is used
     // by default. On windows you might need to set the environment variable
-    // USER or USERNAME to the name registered on the server.
+    // USER or USERNAME to the name registered on the server. Enable query
+    // debugging by setting DB_DEBUG to 'true'.
     personal: {
         client: 'pg',
         connection: {
@@ -56,7 +57,7 @@ module.exports = {
             charset: 'utf8'
         },
 
-        debug: process.env.DB_DEBUG || true,
+        debug: process.env.DB_DEBUG === 'true' || false,
 
         migrations: {
             directory: path.join(__dirname, 'knex', 'personal', 'migrations')
