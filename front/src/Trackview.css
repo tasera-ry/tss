@@ -1,36 +1,32 @@
-.container {
+.wholeScreenDiv {
+  text-align: center;
+  align-items: center;
+}
+
+.trackNameAndType {
   padding: 8;
   background-color: "#ffffff";
-}
-.rowContainer {
+  text-align: center;
+  align-items: flex-end;
   display: grid;
   flex-direction: "row";
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .infoBox {
   background-color: white;
   outline: 2px solid black;
   color: black;
-  width: 40vw;
+  width: 440px;
   border: 1px;
-  height: 10vh;
+  height: 105px;
   margin: 0 auto;
-  overflow-y: auto;
   margin-bottom: 15px;
-}
-
-.goDown {
-  position: relative;
-  margin-top: auto;
-}
-
-.centerIt {
   text-align: center;
   align-items: center;
-}
-
-.inline {
-  display: inline;
 }
 
 .isAvaivable {
@@ -38,7 +34,9 @@
   color: black;
   padding: 12px;
   text-align: center;
-  width: 40vw;
+  align-items: center;
+  width: 60vw;
+  margin-left: 19vw;
 }
 
 .isUnavaivable {
@@ -46,18 +44,69 @@
   color: black;
   padding: 12px;
   text-align: center;
-  width: 40vw;
+  align-items: center;
+  width: 60vw;
+  margin-left: 19vw;
 }
 
-.maingrid {
-  /* container */
-  direction: column;
-  /*   justify: center;
-  alignitems: left;*/
-  border-spacing: 10px;
-}
-
-.back > svg {
+.backLink > svg {
   margin-bottom: -7px;
   margin-right: 5px;
+  text-align: center;
+  align-items: center;
+  color: black;
+}
+
+@media only screen and (max-width: 640px) {
+}
+
+@media only screen and (max-width: 768px) {
+  .infoBox {
+    background-color: white;
+    outline: 2px solid black;
+    color: black;
+    width: 80%;
+    border: 1px;
+    height: 10%;
+    margin-bottom: 15px;
+    margin-right: 10%;
+  }
+
+  .isAvaivable {
+    background-color: green;
+    color: black;
+    padding: 12px;
+    width: 80vw;
+    margin-left: 8vw;
+  }
+
+  .isUnavaivable {
+    background-color: red;
+    color: black;
+    padding: 12px;
+    width: 80vw;
+    margin-left: 8vw;
+  }
+  .wholeScreenDiv {
+    text-align: center;
+    align-items: left;
+  }
+  .trackNameAndType {
+    padding: 8;
+    background-color: "#ffffff";
+    text-align: center;
+    align-items: flex-end;
+    display: grid;
+    flex-direction: "row";
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+}
+
+@media only screen and (max-width: 1200px) {
 }
