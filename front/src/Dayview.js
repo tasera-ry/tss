@@ -24,24 +24,28 @@ class Dayview extends Component {
     //public class fields syntax a.k.a. nextDayClick = (newObject) => {
     this.previousDayClick = this.previousDayClick.bind(this);
     this.nextDayClick = this.nextDayClick.bind(this);
+    this.update = this.update.bind(this);
   }
 
   componentDidMount(){
+    this.update();
+  }
+  
+  update(){
     // /dayview/2020-02-20
     let date = this.props.match.params.date;
-
     callApi("GET","tracks/"+ (date ? date : ""))
-      .then(res => {
-        console.log(res)
+    .then(res => {
+      console.log(res)
 
-        //async joten tietoa päivittäessä voi välähtää Date.now antama
-        //ennen haluttua tietoa
-        this.setState({
-          date: new Date(res.date),
-          tracks: res.tracks
-        });
-      })
-      .catch(err => console.log(err));
+      //async joten tietoa päivittäessä voi välähtää Date.now antama
+      //ennen haluttua tietoa
+      this.setState({
+        date: new Date(res.date),
+        tracks: res.tracks
+      });
+    })
+    .catch(err => console.log(err));
   }
 
   //TODO ComponentDidUpdate? päivän vaihdon jälkeen uutta tietoa varten
@@ -52,6 +56,8 @@ class Dayview extends Component {
     this.props.history.push("/dayview/"+date.toISOString());
     this.setState({
       date: date
+    }, function(){
+      this.update();
     });
   }
   
@@ -61,6 +67,8 @@ class Dayview extends Component {
     this.props.history.push("/dayview/"+date.toISOString());
     this.setState({
       date: date
+    }, function(){
+      this.update();
     });
   }
   
