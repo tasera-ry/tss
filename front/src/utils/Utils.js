@@ -22,4 +22,43 @@ export function dayToString(i) {
     }
   }
 
+  export function monthToString(i) {
+    if (i == 0) {
+      return "Tammikuu";
+    }
+    if (i == 1) {
+      return "Helmikuu";
+    }
+    if (i == 2) {
+      return "Maaliskuu";
+    }
+    if (i == 3) {
+      return "Huhtikuu";
+    }
+    if (i == 4) {
+      return "Toukokuu";
+    }
+    if (i == 5) {
+      return "Kesäkuu";
+    }
+    if (i == 6) {
+      return "Heinäkuu";
+    }
+    if (i == 7) {
+      return "Elokuu";
+    }
+    if (i == 8) {
+      return "Syyskuu";
+    }
+    if (i == 9) {
+      return "Lokakuu";
+    }
+    if (i == 10) {
+      return "Marraskuu";
+    }
+    if (i == 11) {
+      return "Joulukuu";
+    }
+  }
+
  
