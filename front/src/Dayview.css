@@ -56,7 +56,7 @@ h2 {
   box-sizing: border-box;
 }
 
-.track > p {
+.track > a > p {
   padding-left:2vh;
 }
 
@@ -142,4 +142,15 @@ h2 {
 
 .hoverHand:hover {
   cursor: pointer;
+}
+
+.trackBoxLink{
+  display: inline-block;
+  width: 100%;
+  text-decoration: none;
+  color:black;
+}
+
+h1{
+  width:200px;
 }
