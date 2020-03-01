@@ -143,7 +143,7 @@ class Dayview extends Component {
             alignItems="center"
           >
             <div className="hoverHand arrow-left" onClick={this.previousDayClick}></div>
-            <h1>{dayToString(this.state.date.getDay())}</h1> 
+            <h1>{dayToString(this.state.date.getDay())}{console.log(this.state.date.getDay())}</h1> 
             <div>{this.state.date.toLocaleDateString()}</div>
             <div className="hoverHand arrow-right" onClick={this.nextDayClick}></div>
           </Grid>
