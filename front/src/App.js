@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import Button from "@material-ui/core/Button";
-import Badge from "@material-ui/core/Badge";
-import logo from "./logo.svg";
 import "./App.css";
 import SignIn from "./SignIn";
 import Nav from "./Nav";
