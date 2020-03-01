@@ -2,12 +2,14 @@ import React from 'react';
 import './App.css';
 import './Weekview.css'
 import {Link} from 'react-router-dom';
-
-function test() {
-    alert("function executed on clicking div");
-  }
+import Grid from '@material-ui/core/Grid';
+import { monthToString } from "./utils/Utils";
 
 function Weekview() {
+
+    let date = new Date(Date.now());
+
+    var currentYear = date.toLocaleDateString().split(".")[2];
 
     var dateNow = 1
     var monthNow = 1
@@ -17,57 +19,60 @@ function Weekview() {
     var dayUrl = "/dayview" + dayParams;
 
     return (
-        <div>
-            <h1 class="week-header">Viikko 5, 2020</h1>
+        <div class="container">
+            {/* Header with arrows */}
+            <Grid class="date-header">
+                <h1> {monthToString(date.getMonth())} {currentYear}</h1>
+            </Grid>
 
-            <div>
-            <div class="flex-container2">
-                <Link class="link" to={dayUrl}>
+            {/* Date boxes */}
+            <Grid class="flex-container2">
+            <Link class="link" to={dayUrl}>
                 <p style={{ fontSize: "medium" }}>
-                Ma {dateNow}.{monthNow}
+                {dateNow}.{monthNow}
                 </p>
                 </Link>
 
                 <Link class="link" to="/dayview">
                 <p style={{ fontSize: "medium" }}>
-                Ti {dateNow + 1}.{monthNow}
+                {dateNow + 1}.{monthNow}
                 </p>
                 </Link>
 
                 <Link class="link" to="/dayview">
                 <p style={{ fontSize: "medium" }}>
-                Ke {dateNow + 2}.{monthNow}
+                {dateNow + 2}.{monthNow}
                 </p>
                 </Link>
 
                 <Link class="link" to="/dayview">
                 <p style={{ fontSize: "medium" }}>
-                To {dateNow + 3}.{monthNow}
+                {dateNow + 3}.{monthNow}
                 </p>
                 </Link>
 
                 <Link class="link" to="/dayview">
                 <p style={{ fontSize: "medium" }}>
-                Pe {dateNow + 4}.{monthNow}
+                {dateNow + 4}.{monthNow}
                 </p>
                 </Link>
 
                 <Link class="link" to="/dayview">
                 <p style={{ fontSize: "medium" }}>
-                La {dateNow + 5}.{monthNow}
+                {dateNow + 5}.{monthNow}
                 </p>    
                 </Link>
 
                 <Link class="link" to="/dayview">
                 <p style={{ fontSize: "medium" }}>
-                Su {dateNow + 6}.{monthNow}
+                {dateNow + 6}.{monthNow}
                 </p>
                 </Link>
-            </div>
-            </div>
+            </Grid>
 
             <div>
-            <div class="flex-container">
+            {/* Colored boxes for dates */}
+            <Grid class="flex-container">
                 <Link style={{ backgroundColor: "orange" }} class="link" to="/dayview">
                 <p>
                 &nbsp;
@@ -109,28 +114,32 @@ function Weekview() {
                 &nbsp;
                 </p>
                 </Link>
-            </div>
-            </div>
-
-            <div class="info-flex">
-            <div class='box green'></div>
-            &nbsp;Avoinna
-            <div>
-            <div class='box orange info-flex2'></div>
-            &nbsp;Päävalvoja tulossa
-            </div>
+            </Grid>
             </div>
 
-            <div class="info-flex">
-            <div>
-            <div class='box red'></div>
-            &nbsp;Suljettu&nbsp;
-            </div>
-            <div>
-            <div class='box white info-flex2'></div>
-            &nbsp;Ei tietoa 
-            </div>
-            </div>
+            
+            {/* Infoboxes */}
+
+            {/* Top row */}
+            {/* To do: Tekstit ei toimi */}
+            <Grid>
+                <div class="info-flex">
+                    <div id="open-info" class='box'></div>
+                    {/* Avoinna */}
+                    <div id="valvoja-info" class='box'></div>
+                    {/* Päävalvoja tulossa */}
+                </div>
+            </Grid>
+
+            {/* Bottom row */}
+            <Grid class="bottom-info">
+                <div class="info-flex">
+                    <div id="closed-info" class='box'></div>
+                    {/* Suljettu */}
+                    <div id="no-info" class='box'></div>
+                    {/* Ei tietoa */}
+                </div>
+            </Grid>
         </div>
     );
 }
