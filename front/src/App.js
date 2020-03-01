@@ -23,7 +23,7 @@ class App extends Component {
             <Switch>
               <Route path="/" exact component={Home} />
               <Route path="/signin" component={SignIn} />
-              <Route path="/dayview" component={Dayview} />
+              <Route path="/dayview/:date?" component={Dayview} />
               <Route path="/weekview" component={Weekview} />
               <Route path="/trackview" component={Trackview} />
             </Switch>

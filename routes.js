@@ -7,6 +7,7 @@ const { check } = require('express-validator');
 
 //require controller
 const user = require('./controllers/user');
+const track = require('./controllers/track');
 
 /*
 *  Authorization requires jwt token given by login
@@ -87,5 +88,12 @@ router.post("/register", function(req,res,next){
                     .isLength({ min: 4, max: 30 })
 ], user.register);
 
+/*
+*  Get date
+*/
+router.get("/tracks/:date?", track.tracks);
+
+//router.get("/week/", track.week);
+//router.get("/month/", track.month);
 
 module.exports = router;
