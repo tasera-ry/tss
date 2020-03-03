@@ -8,6 +8,7 @@ const { check } = require('express-validator');
 //require controller
 const user = require('./controllers/user');
 const track = require('./controllers/track');
+const scheduleTrack = require('./controllers/scheduleTrack');
 
 /*
 *  Authorization requires jwt token given by login
@@ -89,19 +90,25 @@ router.post("/register", function(req,res,next){
 ], user.register);
 
 /*
-*  Tracks
+*  Track
 */
 //TODO verify how to identify
-//get all
-//also allows /tracks with the ? modifier
-router.get("/tracks/:date?", track.tracks);
-//get one
-router.get("/tracks/:date/:id", track.track);
-//add one
-router.post("/tracks", track.addTrack);
+//get tracks
+router.get("/track", track.track);
+//add a track
+router.post("/track", track.addTrack);
 //delete one
-router.delete("/tracks/:id",track.deleteTrack);
+router.delete("/track/:id",track.deleteTrack);
 //update one
-router.put("tracks/:id",track.updateTrack);
+router.put("/track/:id",track.updateTrack);
+
+/*
+*  Schedule
+*/
+router.get("/date/:date/track", scheduleTrack.trackInfoForDay);
+router.get("/date/:date/track/:id", scheduleTrack.trackInfoForDay);
+router.post("/date/:date/track/:id", scheduleTrack.addTrackInfoForDay);
+router.delete("/date/:date/track/:id",scheduleTrack.deleteTrackInfoForDay);
+router.put("/date/:date/track/:id",scheduleTrack.updateTrackInfoForDay);
 
 module.exports = router;
