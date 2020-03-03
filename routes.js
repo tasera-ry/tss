@@ -89,11 +89,19 @@ router.post("/register", function(req,res,next){
 ], user.register);
 
 /*
-*  Get date
+*  Tracks
 */
+//TODO verify how to identify
+//get all
+//also allows /tracks with the ? modifier
 router.get("/tracks/:date?", track.tracks);
-
-//router.get("/week/", track.week);
-//router.get("/month/", track.month);
+//get one
+router.get("/tracks/:date/:id", track.track);
+//add one
+router.post("/tracks", track.addTrack);
+//delete one
+router.delete("/tracks/:id",track.deleteTrack);
+//update one
+router.put("tracks/:id",track.updateTrack);
 
 module.exports = router;

@@ -24,3 +24,62 @@ exports.tracks = async (req, res) => {
   res.status(200).json(trackListObj);
 };
 
+
+/*
+* Get a track with identifier
+*/
+exports.track = async (req, res) => {
+  //tracks/:date/:id
+  console.log("date "+req.params.date)
+  console.log("id "+req.params.id)
+  
+  //TODO get track from db with date and id
+  
+  var trackObj = {name:"Kivääri",status:1,info:"???"};
+  
+  res.status(200).json({
+    track: trackObj
+  });
+}
+
+/*
+* Add a track with body params
+*/
+exports.addTrack = async (req, res) => {
+  //tracks
+  console.log("body "+ req.body)
+  
+  //TODO add track to db
+  
+  res.status(200).json({
+    added: true
+  });
+}
+
+/*
+* Delete a track with id
+*/
+exports.deleteTrack = async (req, res) => {
+  //tracks/:id
+  console.log("id "+req.params.id)
+  
+  //TODO delete track from db
+  
+  res.status(200).json({
+    deleted: true
+  });
+}
+
+/*
+* Update a track with id
+*/
+exports.updateTrack = async (req, res) => {
+  //tracks/:id
+  console.log("id "+req.params.id)
+  
+  //TODO update track
+  
+  res.status(200).json({
+    updated: true
+  });
+}
