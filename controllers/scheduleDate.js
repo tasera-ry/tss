@@ -4,7 +4,7 @@
 exports.date = async (req, res) => {
   //year-month-day
   let date = new Date(req.params.date);
-  console.log(date);
+  console.log("SCHEDULE_DATE "+date);
   
   //check for valid date object
   if(date instanceof Date && !isNaN(date.getTime())){
@@ -27,8 +27,8 @@ exports.date = async (req, res) => {
 * Add date with body params
 */
 exports.addDate = async (req, res) => {
-  console.log(req.params.date)
-  console.log("body "+ req.body)
+  console.log("SCHEDULE_DATE "+req.params.date)
+  console.log("SCHEDULE_DATE "+"body "+ req.body)
   
   //TODO
   
@@ -41,7 +41,7 @@ exports.addDate = async (req, res) => {
 * Delete a date
 */
 exports.deleteDate = async (req, res) => {
-  console.log(req.params.date)
+  console.log("SCHEDULE_DATE "+req.params.date)
   
   //TODO
   
@@ -54,7 +54,7 @@ exports.deleteDate = async (req, res) => {
 * Update a date
 */
 exports.updateDate = async (req, res) => {
-  console.log(req.params.date)
+  console.log("SCHEDULE_DATE "+req.params.date)
   
   //TODO
   

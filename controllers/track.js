@@ -2,6 +2,7 @@
 *  Get tracks
 */
 exports.track = async (req, res) => {
+  console.log("TRACK ");
   
   //TODO
   
@@ -16,7 +17,7 @@ exports.track = async (req, res) => {
 * Add a track with body params
 */
 exports.addTrack = async (req, res) => {
-  console.log("body "+ req.body)
+  console.log("TRACK "+"body "+ req.body)
   
   //TODO
   
@@ -29,7 +30,7 @@ exports.addTrack = async (req, res) => {
 * Delete a track with id
 */
 exports.deleteTrack = async (req, res) => {
-  console.log("id "+req.params.id)
+  console.log("TRACK "+"id "+req.params.id)
   
   //TODO
   
@@ -42,7 +43,7 @@ exports.deleteTrack = async (req, res) => {
 * Update a track with id
 */
 exports.updateTrack = async (req, res) => {
-  console.log("id "+req.params.id)
+  console.log("TRACK "+"id "+req.params.id)
   
   //TODO
   

@@ -4,8 +4,8 @@
 exports.trackInfoForDay = async (req, res) => {
   //Selecting track-status for a specific day from the DB and sending it to the front end
   //date/:date/track/:id
-  console.log(req.params.date);
-  console.log(req.params.id);
+  console.log("SCHEDULE_TRACK "+req.params.date);
+  console.log("SCHEDULE_TRACK "+req.params.id);
   
   //TODO
   //with id single track, without all
@@ -34,9 +34,9 @@ exports.trackInfoForDay = async (req, res) => {
 exports.addTrackInfoForDay = async (req, res) => {
   //adding track-specific info for a day to the DB
   //date/:date/track/:id
-  console.log(req.params.date);
-  console.log(req.params.id);
-  console.log("body "+ req.body)
+  console.log("SCHEDULE_TRACK "+req.params.date);
+  console.log("SCHEDULE_TRACK "+req.params.id);
+  console.log("SCHEDULE_TRACK "+"body "+ req.body)
   
   //TODO
   
@@ -51,8 +51,8 @@ exports.addTrackInfoForDay = async (req, res) => {
 exports.deleteTrackInfoForDay = async (req, res) => {
   //removing track's day-specific info from the DB (in UI day turns white)
   //date/:date/track/:id
-  console.log(req.params.date);
-  console.log(req.params.id);
+  console.log("SCHEDULE_TRACK "+req.params.date);
+  console.log("SCHEDULE_TRACK "+req.params.id);
   
   //TODO
   
@@ -67,8 +67,8 @@ exports.deleteTrackInfoForDay = async (req, res) => {
 exports.updateTrackInfoForDay = async (req, res) => {
   //updating a track's info in the DB
   //date/:date/track/:id
-  console.log(req.params.date);
-  console.log(req.params.id);
+  console.log("SCHEDULE_TRACK "+req.params.date);
+  console.log("SCHEDULE_TRACK "+req.params.id);
   
   //TODO
   
