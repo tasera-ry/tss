@@ -47,8 +47,6 @@ class Dayview extends Component {
       .catch(err => console.log(err));
   }
 
-  //TODO ComponentDidUpdate? päivän vaihdon jälkeen uutta tietoa varten
-
   previousDayClick(e) {
     e.preventDefault();
     let date = new Date(this.state.date.setDate(this.state.date.getDate() - 1));
