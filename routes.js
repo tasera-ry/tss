@@ -3,12 +3,13 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const config = require("./config/config");
-const { check } = require('express-validator');
+const { check } = require("express-validator");
 
 //require controller
-const user = require('./controllers/user');
-const track = require('./controllers/track');
-const scheduleTrack = require('./controllers/scheduleTrack');
+const user = require("./controllers/user");
+const track = require("./controllers/track");
+const scheduleTrack = require("./controllers/scheduleTrack");
+const scheduleDate = require("./controllers/scheduleDate");
 
 /*
 *  Authorization requires jwt token given by login
@@ -90,6 +91,15 @@ router.post("/register", function(req,res,next){
 ], user.register);
 
 /*
+*  Date
+*/
+//also allows /date with the ? modifier
+router.get("/date/:date?", scheduleDate.date);
+router.post("/date", scheduleDate.addDate);
+router.delete("/date/:date",scheduleDate.deleteDate);
+router.put("/date/:date",scheduleDate.updateDate);
+
+/*
 *  Track
 */
 //TODO verify how to identify
@@ -105,8 +115,7 @@ router.put("/track/:id",track.updateTrack);
 /*
 *  Schedule
 */
-router.get("/date/:date/track", scheduleTrack.trackInfoForDay);
-router.get("/date/:date/track/:id", scheduleTrack.trackInfoForDay);
+router.get("/date/:date/track/:id?", scheduleTrack.trackInfoForDay);
 router.post("/date/:date/track/:id", scheduleTrack.addTrackInfoForDay);
 router.delete("/date/:date/track/:id",scheduleTrack.deleteTrackInfoForDay);
 router.put("/date/:date/track/:id",scheduleTrack.updateTrackInfoForDay);

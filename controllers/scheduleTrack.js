@@ -2,12 +2,13 @@
 *  Get track status for a day
 */
 exports.trackInfoForDay = async (req, res) => {
-  //Selecting the day's track-status from the DB and sending it to the front end
+  //Selecting track-status for a specific day from the DB and sending it to the front end
   //date/:date/track/:id
   console.log(req.params.date);
   console.log(req.params.id);
   
   //TODO
+  //with id single track, without all
   
   let date = new Date(req.params.date);
   
@@ -31,7 +32,7 @@ exports.trackInfoForDay = async (req, res) => {
 *  Add track status for a day
 */
 exports.addTrackInfoForDay = async (req, res) => {
-  //adding a new day's track-specific info to the DB
+  //adding track-specific info for a day to the DB
   //date/:date/track/:id
   console.log(req.params.date);
   console.log(req.params.id);

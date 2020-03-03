@@ -33,7 +33,7 @@ class Dayview extends Component {
   update() {
     // /dayview/2020-02-20
     let date = this.props.match.params.date;
-    callApi("GET", "tracks/" + (date ? date : ""))
+    callApi("GET", "date/" + (date ? date : ""))
       .then(res => {
         console.log(res);
 
