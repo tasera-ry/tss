@@ -19,6 +19,7 @@ function Weekview() {
     var dayUrl = "/dayview" + dayParams;
 
     return (
+        <div>
         <div class="container">
             {/* Header with arrows */}
             <Grid class="date-header">
@@ -116,18 +117,22 @@ function Weekview() {
                 </Link>
             </Grid>
             </div>
+            </div>
+            
+
 
             
             {/* Infoboxes */}
 
             {/* Top row */}
             {/* To do: Tekstit ei toimi */}
+            <div class="infoContainer">
             <Grid>
                 <div class="info-flex">
                     <div id="open-info" class='box'></div>
-                    {/* Avoinna */}
+                    {/* Avoinna */} &nbsp;Avoinna <br></br> <br></br>
                     <div id="valvoja-info" class='box'></div>
-                    {/* Päävalvoja tulossa */}
+                    {/* Päävalvoja tulossa */} &nbsp;Päävalvoja tulossa<br></br> <br></br>
                 </div>
             </Grid>
 
@@ -135,11 +140,12 @@ function Weekview() {
             <Grid class="bottom-info">
                 <div class="info-flex">
                     <div id="closed-info" class='box'></div>
-                    {/* Suljettu */}
+                    {/* Suljettu */} &nbsp;Suljettu <br></br><br></br>
                     <div id="no-info" class='box'></div>
-                    {/* Ei tietoa */}
+                    {/* Ei tietoa */} &nbsp;Ei tietoa
                 </div>
             </Grid>
+            </div>
         </div>
     );
 }

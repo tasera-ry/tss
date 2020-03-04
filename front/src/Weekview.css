@@ -3,6 +3,10 @@
   padding:5vh 20vh 5vh 20vh;
 }
 
+.infoContainer {
+  padding:5vh 20vh 5vh 20vh;
+}
+
 .box {
     float: left;
     height: 20px;
@@ -142,6 +146,10 @@
   .info-flex {
     float: none;
     display: block;
+  }
+
+  .infoContainer {
+    padding:0vh 0vh 0vh 0vh;
   }
   .flex-container2 {
     margin-left: -100%;
