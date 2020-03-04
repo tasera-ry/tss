@@ -45,6 +45,10 @@ function getParent() {
   return "/dayview";
 }
 
+function getInfobox(){
+  return "Did you know octopuses don’t have tentacles; they have arms. A tentacle only has suckers at its end, while a cephalopod arm has suckers for most of its length. Did u also know boomari arm have no sucker to make swinging easier. Ja jtn et 255 char täyteee"
+}
+
 /*
  ** Main function
  */
@@ -92,10 +96,7 @@ function Trackview() {
 
       <p>Lisätietoja:</p>
       <div class="infoBox">
-        Did you know octopuses don’t have tentacles; they have arms. A tentacle
-        only has suckers at its end, while a cephalopod arm has suckers for most
-        of its length. Did u also know boomari arm have no sucker to make
-        swinging easier. Ja jtn et 255 char täyteee
+        {getInfobox()}
       </div>
 
       {/*    Linkki taaksepäin  */}
