@@ -43,8 +43,8 @@ execute procedure propagate_upd_range_reservation_to_scheduled_range_supervision
 
 exports.down = function(knex) {
   return knex.schema
-    .raw("drop trigger if exists after_insert on range_reservation")
-    .raw("drop function if exists propagate_ins_range_reservation_to_scheduled_range_supervision()")
-    .raw("drop trigger if exists after_update on range_reservation")
-    .raw("drop function if exists propagate_upd_range_reservation_to_scheduled_range_supervision()")
+    .raw("drop trigger after_insert on range_reservation")
+    .raw("drop function propagate_ins_range_reservation_to_scheduled_range_supervision()")
+    .raw("drop trigger after_update on range_reservation")
+    .raw("drop function propagate_upd_range_reservation_to_scheduled_range_supervision()")
 }
