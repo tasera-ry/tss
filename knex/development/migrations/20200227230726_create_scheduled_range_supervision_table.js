@@ -11,8 +11,10 @@ exports.up = function(knex) {
         .inTable('supervisor')
       schedule.time('open')
         .notNullable()
+        .defaultTo('16:00:00')
       schedule.time('close')
         .notNullable()
+        .defaultTo('21:00:00')
     })
 }
 
