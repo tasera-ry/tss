@@ -40,7 +40,7 @@ exports.trackInfoForDay = async (req, res) => {
             let roState = (trackInfo.rangeOfficer !== null) ? true : false;
             let toState = (trackInfo.trackOfficer !== null) ? true : false;
             console.log(roState);
-            var trackObj = {trackName:trackInfo.name,description:trackInfo.description,trackOfficer:toState,rangeOfficer:toState,trackNotice:trackInfo.trackNotice};
+            var trackObj = {trackName:trackInfo.name,description:trackInfo.description,trackOfficer:toState,rangeOfficer:roState,trackNotice:trackInfo.trackNotice};
           
             res.status(200).json({
               track: trackObj
