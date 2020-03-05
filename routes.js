@@ -95,29 +95,63 @@ router.post("/register", function(req,res,next){
 */
 //also allows /date with the ? modifier
 router.get("/date/:date?", scheduleDate.date);
-router.post("/date", scheduleDate.addDate);
-router.delete("/date/:date",scheduleDate.deleteDate);
-router.put("/date/:date",scheduleDate.updateDate);
+
+router.post("/date", function(req,res,next){
+  res.locals.rank = [1,2];
+  next();
+}, authorize, scheduleDate.addDate);
+
+router.delete("/date/:date", function(req,res,next){
+  res.locals.rank = [1,2];
+  next();
+}, authorize,scheduleDate.deleteDate);
+
+router.put("/date/:date", function(req,res,next){
+  res.locals.rank = [1,2];
+  next();
+}, authorize,scheduleDate.updateDate);
 
 /*
 *  Track
 */
 //TODO verify how to identify
 //get tracks
-router.get("/track", track.track);
+router.get("/track", function(req,res,next){
+  res.locals.rank = [1,2];
+  next();
+}, authorize,track.track);
 //add a track
-router.post("/track", track.addTrack);
+router.post("/track", function(req,res,next){
+  res.locals.rank = [1,2];
+  next();
+}, authorize,track.addTrack);
 //delete one
-router.delete("/track/:id",track.deleteTrack);
+router.delete("/track/:id", function(req,res,next){
+  res.locals.rank = [1,2];
+  next();
+}, authorize,track.deleteTrack);
 //update one
-router.put("/track/:id",track.updateTrack);
+router.put("/track/:id", function(req,res,next){
+  res.locals.rank = [1,2];
+  next();
+}, authorize,track.updateTrack);
 
 /*
 *  Schedule
 */
 router.get("/date/:date/track/:id?", scheduleTrack.trackInfoForDay);
-router.post("/date/:date/track/:id", scheduleTrack.addTrackInfoForDay);
-router.delete("/date/:date/track/:id",scheduleTrack.deleteTrackInfoForDay);
-router.put("/date/:date/track/:id",scheduleTrack.updateTrackInfoForDay);
+
+router.post("/date/:date/track/:id", function(req,res,next){
+  res.locals.rank = [1,2];
+  next();
+}, authorize, scheduleTrack.addTrackInfoForDay);
+router.delete("/date/:date/track/:id", function(req,res,next){
+  res.locals.rank = [1,2];
+  next();
+}, authorize,scheduleTrack.deleteTrackInfoForDay);
+router.put("/date/:date/track/:id", function(req,res,next){
+  res.locals.rank = [1,2];
+  next();
+}, authorize,scheduleTrack.updateTrackInfoForDay);
 
 module.exports = router;
