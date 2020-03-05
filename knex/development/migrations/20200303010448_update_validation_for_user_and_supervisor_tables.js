@@ -25,10 +25,10 @@ create trigger after_insert \
 after insert on \"user\" \
 for each row \
 execute procedure propagate_user_insert_to_supervisor()")
-};
+}
 
 exports.down = function(knex) {
   return knex.schema
     .raw("drop trigger if exists after_insert on \"user\"")
     .raw("drop function if exists propagate_user_insert_to_supervisor()")
-};
+}
