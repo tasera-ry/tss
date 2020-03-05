@@ -95,6 +95,7 @@ router.post("/register", function(req,res,next){
 */
 //also allows /date with the ? modifier
 router.get("/date/:date?", scheduleDate.date);
+router.get("/week/:date?", scheduleDate.week);
 
 router.post("/date", function(req,res,next){
   res.locals.rank = [1,2];
