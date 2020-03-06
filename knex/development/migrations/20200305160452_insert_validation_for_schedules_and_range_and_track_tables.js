@@ -21,7 +21,7 @@ create function propagate_ins_scheduled_range_supervision_to_track_supervision()
 returns trigger as \
 $BODY$ \
 begin \
-        insert into track_supervision(scheduled,_range_supervision_id, track_supervisor) \
+        insert into track_supervision(scheduled_range_supervision_id, track_supervisor) \
         values(new.id, 'absent'); \
         return new; \
 end; \
