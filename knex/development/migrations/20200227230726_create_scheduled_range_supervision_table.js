@@ -6,6 +6,7 @@ exports.up = function(knex) {
         .references('id')
         .inTable('range_reservation')
         .notNullable()
+        .unique()
       schedule.integer('supervisor_id')
         .references('user_id')
         .inTable('supervisor')
