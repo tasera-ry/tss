@@ -4,7 +4,6 @@ exports.up = function(knex) {
     history.integer('scheduled_range_supervision_id')
       .references('id')
       .inTable('scheduled_range_supervision')
-      .onDelete('cascade')
       .notNullable()
     history.timestamp('updated_at', { useTz: true, precision: 6 })
       .notNullable()

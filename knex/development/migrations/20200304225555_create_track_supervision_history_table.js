@@ -5,7 +5,10 @@ exports.up = function(knex) {
       history.integer('scheduled_range_supervision_id')
         .references('id')
         .inTable('scheduled_range_supervision')
-        .onDelete('cascade')
+        .notNullable()
+      history.integer('track_id')
+        .references('id')
+        .inTable('track')
         .notNullable()
       history.timestamp('updated_at', { useTz: true, precision: 6 })
         .notNullable()
@@ -17,9 +20,9 @@ exports.up = function(knex) {
         .notNullable()
       history.string('notice')
     })
-};
+}
 
 exports.down = function(knex) {
   return knex.schema
     .dropTable('track_supervision_history')
-};
+}

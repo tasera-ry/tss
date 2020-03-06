@@ -5,11 +5,11 @@ exports.up = function(knex) {
       supervision.integer('scheduled_range_supervision_id')
         .references('id')
         .inTable('scheduled_range_supervision')
-        .onDelete('cascade')
         .notNullable()
         .primary()
       supervision.timestamp('updated_at', { useTz: true, precision: 6 })
-        .defaultTo(knex.fn.now()).notNullable()
+        .defaultTo(knex.fn.now())
+        .notNullable()
       supervision.enu('range_supervisor'
                       , ['absent', 'confirmed', 'en route', 'present']
                       , { useNative: true

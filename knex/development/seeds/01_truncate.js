@@ -7,7 +7,9 @@ exports.seed = function(knex) {
       .del()
   }
 
+  truncateTrackHistory = _.partial(truncate, 'track_supervision_history')
   truncateTrackSupervision = _.partial(truncate, 'track_supervision')
+  truncateRangeHistory = _.partial(truncate, 'range_supervision_history')
   truncateRangeSupervision = _.partial(truncate, 'range_supervision')
   truncateScheduledRangeSupervision = _.partial(truncate, 'scheduled_range_supervision')
   truncateRangeReservation = _.partial(truncate, 'range_reservation')

@@ -5,11 +5,14 @@ exports.up = function(knex) {
       supervision.integer('scheduled_range_supervision_id')
         .references('id')
         .inTable('scheduled_range_supervision')
-        .onDelete('cascade')
         .notNullable()
-        .primary()
+      supervision.integer('track_id')
+        .references('id')
+        .inTable('track')
+        .notNullable()
       supervision.timestamp('updated_at', { useTz: true, precision: 6 })
-        .defaultTo(knex.fn.now()).notNullable()
+        .defaultTo(knex.fn.now())
+        .notNullable()
       supervision.enu('track_supervisor'
                       , ['absent', 'present']
                       , { useNative: true
@@ -17,6 +20,7 @@ exports.up = function(knex) {
                           , enumName: 'track_supervisor' })
         .notNullable()
       supervision.string('notice')
+      supervision.primary(['scheduled_range_supervision_id', 'track_id'])
     })
 }
 
