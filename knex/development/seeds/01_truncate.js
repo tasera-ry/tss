@@ -18,7 +18,9 @@ exports.seed = function(knex) {
   truncateSupervisor = _.partial(truncate, 'supervisor')
   truncateUser = _.partial(truncate, 'user')
 
-  return truncateTrackSupervision()
+  return truncateTrackHistory()
+    .then(truncateRangeHistory)
+    .then(truncateTrackSupervision)
     .then(truncateRangeSupervision)
     .then(truncateScheduledRangeSupervision)
     .then(truncateRangeReservation)

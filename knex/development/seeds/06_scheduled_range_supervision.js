@@ -4,39 +4,35 @@ const moment = require('moment')
 casual.seed(0)
 
 exports.seed = function(knex) {
-  const rangeReservation = knex
+  const available_reservations = knex('range_reservation')
         .select('id')
-        .from('range_reservation')
-        .where('available', true)
+        .where({available: true})
 
-  const supervisor = knex
+  const supervisors = knex('supervisor')
         .select('user_id')
-        .from('supervisor')
 
-  return Promise.all([rangeReservation, supervisor])
-    .then(([rangeReservation, supervisor]) => {
-      return rangeReservation.map(reservation => {
-        return casual.scheduled_range_supervision(reservation.id, supervisor)
-      })
-    }).then(schedule => {
-      return knex('scheduled_range_supervision')
-        .insert(schedule)
-    })
+  return Promise.all([available_reservations, supervisors])
+    .then(([reservations, supervisors]) => {
+      return reservations.map(reservation => casual.scheduled_range_supervision(
+        reservation.id
+        , supervisors))
+    }).then(schedule => knex('scheduled_range_supervision')
+            .insert(schedule))
 }
 
-casual.define('scheduled_range_supervision', function(rangeReservationId, supervisors) {
+casual.define('scheduled_range_supervision', function(reservationId, supervisors) {
   const openTime = casual.integer(0, 22)
   const closeTime = casual.integer(openTime + 1, 23)
-  const useSupervisor = !!casual.integer(0, 3)
+  const defineSupervisor = !!casual.integer(0, 3)
 
-    const supervisorId = useSupervisor
+  const supervisorId = defineSupervisor
         ? supervisors[casual.integer(0, supervisors.length - 1)].user_id
-        : null;
+        : null
   
   return {
-    range_reservation_id:rangeReservationId,
-    supervisor_id: supervisorId,
-    open: moment(`0001-01-01T${openTime.toString().padStart(2, '0')}:00`).format('HH:MM:SS'),
-    close: moment('0001-01-01T' + closeTime.toString().padStart(2, '0')).format('HH:MM:SS')
+    range_reservation_id: reservationId
+    , supervisor_id: supervisorId
+    , open: `${openTime.toString().padStart(2, '0')}:00:00`
+    , close: `${closeTime.toString().padStart(2, '0')}:00:00`
   }
 })

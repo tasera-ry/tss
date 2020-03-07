@@ -4,26 +4,14 @@ const casual = require('casual')
 casual.seed(0)
 
 exports.seed = function(knex) {
-  return knex('track')
-    .del()
-    .then(() => {
-      return knex
-        .select('id')
-        .from('range')
-        .then(ranges => {
-          return Promise.all(
-            ranges.map((range, i) => {
-              return populateRange(knex, range.id)
-            }))
-        })
-    })
-}
 
-const populateRange = (knex, range_id) => {
-  const tracks =_.times(7, _.partial(casual._shooting_track, range_id))
-
-  return knex('track')
-    .insert(tracks)
+  return knex('range')
+    .select('id')
+    .then(ranges => {
+      return _.flatten(
+        ranges.map(range => _.times(7, _.partial(casual._shooting_track, range.id))))
+    }).then(tracks => knex('track')
+            .insert(tracks))
 }
 
 casual.define('shooting_track_desc', function() {
@@ -52,7 +40,7 @@ casual.define('shooting_track_desc', function() {
 casual.define('shooting_track', function(range_id, n) {
   return {
     range_id: range_id
-    , name: 'Shooting Track ' + n
+    , name: 'Shooting Track ' + (n + 1)
     , description: casual.shooting_track_desc
   }
 })
