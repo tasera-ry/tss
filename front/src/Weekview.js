@@ -18,12 +18,22 @@ function Weekview() {
     var dayParams = "?q=" + dateNow + monthNow + yearNow;
     var dayUrl = "/dayview" + dayParams;
 
+    var date1 = new Date(date.getTime());
+    date1.setHours(0, 0, 0, 0);
+    // Thursday in current week decides the year.
+    date1.setDate(date1.getDate() + 3 - (date1.getDay() + 6) % 7);
+    // January 4 is always in week 1.
+    var week1 = new Date(date1.getFullYear(), 0, 4);
+    // Adjust to Thursday in week 1 and count number of weeks from date to week1.
+    var weekNow = 1 + Math.round(((date1.getTime() - week1.getTime()) / 86400000
+                            - 3 + (week1.getDay() + 6) % 7) / 7);
+
     return (
         <div>
         <div class="container">
             {/* Header with arrows */}
             <Grid class="date-header">
-                <h1> {monthToString(date.getMonth())} {currentYear}</h1>
+                <h1> Viikko {weekNow} {monthToString(date.getMonth())}</h1>
             </Grid>
 
             {/* Date boxes */}
