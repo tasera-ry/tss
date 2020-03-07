@@ -5,5 +5,7 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  
+  return knex.schema.alterTable('user', user => {
+    user.dropUnique('name')
+  })
 };
