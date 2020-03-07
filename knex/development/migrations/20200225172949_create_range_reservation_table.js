@@ -7,10 +7,10 @@ exports.up = function(knex) {
         .inTable('range')
         .notNullable()
       reservation.date('date')
-        .unique()
         .notNullable()
       reservation.boolean('available')
         .notNullable()
+      reservation.unique(['range_id', 'date'])
     })
 }
 

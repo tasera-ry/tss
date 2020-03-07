@@ -7,7 +7,7 @@ exports.up = function(knex) {
         .references('id')
         .inTable('scheduled_range_supervision')
         .notNullable()
-      supervision.timestamp('temporal', { useTz: true, precision: 6 })
+      supervision.timestamp('timestamp', { useTz: true, precision: 6 })
         .notNullable()
       supervision.enu('range_supervisor'
                       , ['absent', 'en route', 'present']

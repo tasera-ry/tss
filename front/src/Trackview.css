@@ -27,6 +27,8 @@
   margin-bottom: 15px;
   text-align: center;
   align-items: center;
+  padding: 5px;
+  min-height: 48px;
 }
 
 .isAvaivable {
