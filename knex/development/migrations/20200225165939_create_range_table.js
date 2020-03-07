@@ -2,7 +2,8 @@ exports.up = function(knex) {
   return knex.schema
     .createTable('range', range => {
       range.increments()
-      range.string('name').notNullable()
+      range.string('name')
+        .notNullable()
     })
 }
 
