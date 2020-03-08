@@ -1,4 +1,5 @@
 const knex = require('../knex/knex')
+const config = require("../config/config");
 
 /*
 *  Get track status for a day
@@ -27,7 +28,7 @@ exports.trackInfoForDay = async (req, res) => {
           //atm track name needs to be exact e.g. 'Shooting Track 0'
           .where('track.name', req.params.id)
           //TODO remove hard coded range below
-          .where('range.id', 6)
+          .where('range.id', config.dev.range_id)
           
           //TODO test below
           //track supervision has multiple events and the most recent one is the correct you want rest are for history

@@ -1,4 +1,5 @@
 const knex = require('../knex/knex')
+const config = require("../config/config");
 const moment = require("moment");
 
 /*
@@ -23,7 +24,7 @@ exports.date = async (req, res) => {
         .leftJoin('track_supervision', 'scheduled_range_supervision.id', '=', 'scheduled_range_supervision_id')
         .where('date', req.params.date)
         //TODO remove hard coded range below
-        .where('range.id', 6)
+        .where('range.id', config.dev.range_id)
 
         .then((rows) => {
           if(rows.length === 0){
@@ -142,7 +143,7 @@ exports.week = async (req, res) => {
         .leftJoin('scheduled_range_supervision', 'range_reservation.id', '=', 'range_reservation_id')
         .whereBetween('date', [begin, end])
         //TODO remove hard coded range below
-        .where('range.id', 6)
+        .where('range.id', config.dev.range_id)
         .orderBy('date', 'asc')
         
         .then((rows) => {
