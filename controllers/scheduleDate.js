@@ -26,41 +26,48 @@ exports.date = async (req, res) => {
         .where('range.id', 6)
 
         .then((rows) => {
-          console.log(rows);
-          console.log(rows.length)
-          
-          let trackList = [];
-          let roState;
-          
-          var i;
-          while(rows.length !== 0) {
-            const trackInfo = rows.pop()
-            console.log(trackInfo);
-            
-            roState = (trackInfo.rangeOfficer !== null) ? true : false;
-            let toState = (trackInfo.trackOfficer !== null) ? true : false;
-            console.log(roState);
-            
-            let status;
-            //track officer present == open
-            if(toState){
-              status="open";
-            }
-            //TODO notice == closed?
-            else if(trackInfo.trackNotice !== null){
-              status="closed";
-            }
-            else {
-              status="trackofficer unavailable"
-            }
-            
-            var trackObj = {name:trackInfo.name,status:status};
-            trackList.push(trackObj)
+          if(rows.length === 0){
+            res.status(400).json({
+              err: "No results found."
+            });
           }
-          console.log(trackList);
-          trackList.reverse();
-          trackListObj = {date:date,rangeOfficer:roState,tracks:trackList};
-          res.status(200).json(trackListObj);
+          else {
+            console.log(rows);
+            console.log("length "+rows.length)
+            
+            let trackList = [];
+            let roState;
+            
+            var i;
+            while(rows.length !== 0) {
+              const trackInfo = rows.pop()
+              console.log(trackInfo);
+              
+              roState = (trackInfo.rangeOfficer !== null) ? true : false;
+              let toState = (trackInfo.trackOfficer !== null) ? true : false;
+              console.log(roState);
+              
+              let status;
+              //track officer present == open
+              if(toState){
+                status="open";
+              }
+              //TODO notice == closed?
+              else if(trackInfo.trackNotice !== null){
+                status="closed";
+              }
+              else {
+                status="trackofficer unavailable"
+              }
+              
+              var trackObj = {name:trackInfo.name,status:status};
+              trackList.push(trackObj)
+            }
+            console.log(trackList);
+            trackList.reverse();
+            trackListObj = {date:date,rangeOfficer:roState,tracks:trackList};
+            res.status(200).json(trackListObj);
+          }
         })
     )
   }
@@ -139,44 +146,51 @@ exports.week = async (req, res) => {
         .orderBy('date', 'asc')
         
         .then((rows) => {
-          console.log(rows);
-          
-          let dayList = [];
-          let roState;
-          
-          var i;
-          while(rows.length !== 0) {
-            const dayInfo = rows.pop();
-            
-            roState = (dayInfo.rangeOfficer !== null) ? true : false;
-            
-            let status;
-            //range officer present == open
-            if(roState){
-              status="open";
-            }
-            //available false
-            else if(!dayInfo.available){
-              status="closed";
-            }
-            else if(status==="orange"){
-              //TODO 4th orange color?
-              status="coming";
-            }
-            //available true
-            else {
-              status="range officer unavailable";
-            }
-            
-            var dayObj = {date:dayInfo.date,status:status};
-            dayList.push(dayObj);
+          if(rows.length === 0){
+            res.status(400).json({
+              err: "No results found."
+            });
           }
+          else {
+            console.log(rows);
+            
+            let dayList = [];
+            let roState;
+            
+            var i;
+            while(rows.length !== 0) {
+              const dayInfo = rows.pop();
+              
+              roState = (dayInfo.rangeOfficer !== null) ? true : false;
+              
+              let status;
+              //range officer present == open
+              if(roState){
+                status="open";
+              }
+              //available false
+              else if(!dayInfo.available){
+                status="closed";
+              }
+              else if(status==="orange"){
+                //TODO 4th orange color?
+                status="coming";
+              }
+              //available true
+              else {
+                status="range officer unavailable";
+              }
+              
+              var dayObj = {date:dayInfo.date,status:status};
+              dayList.push(dayObj);
+            }
 
-          //TODO guarantee length 7?
+            //TODO guarantee length 7?
 
-          dayList.reverse();
-          dayListObj = {weekNum:weekNum,weekBegin:begin,weekEnd:end,days:dayList};
-          res.status(200).json(dayListObj);
+            dayList.reverse();
+            dayListObj = {weekNum:weekNum,weekBegin:begin,weekEnd:end,days:dayList};
+            res.status(200).json(dayListObj);
+          }
         })
     )
   }

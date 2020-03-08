@@ -18,7 +18,7 @@ exports.trackInfoForDay = async (req, res) => {
       (
         knex
           .from('range')
-          .select('range.name as rangeName','track.name','track.description','supervisor_id as rangeOfficer','track_supervisor as trackOfficer','track_supervision.notice as trackNotice')
+          .select('range.name as rangeName','track.name','track.description','scheduled_range_supervision.supervisor_id as rangeOfficer','track_supervisor as trackOfficer','track_supervision.notice as trackNotice')
           .join('range_reservation', 'range.id', '=', 'range_reservation.range_id')
           .join('track', 'range.id', '=', 'track.range_id')
           .leftJoin('scheduled_range_supervision', 'range_reservation.id', '=', 'range_reservation_id')
@@ -33,18 +33,25 @@ exports.trackInfoForDay = async (req, res) => {
           //track supervision has multiple events and the most recent one is the correct you want rest are for history
 
           .then((rows) => {
-            console.log(rows);
-            const trackInfo = rows.pop()
-            console.log(trackInfo);
+            if(rows.length === 0){
+              res.status(400).json({
+                err: "No results found. Either date or track name not found."
+              });
+            }
+            else {
+              console.log(rows);
+              const trackInfo = rows.pop()
+              console.log(trackInfo);
+              
+              let roState = (trackInfo.rangeOfficer !== null) ? true : false;
+              let toState = (trackInfo.trackOfficer !== null) ? true : false;
+              console.log(roState);
+              var trackObj = {trackName:trackInfo.name,description:trackInfo.description,trackOfficer:toState,rangeOfficer:roState,trackNotice:trackInfo.trackNotice};
             
-            let roState = (trackInfo.rangeOfficer !== null) ? true : false;
-            let toState = (trackInfo.trackOfficer !== null) ? true : false;
-            console.log(roState);
-            var trackObj = {trackName:trackInfo.name,description:trackInfo.description,trackOfficer:toState,rangeOfficer:roState,trackNotice:trackInfo.trackNotice};
-          
-            res.status(200).json({
-              track: trackObj
-            });
+              res.status(200).json({
+                track: trackObj
+              });
+            }
           })
       )
     }
