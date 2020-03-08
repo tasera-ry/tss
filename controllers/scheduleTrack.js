@@ -15,25 +15,38 @@ exports.trackInfoForDay = async (req, res) => {
   if(date instanceof Date && !isNaN(date.getTime())){
     if(req.params.id !== undefined){
       //get single track
-      //works with localhost:3000/api/date/2020-02-20/track/Shooting Track 0
+      //works with localhost:3000/api/date/2020-02-20/track/Shooting Track 1
       (
-        knex
+        knex          
+          .with('getTOState', knex.raw(
+            'select * '+
+            'from track_supervision '+
+            'inner join track on track.id = track_supervision.track_id '+
+            'where track.name=? '+
+            'order by updated_at',
+            [req.params.id])
+          )
+          .select(
+            'range.name as rangeName',
+            'track.name','track.description',
+            'scheduled_range_supervision.supervisor_id as rangeOfficer',
+            'getTOState.track_supervisor as trackOfficer',
+            'getTOState.notice as trackNotice',
+            //'getTOState.*'
+          )
           .from('range')
-          .select('range.name as rangeName','track.name','track.description','scheduled_range_supervision.supervisor_id as rangeOfficer','track_supervisor as trackOfficer','track_supervision.notice as trackNotice')
           .join('range_reservation', 'range.id', '=', 'range_reservation.range_id')
           .join('track', 'range.id', '=', 'track.range_id')
           .leftJoin('scheduled_range_supervision', 'range_reservation.id', '=', 'range_reservation_id')
-          .leftJoin('track_supervision', 'scheduled_range_supervision.id', '=', 'scheduled_range_supervision_id')
+          .leftJoin('getTOState' ,'scheduled_range_supervision.id' , '=', 'getTOState.scheduled_range_supervision_id')
           .where('date', req.params.date)
-          //atm track name needs to be exact e.g. 'Shooting Track 0'
+          //atm track name needs to be exact e.g. 'Shooting Track 1'
           .where('track.name', req.params.id)
           //TODO remove hard coded range below
           .where('range.id', config.dev.range_id)
-          
-          //TODO test below
-          //track supervision has multiple events and the most recent one is the correct you want rest are for history
 
           .then((rows) => {
+            console.log("Got rows: "+rows.length);
             if(rows.length === 0){
               res.status(400).json({
                 err: "No results found. Either date or track name not found."
@@ -45,7 +58,7 @@ exports.trackInfoForDay = async (req, res) => {
               console.log(trackInfo);
               
               let roState = (trackInfo.rangeOfficer !== null) ? true : false;
-              let toState = (trackInfo.trackOfficer !== null) ? true : false;
+              let toState = (trackInfo.trackOfficer !== null && trackInfo.trackOfficer !== 'absent') ? true : false;
               console.log(roState);
               var trackObj = {trackName:trackInfo.name,description:trackInfo.description,trackOfficer:toState,rangeOfficer:roState,trackNotice:trackInfo.trackNotice};
             
