@@ -77,6 +77,7 @@ exports.getWithProperties = function getWithProperties(key) {
  * Delete the users matching a key.
  *
  * @param {object} key - Identifying key, { id?, name?, digest?, role? }
+ *
  * @return {Promise<number>} Count of deleted users
  *
  * @example
@@ -102,7 +103,7 @@ exports.del = function deleteUser(key) {
  * @param {object} current - The current identifying info of user(s)
  * @param {object} update - New information for the user(s)
  *
- * @return Count of rows updated
+ * @return {Promise<number>} Count of rows updated
  *
  * @example
  * exports.update({ name: 'Mark }, {digest: 'new_password_digest' })
