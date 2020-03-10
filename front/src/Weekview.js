@@ -3,31 +3,53 @@ import './App.css';
 import './Weekview.css'
 import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-import { monthToString } from "./utils/Utils";
 
 class Weekview extends Component {
 
-    previousWeekClick(e) {
-        alert("works");
+    constructor(props) {
+        super(props);
+        this.state = {
+          weekNro: 0
+        };
     }
 
-    nextWeekClick(e) {
-        alert("works");
+    componentDidMount() {
+        this.getWeek();
+      }
+
+    previousWeekClick = () => {
+        let previous;
+        if (this.state.weekNro == 1 ) {
+            previous = 52
+        } else {
+            previous = this.state.weekNro-1
+        }
+        this.setState({weekNro: previous})
     }
 
-    weekNumber() {
-        var date1 = new Date(this.state.date.getTime());
+    nextWeekClick = () => {
+        let previous;
+        if (this.state.weekNro == 52 ) {
+            previous = 1
+        } else {
+            previous = this.state.weekNro+1
+        }
+        this.setState({weekNro: previous})
+    }
+
+    getWeek = () => {
+        var date1 = new Date();
         date1.setHours(0, 0, 0, 0);
-        // Thursday in current week decides the year.
         date1.setDate(date1.getDate() + 3 - (date1.getDay() + 6) % 7);
-        // January 4 is always in week 1.
         var week1 = new Date(date1.getFullYear(), 0, 4);
-        // Adjust to Thursday in week 1 and count number of weeks from date to week1.
-        return 1 + Math.round(((date1.getTime() - week1.getTime()) / 86400000
-                                - 3 + (week1.getDay() + 6) % 7) / 7);
+        var current = 1 + Math.round(((date1.getTime() - week1.getTime()) / 86400000
+        - 3 + (week1.getDay() + 6) % 7) / 7);
+        this.setState({weekNro: current})
+        return current;
     }
 
     render() {
+
         return (
 
             <div>
@@ -38,7 +60,7 @@ class Weekview extends Component {
                     className="hoverHand arrow-left"
                     onClick={this.previousWeekClick}
                     ></div>
-                    <h1> Viikko </h1>
+                    <h1> Viikko {this.state.weekNro} </h1>
                     {/* kuukausi jos tarvii: {monthToString(date.getMonth())} */}
                     <div
                     className="hoverHand arrow-right"
@@ -143,7 +165,12 @@ class Weekview extends Component {
     
                 {/* Top row */}
                 {/* To do: Tekstit ei toimi */}
-                <div class="infoContainer">
+                <hr></hr>
+                <div className="infoContainer">
+                <div className="klockan">
+                    Aukiolo: 16-20 
+                </div>
+                <br></br>
                 <Grid>
                     <div class="info-flex">
                         <div id="open-info" class='box'></div>
@@ -162,8 +189,9 @@ class Weekview extends Component {
                         {/* Ei tietoa */} &nbsp;Ei tietoa
                     </div>
                 </Grid>
-                </div>
+                </div> 
             </div>
+            
         );
     }
 }
