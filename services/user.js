@@ -86,3 +86,42 @@ exports.create = async function createUser(user) {
   return userModel.create(modelEntry)
 }
 
+/** 
+ * Read (a) user(s)' info.
+ *
+ * @param {object} user - The query information, {} returns all users.
+ *
+ * @return {Promise<number[]>} List of users matching the query
+ *
+ * @example
+ * exports.read({ role: 'supervisor' }) - Find all supervisors
+ */
+exports.read = async function readUser(user) {
+  /* TODO
+   * Inject constraints
+   * Authentication?
+   */
+  const constraints = {
+    id: {
+      type: 'number'
+    }
+    , name: {
+      type: 'string'
+    }
+    // why would you query by password digest?
+    , digest: {
+      type: 'string'
+    }
+    , role: {
+      type: 'string'
+    }
+    , phone: {
+      type: 'string'
+    }
+  }
+
+  let validationFail
+  if((validationFail = validate(user, constraints))){
+    throw Error(stringify(validationFail))
+  }
+}
