@@ -7,6 +7,9 @@ const config = {
   },
   development: {
     range_id: 1
+  },
+  bcrypt: {
+    hashRounds: 8
   }
 };
 
