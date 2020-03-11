@@ -52,12 +52,13 @@
     align-items: center;
     justify-content: center;
     text-align:center;
+    margin-top: -4%;
   }
   
 
   .flex-container2 > a {
     
-    outline: 2px solid black;
+    outline: 0px solid black;
     background-color: white;
     width: 14.28571428571429%;
     margin: 0px;
@@ -70,8 +71,7 @@
 
   .flex-container > a {
     
-    outline: 2px solid black;
-    background-color: green;
+    outline: 1px solid black;
     width: 14.28571428571429%;
     margin: 0px;
     text-align: center;
@@ -153,8 +153,35 @@
 /* For mobile phones: */
 @media (max-width: 550px) {
   .info-flex {
-    float: none;
-    display: block;
+    display:flex;
+  }
+
+  #open-info {
+    display: flex;
+    background: green;
+    margin-left: 10%;
+  }
+
+  #weekDay {
+    font-size: 0;
+  }
+  
+#valvoja-info {
+    display: flex;
+    background:orange;
+    margin-left: 9%;
+  }
+
+#closed-info {
+    display: flex;
+    background: red;
+    margin-left: 10%;
+  }
+  
+#no-info {
+    display: flex;
+    background:white;
+    margin-left: 10%;
   }
 
   .infoContainer {
@@ -175,5 +202,11 @@
   }
   .arrow-left {
     margin: 10vh;
+  }
+  .date-header {
+    margin-top: -40%;
+  }
+  .flex-container2 {
+    margin-top: -30%;
   }
 }

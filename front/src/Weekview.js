@@ -4,6 +4,8 @@ import './Weekview.css'
 import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 
+import { dayToString } from "./utils/Utils";
+
 class Weekview extends Component {
 
     constructor(props) {
@@ -13,13 +15,16 @@ class Weekview extends Component {
         };
     }
 
+    //Updates week to current when page loads
     componentDidMount() {
         this.getWeek();
       }
 
+    //Changes week number state to previous one
     previousWeekClick = () => {
         let previous;
-        if (this.state.weekNro == 1 ) {
+        //Week logic cuz you can't go negative
+        if (this.state.weekNro === 1 ) {
             previous = 52
         } else {
             previous = this.state.weekNro-1
@@ -27,9 +32,11 @@ class Weekview extends Component {
         this.setState({weekNro: previous})
     }
 
+    //Changes week number state to next one
     nextWeekClick = () => {
         let previous;
-        if (this.state.weekNro == 52 ) {
+        //Week logic cuz there's no 53 weeks
+        if (this.state.weekNro === 52 ) {
             previous = 1
         } else {
             previous = this.state.weekNro+1
@@ -37,6 +44,7 @@ class Weekview extends Component {
         this.setState({weekNro: previous})
     }
 
+    //Function for parsin current week number
     getWeek = () => {
         var date1 = new Date();
         date1.setHours(0, 0, 0, 0);
@@ -48,11 +56,75 @@ class Weekview extends Component {
         return current;
     }
 
+    //Creates 7 columns for days
+    createWeekDay = () => {
+
+        //Date should come from be?
+        let table = []
+        let pv;
+    
+        for (let j = 1; j < 8; j++) {
+            pv = dayToString(j);
+            //Korjausliike ku utilsseis sunnuntai on eka päivä
+            if (j === 7) {
+                pv = "Sunnuntai"
+            }
+            table.push(
+                <Link className="link">
+                <p id ="weekDay">
+                    {pv}
+                </p>
+                </Link>
+                )
+            }
+        return table
+    }
+
+    //Creates 7 columns for days
+    createDate = () => {
+
+        //Date should come from be?
+        var dateFromBackEnd = 1.1;
+        let table = []
+    
+        for (let j = 0; j < 7; j++) {
+            table.push(
+                <Link class="link" to="/dayview">
+                <p style={{ fontSize: "medium" }}>
+                {dateFromBackEnd}
+                </p>
+                </Link>
+                )
+            }
+        return table
+      }
+
+    //Creates 7 columns for päävalvoja info, colored boxes
+    createColorInfo = () => {
+
+        //Color from be?
+        //If blue, something is wrong
+        let colorFromBackEnd = "blue"
+        let table = []
+
+        for (let j = 0; j < 7; j++) {
+            colorFromBackEnd = "red"
+            table.push(
+                <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to="/dayview">
+                <p>
+                &nbsp;
+                </p>
+                </Link>
+                )
+            }
+        return table
+    }
+
     render() {
 
         return (
-
-            <div>
+            
+        <div>
             <div class="container">
                 {/* Header with arrows */}
                 <Grid class="date-header">
@@ -67,96 +139,21 @@ class Weekview extends Component {
                     onClick={this.nextWeekClick}
                     ></div>
                 </Grid>
+
+                {/* Date boxes */}
+                <Grid class="flex-container2">
+                    {this.createWeekDay()}
+                </Grid>
     
                 {/* Date boxes */}
                 <Grid class="flex-container2">
-                <Link class="link" to="/dayview">
-                    <p style={{ fontSize: "medium" }}>
-                    1
-                    </p>
-                    </Link>
-    
-                    <Link class="link" to="/dayview">
-                    <p style={{ fontSize: "medium" }}>
-                    2
-                    </p>
-                    </Link>
-    
-                    <Link class="link" to="/dayview">
-                    <p style={{ fontSize: "medium" }}>
-                    3
-                    </p>
-                    </Link>
-    
-                    <Link class="link" to="/dayview">
-                    <p style={{ fontSize: "medium" }}>
-                    4
-                    </p>
-                    </Link>
-    
-                    <Link class="link" to="/dayview">
-                    <p style={{ fontSize: "medium" }}>
-                    5
-                    </p>
-                    </Link>
-    
-                    <Link class="link" to="/dayview">
-                    <p style={{ fontSize: "medium" }}>
-                    6
-                    </p>    
-                    </Link>
-    
-                    <Link class="link" to="/dayview">
-                    <p style={{ fontSize: "medium" }}>
-                    7
-                    </p>
-                    </Link>
+                    {this.createDate()}
                 </Grid>
     
                 <div>
                 {/* Colored boxes for dates */}
                 <Grid class="flex-container">
-                    <Link style={{ backgroundColor: "orange" }} class="link" to="/dayview">
-                    <p>
-                    &nbsp;
-                    </p>
-                    </Link>
-    
-                    <Link style={{ backgroundColor: "green" }} class="link" to="/dayview">
-                    <p style={{ fontSize: "medium" }}>
-                    &nbsp;
-                    </p>
-                    </Link>
-    
-                    <Link style={{ backgroundColor: "red" }} class="link" to="/dayview">
-                    <p style={{ fontSize: "medium" }}>
-                    &nbsp;
-                    </p>
-                    </Link>
-    
-                    <Link style={{ backgroundColor: "green" }} class="link" to="/dayview">
-                    <p style={{ fontSize: "medium" }}>
-                    &nbsp;
-                    </p>
-                    </Link>
-    
-                    <Link style={{ backgroundColor: "white" }} class="link" to="/dayview">
-                    <p style={{ fontSize: "medium" }}>
-                    &nbsp;
-                    </p>
-                    </Link>
-    
-                    <Link style={{ backgroundColor: "green" }} class="link" to="/dayview">
-                    <p style={{ fontSize: "medium" }}>
-                    &nbsp;
-                    </p>
-                    </Link>
-    
-                    <Link style={{ backgroundColor: "red" }} class="link" to="/dayview">
-                    <p style={{ fontSize: "medium" }}>
-                    &nbsp;
-                    </p>
-                    </Link>
+                    {this.createColorInfo()}
                 </Grid>
                 </div>
                 </div>
