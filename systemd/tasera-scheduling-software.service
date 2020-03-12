@@ -1,0 +1,14 @@
+[Unit]
+Description=Tasera Scheduling Software
+After=network.target
+
+[Service]
+Environment=ALT_PORT=3001
+WorkingDirectory=/var/www/tasera-scheduling-software
+Type=simple
+User=nodejs
+ExecStart=/usr/bin/npm run start
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
