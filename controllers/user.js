@@ -79,7 +79,8 @@ exports.login = async (req, res) => {
        login: false,
        err: "Login failed"
      })
-   }))
+   })
+  )
 }
 
 /*
