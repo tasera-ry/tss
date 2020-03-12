@@ -104,7 +104,8 @@ class Dayview extends Component {
             key={key}
             name={props.tracks[key].name}
             state={props.tracks[key].status}
-            to={"/trackview/date?/" + props.tracks[key].name}
+            //TODO final react routing
+            to={"/trackview/"+props.date.toISOString()+"/" + props.tracks[key].name}
           />
         );
       }
@@ -181,7 +182,7 @@ class Dayview extends Component {
             </Grid>
           </Grid>
           {/* MUI grid */}
-          <TrackList tracks={this.state.tracks} />
+          <TrackList tracks={this.state.tracks} date={this.state.date} />
           {/* Other info */}
           <Grid
             container
