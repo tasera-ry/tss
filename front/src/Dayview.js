@@ -51,8 +51,7 @@ class Dayview extends Component {
   previousDayClick(e) {
     e.preventDefault();
     let date = new Date(this.state.date.setDate(this.state.date.getDate() - 1));
-    this.props.history.push("/dayview/" + date.toISOString());
-    console.log(this.props.history)
+    this.props.history.replace("/dayview/" + date.toISOString());
     this.setState(
       {
         date: date
@@ -66,7 +65,7 @@ class Dayview extends Component {
   nextDayClick(e) {
     e.preventDefault();
     let date = new Date(this.state.date.setDate(this.state.date.getDate() + 1));
-    this.props.history.push("/dayview/" + date.toISOString());
+    this.props.history.replace("/dayview/" + date.toISOString());
     this.setState(
       {
         date: date
