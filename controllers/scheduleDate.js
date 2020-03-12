@@ -1,6 +1,6 @@
 const knex = require('../knex/knex')
 const config = require("../config/config");
-const moment = require("moment");
+const moment = require("moment-timezone");
 
 /*
 *  Get date info
@@ -182,7 +182,11 @@ exports.week = async (req, res) => {
                 status="range officer unavailable";
               }
               
-              var dayObj = {date:dayInfo.date,status:status};
+              //parse gotten date as GMT time and change to GMT+2
+              let date = moment(dayInfo.date).tz("Europe/London");
+              date = date.tz("Europe/Helsinki").format("YYYY-MM-DD");
+              
+              var dayObj = {date:date,status:status};
               dayList.push(dayObj);
             }
 
