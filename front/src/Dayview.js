@@ -85,7 +85,14 @@ class Dayview extends Component {
       if (props.available) {
         text = "Päävalvoja paikalla";
         color = "greenB";
-      } else {
+      }
+      /*
+      else if(props.available === "soon tm") {
+        text = "Päävalvoja nimetty";
+        color = "lightGreenB";
+      }
+      */
+      else {
         text = "Päävalvoja ei ole paikalla";
         color = "redB";
       }
