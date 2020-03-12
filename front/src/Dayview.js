@@ -53,6 +53,7 @@ class Dayview extends Component {
     e.preventDefault();
     let date = new Date(this.state.date.setDate(this.state.date.getDate() - 1));
     this.props.history.push("/dayview/" + date.toISOString());
+    console.log(this.props.history)
     this.setState(
       {
         date: date
@@ -211,9 +212,6 @@ class Dayview extends Component {
         <Link className="back" style={{ color: "black" }} to="/weekview">
           <ArrowBackIcon />
           Viikkonäkymään
-        </Link>
-        <Link className="hoverHand arrow-right" to="/trackview">
-          Ratanäkymä
         </Link>
       </div>
     );

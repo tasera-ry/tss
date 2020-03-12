@@ -20,7 +20,7 @@ h2 {
 
 @media (max-width: 600px) {
   .container {
-    padding:2vh 2vh 2vh 2vh;
+    padding:2vh 2vh 2vh 2vh !important;
   }
 }
 
