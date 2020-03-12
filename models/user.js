@@ -4,150 +4,155 @@ const validate = require('validate.js')
 const knex = require(path.join(root, 'knex', 'knex'))
 const _ = require('lodash')
 
-/** 
- * Create a new user.
- *
- * @param {object} user - User's properties, { id?, name, digest, role, phone? }
- * @return {Promise<number[]>} The added users id
- *
- * @example
- * exports.create({ name: 'Mark', digest:'password_digest', role:'superuser'})
- */
-exports.create = function createUser(user) {
-  /* TODO allow insertion of multiple users at once */
-  const universal = _.pick(user, 'name', 'digest', 'role')
-  const supervisor = _.pick(user, 'phone')
-  
-  return knex.transaction(trx => {
-    return trx
-      .returning('id')
-      .insert(universal)
-      .into('user')
-      .then(ids => {
-        return user.role !== 'supervisor'
-          ? new Promise((resolve, reject) => resolve(ids))
-          : (trx('supervisor')
-             .returning('user_id')
-             .insert({
-               user_id: ids.pop()
-               , phone: supervisor.phone
-             }))
-      }).then(trx.commit)
-      .catch(trx.rollback)
-    /* TODO handle connection errors, logic error handling belongs at service
-     * level */
-  }).catch(console.error)
-}
+// Turn this into an npm package, move somewhere else, or find a replacement
+// package
+const stringify = _.partialRight(JSON.stringify, undefined, 2)
 
-/**
- * Get the users matching a key.
- *
- * @param {object} key - Identifying key, { id?, name?, digest?, role? }
- * @return {Promise<object[]>} Users that matched the key
- *
- * @example
- * exports.get({ name: 'Mark' })
- */
-exports.get = function getUser(key) {
-  return knex('user')
-    .where(key)
-  /* TODO handle connection errors, logic error handling belongs at service
-   * level */
-    .catch(console.error)
-}
-
-/**
- * Get the users matching a key along with all of their properties.
- *
- * @param {object} key - Identifying key, { id?, name?, digest?, role?, phone?}
- * @return {Promise<object[]>} Users that matched the key
- *
- * @example
- * exports.getWithProperties({ phone:'0400-123753 })
- */
-exports.getWithProperties = function getWithProperties(key) {
-  return knex('user')
-    .join('supervisor', 'user_id', 'id')
-    .where(key)
-  /* TODO handle connection errors */
-    .catch(console.error)
-}
-
-/**
- * Delete the users matching a key.
- *
- * @param {object} key - Identifying key, { id?, name?, digest?, role? }
- *
- * @return {Promise<number>} Count of deleted users
- *
- * @example
- * exports.del({ name: 'Mark })
- */
-exports.del = function deleteUser(key) {
-  /* TODO Allow deleting based on a (supervisors) phone number */
-  return knex.transaction(trx => {
-    return trx('user')
-      .where(key)
-      .del()
-      .then()
-      .then(trx.commit)
-      .catch(trx.rollback)
-    /* TODO handle connection errors, logic error handling belongs at service
-     * level */
-  }).catch(console.error)
-}
-
-/**
- * Update users info.
- *
- * @param {object} current - The current identifying info of user(s)
- * @param {object} update - New information for the user(s)
- *
- * @return {Promise<number>} Count of rows updated
- *
- * @example
- * exports.update({ name: 'Mark }, {digest: 'new_password_digest' })
- */
-exports.update = function updateUser(current, update) {
-  return new Promise(function(resolve, reject) {
-    if(validate.isDefined(update.id)) {
-      reject('User\'s id may not be updated: ' + JSON.stringify(update))
-    }
-
-    if(validate.isDefined(update.role)) {
-      reject('User\'s role may not be updated: ' + JSON.stringify(update))
-    }
-
-    /* TODO, supervisor's (phone)numbers can only be updated if you query with
-     * their id. Refactor this to allow phone number updates when querying by
-     * username or other fields.
-     */
-
-    /* TODO A where that gets picked into a {} will match every row in the
-     * table, which can be a bit dangerous.
-     */
-    const universalWhere   = _.pick(current, 'id', 'name', 'role', 'digest')
-    const universalUpdate  = _.pick(update, 'name', 'digest')
-    const supervisorWhere  = _.pick(current, 'id', 'phone')
-    const supervisorUpdate = _.pick(update, 'phone')
-    
-    return knex.transaction(trx => {
-      return trx('user')
-        .where(universalWhere)
-        .update(universalUpdate)
-      /* TODO phone number updates */
-      //        .then((updated) => {
-      //          return supervisorUpdate = {}
-      //            ? updated
-      //            : (trx('supervisor')
-      //               .where(supervisorWhere)
-      //               .update(supervisorUpdate))
-        .then(trx.commit)
-        .catch(trx.rollback)
-      /* TODO handle connection errors, logic error handling belongs at service
-       * level */
-    }).catch(console.error)
-      .then(resolve)
-      .catch(reject)
+// Turn this into a package as well
+const remapKeys = (mapper, obj) => {
+  const keyMapper = (acc, key) => ({
+    ...acc,
+    ...{ [mapper[key] || key]: obj[key] }
   })
+  
+  return Object.keys(obj).reduce(keyMapper, {})
 }
+
+const model = {
+  /** 
+   * Create a new persistent user.
+   *
+   * @param {object} user - User's properties, { id?, name, digest, role, phone? }
+   * @return {Promise<number[]>} The added users id
+   *
+   * @example
+   * model.create({ name: 'Mark', digest:'password_digest', role:'superuser'})
+   */
+  create: async function createUser(user) {
+    const userConstraints = {
+      id: {}
+      , name: {}
+      , digest: {}
+      , role: {}
+    }
+
+    const supervisorConstraints = {
+      phone: {}
+    }
+
+    const general = validate.cleanAttributes(user, userConstraints)
+    const supervisor = validate.cleanAttributes(user, supervisorConstraints)
+    
+    return await knex.transaction(trx => {
+      return trx
+        .returning('id')
+        .insert(general)
+        .into('user')
+        .then(ids => {
+          const id = ids[0]
+          if(user.role === 'supervisor') {
+            return trx
+              .returning('user_id')
+              .insert({
+                user_id: id
+                , phone: supervisor.phone
+              }).into('supervisor')
+          }
+          return ids
+        }).then(trx.commit)
+        .catch(trx.rollback)
+    })
+  }
+
+  /**
+   * Get the users matching a key.
+   *
+   * @param {object} key - Identifying key, { id?, name?, digest?, role?, phone? }
+   * @param {object} fields - Attributes about the user to select { id?, name?, digest?, role? , phone? }
+   * @return {Promise<object[]>} Users that matched the key
+   *
+   * @example
+   * model.read({ name: 'Mark' }, ['role'])
+   */
+  , read: async function readUser(key, fields) {
+    return knex('user')
+      .leftJoin('supervisor', 'supervisor.user_id', 'user.id')
+      .where(key)
+      .select(fields)
+  }
+
+  /**
+   * Update a users' info.
+   *
+   * @param {object} current - The current identifying info of the user.
+   * @param {object} update - New information for the user
+   *
+   * @return {Promise<number[]>} Count of rows updated
+   *
+   * @example
+   * exports.update({ name: 'Mark }, { digest: 'new_password_digest' })
+   */
+  , update: async function updateUser(current, update) {
+    if(validate.isDefined(update.role)) {
+      throw Error('User\'s role may not be updated: ' + stringify(update))
+    }
+
+    const userConstraints = {
+      id: {}
+      , name: {}
+      , digest: {}
+    }
+
+    const supervisorConstraints = {
+      phone: {}
+    }
+
+    const user = validate.cleanAttributes(update, userConstraints)
+    const supervisor = validate.cleanAttributes(update, supervisorConstraints)
+    
+    const id = await model
+          .read(current, ['id'])
+          .then(rows => rows[0])
+    
+    return await knex.transaction(trx => {
+      return trx('user')
+        .where(id)
+        .update(user)
+        .then((updates) => {
+          if(_.isEmpty(supervisor) === false) {
+            return trx('supervisor')
+              .where(id)
+              .update(supervisor)
+          }
+          return updates
+        }).then(trx.commit)
+        .catch(trx.rollback)
+    })
+  }
+
+  /**
+   * Delete the users matching a key.
+   *
+   * @param {object} key - Identifying key, { id?, name?, digest?, role?, phone? }
+   * @return {Promise<number[]>} Count of deleted users
+   *
+   * @example
+   * exports.del({ name: 'Mark })
+   */
+  , delete: async function deleteUser(user) {
+    const ids = await model.read(user, ['id'])
+    console.log(ids)
+
+    return await knex.transaction(trx => {
+      return Promise.all(
+        ids.map(id => {
+          return trx('user')
+            .where(id)
+            .del()
+        })).then(trx.commit)
+        .catch(trx.rollback)
+    })
+  }
+}
+
+module.exports = model
