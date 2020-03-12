@@ -6,111 +6,120 @@
     xl, extra-large: 1920px
 */
 
-h1 {
+.dayviewContainer h1 {
+  margin:2vh;
+  width:200px;
+}
+
+.dayviewContainer h2 {
   margin:2vh;
 }
 
-h2 {
-  margin:2vh;
+.dayviewContainer {
+  padding:5vmin 20vmin 5vmin 20vmin;
 }
 
-.container {
-  padding:5vh 20vh 5vh 20vh;
-}
-
-@media (max-width: 600px) {
-  .container {
-    padding:2vh 2vh 2vh 2vh !important;
+@media only screen and (max-width: 1280px) {
+  .dayviewContainer {
+    padding:5vmin 10vmin 5vmin 10vmin;
   }
 }
 
-@media (max-width: 1280px) {
-  .container {
-    padding:5vh 10vh 5vh 10vh;
+@media only screen and (max-width: 600px) {
+  .dayviewContainer {
+    padding:2vmin 2vmin 2vmin 2vmin;
   }
 }
 
-.info {
+.dayviewContainer .info {
   text-align: center;
   background:lightgreen;
 }
 
-.sevenGrid {
+.dayviewContainer .sevenGrid {
   border:solid 1px black;
 }
 
 /* To have 7 boxes force size 100 / 7 = 14.28571428571429 */
-.sevenGrid > div {
+.dayviewContainer .sevenGrid > div {
   max-width:14.28571428571429%;
 }
 
-@media (max-width: 600px) {
-  .sevenGrid > div {
+@media only screen and (max-width: 600px) {
+  .dayviewContainer .sevenGrid > div {
     max-width:100%;
   }
 }
 
-.track {
+.dayviewContainer .track {
   background:lightgray;
   border:solid 1px black;
   box-sizing: border-box;
 }
 
-.track > a > p {
+.dayviewContainer .track > a > p {
   padding-left:2vh;
+  overflow:hidden;
+  font-size:100%;
 }
 
-.clickableBox {
+@media only screen and (min-width: 600px) and (max-width: 800px) {
+  .dayviewContainer .track > a > p {
+    font-size:60%;
+  }
+}
+
+.dayviewContainer .clickableBox {
   box-sizing: border-box;
   background:white;
   padding:25% 2vh 25% 2vh;
   text-align: left;
 }
 
-@media (max-width: 600px) {
-  .clickableBox {
+@media only screen and (max-width: 600px) {
+  .dayviewContainer .clickableBox {
     background:white;
     padding:2vh;
   }
 }
 
-.otherInfo {
+.dayviewContainer .otherInfo {
   margin-top:2vh;
 }
 
-.colorInfo {
+.dayviewContainer .colorInfo {
   margin-bottom:1vh;
 }
 
-.excolor {
+.dayviewContainer .excolor {
   border:solid 1px black;
   width:20px;
   margin-right:5px;
   display:inline-block;
 }
 
-.colorInfo > p {
+.dayviewContainer .colorInfo > p {
   margin:0;
   padding:0;
   display:inline-block;
 }
 
-.greenB {
+.dayviewContainer .greenB {
   background:green;
 }
-.info.greenB {
+.dayviewContainer .lightGreenB {
   background:lightgreen;
 }
 
-.redB {
+.dayviewContainer .redB {
   background:red;
 }
 
-.whiteB {
+.dayviewContainer .whiteB {
   background:white;
 }
 
-.arrow-right {
+.dayviewContainer .arrow-right {
   width: 0; 
   height: 0; 
   border-top: 20px solid transparent;
@@ -122,7 +131,7 @@ h2 {
   align-items: center;
 }
 
-.arrow-left {
+.dayviewContainer .arrow-left {
   width: 0; 
   height: 0; 
   border-top: 20px solid transparent;
@@ -135,22 +144,18 @@ h2 {
   align-items: center;
 }
 
-.back > svg {
+.dayviewContainer .back > svg {
   margin-bottom:-7px;
   margin-right:5px;
 }
 
-.hoverHand:hover {
+.dayviewContainer .hoverHand:hover {
   cursor: pointer;
 }
 
-.trackBoxLink{
+.dayviewContainer .trackBoxLink{
   display: inline-block;
   width: 100%;
   text-decoration: none;
   color:black;
-}
-
-h1{
-  width:200px;
 }

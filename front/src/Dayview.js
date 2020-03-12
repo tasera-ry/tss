@@ -153,7 +153,7 @@ class Dayview extends Component {
     }
 
     return (
-      <div className="container">
+      <div className="dayviewContainer">
         {/* Whole view */}
         <Grid
           container
