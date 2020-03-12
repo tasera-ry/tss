@@ -33,7 +33,7 @@ class Dayview extends Component {
   update() {
     // /dayview/2020-02-20
     let date = this.props.match.params.date;
-    callApi("GET", "tracks/" + (date ? date : ""))
+    callApi("GET", "date/" + (date ? date : this.state.date.toISOString()))
       .then(res => {
         console.log(res);
 
@@ -41,13 +41,12 @@ class Dayview extends Component {
         //ennen haluttua tietoa
         this.setState({
           date: new Date(res.date),
-          tracks: res.tracks
+          tracks: res.tracks,
+          rangeOfficer: res.rangeOfficer
         });
       })
       .catch(err => console.log(err));
   }
-
-  //TODO ComponentDidUpdate? päivän vaihdon jälkeen uutta tietoa varten
 
   previousDayClick(e) {
     e.preventDefault();
@@ -99,12 +98,13 @@ class Dayview extends Component {
       let items = [];
       for (var key in props.tracks) {
         console.log(key);
+        console.log(props.tracks[key].name);
         items.push(
           <TrackBox
             key={key}
-            name={key}
-            state={props.tracks[key]}
-            to={"/trackview/date?/" + key}
+            name={props.tracks[key].name}
+            state={props.tracks[key].status}
+            to={"/trackview/date?/" + props.tracks[key].name}
           />
         );
       }
@@ -126,10 +126,10 @@ class Dayview extends Component {
     function TrackBox(props) {
       let color;
 
-      if (props.state === 1) {
+      if (props.state === "open") {
         //open
         color = "greenB";
-      } else if (props.state === 2) {
+      } else if (props.state === "closed") {
         //closed
         color = "redB";
       }
