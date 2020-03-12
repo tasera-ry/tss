@@ -1,7 +1,7 @@
 const path = require('path')
 
 const root = path.join(__dirname, '..')
-const userModel = require(path.join(root, 'models', 'user'))
+const user = require(path.join(root, 'models', 'user'))
 const config = require(path.join(root, 'config', 'config'))
 
 const validate = require('validate.js')
@@ -12,116 +12,82 @@ const bcrypt = require('bcryptjs')
 // package
 const stringify = _.partialRight(JSON.stringify, undefined, 2)
 
-/**
- * Create a new user.
- *
- * @param {object} user - The properties of the new user { name, password, role, phone? }
- * @return {Promise<number[]>} The added users' id
- *
- * @example
- * exports.create({ name: 'Mark', password: 'password', role: 'superuser' })
- */
-exports.create = async function createUser(user) {
-  /* TODO
-   * Inject constraints
+const service = {
+  /**
+   * Create a new user.
+   *
+   * @param {object} info - The properties of the new user { name, password, role, phone? }
+   * @return {Promise<number[]>} The added users' id
+   *
+   * @example
+   * service.create({ name: 'Mark', password: 'password', role: 'superuser' })
    */
-  const constraints = {
-    name: {
-      presence: true
-      , format: {
-        // TODO fix with something proper
-        pattern: /^[ -~ÅÄÖåäö]*$/
-      } 
-      , type: 'string'
-      , length: {
-        minimum: 1
-        , maximum: 255
-      }
-    }
-    , password: {
-      presence: true
-      , type: 'string'
-      , length: {
-        minimum: 4
-        // Bcrypt max length is 72 bytes but it seems to allow more, one
-        // unicode character can be up to 4 bytes so idk what to do about this
-        , maximum: 72
-      }
-    }
-    , role: {
-      // Constraints enforced by database system, this is only for nicer
-      // error message
-      presence: true
-      , format: {
-        pattern: /^(supervisor|superuser)$/
-      }
-    }, phone: {
-      // TODO replace with validator.isMobilePhone or something similiar
-      type: 'string'
-    }
+  create: async function createUser(info) {
+    /* TODO
+     * Data validation (constraint injection)
+     */
+
+    let digest = await bcrypt.hash(info.password
+                                   , config.bcrypt.hashRounds)
+    
+    delete info.password
+    info['digest'] = digest
+    return user.create(info)
   }
 
-  let validationFail
-  if((validationFail = validate(user, constraints))) {
-    throw Error(stringify(validationFail))
+  /** 
+   * Read (a) users' info.
+   *
+   * @param {object} key - The query information, {} returns all users.
+   * @param {string[]} fields - Users' fields to return
+   *
+   * @return {Promise<number[]>} List of users matching the query
+   *
+   * @example
+   * exports.read({ role: 'supervisor' }) - Find all supervisors
+   */
+  , read: async function readUser(key, fields) {
+    /* TODO
+     * Data validation (constraint injection)
+     */
+
+    return user.read(key, fields)
   }
 
-  let digest;
-  
-  try {
-    digest = await bcrypt.hash(user.password
-                               , config.bcrypt.hashRounds)
-  } catch(e) {
-    // Please log me at least
-    throw e;
+  /**
+   * Update a users' info.
+   *
+   * @param {object} key - Users' identifying info.
+   * @param {object} updates - Key-value pairs of the field to update and new value.
+   *
+   * @return {Promise<number>} - TODO
+   *
+   * @example
+   * exports.update({ name: 'mark' }, { name:'mark shuttleworth' })
+   */
+  , update: async function updateUser(key, updates) {
+    /* TODO
+     * Data validation (constraint injection)
+     */
+    return user.update(key, updates)
   }
 
-  const modelEntry = {
-    name: user.name
-    , digest: digest
-    , role: user.role
-    , phone: user.phone
+    /** 
+     * Delete a user.
+     *
+     * @param {object} key - Users' identifying info.
+     *
+     * @return {Promise<number>} - TODO
+     *
+     * @example
+     * service.delete({name: 'mark'})
+     */
+  , delete: async function deleteUser(key) {
+    /* TODO
+     * Data validation (constraint injection)
+     */
+    return user.delete(key)
   }
-
-  return userModel.create(modelEntry)
 }
 
-/** 
- * Read (a) user(s)' info.
- *
- * @param {object} user - The query information, {} returns all users.
- *
- * @return {Promise<number[]>} List of users matching the query
- *
- * @example
- * exports.read({ role: 'supervisor' }) - Find all supervisors
- */
-exports.read = async function readUser(user) {
-  /* TODO
-   * Inject constraints
-   * Authentication?
-   */
-  const constraints = {
-    id: {
-      type: 'number'
-    }
-    , name: {
-      type: 'string'
-    }
-    // why would you query by password digest?
-    , digest: {
-      type: 'string'
-    }
-    , role: {
-      type: 'string'
-    }
-    , phone: {
-      type: 'string'
-    }
-  }
-
-  let validationFail
-  if((validationFail = validate(user, constraints))){
-    throw Error(stringify(validationFail))
-  }
-}
+module.exports = service
