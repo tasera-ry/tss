@@ -1,111 +1,197 @@
-import React from "react";
+import React, { Component } from "react";
 import "./App.css";
 import "./Trackview.css";
 import { Link } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-
+import { callApi } from "./utils/helper.js";
 import { dayToString } from "./utils/Utils";
-
-/*
- ** Returns red or green box according to if rangeofficer is avaivable
- ** !!!!! Rewrite when start getting data from backend
- */
-function rangeAvaivability(binar) {
-  if (binar === 1) {
-    let returnable = <Box class="isAvaivable">Päävalvoja Paikalla</Box>;
-    return returnable;
-  }
-  if (binar === 0) {
-    let returnable = <Box class="isUnavaivable">Päävalvoja ei paikalla</Box>;
-    return returnable;
-  }
-}
-
-/*
- ** Returns red or green box according to if trackofficer is avaivable
- ** !!!!! Rewrite when start getting data from backend
- */
-function trackAvaivability(binar) {
-  if (binar === 1) {
-    let returnable = <Box class="isAvaivable">Ratavalvoja Paikalla</Box>;
-    return returnable;
-  }
-  if (binar === 0) {
-    let returnable = <Box class="isUnavaivable">Ratavalvoja ei paikalla</Box>;
-    return returnable;
-  }
-}
-
-/*
- ** !!!REWRITE WHEN ROUTING WORKS
- */
-function getParent() {
-  return "/dayview";
-}
-
-function getInfobox(){
-  return "Did you know octopuses don’t have tentacles; they have arms. A tentacle only has suckers at its end, while a cephalopod arm has suckers for most of its length. Did u also know boomari arm have no sucker to make swinging easier. Ja jtn et 255 char täyteee"
-}
-
 /*
  ** Main function
  */
-function Trackview() {
-  let date = new Date(Date.now());
+class Trackview extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      date: new Date(Date.now()),
+      opens: 16,
+      closes: 20,
+      rangeOfficer: false,
+      trackOfficer: false,
+      info: "",
+      parent: props.getParent,
+      name: "rata 1",
+      description: ""
+    };
+    this.update = this.update.bind(this);
+  }
+  componentDidMount() {
+    console.log("trackview calls:");
+    console.log(this.props.match);
+    this.update();
+  }
+  update() {
+    // /dayview/2020-02-20
+    let date = this.props.match.params.date;
+    console.log("trackview call api:");
+    callApi("GET", "date/" + this.props.match.params.date + "/track/" + this.props.match.params.track  )
+       .then(res => {
+         console.log("trackview res calls:");
+         console.log(res);
 
-  return (
-    /*    Whole view */
-    <div class="wholeScreenDiv">
-      {/*    Radan nimi ja kuvaus  */}
-      <div class="trackNameAndType">
-        <div>
-          <h1>Rata 1</h1>
+         //async joten tietoa päivittäessä voi välähtää Date.now antama
+         //ennen haluttua tietoa
+         this.setState({
+           date: new Date(this.props.match.params.date),
+           trackOfficer: res.track.trackOfficer,
+           rangeOfficer: res.track.rangeOfficer,
+           name: res.track.trackName,
+           description: "(" + res.track.description + ")",
+           info: res.track.trackNotice,
+         });
+       })
+       .catch(err => console.log(err));
+  }
+
+  rangeAvaivability(){
+    if (this.state.rangeOfficer) {
+      let returnable = <Box class="isAvaivable">Päävalvoja Paikalla</Box>;
+      return returnable;
+    }
+    else {
+      let returnable = <Box class="isUnavaivable">Päävalvoja ei paikalla</Box>;
+      return returnable;
+    }
+  }
+
+ trackAvaivability() {
+    console.log("track avaivability ulkoo");
+    console.log(this.state.trackOfficer);
+    if (this.state.trackOfficer) {
+      let returnable = <Box class="isAvaivable">Ratavalvoja Paikalla</Box>;
+      return returnable;
+    }
+    else {
+      let returnable = <Box class="isUnavaivable">Ratavalvoja ei paikalla</Box>;
+      return returnable;
+    }
+  }
+
+  render(){
+
+    //required for "this" to work in callback
+    //alternative way without binding in constructor:
+    this.update = this.update.bind(this);
+    return(
+      /*    Whole view */
+      <div class="wholeScreenDiv">
+        {/*    Radan nimi ja kuvaus  */}
+        <div class="trackNameAndType">
+          <div>
+            <h1>{this.state.name}</h1>
+          </div>
+          <div>
+            <h3> &nbsp;{this.state.description}</h3>
+          </div>
         </div>
+      
+        {/*    Päivämäärä */}
         <div>
-          <h3> Kivääri 200m</h3>
+          <h2>
+          {dayToString(this.state.date.getDay())} {this.state.date.toLocaleDateString("fi-FI")}
+          </h2>
         </div>
-      </div>
-
-      {/*    Päivämäärä */}
-      <div>
-        <h2>
-          {dayToString(date.getDay())} {date.toLocaleDateString("fi-FI")}
-        </h2>
-      </div>
-
-      {/*    Päävalvojan ja ratavalvojan status  */}
-      <Grid
+      
+        {/*    Päävalvojan ja ratavalvojan status  */}
+        <Grid
         container
         direction="column"
         justify="center"
         alignItems="left"
         spacing={1}
-      >
-        {/*   pyydetään metodeilta boxit joissa radan tila */}
-        <Grid item xs={1} sm={6}>
-          {rangeAvaivability(1)}
+        >
+          {/*   pyydetään metodeilta boxit joissa radan tila */}
+          <Grid item xs={1} sm={6}>
+            {this.rangeAvaivability()}
+          </Grid>
+          <Grid item xs={1} sm={6}>
+          {this.trackAvaivability()}
+          </Grid>
         </Grid>
-        <Grid item xs={1} sm={6}>
-          {trackAvaivability(0)}
-        </Grid>
-      </Grid>
-
-      {/*    Infobox  */}
-
-      <p>Lisätietoja:</p>
-      <div class="infoBox">
-        {getInfobox()}
+      
+        {/*    Infobox  */}
+      
+        <p>Lisätietoja:</p>
+        <div class="infoBox">
+          {this.state.info}
+        </div>
+      
+        {/*    Linkki taaksepäin  */}
+        <Link className="backLink" style={{ color: "black" }} to={this.state.parent}>
+          <ArrowBackIcon />
+          Päivänäkymään
+        </Link>
       </div>
-
-      {/*    Linkki taaksepäin  */}
-      <Link className="backLink" style={{ color: "black" }} to={getParent()}>
-        <ArrowBackIcon />
-        Päivänäkymään
-      </Link>
-    </div>
-  );
+    );
+  }
 }
+
+
+// function Trackview() {
+//   let date = new Date(Date.now());
+
+//   return (
+//     /*    Whole view */
+//     <div class="wholeScreenDiv">
+//       {/*    Radan nimi ja kuvaus  */}
+//       <div class="trackNameAndType">
+//         <div>
+//           <h1>Rata 1</h1>
+//         </div>
+//         <div>
+//           <h3> Kivääri 200m</h3>
+//         </div>
+//       </div>
+
+//       {/*    Päivämäärä */}
+//       <div>
+//         <h2>
+//           {dayToString(date.getDay())} {date.toLocaleDateString("fi-FI")}
+//         </h2>
+//       </div>
+
+//       {/*    Päävalvojan ja ratavalvojan status  */}
+//       <Grid
+//         container
+//         direction="column"
+//         justify="center"
+//         alignItems="left"
+//         spacing={1}
+//       >
+//         {/*   pyydetään metodeilta boxit joissa radan tila */}
+//         <Grid item xs={1} sm={6}>
+//           {rangeAvaivability(1)}
+//         </Grid>
+//         <Grid item xs={1} sm={6}>
+//           {trackAvaivability(0)}
+//         </Grid>
+//       </Grid>
+
+//       {/*    Infobox  */}
+
+//       <p>Lisätietoja:</p>
+//       <div class="infoBox">
+//         {getInfobox()}
+//       </div>
+
+//       {/*    Linkki taaksepäin  */}
+//       <Link className="backLink" style={{ color: "black" }} to={getParent()}>
+//         <ArrowBackIcon />
+//         Päivänäkymään
+//       </Link>
+//     </div>
+//   );
+// }
 
 export default Trackview;
