@@ -27,19 +27,13 @@ class Trackview extends Component {
     this.update = this.update.bind(this);
   }
   componentDidMount() {
-    console.log("trackview calls:");
-    console.log(this.props.match);
     this.update();
   }
   update() {
     // /dayview/2020-02-20
     let date = this.props.match.params.date;
-    console.log("trackview call api:");
     callApi("GET", "date/" + this.props.match.params.date + "/track/" + this.props.match.params.track  )
        .then(res => {
-         console.log("trackview res calls:");
-         console.log(res);
-
          //async joten tietoa päivittäessä voi välähtää Date.now antama
          //ennen haluttua tietoa
          this.setState({
@@ -54,7 +48,7 @@ class Trackview extends Component {
        .catch(err => console.log(err));
   }
 
-  rangeAvaivability(){
+  rangeAvailability(){
     if (this.state.rangeOfficer) {
       let returnable = <Box class="isAvaivable">Päävalvoja Paikalla</Box>;
       return returnable;
@@ -65,9 +59,7 @@ class Trackview extends Component {
     }
   }
 
- trackAvaivability() {
-    console.log("track avaivability ulkoo");
-    console.log(this.state.trackOfficer);
+ trackAvailability() {
     if (this.state.trackOfficer) {
       let returnable = <Box class="isAvaivable">Ratavalvoja Paikalla</Box>;
       return returnable;
@@ -113,10 +105,10 @@ class Trackview extends Component {
         >
           {/*   pyydetään metodeilta boxit joissa radan tila */}
           <Grid item xs={1} sm={6}>
-            {this.rangeAvaivability()}
+            {this.rangeAvailability()}
           </Grid>
           <Grid item xs={1} sm={6}>
-          {this.trackAvaivability()}
+          {this.trackAvailability()}
           </Grid>
         </Grid>
       
@@ -136,62 +128,5 @@ class Trackview extends Component {
     );
   }
 }
-
-
-// function Trackview() {
-//   let date = new Date(Date.now());
-
-//   return (
-//     /*    Whole view */
-//     <div class="wholeScreenDiv">
-//       {/*    Radan nimi ja kuvaus  */}
-//       <div class="trackNameAndType">
-//         <div>
-//           <h1>Rata 1</h1>
-//         </div>
-//         <div>
-//           <h3> Kivääri 200m</h3>
-//         </div>
-//       </div>
-
-//       {/*    Päivämäärä */}
-//       <div>
-//         <h2>
-//           {dayToString(date.getDay())} {date.toLocaleDateString("fi-FI")}
-//         </h2>
-//       </div>
-
-//       {/*    Päävalvojan ja ratavalvojan status  */}
-//       <Grid
-//         container
-//         direction="column"
-//         justify="center"
-//         alignItems="left"
-//         spacing={1}
-//       >
-//         {/*   pyydetään metodeilta boxit joissa radan tila */}
-//         <Grid item xs={1} sm={6}>
-//           {rangeAvaivability(1)}
-//         </Grid>
-//         <Grid item xs={1} sm={6}>
-//           {trackAvaivability(0)}
-//         </Grid>
-//       </Grid>
-
-//       {/*    Infobox  */}
-
-//       <p>Lisätietoja:</p>
-//       <div class="infoBox">
-//         {getInfobox()}
-//       </div>
-
-//       {/*    Linkki taaksepäin  */}
-//       <Link className="backLink" style={{ color: "black" }} to={getParent()}>
-//         <ArrowBackIcon />
-//         Päivänäkymään
-//       </Link>
-//     </div>
-//   );
-// }
 
 export default Trackview;
