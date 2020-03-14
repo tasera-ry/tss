@@ -17,11 +17,20 @@ exports.date = async (req, res) => {
     (
       knex
         .from('range')
-        .select('range.name as rangeName','track.name','track.description','supervisor_id as rangeOfficer','track_supervisor as trackOfficer','track_supervision.notice as trackNotice')
+        .select(
+          'range.name as rangeName',
+          'range_reservation.available',
+          'supervisor_id as rangeOfficer',
+          'track_supervisor as trackOfficer',
+          'track_supervision.notice as trackNotice',
+          'track.name',
+          'track.description'
+        )
         .join('range_reservation', 'range.id', '=', 'range_reservation.range_id')
-        .join('track', 'range.id', '=', 'track.range_id')
+        //left join since range if not available would return nothing otherwise
         .leftJoin('scheduled_range_supervision', 'range_reservation.id', '=', 'range_reservation_id')
         .leftJoin('track_supervision', 'scheduled_range_supervision.id', '=', 'scheduled_range_supervision_id')
+        .leftJoin('track', 'track_supervision.track_id', '=', 'track.id')
         .where('date', req.params.date)
         //TODO remove hard coded range below
         .where('range.id', config.development.range_id)
@@ -45,7 +54,7 @@ exports.date = async (req, res) => {
               console.log(trackInfo);
               
               roState = (trackInfo.rangeOfficer !== null) ? true : false;
-              let toState = (trackInfo.trackOfficer !== null) ? true : false;
+              let toState = (trackInfo.trackOfficer !== null && trackInfo.trackOfficer !== 'absent') ? true : false;
               console.log(roState);
               
               let status;
@@ -53,8 +62,8 @@ exports.date = async (req, res) => {
               if(toState){
                 status="open";
               }
-              //TODO notice == closed?
-              else if(trackInfo.trackNotice !== null){
+              //TODO is this right? this would mean range not available == track closed
+              else if(trackInfo.available === false){
                 status="closed";
               }
               else {
