@@ -51,7 +51,7 @@ class Dayview extends Component {
   previousDayClick(e) {
     e.preventDefault();
     let date = new Date(this.state.date.setDate(this.state.date.getDate() - 1));
-    this.props.history.push("/dayview/" + date.toISOString());
+    this.props.history.replace("/dayview/" + date.toISOString());
     this.setState(
       {
         date: date
@@ -65,7 +65,7 @@ class Dayview extends Component {
   nextDayClick(e) {
     e.preventDefault();
     let date = new Date(this.state.date.setDate(this.state.date.getDate() + 1));
-    this.props.history.push("/dayview/" + date.toISOString());
+    this.props.history.replace("/dayview/" + date.toISOString());
     this.setState(
       {
         date: date
@@ -84,7 +84,14 @@ class Dayview extends Component {
       if (props.available) {
         text = "Päävalvoja paikalla";
         color = "greenB";
-      } else {
+      }
+      /*
+      else if(props.available === "soon tm") {
+        text = "Päävalvoja nimetty";
+        color = "lightGreenB";
+      }
+      */
+      else {
         text = "Päävalvoja ei ole paikalla";
         color = "redB";
       }
@@ -103,7 +110,8 @@ class Dayview extends Component {
             key={key}
             name={props.tracks[key].name}
             state={props.tracks[key].status}
-            to={"/trackview/date?/" + props.tracks[key].name}
+            //TODO final react routing
+            to={"/trackview/"+props.date.toISOString()+"/" + props.tracks[key].name}
           />
         );
       }
@@ -144,7 +152,7 @@ class Dayview extends Component {
     }
 
     return (
-      <div className="container">
+      <div className="dayviewContainer">
         {/* Whole view */}
         <Grid
           container
@@ -180,7 +188,7 @@ class Dayview extends Component {
             </Grid>
           </Grid>
           {/* MUI grid */}
-          <TrackList tracks={this.state.tracks} />
+          <TrackList tracks={this.state.tracks} date={this.state.date} />
           {/* Other info */}
           <Grid
             container
@@ -211,9 +219,6 @@ class Dayview extends Component {
         <Link className="back" style={{ color: "black" }} to="/weekview">
           <ArrowBackIcon />
           Viikkonäkymään
-        </Link>
-        <Link className="hoverHand arrow-right" to="/trackview">
-          Ratanäkymä
         </Link>
       </div>
     );
