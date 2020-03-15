@@ -1,4 +1,4 @@
-/* For desktop: */
+/* Default machine (Desktop atm) */
 .container {
   padding:5vh 20vh 5vh 20vh;
 }
@@ -35,7 +35,7 @@
   }
   
   .week-header {
-    margin-left: 65vh;
+    margin-left: 65vw;
   }
   
   .flex-container2 {
@@ -141,20 +141,21 @@
   }
 
 .info-flex {
-  /* display:flex; */
+  display:flex;
+  /*
   float: none;
   display: block;
+  */
 }
 
 .klockan {
   margin-left: 16vw;
 }
 
-/* For mobile phones: */
-@media (max-width: 550px) {
-  .info-flex {
-    display:flex;
-  }
+
+
+/* Average phones */
+@media only screen and (max-width: 600px) {
 
   #open-info {
     display: flex;
@@ -185,7 +186,7 @@
   }
 
   .infoContainer {
-    padding:0vh 0vh 0vh 0vh;
+    padding:0 0 0 0;
   }
   .flex-container2 {
     margin-left: -100%;
@@ -198,10 +199,10 @@
     height: 100px;
   }
   .arrow-right {
-    margin: 10vh;
+    margin: 10vw;
   }
   .arrow-left {
-    margin: 10vh;
+    margin: 10vw;
   }
   .date-header {
     margin-top: -40%;
@@ -210,3 +211,67 @@
     margin-top: -30%;
   }
 }
+
+/* Average tablets 768 width x 1024 heigth */
+@media only screen and (min-width: 750px) and (min-height: 1000px) and (max-width: 1000px) and (max-height: 1300px) {
+  .container {
+    padding: 0;
+    margin: 0% -15% 0% -15%;
+  }
+  
+  .infoContainer {
+    padding: 5vw 5vw 5vw 5vw;
+    margin-left: -10%;
+  }
+  #weekDay {
+    font-size: 0;
+  }
+}
+
+/* Larger tablets 768 width x 1024 heigth */
+@media only screen and (min-width: 1000px) and (min-height: 1300px) and (max-width: 1200px) and (max-height: 1500px) {
+  .container {
+    padding: 0;
+    margin-top: 4%;
+    margin-left: -15%;
+    margin-right: -15%;
+  }
+  
+  .infoContainer {
+    padding: 5vw 5vw 5vw 5vw;
+    margin-left: -10%;
+    margin-top: -3%;
+  }
+  #weekDay {
+    font-size: 2;
+  }
+}
+
+/* Laptops 1280 width x 720 height*/
+@media only screen and (min-width: 1250px) and (min-height: 700px) and (max-width: 1350px) and (max-height: 780px) {
+  .container {
+    padding: 0;
+    margin-top: 2%;
+  }
+  
+  .infoContainer {
+    padding: 5vw 5vw 5vw 5vw;
+    margin-left: -10%;
+    margin-top: -3%;
+  }
+  #weekDay {
+    font-size: 2;
+  }
+}
+
+/* Larger phones such as iPhone X */
+@media only screen and (min-height: 800px) and (max-width: 500px) {
+  .container {
+    padding:11vw 35vw 11vw 35vw;
+  }
+  
+  .infoContainer {
+    padding: 5vw 10vw 5vw 10vw;
+  }
+}
+

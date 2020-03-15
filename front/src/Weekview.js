@@ -181,7 +181,7 @@ class Weekview extends Component {
                 <Grid class="bottom-info">
                     <div class="info-flex">
                         <div id="closed-info" class='box'></div>
-                        {/* Suljettu */} &nbsp;Suljettu <br></br><br></br>
+                        {/* Suljettu */} &nbsp;Suljettu&nbsp; <br></br><br></br>
                         <div id="no-info" class='box'></div>
                         {/* Ei tietoa */} &nbsp;Ei tietoa
                     </div>
