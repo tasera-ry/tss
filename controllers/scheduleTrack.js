@@ -43,7 +43,7 @@ exports.trackInfoForDay = async (req, res) => {
           //atm track name needs to be exact e.g. 'Shooting Track 1'
           .where('track.name', req.params.id)
           //TODO remove hard coded range below
-          .where('range.id', config.dev.range_id)
+          .where('range.id', config.development.range_id)
 
           .then((rows) => {
             console.log("Got rows: "+rows.length);

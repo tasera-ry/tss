@@ -5,7 +5,7 @@ const config = {
   jwt: {
     secret: 'example-secret'
   },
-  dev: {
+  development: {
     range_id: 1
   }
 };

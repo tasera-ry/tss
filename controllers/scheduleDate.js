@@ -1,6 +1,6 @@
 const knex = require('../knex/knex')
 const config = require("../config/config");
-const moment = require("moment");
+const moment = require("moment-timezone");
 
 /*
 *  Get date info
@@ -17,14 +17,23 @@ exports.date = async (req, res) => {
     (
       knex
         .from('range')
-        .select('range.name as rangeName','track.name','track.description','supervisor_id as rangeOfficer','track_supervisor as trackOfficer','track_supervision.notice as trackNotice')
+        .select(
+          'range.name as rangeName',
+          'range_reservation.available',
+          'supervisor_id as rangeOfficer',
+          'track_supervisor as trackOfficer',
+          'track_supervision.notice as trackNotice',
+          'track.name',
+          'track.description'
+        )
         .join('range_reservation', 'range.id', '=', 'range_reservation.range_id')
-        .join('track', 'range.id', '=', 'track.range_id')
+        //left join since range if not available would return nothing otherwise
         .leftJoin('scheduled_range_supervision', 'range_reservation.id', '=', 'range_reservation_id')
         .leftJoin('track_supervision', 'scheduled_range_supervision.id', '=', 'scheduled_range_supervision_id')
+        .leftJoin('track', 'track_supervision.track_id', '=', 'track.id')
         .where('date', req.params.date)
         //TODO remove hard coded range below
-        .where('range.id', config.dev.range_id)
+        .where('range.id', config.development.range_id)
 
         .then((rows) => {
           if(rows.length === 0){
@@ -45,7 +54,7 @@ exports.date = async (req, res) => {
               console.log(trackInfo);
               
               roState = (trackInfo.rangeOfficer !== null) ? true : false;
-              let toState = (trackInfo.trackOfficer !== null) ? true : false;
+              let toState = (trackInfo.trackOfficer !== null && trackInfo.trackOfficer !== 'absent') ? true : false;
               console.log(roState);
               
               let status;
@@ -53,8 +62,8 @@ exports.date = async (req, res) => {
               if(toState){
                 status="open";
               }
-              //TODO notice == closed?
-              else if(trackInfo.trackNotice !== null){
+              //TODO is this right? this would mean range not available == track closed
+              else if(trackInfo.available === false){
                 status="closed";
               }
               else {
@@ -143,7 +152,7 @@ exports.week = async (req, res) => {
         .leftJoin('scheduled_range_supervision', 'range_reservation.id', '=', 'range_reservation_id')
         .whereBetween('date', [begin, end])
         //TODO remove hard coded range below
-        .where('range.id', config.dev.range_id)
+        .where('range.id', config.development.range_id)
         .orderBy('date', 'asc')
         
         .then((rows) => {
@@ -182,7 +191,11 @@ exports.week = async (req, res) => {
                 status="range officer unavailable";
               }
               
-              var dayObj = {date:dayInfo.date,status:status};
+              //parse gotten date as GMT time and change to GMT+2
+              let date = moment(dayInfo.date).tz("Europe/London");
+              date = date.tz("Europe/Helsinki").format("YYYY-MM-DD");
+              
+              var dayObj = {date:date,status:status};
               dayList.push(dayObj);
             }
 
