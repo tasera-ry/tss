@@ -25,7 +25,9 @@ casual.define('track_supervision', function(track_id, supervision_id) {
   return {
     scheduled_range_supervision_id: supervision_id
     , track_id: track_id
-    , track_supervisor: 'absent'
+    , track_supervisor: casual.boolean
+      ? 'present'
+      : 'absent'
     , notice: casual.description.substring(0, 255)
   }
 })
