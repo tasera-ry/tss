@@ -1,5 +1,9 @@
-/* For desktop: */
+/* Default machine (Desktop atm) */
 .container {
+  padding:5vh 20vh 5vh 20vh;
+}
+
+.infoContainer {
   padding:5vh 20vh 5vh 20vh;
 }
 
@@ -31,7 +35,7 @@
   }
   
   .week-header {
-    margin-left: 65vh;
+    margin-left: 65vw;
   }
   
   .flex-container2 {
@@ -48,12 +52,13 @@
     align-items: center;
     justify-content: center;
     text-align:center;
+    margin-top: -4%;
   }
   
 
   .flex-container2 > a {
     
-    outline: 2px solid black;
+    outline: 0px solid black;
     background-color: white;
     width: 14.28571428571429%;
     margin: 0px;
@@ -66,8 +71,7 @@
 
   .flex-container > a {
     
-    outline: 2px solid black;
-    background-color: green;
+    outline: 1px solid black;
     width: 14.28571428571429%;
     margin: 0px;
     text-align: center;
@@ -90,8 +94,10 @@
     border-bottom: 20px solid transparent;
     
     border-left: 20px solid black;
-  
+    
+    margin-left: 17vw;
     display: flex;
+    float: right;
     align-items: center;
   }
   
@@ -104,6 +110,7 @@
     border-right:20px solid black; 
     text-align: right;
   
+    margin-right: 17vw;
     display: flex;
     align-items: center;
   }
@@ -117,13 +124,19 @@
   
 #valvoja-info {
     display: flex;
-    background:orange;
+    background:lightgreen;
     margin-left: 20%;
   }
 
 #closed-info {
     display: flex;
     background: red;
+    margin-left: 20%;
+  }
+
+#closed-info2 {
+    display: flex;
+    background: orange;
     margin-left: 20%;
   }
   
@@ -135,13 +148,51 @@
 
 .info-flex {
   display:flex;
+  /*
+  float: none;
+  display: block;
+  */
 }
 
-/* For mobile phones: */
-@media (max-width: 550px) {
-  .info-flex {
-    float: none;
-    display: block;
+.klockan {
+  margin-left: 16vw;
+}
+
+
+
+/* Average phones */
+@media only screen and (max-width: 600px) {
+
+  #open-info {
+    display: flex;
+    background: green;
+    margin-left: 10%;
+  }
+
+  #weekDay {
+    font-size: 0;
+  }
+  
+#valvoja-info {
+    display: flex;
+    background:lightgreen;
+    margin-left: 9%;
+  }
+
+#closed-info {
+    display: flex;
+    background: red;
+    margin-left: 10%;
+  }
+  
+#no-info {
+    display: flex;
+    background:white;
+    margin-left: 10%;
+  }
+
+  .infoContainer {
+    padding:0 0 0 0;
   }
   .flex-container2 {
     margin-left: -100%;
@@ -152,5 +203,81 @@
     margin-left: -100%;
     margin-right: -100%;
     height: 100px;
-  } 
+  }
+  .arrow-right {
+    margin: 10vw;
+  }
+  .arrow-left {
+    margin: 10vw;
+  }
+  .date-header {
+    margin-top: -40%;
+  }
+  .flex-container2 {
+    margin-top: -30%;
+  }
 }
+
+/* Average tablets 768 width x 1024 heigth */
+@media only screen and (min-width: 750px) and (min-height: 1000px) and (max-width: 1000px) and (max-height: 1300px) {
+  .container {
+    padding: 0;
+    margin: 0% -15% 0% -15%;
+  }
+  
+  .infoContainer {
+    padding: 5vw 5vw 5vw 5vw;
+    margin-left: -10%;
+  }
+  #weekDay {
+    font-size: 0;
+  }
+}
+
+/* Larger tablets 768 width x 1024 heigth */
+@media only screen and (min-width: 1000px) and (min-height: 1300px) and (max-width: 1200px) and (max-height: 1500px) {
+  .container {
+    padding: 0;
+    margin-top: 4%;
+    margin-left: -15%;
+    margin-right: -15%;
+  }
+  
+  .infoContainer {
+    padding: 5vw 5vw 5vw 5vw;
+    margin-left: -10%;
+    margin-top: -3%;
+  }
+  #weekDay {
+    font-size: 2;
+  }
+}
+
+/* Laptops 1280 width x 720 height*/
+@media only screen and (min-width: 1250px) and (min-height: 700px) and (max-width: 1350px) and (max-height: 780px) {
+  .container {
+    padding: 0;
+    margin-top: 2%;
+  }
+  
+  .infoContainer {
+    padding: 5vw 5vw 5vw 5vw;
+    margin-left: -10%;
+    margin-top: -3%;
+  }
+  #weekDay {
+    font-size: 2;
+  }
+}
+
+/* Larger phones such as iPhone X */
+@media only screen and (min-height: 800px) and (max-width: 500px) {
+  .container {
+    padding:11vw 35vw 11vw 35vw;
+  }
+  
+  .infoContainer {
+    padding: 5vw 10vw 5vw 10vw;
+  }
+}
+
