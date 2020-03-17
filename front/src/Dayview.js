@@ -33,7 +33,7 @@ class Dayview extends Component {
   update() {
     // /dayview/2020-02-20
     let date = this.props.match.params.date;
-    callApi("GET", "tracks/" + (date ? date : ""))
+    callApi("GET", "date/" + (date ? date : this.state.date.toISOString()))
       .then(res => {
         console.log(res);
 
@@ -41,18 +41,17 @@ class Dayview extends Component {
         //ennen haluttua tietoa
         this.setState({
           date: new Date(res.date),
-          tracks: res.tracks
+          tracks: res.tracks,
+          rangeOfficer: res.rangeOfficer
         });
       })
       .catch(err => console.log(err));
   }
 
-  //TODO ComponentDidUpdate? päivän vaihdon jälkeen uutta tietoa varten
-
   previousDayClick(e) {
     e.preventDefault();
     let date = new Date(this.state.date.setDate(this.state.date.getDate() - 1));
-    this.props.history.push("/dayview/" + date.toISOString());
+    this.props.history.replace("/dayview/" + date.toISOString());
     this.setState(
       {
         date: date
@@ -66,7 +65,7 @@ class Dayview extends Component {
   nextDayClick(e) {
     e.preventDefault();
     let date = new Date(this.state.date.setDate(this.state.date.getDate() + 1));
-    this.props.history.push("/dayview/" + date.toISOString());
+    this.props.history.replace("/dayview/" + date.toISOString());
     this.setState(
       {
         date: date
@@ -85,7 +84,14 @@ class Dayview extends Component {
       if (props.available) {
         text = "Päävalvoja paikalla";
         color = "greenB";
-      } else {
+      }
+      /*
+      else if(props.available === "soon tm") {
+        text = "Päävalvoja nimetty";
+        color = "lightGreenB";
+      }
+      */
+      else {
         text = "Päävalvoja ei ole paikalla";
         color = "redB";
       }
@@ -98,12 +104,14 @@ class Dayview extends Component {
       let items = [];
       for (var key in props.tracks) {
         console.log(key);
+        console.log(props.tracks[key].name);
         items.push(
           <TrackBox
             key={key}
-            name={key}
-            state={props.tracks[key]}
-            to={"/trackview/date?/" + key}
+            name={props.tracks[key].name}
+            state={props.tracks[key].status}
+            //TODO final react routing
+            to={"/trackview/"+props.date.toISOString()+"/" + props.tracks[key].name}
           />
         );
       }
@@ -125,10 +133,10 @@ class Dayview extends Component {
     function TrackBox(props) {
       let color;
 
-      if (props.state === 1) {
+      if (props.state === "open") {
         //open
         color = "greenB";
-      } else if (props.state === 2) {
+      } else if (props.state === "closed") {
         //closed
         color = "redB";
       }
@@ -144,7 +152,7 @@ class Dayview extends Component {
     }
 
     return (
-      <div className="container">
+      <div className="dayviewContainer">
         {/* Whole view */}
         <Grid
           container
@@ -180,7 +188,7 @@ class Dayview extends Component {
             </Grid>
           </Grid>
           {/* MUI grid */}
-          <TrackList tracks={this.state.tracks} />
+          <TrackList tracks={this.state.tracks} date={this.state.date} />
           {/* Other info */}
           <Grid
             container
@@ -211,9 +219,6 @@ class Dayview extends Component {
         <Link className="back" style={{ color: "black" }} to="/weekview">
           <ArrowBackIcon />
           Viikkonäkymään
-        </Link>
-        <Link className="hoverHand arrow-right" to="/trackview">
-          Ratanäkymä
         </Link>
       </div>
     );

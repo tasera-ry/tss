@@ -1,16 +1,17 @@
 exports.up = function(knex) {
   return knex.schema
-    .raw("create type range_supervisor as enum('absent', 'en route', 'present')")
+    .raw("create type range_supervisor as enum('absent', 'confirmed', 'en route', 'present')")
     .createTable('range_supervision', supervision => {
-      supervision.increments()
       supervision.integer('scheduled_range_supervision_id')
         .references('id')
         .inTable('scheduled_range_supervision')
         .notNullable()
-      supervision.timestamp('timestamp', { useTz: true, precision: 6 })
+        .primary()
+      supervision.timestamp('updated_at', { useTz: true, precision: 6 })
+        .defaultTo(knex.fn.now())
         .notNullable()
       supervision.enu('range_supervisor'
-                      , ['absent', 'en route', 'present']
+                      , ['absent', 'confirmed', 'en route', 'present']
                       , { useNative: true
                           , existingType: true
                           , enumName: 'range_supervisor' })

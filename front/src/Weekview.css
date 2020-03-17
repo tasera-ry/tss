@@ -124,13 +124,19 @@
   
 #valvoja-info {
     display: flex;
-    background:orange;
+    background:lightgreen;
     margin-left: 20%;
   }
 
 #closed-info {
     display: flex;
     background: red;
+    margin-left: 20%;
+  }
+
+#closed-info2 {
+    display: flex;
+    background: orange;
     margin-left: 20%;
   }
   
@@ -169,7 +175,7 @@
   
 #valvoja-info {
     display: flex;
-    background:orange;
+    background:lightgreen;
     margin-left: 9%;
   }
 
