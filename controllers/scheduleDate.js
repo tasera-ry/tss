@@ -42,20 +42,17 @@ exports.date = async (req, res) => {
             });
           }
           else {
-            console.log(rows);
-            console.log("length "+rows.length)
+            //console.log(rows);
+            console.log("SCHEDULE_DATE rows length "+rows.length)
             
             let trackList = [];
             let roState;
             
-            var i;
             while(rows.length !== 0) {
               const trackInfo = rows.pop()
-              console.log(trackInfo);
               
               roState = (trackInfo.rangeOfficer !== null) ? true : false;
               let toState = (trackInfo.trackOfficer !== null && trackInfo.trackOfficer !== 'absent') ? true : false;
-              console.log(roState);
               
               let status;
               //track officer present == open
@@ -167,7 +164,6 @@ exports.week = async (req, res) => {
             let dayList = [];
             let roState;
             
-            var i;
             while(rows.length !== 0) {
               const dayInfo = rows.pop();
               
