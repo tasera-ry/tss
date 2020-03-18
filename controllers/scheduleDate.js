@@ -57,8 +57,8 @@ exports.date = async (req, res) => {
 
         .then((rows) => {
           if(rows.length === 0){
-            res.status(400).json({
-              err: "No results found."
+            trackListObj = {date:date,rangeOfficer:false,tracks:defaultTracks};
+            res.status(200).json(trackListObj);
             });
           }
           else {
