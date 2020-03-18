@@ -1,21 +1,42 @@
-
 const express = require("express");
 const router = express.Router();
+
 const jwt = require("jsonwebtoken");
-const config = require("./config/config");
-const { check } = require("express-validator");
 
-//require controller
-const user = require("./controllers/user");
-const track = require("./controllers/track");
-const scheduleTrack = require("./controllers/scheduleTrack");
-const scheduleDate = require("./controllers/scheduleDate");
+const { check, body, validationResult, matchedData } = require("express-validator");
 
-/*
-*  Authorization requires jwt token given by login
-*  in the body of the request
-*/
+const path = require('path')
+const root = path.join(__dirname, '.')
 
+const config = require(path.join(root, 'config', 'config'))
+const express_jwt = require('express-jwt')({ secret: config.jwt.secret })
+
+const controllers = path.join(root, 'controllers')
+
+const user = require(path.join(controllers, 'user'))
+
+const track = require(path.join(controllers, 'track'))
+const scheduleTrack = require(path.join(controllers, 'scheduleTrack'))
+const scheduleDate = require(path.join(controllers, 'scheduleDate'))
+
+/* TODO */
+// router.route('/user')
+//     .all(express_jwt)
+//     .get(async function(req, res) {
+//         res.send(await userm.read({id: req.user.id}))
+//    })
+
+/* TODO
+ * Stricter validation rules, should probably be defined somewhere else,
+ * so they can be uniform between end-points.
+ */
+router.post(
+  '/sign'
+  , body('name').exists()
+  , body('password').exists()
+  , user.sign)
+
+/* TODO move to middlewares */
 authorize = function(req, res, next) {
   const token = req.body.token || req.cookies.access;
   let auth = false;
@@ -54,41 +75,6 @@ authorize = function(req, res, next) {
     });
   }
 }
-
-/*
- *  Login with post
- *  requires body fields: name, password
- */
-router.post("/login", [
-  check('name').exists()
-    .custom((value) => (value == value.match(/[A-ZÖÄÅa-zöäå0-9 ]+/)))
-    .isLength({ min: 4, max: 30 }),
-  check('password').exists()
-                    .isAlphanumeric()
-                    .isLength({ min: 4, max: 30 })
-], user.login);
-
-/*
-*  Register with post
-*  requires body fields: name, password
-*
-*  1. Sets required rank
-*  2. Authorization with token and rank
-*  3. Validates params
-*  4. Uses register from user controller
-*/
-router.post("/register", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize, [
-
-  check('name').exists()
-    .custom((value) => (value == value.match(/[A-ZÖÄÅa-zöäå0-9 ]+/)))
-    .isLength({ min: 4, max: 30 }),
-  check('password').exists()
-                    .isAlphanumeric()
-                    .isLength({ min: 4, max: 30 })
-], user.register);
 
 /*
 *  Date

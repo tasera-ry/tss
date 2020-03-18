@@ -13,6 +13,35 @@ const bcrypt = require('bcryptjs')
 const stringify = _.partialRight(JSON.stringify, undefined, 2)
 
 const service = {
+
+  /**
+   * Authenticate a user based on the credentials given.
+   *
+   * @param {object} credentials - User's name and password.
+   * @return {Promise<number|undefined>} Authenticated user's id, undefined when unmatched
+   *
+   * @example
+   * service.authenticate('Mark', 'password')
+   */
+  authenticate: async function authenticateUser(credentials) {
+    const users = await service.read({
+      name: credentials.name
+    }, ['id', 'digest'])
+    
+    if(users.length !== 1) {
+      return undefined
+    }
+
+    const user = users.pop()
+    const matches = await bcrypt.compare(credentials.password, user.digest.toString())
+
+    if(matches === false){
+      return undefined
+    }
+
+    return user.id
+  }
+    
   /**
    * Create a new user.
    *
@@ -22,7 +51,7 @@ const service = {
    * @example
    * service.create({ name: 'Mark', password: 'password', role: 'superuser' })
    */
-  create: async function createUser(info) {
+  , create: async function createUser(info) {
     /* TODO
      * Data validation (constraint injection)
      */
@@ -41,7 +70,7 @@ const service = {
    * @param {object} key - The query information, {} returns all users.
    * @param {string[]} fields - Users' fields to return
    *
-   * @return {Promise<number[]>} List of users matching the query
+   * @return {Promise<object[]>} List of users matching the query
    *
    * @example
    * exports.read({ role: 'supervisor' }) - Find all supervisors

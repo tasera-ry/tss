@@ -1,22 +1,12 @@
+/* TODO
+ * Replace validations with validator.js
+ */
+const _ = require('lodash')
+const validate = require('validate.js')
+
 const path = require('path')
 const root = path.join(__dirname, '..')
-const validate = require('validate.js')
 const knex = require(path.join(root, 'knex', 'knex'))
-const _ = require('lodash')
-
-// Turn this into an npm package, move somewhere else, or find a replacement
-// package
-const stringify = _.partialRight(JSON.stringify, undefined, 2)
-
-// Turn this into a package as well
-const remapKeys = (mapper, obj) => {
-  const keyMapper = (acc, key) => ({
-    ...acc,
-    ...{ [mapper[key] || key]: obj[key] }
-  })
-  
-  return Object.keys(obj).reduce(keyMapper, {})
-}
 
 const model = {
   /** 
