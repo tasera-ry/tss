@@ -8,10 +8,6 @@ const validate = require('validate.js')
 const _ = require('lodash')
 const bcrypt = require('bcryptjs')
 
-// Make this into an npm package, move somewhere else, or find a replacement
-// package
-const stringify = _.partialRight(JSON.stringify, undefined, 2)
-
 const service = {
 
   /**
@@ -80,7 +76,7 @@ const service = {
      * Data validation (constraint injection)
      */
 
-    return user.read(key, fields)
+    return user.read(_.pick(key, 'id', 'name', 'role', 'phone'), fields)
   }
 
   /**

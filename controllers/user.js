@@ -4,7 +4,7 @@ const { validationResult, matchedData } = require('express-validator');
 
 const path = require('path')
 const root = path.join(__dirname, '..')
-const user = require(path.join(root, 'services', 'user'))
+const services = require(path.join(root, 'services'))
 const secret = require(path.join(root, 'config', 'config')).jwt.secret
 
 const controller = {
@@ -17,7 +17,7 @@ const controller = {
 
     const credentials = matchedData(request, { locations: ['body'] })
 
-    const id = await user.authenticate(credentials)
+    const id = await services.user.authenticate(credentials)
     if(id === undefined) {
       return response.set('WWW-Authenticate', 'Basic').status(401).send()
     }
@@ -26,6 +26,18 @@ const controller = {
       jwt.sign({
         id: id
       }, secret))
+  }
+
+  , readAll: async function readAllUsers(request, response) {
+    const validationErrors = validationResult(request)
+
+    if(validationErrors.isEmpty() === false) {
+      return response.status(400).send(validationErrors)
+    }
+
+    const query = matchedData(request, { locations: ['query'] })
+
+    return response.send(await services.user.read(query))
   }
 }
 

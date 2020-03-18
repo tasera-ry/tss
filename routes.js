@@ -3,7 +3,7 @@ const router = express.Router();
 
 const jwt = require("jsonwebtoken");
 
-const { check, body, validationResult, matchedData } = require("express-validator");
+const { check, body, query, validationResult, matchedData } = require("express-validator");
 
 const path = require('path')
 const root = path.join(__dirname, '.')
@@ -11,30 +11,54 @@ const root = path.join(__dirname, '.')
 const config = require(path.join(root, 'config', 'config'))
 const express_jwt = require('express-jwt')({ secret: config.jwt.secret })
 
-const controllers = path.join(root, 'controllers')
+const middlewares = require(path.join(root, 'middlewares'))
+const controllers = require(path.join(root, 'controllers'))
 
-const user = require(path.join(controllers, 'user'))
-
-const track = require(path.join(controllers, 'track'))
-const scheduleTrack = require(path.join(controllers, 'scheduleTrack'))
-const scheduleDate = require(path.join(controllers, 'scheduleDate'))
+const track = require(path.join(root, 'controllers', 'track'))
+const scheduleTrack = require(path.join(root, 'controllers', 'scheduleTrack'))
+const scheduleDate = require(path.join(root, 'controllers', 'scheduleDate'))
 
 /* TODO */
 // router.route('/user')
-//     .all(express_jwt)
-//     .get(async function(req, res) {
-//         res.send(await userm.read({id: req.user.id}))
-//    })
+//   .all(
+//     express_jwt
+//     , isAuthorized)
+//   .get(async function(req, res) {
+//     res.send(await userm.read({id: req.user.id}))
+//   })
 
 /* TODO
  * Stricter validation rules, should probably be defined somewhere else,
  * so they can be uniform between end-points.
  */
-router.post(
-  '/sign'
-  , body('name').exists()
-  , body('password').exists()
-  , user.sign)
+router.route('/sign')
+  .post(
+    body('name').exists()
+    , body('password').exists()
+    , controllers.user.sign)
+
+router.route('/user')
+  .all(
+    express_jwt
+    , middlewares.user.read
+    , middlewares.user.hasProperty('role', 'superuser'))
+  .get(
+    query('id')
+      .isInt()
+      .toInt()
+      .optional()
+    , query('name')
+      .isString()
+      .optional()
+    , query('role')
+      .isString()
+      .isIn(['superuser', 'supervisor'])
+      .optional()
+    , query('phone')
+      .isMobilePhone()
+      .optional()
+    , controllers.user.readAll)
+//   .post()
 
 /* TODO move to middlewares */
 authorize = function(req, res, next) {
