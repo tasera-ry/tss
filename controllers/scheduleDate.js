@@ -59,7 +59,6 @@ exports.date = async (req, res) => {
           if(rows.length === 0){
             trackListObj = {date:date,rangeOfficer:false,tracks:defaultTracks};
             res.status(200).json(trackListObj);
-            });
           }
           else {
             //console.log(rows);
@@ -168,6 +167,20 @@ exports.week = async (req, res) => {
     let begin = moment(req.params.date, "YYYYMMDD").startOf('isoWeek').format('YYYY-MM-DD');
     let end = moment(req.params.date, "YYYYMMDD").endOf('isoWeek').format('YYYY-MM-DD');
     console.log("WEEK "+weekNum+ " BEGIN "+begin+ " END "+end);
+    
+    //week defaults
+    async function week() {
+      let day = moment(req.params.date, "YYYYMMDD").startOf('isoWeek');
+      let dayList = [];
+      for (i = 0; i < 7; i++) {
+        let dayObj = {date:day.format('YYYY-MM-DD'),status:"range officer unavailable"};
+        dayList.push(dayObj);
+        day.add(1,"day");
+      }
+      return dayList;
+    }
+    const defaultWeek = await week();
+    
     //get specific week
     //localhost:3000/api/week/2020-02-20
     (
@@ -183,13 +196,10 @@ exports.week = async (req, res) => {
         
         .then((rows) => {
           if(rows.length === 0){
-            res.status(400).json({
-              err: "No results found."
-            });
+            dayListObj = {weekNum:weekNum,weekBegin:begin,weekEnd:end,days:defaultWeek};
+            res.status(200).json(dayListObj);
           }
           else {
-            console.log(rows);
-            
             let dayList = [];
             let roState;
             
@@ -220,14 +230,18 @@ exports.week = async (req, res) => {
               let date = moment(dayInfo.date).tz("Europe/London");
               date = date.tz("Europe/Helsinki").format("YYYY-MM-DD");
               
-              var dayObj = {date:date,status:status};
+              let dayObj = {date:date,status:status};
               dayList.push(dayObj);
             }
 
-            //TODO guarantee length 7?
+            //gets defaults adds possible status on top
+            const combinedWeek = defaultWeek.map((item, i, arr) => ({
+              ...item,
+              ...dayList.find((findItem) => findItem.date === item.date)
+            }));
+            console.log("SCHEDULE_WEEK combined",combinedWeek);
 
-            dayList.reverse();
-            dayListObj = {weekNum:weekNum,weekBegin:begin,weekEnd:end,days:dayList};
+            dayListObj = {weekNum:weekNum,weekBegin:begin,weekEnd:end,days:combinedWeek};
             res.status(200).json(dayListObj);
           }
         })
