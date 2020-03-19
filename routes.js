@@ -18,15 +18,6 @@ const track = require(path.join(root, 'controllers', 'track'))
 const scheduleTrack = require(path.join(root, 'controllers', 'scheduleTrack'))
 const scheduleDate = require(path.join(root, 'controllers', 'scheduleDate'))
 
-/* TODO */
-// router.route('/user')
-//   .all(
-//     express_jwt
-//     , isAuthorized)
-//   .get(async function(req, res) {
-//     res.send(await userm.read({id: req.user.id}))
-//   })
-
 /* TODO
  * Stricter validation rules, should probably be defined somewhere else,
  * so they can be uniform between end-points.
@@ -58,7 +49,28 @@ router.route('/user')
       .isMobilePhone()
       .optional()
     , controllers.user.readAll)
-//   .post()
+  .post(
+    body('name')
+      .exists({ checkNull: true, checkFalsy: true })
+      .isString()
+    /*  No finnish alphanumeric validator exists so we use the swedish one */
+      .isAlphanumeric('sv-SE')
+      .isLength({ min: 1, max: 255 })
+    , body('password')
+      .exists({ checkNull: true, checkFalsy: true })
+      .isString()
+      .isAscii()
+      .isByteLength({ min: 6, max: 72 })
+    , body('role')
+      .exists({ checkNull: true, checkFalsy: true })
+      .isString()
+      .isIn(['superuser', 'supervisor'])
+    , body('phone')
+      .optional()
+      .isString()
+      .isMobilePhone('fi-FI')
+      .custom((value, { req }) => req.body.role === 'supervisor')
+    , controllers.user.create)
 
 /* TODO move to middlewares */
 authorize = function(req, res, next) {

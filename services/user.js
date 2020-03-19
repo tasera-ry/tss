@@ -17,7 +17,7 @@ const service = {
    * @return {Promise<number|undefined>} Authenticated user's id, undefined when unmatched
    *
    * @example
-   * service.authenticate('Mark', 'password')
+   * service.authenticate({ name: 'Mark', password: 'mark_password' })
    */
   authenticate: async function authenticateUser(credentials) {
     const users = await service.read({

@@ -12,7 +12,7 @@ const controller = {
     const validationErrors = validationResult(request)
 
     if(validationErrors.isEmpty() === false) {
-      return response.status(400).send()
+      return response.status(400).send(validationErrors)
     }
 
     const credentials = matchedData(request, { locations: ['body'] })
@@ -38,6 +38,18 @@ const controller = {
     const query = matchedData(request, { locations: ['query'] })
 
     return response.send(await services.user.read(query))
+  }
+
+  , create: async function createUser(request, response) {
+    const validationErrors = validationResult(request)
+
+    if(validationErrors.isEmpty() === false) {
+      return response.status(400).send(validationErrors)
+    }
+
+    const userDetails = matchedData(request, { locations: ['body'] })
+
+    return response.send(await services.user.create(userDetails))
   }
 }
 
