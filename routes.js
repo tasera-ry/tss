@@ -3,7 +3,7 @@ const router = express.Router();
 
 const jwt = require("jsonwebtoken");
 
-const { check, body, query, validationResult, matchedData } = require("express-validator");
+const { check, body, query, param, validationResult, matchedData } = require("express-validator");
 
 const path = require('path')
 const root = path.join(__dirname, '.')
@@ -71,6 +71,18 @@ router.route('/user')
       .isMobilePhone('fi-FI')
       .custom((value, { req }) => req.body.role === 'supervisor')
     , controllers.user.create)
+
+router.route('/user/:id')
+  .all(
+    express_jwt
+    , middlewares.user.read
+    , middlewares.user.hasProperty('role', 'superuser'))
+  .get(
+    param('id')
+      .exists()
+      .isInt()
+      .toInt()
+    , controllers.user.read)
 
 /* TODO move to middlewares */
 authorize = function(req, res, next) {

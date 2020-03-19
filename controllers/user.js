@@ -51,6 +51,18 @@ const controller = {
 
     return response.send(await services.user.create(userDetails))
   }
+
+  , read: async function readUser(request, response) {
+    const validationErrors = validationResult(request)
+
+    if(validationErrors.isEmpty() === false) {
+      return response.status(400).send(validationErrors)
+    }
+
+    const query = matchedData(request)
+
+    return response.send(await services.user.read(query))
+  }
 }
 
 /*
