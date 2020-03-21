@@ -99,11 +99,11 @@ const model = {
 
     const user = validate.cleanAttributes(update, userConstraints)
     const supervisor = validate.cleanAttributes(update, supervisorConstraints)
-    
+
     const id = await model
           .read(current, ['id'])
           .then(rows => rows[0])
-    
+
     return await knex.transaction(trx => {
       return trx('user')
         .where(id)
@@ -131,7 +131,6 @@ const model = {
    */
   , delete: async function deleteUser(user) {
     const ids = await model.read(user, ['id'])
-    console.log(ids)
 
     return await knex.transaction(trx => {
       return Promise.all(

@@ -18,71 +18,54 @@ const track = require(path.join(root, 'controllers', 'track'))
 const scheduleTrack = require(path.join(root, 'controllers', 'scheduleTrack'))
 const scheduleDate = require(path.join(root, 'controllers', 'scheduleDate'))
 
-/* TODO
- * Stricter validation rules, should probably be defined somewhere else,
- * so they can be uniform between end-points.
- */
 router.route('/sign')
   .post(
-    body('name').exists()
-    , body('password').exists()
+    middlewares.user.validators.name(body, 'exists')
+    , middlewares.user.validators.password(body, 'exists')
+    , middlewares.user.handleValidationErrors
     , controllers.user.sign)
 
 router.route('/user')
   .all(
     express_jwt
-    , middlewares.user.read
-    , middlewares.user.hasProperty('role', 'superuser'))
+    , middlewares.user.queryJWTUserInfo
+    , middlewares.user.requesterHasProperty('role', 'superuser'))
   .get(
-    query('id')
-      .isInt()
-      .toInt()
-      .optional()
-    , query('name')
-      .isString()
-      .optional()
-    , query('role')
-      .isString()
-      .isIn(['superuser', 'supervisor'])
-      .optional()
-    , query('phone')
-      .isMobilePhone()
-      .optional()
+    middlewares.user.validators.id(query, 'optional')
+    , middlewares.user.validators.name(query, 'optional')
+    , middlewares.user.validators.role(query, 'optional')
+    , middlewares.user.validators.phone(query, 'optional')
+    , middlewares.user.handleValidationErrors
     , controllers.user.readAll)
   .post(
-    body('name')
-      .exists({ checkNull: true, checkFalsy: true })
-      .isString()
-    /*  No finnish alphanumeric validator exists so we use the swedish one */
-      .isAlphanumeric('sv-SE')
-      .isLength({ min: 1, max: 255 })
-    , body('password')
-      .exists({ checkNull: true, checkFalsy: true })
-      .isString()
-      .isAscii()
-      .isByteLength({ min: 6, max: 72 })
-    , body('role')
-      .exists({ checkNull: true, checkFalsy: true })
-      .isString()
-      .isIn(['superuser', 'supervisor'])
-    , body('phone')
-      .optional()
-      .isString()
-      .isMobilePhone('fi-FI')
-      .custom((value, { req }) => req.body.role === 'supervisor')
+    middlewares.user.validators.name(body, 'exists')
+    , middlewares.user.validators.password(body, 'exists')
+    , middlewares.user.validators.role(body, 'exists')
+    , middlewares.user.validators.phone(body, 'optional')
+      .custom((value, { req }) => req.body.role === 'supervisor' )
+      .withMessage('may only be assigned to a supervisor')
+    , middlewares.user.handleValidationErrors
     , controllers.user.create)
 
 router.route('/user/:id')
   .all(
     express_jwt
-    , middlewares.user.read
-    , middlewares.user.hasProperty('role', 'superuser'))
+    , middlewares.user.queryJWTUserInfo
+    , middlewares.user.requesterHasProperty('role', 'superuser')
+    , middlewares.user.validators.id(param, 'exists'))
   .get(
-    param('id')
-      .exists()
-      .isInt()
-      .toInt()
+    middlewares.user.handleValidationErrors
     , controllers.user.read)
+  .put(
+    middlewares.user.validators.name(body, 'optional')
+    , middlewares.user.validators.password(body, 'optional')
+    , middlewares.user.validators.phone(body, 'optional')
+    , middlewares.user.handleValidationErrors
+    , controllers.user.update)
+  .delete(
+    middlewares.user.handleValidationErrors
+    , controllers.user.delete)
+
 
 /* TODO move to middlewares */
 authorize = function(req, res, next) {

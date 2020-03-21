@@ -1,15 +1,18 @@
 const path = require('path')
 
 const root = path.join(__dirname, '..')
-const user = require(path.join(root, 'models', 'user'))
+const models = require(path.join(root, 'models'))
 const config = require(path.join(root, 'config', 'config'))
 
 const validate = require('validate.js')
 const _ = require('lodash')
 const bcrypt = require('bcryptjs')
 
-const service = {
+async function hash(password) {
+  return bcrypt.hash(password, config.bcrypt.hashRounds)
+}
 
+const service = {
   /**
    * Authenticate a user based on the credentials given.
    *
@@ -24,7 +27,8 @@ const service = {
       name: credentials.name
     }, ['id', 'digest'])
     
-    if(users.length !== 1) {
+    if(users.length === 0) {
+      // throw error instead of undefined
       return undefined
     }
 
@@ -52,12 +56,11 @@ const service = {
      * Data validation (constraint injection)
      */
 
-    let digest = await bcrypt.hash(info.password
-                                   , config.bcrypt.hashRounds)
-    
+    const digest = await hash(info.password)
     delete info.password
-    info['digest'] = digest
-    return user.create(info)
+    info.digest = digest
+
+    return models.user.create(info)
   }
 
   /** 
@@ -76,7 +79,7 @@ const service = {
      * Data validation (constraint injection)
      */
 
-    return user.read(_.pick(key, 'id', 'name', 'role', 'phone'), fields)
+    return models.user.read(_.pick(key, 'id', 'name', 'role', 'phone'), fields)
   }
 
   /**
@@ -91,10 +94,14 @@ const service = {
    * exports.update({ name: 'mark' }, { name:'mark shuttleworth' })
    */
   , update: async function updateUser(key, updates) {
-    /* TODO
-     * Data validation (constraint injection)
-     */
-    return user.update(key, updates)
+
+    if('password' in updates) {
+      const digest = await hash(updates.password)
+      delete updates.password
+      updates.digest = digest
+    }
+
+    return models.user.update(key, updates)
   }
 
     /** 
@@ -111,7 +118,7 @@ const service = {
     /* TODO
      * Data validation (constraint injection)
      */
-    return user.delete(key)
+    return models.user.delete(key)
   }
 }
 
