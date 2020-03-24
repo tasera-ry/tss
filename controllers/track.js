@@ -23,7 +23,7 @@ const controller = {
       .send(response.locals.queryResult)
   }
 
-  , read: async function readTrackAll(request, response) {
+  , readAll: async function readTrackAll(request, response) {
     console.log("CONT TRACK READ ALL???");
     
     return response

@@ -14,7 +14,6 @@ const config = require(path.join(root, 'config', 'config'))
 const middlewares = require(path.join(root, 'middlewares'))
 const controllers = require(path.join(root, 'controllers'))
 
-const track = require(path.join(root, 'controllers', 'track'))
 const scheduleTrack = require(path.join(root, 'controllers', 'scheduleTrack'))
 const scheduleDate = require(path.join(root, 'controllers', 'scheduleDate'))
 
@@ -118,39 +117,28 @@ router.put("/date/:date", function(req,res,next){
 /*
 *  Track
 */
-//TODO how to handle authorize
-router.route('/track')
-  .all(
-    //TODO check rank
-    //middlewares.jwt.read
-    //, middlewares.track.hasProperty('role', 'superuser')
-    )
-  .get(
-    function(req,res,next){
-      console.log("Am I real?");
-      next();
-    }
-    , middlewares.user.read
-    , controllers.user.read)
-  .post(
-    middlewares.user.create
-    , controllers.user.create)
+//TODO suggest better authz
+//router.route('/track')
+//  .all(middlewares.jwt.read)
 
-router.route('/user/:id')
-  .all(
-    //TODO check rank
-    //middlewares.jwt.read
-    //, middlewares.track.hasProperty('role', 'superuser')
-    )
+router.route('/track')
   .get(
     middlewares.track.read
-    , controllers.user.read)
+    , controllers.track.read)
+  .post(
+    middlewares.track.create
+    , controllers.track.create)
+
+router.route('/track/:id')
+  .get(
+    middlewares.track.read
+    , controllers.track.read)
   .put(
     middlewares.track.update
-    , controllers.user.update)
+    , controllers.track.update)
   .delete(
     middlewares.track.delete
-    , controllers.user.delete)
+    , controllers.track.delete)
 
 /*
 *  Schedule
