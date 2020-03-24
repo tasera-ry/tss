@@ -1,56 +1,78 @@
 const path = require('path')
 const root = path.join(__dirname, '..')
 const services = require(path.join(root, 'services'))
-const { validationResult } = require('express-validator')
+const validators = require(path.join(root, 'validators'))
 
-function validatorAdditions(validator, opts) {
-  if(opts.includes('exists')) {
-    validator = validator
-      .exists({ checkNull: true, checkFalsy: true })
-      .withMessage('must be included')
+const serviceCalls = {
+  //TODO figure out what response.locals.query should contain
+  read: async function readTrack(request, response, next) {
+    const query = response.locals.query
+    try {
+      response.locals.queryResult = await services.track.read(query, [])
+    }
+    catch(e) {
+      return next(e)
+    }
+    return next()
   }
+  , create: async function createTrack(request, response, next) {
+    const query = response.locals.query
+    let id
+    try {
+      id = await services.track.create(query)
+    }
+    catch(e) {
+      return next(e)
+    }
 
-  if(opts.includes('optional')) {
-    validator = validator
-      .optional()
+    try {
+      response.locals.queryResult = await services.track.read({id: id})
+    }
+    catch(e) {
+      return next(e)
+    }
+    //TODO ???
+    response.locals.address = `/api/track/${id}`
+    return next()
   }
-  
-  return validator
+  , update: async function updateTrack(request, response, next) {
+    const id = response.locals.id
+    const updates = response.locals.updates
+
+    try {
+      response.locals.queryResult = await services.track.update(id, updates)
+    } catch(e) {
+      return next(e)
+    }
+    return next()
+  }
+  , delete: async function deleteTrack(request, response, next) {
+    const query = response.locals.query
+    try {
+      response.locals.queryResult = await services.track.delete(query)
+    } catch(e) {
+      return next(e)
+    }
+    return next()
+  }
 }
 
-exports.validators = {
-  id: function idValidation(requestObject, ...opts) {
-    const validator = requestObject('id')
-          .isInt()
-          .withMessage('must be an integer')
-          .toInt()
+exports.read = [
+  validators.track.read
+  , serviceCalls.read
+]
 
-    return validatorAdditions(validator, opts)
-  }
+exports.create = [
+  validators.track.create
+  , serviceCalls.create
+]
 
-  , name: function nameValidation(requestObject, ...opts) {
-    const validator = requestObject('name')
-          .isString()
-          .withMessage('must be a string')
-          .isLength({ min: 1, max: 255 })
-          .withMessage('must be between 1 and 255 characters')
-    return validatorAdditions(validator, opts)
-  }
+exports.update = [
+  validators.track.update
+  , serviceCalls.update
+]
 
-  , description: function descriptionValidation(requestObject, ...opts) {
-    const validator = requestObject('description')
-          .isString()
-          .withMessage('must be a string')
-          .isLength({ min: 1, max: 255 })
-          .withMessage('must be between 1 and 255 characters')
-    return validatorAdditions(validator, opts)
-  }
-}
-
-exports.handleValidationErrors = function handleValidationErrors(request, response, next) {
-  const validationErrors = validationResult(request)
-  if(validationErrors.isEmpty() === false) {
-    return response.status(400).send(validationErrors)
-  }
-  return next()
-}
+exports.delete = [
+  validators.track.delete
+  , serviceCalls.delete
+]

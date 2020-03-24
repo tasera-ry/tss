@@ -21,15 +21,12 @@ const service = {
    * service.create({ range_id: 1, name: 'Shooting track 1', description: '100m Kohdistusrata' })
    */
   , create: async function createTrack(info) {
-    /* TODO
-     * Data validation (constraint injection)
-     */
 
     //TODO get id with name?
     const info = Object.assign({range_id: range_id}, info);
     console.log("SERVICE_TRACK_CREATE combined: ",info);
 
-    return models.track.create(info)
+    return (await models.track.create(info)).pop()
   }
 
   /** 
@@ -45,11 +42,8 @@ const service = {
    * exports.read({range_id:1}['name']) - All track names
    */
   , read: async function readTrack(key, fields) {
-    /* TODO
-     * Data validation (constraint injection)
-     */
-
-    return models.track.read(_.pick(key, 'id', 'name', 'description'), fields)
+    return (await models.track.read(_.pick(key, 'id', 'name', 'description')))
+      //.map(_.partialRight(_.omit, 'digest', 'user_id'))
   }
 
   /**
@@ -58,7 +52,7 @@ const service = {
    * @param {object} key - Tracks' identifying info. { range_id, id?, name?}
    * @param {object} updates - Key-value pairs of the field to update and new value. { name?, description? }
    *
-   * @return {Promise<number>} - TODO
+   * @return {Promise<number>} - Count of tracks updated
    *
    * @example
    * exports.update({ name: 'Shooting track 1' }, { description: 'New and improved' })
@@ -73,15 +67,12 @@ const service = {
      *
      * @param {object} key - Tracks' identifying info. { range_id, id?, name?}
      *
-     * @return {Promise<number>} - TODO
+     * @return {Promise<number>} - Count of tracks deleted
      *
      * @example
      * service.delete({ name: 'Shooting track 1' })
      */
   , delete: async function deleteTrack(key) {
-    /* TODO
-     * Data validation (constraint injection)
-     */
     return models.track.delete(key)
   }
 }
