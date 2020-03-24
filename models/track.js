@@ -43,7 +43,7 @@ const model = {
   /**
    * Get the tracks matching a key.
    *
-   * @param {object} key - Identifying key, { id?, range_id?, name?, description? }
+   * @param {object} key - Identifying key, { range_id, id?, name?, description? }
    * @param {string[]} fields - Attributes about the track to select [ id?, range_id?, name?, description? ]
    * @return {Promise<object[]>} Tracks that matched the key
    *
@@ -52,7 +52,7 @@ const model = {
    */
   , read: async function readTrack(key, fields) {
     return knex('track')
-      .leftJoin('range', 'range.id', 'track.range_id')
+      .join('range', 'range.id', 'track.range_id')
       .where(key)
       .select(fields)
   }
@@ -93,14 +93,14 @@ const model = {
   /**
    * Delete the tracks matching a key.
    *
-   * @param {object} key - Identifying key, { id?, name? }
+   * @param {object} key - Identifying key, { range_id, id?, name? }
    * @return {Promise<number[]>} Count of deleted tracks
    *
    * @example
    * exports.del({ name: 'Shooting track 1' })
    */
-  , delete: async function deleteTrack(track) {
-    const ids = await model.read(track, ['id'])
+  , delete: async function deleteTrack(key) {
+    const ids = await model.read(key, ['id'])
 
     return await knex.transaction(trx => {
       return Promise.all(
