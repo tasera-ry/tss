@@ -96,6 +96,13 @@ const serviceCalls = {
     try {
       response.locals.queryResult = await services.user.update(id, updates)
     } catch(e) {
+      if(e.name === 'Unknown user') {
+        return response
+          .status(404)
+          .send({
+            error: e.name
+          })
+      }
       return next(e)
     }
     return next()
