@@ -7,8 +7,6 @@ const validate = require('validate.js')
 const path = require('path')
 const root = path.join(__dirname, '..')
 const knex = require(path.join(root, 'knex', 'knex'))
-//TODO replace with actual range
-const range_id = require(path.join(root, 'config', 'config')).development.range_id
 
 const model = {
   /** 
@@ -21,8 +19,6 @@ const model = {
    * model.create({ range_id: 1, name: 'Shooting track 1', description: '100m Kohdistusrata'})
    */
   create: async function createTrack(trackInfo) {
-    const trackInfo = Object.assign({range_id: range_id}, trackInfo);
-    console.log("MODEL_TRACK_CREATE combined: ",trackInfo);
     
     const trackConstraints = {
       range_id: {}
@@ -48,7 +44,7 @@ const model = {
    * Get the tracks matching a key.
    *
    * @param {object} key - Identifying key, { id?, range_id?, name?, description? }
-   * @param {object (TODO: array?)} fields - Attributes about the track to select { id?, range_id?, name?, description? }
+   * @param {string[]} fields - Attributes about the track to select [ id?, range_id?, name?, description? ]
    * @return {Promise<object[]>} Tracks that matched the key
    *
    * @example
