@@ -19,6 +19,7 @@ const model = {
    * model.create({ range_id: 1, name: 'Shooting track 1', description: '100m Kohdistusrata'})
    */
   create: async function createTrack(trackInfo) {
+    console.log("MODEL TRACK CREATE");
     
     const trackConstraints = {
       range_id: {}
@@ -51,6 +52,8 @@ const model = {
    * model.read({ name: 'Shooting track 1' }, ['description'])
    */
   , read: async function readTrack(key, fields) {
+    console.log("MODEL TRACK READ");
+    
     return knex('track')
       .join('range', 'range.id', 'track.range_id')
       .where(key)
@@ -69,6 +72,7 @@ const model = {
    * exports.update({ name: 'Shooting track 1' }, { description: '200m Kohdistusrata' })
    */
   , update: async function updateTrack(current, update) {
+    console.log("MODEL TRACK UPDATE");
     //TODO: do we allow range_id to be modified for a track?
     
     const trackConstraints = {
@@ -100,6 +104,8 @@ const model = {
    * exports.del({ name: 'Shooting track 1' })
    */
   , delete: async function deleteTrack(key) {
+    console.log("MODEL TRACK DELETE");
+    
     const ids = await model.read(key, ['id'])
 //TODO different
     return await knex.transaction(trx => {

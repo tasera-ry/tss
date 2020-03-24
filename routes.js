@@ -126,7 +126,11 @@ router.route('/track')
     //, middlewares.track.hasProperty('role', 'superuser')
     )
   .get(
-    middlewares.user.read
+    function(req,res,next){
+      console.log("Am I real?");
+      next();
+    }
+    , middlewares.user.read
     , controllers.user.read)
   .post(
     middlewares.user.create

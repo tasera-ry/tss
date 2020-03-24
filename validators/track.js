@@ -5,6 +5,8 @@ const { body
         , matchedData } = require('express-validator')
 
 function validatorAdditions(validator, opts) {
+  console.log("VAL ADDITIONS ???");
+  
   if(opts.includes('exists')) {
     validator = validator
       .exists({ checkNull: true, checkFalsy: true })
@@ -21,6 +23,7 @@ function validatorAdditions(validator, opts) {
 
 const fields = {
   id: function idValidation(requestObject, ...opts) {
+    console.log("VAL TRACK: id");
     const validator = requestObject('id')
           .isInt()
           .withMessage('must be an integer')
@@ -30,6 +33,7 @@ const fields = {
   }
 
   , name: function nameValidation(requestObject, ...opts) {
+    console.log("VAL TRACK: name");
     const validator = requestObject('name')
           .isString()
           .withMessage('must be a string')
@@ -39,6 +43,7 @@ const fields = {
   }
 
   , description: function descriptionValidation(requestObject, ...opts) {
+    console.log("VAL TRACK: description");
     const validator = requestObject('description')
           .isString()
           .withMessage('must be a string')
@@ -49,6 +54,7 @@ const fields = {
 }
 
 function handleValidationErrors(request, response, next) {
+  console.log("VAL ERRORS");
   const validationErrors = validationResult(request)
   if(validationErrors.isEmpty() === false) {
     return response.status(400).send(validationErrors)
@@ -61,6 +67,7 @@ module.exports = {
     fields.id(param, 'exists')
     , handleValidationErrors
     , function storeID(request, response, next) {
+      console.log("VAL EXPORTS STORE: id");
       response.locals.query = matchedData(request, { locations: ['params'] })
       return next()
     }
@@ -70,6 +77,7 @@ module.exports = {
     , fields.id(body, 'exists') //TODO check whats happening here used to be range_id
     , handleValidationErrors
     , function storeCreationRequest(request, response, next) {
+      console.log("VAL EXPORTS STORE: name");
       response.locals.query = matchedData(request, { locations: ['body'] })
       return next()
     }
@@ -79,6 +87,7 @@ module.exports = {
     , fields.description(body, 'optional')
     , handleValidationErrors
     , function storeUpdateRequest(request, response, next) {
+      console.log("VAL EXPORTS STORE: update request");
       response.locals.id = matchedData(request, { locations: ['params'] })
       response.locals.updates = matchedData(request, { locations: ['body'] })
       return next()
@@ -86,6 +95,7 @@ module.exports = {
   ], delete: [
     fields.id(param, 'exists')
     , function storeDeleteRequest(request, response, next) {
+      console.log("VAL EXPORTS STORE: delete request");
       response.locals.query = matchedData(request, { locations: ['params'] })
       return next()
     }

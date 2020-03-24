@@ -21,6 +21,7 @@ const service = {
    * service.create({ range_id: 1, name: 'Shooting track 1', description: '100m Kohdistusrata' })
    */
   create: async function createTrack(info) {
+    console.log("SERV TRACK CREATE");
 
     //TODO get id with name?
     const combinedInfo = Object.assign({range_id: range_id}, info);
@@ -42,6 +43,8 @@ const service = {
    * exports.read({range_id:1}['name']) - All track names
    */
   , read: async function readTrack(key, fields) {
+    console.log("SERV TRACK READ");
+    
     return (await models.track.read(_.pick(key, 'id', 'name', 'description')))
       //.map(_.partialRight(_.omit, 'digest', 'user_id'))
   }
@@ -58,6 +61,7 @@ const service = {
    * exports.update({ name: 'Shooting track 1' }, { description: 'New and improved' })
    */
   , update: async function updateTrack(key, updates) {
+    console.log("SERV TRACK UPDATE");
 
     return models.track.update(key, updates)
   }
@@ -73,6 +77,8 @@ const service = {
      * service.delete({ name: 'Shooting track 1' })
      */
   , delete: async function deleteTrack(key) {
+    console.log("SERV TRACK DELETE");
+    
     return models.track.delete(key)
   }
 }
