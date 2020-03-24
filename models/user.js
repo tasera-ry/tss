@@ -83,26 +83,18 @@ const model = {
    * exports.update({ name: 'Mark }, { digest: 'new_password_digest' })
    */
   , update: async function updateUser(current, update) {
-    if(validate.isDefined(update.role)) {
-      throw Error('User\'s role may not be updated: ' + stringify(update))
-    }
+    const user = _.pick(update, 'name', 'digest')
+    const supervisor = _.pick(update, 'phone')
 
-    const userConstraints = {
-      id: {}
-      , name: {}
-      , digest: {}
-    }
-
-    const supervisorConstraints = {
-      phone: {}
-    }
-
-    const user = validate.cleanAttributes(update, userConstraints)
-    const supervisor = validate.cleanAttributes(update, supervisorConstraints)
-
+    console.log(current, user, supervisor)
     const id = await model
           .read(current, ['id'])
           .then(rows => rows[0])
+    console.log(JSON.stringify(id), 'ballsed it')
+
+    if(id === undefined) {
+      const err = 
+    }
 
     return await knex.transaction(trx => {
       return trx('user')
@@ -130,15 +122,11 @@ const model = {
    * exports.del({ name: 'Mark })
    */
   , delete: async function deleteUser(user) {
-    const ids = await model.read(user, ['id'])
-
     return await knex.transaction(trx => {
-      return Promise.all(
-        ids.map(id => {
-          return trx('user')
-            .where(id)
-            .del()
-        })).then(trx.commit)
+      return trx('user')
+        .where(user)
+        .del()
+        .then(trx.commit)
         .catch(trx.rollback)
     })
   }

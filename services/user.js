@@ -23,25 +23,30 @@ const service = {
    * service.authenticate({ name: 'Mark', password: 'mark_password' })
    */
   authenticate: async function authenticateUser(credentials) {
-    const users = await service.read({
+    const users = await models.user.read({
       name: credentials.name
     }, ['id', 'digest'])
-    
+
     if(users.length === 0) {
-      // throw error instead of undefined
-      return undefined
+      const err = Error('Username didn\'t match any users')
+      err.name = 'Unknown user'
+      throw err
     }
 
     const user = users.pop()
-    const matches = await bcrypt.compare(credentials.password, user.digest.toString())
 
-    if(matches === false){
-      return undefined
+    const passwordMatches = await bcrypt
+          .compare(credentials.password, user.digest.toString())
+
+    if(passwordMatches === false) {
+      const err = Error('Password was incorrect')
+      err.name = 'Incorrect password'
+      throw err
     }
-
+    
     return user.id
   }
-    
+  
   /**
    * Create a new user.
    *
@@ -52,15 +57,10 @@ const service = {
    * service.create({ name: 'Mark', password: 'password', role: 'superuser' })
    */
   , create: async function createUser(info) {
-    /* TODO
-     * Data validation (constraint injection)
-     */
-
     const digest = await hash(info.password)
     delete info.password
     info.digest = digest
-
-    return models.user.create(info)
+    return (await models.user.create(info)).pop()
   }
 
   /** 
@@ -75,11 +75,8 @@ const service = {
    * exports.read({ role: 'supervisor' }) - Find all supervisors
    */
   , read: async function readUser(key, fields) {
-    /* TODO
-     * Data validation (constraint injection)
-     */
-
-    return models.user.read(_.pick(key, 'id', 'name', 'role', 'phone'), fields)
+    return (await models.user.read(_.pick(key, 'id', 'name', 'role', 'phone')))
+      .map(_.partialRight(_.omit, 'digest', 'user_id'))
   }
 
   /**
@@ -94,7 +91,6 @@ const service = {
    * exports.update({ name: 'mark' }, { name:'mark shuttleworth' })
    */
   , update: async function updateUser(key, updates) {
-
     if('password' in updates) {
       const digest = await hash(updates.password)
       delete updates.password
@@ -103,21 +99,18 @@ const service = {
 
     return models.user.update(key, updates)
   }
-
-    /** 
-     * Delete a user.
-     *
-     * @param {object} key - Users' identifying info.
-     *
-     * @return {Promise<number>} - TODO
-     *
-     * @example
-     * service.delete({name: 'mark'})
-     */
+  
+  /** 
+   * Delete a user.
+   *
+   * @param {object} key - Users' identifying info.
+   *
+   * @return {Promise<number>} - Count of users deleted
+   *
+   * @example
+   * service.delete({name: 'mark'})
+   */
   , delete: async function deleteUser(key) {
-    /* TODO
-     * Data validation (constraint injection)
-     */
     return models.user.delete(key)
   }
 }

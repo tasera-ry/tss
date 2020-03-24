@@ -9,7 +9,7 @@ const path = require('path')
 const root = path.join(__dirname, '.')
 
 const config = require(path.join(root, 'config', 'config'))
-const express_jwt = require('express-jwt')({ secret: config.jwt.secret })
+// const express_jwt = require('express-jwt')({ secret: config.jwt.secret })
 
 const middlewares = require(path.join(root, 'middlewares'))
 const controllers = require(path.join(root, 'controllers'))
@@ -20,50 +20,36 @@ const scheduleDate = require(path.join(root, 'controllers', 'scheduleDate'))
 
 router.route('/sign')
   .post(
-    middlewares.user.validators.name(body, 'exists')
-    , middlewares.user.validators.password(body, 'exists')
-    , middlewares.user.handleValidationErrors
+    middlewares.user.sign
     , controllers.user.sign)
 
 router.route('/user')
+  .all(middlewares.jwt.read)
+
+
+router.route('/user')
   .all(
-    express_jwt
-    , middlewares.user.queryJWTUserInfo
-    , middlewares.user.requesterHasProperty('role', 'superuser'))
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser'))
   .get(
-    middlewares.user.validators.id(query, 'optional')
-    , middlewares.user.validators.name(query, 'optional')
-    , middlewares.user.validators.role(query, 'optional')
-    , middlewares.user.validators.phone(query, 'optional')
-    , middlewares.user.handleValidationErrors
-    , controllers.user.readAll)
+    middlewares.user.readFilter
+    , controllers.user.readFilter)
   .post(
-    middlewares.user.validators.name(body, 'exists')
-    , middlewares.user.validators.password(body, 'exists')
-    , middlewares.user.validators.role(body, 'exists')
-    , middlewares.user.validators.phone(body, 'optional')
-      .custom((value, { req }) => req.body.role === 'supervisor' )
-      .withMessage('may only be assigned to a supervisor')
-    , middlewares.user.handleValidationErrors
+    middlewares.user.create
     , controllers.user.create)
 
 router.route('/user/:id')
   .all(
-    express_jwt
-    , middlewares.user.queryJWTUserInfo
-    , middlewares.user.requesterHasProperty('role', 'superuser')
-    , middlewares.user.validators.id(param, 'exists'))
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser'))
   .get(
-    middlewares.user.handleValidationErrors
+    middlewares.user.read
     , controllers.user.read)
   .put(
-    middlewares.user.validators.name(body, 'optional')
-    , middlewares.user.validators.password(body, 'optional')
-    , middlewares.user.validators.phone(body, 'optional')
-    , middlewares.user.handleValidationErrors
+    middlewares.user.update
     , controllers.user.update)
   .delete(
-    middlewares.user.handleValidationErrors
+    middlewares.user.delete
     , controllers.user.delete)
 
 

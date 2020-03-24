@@ -10,53 +10,55 @@ const secret = require(path.join(root, 'config', 'config')).jwt.secret
 
 const controller = {
   sign: async function signUser(request, response) {
-    const credentials = matchedData(request, { locations: ['body'] })
-
-    const id = await services.user.authenticate(credentials)
-    if(id === undefined) {
-      return response.set('WWW-Authenticate', 'Basic').status(401).send()
-    }
-    
-    return response.send(
-      jwt.sign({
-        id: id
+    return response
+      .status(200)
+      .send(jwt.sign({
+        id: response.locals.id
       }, secret))
   }
 
-  , readAll: async function readAllUsers(request, response) {
-    const query = matchedData(request, { locations: ['query'] })
+  , readFilter: async function readFilterUsers(request, response) {
+    return response
+      .status(200)
+      .send(response.locals.queryResult)
+  }
 
-    return response.send(await services.user.read(query))
+  , read: async function read(request, response) {
+    return response
+      .status(200)
+      .send(response.locals.queryResult)
   }
 
   , create: async function createUser(request, response) {
-    const userDetails = matchedData(request, { locations: ['body'] })
-
-    return response.status(201).send(await services.user.create(userDetails))
+    return response
+      .set('Location', response.locals.address)
+      .status(201)
+      .send(response.locals.queryResult)
   }
 
   , read: async function readUser(request, response) {
-    const query = matchedData(request)
-
-    return response.send(await services.user.read(query))
+    return response
+      .status(200)
+      .send(response.locals.queryResult)
   }
 
   , update: async function updateUser(request, response) {
-    const id = matchedData(request, { locations: ['params'] })
-    const updates = matchedData(request, {locations: ['body'] })
-
-    try {
-      await services.user.update(id, updates)
-      return response.status(204).send()
-    } catch(e) {
-      return response.status(500).send()
-      throw e
-    }
+    response
+      .status(204)
+      .send()
   }
 
   , delete: async function deleteUser(request, response) {
-    const query = matchedData(request, { locations: ['params'] })
-    return response.send(await services.user.delete(query))
+    if(response.locals.queryResult === 0) {
+      return response
+        .status(404)
+        .send({
+          error: `No user exists matching id ${response.locals.query.id}`
+        })
+    }
+    return response
+      .status(204)
+      .send()
   }
 }
 
