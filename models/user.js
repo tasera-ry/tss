@@ -86,14 +86,14 @@ const model = {
     const user = _.pick(update, 'name', 'digest')
     const supervisor = _.pick(update, 'phone')
 
-    console.log(current, user, supervisor)
     const id = await model
           .read(current, ['id'])
           .then(rows => rows[0])
-    console.log(JSON.stringify(id), 'ballsed it')
 
     if(id === undefined) {
-      const err = 
+      const err = Error('Didn\'t identify user(s) to update')
+      err.name = 'Unknown user'
+      throw err
     }
 
     return await knex.transaction(trx => {
