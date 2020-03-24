@@ -93,7 +93,7 @@ const model = {
     console.log(JSON.stringify(id), 'ballsed it')
 
     if(id === undefined) {
-      const err = 
+      const err = "";
     }
 
     return await knex.transaction(trx => {

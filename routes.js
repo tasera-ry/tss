@@ -118,27 +118,35 @@ router.put("/date/:date", function(req,res,next){
 /*
 *  Track
 */
-//TODO verify how to identify
-//get tracks
-router.get("/track", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,track.track);
-//add a track
-router.post("/track", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,track.addTrack);
-//delete one
-router.delete("/track/:id", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,track.deleteTrack);
-//update one
-router.put("/track/:id", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,track.updateTrack);
+//TODO how to handle authorize
+router.route('/track')
+  .all(
+    //TODO check rank
+    //middlewares.jwt.read
+    //, middlewares.track.hasProperty('role', 'superuser')
+    )
+  .get(
+    middlewares.user.read
+    , controllers.user.read)
+  .post(
+    middlewares.user.create
+    , controllers.user.create)
+
+router.route('/user/:id')
+  .all(
+    //TODO check rank
+    //middlewares.jwt.read
+    //, middlewares.track.hasProperty('role', 'superuser')
+    )
+  .get(
+    middlewares.track.read
+    , controllers.user.read)
+  .put(
+    middlewares.track.update
+    , controllers.user.update)
+  .delete(
+    middlewares.track.delete
+    , controllers.user.delete)
 
 /*
 *  Schedule

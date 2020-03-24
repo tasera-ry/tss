@@ -20,13 +20,13 @@ const service = {
    * @example
    * service.create({ range_id: 1, name: 'Shooting track 1', description: '100m Kohdistusrata' })
    */
-  , create: async function createTrack(info) {
+  create: async function createTrack(info) {
 
     //TODO get id with name?
-    const info = Object.assign({range_id: range_id}, info);
-    console.log("SERVICE_TRACK_CREATE combined: ",info);
+    const combinedInfo = Object.assign({range_id: range_id}, info);
+    console.log("SERVICE_TRACK_CREATE combined: ",combinedInfo);
 
-    return (await models.track.create(info)).pop()
+    return (await models.track.create(combinedInfo)).pop()
   }
 
   /** 

@@ -45,7 +45,7 @@ const fields = {
           .isLength({ min: 1, max: 255 })
           .withMessage('must be between 1 and 255 characters')
     return validatorAdditions(validator, opts)
-  
+  }
 }
 
 function handleValidationErrors(request, response, next) {
@@ -67,7 +67,7 @@ module.exports = {
   ], create: [
     fields.name(body, 'exists')
     , fields.description(body, 'exists')
-    , fields.range_id(body, 'exists')
+    , fields.id(body, 'exists') //TODO check whats happening here used to be range_id
     , handleValidationErrors
     , function storeCreationRequest(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['body'] })
