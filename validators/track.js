@@ -5,15 +5,17 @@ const { body
         , matchedData } = require('express-validator')
 
 function validatorAdditions(validator, opts) {
-  console.log("VAL ADDITIONS ???");
+  console.log("VAL TRACK PARAM CHECKS");
   
   if(opts.includes('exists')) {
+    console.log("VAL TRACK PARAM EXISTS");
     validator = validator
       .exists({ checkNull: true, checkFalsy: true })
       .withMessage('must be included')
   }
 
   if(opts.includes('optional')) {
+    console.log("VAL TRACK PARAM OPTIONAL");
     validator = validator
       .optional()
   }
@@ -71,7 +73,16 @@ module.exports = {
       response.locals.query = matchedData(request, { locations: ['params'] })
       return next()
     }
-  ], create: [
+  ],
+  readAll: [
+    fields.id(param, 'optional')
+    , handleValidationErrors
+    , function storeID(request, response, next) {
+      console.log("VAL EXPORTS STORE: id");
+      response.locals.query = matchedData(request, { locations: ['params'] })
+      return next()
+    }
+  ],  create: [
     fields.name(body, 'exists')
     , fields.description(body, 'exists')
     , fields.id(body, 'exists') //TODO check whats happening here used to be range_id

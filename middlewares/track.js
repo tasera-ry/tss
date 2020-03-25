@@ -1,7 +1,6 @@
 const path = require('path')
 const root = path.join(__dirname, '..')
 const services = require(path.join(root, 'services'))
-const validators = require(path.join(root, 'validators'))
 
 const serviceCalls = {
   //TODO figure out what response.locals.query should contain
@@ -65,22 +64,4 @@ const serviceCalls = {
   }
 }
 
-exports.read = [
-  validators.track.read
-  , serviceCalls.read
-]
-
-exports.create = [
-  validators.track.create
-  , serviceCalls.create
-]
-
-exports.update = [
-  validators.track.update
-  , serviceCalls.update
-]
-
-exports.delete = [
-  validators.track.delete
-  , serviceCalls.delete
-]
+module.exports = serviceCalls

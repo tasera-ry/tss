@@ -11,6 +11,8 @@ const root = path.join(__dirname, '.')
 const config = require(path.join(root, 'config', 'config'))
 // const express_jwt = require('express-jwt')({ secret: config.jwt.secret })
 
+//console spam comes from validator initialization?
+const validators = require(path.join(root, 'validators'))
 const middlewares = require(path.join(root, 'middlewares'))
 const controllers = require(path.join(root, 'controllers'))
 
@@ -123,21 +125,26 @@ router.put("/date/:date", function(req,res,next){
 
 router.route('/track')
   .get(
-    middlewares.track.read
+    validators.track.readAll
+    , middlewares.track.read
     , controllers.track.read)
   .post(
-    middlewares.track.create
+    validators.track.create
+    , middlewares.track.create
     , controllers.track.create)
 
 router.route('/track/:id')
   .get(
-    middlewares.track.read
+    validators.track.read
+    , middlewares.track.read
     , controllers.track.read)
   .put(
-    middlewares.track.update
+    validators.track.update
+    , middlewares.track.update
     , controllers.track.update)
   .delete(
-    middlewares.track.delete
+    validators.track.delete
+    , middlewares.track.delete
     , controllers.track.delete)
 
 /*

@@ -44,9 +44,9 @@ const service = {
    */
   , read: async function readTrack(key, fields) {
     console.log("SERV TRACK READ");
-    
+
     return (await models.track.read(_.pick(key, 'id', 'name', 'description')))
-      //.map(_.partialRight(_.omit, 'digest', 'user_id'))
+      .map(_.partialRight(_.omit, 'range_id'))
   }
 
   /**

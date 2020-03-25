@@ -53,6 +53,13 @@ const model = {
    */
   , read: async function readTrack(key, fields) {
     console.log("MODEL TRACK READ");
+    console.log("MODEL key: ",key);
+    console.log("MODEL fields: ",fields);
+    
+    //default value
+    if(fields === undefined){
+      fields = ['range.name as range','track.id','track.name as name','description']
+    }
     
     return knex('track')
       .join('range', 'range.id', 'track.range_id')
