@@ -8,6 +8,13 @@ const secret = require(path.join(root, 'config', 'config')).jwt.secret
 const controller = {
   read: async function readTrack(request, response) {
     console.log("CONT TRACK READ");
+    if(response.locals.queryResult.length === 0) {
+      return response
+        .status(404)
+        .send({
+          error: 'Unknown track'
+        })
+    }
     
     return response
       .status(200)
@@ -18,15 +25,15 @@ const controller = {
     console.log("CONT TRACK CREATE");
     
     return response
-      .set('Location', response.locals.address)
       .status(201)
       .send(response.locals.queryResult)
   }
 
   , update: async function updateTrack(request, response) {
     console.log("CONT TRACK UPDATE");
-    
-    response
+
+    //return 204 no content
+    return response
       .status(204)
       .send()
   }

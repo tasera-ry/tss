@@ -133,7 +133,7 @@ router.route('/track')
     , middlewares.track.create
     , controllers.track.create)
 
-router.route('/track/:id')
+router.route('/track/:track_id')
   .get(
     validators.track.read
     , middlewares.track.read

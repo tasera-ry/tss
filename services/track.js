@@ -23,11 +23,7 @@ const service = {
   create: async function createTrack(info) {
     console.log("SERV TRACK CREATE");
 
-    //TODO get id with name?
-    const combinedInfo = Object.assign({range_id: range_id}, info);
-    console.log("SERVICE_TRACK_CREATE combined: ",combinedInfo);
-
-    return (await models.track.create(combinedInfo)).pop()
+    return (await models.track.create(info)).pop()
   }
 
   /** 
@@ -47,12 +43,12 @@ const service = {
     console.log("SERV TRACK key: ",key)
     console.log("SERV TRACK fields: ",fields)
 
-    let combinedKey = Object.assign({range_id: range_id}, key);
+    let combinedKey = key;
     
     //id was ambiguous
-    if(key.id !== undefined){
-      combinedKey = Object.assign({'track.id': key.id}, combinedKey);
-      combinedKey = _.omit(combinedKey, ['id']);
+    if(key.track_id !== undefined){
+      combinedKey = Object.assign({'track.id': key.track_id}, combinedKey);
+      combinedKey = _.omit(combinedKey, ['track_id']);
       console.log("SERVICE_TRACK_CREATE combined: ",combinedKey);
     }
 
@@ -73,8 +69,17 @@ const service = {
    */
   , update: async function updateTrack(key, updates) {
     console.log("SERV TRACK UPDATE");
+    
+    let combinedKey = key;
+    
+    //id was ambiguous
+    if(key.track_id !== undefined){
+      combinedKey = Object.assign({'track.id': key.track_id}, combinedKey);
+      combinedKey = _.omit(combinedKey, ['track_id']);
+      console.log("SERVICE_TRACK_CREATE combined: ",combinedKey);
+    }
 
-    return models.track.update(key, updates)
+    return models.track.update(combinedKey, updates)
   }
 
     /** 
@@ -90,7 +95,16 @@ const service = {
   , delete: async function deleteTrack(key) {
     console.log("SERV TRACK DELETE");
     
-    return models.track.delete(key)
+    let combinedKey = key;
+    
+    //id was ambiguous
+    if(key.track_id !== undefined){
+      combinedKey = Object.assign({'track.id': key.track_id}, combinedKey);
+      combinedKey = _.omit(combinedKey, ['track_id']);
+      console.log("SERVICE_TRACK_CREATE combined: ",combinedKey);
+    }
+    
+    return models.track.delete(combinedKey)
   }
 }
 

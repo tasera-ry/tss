@@ -24,9 +24,19 @@ function validatorAdditions(validator, opts) {
 }
 
 const fields = {
-  id: function idValidation(requestObject, ...opts) {
+  track_id: function idValidation(requestObject, ...opts) {
     console.log("VAL TRACK: id");
-    const validator = requestObject('id')
+    const validator = requestObject('track_id')
+          .isInt()
+          .withMessage('must be an integer')
+          .toInt()
+
+    return validatorAdditions(validator, opts)
+  }
+
+  , range_id: function idValidation(requestObject, ...opts) {
+    console.log("VAL TRACK: id");
+    const validator = requestObject('range_id')
           .isInt()
           .withMessage('must be an integer')
           .toInt()
@@ -66,18 +76,15 @@ function handleValidationErrors(request, response, next) {
 
 module.exports = {
   read: [
-    fields.id(param, 'exists')
+    fields.track_id(param, 'exists')
     , handleValidationErrors
     , function storeID(request, response, next) {
       console.log("VAL EXPORTS STORE: id");
       response.locals.query = matchedData(request, { locations: ['params'] })
       return next()
     }
-  ],
-  readAll: [
-    fields.id(param, 'optional')
-    , handleValidationErrors
-    , function storeID(request, response, next) {
+  ],  readAll: [
+    function storeID(request, response, next) {
       console.log("VAL EXPORTS STORE: id");
       response.locals.query = matchedData(request, { locations: ['params'] })
       return next()
@@ -85,7 +92,7 @@ module.exports = {
   ],  create: [
     fields.name(body, 'exists')
     , fields.description(body, 'exists')
-    , fields.id(body, 'exists') //TODO check whats happening here used to be range_id
+    , fields.range_id(body, 'exists')
     , handleValidationErrors
     , function storeCreationRequest(request, response, next) {
       console.log("VAL EXPORTS STORE: name");
@@ -93,7 +100,7 @@ module.exports = {
       return next()
     }
   ], update: [
-    fields.id(param, 'exists')
+    fields.track_id(param, 'exists')
     , fields.name(body, 'optional')
     , fields.description(body, 'optional')
     , handleValidationErrors
@@ -104,7 +111,7 @@ module.exports = {
       return next()
     }
   ], delete: [
-    fields.id(param, 'exists')
+    fields.track_id(param, 'exists')
     , function storeDeleteRequest(request, response, next) {
       console.log("VAL EXPORTS STORE: delete request");
       response.locals.query = matchedData(request, { locations: ['params'] })

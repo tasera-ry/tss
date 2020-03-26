@@ -44,12 +44,12 @@ const model = {
   /**
    * Get the tracks matching a key.
    *
-   * @param {object} key - Identifying key, { range_id, id?, name?, description? }
-   * @param {string[]} fields - Attributes about the track to select [ id?, range_id?, name?, description? ]
+   * @param {object} key - Identifying key, { track.id }
+   * @param {string[]} fields - Attributes about the track to select [ track.id?, range_id?, name?, description? ]
    * @return {Promise<object[]>} Tracks that matched the key
    *
    * @example
-   * model.read({ name: 'Shooting track 1' }, ['description'])
+   * model.read({ 'track.id': 8 }, ['description'])
    */
   , read: async function readTrack(key, fields) {
     console.log("MODEL TRACK READ");
@@ -70,17 +70,16 @@ const model = {
   /**
    * Update a tracks' info.
    *
-   * @param {object} current - The current identifying info of the track.
+   * @param {object} current - The current identifying info of the track. { track.id }
    * @param {object} update - New information for the track
    *
    * @return {Promise<number[]>} Count of rows updated
    *
    * @example
-   * exports.update({ name: 'Shooting track 1' }, { description: '200m Kohdistusrata' })
+   * exports.update({ 'track.id': 8 }, { description: '200m Kohdistusrata' })
    */
   , update: async function updateTrack(current, update) {
     console.log("MODEL TRACK UPDATE");
-    //TODO: do we allow range_id to be modified for a track?
     
     const trackConstraints = {
       range_id: {}
@@ -90,10 +89,17 @@ const model = {
 
     const track = validate.cleanAttributes(update, trackConstraints)
 
+    //exists
     const id = await model
-          .read(current, ['id'])
+          .read(current, ['track.id'])
           .then(rows => rows[0])
 
+    if(id === undefined) {
+      const err = Error('Didn\'t identify track(s) to update')
+      err.name = 'Unknown track'
+      throw err
+    }
+    
     return await knex.transaction(trx => {
       return trx('track')
         .where(id)
@@ -104,17 +110,17 @@ const model = {
   /**
    * Delete the tracks matching a key.
    *
-   * @param {object} key - Identifying key, { range_id, id?, name? }
+   * @param {object} key - Identifying key, { track.id }
    * @return {Promise<number[]>} Count of deleted tracks
    *
    * @example
-   * exports.del({ name: 'Shooting track 1' })
+   * exports.del({ 'track.id': 8 })
    */
   , delete: async function deleteTrack(key) {
     console.log("MODEL TRACK DELETE");
     
-    const ids = await model.read(key, ['id'])
-//TODO different
+    const ids = await model.read(key, ['track.id'])
+
     return await knex.transaction(trx => {
       return Promise.all(
         ids.map(id => {

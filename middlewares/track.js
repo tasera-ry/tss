@@ -3,7 +3,6 @@ const root = path.join(__dirname, '..')
 const services = require(path.join(root, 'services'))
 
 const serviceCalls = {
-  //TODO figure out what response.locals.query should contain
   read: async function readTrack(request, response, next) {
     console.log("MW TRACK READ");
     
@@ -29,13 +28,12 @@ const serviceCalls = {
     }
 
     try {
-      response.locals.queryResult = await services.track.read({id: id})
+      response.locals.queryResult = await services.track.read({'track.id': id})
     }
     catch(e) {
       return next(e)
     }
-    //TODO ???
-    response.locals.address = `/api/track/${id}`
+
     return next()
   }
   , update: async function updateTrack(request, response, next) {
@@ -47,6 +45,13 @@ const serviceCalls = {
     try {
       response.locals.queryResult = await services.track.update(id, updates)
     } catch(e) {
+      if(e.name === 'Unknown track') {
+        return response
+          .status(404)
+          .send({
+            error: e.name
+          })
+      }
       return next(e)
     }
     return next()
