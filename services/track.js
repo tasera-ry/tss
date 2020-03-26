@@ -44,8 +44,19 @@ const service = {
    */
   , read: async function readTrack(key, fields) {
     console.log("SERV TRACK READ");
+    console.log("SERV TRACK key: ",key)
+    console.log("SERV TRACK fields: ",fields)
 
-    return (await models.track.read(_.pick(key, 'id', 'name', 'description')))
+    let combinedKey = Object.assign({range_id: range_id}, key);
+    
+    //id was ambiguous
+    if(key.id !== undefined){
+      combinedKey = Object.assign({'track.id': key.id}, combinedKey);
+      combinedKey = _.omit(combinedKey, ['id']);
+      console.log("SERVICE_TRACK_CREATE combined: ",combinedKey);
+    }
+
+    return (await models.track.read(_.pick(combinedKey, 'range_id', 'track.id', 'name', 'description')))
       .map(_.partialRight(_.omit, 'range_id'))
   }
 

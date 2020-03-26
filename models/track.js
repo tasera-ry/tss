@@ -53,8 +53,8 @@ const model = {
    */
   , read: async function readTrack(key, fields) {
     console.log("MODEL TRACK READ");
-    console.log("MODEL key: ",key);
-    console.log("MODEL fields: ",fields);
+    console.log("MODEL TRACK key: ",key);
+    console.log("MODEL TRACK fields: ",fields);
     
     //default value
     if(fields === undefined){
