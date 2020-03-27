@@ -51,8 +51,15 @@ const service = {
       combinedKey = _.omit(combinedKey, ['track_id']);
       console.log("SERVICE_TRACK_CREATE combined: ",combinedKey);
     }
+    
+    //name was ambiguous
+    if(key.name !== undefined){
+      combinedKey = Object.assign({'track.name': key.name}, combinedKey);
+      combinedKey = _.omit(combinedKey, ['name']);
+      console.log("SERVICE_TRACK_CREATE combined: ",combinedKey);
+    }
 
-    return (await models.track.read(_.pick(combinedKey, 'range_id', 'track.id', 'name', 'description')))
+    return (await models.track.read(_.pick(combinedKey, 'range_id', 'track.id', 'track.name', 'description')))
       .map(_.partialRight(_.omit, 'range_id'))
   }
 

@@ -44,6 +44,7 @@ const fields = {
     return validatorAdditions(validator, opts)
   }
 
+  //TODO sanitize?
   , name: function nameValidation(requestObject, ...opts) {
     console.log("VAL TRACK: name");
     const validator = requestObject('name')
@@ -84,9 +85,11 @@ module.exports = {
       return next()
     }
   ],  readAll: [
-    function storeID(request, response, next) {
+    fields.name(query, 'optional')
+    , handleValidationErrors
+    ,  function storeID(request, response, next) {
       console.log("VAL EXPORTS STORE: id");
-      response.locals.query = matchedData(request, { locations: ['params'] })
+      response.locals.query = matchedData(request, { locations: ['params', 'query'] })
       return next()
     }
   ],  create: [
