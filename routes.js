@@ -119,11 +119,10 @@ router.put("/date/:date", function(req,res,next){
 /*
 *  Track
 */
-//TODO suggest better authz
-//router.route('/track')
-//  .all(middlewares.jwt.read)
-
 router.route('/track')
+  .all(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser'))
   .get(
     validators.track.readAll
     , middlewares.track.read
@@ -134,6 +133,9 @@ router.route('/track')
     , controllers.track.create)
 
 router.route('/track/:track_id')
+  .all(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser'))
   .get(
     validators.track.read
     , middlewares.track.read
