@@ -38,7 +38,6 @@ const controller = {
 
   , create: async function createUser(request, response) {
     return response
-      .set('Location', response.locals.address)
       .status(201)
       .send(response.locals.queryResult)
   }

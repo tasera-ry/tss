@@ -86,7 +86,7 @@ const serviceCalls = {
     catch(e) {
       return next(e)
     }
-    response.locals.address = `/api/user/${id}`
+    response.set('Location', `/api/user/${id}`)
     return next()
   }
   , update: async function updateUser(request, response, next) {
