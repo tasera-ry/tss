@@ -1,21 +1,59 @@
-
 const express = require("express");
 const router = express.Router();
+
 const jwt = require("jsonwebtoken");
-const config = require("./config/config");
-const { check } = require("express-validator");
 
-//require controller
-const user = require("./controllers/user");
-const track = require("./controllers/track");
-const scheduleTrack = require("./controllers/scheduleTrack");
-const scheduleDate = require("./controllers/scheduleDate");
+const { check, body, query, param, validationResult, matchedData } = require("express-validator");
 
-/*
-*  Authorization requires jwt token given by login
-*  in the body of the request
-*/
+const path = require('path')
+const root = path.join(__dirname, '.')
 
+const config = require(path.join(root, 'config', 'config'))
+// const express_jwt = require('express-jwt')({ secret: config.jwt.secret })
+
+const middlewares = require(path.join(root, 'middlewares'))
+const controllers = require(path.join(root, 'controllers'))
+
+const track = require(path.join(root, 'controllers', 'track'))
+const scheduleTrack = require(path.join(root, 'controllers', 'scheduleTrack'))
+const scheduleDate = require(path.join(root, 'controllers', 'scheduleDate'))
+
+router.route('/sign')
+  .post(
+    middlewares.user.sign
+    , controllers.user.sign)
+
+router.route('/user')
+  .all(middlewares.jwt.read)
+
+
+router.route('/user')
+  .all(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser'))
+  .get(
+    middlewares.user.readFilter
+    , controllers.user.readFilter)
+  .post(
+    middlewares.user.create
+    , controllers.user.create)
+
+router.route('/user/:id')
+  .all(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser'))
+  .get(
+    middlewares.user.read
+    , controllers.user.read)
+  .put(
+    middlewares.user.update
+    , controllers.user.update)
+  .delete(
+    middlewares.user.delete
+    , controllers.user.delete)
+
+
+/* TODO move to middlewares */
 authorize = function(req, res, next) {
   const token = req.body.token || req.cookies.access;
   let auth = false;
@@ -54,41 +92,6 @@ authorize = function(req, res, next) {
     });
   }
 }
-
-/*
- *  Login with post
- *  requires body fields: name, password
- */
-router.post("/login", [
-  check('name').exists()
-    .custom((value) => (value == value.match(/[A-ZÖÄÅa-zöäå0-9 ]+/)))
-    .isLength({ min: 4, max: 30 }),
-  check('password').exists()
-                    .isAlphanumeric()
-                    .isLength({ min: 4, max: 30 })
-], user.login);
-
-/*
-*  Register with post
-*  requires body fields: name, password
-*
-*  1. Sets required rank
-*  2. Authorization with token and rank
-*  3. Validates params
-*  4. Uses register from user controller
-*/
-router.post("/register", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize, [
-
-  check('name').exists()
-    .custom((value) => (value == value.match(/[A-ZÖÄÅa-zöäå0-9 ]+/)))
-    .isLength({ min: 4, max: 30 }),
-  check('password').exists()
-                    .isAlphanumeric()
-                    .isLength({ min: 4, max: 30 })
-], user.register);
 
 /*
 *  Date

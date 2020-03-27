@@ -1,126 +1,71 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const config = require("../config/config");
-const { validationResult } = require('express-validator');
+const { validationResult, matchedData } = require('express-validator');
+const _ = require('lodash')
 
-const knex = require('../knex/knex')
+const path = require('path')
+const root = path.join(__dirname, '..')
+const services = require(path.join(root, 'services'))
+const secret = require(path.join(root, 'config', 'config')).jwt.secret
 
-/*
-*  Login
-*  requires body fields: name, password
-*/
-exports.login = async (req, res) => {
-  const errors = validationResult(req);
-  
-  //syntax fail
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      login: false,
-      err: errors.array() 
-    });
+const controller = {
+  sign: async function signUser(request, response) {
+    return response
+      .status(200)
+      .send(jwt.sign({
+        id: response.locals.id
+      }, secret))
   }
-  
-  let name = req.body.name;
-  let password = req.body.password;
 
-  (knex
-   .from('member')
-   .select('name', 'password')
-   .where({ name: name })
+  , readFilter: async function readFilterUsers(request, response) {
+    return response
+      .status(200)
+      .send(response.locals.queryResult)
+  }
 
-   .then((rows) => {
-     const dbUser = rows.pop()
+  , read: async function read(request, response) {
+    if(response.locals.queryResult.length === 0) {
+      return response
+        .status(404)
+        .send({
+          error: 'Query didn\'t match a user'
+        })
+    }
+    return response
+      .status(200)
+      .send(response.locals.queryResult)
+  }
 
-     // TODO compare with db
-     const dbRank = '1'
+  , create: async function createUser(request, response) {
+    return response
+      .status(201)
+      .send(response.locals.queryResult)
+  }
 
-     //checks password vs the hash from db
-     bcrypt.compare(password, dbUser.password, function(err, result) {
-       if(result === true){
-         
-         /* jsonwebtoken for authenticating api calls
-          *  contains 3 values: succesful login, rank and when the token was made
-          *  sending this token back is required for admin functions
-          *
-          *  JWTs payload is readable by anyone that gets their hands on it. But the third last part
-          *  provides tamper protection so even if the same payload is sent by someone malicious
-          *  nothing happens
-          */
-         /* example token for test test:
-          *  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoIjp0cnVlLCJyYW5rIjoiMSIsImlhdCI6MTU4MjA4MzAzMX0.ly57wkYEUC5qWF5Bob-55H_7DL8G7lnJNboP7NTCT7o
-          */
-         jwt.sign({ auth: true, rank: dbRank }, config.jwt.secret, function(err, token) {
-           //succesful login
-           if(!err){
-             console.log("LOGIN token: "+token);
-             res.status(200).cookie("access",token).json({
-               login: true,
-               token: token
-             });
-           } else {
-             console.log(err);
-             res.status(401).json({
-               login: false,
-               err: "Login failed"
-             });
-           } 
-         });
+  , read: async function readUser(request, response) {
+    return response
+      .status(200)
+      .send(response.locals.queryResult)
+  }
 
-       } else {
-         res.status(401).json({
-           login: false,
-           err: "Login failed"
-         });
-       }
-     });
-   }).catch((err) => {
-     console.log(err)
-     res.status(401).json({
-       login: false,
-       err: "Login failed"
-     })
-   })
-  )
+  , update: async function updateUser(request, response) {
+    response
+      .status(204)
+      .send()
+  }
+
+  , delete: async function deleteUser(request, response) {
+    if(response.locals.queryResult === 0) {
+      return response
+        .status(404)
+        .send({
+          error: `No user exists matching id ${response.locals.query.id}`
+        })
+    }
+    return response
+      .status(204)
+      .send()
+  }
 }
 
-/*
-*  Register
-*  requires body fields: name, password
-*/
-exports.register = async (req, res) => {
-  const errors = validationResult(req);
-  
-  //syntax fail
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      register: false,
-      err: errors.array() 
-    });
-  }
-  
-  let name = req.body.name;
-  let password = req.body.password;
-  
-  //generates salted hash of the password
-  bcrypt.genSalt(10, function(err, salt) {
-      bcrypt.hash(password, salt, function(err, hash) {
-          //TODO Store hash in your password DB.
-          console.log("REGISTER hash: "+hash);
-          
-          //TODO act according to db response
-          if(!err){
-            res.status(200).json({
-              register: true
-            });
-          } else {
-            console.log(err);
-            
-            res.status(400).json({
-              register: false,
-              err: "Registration failed"
-            });
-          }
-      });
-  });
-};
-
+module.exports = controller
