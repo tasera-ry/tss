@@ -54,14 +54,14 @@ router.route('/reservation')
         , middlewares.user.hasProperty('role', 'superuser')
         , controllers.reservation.create)
 
-// router.route('/reservation/:id')
-//   .get(controllers.reservation.read)
-//   .put(middlewares.jwt.read
-//        , middlewares.user.hasProperty('role', 'superuser')
-//        , controllers.reservation.update)
-//   .delete(middlewares.jwt.read
-//           , middlewares.user.hasProperty('role', 'superuser')
-//           , controllers.reservation.delete)
+router.route('/reservation/:id')
+  .get(controllers.reservation.readStrict)
+  .put(middlewares.jwt.read
+       , middlewares.user.hasProperty('role', 'superuser')
+       , controllers.reservation.update)
+  .delete(middlewares.jwt.read
+          , middlewares.user.hasProperty('role', 'superuser')
+          , controllers.reservation.delete)
 
 /* TODO move to middlewares */
 authorize = function(req, res, next) {

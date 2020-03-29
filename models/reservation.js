@@ -1,6 +1,7 @@
 const path = require('path')
 const root = path.join(__dirname, '..')
 const knex = require(path.join(root, 'knex', 'knex'))
+const _ = require('lodash')
 
 /** 
  * Create a new reservation.
@@ -41,10 +42,10 @@ async function readReservation(key, fields, from, to) {
 
   return knex('range_reservation')
     .select(fields)
-    .where((builder =>
-            builder
-            .where(fields)
-            .whereBetween('date', from, to)))
+    .where((builder) =>
+           builder
+           .where(key)
+           .whereBetween('date', [from, to]))
 }
 
 /**
@@ -59,7 +60,7 @@ async function readReservation(key, fields, from, to) {
  * updateReservation({ date: '2020-01-01' }, { available: false })
  */
 async function updateReservation(current, updates) {
-  const ids = await readReservation(current, ['id']).map(obj => obj.id)
+  const ids = (await readReservation(current, ['id'])).map(obj => obj.id)
 
   if(ids.length === 0) {
     const err = Error('Didn\'t identify reservations to update')

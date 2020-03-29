@@ -6,6 +6,7 @@ const { body
         , matchedData } = require('express-validator')
 
 function idValidator(requestObject, opts) {
+
   let validator = requestObject('id')
       .isInt()
       .withMessage('must be an integer')
@@ -13,7 +14,7 @@ function idValidator(requestObject, opts) {
 
   if(opts.exists) {
     validator = validator
-      .exists({ checkNull: true })
+      .exists({ checkNull: true, checkFalsy: true })
       .withMessage('must be included')
   }
 
@@ -60,6 +61,42 @@ function dateValidator(requestObject, opts) {
   return validator
 }
 
+function fromValidator(requestObject, opts) {
+  let validator = requestObject('from')
+      .isISO8601({ strict: true })
+      .withMessage('must be an ISO8601 date')
+  
+  if(opts.exists) {
+    validator = validator
+      .exists({ checkNull: true, checkFalsy: true })
+      .withMessage('must be included')
+  }
+
+  if(opts.optional) {
+    validator = validator
+      .optional()
+  }
+  return validator
+}
+
+function toValidator(requestObject, opts) {
+  let validator = requestObject('to')
+      .isISO8601({ strict: true })
+      .withMessage('must be an ISO8601 date')
+  
+  if(opts.exists) {
+    validator = validator
+      .exists({ checkNull: true, checkFalsy: true })
+      .withMessage('must be included')
+  }
+
+  if(opts.optional) {
+    validator = validator
+      .optional()
+  }
+  return validator
+}
+
 function availabilityValidator(requestObject, opts) {
   let validator = requestObject('available')
       .isBoolean()
@@ -85,7 +122,7 @@ function availabilityValidator(requestObject, opts) {
 function handleValidationErrors(request, response, next) {
   const validationErrors = validationResult(request)
   if(validationErrors.isEmpty() === false) {
-    return response.status(400).send(validationResult)
+    return response.status(400).send(validationErrors)
   }
 
   return next()
@@ -93,6 +130,7 @@ function handleValidationErrors(request, response, next) {
 
 function storeRequest(request, response, next) {
   response.locals.matched = matchedData(request)
+  return next()
 }
 
 module.exports = {
@@ -100,13 +138,22 @@ module.exports = {
     rangeValidator(body, { exists: true })
     , dateValidator(body, { exists: true })
     , availabilityValidator(body, { exists: true })
+    , handleValidationErrors
     , storeRequest
   ]
   , read: [
-    idValidator(check, { optional: true })
-    , rangeValidator(body, { optional: true })
-    , dateValidator(body, { optional: true })
-    , availabilityValidator(body, { optional: true })
+    idValidator(query, { optional: true })
+    , rangeValidator(query, { optional: true })
+    , dateValidator(query, { optional: true })
+    , availabilityValidator(query, { optional: true })
+    , fromValidator(query, { optional: true })
+    , toValidator(query, { optional: true })
+    , handleValidationErrors
+    , storeRequest
+  ]
+  , readStrict: [
+    idValidator(param, { exists: true })
+    , handleValidationErrors
     , storeRequest
   ]
   , update: [
@@ -114,10 +161,12 @@ module.exports = {
     , rangeValidator(body, { optional: true })
     , dateValidator(body, { optional: true })
     , availabilityValidator(body, { optional: true })
+    , handleValidationErrors
     , storeRequest
   ]
   , delete: [
     idValidator(param, { exists: true })
+    , handleValidationErrors
     , storeRequest
   ]
 }

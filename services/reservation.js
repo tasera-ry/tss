@@ -15,8 +15,8 @@ const _ = require('lodash')
  * createReservation({ date:'2020-01-01', available:true })
  */
 async function createReservation(details) {
-  details = _.pick(details, 'date', 'available')
-  return models.reservation(filtered)
+  details = _.pick(details, 'range_id', 'date', 'available')
+  return (await models.reservation.create(details)).pop()
 }
 
 
@@ -34,8 +34,7 @@ async function createReservation(details) {
  */
 async function readReservation(key, fields, from, to) {
   key = _.pick(key, 'id', 'range_id', 'date', 'available')
-  fields = _.pick(fields, 'id', 'range_id', 'date', 'available')
-  return models.reservation(key, fields, from, to)
+  return models.reservation.read(key, fields, from, to)
 }
 
 /**

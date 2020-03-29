@@ -16,6 +16,21 @@ async function readReservation(request, response) {
     .send(response.locals.queryResult)
 }
 
+async function readReservationStrict(request, response) {
+
+  if(response.locals.queryResult.length === 0) {
+    return response
+      .status(404)
+      .send({
+        error: 'Query didn\'t match a reservation'
+      })
+  }
+
+  return response
+    .status(200)
+    .send(response.locals.queryResult)
+}
+
 async function updateReservation(request, response) {
   return response
     .status(204)
@@ -27,7 +42,7 @@ async function deleteReservation(request, response) {
     return response
       .status(404)
       .send({
-        error: `No reservation exists matching id ${response.locals.query.id}`
+        error: `No reservation exists matching id ${response.locals.matched.id}`
       })
   }
   return response
@@ -45,6 +60,11 @@ module.exports = {
     validators.reservation.read
     , middlewares.reservation.read
     , readReservation
+  ]
+  , readStrict: [
+    validators.reservation.readStrict
+    , middlewares.reservation.read
+    , readReservationStrict
   ]
   , update: [
     validators.reservation.update
