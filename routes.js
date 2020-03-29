@@ -24,10 +24,6 @@ router.route('/sign')
     , controllers.user.sign)
 
 router.route('/user')
-  .all(middlewares.jwt.read)
-
-
-router.route('/user')
   .all(
     middlewares.jwt.read
     , middlewares.user.hasProperty('role', 'superuser'))
@@ -52,6 +48,20 @@ router.route('/user/:id')
     middlewares.user.delete
     , controllers.user.delete)
 
+router.route('/reservation')
+  .get(controllers.reservation.read)
+  .post(middlewares.jwt.read
+        , middlewares.user.hasProperty('role', 'superuser')
+        , controllers.reservation.create)
+
+// router.route('/reservation/:id')
+//   .get(controllers.reservation.read)
+//   .put(middlewares.jwt.read
+//        , middlewares.user.hasProperty('role', 'superuser')
+//        , controllers.reservation.update)
+//   .delete(middlewares.jwt.read
+//           , middlewares.user.hasProperty('role', 'superuser')
+//           , controllers.reservation.delete)
 
 /* TODO move to middlewares */
 authorize = function(req, res, next) {
