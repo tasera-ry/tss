@@ -1,22 +1,24 @@
 const path = require('path')
 const root = path.join(__dirname, '..')
-const knex = require(path.join(root, 'knex', 'knex'))
+const models = require(path.join(root, 'models'))
+
+const _ = require('lodash')
 
 /** 
  * Create a new reservation.
  *
- * @param {object} reservationDetails - The reservations details { id, date, available }.
+ * @param {object} reservationDetails - The reservations details { date, available }.
  *
  * @return {Promise<object[]>} The added reservations details.
  *
  * @example
- * createReservation({ id: 1, date:'2020-01-01', available:true })
+ * createReservation({ date:'2020-01-01', available:true })
  */
-async function createReservation(reservationDetails) {
-  return knex('range_reservation')
-    .returning('*')
-    .insert(reservationDetails)
+async function createReservation(details) {
+  details = _.pick(details, 'date', 'available')
+  return models.reservation(filtered)
 }
+
 
 /**
  * Get the reservations matching a key.
@@ -31,20 +33,9 @@ async function createReservation(reservationDetails) {
  * readReservation({ available: true }, [], '2020-01-01', '2020-01-31')
  */
 async function readReservation(key, fields, from, to) {
-  if(from === undefined) {
-    from = '0001-01-01'
-  }
-
-  if(to === undefined) {
-    to='9999-12-31'
-  }
-
-  return knex('range_reservation')
-    .select(fields)
-    .where((builder =>
-            builder
-            .where(fields)
-            .whereBetween('date', from, to)))
+  key = _.pick(key, 'id', 'range_id', 'date', 'available')
+  fields = _.pick(fields, 'id', 'range_id', 'date', 'available')
+  return models.reservation(key, fields, from, to)
 }
 
 /**
@@ -59,18 +50,9 @@ async function readReservation(key, fields, from, to) {
  * updateReservation({ date: '2020-01-01' }, { available: false })
  */
 async function updateReservation(current, updates) {
-  const ids = await readReservation(current, ['id']).map(obj => obj.id)
-
-  if(ids.length === 0) {
-    const err = Error('Didn\'t identify reservations to update')
-    err.name = 'Unknown reservation'
-    throw err
-  }
-  
-  return knex('range_reservation')
-    .whereIn('id', ids)
-    .update(updates)
-    .returning('*')
+  current = _.pick(current, 'id', 'range_id', 'date', 'available')
+  updates = _.pick(updates, 'date', 'available')
+  return models.reservation.update(current, updates)
 }
 
 /**
@@ -83,9 +65,8 @@ async function updateReservation(current, updates) {
  * deleteReservation({ date: '2020-01-01' })
  */
 async function deleteReservation(key) {
-  return knex('range_reservation')
-    .where(key)
-    .del()
+  key = _.pick(key, 'id', 'range_id', 'date', 'available')
+  return models.reservation.delete(key)
 }
 
 module.exports = {
