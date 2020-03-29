@@ -32,20 +32,27 @@ async function createReservation(reservationDetails) {
  * readReservation({ available: true }, [], '2020-01-01', '2020-01-31')
  */
 async function readReservation(key, fields, from, to) {
-  if(from === undefined) {
+  let query = knex('range_reservation')
+  
+  if(from !== undefined && to !== undefined) {
+    const dateInterval = knex
+          .raw('\
+natural right join\
+ (select (generate_series(?, ?, \'1 day\'::interval))::date as date) as iv'
+               , [from, to])
+    query = query.joinRaw(dateInterval)
+  } else {
     from = '0001-01-01'
+    to = '9999-12-31'
   }
 
-  if(to === undefined) {
-    to='9999-12-31'
-  }
+  query = query.where(
+    (builder) =>
+      builder
+      .where(key)
+      .whereBetween('date', [from, to]))
 
-  return knex('range_reservation')
-    .select(fields)
-    .where((builder) =>
-           builder
-           .where(key)
-           .whereBetween('date', [from, to]))
+  return query
 }
 
 /**
