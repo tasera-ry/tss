@@ -48,7 +48,6 @@ async function deleteReservation(request, response, next) {
   } catch(e) {
     return next(e)
   }
-
   return next()
 }
 

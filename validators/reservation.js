@@ -32,7 +32,7 @@ function rangeValidator(requestObject, opts) {
 
   if(opts.exists) {
     validator = validator
-      .exists({ checkNull, true })
+      .exists({ checkNull: true })
   }
 
   if(opts.optional) {
