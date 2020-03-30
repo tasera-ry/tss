@@ -1,11 +1,17 @@
+const path = require('path')
+const root = path.join(__dirname, '..', '..', '..')
+const config = require(path.join(root, 'config'))
+
 const _ = require('lodash')
+
+
 const casual = require('casual')
 const bcrypt = require('bcryptjs')
 
 casual.seed(0)
 
 exports.seed = function(knex) {
-  const users = _.times(30, casual._user)
+  const users = _.times(config.seeds.users, casual._user)
 
   return knex('user')
     .insert(users)
