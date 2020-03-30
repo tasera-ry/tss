@@ -23,6 +23,10 @@ function idValidator(requestObject, opts, name) {
   return supplement(validator, opts)
 }
 
+function supervisorValidator(requestObject, opts) {
+  const validator = requestObject('supervisor_id')
+  return supplement(validator, opts)
+}
 function timeValidator(requestObject, opts, name) {
   const validator = requestObject(name)
         .custom(value => {
@@ -50,8 +54,8 @@ function storeRequest(request, response, next) {
 
 module.exports = {
   create: [
-    , idValidator(validate.body, { exists: true }, 'range_reservation_id')
-    , idValidator(validate.body, { optional: true }, 'supervisor_id')
+    idValidator(validate.body, { exists: true }, 'range_reservation_id')
+    , supervisorValidator(validate.body, { optional: true })
     , timeValidator(validate.body, { exists: true }, 'open')
     , timeValidator(validate.body, { exists: true }, 'close')
     , handleValidationErrors
@@ -60,7 +64,7 @@ module.exports = {
   , read: [
     idValidator(validate.query, { optional: true }, 'id')
     , idValidator(validate.query, { optional: true }, 'range_reservation_id')
-    , idValidator(validate.query, { optional: true }, 'supervisor_id')
+    , supervisorValidator(validate.query, { optional: true })
     , timeValidator(validate.query, { optional: true }, 'open')
     , timeValidator(validate.query, { optional: true }, 'close')
     , handleValidationErrors
@@ -74,7 +78,7 @@ module.exports = {
   , update: [
     idValidator(validate.param, { exists: true }, 'id')
     , idValidator(validate.body, { optional: true }, 'range_reservation_id')
-    , idValidator(validate.body, { optional: true }, 'supervisor_id')
+    , supervisorValidator(validate.body, { optional: true })
     , timeValidator(validate.body, { optional: true }, 'open')
     , timeValidator(validate.body, { optional: true}, 'close')
     , handleValidationErrors

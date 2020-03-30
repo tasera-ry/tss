@@ -16,7 +16,7 @@ const moment = require('moment')
  */
 async function createSchedule(details) {
   details = _.pick(details, 'range_reservation_id', 'supervisor_id', 'open', 'close')
-  return models.schedule.create(details)
+  return (await models.schedule.create(details)).pop()
 }
 
 /**
@@ -46,7 +46,7 @@ async function readSchedule(key, fields) {
  */
 async function updateSchedule(current, updates) {
   updates = _.pick(updates, 'range_reservation_id', 'supervisor_id', 'open', 'close')
-  return model.schedule.update(current, updates)
+  return models.schedule.update(current, updates)
 }
 
 /**
@@ -59,7 +59,7 @@ async function updateSchedule(current, updates) {
  * deleteSchedule({ id: 1 })
  */
 async function deleteSchedule(key) {
-  return models.scheule.delete(key)
+  return models.schedule.delete(key)
 }
 
 module.exports = {

@@ -12,6 +12,7 @@ async function createSchedule(request, response, next) {
   } catch(e) {
     return next(e)
   }
+
   response.set('Location', `api/schedule/${response.locals.queryResult.id}`)
   return next()
 }
@@ -37,7 +38,7 @@ async function updateSchedule(request, response, next) {
     , 'close')
 
   try {
-    response.loclas.queryResult = await services.schedule.update(id, updates)
+    response.locals.queryResult = await services.schedule.update(id, updates)
   } catch(e) {
     return next(e)
   }

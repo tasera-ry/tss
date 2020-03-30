@@ -40,7 +40,7 @@ async function deleteSchedule(request, response) {
     return response
       .status(404)
       .send({
-        error: `No reservation exists matching id ${response.locals.matched.id}`
+        error: `No schedule item exists matching id ${response.locals.matched.id}`
       })
   }
   return response
