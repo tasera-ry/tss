@@ -63,6 +63,21 @@ router.route('/reservation/:id')
           , middlewares.user.hasProperty('role', 'superuser')
           , controllers.reservation.delete)
 
+router.route('/schedule')
+  .get(controllers.schedule.read)
+  .post(middlewares.jwt.read
+        , middlewares.user.hasProperty('role', 'superuser')
+        , controllers.schedule.create)
+
+router.route('/schedule/:id')
+  .get(controllers.schedule.readStrict)
+  .put(middlewares.jwt.read
+       , middlewares.user.hasProperty('role', 'superuser')
+       , controllers.schedule.update)
+  .delete(middlewares.jwt.read
+          , middlewares.user.hasProperty('role', 'superuser')
+          , controllers.schedule.delete)
+
 /* TODO move to middlewares */
 authorize = function(req, res, next) {
   const token = req.body.token || req.cookies.access;
