@@ -12,7 +12,6 @@ async function createReservation(request, response, next) {
   } catch(e) {
     return next(e)
   }
-  console.log(response.locals.queryResult)
   response.set('Location', `api/reservation/${response.locals.queryResult.id}`)
   return next()
 }
