@@ -1,21 +1,22 @@
 const path = require('path')
 const root = path.join(__dirname, '..')
-const knex = require(path.join(root, 'knex', 'knex'))
+const models = require(path.join(root, 'models'))
+const _ = require('lodash')
+const moment = require('moment')
 
 /** 
  * Create a new schedule item.
  *
- * @param {object} details - The schedule's details { id?, range_reservation_id, supervisor_id?, open, close }.
+ * @param {object} details - The schedule's details { range_reservation_id, supervisor_id?, open, close }.
  *
  * @return {Promise<object[]>} The added reservations details.
  *
  * @example
- * createSchedule({ id: 1, range_reservation_id: 10, supervisor_id: 3, open:'18:00', close:'21:00' })
+ * createSchedule({ range_reservation_id: 10, supervisor_id: 3, open:'18:00', close:'21:00' })
  */
 async function createSchedule(details) {
-  return knex('scheduled_range_supervision')
-    .returning('*')
-    .insert(details)
+  details = _.pick(details, 'range_reservation_id', 'supervisor_id', 'open', 'close')
+  return models.schedule.create(details)
 }
 
 /**
@@ -29,9 +30,7 @@ async function createSchedule(details) {
  * readSchedule({ open:'18:00:00' }, [])
  */
 async function readSchedule(key, fields) {
-  return knex('scheduled_range_supervision')
-    .where(key)
-    .select(fields)
+  return models.schedule.read(key, fields)
 }
 
 /**
@@ -46,17 +45,8 @@ async function readSchedule(key, fields) {
  * updateSchedule({ time: '17:00:00' }, { open: '18:00:00' })
  */
 async function updateSchedule(current, updates) {
-  const ids = (await readSchedule(current, ['id'])).map(obj => obj.id)
-  if(ids.length === 0) {
-    const err = Error('Didn\'t identify a schedule item to update')
-    err.name = 'Unknown schedule'
-    throw err
-  }
-
-  return knex('scheduled_range_supervision')
-    .whereIn('id', ids)
-    .update(updates)
-    .returning('*')
+  updates = _.pick(updates, 'range_reservation_id', 'supervisor_id', 'open', 'close')
+  return model.schedule.update(current, updates)
 }
 
 /**
@@ -69,9 +59,7 @@ async function updateSchedule(current, updates) {
  * deleteSchedule({ id: 1 })
  */
 async function deleteSchedule(key) {
-  return knex('scheduled_range_supervision')
-    .where(key)
-    .del()
+  return models.scheule.delete(key)
 }
 
 module.exports = {

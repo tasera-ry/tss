@@ -26,7 +26,7 @@ function idValidator(requestObject, opts, name) {
 function timeValidator(requestObject, opts, name) {
   const validator = requestObject(name)
         .custom(value => {
-          if(moment(value, 'HH:mm').isValid()) {
+          if(moment(value, 'HH:mm', true /* strict parsing */).isValid()) {
             return true
           }
           throw Error('Time is not in a valid format (HH:mm)')
@@ -50,7 +50,6 @@ function storeRequest(request, response, next) {
 
 module.exports = {
   create: [
-    idValidator(validate.body, { optional: true }, 'id')
     , idValidator(validate.body, { exists: true }, 'range_reservation_id')
     , idValidator(validate.body, { optional: true }, 'supervisor_id')
     , timeValidator(validate.body, { exists: true }, 'open')
