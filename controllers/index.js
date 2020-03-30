@@ -6,3 +6,4 @@ const reservation = require(path.join(controllers, 'reservation'))
 
 exports.user = user
 exports.reservation = reservation
+exports.schedule = schedule
