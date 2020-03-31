@@ -10,7 +10,7 @@ const controller = {
     console.log("CONT TRACK READ");
     
     //if no results end in 404 but for filters return empty list instead
-    if(response.locals.queryResult.length === 0 && response.locals.filtered === false) {
+    if(response.locals.queryResult.length === 0 && response.locals.filtered !== true) {
       return response
         .status(404)
         .send({
