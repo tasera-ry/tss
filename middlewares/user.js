@@ -86,7 +86,7 @@ const serviceCalls = {
     catch(e) {
       return next(e)
     }
-    response.locals.address = `/api/user/${id}`
+    response.set('Location', `/api/user/${id}`)
     return next()
   }
   , update: async function updateUser(request, response, next) {
@@ -96,6 +96,13 @@ const serviceCalls = {
     try {
       response.locals.queryResult = await services.user.update(id, updates)
     } catch(e) {
+      if(e.name === 'Unknown user') {
+        return response
+          .status(404)
+          .send({
+            error: e.name
+          })
+      }
       return next(e)
     }
     return next()
