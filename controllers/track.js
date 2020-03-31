@@ -8,7 +8,11 @@ const secret = require(path.join(root, 'config', 'config')).jwt.secret
 const controller = {
   read: async function readTrack(request, response) {
     console.log("CONT TRACK READ");
-    if(response.locals.queryResult.length === 0) {
+    
+    //for filters return empty list instead
+    let isFilter = !_.isEmpty(request.query)
+    
+    if(response.locals.queryResult.length === 0 && isFilter === false) {
       return response
         .status(404)
         .send({
