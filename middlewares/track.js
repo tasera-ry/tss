@@ -34,6 +34,7 @@ const serviceCalls = {
       return next(e)
     }
 
+    response.set('Location', `/api/track/${id}`)
     return next()
   }
   , update: async function updateTrack(request, response, next) {
