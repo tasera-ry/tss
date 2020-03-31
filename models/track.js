@@ -15,7 +15,6 @@ const model = {
    * @param {object} track - Track's properties, { range_id, name, description }
    * @return {Promise<number[]>} The added tracks id
    *
-   * @example TODO: range by name?
    * model.create({ range_id: 1, name: 'Shooting track 1', description: '100m Kohdistusrata'})
    */
   create: async function createTrack(trackInfo) {
@@ -56,13 +55,7 @@ const model = {
     console.log("MODEL TRACK key: ",key);
     console.log("MODEL TRACK fields: ",fields);
     
-    //default value
-    if(fields === undefined){
-      fields = ['range.name as range','track.id','track.name as name','description']
-    }
-    
     return knex('track')
-      .join('range', 'range.id', 'track.range_id')
       .where(key)
       .select(fields)
   }

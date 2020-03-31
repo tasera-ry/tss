@@ -7,9 +7,6 @@ const config = require(path.join(root, 'config', 'config'))
 const validate = require('validate.js')
 const _ = require('lodash')
 
-//TODO replace with actual range
-const range_id = require(path.join(root, 'config', 'config')).development.range_id
-
 const service = {
   /**
    * Create a new track.
@@ -59,8 +56,7 @@ const service = {
       console.log("SERVICE_TRACK_CREATE combined: ",combinedKey);
     }
 
-    return (await models.track.read(_.pick(combinedKey, 'range_id', 'track.id', 'track.name', 'description')))
-      .map(_.partialRight(_.omit, 'range_id'))
+    return (await models.track.read(_.pick(combinedKey,'track.id', 'track.name', 'description')))
   }
 
   /**
