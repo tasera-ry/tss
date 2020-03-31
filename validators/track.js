@@ -86,9 +86,11 @@ module.exports = {
     }
   ],  readAll: [
     fields.name(query, 'optional')
+    , fields.description(query, 'optional')
     , handleValidationErrors
     ,  function storeID(request, response, next) {
       console.log("VAL EXPORTS STORE: id");
+      response.locals.filtered = !_.isEmpty(request.query)
       response.locals.query = matchedData(request, { locations: ['params', 'query'] })
       return next()
     }

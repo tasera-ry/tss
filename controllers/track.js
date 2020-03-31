@@ -9,10 +9,8 @@ const controller = {
   read: async function readTrack(request, response) {
     console.log("CONT TRACK READ");
     
-    //for filters return empty list instead
-    let isFilter = !_.isEmpty(request.query)
-    
-    if(response.locals.queryResult.length === 0 && isFilter === false) {
+    //if no results end in 404 but for filters return empty list instead
+    if(response.locals.queryResult.length === 0 && response.locals.filtered === false) {
       return response
         .status(404)
         .send({
