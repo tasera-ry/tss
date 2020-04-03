@@ -21,7 +21,7 @@ function validatorAdditions(validator, opts) {
 
 const fields = {
   scheduled_range_supervision_id: function idValidation(requestObject, ...opts) {
-    const validator = requestObject('id')
+    const validator = requestObject('scheduled_range_supervision_id')
           .isInt()
           .withMessage('must be an integer')
           .toInt()
@@ -30,7 +30,7 @@ const fields = {
   }
 
   ,  track_id: function idValidation(requestObject, ...opts) {
-    const validator = requestObject('id')
+    const validator = requestObject('track_id')
           .isInt()
           .withMessage('must be an integer')
           .toInt()
@@ -39,7 +39,7 @@ const fields = {
   }
 
   , track_supervisor: function supervisorValidation(requestObject, ...opts) {
-    const validator = requestObject('name')
+    const validator = requestObject('track_supervisor')
           .isString()
           .withMessage('must be a string')
           .isLength({ min: 1, max: 255 })
@@ -48,7 +48,7 @@ const fields = {
   }  
   
   , notice: function noticeValidation(requestObject, ...opts) {
-    const validator = requestObject('name')
+    const validator = requestObject('notice')
           .isString()
           .withMessage('must be a string')
           .isLength({ min: 1, max: 255 })

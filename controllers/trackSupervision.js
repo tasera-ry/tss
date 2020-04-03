@@ -42,7 +42,7 @@ const controller = {
       return response
         .status(404)
         .send({
-          error: `No track supervision event exists matching id ${response.locals.query.srsid} and ${response.locals.query.track_id}`
+          error: `No track supervision event exists matching id ${response.locals.query.scheduled_range_supervision_id} and ${response.locals.query.track_id}`
         })
     }
     return response

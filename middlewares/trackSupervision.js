@@ -36,7 +36,7 @@ const serviceCalls = {
     }
 
     try {
-      response.locals.queryResult = await services.trackSupervision.read({id: id})
+      response.locals.queryResult = await services.trackSupervision.read(id)
     }
     catch(e) {
       return next(e)

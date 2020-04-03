@@ -15,10 +15,7 @@ const service = {
    * @return {Promise<[{scheduled_range_supervision_id:number, track_id:number}]>} The combined key for track supervision range_supervision_id, track_id
    *
    */
-  , create: async function createSupervision(info) {
-    const digest = await hash(info.password)
-    delete info.password
-    info.digest = digest
+  create: async function createSupervision(info) {
     return (await models.trackSupervision.create(info)).pop()
   }
 
