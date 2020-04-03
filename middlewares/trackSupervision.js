@@ -32,6 +32,13 @@ const serviceCalls = {
       id = await services.trackSupervision.create(query)
     }
     catch(e) {
+      if(e.name === 'Supervision exists') {
+        return response
+          .status(400)
+          .send({
+            error: e.name
+          })
+      }
       return next(e)
     }
 

@@ -20,11 +20,23 @@ const model = {
    */
   create: async function createSupervision(supVis) {
     console.log("TRACK SUPERVISION MODEL ",supVis);
+    
     const supervisionConstraints = {
       scheduled_range_supervision_id: {}
       , track_id: {}
       , track_supervisor: {}
       , notice: {}
+    }
+    
+    //check if already exists
+    const id = await model
+      .read(supVis, ['scheduled_range_supervision_id', 'track_id'])
+      .then(rows => rows[0])
+
+    if(id !== undefined) {
+      const err = Error('Supervision even already exists')
+      err.name = 'Supervision exists'
+      throw err
     }
 
     const general = validate.cleanAttributes(supVis, supervisionConstraints)
