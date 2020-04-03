@@ -52,6 +52,31 @@ router.route('/user/:id')
     middlewares.user.delete
     , controllers.user.delete)
 
+//Track supervision
+router.route('/track-supervision')
+  .get(
+    middlewares.trackSupervision.readFilter
+    , controllers.trackSupervision.readFilter)
+  .post(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser'))
+    , middlewares.trackSupervision.create
+    , controllers.trackSupervision.create)
+
+router.route('/user/:id')
+  .get(
+    middlewares.trackSupervision.read
+    , controllers.trackSupervision.read)
+  .put(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser'))
+    , middlewares.trackSupervision.update
+    , controllers.trackSupervision.update)
+  .delete(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser'))
+    , middlewares.trackSupervision.delete
+    , controllers.trackSupervision.delete)
 
 /* TODO move to middlewares */
 authorize = function(req, res, next) {
