@@ -14,6 +14,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Button from '@material-ui/core/Button';
 
 class Scheduling extends Component {
 
@@ -61,6 +62,23 @@ class Scheduling extends Component {
         this.setState({
            rangeOfficerId: event.target.value
         });
+      };
+      
+      const handleTrackSwitchChange = (event) => {
+        console.log("Track switch",event.target.name,event.target.checked);
+        this.setState({
+           [event.target.name]: event.target.checked
+        });
+      };
+      
+      const openAllTracks = (event) => {
+        //TODO get track names then loop through enabling them?
+        console.log("Open tracks",event.target);
+      };
+      
+      const closeAllTracks = (event) => {
+        //TODO get track names then loop through disabling them?
+        console.log("Close tracks",event.target);
       };
 
       return (
@@ -129,11 +147,25 @@ class Scheduling extends Component {
           <hr/>
           <div className="secondSection">
             <div className="leftSide">
+              <Switch
+                checked={ this.state.track1 || "" }
+                onChange={handleTrackSwitchChange}
+                name={'track1'}
+                inputProps={{ 'aria-label': 'secondary checkbox' }}
+              />
+              <Switch
+                checked={ this.state.track2 || "" }
+                onChange={handleTrackSwitchChange}
+                name={'track2'}
+                inputProps={{ 'aria-label': 'secondary checkbox' }}
+              />
             </div>
             <div className="rightSide">
-
+              <Button variant="contained" color="primary" onClick={openAllTracks}>Kaikki auki</Button>
+              <Button variant="contained" color="secondary" onClick={closeAllTracks}>Kaikki kiinni</Button>
             </div>
           </div>
+          <hr/>
         </div>
         
       );
