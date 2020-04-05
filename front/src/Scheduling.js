@@ -37,6 +37,11 @@ class Scheduling extends Component {
     
     componentDidMount(){
       console.log("MOUNTED")
+      this.getTracks()
+      this.getRangeOfficers()
+    }
+    
+    getTracks(){
       fetch("/api/track", {
         method: 'GET',
         headers: {
@@ -47,6 +52,21 @@ class Scheduling extends Component {
       .then(json => {
         this.setState({
            tracks: json
+        })
+      });
+    }
+    
+    getRangeOfficers(){
+      fetch("/api/user", {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.state.token}`
+        }
+      })
+      .then(res => res.json())
+      .then(json => {
+        this.setState({
+           rangeOfficers: json
         })
       });
     }
@@ -135,6 +155,40 @@ class Scheduling extends Component {
           </React.Fragment>
         );
       }
+      
+      //builds range officer select
+      function RangeOfficerSelect (props) {
+        let items = [];
+        let disabled = false;
+        
+        for (var key in props.rangeOfficers) {
+          items.push(
+            <MenuItem key={key} value={props.rangeOfficers[key].id}>{props.rangeOfficers[key].name}</MenuItem>
+          );
+        }
+        
+        if (props.state.rangeOfficerSwitch === false) {
+            console.log(props.state.rangeOfficerSwitch)
+            disabled=true
+        };
+
+        return (
+              <FormControl>
+                <InputLabel id="chooseRangeOfficerLabel">Valitse valvoja</InputLabel>
+                <Select
+                  {...disabled && {disabled: true}}
+                  labelId="chooseRangeOfficerLabel"
+                  name="rangeOfficerId"
+                  value={props.state.rangeOfficerId}
+                  onChange={handleValueChange}
+                >
+                  {items}
+                </Select>
+              </FormControl>
+        );
+      }
+      
+
 
       return (
         <div className="root">
@@ -184,19 +238,11 @@ class Scheduling extends Component {
                 name="rangeOfficerSwitch"
                 inputProps={{ 'aria-label': 'secondary checkbox' }}
               />
-              <FormControl>
-                <InputLabel id="chooseRangeOfficerLabel">Valitse valvoja</InputLabel>
-                <Select
-                  labelId="chooseRangeOfficerLabel"
-                  name="rangeOfficerId"
-                  value={this.state.rangeOfficerId}
-                  onChange={handleValueChange}
-                >
-                  <MenuItem value={10}>Ro10</MenuItem>
-                  <MenuItem value={20}>Ro20</MenuItem>
-                  <MenuItem value={30}>Ro30</MenuItem>
-                </Select>
-              </FormControl>
+              {/*Butchered state?*/}
+              <RangeOfficerSelect 
+                rangeOfficers={this.state.rangeOfficers}
+                state={this.state} 
+              />
             </div>
           </div>
           <hr/>
