@@ -27,27 +27,28 @@ class Scheduling extends Component {
           start: new Date(),
           end: new Date(),
           rangeOfficerSwitch: false,
-          rangeOfficerId: '',
+          rangeOfficerId: null,
           daily:false,
           weekly:false,
           monthly:false,
           repeatCount:'',
           token:'SECRET-TOKEN',
-          reservationId:0,
-          range_id: ''
+          reservationId:null,
+          scheduledRangeSupervisionId:null,
+          range_id: null
         };
     }
     
     componentDidMount(){
       console.log("MOUNTED");
-      this.getTracks()
-      this.getRangeOfficers()
+      this.getTracks();
+      this.getRangeOfficers();
       this.update();
     }
     
     update(){
       console.log("update",this.state.rangeOfficerId,this.state.start,this.state.end);
-      this.getReservation()
+      this.getReservation();
     }
     
     getTracks(){
@@ -116,26 +117,82 @@ class Scheduling extends Component {
       .then(json => {
         console.log("reservationid",this.state.reservationId)
         console.log("SCHEDULE",json)
-        let rangeOfficerId = 0;
+        let rangeOfficerId = null;
         let start = 0;
         let end = 0;
         let rangeOfficerSwitch = false;
+        let scheduledRangeSupervisionId = null;
         if(json.length > 0){
           console.log("resid",json[0].supervisor_id,start)
           rangeOfficerId = json[0].supervisor_id; //is this even the correct id? links to supervisor table which links to user table
           start = moment(json[0].open, 'h:mm:ss').format();
           end = moment(json[0].close, 'h:mm:ss').format();
           rangeOfficerSwitch = json[0].supervisor_id !== null ? true : false;
+          scheduledRangeSupervisionId = json[0].id;
           console.log("resid",rangeOfficerId,start,end)
         }
         this.setState({
           rangeOfficerSwitch: rangeOfficerSwitch,
           rangeOfficerId:rangeOfficerId,
           start: start,
-          end: end
+          end: end,
+          scheduledRangeSupervisionId: scheduledRangeSupervisionId
+        },
+        function() {
+          this.getTracksupervision();
         })
       });
     }
+
+    getTracksupervision(){
+      fetch("/api/track-supervision?scheduled_range_supervision_id="+this.state.scheduledRangeSupervisionId, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.state.token}`
+        }
+      })
+      .then(res => res.json())
+      .then(json => {
+        console.log("scheduledRangeSupervisionId",this.state.scheduledRangeSupervisionId)
+        console.log("TRACK SUPERVISION",json)
+        
+        //lovely bubble sort speeds
+        //sets tracks that have supervisor present to active
+        this.closeAllTracks();
+        for (var key in this.state.tracks) {
+          for (var jkey in json) {
+            //console.log(key,jkey,this.state.tracks[key].id,json[jkey].track_id)
+            if(this.state.tracks[key].id === json[jkey].track_id){
+              console.log("match",key,jkey,this.state.tracks[key].id,json[jkey].track_id);
+              if(json[jkey].track_supervisor === 'present'){
+                this.setState({
+                  [this.state.tracks[key].id]: true
+                });
+              }
+            }
+          }
+        }
+        
+      });
+    }
+    
+    openAllTracks = (event) => {        
+      console.log("Open tracks");
+      for (var key in this.state.tracks) {
+        this.setState({
+           [this.state.tracks[key].id]: true
+        });
+      }
+    };
+    
+    closeAllTracks = (event) => {
+      console.log("Close tracks");
+      for (var key in this.state.tracks) {
+        this.setState({
+           [this.state.tracks[key].id]: false
+        });
+      }
+    };
 
     render() {
     
@@ -177,26 +234,41 @@ class Scheduling extends Component {
         });
       };
       
-      const openAllTracks = (event) => {        
-        console.log("Open tracks");
-        for (var key in this.state.tracks) {
-          this.setState({
-             [this.state.tracks[key].id]: true
-          });
-        }
-      };
-      
-      const closeAllTracks = (event) => {
-        console.log("Close tracks");
-        for (var key in this.state.tracks) {
-          this.setState({
-             [this.state.tracks[key].id]: false
-          });
-        }
-      };
-      
       const saveChanges = (event) => {
         //TODO
+        //createReservation({ id: 1, date:'2020-01-01', available:true })
+        //scheduled_range_supervision = createSchedule({ id: 1, range_reservation_id: 10, supervisor_id: 3, open:'18:00', close:'21:00' })
+
+        //TODO check how many problems hardcoding availability does
+        //pretty sure if we want to schedule the track it should be available
+        const params = {range_id: this.state.range_id, date: moment(this.state.date).format('YYYY-MM-DD'), available: true};
+        console.log("params",params)
+        fetch("/api/reservation", {
+          method: 'POST',
+          body: new URLSearchParams(params),
+          headers: {
+            Authorization: `Bearer ${this.state.token}`
+          }
+        })
+        .then(res => {
+          //reservation can result in a duplicate which causes http 500 
+          //error: duplicate key value violates unique constraint "range_reservation_range_id_date_unique"
+          console.log("response",res);
+          res.json()
+          })
+        .then(json => {
+          console.log("wut",json);
+          /*this.setState({
+             rangeOfficers: json
+          })*/
+        });
+        //send
+          //date 
+          //timestart-timeEnd
+          //rangeOfficerId
+          //tracks
+        
+        //repeat options
         console.log("save")
       };
       
@@ -325,8 +397,8 @@ class Scheduling extends Component {
               />
             </div>
             <div className="rightSide">
-              <Button variant="contained" color="primary" onClick={openAllTracks}>Kaikki auki</Button>
-              <Button variant="contained" color="secondary" onClick={closeAllTracks}>Kaikki kiinni</Button>
+              <Button variant="contained" color="primary" onClick={this.openAllTracks}>Kaikki auki</Button>
+              <Button variant="contained" color="secondary" onClick={this.closeAllTracks}>Kaikki kiinni</Button>
             </div>
           </div>
           <hr/>
