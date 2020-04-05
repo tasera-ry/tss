@@ -27,11 +27,28 @@ class Scheduling extends Component {
           end: new Date(),
           rangeOfficerSwitch: false,
           rangeOfficerId: '',
-          daily:'',
-          weekly:'',
-          monthly:'',
-          repeatCount:''
+          daily:false,
+          weekly:false,
+          monthly:false,
+          repeatCount:'',
+          token:'SECRET-TOKEN'
         };
+    }
+    
+    componentDidMount(){
+      console.log("MOUNTED")
+      fetch("/api/track", {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.state.token}`
+        }
+      })
+      .then(res => res.json())
+      .then(json => {
+        this.setState({
+           tracks: json
+        })
+      });
     }
 
     render() {
@@ -71,20 +88,53 @@ class Scheduling extends Component {
         });
       };
       
-      const openAllTracks = (event) => {
-        //TODO get track names then loop through enabling them?
-        console.log("Open tracks",event.target);
+      const openAllTracks = (event) => {        
+        console.log("Open tracks");
+        for (var key in this.state.tracks) {
+          this.setState({
+             [this.state.tracks[key].id]: true
+          });
+        }
       };
       
       const closeAllTracks = (event) => {
-        //TODO get track names then loop through disabling them?
-        console.log("Close tracks",event.target);
+        console.log("Close tracks");
+        for (var key in this.state.tracks) {
+          this.setState({
+             [this.state.tracks[key].id]: false
+          });
+        }
       };
       
       const saveChanges = (event) => {
         //TODO
         console.log("save")
       };
+      
+      //builds tracklist
+      function TrackList(props) {
+        let items = [];
+        for (var key in props.tracks) {
+          items.push(
+            <React.Fragment
+            key={key}>
+              {props.tracks[key].name}
+              <Switch
+                checked={ props.state[props.tracks[key].id] || false }
+                onChange={handleSwitchChange}
+                name={props.tracks[key].id}
+                inputProps={{ 'aria-label': 'secondary checkbox' }}
+              />
+            </React.Fragment>
+          );
+        }
+
+        return (
+          <React.Fragment>
+            {items}
+          </React.Fragment>
+        );
+      }
 
       return (
         <div className="root">
@@ -152,17 +202,10 @@ class Scheduling extends Component {
           <hr/>
           <div className="secondSection">
             <div className="leftSide">
-              <Switch
-                checked={ this.state.track1 || "" }
-                onChange={handleSwitchChange}
-                name={'track1'}
-                inputProps={{ 'aria-label': 'secondary checkbox' }}
-              />
-              <Switch
-                checked={ this.state.track2 || "" }
-                onChange={handleSwitchChange}
-                name={'track2'}
-                inputProps={{ 'aria-label': 'secondary checkbox' }}
+              {/*Butchered state?*/}
+              <TrackList 
+                tracks={this.state.tracks}
+                state={this.state} 
               />
             </div>
             <div className="rightSide">
