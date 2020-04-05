@@ -25,10 +25,6 @@ router.route('/sign')
     , controllers.user.sign)
 
 router.route('/user')
-  .all(middlewares.jwt.read)
-
-
-router.route('/user')
   .all(
     middlewares.jwt.read
     , middlewares.user.hasProperty('role', 'superuser'))
@@ -52,6 +48,64 @@ router.route('/user/:id')
   .delete(
     middlewares.user.delete
     , controllers.user.delete)
+
+
+//Track supervision
+router.route('/track-supervision')
+  .get(
+    middlewares.trackSupervision.readFilter
+    , controllers.trackSupervision.readFilter)
+  .post(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.trackSupervision.create
+    , controllers.trackSupervision.create)
+
+router.route('/track-supervision/:scheduled_range_supervision_id/:track_id')
+  .get(
+    middlewares.trackSupervision.read
+    , controllers.trackSupervision.read)
+  .put(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.trackSupervision.update
+    , controllers.trackSupervision.update)
+  .delete(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.trackSupervision.delete
+    , controllers.trackSupervision.delete)
+
+
+router.route('/reservation')
+  .get(controllers.reservation.read)
+  .post(middlewares.jwt.read
+        , middlewares.user.hasProperty('role', 'superuser')
+        , controllers.reservation.create)
+
+router.route('/reservation/:id')
+  .get(controllers.reservation.readStrict)
+  .put(middlewares.jwt.read
+       , middlewares.user.hasProperty('role', 'superuser')
+       , controllers.reservation.update)
+  .delete(middlewares.jwt.read
+          , middlewares.user.hasProperty('role', 'superuser')
+          , controllers.reservation.delete)
+
+router.route('/schedule')
+  .get(controllers.schedule.read)
+  .post(middlewares.jwt.read
+        , middlewares.user.hasProperty('role', 'superuser')
+        , controllers.schedule.create)
+
+router.route('/schedule/:id')
+  .get(controllers.schedule.readStrict)
+  .put(middlewares.jwt.read
+       , middlewares.user.hasProperty('role', 'superuser')
+       , controllers.schedule.update)
+  .delete(middlewares.jwt.read
+          , middlewares.user.hasProperty('role', 'superuser')
+          , controllers.schedule.delete)
 
 
 /* TODO move to middlewares */

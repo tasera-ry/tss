@@ -1,3 +1,7 @@
+const path = require('path')
+const root = path.join(__dirname, '..', '..', '..')
+const config = require(path.join(root, 'config'))
+
 const casual = require('casual')
 const moment = require('moment')
 const _ = require('lodash')
@@ -11,10 +15,10 @@ exports.seed = function(knex) {
       return _.flatten(
         ranges.map(range => {
           const dateIterator = moment.prototype.add.bind(
-            moment('2018-12-31')
+            moment(config.seeds.startDate)
             , 1
             , 'days')
-          return _.times(565 , _.partial(
+          return _.times(config.seeds.days , _.partial(
             casual.range_reservation
             , range.id
             , dateIterator))
