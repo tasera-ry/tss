@@ -39,14 +39,15 @@ class Scheduling extends Component {
     }
     
     componentDidMount(){
-      console.log("MOUNTED")
+      console.log("MOUNTED");
       this.getTracks()
       this.getRangeOfficers()
-      this.getReservation()
+      this.update();
     }
     
     update(){
       console.log("update",this.state.rangeOfficerId,this.state.start,this.state.end);
+      this.getReservation()
     }
     
     getTracks(){
@@ -118,20 +119,20 @@ class Scheduling extends Component {
         let rangeOfficerId = 0;
         let start = 0;
         let end = 0;
+        let rangeOfficerSwitch = false;
         if(json.length > 0){
           console.log("resid",json[0].supervisor_id,start)
           rangeOfficerId = json[0].supervisor_id; //is this even the correct id? links to supervisor table which links to user table
           start = moment(json[0].open, 'h:mm:ss').format();
           end = moment(json[0].close, 'h:mm:ss').format();
+          rangeOfficerSwitch = json[0].supervisor_id !== null ? true : false;
           console.log("resid",rangeOfficerId,start,end)
         }
         this.setState({
+          rangeOfficerSwitch: rangeOfficerSwitch,
           rangeOfficerId:rangeOfficerId,
           start: start,
           end: end
-        },
-        function() {
-          this.update()
         })
       });
     }
@@ -140,7 +141,6 @@ class Scheduling extends Component {
     
       const selectedDate = this.state.date;
       const handleDateChange = (date) => {
-        this.update();
         this.setState({
            date: date
         },
