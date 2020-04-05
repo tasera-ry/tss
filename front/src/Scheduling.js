@@ -35,6 +35,7 @@ class Scheduling extends Component {
           token:'SECRET-TOKEN',
           reservationId:null,
           scheduledRangeSupervisionId:null,
+          trackSupervisionId:null,
           range_id: null
         };
     }
@@ -93,7 +94,7 @@ class Scheduling extends Component {
       .then(res => res.json())
       .then(json => {
         console.log("RESERVATION",json)
-        let rsId = 0;
+        let rsId = null;
         if(json.length > 0){
           rsId = json[0].id
         }
@@ -156,6 +157,11 @@ class Scheduling extends Component {
         console.log("scheduledRangeSupervisionId",this.state.scheduledRangeSupervisionId)
         console.log("TRACK SUPERVISION",json)
         
+        let trackSupervisionId = null;
+        if(json.length > 0){
+          trackSupervisionId = json[0].id
+        }
+
         //lovely bubble sort speeds
         //sets tracks that have supervisor present to active
         this.closeAllTracks();
@@ -235,16 +241,47 @@ class Scheduling extends Component {
       };
       
       const saveChanges = (event) => {
-        //TODO
-        //createReservation({ id: 1, date:'2020-01-01', available:true })
-        //scheduled_range_supervision = createSchedule({ id: 1, range_reservation_id: 10, supervisor_id: 3, open:'18:00', close:'21:00' })
-
-        //TODO check how many problems hardcoding availability does
-        //pretty sure if we want to schedule the track it should be available
-        const params = {range_id: this.state.range_id, date: moment(this.state.date).format('YYYY-MM-DD'), available: true};
-        console.log("params",params)
-        fetch("/api/reservation", {
-          method: 'POST',
+        console.log("save")
+        
+        let reservationMethod;
+        let scheduledRangeSupervisionMethod;
+        let trackSupervisionMethod;
+        let reservationPath = "";
+        let scheduledRangeSupervisionPath = "";
+        let trackSupervisionPath = "";
+        
+        //determine exist or not with:
+        //reservationId:null,
+        //scheduledRangeSupervisionId:null,
+        //trackSupervisionId:null,
+        if(this.state.reservationId !== null){
+          reservationMethod = 'PUT';
+          reservationPath = "/"+this.state.reservationId;
+        } else reservationMethod = 'POST';
+        
+        if(this.state.scheduledRangeSupervisionId !== null){
+          scheduledRangeSupervisionMethod = 'PUT';
+          scheduledRangeSupervisionPath = "/"+this.state.scheduledRangeSupervisionId;
+        } else scheduledRangeSupervisionMethod = 'POST';
+        
+        if(this.state.trackSupervisionId !== null){
+          trackSupervisionMethod = 'PUT';
+          trackSupervisionPath = "/"+this.state.trackSupervisionId;
+        } else trackSupervisionMethod = 'POST';
+        
+        console.log("PRE SEND",this.state.reservationId,this.state.scheduledRangeSupervisionId,this.state.trackSupervisionId);
+        console.log("PRE SEND",reservationMethod,scheduledRangeSupervisionMethod,trackSupervisionMethod);
+        
+        let params = {
+          range_id: this.state.range_id, 
+          date: moment(this.state.date).format('YYYY-MM-DD'), 
+          available: this.state.rangeOfficerSwitch //did available mean range officer?
+        };
+        console.log("params",params)        
+        
+        //reservation
+        fetch("/api/reservation"+reservationPath, {
+          method: reservationMethod,
           body: new URLSearchParams(params),
           headers: {
             Authorization: `Bearer ${this.state.token}`
@@ -254,22 +291,50 @@ class Scheduling extends Component {
           //reservation can result in a duplicate which causes http 500 
           //error: duplicate key value violates unique constraint "range_reservation_range_id_date_unique"
           console.log("response",res);
-          res.json()
-          })
+          if(res.status !== 204){ //no content crashes json parse so skip it
+            res.json()
+          }
+        })
         .then(json => {
-          console.log("wut",json);
-          /*this.setState({
-             rangeOfficers: json
-          })*/
+          console.log("reservation success",json);
+          
+          let params = {
+            reservation_id: this.state.reservationId,
+            open: moment(this.state.start).format('HH:mm'), 
+            close: moment(this.state.end).format('HH:mm')
+          };
+          /*
+          this.state.rangeOfficerId, 
+          this being null causes error: invalid input syntax for integer: "null"
+          [0]     at Connection.parseE (C:\Users\JH\Documents\tasera\TSS\node_modules\pg\lib\connection.js:614:13)          
+           */
+          if(this.state.rangeOfficerId !== null){
+            params = {
+              ...params,
+              supervisor_id: this.state.rangeOfficerId
+            };
+          }
+          console.log("params",params)
+          
+          //scheduled range supervision
+          fetch("/api/schedule"+scheduledRangeSupervisionPath, {
+            method: scheduledRangeSupervisionMethod,
+            body: new URLSearchParams(params),
+            headers: {
+              Authorization: `Bearer ${this.state.token}`
+            }
+          })
+          .then(res => {
+            console.log("response",res);
+            if(res.status !== 204){ //no content crashes json parse so skip it
+              res.json()
+            }
+          })
+          .then(json => {
+            console.log("schedule success",json);
+            //TODO up to date?
+          });
         });
-        //send
-          //date 
-          //timestart-timeEnd
-          //rangeOfficerId
-          //tracks
-        
-        //repeat options
-        console.log("save")
       };
       
       //builds tracklist
