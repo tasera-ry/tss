@@ -16,6 +16,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import moment from 'moment';
 
 class Scheduling extends Component {
 
@@ -31,7 +32,9 @@ class Scheduling extends Component {
           weekly:false,
           monthly:false,
           repeatCount:'',
-          token:'SECRET-TOKEN'
+          token:'SECRET-TOKEN',
+          reservationId:0,
+          range_id: ''
         };
     }
     
@@ -39,6 +42,11 @@ class Scheduling extends Component {
       console.log("MOUNTED")
       this.getTracks()
       this.getRangeOfficers()
+      this.getReservation()
+    }
+    
+    update(){
+      console.log("update",this.state.rangeOfficerId,this.state.start,this.state.end);
     }
     
     getTracks(){
@@ -50,8 +58,10 @@ class Scheduling extends Component {
       })
       .then(res => res.json())
       .then(json => {
+        console.log("gettracks",json)
         this.setState({
-           tracks: json
+           tracks: json,
+           range_id: json[0].range_id //roundabout way to grab range_id for now
         })
       });
     }
@@ -70,13 +80,72 @@ class Scheduling extends Component {
         })
       });
     }
+    
+    getReservation(){
+      fetch("/api/reservation?date="+moment(this.state.date).format('YYYY-MM-DD'), {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.state.token}`
+        }
+      })
+      .then(res => res.json())
+      .then(json => {
+        console.log("RESERVATION",json)
+        let rsId = 0;
+        if(json.length > 0){
+          rsId = json[0].id
+        }
+        this.setState({
+          reservationId:rsId
+        },
+        function() {
+          this.getSchedule();
+        })
+      });
+    }
+    
+    getSchedule(){
+      fetch("/api/schedule?range_reservation_id="+this.state.reservationId, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.state.token}`
+        }
+      })
+      .then(res => res.json())
+      .then(json => {
+        console.log("reservationid",this.state.reservationId)
+        console.log("SCHEDULE",json)
+        let rangeOfficerId = 0;
+        let start = 0;
+        let end = 0;
+        if(json.length > 0){
+          console.log("resid",json[0].supervisor_id,start)
+          rangeOfficerId = json[0].supervisor_id; //is this even the correct id? links to supervisor table which links to user table
+          start = moment(json[0].open, 'h:mm:ss').format();
+          end = moment(json[0].close, 'h:mm:ss').format();
+          console.log("resid",rangeOfficerId,start,end)
+        }
+        this.setState({
+          rangeOfficerId:rangeOfficerId,
+          start: start,
+          end: end
+        },
+        function() {
+          this.update()
+        })
+      });
+    }
 
     render() {
     
       const selectedDate = this.state.date;
       const handleDateChange = (date) => {
+        this.update();
         this.setState({
            date: date
+        },
+        function() {
+          this.update()
         });
       };
       
@@ -168,7 +237,7 @@ class Scheduling extends Component {
         }
         
         if (props.state.rangeOfficerSwitch === false) {
-            console.log(props.state.rangeOfficerSwitch)
+            console.log("range officer switch",props.state.rangeOfficerSwitch)
             disabled=true
         };
 
@@ -232,6 +301,7 @@ class Scheduling extends Component {
               </MuiPickersUtilsProvider>
             </div>
             <div className="bottomRow">
+              Päävalvoja
               <Switch
                 checked={this.state.rangeOfficerSwitch}
                 onChange={handleSwitchChange}
