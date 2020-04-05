@@ -1,6 +1,5 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { validationResult, matchedData } = require('express-validator');
 const _ = require('lodash')
 
 const path = require('path')
@@ -49,7 +48,7 @@ const controller = {
   }
 
   , update: async function updateUser(request, response) {
-    response
+    return response
       .status(204)
       .send()
   }
