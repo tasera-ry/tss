@@ -51,7 +51,7 @@ natural right join\
       builder
       .where(key)
       .whereBetween('date', [from, to]))
-
+    .select(fields)
   return query
 }
 
@@ -59,7 +59,7 @@ natural right join\
  * Update reservations' info.
  *
  * @param {object} current - The current identifying info of the reservation.
- * @param {object} update - New information for the reservation
+ * @param {object} updates - New information for the reservation
  *
  * @return {Promise<object[]>} Updated rows 
  *
@@ -85,7 +85,7 @@ async function updateReservation(current, updates) {
  * Delete the reservations matching a key.
  *
  * @param {object} key - Identifying key
- * @return {Promise<number>} Count of deleted users
+ * @return {Promise<number>} Count of deleted reservations
  *
  * @example
  * deleteReservation({ date: '2020-01-01' })
