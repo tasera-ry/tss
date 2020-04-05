@@ -49,6 +49,34 @@ router.route('/user/:id')
     middlewares.user.delete
     , controllers.user.delete)
 
+
+//Track supervision
+router.route('/track-supervision')
+  .get(
+    middlewares.trackSupervision.readFilter
+    , controllers.trackSupervision.readFilter)
+  .post(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.trackSupervision.create
+    , controllers.trackSupervision.create)
+
+router.route('/track-supervision/:scheduled_range_supervision_id/:track_id')
+  .get(
+    middlewares.trackSupervision.read
+    , controllers.trackSupervision.read)
+  .put(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.trackSupervision.update
+    , controllers.trackSupervision.update)
+  .delete(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.trackSupervision.delete
+    , controllers.trackSupervision.delete)
+
+
 router.route('/reservation')
   .get(controllers.reservation.read)
   .post(middlewares.jwt.read
@@ -78,6 +106,7 @@ router.route('/schedule/:id')
   .delete(middlewares.jwt.read
           , middlewares.user.hasProperty('role', 'superuser')
           , controllers.schedule.delete)
+
 
 /* TODO move to middlewares */
 authorize = function(req, res, next) {
