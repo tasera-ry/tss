@@ -10,6 +10,14 @@ const config = {
   },
   bcrypt: {
     hashRounds: 8
+  },
+
+  seeds: {
+    users: 30,
+    ranges: 1,
+    tracks: 7,
+    startDate: '2018-12-31',
+    days: 565
   }
 };
 
