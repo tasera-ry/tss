@@ -5,8 +5,10 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {Link} from 'react-router-dom';
-import {callApi} from './utils/helper.js';
+
+import {Link, useHistory} from 'react-router-dom';
+import Weekview from './Weekview';
+import axios from 'axios'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -35,20 +37,51 @@ export default function SignIn() {
   //other end: value={name} onInput={e => setName(e.target.value)}
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [user, setUser] = useState('');
+  const [mokat, setMokat] = useState('');
+  const history = useHistory();
+  let myStorage = window.localStorage;
   
   const login = (e) => {
     e.preventDefault();
-    console.log({name, password})
-    //call backend login function
-    const params = {name: name, password: password};
-    callApi("POST","login",params)
-      .then(res => {
-        console.log(res)
-        //TODO real login redirection
-        window.location = "/";
-      })
-      .catch(err => console.log(err));
+    //console.log({name, password})
 
+    let response = axios.post('api/sign', {
+      name: name,
+      password: password
+    }).then(response => {
+      HandleResponse(response)
+      RedirectToWeekview()
+    }).catch(error => {
+      HandleError(error)
+    })
+    
+  }
+
+  const HandleResponse = response => {
+    setUser(response.data)
+    myStorage.setItem('token', response.data)
+  }
+
+  const RedirectToWeekview = () => {
+    history.push('/')
+  }
+
+  const HandleError = error => {
+    setMokat(true);
+
+    //message contains all errors, might be useful
+    let message = ''
+    if(error.response.status===400) {
+      for(let i=0; i<error.response.data.errors.length; i++) {
+        let param = error.response.data.errors[i].param;
+        let msg = error.response.data.errors[i].msg;
+        message+=(`${param} ${msg}\n`);
+      }
+    }
+    if(error.response.status===401) {
+      message = error.response.data
+    }
   }
 
   return (
@@ -86,30 +119,36 @@ export default function SignIn() {
             onInput={e => setPassword(e.target.value)}
           />
 
-        <Link style={{textDecoration: 'none'}} to='/'>
-          <Button
-            onClick={login}
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Kirjaudu
-          </Button>
-        </Link>
+          {(mokat) ?
+           <p style={{fontSize: 20, color: "red", textAlign: "center"}}>
+             Käyttäjänimi tai salasana väärin
+           </p> :
+           <p></p>}
 
-          <Link to='/'>
-          <Button
-            type="submit"
-            fullWidth
-            color="primary"
-            className={classes.submit}
+          <Link>
+            <Button
+              onClick={login}
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
             >
-            Peruuta
+              Kirjaudu
             </Button>
-        </Link>
+          </Link>
 
+          <Link>
+            <Button
+              onClick={() => history.goBack()}
+              type="submit"
+              fullWidth
+              color="primary"
+              className={classes.submit}
+            >
+              Takaisin
+            </Button>
+          </Link>
 
         </form>
       </div>
