@@ -15,6 +15,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 class Scheduling extends Component {
 
@@ -25,7 +26,11 @@ class Scheduling extends Component {
           start: new Date(),
           end: new Date(),
           rangeOfficerSwitch: false,
-          rangeOfficerId: ''
+          rangeOfficerId: '',
+          daily:'',
+          weekly:'',
+          monthly:'',
+          repeatCount:''
         };
     }
 
@@ -52,22 +57,17 @@ class Scheduling extends Component {
         });
       };
       
-      const handleRangeOfficerSwitchChange = (event) => {
+      const handleSwitchChange = (event) => {
+        console.log("Switch",event.target.name, event.target.checked)
         this.setState({
            [event.target.name]: event.target.checked
         });
       };
       
-      const handleRangeOfficerSelectChange = (event) => {
+      const handleValueChange = (event) => {
+        console.log("Value change",event.target.name, event.target.value)
         this.setState({
-           rangeOfficerId: event.target.value
-        });
-      };
-      
-      const handleTrackSwitchChange = (event) => {
-        console.log("Track switch",event.target.name,event.target.checked);
-        this.setState({
-           [event.target.name]: event.target.checked
+           [event.target.name]: event.target.value
         });
       };
       
@@ -80,6 +80,11 @@ class Scheduling extends Component {
         //TODO get track names then loop through disabling them?
         console.log("Close tracks",event.target);
       };
+      
+      const saveChanges = (event) => {
+        //TODO
+        console.log("save")
+      };
 
       return (
         <div className="root">
@@ -88,7 +93,7 @@ class Scheduling extends Component {
               <MuiPickersUtilsProvider utils={MomentUtils}>
                 <KeyboardDatePicker
                   margin="normal"
-                  id="date-picker"
+                  name="date"
                   label="Valitse päivä"
                   clearable
                   value={selectedDate}
@@ -99,7 +104,7 @@ class Scheduling extends Component {
               <MuiPickersUtilsProvider utils={MomentUtils}>
                 <KeyboardTimePicker
                   margin="normal"
-                  id="time-picker"
+                  name="start"
                   label="Alku"
                   value={selectedTimeStart}
                   onChange={handleTimeStartChange}
@@ -112,7 +117,7 @@ class Scheduling extends Component {
               <MuiPickersUtilsProvider utils={MomentUtils}>
                 <KeyboardTimePicker
                   margin="normal"
-                  id="time-picker"
+                  name="end"
                   label="Loppu"
                   value={selectedTimeEnd}
                   onChange={handleTimeEndChange}
@@ -125,7 +130,7 @@ class Scheduling extends Component {
             <div className="bottomRow">
               <Switch
                 checked={this.state.rangeOfficerSwitch}
-                onChange={handleRangeOfficerSwitchChange}
+                onChange={handleSwitchChange}
                 name="rangeOfficerSwitch"
                 inputProps={{ 'aria-label': 'secondary checkbox' }}
               />
@@ -133,9 +138,9 @@ class Scheduling extends Component {
                 <InputLabel id="chooseRangeOfficerLabel">Valitse valvoja</InputLabel>
                 <Select
                   labelId="chooseRangeOfficerLabel"
-                  id="chooseRangeOfficer"
+                  name="rangeOfficerId"
                   value={this.state.rangeOfficerId}
-                  onChange={handleRangeOfficerSelectChange}
+                  onChange={handleValueChange}
                 >
                   <MenuItem value={10}>Ro10</MenuItem>
                   <MenuItem value={20}>Ro20</MenuItem>
@@ -149,13 +154,13 @@ class Scheduling extends Component {
             <div className="leftSide">
               <Switch
                 checked={ this.state.track1 || "" }
-                onChange={handleTrackSwitchChange}
+                onChange={handleSwitchChange}
                 name={'track1'}
                 inputProps={{ 'aria-label': 'secondary checkbox' }}
               />
               <Switch
                 checked={ this.state.track2 || "" }
-                onChange={handleTrackSwitchChange}
+                onChange={handleSwitchChange}
                 name={'track2'}
                 inputProps={{ 'aria-label': 'secondary checkbox' }}
               />
@@ -166,6 +171,48 @@ class Scheduling extends Component {
             </div>
           </div>
           <hr/>
+          <div className="thirdSection">
+            <div className="repetition">
+              <div className="daily">
+                Toista päivittäin
+                <Switch
+                  checked={ this.state.daily }
+                  onChange={handleSwitchChange}
+                  name='daily'
+                  inputProps={{ 'aria-label': 'secondary checkbox' }}
+                />
+              </div>
+              <div className="weekly">
+                Toista viikottain
+                <Switch
+                  checked={ this.state.weekly }
+                  onChange={handleSwitchChange}
+                  name='weekly'
+                  inputProps={{ 'aria-label': 'secondary checkbox' }}
+                />
+              </div>
+              <div className="monthly">
+                Toista 4 viikon välein
+                <Switch
+                  checked={ this.state.monthly }
+                  onChange={handleSwitchChange}
+                  name='monthly'
+                  inputProps={{ 'aria-label': 'secondary checkbox' }}
+                />
+              </div>
+              <div className="repeatCount">
+                Toistojen määrä
+                <TextField 
+                  name="repeatCount" 
+                  type="number" 
+                  value={this.state.repeatCount} 
+                  onChange={handleValueChange}/>
+              </div>
+            </div>
+            <div className="save">
+              <Button variant="contained" onClick={saveChanges}>Tallenna muutokset</Button>
+            </div>
+          </div>
         </div>
         
       );
