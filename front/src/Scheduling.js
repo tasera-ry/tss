@@ -16,6 +16,10 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
 import moment from 'moment';
 
 class Scheduling extends Component {
@@ -163,15 +167,20 @@ class Scheduling extends Component {
 
         //lovely bubble sort speeds
         //sets tracks that have supervisor present to active
-        this.closeAllTracks();
+        this.emptyAllTracks();
         for (var key in this.state.tracks) {
           for (var jkey in json) {
             //console.log(key,jkey,this.state.tracks[key].id,json[jkey].track_id)
             if(this.state.tracks[key].id === json[jkey].track_id){
               console.log("match",key,jkey,this.state.tracks[key].id,json[jkey].track_id);
-              if(json[jkey].track_supervisor === 'present'){
+              if(json[jkey].track_supervisor === 'present' || json[jkey].track_supervisor === 'closed'){
                 this.setState({
-                  [this.state.tracks[key].id]: true
+                  [this.state.tracks[key].id]: json[jkey].track_supervisor
+                });
+              }
+              else {
+                this.setState({
+                  [this.state.tracks[key].id]: 'absent'
                 });
               }
             }
@@ -185,16 +194,25 @@ class Scheduling extends Component {
       console.log("Open tracks");
       for (var key in this.state.tracks) {
         this.setState({
-           [this.state.tracks[key].id]: true
+           [this.state.tracks[key].id]: 'present'
         });
       }
     };
     
+    emptyAllTracks = (event) => {
+      console.log("Empty tracks");
+      for (var key in this.state.tracks) {
+        this.setState({
+           [this.state.tracks[key].id]: 'absent'
+        });
+      }
+    };
+
     closeAllTracks = (event) => {
       console.log("Close tracks");
       for (var key in this.state.tracks) {
         this.setState({
-           [this.state.tracks[key].id]: false
+           [this.state.tracks[key].id]: 'closed'
         });
       }
     };
@@ -229,6 +247,13 @@ class Scheduling extends Component {
         console.log("Switch",event.target.name, event.target.checked)
         this.setState({
            [event.target.name]: event.target.checked
+        });
+      };
+      
+      const handleRadioChange = (event) => {
+        console.log("Radio",event.target.name, event.target)
+        this.setState({
+           [event.target.name]: event.target.value
         });
       };
       
@@ -337,7 +362,7 @@ class Scheduling extends Component {
                 }
               }
               
-              let supervisorStatus = this.state[this.state.tracks[key].id] ? 'present' : 'absent';
+              let supervisorStatus = this.state[this.state.tracks[key].id];
               let params = {
                 track_supervisor: supervisorStatus
               };
@@ -390,13 +415,19 @@ class Scheduling extends Component {
           items.push(
             <React.Fragment
             key={key}>
-              {props.tracks[key].name}
-              <Switch
-                checked={ props.state[props.tracks[key].id] || false }
-                onChange={handleSwitchChange}
-                name={props.tracks[key].id}
-                inputProps={{ 'aria-label': 'secondary checkbox' }}
-              />
+              <FormControl component="fieldset">
+                <FormLabel component="legend">{props.tracks[key].name}</FormLabel>
+                  <RadioGroup 
+                    defaultValue="absent" 
+                    name={props.tracks[key].id} 
+                    onChange={handleRadioChange}
+                    value={ props.state[props.tracks[key].id] || 'absent'}
+                  >
+                    <FormControlLabel value="present" control={<Radio />} label="Valvoja paikalla" />
+                    <FormControlLabel value="absent" control={<Radio />} label="Ei valvojaa" />
+                    <FormControlLabel value="closed" control={<Radio />} label="Suljettu" />
+                  </RadioGroup>
+              </FormControl>
             </React.Fragment>
           );
         }
