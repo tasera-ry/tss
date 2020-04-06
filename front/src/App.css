@@ -1,8 +1,8 @@
 nav {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  min-height: 10vh;
-  background-color: lightblue;
-  color: black;
+   display: flex;
+   justify-content: space-around;
+   align-items: center;
+   min-height: 10vh;
+   background-color: #d8c3a5;
+   color: black;
 }
