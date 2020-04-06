@@ -35,7 +35,6 @@ class Scheduling extends Component {
           token:'SECRET-TOKEN',
           reservationId:null,
           scheduledRangeSupervisionId:null,
-          trackSupervisionId:null,
           range_id: null
         };
     }
@@ -157,10 +156,10 @@ class Scheduling extends Component {
         console.log("scheduledRangeSupervisionId",this.state.scheduledRangeSupervisionId)
         console.log("TRACK SUPERVISION",json)
         
-        let trackSupervisionId = null;
-        if(json.length > 0){
-          trackSupervisionId = json[0].id
-        }
+        //clarifies whether to use post or put later
+        this.setState({
+          existingTracks: json
+        });
 
         //lovely bubble sort speeds
         //sets tracks that have supervisor present to active
@@ -263,14 +262,9 @@ class Scheduling extends Component {
           scheduledRangeSupervisionMethod = 'PUT';
           scheduledRangeSupervisionPath = "/"+this.state.scheduledRangeSupervisionId;
         } else scheduledRangeSupervisionMethod = 'POST';
-        
-        if(this.state.trackSupervisionId !== null){
-          trackSupervisionMethod = 'PUT';
-          trackSupervisionPath = "/"+this.state.trackSupervisionId;
-        } else trackSupervisionMethod = 'POST';
-        
-        console.log("PRE SEND",this.state.reservationId,this.state.scheduledRangeSupervisionId,this.state.trackSupervisionId);
-        console.log("PRE SEND",reservationMethod,scheduledRangeSupervisionMethod,trackSupervisionMethod);
+
+        console.log("PRE SEND",this.state.reservationId,this.state.scheduledRangeSupervisionId);
+        console.log("PRE SEND",reservationMethod,scheduledRangeSupervisionMethod);
         
         let params = {
           range_id: this.state.range_id, 
@@ -332,7 +326,59 @@ class Scheduling extends Component {
           })
           .then(json => {
             console.log("schedule success",json);
-            //TODO up to date?
+            
+            //track supervision
+            for (var key in this.state.tracks) {
+              
+              let exists = false;
+              for (var ekey in this.state.existingTracks) {
+                if( this.state.tracks[key].id === this.state.existingTracks[ekey].track_id){
+                  exists = true;
+                }
+              }
+              
+              let supervisorStatus = this.state[this.state.tracks[key].id] ? 'present' : 'absent';
+              let params = {
+                track_supervisor: supervisorStatus
+              };
+              console.log("params",params)              
+              
+              let srsp = '';
+              if(exists){
+                scheduledRangeSupervisionMethod = 'PUT';
+                srsp = scheduledRangeSupervisionPath + '/' + this.state.tracks[key].id;
+              } 
+              else
+              {
+                scheduledRangeSupervisionMethod = 'POST';
+                params = {
+                  ...params,
+                  scheduled_range_supervision_id:this.state.scheduledRangeSupervisionId,
+                  track_id:this.state.tracks[key].id
+                };
+              }
+              console.log("srsp",srsp,scheduledRangeSupervisionMethod);
+              
+              fetch("/api/track-supervision"+srsp, {
+                method: scheduledRangeSupervisionMethod,
+                body: new URLSearchParams(params),
+                headers: {
+                  Authorization: `Bearer ${this.state.token}`
+                }
+              })
+              .then(res => {
+                console.log("response",res);
+                if(res.status !== 204){ //no content crashes json parse so skip it
+                  res.json()
+                }
+              })
+              .then(json => {
+                console.log("track supervision "+this.state.tracks[key].name+" "+this.state.tracks[key].name+" success",json);
+                //TODO up to date?
+                
+              });
+            }
+            
           });
         });
       };
