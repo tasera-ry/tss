@@ -38,7 +38,7 @@ class Scheduling extends Component {
         daily:false,
         weekly:false,
         monthly:false,
-        repeatCount:'',
+        repeatCount:1,
         token:'SECRET-TOKEN',
         reservationId:null,
         scheduledRangeSupervisionId:null,
@@ -91,19 +91,9 @@ class Scheduling extends Component {
   }
   
   getReservation(){
-    fetch("/api/reservation?date="+moment(this.state.date).format('YYYY-MM-DD'), {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${this.state.token}`
-      }
-    })
-    .then(res => res.json())
-    .then(json => {
-      console.log("RESERVATION",json)
-      let rsId = null;
-      if(json.length > 0){
-        rsId = json[0].id
-      }
+    this.getReservationInfo(this.state.date).then((res)=>{
+      console.log(res);
+      let rsId = res;
       this.setState({
         reservationId:rsId
       },
@@ -113,41 +103,88 @@ class Scheduling extends Component {
     });
   }
   
+  //return:
+  //  reservation id
+  async getReservationInfo(date){
+    return new Promise(resolve => {
+      fetch("/api/reservation?date="+moment(date).format('YYYY-MM-DD'), {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.state.token}`
+        }
+      })
+      .then(res => res.json())
+      .then(json => {
+        console.log("RESERVATION",json)
+        let rsId = null;
+        if(json.length > 0){
+          rsId = json[0].id
+        }
+        resolve(rsId);
+      });
+    });
+  }
+  
   getSchedule(){
-    fetch("/api/schedule?range_reservation_id="+this.state.reservationId, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${this.state.token}`
-      }
-    })
-    .then(res => res.json())
-    .then(json => {
-      console.log("reservationid",this.state.reservationId)
-      console.log("SCHEDULE",json)
-      let rangeOfficerId = null;
-      let start = 0;
-      let end = 0;
-      let rangeOfficerSwitch = false;
-      let scheduledRangeSupervisionId = null;
-      if(json.length > 0){
-        console.log("resid",json[0].supervisor_id,start)
-        rangeOfficerId = json[0].supervisor_id; //is this even the correct id? links to supervisor table which links to user table
-        start = moment(json[0].open, 'h:mm:ss').format();
-        end = moment(json[0].close, 'h:mm:ss').format();
-        rangeOfficerSwitch = json[0].supervisor_id !== null ? true : false;
-        scheduledRangeSupervisionId = json[0].id;
-        console.log("resid",rangeOfficerId,start,end)
-      }
+    this.getScheduleInfo(this.state.reservationId).then((res)=>{
+      console.log(res);
+      let gsiObj = res;
       this.setState({
-        rangeOfficerSwitch: rangeOfficerSwitch,
-        rangeOfficerId:rangeOfficerId,
-        start: start,
-        end: end,
-        scheduledRangeSupervisionId: scheduledRangeSupervisionId
+        rangeOfficerSwitch: gsiObj.rangeOfficerSwitch,
+        rangeOfficerId:gsiObj.rangeOfficerId,
+        start: gsiObj.start,
+        end: gsiObj.end,
+        scheduledRangeSupervisionId: gsiObj.scheduledRangeSupervisionId
       },
       function() {
+        console.log("uhh",this.state)
         this.getTracksupervision();
       })
+    });
+  }
+  
+  //return:
+  //  rangeOfficerId
+  //  start
+  //  end
+  //  rangeOfficerSwitch
+  //  scheduledRangeSupervisionId
+  async getScheduleInfo(reservationId){
+    return new Promise(resolve => {
+      fetch("/api/schedule?range_reservation_id="+reservationId, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.state.token}`
+        }
+      })
+      .then(res => res.json())
+      .then(json => {
+        console.log("reservationid",reservationId)
+        console.log("SCHEDULE",json)
+        let rangeOfficerId = null;
+        let start = 0;
+        let end = 0;
+        let rangeOfficerSwitch = false;
+        let scheduledRangeSupervisionId = null;
+        
+        if(json.length > 0){
+          console.log("resid",json[0].supervisor_id,start)
+          rangeOfficerId = json[0].supervisor_id; //is this even the correct id? links to supervisor table which links to user table
+          start = moment(json[0].open, 'h:mm:ss').format();
+          end = moment(json[0].close, 'h:mm:ss').format();
+          rangeOfficerSwitch = json[0].supervisor_id !== null ? true : false;
+          scheduledRangeSupervisionId = json[0].id;
+          console.log("resid",rangeOfficerId,start,end)
+        }
+        
+        resolve({
+          rangeOfficerId:rangeOfficerId,
+          start:start,
+          end:end,
+          rangeOfficerSwitch:rangeOfficerSwitch,
+          scheduledRangeSupervisionId:scheduledRangeSupervisionId,
+        });
+      });
     });
   }
 
@@ -191,6 +228,8 @@ class Scheduling extends Component {
     });
   }
   
+  //if these all tracks can work with trackChanges only changed updates could be sent
+  //there's a bug somewhere that makes state handling here a pain
   openAllTracks = () => {        
     console.log("Open tracks");
     for (var key in this.state.tracks) {
@@ -269,6 +308,30 @@ class Scheduling extends Component {
       });
     };
     
+    const handleRepeatChange = (event) => {
+      console.log("Repeat",event.target.name, event.target.checked)
+      
+      let daily = false;
+      let weekly = false;
+      let monthly = false;
+      
+      if(event.target.name === 'daily'){
+        daily = !this.state.daily;
+      }
+      else if(event.target.name === 'weekly'){
+        weekly = !this.state.weekly;
+      }
+      else if(event.target.name === 'monthly'){
+        monthly = !this.state.monthly;
+      }
+      
+      this.setState({
+        daily: daily,
+        weekly: weekly,
+        monthly: monthly
+      });
+    };
+    
     const handleRadioChange = (event) => {
       console.log("Radio",event.target.name, event.target)
       let trackChanges = {
@@ -291,6 +354,64 @@ class Scheduling extends Component {
     
     const saveChanges = (event) => {
       console.log("save")
+      let date = moment(this.state.date).format('YYYY-MM-DD');
+      updateRequirements(date)
+      
+      //repeat after me
+      if(this.state.daily === true || 
+         this.state.weekly === true || 
+         this.state.monthly === true
+      ){
+        for (var i = 0; i < this.state.repeatCount; i++) {
+          if(this.state.daily === true){
+            date = moment(date).add(1, 'days');
+            updateRequirements(date);
+          }
+          else if(this.state.weekly === true){
+            date = moment(date).add(1, 'weeks');
+            updateRequirements(date);
+          }
+          else if(this.state.monthly === true){
+            date = moment(date).add(1, 'months');
+            updateRequirements(date);
+          }
+        }
+      }
+    };
+    
+    const updateRequirements = (date) => {
+      console.log("UPDATE Re´RQUIREMENTS",date);
+      this.getReservationInfo(date).then((res)=>{
+        let rsId = res;
+        console.log("rs",rsId);
+        this.getScheduleInfo(rsId).then((res)=>{
+          let srsId = res;
+          console.log("srs",srsId);
+          updateCall(date,rsId,srsId);
+        });
+      });
+    }
+    
+    /*
+    * requires:
+    * date,
+    * reservationId,
+    * scheduledRangeSupervisionId,
+    *
+    * from state:
+    * this.state.range_id
+    * this.state.token
+    * this.state.rangeOfficerSwitch
+    * this.state.start
+    * this.state.end
+    * this.state.rangeOfficerId
+    * this.state.tracks
+    * this.state.existingTracks
+    * supervisorStatus = this.state[this.state.tracks[key].id]
+    */
+    const updateCall = (date,rsId,gsiObj) => {
+      console.log("UPDATE CALL",date,rsId,gsiObj.srsId);
+      let srsId = gsiObj.scheduledRangeSupervisionId;
       
       let reservationMethod;
       let reservationPath = "";
@@ -303,20 +424,20 @@ class Scheduling extends Component {
       //trackSupervisionId:null,
       if(this.state.reservationId !== null){
         reservationMethod = 'PUT';
-        reservationPath = "/"+this.state.reservationId;
+        reservationPath = "/"+rsId;
       } else reservationMethod = 'POST';
       
       if(this.state.scheduledRangeSupervisionId !== null){
         scheduledRangeSupervisionMethod = 'PUT';
-        scheduledRangeSupervisionPath = "/"+this.state.scheduledRangeSupervisionId;
+        scheduledRangeSupervisionPath = "/"+srsId;
       } else scheduledRangeSupervisionMethod = 'POST';
 
-      console.log("PRE SEND",this.state.reservationId,this.state.scheduledRangeSupervisionId);
+      console.log("PRE SEND",rsId,srsId);
       console.log("PRE SEND",reservationMethod,scheduledRangeSupervisionMethod);
       
       let params = {
         range_id: this.state.range_id, 
-        date: moment(this.state.date).format('YYYY-MM-DD'), 
+        date: moment(date).format('YYYY-MM-DD'), 
         available: this.state.rangeOfficerSwitch //did available mean range officer?
       };
       console.log("params",params)        
@@ -341,7 +462,7 @@ class Scheduling extends Component {
         console.log("reservation success",json);
         
         let params = {
-          reservation_id: this.state.reservationId,
+          reservation_id: rsId,
           open: moment(this.state.start).format('HH:mm'), 
           close: moment(this.state.end).format('HH:mm')
         };
@@ -376,9 +497,7 @@ class Scheduling extends Component {
           console.log("schedule success",json);
           
           //track supervision
-          for (var key in this.state.trackChanges) {
-            //this.state.tracks 0-> trackchanges 1->
-            key--;
+          for (var key in this.state.tracks) {
             console.log("ts",key,this.state.tracks[key])
             let exists = false;
             for (var ekey in this.state.existingTracks) {
@@ -403,7 +522,7 @@ class Scheduling extends Component {
               scheduledRangeSupervisionMethod = 'POST';
               params = {
                 ...params,
-                scheduled_range_supervision_id:this.state.scheduledRangeSupervisionId,
+                scheduled_range_supervision_id:srsId,
                 track_id:this.state.tracks[key].id
               };
             }
@@ -430,8 +549,8 @@ class Scheduling extends Component {
           }
           
         });
-      });
-    };
+      });    
+    }
     
     //builds tracklist
     function TrackList(props) {
@@ -578,7 +697,7 @@ class Scheduling extends Component {
               Toista päivittäin
               <Switch
                 checked={ this.state.daily }
-                onChange={handleSwitchChange}
+                onChange={handleRepeatChange}
                 name='daily'
               />
             </div>
@@ -586,7 +705,7 @@ class Scheduling extends Component {
               Toista viikottain
               <Switch
                 checked={ this.state.weekly }
-                onChange={handleSwitchChange}
+                onChange={handleRepeatChange}
                 name='weekly'
               />
             </div>
@@ -594,7 +713,7 @@ class Scheduling extends Component {
               Toista 4 viikon välein
               <Switch
                 checked={ this.state.monthly }
-                onChange={handleSwitchChange}
+                onChange={handleRepeatChange}
                 name='monthly'
               />
             </div>
@@ -604,7 +723,10 @@ class Scheduling extends Component {
                 name="repeatCount" 
                 type="number" 
                 value={this.state.repeatCount} 
-                onChange={handleValueChange}/>
+                onChange={handleValueChange}
+                defaultValue={1}
+                InputProps={{ inputProps: { min: 1, max: 100 } }}
+              />
             </div>
           </div>
           <div className="save">
