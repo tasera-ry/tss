@@ -1,9 +1,11 @@
+const crypto = require('crypto')
+
 const config = {
   server: {
     port: 8000
   },
   jwt: {
-    secret: 'example-secret'
+    secret: crypto.randomBytes(2 ** 8).toString('hex')
   },
   development: {
     range_id: 1
