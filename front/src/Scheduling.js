@@ -20,6 +20,10 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
+import Fade from '@material-ui/core/Fade';
+import Backdrop from '@material-ui/core/Backdrop';
 import moment from 'moment';
 import "moment/locale/fi";
 moment.locale("fi");
@@ -29,6 +33,7 @@ class Scheduling extends Component {
   constructor(props) {
       super(props);
       this.state = {
+        state: 'loading', //loading, ready
         date: new Date(),
         start: new Date(),
         end: new Date(),
@@ -224,7 +229,12 @@ class Scheduling extends Component {
           }
         }
       }
-      
+      //at the end stop spinner
+      //check scheduledRangeSupervisionId null
+      //and others
+      this.setState({
+        state:'ready'
+      });
     });
   }
   
@@ -280,7 +290,8 @@ class Scheduling extends Component {
     const selectedDate = this.state.date;
     const handleDateChange = (date) => {
       this.setState({
-         date: date
+        state: 'loading',
+        date: date
       },
       function() {
         this.update()
@@ -350,6 +361,11 @@ class Scheduling extends Component {
       this.setState({
          [event.target.name]: event.target.value
       });
+    };
+    
+    const handleBackdropClick = (event) => {
+      console.log("Backdrop clicked",event);
+      event.preventDefault();
     };
     
     const saveChanges = (event) => {
@@ -620,19 +636,26 @@ class Scheduling extends Component {
     return (
       <div className="root">
         <div className="firstSection">
+          <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
+            <KeyboardDatePicker
+              autoOk
+              margin="normal"
+              name="date"
+              label="Valitse päivä"
+              value={selectedDate}
+              onChange={date => handleDateChange(date)}
+              format="DD.MM.YYYY"
+              showTodayButton
+            />
+          </MuiPickersUtilsProvider>
+        </div>
+        <hr/>
+        <Backdrop open={this.state.state!=='ready'?true:false} onClick={handleBackdropClick}>
+          <CircularProgress disableShrink />
+        </Backdrop>
+        <div className="secondSection">
           <div className="topRow">
-            <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
-              <KeyboardDatePicker
-                autoOk
-                margin="normal"
-                name="date"
-                label="Valitse päivä"
-                value={selectedDate}
-                onChange={date => handleDateChange(date)}
-                format="DD.MM.YYYY"
-                showTodayButton
-              />
-            </MuiPickersUtilsProvider>
+
             <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
               <KeyboardTimePicker
                 autoOk
@@ -676,7 +699,7 @@ class Scheduling extends Component {
           </div>
         </div>
         <hr/>
-        <div className="secondSection">
+        <div className="thirdSection">
           <div className="leftSide">
             {/*Butchered state?*/}
             <TrackList 
@@ -691,7 +714,7 @@ class Scheduling extends Component {
           </div>
         </div>
         <hr/>
-        <div className="thirdSection">
+        <div className="fourthSection">
           <div className="repetition">
             <div className="daily">
               Toista päivittäin
