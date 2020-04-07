@@ -1,23 +1,12 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const { validationResult, matchedData } = require('express-validator');
 const _ = require('lodash')
 
 const path = require('path')
 const root = path.join(__dirname, '..')
 const services = require(path.join(root, 'services'))
-const config = require(path.join(root, 'config'))
-
 
 const controller = {
-  sign: async function signUser(request, response) {
-    return response
-      .status(200)
-      .send(jwt.sign({
-        id: response.locals.id
-      }, config.jwt.secret))
-  }
-
-  , readFilter: async function readFilterUsers(request, response) {
+  readFilter: async function readFilterSupervisions(request, response) {
     return response
       .status(200)
       .send(response.locals.queryResult)
@@ -28,7 +17,7 @@ const controller = {
       return response
         .status(404)
         .send({
-          error: 'Query didn\'t match a user'
+          error: 'Query didn\'t match track supervision event'
         })
     }
     return response
@@ -36,30 +25,24 @@ const controller = {
       .send(response.locals.queryResult)
   }
 
-  , create: async function createUser(request, response) {
+  , create: async function createSupervision(request, response) {
     return response
       .status(201)
       .send(response.locals.queryResult)
   }
 
-  , read: async function readUser(request, response) {
-    return response
-      .status(200)
-      .send(response.locals.queryResult)
-  }
-
-  , update: async function updateUser(request, response) {
-    return response
+  , update: async function updateSupervision(request, response) {
+    response
       .status(204)
       .send()
   }
 
-  , delete: async function deleteUser(request, response) {
+  , delete: async function deleteSupervision(request, response) {
     if(response.locals.queryResult === 0) {
       return response
         .status(404)
         .send({
-          error: `No user exists matching id ${response.locals.query.id}`
+          error: `No track supervision event exists matching id ${response.locals.query.scheduled_range_supervision_id} and ${response.locals.query.track_id}`
         })
     }
     return response

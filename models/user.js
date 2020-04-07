@@ -1,22 +1,12 @@
+/* TODO
+ * Replace validations with validator.js
+ */
+const _ = require('lodash')
+const validate = require('validate.js')
+
 const path = require('path')
 const root = path.join(__dirname, '..')
-const validate = require('validate.js')
 const knex = require(path.join(root, 'knex', 'knex'))
-const _ = require('lodash')
-
-// Turn this into an npm package, move somewhere else, or find a replacement
-// package
-const stringify = _.partialRight(JSON.stringify, undefined, 2)
-
-// Turn this into a package as well
-const remapKeys = (mapper, obj) => {
-  const keyMapper = (acc, key) => ({
-    ...acc,
-    ...{ [mapper[key] || key]: obj[key] }
-  })
-  
-  return Object.keys(obj).reduce(keyMapper, {})
-}
 
 const model = {
   /** 
@@ -93,27 +83,19 @@ const model = {
    * exports.update({ name: 'Mark }, { digest: 'new_password_digest' })
    */
   , update: async function updateUser(current, update) {
-    if(validate.isDefined(update.role)) {
-      throw Error('User\'s role may not be updated: ' + stringify(update))
-    }
+    const user = _.pick(update, 'name', 'digest')
+    const supervisor = _.pick(update, 'phone')
 
-    const userConstraints = {
-      id: {}
-      , name: {}
-      , digest: {}
-    }
-
-    const supervisorConstraints = {
-      phone: {}
-    }
-
-    const user = validate.cleanAttributes(update, userConstraints)
-    const supervisor = validate.cleanAttributes(update, supervisorConstraints)
-    
     const id = await model
           .read(current, ['id'])
           .then(rows => rows[0])
-    
+
+    if(id === undefined) {
+      const err = Error('Didn\'t identify user(s) to update')
+      err.name = 'Unknown user'
+      throw err
+    }
+
     return await knex.transaction(trx => {
       return trx('user')
         .where(id)
@@ -140,16 +122,11 @@ const model = {
    * exports.del({ name: 'Mark })
    */
   , delete: async function deleteUser(user) {
-    const ids = await model.read(user, ['id'])
-    console.log(ids)
-
     return await knex.transaction(trx => {
-      return Promise.all(
-        ids.map(id => {
-          return trx('user')
-            .where(id)
-            .del()
-        })).then(trx.commit)
+      return trx('user')
+        .where(user)
+        .del()
+        .then(trx.commit)
         .catch(trx.rollback)
     })
   }
