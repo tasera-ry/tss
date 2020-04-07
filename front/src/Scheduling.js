@@ -34,6 +34,7 @@ class Scheduling extends Component {
         end: new Date(),
         rangeOfficerSwitch: false,
         rangeOfficerId: null,
+        trackChanges: {},
         daily:false,
         weekly:false,
         monthly:false,
@@ -169,12 +170,10 @@ class Scheduling extends Component {
 
       //lovely bubble sort speeds
       //sets tracks that have supervisor present to active
-      this.emptyAllTracks();
       for (var key in this.state.tracks) {
         for (var jkey in json) {
-          //console.log(key,jkey,this.state.tracks[key].id,json[jkey].track_id)
+          //match
           if(this.state.tracks[key].id === json[jkey].track_id){
-            console.log("match",key,jkey,this.state.tracks[key].id,json[jkey].track_id);
             if(json[jkey].track_supervisor === 'present' || json[jkey].track_supervisor === 'closed'){
               this.setState({
                 [this.state.tracks[key].id]: json[jkey].track_supervisor
@@ -192,29 +191,47 @@ class Scheduling extends Component {
     });
   }
   
-  openAllTracks = (event) => {        
+  openAllTracks = () => {        
     console.log("Open tracks");
     for (var key in this.state.tracks) {
+      let trackChanges = {
+        ...this.state.trackChanges,
+        [this.state.tracks[key].id]: 'present'
+      }
+      
       this.setState({
-         [this.state.tracks[key].id]: 'present'
+        trackChanges: trackChanges,
+        [this.state.tracks[key].id]: 'present'
       });
     }
   };
   
-  emptyAllTracks = (event) => {
+  emptyAllTracks = () => {
     console.log("Empty tracks");
     for (var key in this.state.tracks) {
+      let trackChanges = {
+        ...this.state.trackChanges,
+        [this.state.tracks[key].id]: 'absent'
+      }
+      
       this.setState({
-         [this.state.tracks[key].id]: 'absent'
+        trackChanges: trackChanges,
+        [this.state.tracks[key].id]: 'absent'
       });
     }
   };
 
-  closeAllTracks = (event) => {
+  closeAllTracks = () => {
     console.log("Close tracks");
     for (var key in this.state.tracks) {
+      let trackChanges = {
+        ...this.state.trackChanges,
+        [this.state.tracks[key].id]: 'closed'
+      }
+      
       this.setState({
-         [this.state.tracks[key].id]: 'closed'
+        trackChanges: trackChanges,
+        [this.state.tracks[key].id]: 'closed'
       });
     }
   };
@@ -254,8 +271,14 @@ class Scheduling extends Component {
     
     const handleRadioChange = (event) => {
       console.log("Radio",event.target.name, event.target)
+      let trackChanges = {
+        ...this.state.trackChanges,
+        [event.target.name]: event.target.value
+      }
+      
       this.setState({
-         [event.target.name]: event.target.value
+        trackChanges: trackChanges,
+        [event.target.name]: event.target.value
       });
     };
     
@@ -270,11 +293,9 @@ class Scheduling extends Component {
       console.log("save")
       
       let reservationMethod;
-      let scheduledRangeSupervisionMethod;
-      let trackSupervisionMethod;
       let reservationPath = "";
+      let scheduledRangeSupervisionMethod;
       let scheduledRangeSupervisionPath = "";
-      let trackSupervisionPath = "";
       
       //determine exist or not with:
       //reservationId:null,
@@ -355,8 +376,10 @@ class Scheduling extends Component {
           console.log("schedule success",json);
           
           //track supervision
-          for (var key in this.state.tracks) {
-            
+          for (var key in this.state.trackChanges) {
+            //this.state.tracks 0-> trackchanges 1->
+            key--;
+            console.log("ts",key,this.state.tracks[key])
             let exists = false;
             for (var ekey in this.state.existingTracks) {
               if( this.state.tracks[key].id === this.state.existingTracks[ekey].track_id){
@@ -368,7 +391,7 @@ class Scheduling extends Component {
             let params = {
               track_supervisor: supervisorStatus
             };
-            console.log("params",params)              
+            console.log("params",params,this.state.trackChanges)              
             
             let srsp = '';
             if(exists){
@@ -525,7 +548,6 @@ class Scheduling extends Component {
               checked={this.state.rangeOfficerSwitch}
               onChange={handleSwitchChange}
               name="rangeOfficerSwitch"
-              inputProps={{ 'aria-label': 'secondary checkbox' }}
             />
             {/*Butchered state?*/}
             <RangeOfficerSelect 
@@ -544,8 +566,9 @@ class Scheduling extends Component {
             />
           </div>
           <div className="rightSide">
-            <Button variant="contained" color="primary" onClick={this.openAllTracks}>Kaikki auki</Button>
-            <Button variant="contained" color="secondary" onClick={this.closeAllTracks}>Kaikki kiinni</Button>
+            <Button variant="contained" color="primary" onClick={this.openAllTracks}>Avaa kaikki</Button>
+            <Button variant="contained" onClick={this.emptyAllTracks}>Tyhjennä kaikki</Button>
+            <Button variant="contained" color="secondary" onClick={this.closeAllTracks}>Sulje kaikki</Button>
           </div>
         </div>
         <hr/>
@@ -557,7 +580,6 @@ class Scheduling extends Component {
                 checked={ this.state.daily }
                 onChange={handleSwitchChange}
                 name='daily'
-                inputProps={{ 'aria-label': 'secondary checkbox' }}
               />
             </div>
             <div className="weekly">
@@ -566,7 +588,6 @@ class Scheduling extends Component {
                 checked={ this.state.weekly }
                 onChange={handleSwitchChange}
                 name='weekly'
-                inputProps={{ 'aria-label': 'secondary checkbox' }}
               />
             </div>
             <div className="monthly">
@@ -575,7 +596,6 @@ class Scheduling extends Component {
                 checked={ this.state.monthly }
                 onChange={handleSwitchChange}
                 name='monthly'
-                inputProps={{ 'aria-label': 'secondary checkbox' }}
               />
             </div>
             <div className="repeatCount">
