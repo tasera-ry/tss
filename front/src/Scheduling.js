@@ -369,6 +369,10 @@ class Scheduling extends Component {
     };
     
     const saveChanges = (event) => {
+      this.setState({
+        state: 'loading'
+      });
+      
       console.log("save")
       let date = moment(this.state.date).format('YYYY-MM-DD');
       updateRequirements(date)
@@ -564,6 +568,9 @@ class Scheduling extends Component {
             });
           }
           
+          this.setState({
+            state: 'ready'
+          });
         });
       });    
     }
@@ -634,7 +641,7 @@ class Scheduling extends Component {
 
 
     return (
-      <div className="root">
+      <div className="schedulingRoot">
         <div className="firstSection">
           <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
             <KeyboardDatePicker
@@ -669,7 +676,7 @@ class Scheduling extends Component {
                 showTodayButton
               />
             </MuiPickersUtilsProvider>
-            <div>-</div>
+            <div className="dash">-</div>
             <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
               <KeyboardTimePicker
                 autoOk
@@ -685,12 +692,14 @@ class Scheduling extends Component {
             </MuiPickersUtilsProvider>
           </div>
           <div className="bottomRow">
-            Päävalvoja
-            <Switch
-              checked={this.state.rangeOfficerSwitch}
-              onChange={handleSwitchChange}
-              name="rangeOfficerSwitch"
-            />
+            <div className="roSwitch">
+              Päävalvoja
+              <Switch
+                checked={this.state.rangeOfficerSwitch}
+                onChange={handleSwitchChange}
+                name="rangeOfficerSwitch"
+              />
+            </div>
             {/*Butchered state?*/}
             <RangeOfficerSelect 
               rangeOfficers={this.state.rangeOfficers}

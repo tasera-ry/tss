@@ -1,0 +1,63 @@
+.schedulingRoot {
+  padding:1vmin 5vmin 1vmin 5vmin;
+}
+
+.schedulingRoot .MuiButton-contained {
+  margin:1vmin 1vmin 1vmin 0vmin;
+}
+
+hr {
+  margin:10px 0px 10px 0px;
+}
+
+.schedulingRoot .secondSection .topRow {
+  display:inline-block;
+  width:100%;
+}
+
+.schedulingRoot .secondSection .topRow .MuiFormControl-root {
+  width:100px;
+}
+
+.schedulingRoot .secondSection .topRow .MuiFormControl-root:nth-child(1) {
+  float:left;
+}
+
+.schedulingRoot .secondSection .topRow .dash {
+  float:left;
+  padding:35px 12.5px 0px 12.5px;
+}
+
+.schedulingRoot .secondSection .bottomRow {
+  display:inline-block;
+  width:100%;
+  padding:10px 0px 10px 0px;
+  /*background:green;*/
+}
+
+.schedulingRoot .secondSection .bottomRow .roSwitch {
+  float:left;
+  padding-top:13px;
+  /*background:blue;*/
+}
+
+.schedulingRoot .secondSection .bottomRow .MuiFormControl-root:nth-child(2) {
+  min-width:150px;
+  /*background:red;*/
+}
+
+.schedulingRoot .thirdSection {
+  padding-top:15px;
+}
+
+.schedulingRoot .thirdSection .MuiFormControl-root{
+  padding: 0px 30px 30px 0px;
+}
+
+.schedulingRoot .fourthSection .repeatCount .MuiFormControl-root{
+  width:50px;
+}
+
+.schedulingRoot .fourthSection .repeatCount{
+  padding-bottom:10px;
+}
