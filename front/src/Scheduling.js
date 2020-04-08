@@ -24,6 +24,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Fade from '@material-ui/core/Fade';
 import Backdrop from '@material-ui/core/Backdrop';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import Modal from '@material-ui/core/Modal';
 import moment from 'moment';
 import "moment/locale/fi";
 moment.locale("fi");
@@ -34,6 +37,7 @@ class Scheduling extends Component {
       super(props);
       this.state = {
         state: 'loading', //loading, ready
+        updated: false,
         date: new Date(),
         start: new Date(),
         end: new Date(),
@@ -343,6 +347,20 @@ class Scheduling extends Component {
       });
     };
     
+    function Alert(props) {
+      return <MuiAlert elevation={6} variant="filled" {...props} />;
+    }
+    
+    const handleSnackbarClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      
+      this.setState({
+        updated: false
+      });
+    };
+    
     const handleRadioChange = (event) => {
       console.log("Radio",event.target.name, event.target)
       let trackChanges = {
@@ -569,7 +587,8 @@ class Scheduling extends Component {
           }
           
           this.setState({
-            state: 'ready'
+            state: 'ready',
+            updated: true
           });
         });
       });    
@@ -642,6 +661,11 @@ class Scheduling extends Component {
 
     return (
       <div className="schedulingRoot">
+        <Modal open={this.state.state!=='ready'?true:false} onClick={handleBackdropClick}>
+          <Backdrop open={this.state.state!=='ready'?true:false} onClick={handleBackdropClick}>
+            <CircularProgress disableShrink />
+          </Backdrop>
+        </Modal>
         <div className="firstSection">
           <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
             <KeyboardDatePicker
@@ -657,9 +681,6 @@ class Scheduling extends Component {
           </MuiPickersUtilsProvider>
         </div>
         <hr/>
-        <Backdrop open={this.state.state!=='ready'?true:false} onClick={handleBackdropClick}>
-          <CircularProgress disableShrink />
-        </Backdrop>
         <div className="secondSection">
           <div className="topRow">
 
@@ -763,6 +784,13 @@ class Scheduling extends Component {
           </div>
           <div className="save">
             <Button variant="contained" onClick={saveChanges}>Tallenna muutokset</Button>
+            <div className="toast">
+              <Snackbar open={this.state.updated} autoHideDuration={5000} onClose={handleSnackbarClose}>
+                <Alert onClose={handleSnackbarClose} severity="success">
+                  Updated succesfully!
+                </Alert>
+              </Snackbar>
+            </div>
           </div>
         </div>
       </div>
