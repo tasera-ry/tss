@@ -55,6 +55,8 @@ hr {
 }
 
 .schedulingRoot .fourthSection .repeatCount .MuiFormControl-root{
+  margin-top:-2px;
+  padding-left:10px;
   width:50px;
 }
 
