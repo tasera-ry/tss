@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import './App.css';
 import './Scheduling.css'
-import Grid from '@material-ui/core/Grid';
 import MomentUtils from '@date-io/moment';
 import {
   MuiPickersUtilsProvider,
@@ -11,7 +10,6 @@ import {
 import Switch from '@material-ui/core/Switch';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
@@ -21,8 +19,6 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
-import Fade from '@material-ui/core/Fade';
 import Backdrop from '@material-ui/core/Backdrop';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -42,16 +38,16 @@ class Scheduling extends Component {
         start: new Date(),
         end: new Date(),
         rangeOfficerSwitch: false,
-        rangeOfficerId: null,
+        rangeOfficerId: '',
         trackChanges: {},
         daily:false,
         weekly:false,
         monthly:false,
         repeatCount:1,
         token:'SECRET-TOKEN',
-        reservationId:null,
-        scheduledRangeSupervisionId:null,
-        range_id: null
+        reservationId:'',
+        scheduledRangeSupervisionId:'',
+        range_id: ''
       };
   }
   
@@ -125,7 +121,7 @@ class Scheduling extends Component {
       .then(res => res.json())
       .then(json => {
         console.log("RESERVATION",json)
-        let rsId = null;
+        let rsId = '';
         if(json.length > 0){
           rsId = json[0].id
         }
@@ -170,18 +166,18 @@ class Scheduling extends Component {
       .then(json => {
         console.log("reservationid",reservationId)
         console.log("SCHEDULE",json)
-        let rangeOfficerId = null;
+        let rangeOfficerId = '';
         let start = 0;
         let end = 0;
         let rangeOfficerSwitch = false;
-        let scheduledRangeSupervisionId = null;
+        let scheduledRangeSupervisionId = '';
         
         if(json.length > 0){
           console.log("resid",json[0].supervisor_id,start)
           rangeOfficerId = json[0].supervisor_id; //is this even the correct id? links to supervisor table which links to user table
           start = moment(json[0].open, 'h:mm:ss').format();
           end = moment(json[0].close, 'h:mm:ss').format();
-          rangeOfficerSwitch = json[0].supervisor_id !== null ? true : false;
+          rangeOfficerSwitch = json[0].supervisor_id !== '' ? true : false;
           scheduledRangeSupervisionId = json[0].id;
           console.log("resid",rangeOfficerId,start,end)
         }
@@ -234,7 +230,7 @@ class Scheduling extends Component {
         }
       }
       //at the end stop spinner
-      //check scheduledRangeSupervisionId null
+      //check scheduledRangeSupervisionId ''
       //and others
       this.setState({
         state:'ready'
@@ -324,19 +320,19 @@ class Scheduling extends Component {
     };
     
     const handleRepeatChange = (event) => {
-      console.log("Repeat",event.target.name, event.target.checked)
+      console.log("Repeat",event.target.id, event.target.checked)
       
       let daily = false;
       let weekly = false;
       let monthly = false;
       
-      if(event.target.name === 'daily'){
+      if(event.target.id === 'daily'){
         daily = !this.state.daily;
       }
-      else if(event.target.name === 'weekly'){
+      else if(event.target.id === 'weekly'){
         weekly = !this.state.weekly;
       }
-      else if(event.target.name === 'monthly'){
+      else if(event.target.id === 'monthly'){
         monthly = !this.state.monthly;
       }
       
@@ -363,6 +359,8 @@ class Scheduling extends Component {
     
     const handleRadioChange = (event) => {
       console.log("Radio",event.target.name, event.target)
+      //having the name be a int causes
+      //Failed prop type: Invalid prop `name` of type `number`
       let trackChanges = {
         ...this.state.trackChanges,
         [event.target.name]: event.target.value
@@ -457,15 +455,15 @@ class Scheduling extends Component {
       let scheduledRangeSupervisionPath = "";
       
       //determine exist or not with:
-      //reservationId:null,
-      //scheduledRangeSupervisionId:null,
-      //trackSupervisionId:null,
-      if(this.state.reservationId !== null){
+      //reservationId:'',
+      //scheduledRangeSupervisionId:'',
+      //trackSupervisionId:'',
+      if(this.state.reservationId !== ''){
         reservationMethod = 'PUT';
         reservationPath = "/"+rsId;
       } else reservationMethod = 'POST';
       
-      if(this.state.scheduledRangeSupervisionId !== null){
+      if(this.state.scheduledRangeSupervisionId !== ''){
         scheduledRangeSupervisionMethod = 'PUT';
         scheduledRangeSupervisionPath = "/"+srsId;
       } else scheduledRangeSupervisionMethod = 'POST';
@@ -504,12 +502,7 @@ class Scheduling extends Component {
           open: moment(this.state.start).format('HH:mm'), 
           close: moment(this.state.end).format('HH:mm')
         };
-        /*
-        this.state.rangeOfficerId, 
-        this being null causes error: invalid input syntax for integer: "null"
-        [0]     at Connection.parseE (C:\Users\JH\Documents\tasera\TSS\node_modules\pg\lib\connection.js:614:13)          
-         */
-        if(this.state.rangeOfficerId !== null){
+        if(this.state.rangeOfficerId !== ''){
           params = {
             ...params,
             supervisor_id: this.state.rangeOfficerId
@@ -535,10 +528,10 @@ class Scheduling extends Component {
           console.log("schedule success",json);
           
           //track supervision
-          for (var key in this.state.tracks) {
+          for (let key in this.state.tracks) {
             console.log("ts",key,this.state.tracks[key])
             let exists = false;
-            for (var ekey in this.state.existingTracks) {
+            for (let ekey in this.state.existingTracks) {
               if( this.state.tracks[key].id === this.state.existingTracks[ekey].track_id){
                 exists = true;
               }
@@ -751,7 +744,7 @@ class Scheduling extends Component {
               <Switch
                 checked={ this.state.daily }
                 onChange={handleRepeatChange}
-                name='daily'
+                id='daily'
               />
             </div>
             <div className="weekly">
@@ -759,7 +752,7 @@ class Scheduling extends Component {
               <Switch
                 checked={ this.state.weekly }
                 onChange={handleRepeatChange}
-                name='weekly'
+                id='weekly'
               />
             </div>
             <div className="monthly">
@@ -767,17 +760,16 @@ class Scheduling extends Component {
               <Switch
                 checked={ this.state.monthly }
                 onChange={handleRepeatChange}
-                name='monthly'
+                id='monthly'
               />
             </div>
             <div className="repeatCount">
               Toistojen määrä
               <TextField 
-                name="repeatCount" 
+                name="repeatCount"
                 type="number" 
                 value={this.state.repeatCount} 
                 onChange={handleValueChange}
-                defaultValue={1}
                 InputProps={{ inputProps: { min: 1, max: 100 } }}
               />
             </div>
