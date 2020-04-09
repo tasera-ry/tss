@@ -390,14 +390,15 @@ class Scheduling extends Component {
         date: moment(date).format(), 
         available: true //TODO add button for availability?
       };
-      console.log("params",params)        
+      console.log("params",params)      
       
       //reservation
       fetch("/api/reservation"+reservationPath, {
-        redirect: 'follow',
         method: reservationMethod,
-        body: new URLSearchParams(params),
+        body: JSON.stringify(params),
         headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${this.state.token}`
         }
       })
@@ -410,20 +411,14 @@ class Scheduling extends Component {
           return reject(new Error('update reservation failed'));
         }
         if(res.status !== 204){ //no content crashes json parse so skip it
-          //for whatever reason res.json doesn't return anything
-          //but res.text does
-          return res.text()
+          return res.json();
         }
       })
       .then(json => {
-        let ids;
-        if(json !== undefined){
-          ids = json.match(/(\d+)/i);
-        }
-        console.log("reservation success",json,ids);
+        console.log("reservation success",json);
         if(typeof rsId !== 'number' && json !== undefined){
           console.log("rsId grabbed from result")
-          rsId = parseInt(ids[0])//json.id;
+          rsId = json.id;
         }
         console.log(rsId,(typeof rsId !== 'number'),typeof rsId)
         if(typeof rsId !== 'number'){
@@ -450,10 +445,11 @@ class Scheduling extends Component {
         
         //scheduled range supervision
         return fetch("/api/schedule"+scheduledRangeSupervisionPath, {
-          redirect: 'follow',
           method: scheduledRangeSupervisionMethod,
-          body: new URLSearchParams(params),
+          body: JSON.stringify(params),
           headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${this.state.token}`
           }
         })
@@ -464,18 +460,14 @@ class Scheduling extends Component {
             return reject(new Error('update schedule failed'));
           }
           if(res.status !== 204){ //no content crashes json parse so skip it
-            return res.text()
+            return res.json();
           }
         })
         .then(json => {
-          let ids;
-          if(json !== undefined){
-            ids = json.match(/(\d+)/i);
-          }
-          console.log("sched success",json,ids);
+          console.log("sched success",json);
           if(typeof srsId !== 'number' && json !== undefined){
             console.log("srsId grabbed from result")
-            srsId = parseInt(ids[0])//json.id;
+            srsId = json.id;
             //update tracks for new
             this.getTracksupervision(srsId).then((res)=>{
               console.log("GTS",res,this.state.existingTracks);
@@ -549,10 +541,11 @@ class Scheduling extends Component {
         console.log("srsp",srsp,trackSupervisionMethod);
         
         fetch("/api/track-supervision"+srsp, {
-          redirect: 'follow',
           method: trackSupervisionMethod,
-          body: new URLSearchParams(params),
+          body: JSON.stringify(params),
           headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${this.state.token}`
           }
         })
@@ -563,7 +556,7 @@ class Scheduling extends Component {
             return reject(new Error('update track supervision failed'));
           }
           if(res.status !== 204){ //no content crashes json parse so skip it
-            return res.text()
+            return res.json();
           }
         })
         .then(json => {
@@ -734,35 +727,39 @@ class Scheduling extends Component {
       })
       .then((res3) => {
         console.log("res3",res3);
-        this.updateCall(date,rsId,srsId).then((res4) => {
-          console.log("Gonna call update",res4,rsId,srsId);
-          this.setState({
-            state: 'ready',
-            toast: true,
-            toastMessage: "Päivitys onnistui",
-            toastSeverity: "success"
-          });
-        },
-        (error) => {
-          console.log("Failed call update",error);
-          console.error('Update rejection called: ' + error.message);
-          if(error.message === 'Range officer enabled but no id'){
+        (async () => {
+          const uc = await this.updateCall(date,rsId,srsId).then((res4) => {
+            console.log("Gonna call update",res4,rsId,srsId);
             this.setState({
-              toastMessage: "Päävalvoja aktiivinen ilman valvojaa",
-              toastSeverity: "warning",
+              state: 'ready',
               toast: true,
-              state: 'ready'
+              toastMessage: "Päivitys onnistui",
+              toastSeverity: "success"
             });
-          }
-          else{
-            this.setState({
-              toastMessage: "Päivitys epäonnistui",
-              toastSeverity: "error",
-              toast: true,
-              state: 'ready'
-            });
-          }
-        })
+          },
+          (error) => {
+            console.log("Failed call update",error);
+            console.error('Update rejection called: ' + error.message);
+            if(error.message === 'Range officer enabled but no id'){
+              this.setState({
+                toastMessage: "Päävalvoja aktiivinen ilman valvojaa",
+                toastSeverity: "warning",
+                toast: true,
+                state: 'ready'
+              });
+            }
+            else{
+              this.setState({
+                toastMessage: "Päivitys epäonnistui",
+                toastSeverity: "error",
+                toast: true,
+                state: 'ready'
+              });
+            }
+          })
+          console.log("uc",uc);
+        })();
+
       })
     }
 
