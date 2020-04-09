@@ -59,7 +59,10 @@ class Scheduling extends Component {
     this.update();
   }
   
-  update(){
+  update(avoidEmpty){
+    if(avoidEmpty  === true){
+      this.emptyAllTracks();
+    }
     console.log("update",this.state.rangeOfficerId,this.state.start,this.state.end);
     this.getReservation();
   }
@@ -130,7 +133,6 @@ class Scheduling extends Component {
   
   getReservation(){
     this.getReservationInfo(this.state.date).then((res)=>{
-      console.log(res);
       let rsId = res;
       this.setState({
         reservationId:rsId
@@ -173,7 +175,6 @@ class Scheduling extends Component {
   
   getSchedule(){
     this.getScheduleInfo(this.state.reservationId).then((res)=>{
-      console.log(res);
       let gsiObj = res;
       this.setState({
         rangeOfficerSwitch: gsiObj.rangeOfficerSwitch,
@@ -183,7 +184,7 @@ class Scheduling extends Component {
         scheduledRangeSupervisionId: gsiObj.scheduledRangeSupervisionId
       },
       function() {
-        this.getTracksupervision();
+        this.getTracksupervision(this.state.scheduledRangeSupervisionId);
       })
     },
     //promise error
@@ -241,49 +242,53 @@ class Scheduling extends Component {
     });
   }
   
-  getTracksupervision(){
-    fetch("/api/track-supervision?scheduled_range_supervision_id="+this.state.scheduledRangeSupervisionId, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${this.state.token}`
-      }
-    })
-    .then(res => res.json())
-    .then(json => {
-      console.log("scheduledRangeSupervisionId",this.state.scheduledRangeSupervisionId)
-      console.log("TRACK SUPERVISION",json)
-      
-      if(json.length > 0){
-        //lovely bubble sort speeds
-        //sets tracks that have supervisor present to active
-        for (var key in this.state.tracks) {
-          for (var jkey in json) {
-            //match
-            if(this.state.tracks[key].id === json[jkey].track_id){
-              if(json[jkey].track_supervisor === 'present' || json[jkey].track_supervisor === 'closed'){
-                this.setState({
-                  [this.state.tracks[key].id]: json[jkey].track_supervisor
-                });
-              }
-              else {
-                this.setState({
-                  [this.state.tracks[key].id]: 'absent'
-                });
+  async getTracksupervision(srsId){
+    return new Promise((resolve,reject) => {
+
+      fetch("/api/track-supervision?scheduled_range_supervision_id="+srsId, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.state.token}`
+        }
+      })
+      .then(res => res.json())
+      .then(json => {
+        console.log("scheduledRangeSupervisionId",this.state.scheduledRangeSupervisionId)
+        console.log("TRACK SUPERVISION",json)
+        
+        if(json.length > 0){
+          //lovely bubble sort speeds
+          //sets tracks that have supervisor present to active
+          for (var key in this.state.tracks) {
+            for (var jkey in json) {
+              //match
+              if(this.state.tracks[key].id === json[jkey].track_id){
+                if(json[jkey].track_supervisor === 'present' || json[jkey].track_supervisor === 'closed'){
+                  this.setState({
+                    [this.state.tracks[key].id]: json[jkey].track_supervisor
+                  });
+                }
+                else {
+                  this.setState({
+                    [this.state.tracks[key].id]: 'absent'
+                  });
+                }
               }
             }
           }
         }
-      }
-      else{
-        this.emptyAllTracks();
-      }
-      //at the end stop spinner
-      //existing clarifies whether to use post or put later
-      this.setState({
-        existingTracks: json,
-        state:'ready'
+
+        //at the end stop spinner
+        //existing clarifies whether to use post or put later
+        this.setState({
+          existingTracks: json,
+          state:'ready'
+        },
+        function() {
+          return resolve();
+        });
       });
-    });
+    })
   }
   
   //if these all tracks can work with trackChanges only changed updates could be sent
@@ -403,17 +408,23 @@ class Scheduling extends Component {
         if(res.status.toString().startsWith(4)){
           return reject(new Error('update reservation failed'));
         }
-        if(res.status == 204){ //no content crashes json parse so skip it
-          return res.json()
+        if(res.status !== 204){ //no content crashes json parse so skip it
+          //for whatever reason res.json doesn't return anything
+          //but res.text does
+          return res.text()
         }
       })
       .then(json => {
-        console.log("reservation success",json);
+        let ids;
+        if(json !== undefined){
+          ids = json.match(/(\d+)/i);
+        }
+        console.log("reservation success",json,ids);
         if(typeof rsId !== 'number' && json !== undefined){
           console.log("rsId grabbed from result")
-          rsId = json.id;
+          rsId = parseInt(ids[0])//json.id;
         }
-        console.log(rsId,typeof rsId !== 'number')
+        console.log(rsId,(typeof rsId !== 'number'),typeof rsId)
         if(typeof rsId !== 'number'){
           return reject(new Error('no reservation id in schedule'));
         }
@@ -447,79 +458,115 @@ class Scheduling extends Component {
             return reject(new Error('update schedule failed'));
           }
           if(res.status !== 204){ //no content crashes json parse so skip it
-            return res.json()
+            return res.text()
           }
         })
         .then(json => {
-          console.log("schedule success",json);
+          let ids;
+          if(json !== undefined){
+            ids = json.match(/(\d+)/i);
+          }
+          console.log("sched success",json,ids);
           if(typeof srsId !== 'number' && json !== undefined){
             console.log("srsId grabbed from result")
-            srsId = json.id;
+            srsId = parseInt(ids[0])//json.id;
+            //update tracks for new
+            this.getTracksupervision(srsId).then((res)=>{
+              console.log("GTS",res,this.state.existingTracks);
+              this.saveTrackSupervision(srsId).then((res) => {
+                console.log("track supervision",res);
+                this.update(true);
+              },
+              (error) => {
+                return reject(new Error("track supervision error"));
+              });
+            });
           }
-          console.log(srsId,typeof srsId !== 'number')
-          if(typeof srsId !== 'number'){
-            return reject(new Error('no schedule id in track supervision'));
-          }
-          
-          //track supervision
-          for (let key in this.state.tracks) {
-            console.log("ts",key,this.state.tracks[key])
-            let exists = false;
-            for (let ekey in this.state.existingTracks) {
-              if( this.state.tracks[key].id === this.state.existingTracks[ekey].track_id){
-                exists = true;
-              }
+          else {
+            console.log(srsId,(typeof srsId !== 'number'),typeof srsId)
+            if(typeof srsId !== 'number'){
+              return reject(new Error('no schedule id in track supervision'));
             }
-            
-            let supervisorStatus = this.state[this.state.tracks[key].id];
-            let params = {
-              track_supervisor: supervisorStatus
-            };
-            console.log("params",params,this.state.trackChanges)              
-            
-            let srsp = '';
-            if(exists){
-              scheduledRangeSupervisionMethod = 'PUT';
-              srsp = scheduledRangeSupervisionPath + '/' + this.state.tracks[key].id;
-            } 
-            else
-            {
-              scheduledRangeSupervisionMethod = 'POST';
-              params = {
-                ...params,
-                scheduled_range_supervision_id:srsId,
-                track_id:this.state.tracks[key].id
-              };
-            }
-            console.log("srsp",srsp,scheduledRangeSupervisionMethod);
-            
-            fetch("/api/track-supervision"+srsp, {
-              redirect: 'follow',
-              method: scheduledRangeSupervisionMethod,
-              body: new URLSearchParams(params),
-              headers: {
-                Authorization: `Bearer ${this.state.token}`
-              }
-            })
-            .then(res => {
-              console.log("response",res);
-              //400 and so on
-              if(res.status.toString().startsWith(4)){
-                return reject(new Error('update track supervision failed'));
-              }
-              if(res.status !== 204){ //no content crashes json parse so skip it
-                return res.json()
-              }
-            })
-            .then(json => {
-              console.log("track supervision "+this.state.tracks[key].name+" "+this.state.tracks[key].name+" success",json);
-              //TODO up to date?
+            this.saveTrackSupervision(srsId).then((res) => {
+              console.log("track supervision",res);
+              this.update(true);
+            },
+            (error) => {
+              return reject(new Error("track supervision error"));
             });
           }
           
           return resolve("update success")
         });
       });
+    })
+  }
+
+  async saveTrackSupervision(srsId){
+    return new Promise((resolve,reject) => {
+
+      //track supervision
+      for (let key in this.state.tracks) {
+        console.log("ts",key,this.state.tracks[key],this.state.existingTracks)
+        let exists = false;
+        for (let ekey in this.state.existingTracks) {
+          if( this.state.tracks[key].id === this.state.existingTracks[ekey].track_id){
+            exists = true;
+          }
+        }
+        
+        let supervisorStatus = this.state[this.state.tracks[key].id];
+        let params = {
+          track_supervisor: supervisorStatus
+        };
+        console.log("params",params,this.state.trackChanges)              
+        
+        let srsp = '';
+        let trackSupervisionMethod = '';
+        if(exists){
+          trackSupervisionMethod = 'PUT';
+          srsp = "/" + srsId + '/' + this.state.tracks[key].id;
+        } 
+        else
+        {
+          trackSupervisionMethod = 'POST';
+          params = {
+            ...params,
+            scheduled_range_supervision_id:srsId,
+            track_id:this.state.tracks[key].id
+          };
+          console.log("POST PARAMS",params);
+        }
+        console.log("srsp",srsp,trackSupervisionMethod);
+        
+        fetch("/api/track-supervision"+srsp, {
+          redirect: 'follow',
+          method: trackSupervisionMethod,
+          body: new URLSearchParams(params),
+          headers: {
+            Authorization: `Bearer ${this.state.token}`
+          }
+        })
+        .then(res => {
+          console.log("response",res);
+          //400 and so on
+          if(res.status.toString().startsWith(4)){
+            return reject(new Error('update track supervision failed'));
+          }
+          if(res.status !== 204){ //no content crashes json parse so skip it
+            return res.text()
+          }
+        })
+        .then(json => {
+          let ids;
+          if(json !== undefined){
+            ids = json.match(/(\d+)/i);
+            console.log("track supervision "+this.state.tracks[key].name+" "+this.state.tracks[key].name+" success",json,ids);
+            //TODO up to date?
+          }
+        });
+      }
+      return resolve("saveTrackSupervision");
     })
   }
 
@@ -682,7 +729,6 @@ class Scheduling extends Component {
           console.log("Gonna call update",res4,rsId,srsId);
           this.setState({
             updated: true,
-            state:'ready'
           });
         },
         (error) => {
