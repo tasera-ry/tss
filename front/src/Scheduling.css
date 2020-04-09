@@ -10,6 +10,16 @@ hr {
   margin:10px 0px 10px 0px;
 }
 
+.schedulingRoot .firstSection form {
+  display:flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+.schedulingRoot .firstSection .continue .MuiButtonBase-root{
+  margin:15px 0 0 10px;
+}
+
 .schedulingRoot .secondSection .topRow {
   display:inline-block;
   width:100%;
@@ -19,26 +29,25 @@ hr {
   width:100px;
 }
 
-.schedulingRoot .secondSection .topRow .MuiFormControl-root:nth-child(1) {
-  float:left;
+.schedulingRoot .secondSection .topRow {
+  display:flex;
+  flex-flow: row wrap;
+  align-items: center;
 }
 
 .schedulingRoot .secondSection .topRow .dash {
-  float:left;
-  padding:35px 12.5px 0px 12.5px;
+  padding:20px 20px 0 20px;
 }
 
 .schedulingRoot .secondSection .bottomRow {
-  display:inline-block;
-  width:100%;
-  padding:10px 0px 10px 0px;
-  /*background:green;*/
+  display:flex;
+  flex-flow: row wrap;
+  align-items: center;
+  padding:20px 0 20px 0;
 }
 
 .schedulingRoot .secondSection .bottomRow .roSwitch {
-  float:left;
   padding-top:13px;
-  /*background:blue;*/
 }
 
 .schedulingRoot .secondSection .bottomRow .MuiFormControl-root:nth-child(2) {
@@ -46,16 +55,24 @@ hr {
   /*background:red;*/
 }
 
-.schedulingRoot .thirdSection {
+.schedulingRoot .thirdSection .leftSide {
   padding-top:15px;
+  display:flex;
+  flex-flow: row wrap;
+  align-items: center;
 }
 
 .schedulingRoot .thirdSection .MuiFormControl-root{
   padding: 0px 30px 30px 0px;
 }
 
+.schedulingRoot .fourthSection .repeatCount {
+  display:flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
 .schedulingRoot .fourthSection .repeatCount .MuiFormControl-root{
-  margin-top:-2px;
   padding-left:10px;
   width:50px;
 }

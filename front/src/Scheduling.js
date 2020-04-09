@@ -58,6 +58,10 @@ class Scheduling extends Component {
     this.getTracks();
     this.getRangeOfficers();
     this.update();
+    
+    this.setState({
+      state: 'loading'
+    });
   }
   
   update(avoidEmpty){
@@ -560,12 +564,8 @@ class Scheduling extends Component {
           }
         })
         .then(json => {
-          let ids;
-          if(json !== undefined){
-            ids = json.match(/(\d+)/i);
-            console.log("track supervision "+this.state.tracks[key].name+" "+this.state.tracks[key].name+" success",json,ids);
-            //TODO up to date?
-          }
+          console.log("track supervision "+this.state.tracks[key].name+" "+this.state.tracks[key].name+" success",json);
+          //TODO up to date?
         });
       }
       return resolve("saveTrackSupervision");
@@ -577,13 +577,20 @@ class Scheduling extends Component {
     const selectedDate = this.state.date;
     const handleDateChange = (date) => {
       this.setState({
-        state: 'loading',
         date: date
-      },
-      function() {
-        this.update()
       });
     };
+    
+    const continueWithDate = (event) => {
+      console.log("contwithdate",event);
+      if(event.type !== undefined && event.type === 'submit'){
+        event.preventDefault();
+      }
+      this.setState({
+        state: 'loading'
+      });
+      this.update();
+    }
     
     const selectedTimeStart = this.state.start;
     const handleTimeStartChange = (date) => {
@@ -836,18 +843,24 @@ class Scheduling extends Component {
           </Backdrop>
         </Modal>
         <div className="firstSection">
-          <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
-            <KeyboardDatePicker
-              autoOk
-              margin="normal"
-              name="date"
-              label="Valitse päivä"
-              value={selectedDate}
-              onChange={date => handleDateChange(date)}
-              format="DD.MM.YYYY"
-              showTodayButton
-            />
-          </MuiPickersUtilsProvider>
+          <form onSubmit={continueWithDate}>
+            <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
+              <KeyboardDatePicker
+                autoOk
+                margin="normal"
+                name="date"
+                label="Valitse päivä"
+                value={selectedDate}
+                onChange={date => handleDateChange(date)}
+                onAccept={continueWithDate}
+                format="DD.MM.YYYY"
+                showTodayButton
+              />
+            </MuiPickersUtilsProvider>
+            <div className="continue">
+              <Button type="submit" variant="contained">Valitse päivä</Button>
+            </div>
+          </form>
         </div>
         <hr/>
         <div className="secondSection">
