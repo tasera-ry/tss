@@ -33,8 +33,9 @@ class Scheduling extends Component {
       super(props);
       this.state = {
         state: 'loading', //loading, ready
-        updated: false,
-        updateFailed: false,
+        toast:false,
+        toastMessage:'Nope',
+        toastSeverity:'success',
         date: new Date(),
         start: new Date(),
         end: new Date(),
@@ -178,7 +179,7 @@ class Scheduling extends Component {
       let gsiObj = res;
       this.setState({
         rangeOfficerSwitch: gsiObj.rangeOfficerSwitch,
-        rangeOfficerId:gsiObj.rangeOfficerId,
+        rangeOfficerId:(gsiObj.rangeOfficerId !== null ? gsiObj.rangeOfficerId : ''),
         start: gsiObj.start,
         end: gsiObj.end,
         scheduledRangeSupervisionId: gsiObj.scheduledRangeSupervisionId
@@ -220,10 +221,10 @@ class Scheduling extends Component {
         
         if(json.length > 0){
           console.log("resid",json[0].supervisor_id,start)
-          rangeOfficerId = json[0].supervisor_id; //is this even the correct id? links to supervisor table which links to user table
+          rangeOfficerId = json[0].supervisor_id;
           start = moment(json[0].open, 'h:mm:ss').format();
           end = moment(json[0].close, 'h:mm:ss').format();
-          rangeOfficerSwitch = json[0].supervisor_id !== '' ? true : false;
+          rangeOfficerSwitch = json[0].supervisor_id !== null ? true : false;
           scheduledRangeSupervisionId = json[0].id;
           console.log("resid",rangeOfficerId,start,end)
         }
@@ -387,7 +388,7 @@ class Scheduling extends Component {
       let params = {
         range_id: this.state.range_id, 
         date: moment(date).format(), 
-        available: (this.state.rangeOfficerSwitch === true ? true : false) //did available mean range officer?
+        available: true //TODO add button for availability?
       };
       console.log("params",params)        
       
@@ -405,7 +406,7 @@ class Scheduling extends Component {
         //error: duplicate key value violates unique constraint "range_reservation_range_id_date_unique"
         console.log("response",res);
         //400 and so on
-        if(res.status.toString().startsWith(4)){
+        if(res.status.toString().startsWith(2) !== true){
           return reject(new Error('update reservation failed'));
         }
         if(res.status !== 204){ //no content crashes json parse so skip it
@@ -432,18 +433,23 @@ class Scheduling extends Component {
         let params = {
           range_reservation_id: rsId,
           open: moment(this.state.start).format('HH:mm'), 
-          close: moment(this.state.end).format('HH:mm')
+          close: moment(this.state.end).format('HH:mm'),
+          supervisor_id: null
         };
-        if(this.state.rangeOfficerId !== ''){
-          params = {
-            ...params,
-            supervisor_id: this.state.rangeOfficerId
-          };
+        console.log("user",this.state.rangeOfficerSwitch === true, this.state.rangeOfficerId !== '')
+        if(this.state.rangeOfficerSwitch === true){
+          if(this.state.rangeOfficerId !== ''){
+            params = {
+              ...params,
+              supervisor_id: this.state.rangeOfficerId
+            };
+          }
+          else return reject(new Error('Range officer enabled but no id'));
         }
         console.log("params",params)
         
         //scheduled range supervision
-        fetch("/api/schedule"+scheduledRangeSupervisionPath, {
+        return fetch("/api/schedule"+scheduledRangeSupervisionPath, {
           redirect: 'follow',
           method: scheduledRangeSupervisionMethod,
           body: new URLSearchParams(params),
@@ -454,7 +460,7 @@ class Scheduling extends Component {
         .then(res => {
           console.log("response",res);
           //400 and so on
-          if(res.status.toString().startsWith(4)){
+          if(res.status.toString().startsWith(2) !== true){
             return reject(new Error('update schedule failed'));
           }
           if(res.status !== 204){ //no content crashes json parse so skip it
@@ -478,8 +484,11 @@ class Scheduling extends Component {
                 this.update(true);
               },
               (error) => {
-                return reject(new Error("track supervision error"));
+                return reject(new Error("track supervision error 1"));
               });
+            },
+            (error) => {
+              return reject(new Error("track supervision error 2"));
             });
           }
           else {
@@ -492,7 +501,7 @@ class Scheduling extends Component {
               this.update(true);
             },
             (error) => {
-              return reject(new Error("track supervision error"));
+              return reject(new Error("track supervision error 3"));
             });
           }
           
@@ -550,7 +559,7 @@ class Scheduling extends Component {
         .then(res => {
           console.log("response",res);
           //400 and so on
-          if(res.status.toString().startsWith(4)){
+          if(res.status.toString().startsWith(2) !== true){
             return reject(new Error('update track supervision failed'));
           }
           if(res.status !== 204){ //no content crashes json parse so skip it
@@ -638,8 +647,7 @@ class Scheduling extends Component {
       }
       
       this.setState({
-        updated: false,
-        updateFailed: false
+        toast:false
       });
     };
     
@@ -671,10 +679,6 @@ class Scheduling extends Component {
     };
     
     const saveChanges = (event) => {
-      this.setState({
-        state: 'loading'
-      });
-      
       console.log("save")
       let date = moment(this.state.date).format('YYYY-MM-DD');
       updateRequirements(date)
@@ -706,6 +710,11 @@ class Scheduling extends Component {
       let rsId = '';
       let srsId = '';
       
+      //start spinner
+      this.setState({
+        state: 'loading'
+      });
+      
       this.getReservationInfo(date)
       .then((res)=>{
         console.log("GetReservationId",res);
@@ -728,16 +737,31 @@ class Scheduling extends Component {
         this.updateCall(date,rsId,srsId).then((res4) => {
           console.log("Gonna call update",res4,rsId,srsId);
           this.setState({
-            updated: true,
+            state: 'ready',
+            toast: true,
+            toastMessage: "Päivitys onnistui",
+            toastSeverity: "success"
           });
         },
         (error) => {
           console.log("Failed call update",error);
           console.error('Update rejection called: ' + error.message);
-          this.setState({
-            updateFailed: true,
-            state:'ready'
-          });
+          if(error.message === 'Range officer enabled but no id'){
+            this.setState({
+              toastMessage: "Päävalvoja aktiivinen ilman valvojaa",
+              toastSeverity: "warning",
+              toast: true,
+              state: 'ready'
+            });
+          }
+          else{
+            this.setState({
+              toastMessage: "Päivitys epäonnistui",
+              toastSeverity: "error",
+              toast: true,
+              state: 'ready'
+            });
+          }
         })
       })
     }
@@ -932,14 +956,9 @@ class Scheduling extends Component {
           <div className="save">
             <Button variant="contained" onClick={saveChanges}>Tallenna muutokset</Button>
             <div className="toast">
-              <Snackbar open={this.state.updated} autoHideDuration={5000} onClose={handleSnackbarClose}>
-                <Alert onClose={handleSnackbarClose} severity="success">
-                  Updated succesfully!
-                </Alert>
-              </Snackbar>
-              <Snackbar open={this.state.updateFailed} autoHideDuration={5000} onClose={handleSnackbarClose}>
-                <Alert onClose={handleSnackbarClose} severity="error">
-                  Update failed!
+              <Snackbar open={this.state.toast} autoHideDuration={5000} onClose={handleSnackbarClose}>
+                <Alert onClose={handleSnackbarClose} severity={this.state.toastSeverity}>
+                  {this.state.toastMessage}!
                 </Alert>
               </Snackbar>
             </div>
