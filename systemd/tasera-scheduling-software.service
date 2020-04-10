@@ -1,12 +1,17 @@
 [Unit]
 Description=Tasera Scheduling Software
+# Requires=tasera-scheduling-software.socket
+After=postgresql.service
 After=network.target
 
 [Service]
-Environment=ALT_PORT=3001
+Environment=NODE_ENV=stable
+Environment=ALT_PORT=80
+Environment=DB_PASSWORD=# password here
 WorkingDirectory=/var/www/tasera-scheduling-software
 Type=simple
-User=nodejs
+User=root
+Group=root
 ExecStart=/usr/bin/npm run start
 Restart=on-failure
 
