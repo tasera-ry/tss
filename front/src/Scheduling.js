@@ -39,6 +39,7 @@ class Scheduling extends Component {
         date: new Date(),
         start: new Date(),
         end: new Date(),
+        available: false,
         rangeOfficerSwitch: false,
         rangeOfficerId: '',
         trackChanges: {},
@@ -76,7 +77,8 @@ class Scheduling extends Component {
     console.log("handleempty",error);
     if(error === 'reservation empty'){
       this.setState({
-        reservationId:''
+        reservationId:'',
+        available: false
       });
     }
     
@@ -137,10 +139,12 @@ class Scheduling extends Component {
   }
   
   getReservation(){
-    this.getReservationInfo(this.state.date).then((res)=>{
-      let rsId = res;
+    this.getReservationInfo(moment(this.state.date).format('YYYY-MM-DD')).then((res)=>{
+      let rsId = res.id;
+      let available = res.available;
       this.setState({
-        reservationId:rsId
+        reservationId:rsId,
+        available:available
       },
       function() {
         this.getSchedule();
@@ -149,6 +153,14 @@ class Scheduling extends Component {
     //promise error
     (error)=> {
       console.error(error);
+      console.log(error.message === 'time mismatch');
+      if(error.message === 'time mismatch'){
+        this.setState({
+          toastMessage: "Ajat eivät vastaa toisiaan",
+          toastSeverity: "error",
+          toast: true
+        });
+      }
       this.handleEmpty(error.message);
     });
   }
@@ -165,15 +177,16 @@ class Scheduling extends Component {
       })
       .then(res => res.json())
       .then(json => {
-        console.log("RESERVATION",json)
-        let rsId = '';
-        if(json.length > 0){
-          rsId = json[0].id
+        console.log("RESERVATION",json);
+        if(json.length > 0) {
+          console.log(moment(json[0].date).format('YYYY-MM-DD'), moment(date).format('YYYY-MM-DD'));
+          if(moment(json[0].date).format('YYYY-MM-DD') === moment(date).format('YYYY-MM-DD')){
+            return resolve(json[0]);
+          }else return reject(new Error('time mismatch'));
         }
         else{
           return reject(new Error('reservation empty'));
         }
-        return resolve(rsId);
       });
     });
   }
@@ -391,8 +404,8 @@ class Scheduling extends Component {
       
       let params = {
         range_id: this.state.range_id, 
-        date: moment(date).format(), 
-        available: true //TODO add button for availability?
+        date: moment(date).format('YYYY-MM-DD'), 
+        available: this.state.available
       };
       console.log("params",params)      
       
@@ -581,15 +594,26 @@ class Scheduling extends Component {
       });
     };
     
+    const handleDatePickChange = (date) => {
+      this.setState({
+        date: date
+      },
+      function() {
+        continueWithDate();
+      });
+    };
+    
     const continueWithDate = (event) => {
-      console.log("contwithdate",event);
-      if(event.type !== undefined && event.type === 'submit'){
+      if(event !== undefined && event.type !== undefined && event.type === 'submit'){
         event.preventDefault();
       }
       this.setState({
-        state: 'loading'
+        state: 'loading',
+      },
+      function() {
+        console.log("TIME IS",this.state.date);
+        this.update();
       });
-      this.update();
     }
     
     const selectedTimeStart = this.state.start;
@@ -691,15 +715,15 @@ class Scheduling extends Component {
         for (var i = 0; i < this.state.repeatCount; i++) {
           if(this.state.daily === true){
             date = moment(date).add(1, 'days');
-            updateRequirements(date);
+            updateRequirements(moment(date).format('YYYY-MM-DD'));
           }
           else if(this.state.weekly === true){
             date = moment(date).add(1, 'weeks');
-            updateRequirements(date);
+            updateRequirements(moment(date).format('YYYY-MM-DD'));
           }
           else if(this.state.monthly === true){
             date = moment(date).add(1, 'months');
-            updateRequirements(date);
+            updateRequirements(moment(date).format('YYYY-MM-DD'));
           }
         }
       }
@@ -717,8 +741,8 @@ class Scheduling extends Component {
       
       this.getReservationInfo(date)
       .then((res)=>{
-        console.log("GetReservationId",res);
-        rsId = res !== undefined ? res : '';
+        console.log("GetReservationInfo",res);
+        rsId = res.id !== undefined ? res.id : '';
         return this.getScheduleInfo(rsId);
       })
       .catch(error => {
@@ -852,7 +876,7 @@ class Scheduling extends Component {
                 label="Valitse päivä"
                 value={selectedDate}
                 onChange={date => handleDateChange(date)}
-                onAccept={continueWithDate}
+                onAccept={handleDatePickChange}
                 format="DD.MM.YYYY"
                 showTodayButton
               />
@@ -865,7 +889,31 @@ class Scheduling extends Component {
         <hr/>
         <div className="secondSection">
           <div className="topRow">
-
+            <div className="text">Keskus auki</div>
+            <Switch
+              checked={ this.state.available }
+              onChange={handleSwitchChange}
+              name="available"
+            />
+          </div>
+          <div className="middleRow">
+            <div className="roSwitch">
+              <div className="text">Päävalvoja</div>
+              <Switch
+                className="officerSwitch"
+                checked={this.state.rangeOfficerSwitch}
+                onChange={handleSwitchChange}
+                name="rangeOfficerSwitch"
+              />
+            </div>
+            {/*Butchered state?*/}
+            <RangeOfficerSelect 
+              rangeOfficers={this.state.rangeOfficers}
+              state={this.state} 
+            />
+          </div>
+          <div className="bottomRow">
+            <div className="text">Aukioloaika</div>
             <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
               <KeyboardTimePicker
                 autoOk
@@ -893,21 +941,6 @@ class Scheduling extends Component {
                 showTodayButton
               />
             </MuiPickersUtilsProvider>
-          </div>
-          <div className="bottomRow">
-            <div className="roSwitch">
-              Päävalvoja
-              <Switch
-                checked={this.state.rangeOfficerSwitch}
-                onChange={handleSwitchChange}
-                name="rangeOfficerSwitch"
-              />
-            </div>
-            {/*Butchered state?*/}
-            <RangeOfficerSelect 
-              rangeOfficers={this.state.rangeOfficers}
-              state={this.state} 
-            />
           </div>
         </div>
         <hr/>

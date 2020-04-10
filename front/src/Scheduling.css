@@ -20,12 +20,8 @@ hr {
   margin:15px 0 0 10px;
 }
 
-.schedulingRoot .secondSection .topRow {
+.schedulingRoot .secondSection .text {
   display:inline-block;
-  width:100%;
-}
-
-.schedulingRoot .secondSection .topRow .MuiFormControl-root {
   width:100px;
 }
 
@@ -33,26 +29,47 @@ hr {
   display:flex;
   flex-flow: row wrap;
   align-items: center;
+  padding:10px 20px 15px 0;
 }
 
-.schedulingRoot .secondSection .topRow .dash {
-  padding:20px 20px 0 20px;
+.schedulingRoot .secondSection .middleRow  {
+  display:flex;
+  flex-flow: row wrap;
+  align-items: center;
+  padding:0px 20px 20px 0;
+}
+
+.schedulingRoot .secondSection .middleRow .officerSwitch {
+  margin-right:10px;
+}
+
+.schedulingRoot .secondSection .middleRow .roSwitch {
+  padding-top:15px;
+}
+
+.schedulingRoot .secondSection .middleRow .MuiFormControl-root:nth-child(2) {
+  min-width:150px;
+  /*background:red;*/
 }
 
 .schedulingRoot .secondSection .bottomRow {
   display:flex;
   flex-flow: row wrap;
   align-items: center;
-  padding:20px 0 20px 0;
+  padding:0px 20px 10px 0;
 }
 
-.schedulingRoot .secondSection .bottomRow .roSwitch {
-  padding-top:13px;
+.schedulingRoot .secondSection .bottomRow .text {
+  margin-right:15px;
 }
 
-.schedulingRoot .secondSection .bottomRow .MuiFormControl-root:nth-child(2) {
-  min-width:150px;
-  /*background:red;*/
+.schedulingRoot .secondSection .bottomRow .MuiFormControl-root {
+  width:100px;
+  margin-top:-5px;
+}
+
+.schedulingRoot .secondSection .bottomRow .dash {
+  padding:0px 20px 0 20px;
 }
 
 .schedulingRoot .thirdSection .leftSide {
