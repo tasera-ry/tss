@@ -41,8 +41,18 @@
   margin-left: 19vw;
 }
 
-.isUnavaivable {
+.isClosed {
   background-color: red;
+  color: black;
+  padding: 12px;
+  text-align: center;
+  align-items: center;
+  width: 60vw;
+  margin-left: 19vw;
+}
+
+.isUnavaivable {
+  background-color: white;
   color: black;
   padding: 12px;
   text-align: center;

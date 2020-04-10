@@ -159,11 +159,15 @@ class Weekview extends Component {
 
                 rataStatus = this.state.paivat[j].status
 
-                if (rataStatus === "closed") {
-                    colorFromBackEnd = "red"
-                } else if (rataStatus === "open") {
+                if (rataStatus === "present") {
                     colorFromBackEnd = "green"
-                } else if (rataStatus === "range officer unavailable") {
+                } else if (rataStatus === "confirmed") {
+                    colorFromBackEnd = "lightGreen"
+                } else if (rataStatus === "en route") {
+                    colorFromBackEnd = "yellow"
+                } else if (rataStatus === "closed") {
+                    colorFromBackEnd = "red"
+                } else if (rataStatus === "absent") {
                     colorFromBackEnd = "white"
                 }
 

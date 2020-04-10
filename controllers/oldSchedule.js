@@ -41,8 +41,8 @@ exports.date = async (req, res) => {
           'range.name as rangeName',
           'range_reservation.available',
           'supervisor_id as rangeOfficer',
-          'track_supervisor as trackOfficer',
-          'track_supervision.notice as trackNotice',
+          'track_supervisor',
+          'track_supervision.notice',
           'track.name',
           'track.description'
         )
@@ -71,22 +71,9 @@ exports.date = async (req, res) => {
               const trackInfo = rows.pop()
               
               roState = (trackInfo.rangeOfficer !== null) ? true : false;
-              let toState = (trackInfo.trackOfficer !== null && trackInfo.trackOfficer !== 'absent') ? true : false;
+              let toState = trackInfo.track_supervisor;
               
-              let status;
-              //track officer present == open
-              if(toState){
-                status="open";
-              }
-              //TODO is this right? this would mean range not available == track closed
-              else if(trackInfo.available === false){
-                status="closed";
-              }
-              else {
-                status="trackofficer unavailable"
-              }
-              
-              var trackObj = {name:trackInfo.name,status:status};
+              var trackObj = {name:trackInfo.name,status:toState};
               trackList.push(trackObj)
             }
             
@@ -112,46 +99,6 @@ exports.date = async (req, res) => {
     });
   }
 };
-
-/*
-* Add date with body params
-*/
-exports.addDate = async (req, res) => {
-  console.log("SCHEDULE_DATE "+req.params.date)
-  console.log("SCHEDULE_DATE "+"body "+ req.body)
-  
-  //TODO
-  
-  res.status(200).json({
-    added: true
-  });
-}
-
-/*
-* Delete a date
-*/
-exports.deleteDate = async (req, res) => {
-  console.log("SCHEDULE_DATE "+req.params.date)
-  
-  //TODO
-  
-  res.status(200).json({
-    deleted: true
-  });
-}
-
-/*
-* Update a date
-*/
-exports.updateDate = async (req, res) => {
-  console.log("SCHEDULE_DATE "+req.params.date)
-  
-  //TODO
-  
-  res.status(200).json({
-    updated: true
-  });
-}
 
 /*
 *  Get week info
@@ -186,9 +133,10 @@ exports.week = async (req, res) => {
     (
       knex
         .from('range')
-        .select('range.name as rangeName','range_reservation.available','supervisor_id as rangeOfficer','range_reservation.date')
+        .select('range.name as rangeName','range_reservation.available','supervisor_id as rangeOfficer','range_reservation.date','range_supervisor')
         .join('range_reservation', 'range.id', '=', 'range_reservation.range_id')
         .leftJoin('scheduled_range_supervision', 'range_reservation.id', '=', 'range_reservation_id')
+        .leftJoin('range_supervision', 'scheduled_range_supervision.id', '=', 'scheduled_range_supervision_id')
         .whereBetween('date', [begin, end])
         //TODO remove hard coded range below
         .where('range.id', config.development.range_id)
@@ -205,25 +153,24 @@ exports.week = async (req, res) => {
             
             while(rows.length !== 0) {
               const dayInfo = rows.pop();
-              
+              console.log("DAYINFO:",dayInfo)
               roState = (dayInfo.rangeOfficer !== null) ? true : false;
               
               let status;
-              //range officer present == open
-              if(roState){
-                status="open";
+              if(dayInfo.range_supervisor === 'present'){
+                status="present"; //green
               }
-              //available false
-              else if(!dayInfo.available){
-                status="closed";
+              else if(dayInfo.range_supervisor === 'confirmed'){
+                status="confirmed"; //lightgreen
               }
-              else if(status==="orange"){
-                //TODO 4th orange color?
-                status="coming";
+              else if(dayInfo.range_supervisor === 'en route'){
+                status="en route"; //yellow
               }
-              //available true
-              else {
-                status="range officer unavailable";
+              else if(dayInfo.available === false){
+                status="closed"; //red
+              }
+              else if(dayInfo.range_supervisor === 'absent'){
+                status="absent"; //white
               }
               
               //parse gotten date as GMT time and change to GMT+2
@@ -246,6 +193,87 @@ exports.week = async (req, res) => {
           }
         })
     )
+  }
+  else{
+    res.status(400).json({
+      err: "Invalid date"
+    });
+  }
+};
+
+/*
+*  Get track status for a day
+*/
+exports.trackInfoForDay = async (req, res) => {
+  //Selecting track-status for a specific day from the DB and sending it to the front end
+  //date/:date/track/:id
+  console.log("SCHEDULE_TRACK "+req.params.date);
+  console.log("SCHEDULE_TRACK "+req.params.id);
+  let date = new Date(req.params.date);
+  
+  //check for valid date object
+  if(date instanceof Date && !isNaN(date.getTime())){
+    if(req.params.id !== undefined){
+      //get single track
+      //works with localhost:3000/api/date/2020-02-20/track/Shooting Track 1
+      (
+        knex          
+          .with('getTOState', knex.raw(
+            'select * '+
+            'from track_supervision '+
+            'inner join track on track.id = track_supervision.track_id '+
+            'where track.name=? '+
+            'order by updated_at',
+            [req.params.id])
+          )
+          .select(
+            'range.name as rangeName',
+            'track.name','track.description',
+            'scheduled_range_supervision.supervisor_id as rangeOfficer',
+            'getTOState.track_supervisor',
+            'getTOState.notice',
+            //'getTOState.*'
+          )
+          .from('range')
+          .join('range_reservation', 'range.id', '=', 'range_reservation.range_id')
+          .join('track', 'range.id', '=', 'track.range_id')
+          .leftJoin('scheduled_range_supervision', 'range_reservation.id', '=', 'range_reservation_id')
+          .leftJoin('getTOState' ,'scheduled_range_supervision.id' , '=', 'getTOState.scheduled_range_supervision_id')
+          .where('date', req.params.date)
+          //atm track name needs to be exact e.g. 'Shooting Track 1'
+          .where('track.name', req.params.id)
+          //TODO remove hard coded range below
+          .where('range.id', config.development.range_id)
+
+          .then((rows) => {
+            console.log("Got rows: "+rows.length);
+            if(rows.length === 0){
+              res.status(400).json({
+                err: "No results found. Either date or track name not found."
+              });
+            }
+            else {
+              console.log(rows);
+              const trackInfo = rows.pop()
+              console.log(trackInfo);
+              
+              let roState = (trackInfo.rangeOfficer !== null) ? true : false;
+              let toState = trackInfo.track_supervisor; //absent/present/closed
+              console.log(roState);
+              var trackObj = {trackName:trackInfo.name,description:trackInfo.description,trackOfficer:toState,rangeOfficer:roState,notice:trackInfo.notice};
+            
+              res.status(200).json({
+                track: trackObj
+              });
+            }
+          })
+      )
+    }
+    else{
+      res.status(400).json({
+        err: "get all not implemented"
+      });
+    }
   }
   else{
     res.status(400).json({

@@ -48,7 +48,7 @@ class Trackview extends Component {
                rangeOfficer: res.track.rangeOfficer,
                name: res.track.trackName,
                description: "(" + res.track.description + ")",
-               info: res.track.trackNotice
+               info: res.track.notice
             });
             document.getElementById("date").style.visibility = "visible";
             document.getElementById("valvojat").style.visibility = "visible";
@@ -74,7 +74,7 @@ class Trackview extends Component {
 
    rangeAvailability() {
       if (this.state.rangeOfficer) {
-         let returnable = <Box class="isAvaivable">Päävalvoja Paikalla</Box>;
+         let returnable = <Box class="isAvaiable">Päävalvoja Paikalla</Box>;
          return returnable;
       } else {
          let returnable = (
@@ -85,14 +85,21 @@ class Trackview extends Component {
    }
 
    trackAvailability() {
-      if (this.state.trackOfficer) {
+      if (this.state.trackOfficer === 'present') {
          let returnable = <Box class="isAvaivable">Ratavalvoja Paikalla</Box>;
          return returnable;
-      } else {
+      } 
+      else if(this.state.trackOfficer === 'absent'){
          let returnable = (
             <Box class="isUnavaivable">Ratavalvoja ei paikalla</Box>
          );
          return returnable;
+      } 
+      else if(this.state.trackOfficer === 'closed'){
+        let returnable = (
+          <Box class="closed">Rata suljettu</Box>
+        );
+        return returnable;
       }
    }
 

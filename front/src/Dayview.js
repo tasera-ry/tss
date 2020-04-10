@@ -81,7 +81,7 @@ class Dayview extends Component {
       let text;
       let color;
 
-      if (props.available) {
+      if (props.rangeOfficer) {
         text = "Päävalvoja paikalla";
         color = "greenB";
       }
@@ -133,9 +133,11 @@ class Dayview extends Component {
     function TrackBox(props) {
       let color;
 
-      if (props.state === "open") {
+      if (props.state === "psesent") {
         //open
         color = "greenB";
+      } else if (props.state === "absent") {
+        color = "whiteB";
       } else if (props.state === "closed") {
         //closed
         color = "redB";
@@ -184,7 +186,7 @@ class Dayview extends Component {
           {/* Range info */}
           <Grid container direction="row" justify="center" alignItems="center">
             <Grid item xs={12}>
-              <OfficerBanner available={this.state.rangeOfficer} />
+              <OfficerBanner rangeOfficer={this.state.rangeOfficer} />
             </Grid>
           </Grid>
           {/* MUI grid */}
