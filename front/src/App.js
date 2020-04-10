@@ -6,6 +6,7 @@ import Dayview from "./Dayview";
 import Weekview from "./Weekview";
 import Trackview from "./Trackview";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import RangeOfficerView from "./rangeofficer";
 
 class App extends Component {
   state = {};
@@ -22,6 +23,7 @@ class App extends Component {
               <Route path="/dayview/:date?" component={Dayview} />
               <Route path="/weekview" component={Weekview} />
               <Route path="/trackview/:date?/:track?" component={Trackview} />
+              <Route path="/trackofficer" component={RangeOfficerView} />
             </Switch>
           </header>
         </div>
