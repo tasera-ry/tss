@@ -5,10 +5,12 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser")
+const helmet = require('helmet');
 const router = require("./routes");
 const port = process.env.ALT_PORT || process.env.PORT || 8000; //azure gives port as an environment variable
 const os = require("os")
 
+app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
