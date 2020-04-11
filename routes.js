@@ -75,6 +75,32 @@ router.route('/track-supervision/:scheduled_range_supervision_id/:track_id')
     , middlewares.user.hasProperty('role', 'superuser')
     , middlewares.trackSupervision.delete
     , controllers.trackSupervision.delete)
+    
+//Range supervision
+router.route('/range-supervision')
+  .get(
+    middlewares.rangeSupervision.readFilter
+    , controllers.rangeSupervision.readFilter)
+  .post(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.rangeSupervision.create
+    , controllers.rangeSupervision.create)
+
+router.route('/range-supervision/:scheduled_range_supervision_id')
+  .get(
+    middlewares.rangeSupervision.read
+    , controllers.rangeSupervision.read)
+  .put(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.rangeSupervision.update
+    , controllers.rangeSupervision.update)
+  .delete(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.rangeSupervision.delete
+    , controllers.rangeSupervision.delete)
 
 
 router.route('/reservation')
