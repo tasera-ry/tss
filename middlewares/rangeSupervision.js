@@ -43,7 +43,7 @@ const serviceCalls = {
     }
 
     try {
-      response.locals.queryResult = await services.rangeSupervision.read(id)
+      response.locals.queryResult = await services.rangeSupervision.read({scheduled_range_supervision_id:id})
     }
     catch(e) {
       return next(e)
