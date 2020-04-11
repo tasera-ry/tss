@@ -60,25 +60,13 @@ class Dayview extends Component {
           this.setState({
             date: new Date(response.date),
             tracks: response.tracks,
-            rangeSupervision: response.rangeSupervision
+            rangeSupervision: response.rangeSupervision,
+            opens: moment(response.open,'HH:mm').format('H.mm'),
+            closes: moment(response.close,'HH:mm').format('H.mm')
           });
         } else console.error("getting info failed");
       } 
       request();
-    
-    /*callApi("GET", "date/" + (date ? date : this.state.date.toISOString()))
-      .then(res => {
-        console.log(res);
-
-        //async joten tietoa päivittäessä voi välähtää Date.now antama
-        //ennen haluttua tietoa
-        this.setState({
-          date: new Date(res.date),
-          tracks: res.tracks,
-          rangeSupervision: res.rangeSupervision
-        });
-      })
-      .catch(err => console.log(err));*/
   }
 
   previousDayClick(e) {
@@ -172,7 +160,7 @@ class Dayview extends Component {
     function TrackBox(props) {
       let color;
 
-      if (props.state === "psesent") {
+      if (props.state === "present") {
         //open
         color = "greenB";
       } else if (props.state === "absent") {
