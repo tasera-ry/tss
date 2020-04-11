@@ -36,7 +36,7 @@ const serviceCalls = {
       // response
       if(e.name === 'Unknown user' || e.name === 'Incorrect password') {
         return response
-          .set('WWW-Authenticate', 'Basic')
+          //.set('WWW-Authenticate', 'Basic')
           .status(401)
           .send({
             error: e.message

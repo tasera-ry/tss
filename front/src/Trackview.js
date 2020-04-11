@@ -50,8 +50,26 @@ class Trackview extends Component {
                description: "(" + res.track.description + ")",
                info: res.track.trackNotice
             });
+            document.getElementById("date").style.visibility = "visible";
+            document.getElementById("valvojat").style.visibility = "visible";
+            if (res.track.trackNotice.length > 0) {
+               document.getElementById("infobox").style.visibility = "visible";
+            } else {
+               document.getElementById("infobox").style.visibility = "disabled";
+            }
          })
-         .catch(err => console.log(err));
+         .catch(
+            err => console.log(err),
+            this.setState({
+               name:
+                  'Rataa nimeltä "' +
+                  this.props.match.params.track +
+                  '" ei löydy.'
+            }),
+            (document.getElementById("date").style.visibility = "hidden"),
+            (document.getElementById("valvojat").style.visibility = "hidden"),
+            (document.getElementById("infobox").style.visibility = "hidden")
+         );
    }
 
    rangeAvailability() {
@@ -100,7 +118,7 @@ class Trackview extends Component {
             </div>
 
             {/*    Päivämäärä */}
-            <div>
+            <div id="date">
                <h2>
                   {dayToString(this.state.date.getDay())}{" "}
                   {this.state.date.toLocaleDateString("fi-FI")}
@@ -114,6 +132,7 @@ class Trackview extends Component {
                justify="center"
                alignItems="left"
                spacing={1}
+               id="valvojat"
             >
                {/*   pyydetään metodeilta boxit joissa radan tila */}
                <Grid item xs={1} sm={6}>
@@ -125,10 +144,10 @@ class Trackview extends Component {
             </Grid>
 
             {/*    Infobox  */}
-
-            <p>Lisätietoja:</p>
-            <div class="infoBox">{this.state.info}</div>
-
+            <div id="infobox">
+               <p>Lisätietoja:</p>
+               <div class="infoBox">{this.state.info}</div>
+            </div>
             {/*    Linkki taaksepäin  */}
             <Link
                className="backLink"

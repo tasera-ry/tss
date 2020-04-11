@@ -11,10 +11,11 @@ const root = path.join(__dirname, '.')
 const config = require(path.join(root, 'config', 'config'))
 // const express_jwt = require('express-jwt')({ secret: config.jwt.secret })
 
+//console spam comes from validator initialization?
+const validators = require(path.join(root, 'validators'))
 const middlewares = require(path.join(root, 'middlewares'))
 const controllers = require(path.join(root, 'controllers'))
 
-const track = require(path.join(root, 'controllers', 'track'))
 const scheduleTrack = require(path.join(root, 'controllers', 'scheduleTrack'))
 const scheduleDate = require(path.join(root, 'controllers', 'scheduleDate'))
 
@@ -22,10 +23,6 @@ router.route('/sign')
   .post(
     middlewares.user.sign
     , controllers.user.sign)
-
-router.route('/user')
-  .all(middlewares.jwt.read)
-
 
 router.route('/user')
   .all(
@@ -51,6 +48,64 @@ router.route('/user/:id')
   .delete(
     middlewares.user.delete
     , controllers.user.delete)
+
+
+//Track supervision
+router.route('/track-supervision')
+  .get(
+    middlewares.trackSupervision.readFilter
+    , controllers.trackSupervision.readFilter)
+  .post(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.trackSupervision.create
+    , controllers.trackSupervision.create)
+
+router.route('/track-supervision/:scheduled_range_supervision_id/:track_id')
+  .get(
+    middlewares.trackSupervision.read
+    , controllers.trackSupervision.read)
+  .put(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.trackSupervision.update
+    , controllers.trackSupervision.update)
+  .delete(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.trackSupervision.delete
+    , controllers.trackSupervision.delete)
+
+
+router.route('/reservation')
+  .get(controllers.reservation.read)
+  .post(middlewares.jwt.read
+        , middlewares.user.hasProperty('role', 'superuser')
+        , controllers.reservation.create)
+
+router.route('/reservation/:id')
+  .get(controllers.reservation.readStrict)
+  .put(middlewares.jwt.read
+       , middlewares.user.hasProperty('role', 'superuser')
+       , controllers.reservation.update)
+  .delete(middlewares.jwt.read
+          , middlewares.user.hasProperty('role', 'superuser')
+          , controllers.reservation.delete)
+
+router.route('/schedule')
+  .get(controllers.schedule.read)
+  .post(middlewares.jwt.read
+        , middlewares.user.hasProperty('role', 'superuser')
+        , controllers.schedule.create)
+
+router.route('/schedule/:id')
+  .get(controllers.schedule.readStrict)
+  .put(middlewares.jwt.read
+       , middlewares.user.hasProperty('role', 'superuser')
+       , controllers.schedule.update)
+  .delete(middlewares.jwt.read
+          , middlewares.user.hasProperty('role', 'superuser')
+          , controllers.schedule.delete)
 
 
 /* TODO move to middlewares */
@@ -118,27 +173,35 @@ router.put("/date/:date", function(req,res,next){
 /*
 *  Track
 */
-//TODO verify how to identify
-//get tracks
-router.get("/track", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,track.track);
-//add a track
-router.post("/track", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,track.addTrack);
-//delete one
-router.delete("/track/:id", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,track.deleteTrack);
-//update one
-router.put("/track/:id", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,track.updateTrack);
+router.route('/track')
+  .all(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser'))
+  .get(
+    validators.track.readAll
+    , middlewares.track.read
+    , controllers.track.read)
+  .post(
+    validators.track.create
+    , middlewares.track.create
+    , controllers.track.create)
+
+router.route('/track/:track_id')
+  .all(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser'))
+  .get(
+    validators.track.read
+    , middlewares.track.read
+    , controllers.track.read)
+  .put(
+    validators.track.update
+    , middlewares.track.update
+    , controllers.track.update)
+  .delete(
+    validators.track.delete
+    , middlewares.track.delete
+    , controllers.track.delete)
 
 /*
 *  Schedule
