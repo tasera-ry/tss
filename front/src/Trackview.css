@@ -31,7 +31,7 @@
   min-height: 48px;
 }
 
-.isAvaivable {
+.isAvailable {
   background-color: green;
   color: black;
   padding: 12px;
@@ -51,8 +51,28 @@
   margin-left: 19vw;
 }
 
-.isUnavaivable {
+.isUnavailable {
   background-color: white;
+  color: black;
+  padding: 12px;
+  text-align: center;
+  align-items: center;
+  width: 60vw;
+  margin-left: 19vw;
+}
+
+.isEnRoute {
+  background-color: yellow;
+  color: black;
+  padding: 12px;
+  text-align: center;
+  align-items: center;
+  width: 60vw;
+  margin-left: 19vw;
+}
+
+.isConfirmed {
+  background-color: lightGreen;
   color: black;
   padding: 12px;
   text-align: center;
@@ -84,7 +104,7 @@
     margin-right: 10%;
   }
 
-  .isAvaivable {
+  .isAvailable {
     background-color: green;
     color: black;
     padding: 12px;
@@ -92,13 +112,38 @@
     margin-left: 8vw;
   }
 
-  .isUnavaivable {
+  .isClosed {
     background-color: red;
     color: black;
     padding: 12px;
     width: 80vw;
     margin-left: 8vw;
   }
+
+  .isUnavailable {
+    background-color: white;
+    color: black;
+    padding: 12px;
+    width: 80vw;
+    margin-left: 8vw;
+  }
+  
+  .isEnRoute {
+    background-color: yellow;
+    color: black;
+    padding: 12px;
+    width: 80vw;
+    margin-left: 8vw;
+  }
+  
+  .isConfirmed {
+    background-color: lightGreen;
+    color: black;
+    padding: 12px;
+    width: 80vw;
+    margin-left: 8vw;
+  }
+  
   .wholeScreenDiv {
     text-align: center;
     align-items: left;
