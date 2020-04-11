@@ -16,8 +16,9 @@ class RangeOfficerView extends Component {
         this.state = {
             date: moment(Date.now()).format("YYYY-MM-DD"),
             tracksAvailable: null,
-            reservationId: null,
+            rangeReservationId: null,
             scheduleId: null,
+            setRangeSupervisor: null,
             openTime: 16,
             closeTime: 20,
             // Statuses: 0 = unavailable, 1 = present, 2 = closed, 3 = coming
@@ -40,23 +41,23 @@ class RangeOfficerView extends Component {
             .then(data => {
                 // Should return table with only 1 object
                 var firstData = data.pop();
-                console.log(firstData);
                 if ( firstData.available === true ) {
                     this.setState({
                         tracksAvailable: true,
-                        reservationId: firstData.id
+                        rangeReservationId: firstData.id
                     }, () => {
-                        fetch(`/api/schedule/${firstData.id}`)
+                        fetch(`/api/schedule?range_reservation_id=${firstData.id}`)
                             .then(res => res.json())
                             .then(data2 => {
                                 console.log(data2);
                                 const timeData = data2[0];
-                                // TODO: In this data there's information for the set supervisor
                                 // timeData.supervisor_id
                                 this.setState({
-                                    openTime: timeData ? timeData.open : 16,
-                                    closeTime: timeData ? timeData.close : 21, 
-                                    //scheduleId: timeData.range_reservation_id
+                                    // This slicing might cause problems later
+                                    openTime: timeData ? timeData.open.slice(0, 5) : 16,
+                                    closeTime: timeData ? timeData.close.slice(0, 5) : 21, 
+                                    scheduleId: timeData.id,
+                                    setRangeSupervisor: timeData ? timeData.supervisor_id : null,
                                 }, () => {
                                     // Getting and setting track information
                                     fetch(`/api/date/${date}`)
@@ -245,6 +246,7 @@ class RangeOfficerView extends Component {
 
 
     render() {
+        console.log(this.state);
 
         return(
             <div className = "containsAll">
