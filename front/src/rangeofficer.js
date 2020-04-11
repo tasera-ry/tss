@@ -40,62 +40,62 @@ class RangeOfficerView extends Component {
             .then(data => {
                 // Should return table with only 1 object
                 var firstData = data.pop();
+                console.log(firstData);
                 if ( firstData.available === true ) {
                     this.setState({
                         tracksAvailable: true,
-                        scheduleId: firstData.id
+                        reservationId: firstData.id
                     }, () => {
                         fetch(`/api/schedule/${firstData.id}`)
                             .then(res => res.json())
                             .then(data2 => {
-                                if ( data2.length > 0 ) {
-                                    const timeData = data2.pop();
-                                    // TODO: In this data there's information for the set supervisor
-                                    // timeData.supervisor_id
-                                    this.setState({
-                                        openTime: timeData.open,
-                                        closeTime: timeData.close,
-                                        reservationId: timeData.range_reservation_id
-                                    }, () => {
-                                        // Getting and setting track information
-                                        fetch(`/api/date/${date}`)
-                                            .then(res => res.json())
-                                            .then(data => {
-                                                console.log(data);
-                                                const tracks = data.tracks;
-                                                var i = 1;
-                                                tracks.map(track => {
-                                                    // White status
-                                                    if (track.status === "trackofficer unavailable") {
-                                                        let trackNum = `track${i}`;
-                                                        i++;
+                                console.log(data2);
+                                const timeData = data2[0];
+                                // TODO: In this data there's information for the set supervisor
+                                // timeData.supervisor_id
+                                this.setState({
+                                    openTime: timeData ? timeData.open : 16,
+                                    closeTime: timeData ? timeData.close : 21, 
+                                    //scheduleId: timeData.range_reservation_id
+                                }, () => {
+                                    // Getting and setting track information
+                                    fetch(`/api/date/${date}`)
+                                        .then(res => res.json())
+                                        .then(data => {
+                                            console.log(data);
+                                            const tracks = data.tracks;
+                                            var i = 1;
+                                            tracks.map(track => {
+                                                // White status
+                                                if (track.status === "trackofficer unavailable") {
+                                                    let trackNum = `track${i}`;
+                                                    i++;
 
-                                                        this.setState({
-                                                            [trackNum]: 0
-                                                        });
-                                                    }
-                                                    // Red status
-                                                    else if ( track.status === "closed" ) {
-                                                        let trackNum = `track${i}`;
-                                                        i++;
+                                                    this.setState({
+                                                        [trackNum]: 0
+                                                    });
+                                                }
+                                                // Red status
+                                                else if ( track.status === "closed" ) {
+                                                    let trackNum = `track${i}`;
+                                                    i++;
 
-                                                        this.setState({
-                                                            [trackNum]: 2
-                                                        });
-                                                    }
-                                                    // Green status
-                                                    else if ( track.status === "trackofficer available" ) {
-                                                        let trackNum = `track${i}`;
-                                                        i++;
+                                                    this.setState({
+                                                        [trackNum]: 2
+                                                    });
+                                                }
+                                                // Green status
+                                                else if ( track.status === "trackofficer available" ) {
+                                                    let trackNum = `track${i}`;
+                                                    i++;
 
-                                                        this.setState({
-                                                            [trackNum]: 1
-                                                        });
-                                                    }
-                                                })
-                                            });
-                                    })
-                                }
+                                                    this.setState({
+                                                        [trackNum]: 1
+                                                    });
+                                                }
+                                            })
+                                        });
+                                })
                             });
                     });
                 }
@@ -108,9 +108,8 @@ class RangeOfficerView extends Component {
             });
     }
 
-     changeTrackStatus = (event, trackNum) => {
+     changeTrackStatus = (trackNum) => {
         let newStatus;
-        console.log(trackNum);
         if (this.state[trackNum] === 2) {
             newStatus = 0;
         }
@@ -124,7 +123,13 @@ class RangeOfficerView extends Component {
             {
                 [trackNum]: newStatus
             }, () => {
-                // TODO save changed range officer status
+                let num = trackNum.slice(-1);
+                console.log(num);
+                fetch(`/api/track-supervision/${this.state.reservationId}/${num}`, {
+                    method: "PUT",
+                    body: { "track_supervisor": "present"}
+                })
+                    .then(status => console.log(status));
             }
         );
     }
@@ -134,7 +139,11 @@ class RangeOfficerView extends Component {
             {
                 officerStatus: 1
             }, () => {
-                // TODO save changed track officer status
+                fetch(`/api/range-supervision/${this.state.reservationId}`, {
+                    method: "PUT",
+                    body: { "range_supervisor": "present"}
+                })
+                    .then(status => console.log(status));
             }
         );
     }
@@ -145,6 +154,11 @@ class RangeOfficerView extends Component {
                 officerStatus: 3
             }, () => {
                 // TODO save changed track officer status
+                fetch(`/api/range-supervision/${this.state.reservationId}`, {
+                    method: "PUT",
+                    body: { "range_supervisor": "en route"}
+                })
+                    .then(status => console.log(status));
             }
         );
     }
@@ -155,6 +169,11 @@ class RangeOfficerView extends Component {
                 officerStatus: 2
             }, () => {
                 // TODO save changed track officer status
+                fetch(`/api/range-supervision/${this.state.reservationId}`, {
+                    method: "PUT",
+                    body: { "range_supervisor": "absent"}
+                })
+                    .then(status => console.log(status));
             }
         );
     }
@@ -190,7 +209,6 @@ class RangeOfficerView extends Component {
     }
 
     createTrackStatuses = () => {
-
         // If blue color is seen, something has gone wrong.
         let newColor = "blue";
         let table = [];
@@ -212,17 +230,15 @@ class RangeOfficerView extends Component {
                 status = "Poissa";
             }
 
-            console.log(trackToChange);
             table.push(
                 (<div 
                 className = "changeTrack" 
-                onClick={(e) => this.changeTrackStatus(e, trackToChange)}
+                onClick={() => this.changeTrackStatus(trackToChange)}
                 style={{ backgroundColor: `${newColor}` }}
                 > {status} </div>)
             );
         }
 
-        console.log(table);
         return table;
     }
 
