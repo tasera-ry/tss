@@ -1,6 +1,3 @@
-
-
-
 const path = require('path')
 const root = path.join(__dirname, '..')
 
@@ -13,6 +10,7 @@ const rangeSupervision = require(path.join(root, 'validators', 'rangeSupervision
 
 exports.user = user
 exports.trackSupervision = trackSupervision
+exports.rangeSupervision = rangeSupervision
 exports.reservation = reservation
 exports.schedule = schedule
 exports.track = track
