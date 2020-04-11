@@ -182,7 +182,7 @@ exports.getScheduleDate = async (req, res) => {
       open:open,
       close:close,
       available:available,
-      rangeSupervision:rangeSupervisionState,
+      rangeSupervision:(available === false ? 'closed' : rangeSupervisionState),
       tracks:tracks
     }
     
