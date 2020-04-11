@@ -21,6 +21,7 @@ const callApi = async (method, route, params) => {
   }
   const body = await response.json();
 
+  // TODO any other method call except ones returning status === 200 won't work
   if (response.status !== 200) {
     throw Error(body.err);
   }

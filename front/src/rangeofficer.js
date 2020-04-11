@@ -14,10 +14,27 @@ class RangeOfficerView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            date: new Date(Date.now()),
-            officerStatus: "Poissa",
-            trackStatus: "Poissa"
+            date: moment(Date.now()).format("YYYY-MM-DD"),
+            // Statuses: 0 = away, 1 = present, 2 = reserved, 3 = coming
+            officerStatus: 0,
+            track1: 0,
+            track2: 0,
+            track3: 0,
+            track4: 0,
+            track5: 0,
+            track6: 0,
+            track7: 0
         };
+    }
+
+    componentDidMount() {
+        console.log(this.state.date);
+        // TODO fetch info for current date
+        fetch(`/api/reservation?date=${this.state.date}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+            });
     }
 
      changeTrackStatus = () => {
@@ -97,19 +114,19 @@ class RangeOfficerView extends Component {
 
     createTrackStatus = () => {
 
-        let newColor = "blue"
-        let table = []
+        let newColor = "blue";
+        let table = [];
         let status;
 
         if (this.state.trackStatus === "Paikalla") {
-            newColor = "green"
-            status = "Paikalla"
+            newColor = "green";
+            status = "Paikalla";
         } else if (this.state.trackStatus === "Tulossa") {
-            newColor = "orange"
-            status = "Tulossa"
+            newColor = "orange";
+            status = "Tulossa";
         } else if (this.state.trackStatus === "Poissa") {
-            newColor = "red"
-            status = "Poissa"
+            newColor = "red";
+            status = "Poissa";
         }
 
         table.push(
@@ -129,7 +146,7 @@ class RangeOfficerView extends Component {
             <div className = "containsAll">
 
             <div className = "dateInfo">
-                <p> {dayToString(this.state.date.getDay())} {this.state.date.toLocaleDateString("fi-FI")} </p>
+                <p> {dayToString(moment(this.state.date).format("d"))} {moment(this.state.date).format("DD.MM.YYYY")} </p>
                 <p> Aukiolo: 16-20 </p>
             </div>
 
