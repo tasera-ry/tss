@@ -2,6 +2,7 @@ const crypto = require('crypto')
 
 const config = {
   server: {
+    host: 'http://localhost:3000',
     port: 8000
   },
   jwt: {

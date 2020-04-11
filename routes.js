@@ -108,15 +108,14 @@ router.route('/schedule/:id')
 *  Track
 */
 router.route('/track')
-  .all(
-    middlewares.jwt.read
-    , middlewares.user.hasProperty('role', 'superuser'))
   .get(
     validators.track.readAll
     , middlewares.track.read
     , controllers.track.read)
   .post(
-    validators.track.create
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , validators.track.create
     , middlewares.track.create
     , controllers.track.create)
 
@@ -143,5 +142,7 @@ router.route('/track/:track_id')
 router.get("/date/:date?", oldSchedule.date);
 router.get("/week/:date?", oldSchedule.week);
 router.get("/date/:date/track/:id?", oldSchedule.trackInfoForDay);
+//newer gets to pad functionality
+router.get("/datesupreme/:date", oldSchedule.getScheduleDate);
 
 module.exports = router;
