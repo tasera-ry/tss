@@ -4,25 +4,10 @@ import { Link } from "react-router-dom";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import { dayToString } from "./utils/Utils";
+import { dayToString, getSchedulingDate } from "./utils/Utils";
 import moment from 'moment';
 
-async function getSchedulingDate(date) {
-  console.log("func",date)
-  try{
-    let response = await fetch("/api/datesupreme/"+moment(date).format('YYYY-MM-DD'), {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
-    return await response.json();
-  }catch(err){
-    console.error(err);
-    return false;
-  }
-}
+
 
 class Dayview extends Component {
   constructor(props) {
@@ -50,23 +35,22 @@ class Dayview extends Component {
   update() {
     // /dayview/2020-02-20
     let date = this.props.match.params.date;
-    
-      const request = async () => {
-        const response = await getSchedulingDate(date);
+    const request = async () => {
+      const response = await getSchedulingDate(date);
 
-        if(response !== false){
-          console.log("Results from api",response);
+      if(response !== false){
+        console.log("Results from api",response);
 
-          this.setState({
-            date: new Date(response.date),
-            tracks: response.tracks,
-            rangeSupervision: response.rangeSupervision,
-            opens: moment(response.open,'HH:mm').format('H.mm'),
-            closes: moment(response.close,'HH:mm').format('H.mm')
-          });
-        } else console.error("getting info failed");
-      } 
-      request();
+        this.setState({
+          date: new Date(response.date),
+          tracks: response.tracks,
+          rangeSupervision: response.rangeSupervision,
+          opens: moment(response.open,'HH:mm').format('H.mm'),
+          closes: moment(response.close,'HH:mm').format('H.mm')
+        });
+      } else console.error("getting info failed");
+    } 
+    request();
   }
 
   previousDayClick(e) {
@@ -227,7 +211,7 @@ class Dayview extends Component {
             className="otherInfo"
           >
             <Grid item xs={6} sm={3}>
-              Aukiolo: {this.state.opens}-{this.state.closes}
+              Aukioloaika: {this.state.opens}-{this.state.closes}
             </Grid>
             <Grid item xs={6} sm={3}>
               <div className="colorInfo">

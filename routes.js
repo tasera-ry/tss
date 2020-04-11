@@ -136,13 +136,7 @@ router.route('/track/:track_id')
     , middlewares.track.delete
     , controllers.track.delete)
 
-/*
-* OG api gets
-*/
-router.get("/date/:date?", oldSchedule.date);
-router.get("/week/:date?", oldSchedule.week);
-router.get("/date/:date/track/:id?", oldSchedule.trackInfoForDay);
-//newer gets to pad functionality
+//newer get with padded functionality
 router.get("/datesupreme/:date", oldSchedule.getScheduleDate);
 
 module.exports = router;

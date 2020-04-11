@@ -5,25 +5,7 @@ import { Link } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import { dayToString } from "./utils/Utils";
-import moment from 'moment';
-
-async function getSchedulingDate(date) {
-  console.log("func",date)
-  try{
-    let response = await fetch("/api/datesupreme/"+moment(date).format('YYYY-MM-DD'), {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
-    return await response.json();
-  }catch(err){
-    console.error(err);
-    return false;
-  }
-}
+import { dayToString, getSchedulingDate } from "./utils/Utils";
 
 /*
  ** Main function
