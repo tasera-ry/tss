@@ -4,8 +4,25 @@ import { Link } from "react-router-dom";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import { callApi } from "./utils/helper.js";
 import { dayToString } from "./utils/Utils";
+import moment from 'moment';
+
+async function getSchedulingDate(date) {
+  console.log("func",date)
+  try{
+    let response = await fetch("/api/datesupreme/"+moment(date).format('YYYY-MM-DD'), {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
+    return await response.json();
+  }catch(err){
+    console.error(err);
+    return false;
+  }
+}
 
 class Dayview extends Component {
   constructor(props) {
@@ -14,7 +31,7 @@ class Dayview extends Component {
       date: new Date(Date.now()),
       opens: 16,
       closes: 20,
-      rangeOfficer: false,
+      rangeSupervision: false,
       tracks: {}
     };
 
@@ -33,7 +50,23 @@ class Dayview extends Component {
   update() {
     // /dayview/2020-02-20
     let date = this.props.match.params.date;
-    callApi("GET", "date/" + (date ? date : this.state.date.toISOString()))
+    
+      const request = async () => {
+        const response = await getSchedulingDate(date);
+
+        if(response !== false){
+          console.log("Results from api",response);
+
+          this.setState({
+            date: new Date(response.date),
+            tracks: response.tracks,
+            rangeSupervision: response.rangeSupervision
+          });
+        } else console.error("getting info failed");
+      } 
+      request();
+    
+    /*callApi("GET", "date/" + (date ? date : this.state.date.toISOString()))
       .then(res => {
         console.log(res);
 
@@ -42,10 +75,10 @@ class Dayview extends Component {
         this.setState({
           date: new Date(res.date),
           tracks: res.tracks,
-          rangeOfficer: res.rangeOfficer
+          rangeSupervision: res.rangeSupervision
         });
       })
-      .catch(err => console.log(err));
+      .catch(err => console.log(err));*/
   }
 
   previousDayClick(e) {
@@ -81,18 +114,24 @@ class Dayview extends Component {
       let text;
       let color;
 
-      if (props.rangeOfficer) {
+      if (props.rangeSupervision === 'present') {
         text = "Päävalvoja paikalla";
         color = "greenB";
       }
-      /*
-      else if(props.available === "soon tm") {
-        text = "Päävalvoja nimetty";
+      else if (props.rangeSupervision === 'absent') {
+        text = "Päävalvoja ei paikalla";
+        color = "whiteB";
+      }
+      else if (props.rangeSupervision === 'confirmed') {
+        text = "Päävalvoja varmistettu";
         color = "lightGreenB";
       }
-      */
-      else {
-        text = "Päävalvoja ei ole paikalla";
+      else if (props.rangeSupervision === 'en route') {
+        text = "Päävalvoja matkalla";
+        color = "yellowB";
+      }
+      else if (props.rangeSupervision === 'closed') {
+        text = "Ampumakeskus suljettu";
         color = "redB";
       }
 
@@ -109,7 +148,7 @@ class Dayview extends Component {
           <TrackBox
             key={key}
             name={props.tracks[key].name}
-            state={props.tracks[key].status}
+            state={props.tracks[key].trackSupervision}
             //TODO final react routing
             to={"/trackview/"+props.date.toISOString()+"/" + props.tracks[key].name}
           />
@@ -186,7 +225,7 @@ class Dayview extends Component {
           {/* Range info */}
           <Grid container direction="row" justify="center" alignItems="center">
             <Grid item xs={12}>
-              <OfficerBanner rangeOfficer={this.state.rangeOfficer} />
+              <OfficerBanner rangeSupervision={this.state.rangeSupervision} />
             </Grid>
           </Grid>
           {/* MUI grid */}
