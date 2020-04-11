@@ -17,7 +17,7 @@ const controller = {
       return response
         .status(404)
         .send({
-          error: 'Query didn\'t match track supervision event'
+          error: 'Query didn\'t match range supervision event'
         })
     }
     return response
@@ -42,7 +42,7 @@ const controller = {
       return response
         .status(404)
         .send({
-          error: `No track supervision event exists matching id ${response.locals.query.scheduled_range_supervision_id}`
+          error: `No range supervision event exists matching id ${response.locals.query.scheduled_range_supervision_id}`
         })
     }
     return response

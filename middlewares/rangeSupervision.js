@@ -29,7 +29,7 @@ const serviceCalls = {
     const query = response.locals.query
     let id
     try {
-      id = await services.trackSupervision.create(query)
+      id = await services.rangeSupervision.create(query)
     }
     catch(e) {
       if(e.name === 'Supervision exists') {
@@ -43,12 +43,12 @@ const serviceCalls = {
     }
 
     try {
-      response.locals.queryResult = await services.trackSupervision.read(id)
+      response.locals.queryResult = await services.rangeSupervision.read(id)
     }
     catch(e) {
       return next(e)
     }
-    response.set('Location', `/api/track-supervision/${id}`)
+    response.set('Location', `/api/range-supervision/${id}`)
     return next()
   }
   , update: async function updateSupervision(request, response, next) {
@@ -56,7 +56,7 @@ const serviceCalls = {
     const updates = response.locals.updates
 
     try {
-      response.locals.queryResult = await services.trackSupervision.update(id, updates)
+      response.locals.queryResult = await services.rangeSupervision.update(id, updates)
     } catch(e) {
       if(e.name === 'Unknown supervision') {
         return response
@@ -72,7 +72,7 @@ const serviceCalls = {
   , delete: async function deleteSupervision(request, response, next) {
     const query = response.locals.query
     try {
-      response.locals.queryResult = await services.trackSupervision.delete(query)
+      response.locals.queryResult = await services.rangeSupervision.delete(query)
     } catch(e) {
       return next(e)
     }
