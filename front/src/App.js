@@ -5,6 +5,7 @@ import Nav from "./Nav";
 import Dayview from "./Dayview";
 import Weekview from "./Weekview";
 import Trackview from "./Trackview";
+import Scheduling from "./Scheduling";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 class App extends Component {
@@ -22,6 +23,7 @@ class App extends Component {
               <Route path="/dayview/:date?" component={Dayview} />
               <Route path="/weekview" component={Weekview} />
               <Route path="/trackview/:date?/:track?" component={Trackview} />
+              <Route path="/scheduling/:date?" component={Scheduling} />
             </Switch>
           </header>
         </div>
