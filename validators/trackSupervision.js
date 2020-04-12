@@ -69,6 +69,7 @@ module.exports = {
   readFilter: [
     fields.track_supervisor(query, 'optional')
     , fields.notice(query, 'optional')
+    , fields.scheduled_range_supervision_id(query, 'optional')
     , handleValidationErrors
     , function storeQuery(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['query'] })
