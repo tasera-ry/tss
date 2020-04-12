@@ -14,12 +14,14 @@ const _ = require('lodash');
       open: "02:00:00",
       close: "03:00:00",
       available: true,              we only care about condition: available === false
+      rangeSupervisorId: 1,
       rangeSupervision:'present',
         //present=green,            from range_supervision.range_supervisor
         //absent=white,             from range_supervision.range_supervisor
         //confirmed=lightGreen,     from range_supervision.range_supervisor
         //en route=yellow,          from range_supervision.range_supervisor
         //closed=red                from reservation.available === false
+        //not confirmed=blue        from range_supervision.range_supervisor
       tracks: [
         {
           id: 1,
@@ -182,6 +184,7 @@ exports.getScheduleDate = async (req, res) => {
       open:open,
       close:close,
       available:available,
+      rangeSupervisorId:rangeSupervisorId,
       rangeSupervision:(available === false ? 'closed' : rangeSupervisionState),
       tracks:tracks
     }
@@ -189,6 +192,11 @@ exports.getScheduleDate = async (req, res) => {
     if(tracks && reservation && schedule){
       res.status(200).json(result);
     }
+    else{
+      res.status(400).json();
+    }
   }
-  res.status(400).json();
+  else{
+    res.status(400).json();
+  }
 }
