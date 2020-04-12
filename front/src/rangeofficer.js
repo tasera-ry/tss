@@ -56,7 +56,7 @@ class RangeOfficerView extends Component {
                                     // This slicing might cause problems later
                                     openTime: timeData ? timeData.open.slice(0, 5) : 16,
                                     closeTime: timeData ? timeData.close.slice(0, 5) : 21, 
-                                    scheduleId: timeData.id,
+                                    scheduleId: timeData ? timeData.id : null,
                                     setRangeSupervisor: timeData ? timeData.supervisor_id : null,
                                 }, () => {
                                     // Getting and setting track information
