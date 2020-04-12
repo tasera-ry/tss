@@ -81,6 +81,16 @@
   margin-left: 19vw;
 }
 
+.isNotConfirmed {
+  background-color: blue;
+  color: black;
+  padding: 12px;
+  text-align: center;
+  align-items: center;
+  width: 60vw;
+  margin-left: 19vw;
+}
+
 .backLink > svg {
   margin-bottom: -7px;
   margin-right: 5px;
@@ -138,6 +148,14 @@
   
   .isConfirmed {
     background-color: lightGreen;
+    color: black;
+    padding: 12px;
+    width: 80vw;
+    margin-left: 8vw;
+  }
+  
+  .isNotConfirmed {
+    background-color: blue;
     color: black;
     padding: 12px;
     width: 80vw;

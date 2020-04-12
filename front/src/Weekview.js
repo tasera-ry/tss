@@ -162,6 +162,8 @@ class Weekview extends Component {
                     colorFromBackEnd = "green"
                 } else if (rataStatus === "confirmed") {
                     colorFromBackEnd = "lightGreen"
+                } else if (rataStatus === "not confirmed") {
+                    colorFromBackEnd = "blue"
                 } else if (rataStatus === "en route") {
                     colorFromBackEnd = "yellow"
                 } else if (rataStatus === "closed") {

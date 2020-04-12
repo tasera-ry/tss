@@ -98,6 +98,10 @@ class Dayview extends Component {
         text = "Päävalvoja varmistettu";
         color = "lightGreenB";
       }
+      else if (props.rangeSupervision === 'not confirmed') {
+        text = "Päävalvoja ei varmistettu";
+        color = "blueB";
+      }
       else if (props.rangeSupervision === 'en route') {
         text = "Päävalvoja matkalla";
         color = "yellowB";

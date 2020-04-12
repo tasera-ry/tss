@@ -107,8 +107,13 @@
 .dayviewContainer .greenB {
   background:green;
 }
+
 .dayviewContainer .lightGreenB {
   background:lightgreen;
+}
+
+.dayviewContainer .blueB {
+  background:blue;
 }
 
 .dayviewContainer .redB {

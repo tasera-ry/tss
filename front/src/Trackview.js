@@ -91,6 +91,11 @@ class Trackview extends Component {
             <Box class="isConfirmed">Päävalvoja varmistettu</Box>
          );
          return returnable;
+      } else if(this.state.rangeSupervision === 'not confirmed'){
+         let returnable = (
+            <Box class="isNotConfirmed">Päävalvoja ei varmistettu</Box>
+         );
+         return returnable;
       } else if(this.state.rangeSupervision === 'en route'){
          let returnable = (
             <Box class="isEnRoute">Päävalvoja matkalla</Box>
