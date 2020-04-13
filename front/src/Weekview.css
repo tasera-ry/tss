@@ -150,6 +150,10 @@
   */
 }
 
+.hoverHand:hover {
+  cursor: pointer;
+}
+
 .klockan {
    margin-left: 16vw;
 }

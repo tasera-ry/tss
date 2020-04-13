@@ -15,6 +15,7 @@ const _ = require('lodash');
       close: "03:00:00",
       available: true,              we only care about condition: available === false
       rangeSupervisorId: 1,
+      rangeSupervisionScheduled: true,    does range_supervision exist for schedule
       rangeSupervision:'present',
         //present=green,            from range_supervision.range_supervisor
         //absent=white,             from range_supervision.range_supervisor
@@ -32,7 +33,7 @@ const _ = require('lodash');
             //present=green,            from track_supervision.track_supervisor
             //absent=white,             from track_supervision.track_supervisor
             //closed=red                from track_supervision.track_supervisor
-          scheduled: true               for scheduling.js to understand which exist already
+          scheduled: true               for scheduling.js to understand which tracks exist already
         }
       ]
     }
@@ -131,6 +132,7 @@ exports.getScheduleDate = async (req, res) => {
     let open = null;
     let close = null;
     let rangeSupervisionState = 'absent';
+    let rangeSupervisionScheduled = false;
          
     const reservation = await getReservation(date);
     if(reservation !== false && reservation.length > 0) {
@@ -174,7 +176,8 @@ exports.getScheduleDate = async (req, res) => {
     const rangeSupervision = await getRangesupervision(scheduleId);
     if(rangeSupervision !== false && rangeSupervision.length > 0) {
       rangeSupervisionState = rangeSupervision[0].range_supervisor;
-    }
+      rangeSupervisionScheduled = true;
+    } else rangeSupervisionScheduled = false;
 
     let result = {
       date:date,
@@ -186,6 +189,7 @@ exports.getScheduleDate = async (req, res) => {
       available:available,
       rangeSupervisorId:rangeSupervisorId,
       rangeSupervision:(available === false ? 'closed' : rangeSupervisionState),
+      rangeSupervisionScheduled:rangeSupervisionScheduled,
       tracks:tracks
     }
     
