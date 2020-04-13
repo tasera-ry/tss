@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import { callApi } from "./utils/helper.js";
-import { dayToString } from "./utils/Utils";
+import { dayToString, getSchedulingDate } from "./utils/Utils";
+
 /*
  ** Main function
  */
@@ -17,8 +17,8 @@ class Trackview extends Component {
          date: new Date(Date.now()),
          opens: 16,
          closes: 20,
-         rangeOfficer: false,
-         trackOfficer: false,
+         rangeSupervision: false,
+         trackSupervision: false,
          info: "",
          parent: props.getParent,
          name: "rata 1",
@@ -26,73 +26,105 @@ class Trackview extends Component {
       };
       this.update = this.update.bind(this);
    }
+   
    componentDidMount() {
       this.update();
    }
+   
    update() {
       // /dayview/2020-02-20
       let date = this.props.match.params.date;
-      callApi(
-         "GET",
-         "date/" +
-            this.props.match.params.date +
-            "/track/" +
-            this.props.match.params.track
-      )
-         .then(res => {
-            //async joten tietoa päivittäessä voi välähtää Date.now antama
-            //ennen haluttua tietoa
+      let track = this.props.match.params.track;
+      const request = async () => {
+        const response = await getSchedulingDate(date);
+
+        if(response !== false){
+          let selectedTrack = response.tracks.find((findItem) => findItem.name === track)
+          console.log("Results from api",response,selectedTrack);
+          
+          if(selectedTrack !== undefined){
             this.setState({
-               date: new Date(this.props.match.params.date),
-               trackOfficer: res.track.trackOfficer,
-               rangeOfficer: res.track.rangeOfficer,
-               name: res.track.trackName,
-               description: "(" + res.track.description + ")",
-               info: res.track.trackNotice
+               date: new Date(response.date),
+               trackSupervision: selectedTrack.trackSupervision,
+               rangeSupervision: response.rangeSupervision,
+               name: selectedTrack.name,
+               description: "(" + selectedTrack.description + ")",
+               info: selectedTrack.notice
+            },function(){
+              document.getElementById("date").style.visibility = "visible";
+              document.getElementById("valvojat").style.visibility = "visible";
+              if (selectedTrack.notice > 0) {
+                 document.getElementById("infobox").style.visibility = "visible";
+              } else {
+                 document.getElementById("infobox").style.visibility = "disabled";
+              }
             });
-            document.getElementById("date").style.visibility = "visible";
-            document.getElementById("valvojat").style.visibility = "visible";
-            if (res.track.trackNotice.length > 0) {
-               document.getElementById("infobox").style.visibility = "visible";
-            } else {
-               document.getElementById("infobox").style.visibility = "disabled";
-            }
-         })
-         .catch(
-            err => console.log(err),
+          } else {
+            console.error("track undefined");
+            
             this.setState({
                name:
                   'Rataa nimeltä "' +
                   this.props.match.params.track +
                   '" ei löydy.'
-            }),
-            (document.getElementById("date").style.visibility = "hidden"),
-            (document.getElementById("valvojat").style.visibility = "hidden"),
-            (document.getElementById("infobox").style.visibility = "hidden")
-         );
+            });
+            document.getElementById("date").style.visibility = "hidden"
+            document.getElementById("valvojat").style.visibility = "hidden"
+            document.getElementById("infobox").style.visibility = "hidden"
+          }
+        } else console.error("getting info failed");
+      } 
+      request();
    }
 
    rangeAvailability() {
-      if (this.state.rangeOfficer) {
-         let returnable = <Box class="isAvaivable">Päävalvoja Paikalla</Box>;
+      if (this.state.rangeSupervision === 'present') {
+         let returnable = <Box class="isAvailable">Päävalvoja Paikalla</Box>;
          return returnable;
-      } else {
+      } else if(this.state.rangeSupervision === 'absent'){
          let returnable = (
-            <Box class="isUnavaivable">Päävalvoja ei paikalla</Box>
+            <Box class="isUnavailable">Päävalvoja ei paikalla</Box>
+         );
+         return returnable;
+      } else if(this.state.rangeSupervision === 'confirmed'){
+         let returnable = (
+            <Box class="isConfirmed">Päävalvoja varmistettu</Box>
+         );
+         return returnable;
+      } else if(this.state.rangeSupervision === 'not confirmed'){
+         let returnable = (
+            <Box class="isNotConfirmed">Päävalvoja ei varmistettu</Box>
+         );
+         return returnable;
+      } else if(this.state.rangeSupervision === 'en route'){
+         let returnable = (
+            <Box class="isEnRoute">Päävalvoja matkalla</Box>
+         );
+         return returnable;
+      } else if(this.state.rangeSupervision === 'closed'){
+         let returnable = (
+            <Box class="isClosed">Ampumakeskus suljettu</Box>
          );
          return returnable;
       }
    }
 
    trackAvailability() {
-      if (this.state.trackOfficer) {
-         let returnable = <Box class="isAvaivable">Ratavalvoja Paikalla</Box>;
+      if (this.state.trackSupervision === 'present') {
+         let returnable = <Box class="isAvailable">Ratavalvoja Paikalla</Box>;
          return returnable;
-      } else {
+      } 
+      else if(this.state.trackSupervision === 'absent'){
          let returnable = (
-            <Box class="isUnavaivable">Ratavalvoja ei paikalla</Box>
+            <Box class="isUnavailable">Ratavalvoja ei paikalla</Box>
          );
          return returnable;
+      } 
+      else if(this.state.trackSupervision === 'closed'){
+        let returnable = (
+          <Box class="isClosed">Rata suljettu</Box>
+        );
+        return returnable;
       }
    }
 
