@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import './App.css';
 import './rangeofficer.css';
 import Grid from '@material-ui/core/Grid';
-import { callApi } from "./utils/helper.js";
 import moment from 'moment'
 
 import { dayToString } from "./utils/Utils";
@@ -20,7 +19,7 @@ class RangeOfficerView extends Component {
             setRangeSupervisor: null,
             openTime: 16,
             closeTime: 20,
-            // Statuses: 0 = unavailable, 1 = present, 2 = closed, 3 = coming
+            // Statuses: 0 = unavailable, 1 = present, 2 = closed, 3 = en route, 4 = confirmed, 5 = not confirmed
             officerStatus: 0,
             track1: 0,
             track2: 0,
@@ -33,6 +32,10 @@ class RangeOfficerView extends Component {
     }
 
     componentDidMount() {
+        this.update();
+    }
+    
+    update(){
         var date = this.state.date;
         // TODO fetch info for current date
         fetch(`/api/reservation?date=${date}`)
@@ -67,7 +70,7 @@ class RangeOfficerView extends Component {
                                             var i = 1;
                                             tracks.map(track => {
                                                 // White status
-                                                if (track.status === "trackofficer unavailable") {
+                                                if (track.status === "absent") {
                                                     let trackNum = `track${i}`;
                                                     i++;
 
@@ -108,7 +111,7 @@ class RangeOfficerView extends Component {
             });
     }
 
-     changeTrackStatus = (trackNum) => {
+    changeTrackStatus = (trackNum) => {
         let newStatus;
         if (this.state[trackNum] === 2) {
             newStatus = 0;
