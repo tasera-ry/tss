@@ -843,7 +843,7 @@ class Scheduling extends Component {
               />
             </div>
             <div className="monthly">
-              Toista 4 viikon välein
+              Toista kuukausittain
               <Switch
                 checked={ this.state.monthly }
                 onChange={handleRepeatChange}
