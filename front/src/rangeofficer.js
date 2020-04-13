@@ -16,6 +16,7 @@ class RangeOfficerView extends Component {
             reservationId: null,
             scheduleId: null,
             rangeSupervision: null,
+            rangeSupervisionScheduled: false,
             open: 16,
             close: 20,
             // Statuses: absent, present, closed, en route, confirmed, not confirmed
@@ -70,6 +71,7 @@ class RangeOfficerView extends Component {
                       .minute(0)
                       .second(0),
                     rangeSupervision: response.rangeSupervision,
+                    rangeSupervisionScheduled: response.rangeSupervisionScheduled,
                     tracks: response.tracks
                 },function(){
                   console.log("state after update",this.state)
@@ -111,17 +113,35 @@ class RangeOfficerView extends Component {
                 tracks: tracks
             }, () => {
                 if(this.state.canUpdate){
-                    fetch(`/api/track-supervision/${this.state.scheduleId}/${this.state.tracks[key].id}`, {
-                        method: "PUT",
-                        body: JSON.stringify({track_supervisor: newStatus}),
-                        headers: {
-                          'Accept': 'application/json',
-                          'Content-Type': 'application/json',
-                          Authorization: `Bearer ${this.state.token}`
-                        }
-                    })
-                    .then(status => console.log(status));
-                }
+                    if(this.state.tracks[key].scheduled){
+                      fetch(`/api/track-supervision/${this.state.scheduleId}/${this.state.tracks[key].id}`, {
+                          method: "PUT",
+                          body: JSON.stringify({track_supervisor: newStatus}),
+                          headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${this.state.token}`
+                          }
+                      })
+                      .then(status => console.log(status));
+                    }
+                    else{
+                      fetch(`/api/track-supervision`, {
+                          method: "PUT",
+                          body: JSON.stringify({
+                            scheduled_range_supervision_id:this.state.scheduleId,
+                            track_id:this.state.tracks[key].id,
+                            track_supervisor: newStatus
+                          }),
+                          headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${this.state.token}`
+                          }
+                      })
+                      .then(status => console.log(status));
+                    }
+                }else console.error("cannot update some parts (reservation or schedule) missing");
             }
         );
     }
@@ -131,18 +151,71 @@ class RangeOfficerView extends Component {
             {
                 rangeSupervision: 'present'
             }, () => {
+                //reservation and schedule exist
                 if(this.state.canUpdate){
-                    fetch(`/api/range-supervision/${this.state.scheduleId}`, {
-                        method: "PUT",
-                        body: JSON.stringify({range_supervisor: 'present'}),
-                        headers: {
-                          'Accept': 'application/json',
-                          'Content-Type': 'application/json',
-                          Authorization: `Bearer ${this.state.token}`
-                        }
-                    })
-                    .then(status => console.log(status));
-                }
+                    //range supervision exists
+                    if(this.state.rangeSupervisionScheduled){
+                        fetch(`/api/reservation/${this.state.reservationId}`, {
+                            method: "PUT",
+                            body: JSON.stringify({available: true}),
+                            headers: {
+                              'Accept': 'application/json',
+                              'Content-Type': 'application/json',
+                              Authorization: `Bearer ${this.state.token}`
+                            }
+                        })
+                        .then(status => {
+                          console.log(status)
+                          fetch(`/api/range-supervision/${this.state.scheduleId}`, {
+                              method: "PUT",
+                              body: JSON.stringify({range_supervisor: 'present'}),
+                              headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${this.state.token}`
+                              }
+                          })
+                          .then(status => console.log(status));
+                        });
+                    }
+                    else{
+                      console.log("rangesfosijdf",this.state.rangeSupervisionScheduled);
+                        fetch(`/api/reservation/${this.state.reservationId}`, {
+                            method: "PUT",
+                            body: JSON.stringify({available: true}),
+                            headers: {
+                              'Accept': 'application/json',
+                              'Content-Type': 'application/json',
+                              Authorization: `Bearer ${this.state.token}`
+                            }
+                        })
+                        fetch(`/api/reservation/${this.state.reservationId}`, {
+                            method: "PUT",
+                            body: JSON.stringify({available: true}),
+                            headers: {
+                              'Accept': 'application/json',
+                              'Content-Type': 'application/json',
+                              Authorization: `Bearer ${this.state.token}`
+                            }
+                        })
+                        .then(status => {
+                          console.log(status)
+                          fetch(`/api/range-supervision`, {
+                              method: "POST",
+                              body: JSON.stringify({
+                                scheduled_range_supervision_id:this.state.scheduleId,
+                                range_supervisor: 'present'
+                              }),
+                              headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${this.state.token}`
+                              }
+                          })
+                          .then(status => console.log(status));
+                        });
+                    }
+                }else console.error("cannot update some parts (reservation or schedule) missing");
             }
         );
     }
@@ -152,18 +225,61 @@ class RangeOfficerView extends Component {
             {
                 rangeSupervision: 'en route'
             }, () => {
+                //reservation and schedule exist
                 if(this.state.canUpdate){
-                    fetch(`/api/range-supervision/${this.state.scheduleId}`, {
-                        method: "PUT",
-                        body: JSON.stringify({range_supervisor: 'en route'}),
-                        headers: {
-                          'Accept': 'application/json',
-                          'Content-Type': 'application/json',
-                          Authorization: `Bearer ${this.state.token}`
-                        }
-                    })
-                    .then(status => console.log(status));
-                }
+                    //range supervision exists
+                    if(this.state.rangeSupervisionScheduled){
+                        fetch(`/api/reservation/${this.state.reservationId}`, {
+                            method: "PUT",
+                            body: JSON.stringify({available: true}),
+                            headers: {
+                              'Accept': 'application/json',
+                              'Content-Type': 'application/json',
+                              Authorization: `Bearer ${this.state.token}`
+                            }
+                        })
+                        .then(status => {
+                          console.log(status)
+                          fetch(`/api/range-supervision/${this.state.scheduleId}`, {
+                              method: "PUT",
+                              body: JSON.stringify({range_supervisor: 'en route'}),
+                              headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${this.state.token}`
+                              }
+                          })
+                          .then(status => console.log(status));
+                        });
+                    }
+                    else{
+                        fetch(`/api/reservation/${this.state.reservationId}`, {
+                            method: "PUT",
+                            body: JSON.stringify({available: true}),
+                            headers: {
+                              'Accept': 'application/json',
+                              'Content-Type': 'application/json',
+                              Authorization: `Bearer ${this.state.token}`
+                            }
+                        })
+                        .then(status => {
+                          console.log(status)
+                          fetch(`/api/range-supervision`, {
+                              method: "POST",
+                              body: JSON.stringify({
+                                scheduled_range_supervision_id:this.state.scheduleId,
+                                range_supervisor: 'en route'
+                              }),
+                              headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${this.state.token}`
+                              }
+                          })
+                          .then(status => console.log(status));
+                        });
+                    }
+                }else console.error("cannot update some parts (reservation or schedule) missing");
             }
         );
     }
@@ -184,7 +300,7 @@ class RangeOfficerView extends Component {
                         }
                     })
                     .then(status => console.log(status));
-                }
+                }else console.error("cannot update some parts (reservation or schedule) missing");
             }
         );
     }
