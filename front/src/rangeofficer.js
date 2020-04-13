@@ -20,15 +20,32 @@ class RangeOfficerView extends Component {
             close: 20,
             // Statuses: absent, present, closed, en route, confirmed, not confirmed
             rangeSupervision: 'absent',
-            tracks:{}
+            tracks:{},
+            token:null,
+            canUpdate:false
         };
     }
 
     componentDidMount() {
-        this.update();
+      console.log("MOUNTED",localStorage.getItem('token'));
+      this.setState({
+        token: localStorage.getItem('token')
+      },function(){
+        if(this.state.token === null){
+          this.props.history.push("/");
+        }
+        else{
+          try{
+            this.update();
+          }
+          catch(error){
+            console.error("init failed",error);
+          }
+        }
+      })
     }
-    
-    update(){
+
+    update() {
         var date = this.state.date;
         // TODO fetch info for current date
         fetch(`/api/datesupreme/${date}`)
@@ -56,6 +73,16 @@ class RangeOfficerView extends Component {
                     tracks: response.tracks
                 },function(){
                   console.log("state after update",this.state)
+                    if(this.state.reservationId === null && this.state.scheduleId === null){
+                      alert("either/both reservation schedule missing");
+                      this.setState({
+                        canUpdate:false
+                      })
+                    }else{
+                      this.setState({
+                        canUpdate:true
+                      })
+                    }
                 })
             });
     }
@@ -83,11 +110,18 @@ class RangeOfficerView extends Component {
             {
                 tracks: tracks
             }, () => {
-                fetch(`/api/track-supervision/${this.state.reservationId}/${this.state.tracks[key].id}`, {
-                    method: "PUT",
-                    body: { "track_supervisor": "present"}
-                })
+                if(this.state.canUpdate){
+                    fetch(`/api/track-supervision/${this.state.scheduleId}/${this.state.tracks[key].id}`, {
+                        method: "PUT",
+                        body: JSON.stringify({track_supervisor: newStatus}),
+                        headers: {
+                          'Accept': 'application/json',
+                          'Content-Type': 'application/json',
+                          Authorization: `Bearer ${this.state.token}`
+                        }
+                    })
                     .then(status => console.log(status));
+                }
             }
         );
     }
@@ -97,11 +131,18 @@ class RangeOfficerView extends Component {
             {
                 rangeSupervision: 'present'
             }, () => {
-                fetch(`/api/range-supervision/${this.state.reservationId}`, {
-                    method: "PUT",
-                    body: { "range_supervisor": "present"}
-                })
+                if(this.state.canUpdate){
+                    fetch(`/api/range-supervision/${this.state.scheduleId}`, {
+                        method: "PUT",
+                        body: JSON.stringify({range_supervisor: 'present'}),
+                        headers: {
+                          'Accept': 'application/json',
+                          'Content-Type': 'application/json',
+                          Authorization: `Bearer ${this.state.token}`
+                        }
+                    })
                     .then(status => console.log(status));
+                }
             }
         );
     }
@@ -111,12 +152,18 @@ class RangeOfficerView extends Component {
             {
                 rangeSupervision: 'en route'
             }, () => {
-                // TODO save changed track officer status
-                fetch(`/api/range-supervision/${this.state.reservationId}`, {
-                    method: "PUT",
-                    body: { "range_supervisor": "en route"}
-                })
+                if(this.state.canUpdate){
+                    fetch(`/api/range-supervision/${this.state.scheduleId}`, {
+                        method: "PUT",
+                        body: JSON.stringify({range_supervisor: 'en route'}),
+                        headers: {
+                          'Accept': 'application/json',
+                          'Content-Type': 'application/json',
+                          Authorization: `Bearer ${this.state.token}`
+                        }
+                    })
                     .then(status => console.log(status));
+                }
             }
         );
     }
@@ -126,12 +173,18 @@ class RangeOfficerView extends Component {
             {
                 rangeSupervision: 'closed'
             }, () => {
-                // TODO save changed track officer status
-                fetch(`/api/range-supervision/${this.state.reservationId}`, {
-                    method: "PUT",
-                    body: { "range_supervisor": "absent"}
-                })
+                if(this.state.canUpdate){
+                    fetch(`/api/reservation/${this.state.reservationId}`, {
+                        method: "PUT",
+                        body: JSON.stringify({available: 'false'}),
+                        headers: {
+                          'Accept': 'application/json',
+                          'Content-Type': 'application/json',
+                          Authorization: `Bearer ${this.state.token}`
+                        }
+                    })
                     .then(status => console.log(status));
+                }
             }
         );
     }
