@@ -29,17 +29,8 @@ const fields = {
     return validatorAdditions(validator, opts)
   }
 
-  ,  track_id: function idValidation(requestObject, ...opts) {
-    const validator = requestObject('track_id')
-          .isInt()
-          .withMessage('must be an integer')
-          .toInt()
-
-    return validatorAdditions(validator, opts)
-  }
-
-  , track_supervisor: function supervisorValidation(requestObject, ...opts) {
-    const validator = requestObject('track_supervisor')
+  , range_supervisor: function supervisorValidation(requestObject, ...opts) {
+    const validator = requestObject('range_supervisor')
           .isString()
           .withMessage('must be a string')
           .isLength({ min: 1, max: 255 })
@@ -67,7 +58,7 @@ function handleValidationErrors(request, response, next) {
 
 module.exports = {
   readFilter: [
-    fields.track_supervisor(query, 'optional')
+    fields.range_supervisor(query, 'optional')
     , fields.notice(query, 'optional')
     , fields.scheduled_range_supervision_id(query, 'optional')
     , handleValidationErrors
@@ -77,7 +68,6 @@ module.exports = {
     }
   ], read: [
     fields.scheduled_range_supervision_id(param, 'exists')
-    , fields.track_id(param, 'exists')
     , handleValidationErrors
     , function storeID(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['params'] })
@@ -85,8 +75,7 @@ module.exports = {
     }
   ], create: [
     fields.scheduled_range_supervision_id(body, 'exists')
-    , fields.track_id(body, 'exists')
-    , fields.track_supervisor(body, 'exists')
+    , fields.range_supervisor(body, 'exists')
     , fields.notice(body, 'optional')
     , handleValidationErrors
     , function storeCreationRequest(request, response, next) {
@@ -95,8 +84,7 @@ module.exports = {
     }
   ], update: [
     fields.scheduled_range_supervision_id(param, 'exists')
-    , fields.track_id(param, 'exists')
-    , fields.track_supervisor(body, 'optional')
+    , fields.range_supervisor(body, 'optional')
     , fields.notice(body, 'optional')
     , handleValidationErrors
     , function storeUpdateRequest(request, response, next) {
@@ -106,7 +94,6 @@ module.exports = {
     }
   ], delete: [
     fields.scheduled_range_supervision_id(param, 'exists')
-    , fields.track_id(param, 'exists')
     , function storeDeleteRequest(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['params'] })
       return next()
