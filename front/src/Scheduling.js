@@ -95,6 +95,8 @@ class Scheduling extends Component {
         available: false,
         rangeSupervisorSwitch: false,
         rangeSupervisorId: '',
+        rangeSupervisionScheduled: false,
+        rangeSupervisionChanged:false,
         daily:false,
         weekly:false,
         monthly:false,
@@ -167,6 +169,7 @@ class Scheduling extends Component {
           available:response.available !== null ? response.available : false,
           rangeSupervisorSwitch: response.rangeSupervisorId !== null ? true : false,
           rangeSupervisorId: response.rangeSupervisorId,
+          rangeSupervisionScheduled: response.rangeSupervisionScheduled,
           tracks: response.tracks,
           state:'ready'
         });
@@ -315,7 +318,7 @@ class Scheduling extends Component {
         }
       }
       const reservationRes = await reservation(rsId,params,reservationMethod,reservationPath);
-      console.log("adwedwedw",reservationRes);
+      console.log("reservationRes",reservationRes);
       
       params = {
         range_reservation_id: reservationRes,
@@ -380,8 +383,113 @@ class Scheduling extends Component {
         }
       }
       const scheduleRes = await schedule(rsId,srsId,params,scheduledRangeSupervisionMethod,scheduledRangeSupervisionPath);
-      console.log("zxczxcz",scheduleRes);
+      console.log("scheduleRes",scheduleRes);
       
+      /*
+      *  Range supervision
+      */
+      let rangeStatus = null;
+      if(this.state.available === false){
+        rangeStatus = 'closed';
+      }
+      else if(this.state.rangeSupervisorSwitch === false){
+        rangeStatus = 'absent';
+      }
+      else if(this.state.rangeSupervisorId !== null && this.state.rangeSupervisionChanged){
+        rangeStatus = 'not confirmed';
+      }
+      
+      const rangeSupervision = async (rsId,srsId,rangeStatus,rsScheduled,token) => {
+        console.log("range supvis params",rsId,srsId,rangeStatus,token);
+        try{
+          if(rsId !== null && srsId !== null){
+            //only closed is different from the 6 states
+            if(rangeStatus !== 'closed'){
+              //range supervision exists
+              if(rsScheduled){
+                fetch(`/api/reservation/${rsId}`, {
+                  method: "PUT",
+                  body: JSON.stringify({available: true}),
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                  }
+                })
+                .then(status => {
+                  console.log("put available",status)
+                  fetch(`/api/range-supervision/${srsId}`, {
+                    method: "PUT",
+                    body: JSON.stringify({range_supervisor: rangeStatus}),
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${token}`
+                    }
+                  })
+                  .then(status => console.log("put rangeSupervision",status));
+                });
+              }
+              else{
+                fetch(`/api/reservation/${rsId}`, {
+                  method: "PUT",
+                  body: JSON.stringify({available: true}),
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                  }
+                })
+                fetch(`/api/reservation/${rsId}`, {
+                  method: "PUT",
+                  body: JSON.stringify({available: true}),
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                  }
+                })
+                .then(status => {
+                  console.log(status)
+                  console.log("put available",status)
+                  fetch(`/api/range-supervision`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                      scheduled_range_supervision_id:srsId,
+                      range_supervisor: rangeStatus
+                    }),
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${token}`
+                    }
+                  })
+                  .then(status => console.log("post rangeSupervision", status));
+                });
+              }
+            }
+            else{
+              fetch(`/api/reservation/${rsId}`, {
+                method: "PUT",
+                body: JSON.stringify({available: 'false'}),
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${this.state.token}`
+                }
+              })
+              .then(status => console.log("put available",status));
+            }
+          }else console.error("cannot update some parts (reservation or schedule) missing");
+        }catch(error){
+          console.error("range supervision",error);
+          return reject(new Error('general range supervision failure'));
+        }
+      }
+      if(rangeStatus !== null){
+        const rangeSupervisionRes = await rangeSupervision(rsId,srsId,rangeStatus,this.state.rangeSupervisionScheduled,this.state.token);
+        console.log("rangeSupervisionRes",rangeSupervisionRes);
+      }
       
       /*
       *  Track supervision
@@ -447,7 +555,7 @@ class Scheduling extends Component {
       for (let key in this.state.tracks) {
         try{
           const trackSupervisionRes = await trackSupervision(scheduleRes,key);
-          console.log("pkpkpkp",trackSupervisionRes);
+          console.log("trackSupervisionRes",trackSupervisionRes);
         }catch(error){
           return reject(error);
         }
@@ -558,6 +666,11 @@ class Scheduling extends Component {
     
     const handleValueChange = (event) => {
       console.log("Value change",event.target.name, event.target.value)
+      if(event.target.name === 'rangeSupervisorId'){
+        this.setState({
+           rangeSupervisionChanged:true
+        });
+      }
       this.setState({
          [event.target.name]: event.target.value
       });
@@ -579,7 +692,7 @@ class Scheduling extends Component {
       //update call/error handling
       const update = async (date,rsId,srsId) => {
         console.log("Gonna call update",date,rsId,srsId);
-        const uc = await this.updateCall(date,rsId,srsId).then((res) => {
+        await this.updateCall(date,rsId,srsId).then((res) => {
           this.setState({
             toast: true,
             toastMessage: "Päivitys onnistui",
