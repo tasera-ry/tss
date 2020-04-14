@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { Link } from "react-router-dom";
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import logo from "./Logo.png";
+import DialogWindow from './LoggedIn';
+
+//TODO:
+//linkki käyttäjienhallintaan
+//kirjaudu ulos johtaa uloskirjautumiseen
+//autentikaatiotason selvitys jotta tiedetään mitkä menuitemit esiin
 
 function Nav() {
   const navStyle = {
-    color: "black"
+    color: "black",
+    textDecoration: "none"
   };
   const logoStyle = {
     textDecoration: "none",
@@ -13,6 +23,73 @@ function Nav() {
     width: "60%",
     display: "block"
   };
+
+  const SideMenu = () => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [openDial, setOpenDial] = useState(false);
+
+    const HandleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+      setOpenDial(false);
+    };
+
+    const HandleClose = (event) => {
+      setAnchorEl(null);
+    }
+
+    return (
+      <div>     
+        <Button
+          onClick={HandleClick}
+          size="small">
+          Valikko
+        </Button>
+
+        <Menu
+          id="menu"
+          open={Boolean(anchorEl)}
+          keepMounted
+          anchorEl={anchorEl}
+          onClose={HandleClose}>
+          
+          <Link style={navStyle} to="/scheduling">
+            <MenuItem>
+              Aikataulut
+            </MenuItem>
+          </Link>
+
+          <Link style={navStyle} to="/">
+            <MenuItem>
+              Käyttäjienhallinta
+            </MenuItem>
+          </Link>
+          
+          <Link style={navStyle}>
+            <MenuItem
+              onClick={() => setOpenDial(true)}>
+              Valvonnat
+            </MenuItem>
+          </Link>
+
+          <Link style={navStyle} to="/tablet">
+            <MenuItem>
+              Tablettinäkymä
+            </MenuItem>
+          </Link>
+
+          <Link style={navStyle} to="/">
+            <MenuItem>
+              Kirjaudu ulos
+            </MenuItem>
+          </Link>
+          
+        </Menu>
+
+        {openDial ? <DialogWindow /> : <p></p> }
+
+      </div>
+    )
+  }
 
   var icon = (
     <span class="logo">
@@ -27,9 +104,16 @@ function Nav() {
       <Link style={logoStyle} to="/">
         {icon}
       </Link>
-      <Link style={navStyle} to="/signin">
-        <p>Kirjaudu sisään</p>
+      
+      <Link to="/signin">
+        <Button
+          size="small">
+          Kirjaudu sisään
+        </Button>
       </Link>
+
+      <SideMenu />
+    
     </nav>
   );
 }
