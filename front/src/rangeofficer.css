@@ -1,0 +1,55 @@
+.containsAll {
+    margin: 20px;
+    align-content: center;
+}
+
+.midInfo {
+    margin-left: 10px;
+    display:flex;
+    flex-flow: row wrap;
+    align-items: center;
+}
+
+.hoverHand:hover {
+    cursor: pointer;
+  }
+
+.rangeOfficerStatus {
+    border-radius: 10px;
+    background-color: green;
+    padding: 10px;
+    margin: 0px 50% 10px 10px;
+    text-align: center;
+}
+
+.dateInfo {
+    margin: 0px 50% 10px 10px;
+    text-align: center;
+}
+
+.changeStatus {
+    background-color: green;
+    padding: 5px 20px 5px 20px;
+    margin: 3px;
+    display: inline-block;
+    border-radius: 10px;
+}
+
+.changeTrack {
+    background-color: green;
+    padding: 5px 20px 5px 20px;
+    margin: 3px;
+    float: left;
+    border-radius: 10px;
+    width: 5vw;
+    max-width:5vw;
+}
+
+.trackName {
+    padding: 5px 20px 5px 20px;
+    margin: 3px;
+    float: left;
+    border-radius: 10px;
+    width: 5vw;
+    max-width:5vw;
+}
