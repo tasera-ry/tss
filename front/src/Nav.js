@@ -27,6 +27,12 @@ function Nav() {
       <Link style={logoStyle} to="/">
         {icon}
       </Link>
+      <Link style={navStyle} to="/scheduling">
+        Scheduling
+      </Link>
+      <Link style={navStyle} to="/tablet">
+        <p>Tablet</p>
+      </Link>
       <Link style={navStyle} to="/signin">
         <p>Kirjaudu sisään</p>
       </Link>
