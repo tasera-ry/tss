@@ -2,7 +2,7 @@ const crypto = require('crypto')
 
 const config = {
   server: {
-    host: 'http://localhost:3000',
+    host: 'http://tss.netum.fi',
     port: 8000
   },
   jwt: {
