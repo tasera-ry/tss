@@ -58,7 +58,7 @@ function Nav() {
             </MenuItem>
           </Link>
 
-          <Link style={navStyle} to="/">
+          <Link style={navStyle} to="/usermanagement">
             <MenuItem>
               Käyttäjienhallinta
             </MenuItem>
