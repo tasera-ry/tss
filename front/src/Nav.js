@@ -110,7 +110,6 @@ function Nav() {
           size="small">
           Kirjaudu sisään
         </Button>
-      </Link>
 
       <SideMenu />
     
