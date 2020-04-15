@@ -2,6 +2,24 @@ const path = require('path')
 const root = path.join(__dirname, '..')
 const services = require(path.join(root, 'services'))
 const validators = require(path.join(root, 'validators'))
+const _ = require('lodash')
+
+const canRead = function canReadUserData(request, response, next) {
+  const session = response.locals.user
+  const query = response.locals.query
+
+  if(session.role === 'superuser') {
+    return next()
+  }
+
+  if(_.isMatch(_.pick(session, 'name', 'id'), _.pick(query, 'name', 'id'))) {
+    return next()
+  }
+
+  return response.status(403).send({
+    error: 'User doesn\'t have privileges to this resource'
+  })
+}
 
 exports.hasProperty = function userHasProperty(propertyName, value, equalityFn) {
   function propertyEquals(obj) {
@@ -125,6 +143,7 @@ exports.sign = [
 
 exports.readFilter = [
   validators.user.readFilter
+  , canRead
   , serviceCalls.readFilter
 ]
 
