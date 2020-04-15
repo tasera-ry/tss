@@ -30,7 +30,7 @@ moment.locale("fi");
 
 async function getRangeSupervisors(token){
   try{
-    let response = await fetch("/api/user", {
+    let response = await fetch("/api/user?role=supervisor", {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
