@@ -28,7 +28,7 @@ router.route('/user')
     middlewares.user.readFilter
     , controllers.user.readFilter)
   .post(
-    middlewares.user.hasProperty('role', 'supervisor')
+    middlewares.user.hasProperty('role', 'superuser')
     , middlewares.user.create
     , controllers.user.create)
 
