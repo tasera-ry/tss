@@ -13,7 +13,9 @@ import axios from 'axios';
 import moment from 'moment';
 
 //TODO:
-//toiminnallisuus sinänsä
+//postaus tietokantaan
+//aiemmin vahvistetut vuorot näkyy drop downeissa värillisinä
+//parempi ilmoitus jos vahvistettavia vuoroja ei ole
 
 //print drop down menus in rows
 const DropDowns = (props) => {
@@ -159,14 +161,37 @@ const Rows = ({HandleChange, changes}) => {
   )
 }
 
+
+//tällä haetaan nimen perusteella käyttäjän id jotta saadaan oikeat vuorot
+//muokattavaa myöhemmin: config axiosin kutsussa
+async function getId() {
+  let name = sessionStorage.getItem("taseraUserName");
+  console.log("username:", name);
+  
+  let token = localStorage.getItem("token");
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+  
+  let query = "api/user?name=" + name;
+  let response = await axios.get(query, config);
+
+  let userID = response.data[0].id;
+  console.log("userID:", userID);
+
+  return userID;
+}
+
 //hakee mahdolliset varauspäivät
-async function getReservations(userID, dates, setDates, setSchedules, get) {
+async function getReservations(dates, setDates, setSchedules, get) {
   //viikkotiedot
   //ilmeisesti reservationista saa aina yhden päivän ennen firstia?
   //sitä ei huomioida
+  let userID = await getId();
+  
   let week = [];
   let first = moment().format().split("T")[0];
-  let last = moment().add(17, 'days').format().split("T")[0];
+  let last = moment().add(30, 'days').format().split("T")[0];
   let query = "api/reservation?available=true&from=" + first + "&to=" + last;
   
   let response = await axios.get(query);
@@ -211,17 +236,16 @@ async function getSchedule(week, userID, setSchedules) {
   }
 }
 
+
 //täältä aloitetaan hakemalla tarvittavaa tietoa
 const DialogWindow = () => {
   const [dates, setDates] = useState([]); //päivät, jolloin rata käytössä
   const [schedules, setSchedules] = useState([]); //käyttäjän valvontavuorot
   let hasReserv = false; //käyttäjällä ei ole valvontoja tietyn ajan sisällä
 
-  //testimuuttuja, vaihda tätä saadaksesi eri käyttäjien vuorot
-  let userID = 46;
-
+  //aloitetaan hakemalla käyttäjälle valvontavuorot
   useEffect(() => {
-    getReservations(userID, dates, setDates, setSchedules);
+    getReservations(dates, setDates, setSchedules);
   }, [])
 
   return (
@@ -258,6 +282,10 @@ const Logic = ({schedules, setSchedules}) => {
     console.log("updating: ")
     console.log(changes);
 
+    //lähetetään changesin objektien id ja range_supervisor
+    //range_supervisioniin
+
+    
 
     
 

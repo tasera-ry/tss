@@ -12,19 +12,12 @@ import DialogWindow from './LoggedIn';
 //kirjaudu ulos johtaa uloskirjautumiseen
 //autentikaatiotason selvitys jotta tiedetään mitkä menuitemit esiin
 
-function Nav() {
+const SideMenu = ({setName}) => {
   const navStyle = {
     color: "black",
     textDecoration: "none"
   };
-  const logoStyle = {
-    textDecoration: "none",
-    height: "100%",
-    width: "60%",
-    display: "block"
-  };
-
-  const SideMenu = () => {
+  
     const [anchorEl, setAnchorEl] = useState(null);
     const [openDial, setOpenDial] = useState(false);
 
@@ -35,6 +28,13 @@ function Nav() {
 
     const HandleClose = (event) => {
       setAnchorEl(null);
+    }
+
+    const HandleSignOut = () => {
+      sessionStorage.clear();
+      setName(null);
+      HandleClose();
+
     }
 
     return (
@@ -53,7 +53,8 @@ function Nav() {
           onClose={HandleClose}>
           
           <Link style={navStyle} to="/scheduling">
-            <MenuItem>
+            <MenuItem
+              onClick={HandleClick}>
               Aikataulut
             </MenuItem>
           </Link>
@@ -78,7 +79,8 @@ function Nav() {
           </Link>
 
           <Link style={navStyle} to="/">
-            <MenuItem>
+            <MenuItem
+              onClick={HandleSignOut}>
               Kirjaudu ulos
             </MenuItem>
           </Link>
@@ -90,6 +92,42 @@ function Nav() {
       </div>
     )
   }
+
+const UserInfo = ({name, setName}) => {
+  setName(sessionStorage.getItem("taseraUserName"))
+  console.log(name)
+
+  return (
+    <div>
+      {name===null ?
+       <Link to="/signin">
+         <Button
+           size="small">
+           Kirjaudu sisään
+         </Button>
+       </Link>
+       :
+       <p>{name}</p>
+      }
+      
+    </div>
+  )
+
+}
+
+const Nav = () => {
+  const navStyle = {
+    color: "black",
+    textDecoration: "none"
+  };
+  const logoStyle = {
+    textDecoration: "none",
+    height: "100%",
+    width: "60%",
+    display: "block"
+  };
+
+  const [name, setName] = useState();
 
   var icon = (
     <span class="logo">
@@ -105,16 +143,12 @@ function Nav() {
         {icon}
       </Link>
       
-      <Link to="/signin">
-        <Button
-          size="small">
-          Kirjaudu sisään
-        </Button>
+      <UserInfo name={name} setName={setName} />
 
-      <SideMenu />
+      <SideMenu setName={setName} />
     
     </nav>
-  );
+  )
 }
 
 export default Nav;
