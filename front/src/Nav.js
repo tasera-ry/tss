@@ -94,7 +94,7 @@ const SideMenu = ({setName}) => {
   }
 
 const UserInfo = ({name, setName}) => {
-  setName(sessionStorage.getItem("taseraUserName"))
+  setName(localStorage.getItem("taseraUserName"))
   console.log(name)
 
   return (

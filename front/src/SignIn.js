@@ -52,7 +52,7 @@ export default function SignIn() {
   }
 
   const RedirectToWeekview = () => {
-    sessionStorage.setItem("taseraUserName", name);
+    localStorage.setItem("taseraUserName", name);
     history.push('/');
   }
 

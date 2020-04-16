@@ -165,7 +165,7 @@ const Rows = ({HandleChange, changes}) => {
 //tällä haetaan nimen perusteella käyttäjän id jotta saadaan oikeat vuorot
 //muokattavaa myöhemmin: config axiosin kutsussa
 async function getId() {
-  let name = sessionStorage.getItem("taseraUserName");
+  let name = localStorage.getItem("taseraUserName");
   console.log("username:", name);
   
   let token = localStorage.getItem("token");
@@ -175,7 +175,8 @@ async function getId() {
   
   let query = "api/user?name=" + name;
   let response = await axios.get(query, config);
-
+  //let response = await axios.get(query);
+  
   let userID = response.data[0].id;
   console.log("userID:", userID);
 
@@ -210,16 +211,22 @@ async function getReservations(dates, setDates, setSchedules, get) {
 //hakee aikataulun käyttäjän id:n ja varauslistan päivien id:n mukaan
 async function getSchedule(week, userID, setSchedules) {
   let res = [];
+  let temp = [];
 
   for(let i=0; i<week.length; i++) {
     let query = "api/schedule?range_reservation_id=" + week[i].id + "&supervisor_id=" + userID;
-    let response = await axios.get(query);
-    
-    if(response.data.length!==0) {
+    let response = axios.get(query);
+    temp = temp.concat(response);
+  }
+
+  for(let i=0; i<temp.length; i++) {
+    let v = await temp[i];
+
+    if(v.data.length!==0) {
       let obj = {
 	"date": week[i].date,
-	"id": response.data[0].id,
-	"reservation_id": response.data[0].range_reservation_id,
+	"id": v.data[0].id,
+	"reservation_id": v.data[0].range_reservation_id,
 	"range_supervisor": ""
       }
       
