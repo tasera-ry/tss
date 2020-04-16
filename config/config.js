@@ -6,7 +6,7 @@ const config = {
     port: 8000
   },
   jwt: {
-    secret: crypto.randomBytes(2 ** 8).toString('hex')
+    secret: process.env.JWT_SECRET || crypto.randomBytes(2 ** 8).toString('hex')
   },
   development: {
     range_id: 1
