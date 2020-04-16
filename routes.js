@@ -23,13 +23,13 @@ router.route('/sign')
 
 router.route('/user')
   .all(
-    middlewares.jwt.read
-    , middlewares.user.hasProperty('role', 'superuser'))
+    middlewares.jwt.read)
   .get(
     middlewares.user.readFilter
     , controllers.user.readFilter)
   .post(
-    middlewares.user.create
+    middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.user.create
     , controllers.user.create)
 
 router.route('/user/:id')
@@ -72,7 +72,7 @@ router.route('/track-supervision/:scheduled_range_supervision_id/:track_id')
     , middlewares.user.hasProperty('role', 'superuser')
     , middlewares.trackSupervision.delete
     , controllers.trackSupervision.delete)
-    
+
 //Range supervision
 router.route('/range-supervision')
   .get(
