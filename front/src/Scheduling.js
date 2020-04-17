@@ -64,7 +64,6 @@ class Scheduling extends Component {
         rangeSupervisorSwitch: false,
         rangeSupervisorId: '',
         rangeSupervisionScheduled: false,
-        rangeSupervisionChanged:false,
         daily:false,
         weekly:false,
         monthly:false,
@@ -463,16 +462,8 @@ class Scheduling extends Component {
         }
       }
       if(rangeStatus !== null){
-        //check if supervisor is different otherwise keep old rangeSupervision
-        if(this.state.rangeSupervisionChanged && isRepeat === false){
-          const rangeSupervisionRes = await rangeSupervision(rsId,srsId,rangeStatus,rangeSupervisionScheduled,this.state.token);
-          console.log("rangeSupervisionRes",rangeSupervisionRes,rangeSupervisionScheduled);
-        }
-        //on repeats don't care and override
-        else if(isRepeat){
-          const rangeSupervisionRes = await rangeSupervision(rsId,srsId,rangeStatus,rangeSupervisionScheduled,this.state.token);
-          console.log("rangeSupervisionRes",rangeSupervisionRes,rangeSupervisionScheduled);
-        }
+        const rangeSupervisionRes = await rangeSupervision(rsId,srsId,rangeStatus,rangeSupervisionScheduled,this.state.token);
+        console.log("rangeSupervisionRes",rangeSupervisionRes,rangeSupervisionScheduled);
       }
       else console.log("range status null")
       
@@ -651,11 +642,6 @@ class Scheduling extends Component {
     
     const handleValueChange = (event) => {
       console.log("Value change",event.target.name, event.target.value)
-      if(event.target.name === 'rangeSupervisorId'){
-        this.setState({
-           rangeSupervisionChanged:true
-        });
-      }
       this.setState({
          [event.target.name]: event.target.value
       });
