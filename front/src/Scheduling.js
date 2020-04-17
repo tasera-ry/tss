@@ -45,38 +45,6 @@ async function getRangeSupervisors(token){
   }
 }
 
-async function getReservation(date){
-  try{
-    let response = await fetch("/api/reservation?date="+moment(date).format('YYYY-MM-DD'), {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
-    });
-    return await response.json();
-  }catch(err){
-    console.error("GETTING RESERVATION FAILED",err);
-    return false;
-  }
-}
-
-async function getSchedule(reservationId){
-  try{
-    let response = await fetch("/api/schedule?range_reservation_id="+reservationId, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
-    });
-    return await response.json();
-  }catch(err){
-    console.error("GETTING SCHEDULE FAILED",err);
-    return false;
-  }
-}
-
 class Scheduling extends Component {
 
   constructor(props) {
@@ -231,7 +199,7 @@ class Scheduling extends Component {
   * this.state.tracks
   * supervisorStatus = this.state[this.state.tracks[key].id]
   */
-  async updateCall(date,rsId,srsId){
+  async updateCall(date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat){
     return new Promise(async (resolve,reject) => {
       console.log("UPDATE CALL",date,rsId,srsId);
       
@@ -395,7 +363,7 @@ class Scheduling extends Component {
       else if(this.state.rangeSupervisorSwitch === false){
         rangeStatus = 'absent';
       }
-      else if(this.state.rangeSupervisorId !== null && this.state.rangeSupervisionChanged){
+      else if(this.state.rangeSupervisorId !== null){
         rangeStatus = 'not confirmed';
       }
       
@@ -487,9 +455,18 @@ class Scheduling extends Component {
         }
       }
       if(rangeStatus !== null){
-        const rangeSupervisionRes = await rangeSupervision(rsId,srsId,rangeStatus,this.state.rangeSupervisionScheduled,this.state.token);
-        console.log("rangeSupervisionRes",rangeSupervisionRes);
+        //check if supervisor is different otherwise keep old rangeSupervision
+        if(this.state.rangeSupervisionChanged && isRepeat === false){
+          const rangeSupervisionRes = await rangeSupervision(rsId,srsId,rangeStatus,rangeSupervisionScheduled,this.state.token);
+          console.log("rangeSupervisionRes",rangeSupervisionRes,rangeSupervisionScheduled);
+        }
+        //on repeats don't care and override
+        else if(isRepeat){
+          const rangeSupervisionRes = await rangeSupervision(rsId,srsId,rangeStatus,rangeSupervisionScheduled,this.state.token);
+          console.log("rangeSupervisionRes",rangeSupervisionRes,rangeSupervisionScheduled);
+        }
       }
+      else console.log("range status null")
       
       /*
       *  Track supervision
@@ -498,7 +475,7 @@ class Scheduling extends Component {
         try{
           //track supervision
           //update only ones changed in state
-          if(this.state[this.state.tracks[key].id] !== undefined){
+          if(this.state[this.state.tracks[key].id] !== undefined || isRepeat){
             let supervisorStatus = this.state[this.state.tracks[key].id];
             let params = {
               track_supervisor: supervisorStatus
@@ -507,7 +484,7 @@ class Scheduling extends Component {
             let srsp = '';
             let trackSupervisionMethod = '';
             //if scheduled track supervision exists -> put otherwise -> post
-            if(this.state.tracks[key].scheduled){
+            if(tracks[key].scheduled){
               trackSupervisionMethod = 'PUT';
               srsp = "/" + srsId + '/' + this.state.tracks[key].id;
             } 
@@ -690,9 +667,9 @@ class Scheduling extends Component {
       });
       
       //update call/error handling
-      const update = async (date,rsId,srsId) => {
-        console.log("Gonna call update",date,rsId,srsId);
-        await this.updateCall(date,rsId,srsId).then((res) => {
+      const update = async (date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat) => {
+        console.log("Gonna call update",date,rsId,srsId,rangeSupervisionScheduled,tracks);
+        await this.updateCall(date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat).then((res) => {
           this.setState({
             toast: true,
             toastMessage: "Päivitys onnistui",
@@ -720,7 +697,14 @@ class Scheduling extends Component {
       
       const repeat = async () => {
         let date = moment(this.state.date).format('YYYY-MM-DD');
-        await update(date,this.state.reservationId,this.state.scheduleId);
+        await update(
+          date,
+          this.state.reservationId,
+          this.state.scheduleId,
+          this.state.rangeSupervisionScheduled,
+          this.state.tracks,
+          false
+        );
         
         //repeat after me
         if(this.state.daily === true || 
@@ -738,8 +722,15 @@ class Scheduling extends Component {
               date = moment(date).add(1, 'months');
             }
             
-            let ids = await updateRequirements(moment(date).format('YYYY-MM-DD'))
-            await update(date,ids[0],ids[1]);
+            let response = await updateRequirements(moment(date).format('YYYY-MM-DD'))
+            await update(
+              date,
+              response.reservationId,
+              response.scheduleId,
+              response.rangeSupervisionScheduled,
+              response.tracks,
+              true
+            );
           }
         }
       }
@@ -757,18 +748,13 @@ class Scheduling extends Component {
     const updateRequirements = async (date) => {
       console.log("UPDATE REQUIREMENTS",date);
       const request = async (date) => {
-        let rsId = null;
-        let srsId = null;
-        const reservation = await getReservation(date);
-        if(reservation !== undefined && reservation[0] !== undefined){
-          rsId = reservation[0].id;
+        const response = await getSchedulingDate(date);
+
+        if(response !== false){
+          console.log("During update base results from api",response);
         }
-        const schedule = await getSchedule(rsId);
-        if(schedule !== undefined && schedule[0] !== undefined){
-          srsId = schedule[0].id;
-        }
-        
-        return [rsId,srsId]
+        else console.error('Getting base info failed');
+        return response;
       }
       return await request(date);
     }
