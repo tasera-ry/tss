@@ -287,9 +287,13 @@ class Scheduling extends Component {
       }
       const reservationRes = await reservation(rsId,params,reservationMethod,reservationPath);
       console.log("reservationRes",reservationRes);
+      //if res grabbed from previous post
+      if(reservationRes !== undefined){
+        rsId = reservationRes;
+      }
       
       params = {
-        range_reservation_id: reservationRes,
+        range_reservation_id: rsId,
         open: moment(this.state.open).format('HH:mm'), 
         close: moment(this.state.close).format('HH:mm'),
         supervisor_id: null
@@ -352,6 +356,10 @@ class Scheduling extends Component {
       }
       const scheduleRes = await schedule(rsId,srsId,params,scheduledRangeSupervisionMethod,scheduledRangeSupervisionPath);
       console.log("scheduleRes",scheduleRes);
+      //if res grabbed from previous post
+      if(scheduleRes !== undefined){
+        srsId = scheduleRes;
+      }
       
       /*
       *  Range supervision
@@ -531,7 +539,7 @@ class Scheduling extends Component {
       }
       for (let key in this.state.tracks) {
         try{
-          const trackSupervisionRes = await trackSupervision(scheduleRes,key);
+          const trackSupervisionRes = await trackSupervision(srsId,key);
           console.log("trackSupervisionRes",trackSupervisionRes);
         }catch(error){
           return reject(error);
