@@ -127,7 +127,7 @@ class RangeOfficerView extends Component {
                     }
                     else{
                       fetch(`/api/track-supervision`, {
-                          method: "PUT",
+                          method: "POST",
                           body: JSON.stringify({
                             scheduled_range_supervision_id:this.state.scheduleId,
                             track_id:this.state.tracks[key].id,
@@ -179,16 +179,6 @@ class RangeOfficerView extends Component {
                         });
                     }
                     else{
-                      console.log("rangesfosijdf",this.state.rangeSupervisionScheduled);
-                        fetch(`/api/reservation/${this.state.reservationId}`, {
-                            method: "PUT",
-                            body: JSON.stringify({available: true}),
-                            headers: {
-                              'Accept': 'application/json',
-                              'Content-Type': 'application/json',
-                              Authorization: `Bearer ${this.state.token}`
-                            }
-                        })
                         fetch(`/api/reservation/${this.state.reservationId}`, {
                             method: "PUT",
                             body: JSON.stringify({available: true}),

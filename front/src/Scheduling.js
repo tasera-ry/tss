@@ -421,15 +421,6 @@ class Scheduling extends Component {
                     Authorization: `Bearer ${token}`
                   }
                 })
-                fetch(`/api/reservation/${rsId}`, {
-                  method: "PUT",
-                  body: JSON.stringify({available: true}),
-                  headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                  }
-                })
                 .then(status => {
                   console.log(status)
                   console.log("put available",status)
