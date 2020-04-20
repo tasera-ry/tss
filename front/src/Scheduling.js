@@ -147,6 +147,12 @@ class Scheduling extends Component {
               [this.state.tracks[key].id]: this.state.tracks[key].trackSupervision
             });
           }
+          //clears track states between date changes
+          else {
+            this.setState({
+              [this.state.tracks[key].id]: undefined
+            });
+          }
         }
       } else console.error("getting info failed");
     } 
@@ -475,7 +481,11 @@ class Scheduling extends Component {
           //track supervision
           //update only ones changed in state
           if(this.state[this.state.tracks[key].id] !== undefined || isRepeat){
-            let supervisorStatus = this.state[this.state.tracks[key].id];
+            let supervisorStatus;
+            let statusInState = this.state[this.state.tracks[key].id];
+            //if coming from repeat and status was cleared
+            supervisorStatus = statusInState !== undefined ? statusInState : 'absent';
+            
             let params = {
               track_supervisor: supervisorStatus
             };            
