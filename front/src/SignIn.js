@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function SignIn() {
+const SignIn = () => {
   
   const classes = useStyles();
   const [name, setName] = useState('');
@@ -138,5 +138,7 @@ export default function SignIn() {
         </form>
       </div>
     </Container>
-  );
+  )
 }
+
+export default SignIn

@@ -10,7 +10,8 @@ import DialogWindow from './LoggedIn';
 //TODO:
 //linkki käyttäjienhallintaan
 //kirjaudu ulos johtaa uloskirjautumiseen
-//autentikaatiotason selvitys jotta tiedetään mitkä menuitemit esiin
+//autentikaatiotason selvitys jotta tiedetään mitkä menuitemit esiin,
+//nyt tsekataan vain onko kirjautuessa talletettu nimeä
 
 const SideMenu = ({setName}) => {
   const navStyle = {
@@ -18,80 +19,86 @@ const SideMenu = ({setName}) => {
     textDecoration: "none"
   };
   
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [openDial, setOpenDial] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [openDial, setOpenDial] = useState(false);
+  let storage = window.localStorage;
 
-    const HandleClick = (event) => {
-      setAnchorEl(event.currentTarget);
-      setOpenDial(false);
-    };
+  const HandleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpenDial(false);
+  };
 
-    const HandleClose = (event) => {
-      setAnchorEl(null);
-    }
-
-    const HandleSignOut = () => {
-      sessionStorage.clear();
-      setName(null);
-      HandleClose();
-
-    }
-
-    return (
-      <div>     
-        <Button
-          onClick={HandleClick}
-          size="small">
-          Valikko
-        </Button>
-
-        <Menu
-          id="menu"
-          open={Boolean(anchorEl)}
-          keepMounted
-          anchorEl={anchorEl}
-          onClose={HandleClose}>
-          
-          <Link style={navStyle} to="/scheduling">
-            <MenuItem
-              onClick={HandleClick}>
-              Aikataulut
-            </MenuItem>
-          </Link>
-
-          <Link style={navStyle} to="/usermanagement">
-            <MenuItem>
-              Käyttäjienhallinta
-            </MenuItem>
-          </Link>
-          
-          <Link style={navStyle}>
-            <MenuItem
-              onClick={() => setOpenDial(true)}>
-              Valvonnat
-            </MenuItem>
-          </Link>
-
-          <Link style={navStyle} to="/tablet">
-            <MenuItem>
-              Tablettinäkymä
-            </MenuItem>
-          </Link>
-
-          <Link style={navStyle} to="/">
-            <MenuItem
-              onClick={HandleSignOut}>
-              Kirjaudu ulos
-            </MenuItem>
-          </Link>
-          
-        </Menu>
-
-        {openDial ? <DialogWindow /> : <p></p> }
-
-      </div>
-    )
+  const HandleClose = (event) => {
+    setAnchorEl(null);
   }
+
+  const HandleSignOut = () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    setName(null);
+    HandleClose();
+
+  }
+
+  return (
+    <div>
+
+      {storage.getItem("taseraUserName")!==null ?
+       <Button
+         onClick={HandleClick}
+         size="small">
+         Valikko
+       </Button>
+       : ""
+      }
+
+      <Menu
+        id="menu"
+        open={Boolean(anchorEl)}
+        keepMounted
+        anchorEl={anchorEl}
+        onClose={HandleClose}>
+        
+        <Link style={navStyle} to="/scheduling">
+          <MenuItem
+            onClick={HandleClick}>
+            Aikataulut
+          </MenuItem>
+        </Link>
+
+        <Link style={navStyle} to="/usermanagement">
+          <MenuItem>
+            Käyttäjienhallinta
+          </MenuItem>
+        </Link>
+        
+        <Link style={navStyle}>
+          <MenuItem
+            onClick={() => setOpenDial(true)}>
+            Valvonnat
+          </MenuItem>
+        </Link>
+
+        <Link style={navStyle} to="/tablet">
+          <MenuItem>
+            Tablettinäkymä
+          </MenuItem>
+        </Link>
+
+        <Link style={navStyle} to="/">
+          <MenuItem
+            onClick={HandleSignOut}>
+            Kirjaudu ulos
+          </MenuItem>
+        </Link>
+        
+      </Menu>
+
+      {openDial ? <DialogWindow /> : <p></p> }
+
+    </div>
+  )
+}
 
 const UserInfo = ({name, setName}) => {
   setName(localStorage.getItem("taseraUserName"))
@@ -146,7 +153,7 @@ const Nav = () => {
       <UserInfo name={name} setName={setName} />
 
       <SideMenu setName={setName} />
-    
+      
     </nav>
   )
 }

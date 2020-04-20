@@ -13,16 +13,27 @@ import axios from 'axios';
 import moment from 'moment';
 
 //TODO:
-//postaus tietokantaan
-//aiemmin vahvistetut vuorot näkyy drop downeissa värillisinä
+//nappien värit tyyleillä
 //parempi ilmoitus jos vahvistettavia vuoroja ei ole
+//optimointia
 
 //print drop down menus in rows
 const DropDowns = (props) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [buttonText, setButtonText] = useState("Vahvista saapuminen");
-  const [buttonColor, setButtonColor] = useState("white");
   let id = props.d;
+  let obj = props.changes.find(o => o.date===id);
+  let text = "Vahvista saapuminen";
+  let color = "white";
+  if(obj.range_supervisor==="confirmed") {
+    text = "Saavun paikalle";
+    color = "green";
+  }
+  if(obj.range_supervisor==="absent") {
+    text = "En pääse paikalle";
+    color = "red";
+  }  
+  const [buttonText, setButtonText] = useState(text);
+  const [buttonColor, setButtonColor] = useState(color);
+  const [anchorEl, setAnchorEl] = useState(null);
   
   const styleB = {
     left:270,
@@ -44,12 +55,10 @@ const DropDowns = (props) => {
     //välitettävä tieto infossa ja päivämäärä id:ssa
     //jos info tyhjä ei varmennettavaa valvontaa kys päivälle
 
-    let obj = props.changes.find(o => o.date===id);
-
     if(event.currentTarget.dataset.info==="") {
       setButtonText("Vahvista saapuminen")
       setButtonColor("white");
-      obj.range_supervisor = "";
+      obj.range_supervisor = "present";
     }
     if(event.currentTarget.dataset.info==="y") {
       setButtonText("Saavun paikalle")
@@ -192,7 +201,7 @@ async function getReservations(dates, setDates, setSchedules, get) {
   
   let week = [];
   let first = moment().format().split("T")[0];
-  let last = moment().add(30, 'days').format().split("T")[0];
+  let last = moment().add(60, 'days').format().split("T")[0];
   let query = "api/reservation?available=true&from=" + first + "&to=" + last;
   
   let response = await axios.get(query);
@@ -223,11 +232,16 @@ async function getSchedule(week, userID, setSchedules) {
     let v = await temp[i];
 
     if(v.data.length!==0) {
+      //haetaan valvonnan senhetkinen tila
+      let rsquery = "api/range-supervision/" + v.data[0].id;
+      let rsresponse = await axios.get(rsquery);
+      
       let obj = {
+        "userID": userID,
 	"date": week[i].date,
 	"id": v.data[0].id,
 	"reservation_id": v.data[0].range_reservation_id,
-	"range_supervisor": ""
+	"range_supervisor": rsresponse.data[0].range_supervisor
       }
       
       res = res.concat(obj);
@@ -235,6 +249,8 @@ async function getSchedule(week, userID, setSchedules) {
   }
 
   console.log("scheduled for user: ", res.length)
+  console.log("userID", userID)
+  console.log(res)
 
   await setSchedules(res);
   
@@ -263,6 +279,30 @@ const DialogWindow = () => {
   )
 }
 
+//lähetetään changesin objektien id ja range_supervisor
+//range_supervisioniin
+async function putSchedules(changes) {
+  console.log("updating: ")
+  console.log(changes);
+
+  let token = localStorage.getItem("token");
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+
+  for(let i=0; i<changes.length; i++) {
+    let id = changes[i].id;
+    let query = "api/range-supervision/" + id;
+    let s = changes[i].range_supervisor;
+    await axios.put(query,
+                    {
+                      range_supervisor:s
+                    }, config)
+    
+    
+  }
+}
+
 //täällä tapahtuu dialogi-ikkunan luominen
 const Logic = ({schedules, setSchedules}) => {
   const [open, setOpen] = useState(true);
@@ -286,13 +326,8 @@ const Logic = ({schedules, setSchedules}) => {
       changes.map(o => (o.date===today ? obj : o))
     }
 
-    console.log("updating: ")
-    console.log(changes);
 
-    //lähetetään changesin objektien id ja range_supervisor
-    //range_supervisioniin
-
-    
+    putSchedules(changes);
 
     
 
