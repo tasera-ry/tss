@@ -124,13 +124,13 @@ class Scheduling extends Component {
           open: response.open !== null ? 
             moment(response.open, 'h:mm:ss').format() :
             moment(response.date)
-            .hour(0)
+            .hour(17)
             .minute(0)
             .second(0),
           close:  response.close !== null ? 
             moment(response.close, 'h:mm:ss').format() :
             moment(response.date)
-            .hour(0)
+            .hour(20)
             .minute(0)
             .second(0),
           available:response.available !== null ? response.available : false,
