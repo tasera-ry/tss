@@ -477,8 +477,15 @@ class Scheduling extends Component {
             //if coming from repeat and status was cleared
             supervisorStatus = statusInState !== undefined ? statusInState : 'absent';
             
+            let notice = this.state.tracks[key].notice;
+            if(notice === null || notice !== ""){
+              //undefined gets removed in object
+              notice=undefined;
+            }
+            
             let params = {
-              track_supervisor: supervisorStatus
+              track_supervisor: supervisorStatus,
+              notice:notice
             };            
             
             let srsp = '';
@@ -653,6 +660,19 @@ class Scheduling extends Component {
       event.preventDefault();
     };
     
+    const handleNotice = (event) => {
+      console.log("handle notice",event.target.id,event.target.value,this.state.tracks)
+      let idx = this.state.tracks.findIndex((findItem) => findItem.id === parseInt(event.target.id));
+      let tracks = this.state.tracks;
+      tracks[idx].notice = event.target.value;
+      
+      this.setState({
+         tracks:tracks
+      },function(){
+        console.debug(this.state);
+      });
+    }
+    
     const saveChanges = async (event) => {
       console.log("save")
       
@@ -773,6 +793,13 @@ class Scheduling extends Component {
                   <FormControlLabel value="absent" control={<Radio />} label="Ei valvojaa" />
                   <FormControlLabel value="closed" control={<Radio />} label="Suljettu" />
                 </RadioGroup>
+                <TextField 
+                  //track_id
+                  id={props.tracks[key].id}
+                  type="text" 
+                  onChange={handleNotice}
+                  value={props.tracks[key].notice}
+                />
             </FormControl>
           </React.Fragment>
         );
