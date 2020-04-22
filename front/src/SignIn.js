@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {Link, useHistory} from 'react-router-dom';
+import App from './App';
 import axios from 'axios'
 
 const useStyles = makeStyles(theme => ({
@@ -44,15 +45,16 @@ const SignIn = () => {
       name: name,
       password: password
     }).then(response => {
-      RedirectToWeekview()
+      RedirectToWeekview(response.data)
     }).catch(error => {
       HandleError(error)
     })
     
   }
 
-  const RedirectToWeekview = () => {
+  function RedirectToWeekview(data){
     localStorage.setItem("taseraUserName", name);
+    localStorage.setItem("token", data);
     history.push('/');
   }
 

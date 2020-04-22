@@ -299,7 +299,6 @@ async function putSchedules(changes) {
                       range_supervisor:s
                     }, config)
     
-    
   }
 }
 

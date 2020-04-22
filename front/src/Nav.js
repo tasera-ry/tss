@@ -6,6 +6,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import logo from "./Logo.png";
 import DialogWindow from './LoggedIn';
+import axios from 'axios';
 
 //TODO:
 //linkki käyttäjienhallintaan
@@ -13,7 +14,7 @@ import DialogWindow from './LoggedIn';
 //autentikaatiotason selvitys jotta tiedetään mitkä menuitemit esiin,
 //nyt tsekataan vain onko kirjautuessa talletettu nimeä
 
-const SideMenu = ({setName}) => {
+const SideMenu = ({setName, superuser}) => {
   const navStyle = {
     color: "black",
     textDecoration: "none"
@@ -33,9 +34,12 @@ const SideMenu = ({setName}) => {
   }
 
   const HandleSignOut = () => {
-    localStorage.clear();
+    storage.clear();
+    
+    //tätä ei kai taideta käyttää edes
     sessionStorage.clear();
-    setName(null);
+    
+    setName("");
     HandleClose();
 
   }
@@ -52,47 +56,12 @@ const SideMenu = ({setName}) => {
        : ""
       }
 
-      <Menu
-        id="menu"
-        open={Boolean(anchorEl)}
-        keepMounted
-        anchorEl={anchorEl}
-        onClose={HandleClose}>
-        
-        <Link style={navStyle} to="/scheduling">
-          <MenuItem
-            onClick={HandleClick}>
-            Aikataulut
-          </MenuItem>
-        </Link>
-
-        <Link style={navStyle} to="/usermanagement">
-          <MenuItem>
-            Käyttäjienhallinta
-          </MenuItem>
-        </Link>
-        
-        <Link style={navStyle}>
-          <MenuItem
-            onClick={() => setOpenDial(true)}>
-            Valvonnat
-          </MenuItem>
-        </Link>
-
-        <Link style={navStyle} to="/tablet">
-          <MenuItem>
-            Tablettinäkymä
-          </MenuItem>
-        </Link>
-
-        <Link style={navStyle} to="/">
-          <MenuItem
-            onClick={HandleSignOut}>
-            Kirjaudu ulos
-          </MenuItem>
-        </Link>
-        
-      </Menu>
+      {superuser ? <SuperMenu anchorEl={anchorEl} HandleClose={HandleClose}
+                              setOpenDial={setOpenDial} HandleSignOut={HandleSignOut}
+                               HandleClick={HandleClick} navStyle={navStyle} />
+    : <BasicMenu anchorEl={anchorEl} HandleClose={HandleClose}
+                              setOpenDial={setOpenDial} HandleSignOut={HandleSignOut}
+                              HandleClick={HandleClick} navStyle={navStyle}/>  }
 
       {openDial ? <DialogWindow /> : <p></p> }
 
@@ -100,13 +69,93 @@ const SideMenu = ({setName}) => {
   )
 }
 
+const BasicMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut, navStyle}) => {
+  return (
+    <Menu
+      id="menu"
+      open={Boolean(anchorEl)}
+      keepMounted
+      anchorEl={anchorEl}
+      onClose={HandleClose}>
+
+      <Link style={navStyle}>
+        <MenuItem
+          onClick={() => setOpenDial(true)}>
+          Valvonnat
+        </MenuItem>
+      </Link>
+
+      <Link style={navStyle} to="/tablet">
+        <MenuItem>
+          Tablettinäkymä
+        </MenuItem>
+      </Link>
+
+      <Link style={navStyle} to="/">
+        <MenuItem
+          onClick={HandleSignOut}>
+          Kirjaudu ulos
+        </MenuItem>
+      </Link>
+    </Menu>
+  )
+}
+
+const SuperMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut, HandleClick, navStyle}) => {
+  return (
+    <Menu
+      id="menu"
+      open={Boolean(anchorEl)}
+      keepMounted
+      anchorEl={anchorEl}
+      onClose={HandleClose}>
+      
+      <Link style={navStyle} to="/scheduling">
+        <MenuItem
+          onClick={HandleClick}>
+          Aikataulut
+        </MenuItem>
+      </Link>
+
+      <Link style={navStyle} to="/usermanagement">
+        <MenuItem>
+          Käyttäjienhallinta
+        </MenuItem>
+      </Link>
+
+      <Link style={navStyle}>
+        <MenuItem
+          onClick={() => setOpenDial(true)}>
+          Valvonnat
+        </MenuItem>
+      </Link>
+
+      <Link style={navStyle} to="/tablet">
+        <MenuItem>
+          Tablettinäkymä
+        </MenuItem>
+      </Link>
+
+      <Link style={navStyle} to="/">
+        <MenuItem
+          onClick={HandleSignOut}>
+          Kirjaudu ulos
+        </MenuItem>
+      </Link>
+    </Menu>
+  )
+}
+
 const UserInfo = ({name, setName}) => {
-  setName(localStorage.getItem("taseraUserName"))
-  console.log(name)
+  let username = localStorage.getItem("taseraUserName")
+  if(username!==null) {
+    setName(username)
+  }
+  console.log("username: ", name)
 
   return (
     <div>
-      {name===null ?
+      {name==="" ?
        <Link to="/signin">
          <Button
            size="small">
@@ -122,6 +171,19 @@ const UserInfo = ({name, setName}) => {
 
 }
 
+async function isSuperuser() {
+  let token = localStorage.getItem("token");
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+  
+  let query = "/api/user?name=" + localStorage.getItem("taseraUserName");
+  let response = await axios.get(query, config);
+  let role = response.data[0].role;
+  console.log("logged in as", role);
+  return role==="superuser";
+}
+
 const Nav = () => {
   const navStyle = {
     color: "black",
@@ -134,8 +196,11 @@ const Nav = () => {
     display: "block"
   };
 
-  const [name, setName] = useState();
-
+  const [name, setName] = useState("");
+  let superuser = null;
+  if(name!=="") {
+    superuser = isSuperuser();
+  }
   var icon = (
     <span class="logo">
       <a href="/">
@@ -152,7 +217,7 @@ const Nav = () => {
       
       <UserInfo name={name} setName={setName} />
 
-      <SideMenu setName={setName} />
+      <SideMenu setName={setName} superuser={superuser} />
       
     </nav>
   )
