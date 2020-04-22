@@ -13,9 +13,8 @@ import axios from 'axios';
 import moment from 'moment';
 
 //TODO:
-//nappien värit tyyleillä
-//parempi ilmoitus jos vahvistettavia vuoroja ei ole
-//optimointia
+//button colors with styles
+//change config after relocating jwt
 
 //print drop down menus in rows
 const DropDowns = (props) => {
@@ -52,8 +51,8 @@ const DropDowns = (props) => {
   };
 
   const HandleClose = (event) => {
-    //välitettävä tieto infossa ja päivämäärä id:ssa
-    //jos info tyhjä ei varmennettavaa valvontaa kys päivälle
+    //data to be sent is in info
+    //empty info means date is not confirmed
 
     if(event.currentTarget.dataset.info==="") {
       setButtonText("Vahvista saapuminen")
@@ -171,8 +170,7 @@ const Rows = ({HandleChange, changes}) => {
 }
 
 
-//tällä haetaan nimen perusteella käyttäjän id jotta saadaan oikeat vuorot
-//muokattavaa myöhemmin: config axiosin kutsussa
+//TODO: change config after relocating jwt
 async function getId() {
   let name = localStorage.getItem("taseraUserName");
   console.log("username:", name);
@@ -192,95 +190,75 @@ async function getId() {
   return userID;
 }
 
-//hakee mahdolliset varauspäivät
-async function getReservations(dates, setDates, setSchedules, get) {
-  //viikkotiedot
-  //ilmeisesti reservationista saa aina yhden päivän ennen firstia?
-  //sitä ei huomioida
-  let userID = await getId();
-  
-  let week = [];
-  let first = moment().format().split("T")[0];
-  let last = moment().add(60, 'days').format().split("T")[0];
-  let query = "api/reservation?available=true&from=" + first + "&to=" + last;
-  
-  let response = await axios.get(query);
+//obtain date info
+async function getReservations(res) {
 
-  for(let i=1; i<response.data.length; i++) {
-    let date = response.data[i].date.split("T")[0];
-    let obj = {"date": date,
-               "id": response.data[i].id}
-    week = week.concat(obj);
+  for(let i=0; i<res.length; i++) {
+    let query = "api/reservation?available=true&id=" + res[i].reservation_id;
+    let response = await axios.get(query);
+    res[i].date = await response.data[0].date.split("T")[0];
   }
-  
-  await setDates(week);
-  getSchedule(week, userID, setSchedules);
+
+  return res;
 }
 
-//hakee aikataulun käyttäjän id:n ja varauslistan päivien id:n mukaan
-async function getSchedule(week, userID, setSchedules) {
+//obtain users schedule and range supervision states
+async function getSchedule(setSchedules, setNoSchedule) {
+  let userID = await getId();  
   let res = [];
   let temp = [];
 
-  for(let i=0; i<week.length; i++) {
-    let query = "api/schedule?range_reservation_id=" + week[i].id + "&supervisor_id=" + userID;
-    let response = axios.get(query);
-    temp = temp.concat(response);
-  }
+  let query = "api/schedule?supervisor_id=" + userID;
+  let response = await axios.get(query);
+  temp = temp.concat(response.data);
 
   for(let i=0; i<temp.length; i++) {
     let v = await temp[i];
 
-    if(v.data.length!==0) {
-      //haetaan valvonnan senhetkinen tila
-      let rsquery = "api/range-supervision/" + v.data[0].id;
-      let rsresponse = await axios.get(rsquery);
-      
-      let obj = {
-        "userID": userID,
-	"date": week[i].date,
-	"id": v.data[0].id,
-	"reservation_id": v.data[0].range_reservation_id,
-	"range_supervisor": rsresponse.data[0].range_supervisor
-      }
-      
-      res = res.concat(obj);
+    let rsquery = "api/range-supervision/" + v.id;
+    let rsresponse = await axios.get(rsquery);
+
+    //object id is schedule id
+    let obj = {
+      "userID": userID,
+      "date": "",
+      "id": v.id,
+      "reservation_id": v.range_reservation_id,
+      "range_supervisor": rsresponse.data[0].range_supervisor
     }
+
+    res = await res.concat(obj);
   }
 
   console.log("scheduled for user: ", res.length)
-  console.log("userID", userID)
   console.log(res)
-
-  await setSchedules(res);
-  
+ 
   if(res.length===0) {
-    window.alert("Ei vahvistettavia valvontoja");
+    setNoSchedule(true);
+    return;
   }
+  
+  res = await getReservations(res);
+  setSchedules(res);
 }
 
-
-//täältä aloitetaan hakemalla tarvittavaa tietoa
 const DialogWindow = () => {
-  const [dates, setDates] = useState([]); //päivät, jolloin rata käytössä
-  const [schedules, setSchedules] = useState([]); //käyttäjän valvontavuorot
-  let hasReserv = false; //käyttäjällä ei ole valvontoja tietyn ajan sisällä
+  const [noSchedule, setNoSchedule] = useState(false);
+  const [schedules, setSchedules] = useState([]);
 
-  //aloitetaan hakemalla käyttäjälle valvontavuorot
+  //starting point
   useEffect(() => {
-    getReservations(dates, setDates, setSchedules);
+    getSchedule(setSchedules, setNoSchedule);
   }, [])
 
   return (
     <div>
-      {schedules.length>0 ? <Logic schedules={schedules} setSchedules={setSchedules} />
-       : ""}
+      <Logic schedules={schedules} setSchedules={setSchedules} noSchedule={noSchedule} />
     </div>
   )
 }
 
-//lähetetään changesin objektien id ja range_supervisor
-//range_supervisioniin
+//sends updated info to database
 async function putSchedules(changes) {
   console.log("updating: ")
   console.log(changes);
@@ -302,20 +280,17 @@ async function putSchedules(changes) {
   }
 }
 
-//täällä tapahtuu dialogi-ikkunan luominen
-const Logic = ({schedules, setSchedules}) => {
+//creates dialog-window
+const Logic = ({schedules, setSchedules, noSchedule}) => {
   const [open, setOpen] = useState(true);
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(false); //user is "en route"
   let changes = [...schedules];
 
   const HandleChange = (event) => {
-    //checked kertoo onko käyttäjä matkalla
     setChecked(!checked)
   }
 
   const HandleClose = () => {
-    //saatujen tietojen välitys ja ikkunan sulkeminen
-
     setOpen(false)
 
     if(checked) {
@@ -325,11 +300,9 @@ const Logic = ({schedules, setSchedules}) => {
       changes.map(o => (o.date===today ? obj : o))
     }
 
-
-    putSchedules(changes);
-
-    
-
+    if(changes.length>0) {
+      putSchedules(changes);
+    }
   }
   
   return (
@@ -341,14 +314,18 @@ const Logic = ({schedules, setSchedules}) => {
         maxWidth='sm'
         fullWidth={true}>
         
-        <DialogTitle id="otsikko">Valvonnat</DialogTitle>
+        <DialogTitle id="otsikko">Vahvistettavat valvonnat</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Varmista päävalvojan saapuminen:
+            <br />
+            {noSchedule ? "Sinulla ei ole vahvistettavia vuoroja"
+             : "Haetaan vuoroja.."}
           </DialogContentText>
         </DialogContent>
 
-        <Rows HandleChange={HandleChange} changes={changes} />
+        {schedules.length!==0 ?
+         <Rows HandleChange={HandleChange} changes={changes} />
+         : ""}
 
         <DialogActions>
           <Button onClick={HandleClose}>
