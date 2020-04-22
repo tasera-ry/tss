@@ -92,22 +92,34 @@ class Weekview extends Component {
         //Date should come from be?
         let table = []
         let pv;
+        let oikeePaiva;
+        let linkki;
     
-        for (let j = 1; j < 8; j++) {
-            pv = dayToString(j);
-            //Korjausliike ku utilsseis sunnuntai on eka päivä
-            if (j === 7) {
-                pv = "Sunnuntai"
-            }
-            table.push(
-                <Link className="link">
-                <p id ="weekDay">
-                    {pv}
-                </p>
-                </Link>
-                )
-            }
-        return table
+        if (this.state.paivat === undefined) {
+            
+        }
+        else {
+            for (let j = 1; j < 8; j++) {
+                pv = dayToString(j);
+                //Korjausliike ku utilsseis sunnuntai on eka päivä
+                if (j === 7) {
+                    pv = "Sunnuntai"
+                }
+                j--;
+                oikeePaiva = this.state.paivat[j].date
+                j++;
+                linkki = "/dayview/" + oikeePaiva
+    
+                table.push(
+                    <Link className="link" to={linkki}>
+                    <p id ="weekDay">
+                        {pv}
+                    </p>
+                    </Link>
+                    )
+                }
+            return table
+        }
     }
 
     //Creates 7 columns for days
@@ -122,12 +134,16 @@ class Weekview extends Component {
             let oikeePaiva;
             let fixed;
             let newDate;
+            let linkki;
             for (let j = 0; j < 7; j++) {
                 oikeePaiva = this.state.paivat[j].date
                 fixed = oikeePaiva.split("-")
                 newDate = fixed[2] + "." + fixed[1]
+
+                linkki = "/dayview/" + oikeePaiva
+
                 table.push(
-                    <Link class="link" to="/dayview">
+                    <Link class="link" to={linkki}>
                     <p style={{ fontSize: "medium" }}>
                     {newDate}
                     </p>
