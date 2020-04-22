@@ -27,7 +27,7 @@ exports.hasProperty = function userHasProperty(propertyName, value, equalityFn) 
   function propertyEquals(obj) {
     return equalityFn === undefined
       ? obj[propertyName] === value
-      : equalityFn(obj[propertyName], value)
+      : equalityFn(value, obj[propertyName])
   }
 
   return function(request, response, next) {
