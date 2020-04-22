@@ -23,6 +23,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { getSchedulingDate } from "./utils/Utils";
 import moment from 'moment';
 import "moment/locale/fi";
@@ -792,10 +793,13 @@ class Scheduling extends Component {
                 <FormControlLabel value="absent" control={<Radio />} label="Ei valvojaa" />
                 <FormControlLabel value="closed" control={<Radio />} label="Suljettu" />
               </RadioGroup>
-              <TextField 
+              <TextareaAutosize
+                className="notice"
                 //track_id
                 id={tracks[key].id}
-                type="textarea" 
+                aria-label="Ilmoitus" 
+                rowsMin={1}
+                rowsMax={3}
                 onChange={this.handleNotice}
                 value={tracks[key].notice !== null ? tracks[key].notice : ''}
               />
