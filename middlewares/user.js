@@ -12,6 +12,8 @@ const canRead = function canReadUserData(request, response, next) {
     return next()
   }
 
+  // Make sure the user being queried has the same id and/or name as the active
+  // session
   if(_.isMatch(_.pick(session, 'name', 'id'), _.pick(query, 'name', 'id'))) {
     return next()
   }
@@ -25,7 +27,7 @@ exports.hasProperty = function userHasProperty(propertyName, value, equalityFn) 
   function propertyEquals(obj) {
     return equalityFn === undefined
       ? obj[propertyName] === value
-      : equalityFn(obj[propertyName], value)
+      : equalityFn(value, obj[propertyName])
   }
 
   return function(request, response, next) {
