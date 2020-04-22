@@ -102,8 +102,26 @@ class Weekview extends Component {
             for (let j = 1; j < 8; j++) {
                 pv = dayToString(j);
                 //Korjausliike ku utilsseis sunnuntai on eka päivä
+                if (j === 1) {
+                    pv = "Ma";
+                }
+                if (j === 2) {
+                    pv = "Ti";
+                }
+                if (j === 3) {
+                    pv = "Ke";
+                }
+                if (j === 4) {
+                    pv = "To";
+                }
+                if (j === 5) {
+                    pv = "Pe";
+                }
+                if (j === 6) {
+                    pv = "La";
+                }
                 if (j === 7) {
-                    pv = "Sunnuntai"
+                    pv = "Su"
                 }
                 j--;
                 oikeePaiva = this.state.paivat[j].date
