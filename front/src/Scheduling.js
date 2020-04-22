@@ -797,7 +797,7 @@ class Scheduling extends Component {
                 id={tracks[key].id}
                 type="textarea" 
                 onChange={this.handleNotice}
-                value={tracks[key].notice}
+                value={tracks[key].notice !== null ? tracks[key].notice : ''}
               />
           </FormControl>
         </React.Fragment>
