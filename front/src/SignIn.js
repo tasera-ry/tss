@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {Link, useHistory} from 'react-router-dom';
-import App from './App';
+import Nav from './Nav';
 import axios from 'axios'
 
 const useStyles = makeStyles(theme => ({
@@ -49,7 +49,7 @@ const SignIn = () => {
     }).catch(error => {
       HandleError(error)
     })
-    
+    Nav()
   }
 
   function RedirectToWeekview(data){
