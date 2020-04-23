@@ -8,30 +8,32 @@ import Trackview from "./Trackview";
 import Scheduling from "./Scheduling";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import RangeOfficerView from "./rangeofficer";
+import UserManagementView from "./UserManagementView";
 
 class App extends Component {
-  state = {};
+   state = {};
 
-  render() {
-    return (
-      <Router>
-        <div className="App">
-          <header className="App-header">
-            <Nav />
-            <Switch>
-              <Route path="/" exact component={Weekview} />
-              <Route path="/signin" component={SignIn} />
-              <Route path="/dayview/:date?" component={Dayview} />
-              <Route path="/weekview" component={Weekview} />
-              <Route path="/trackview/:date?/:track?" component={Trackview} />
-              <Route path="/scheduling/:date?" component={Scheduling} />
-              <Route path="/tablet" component={RangeOfficerView} />
-            </Switch>
-          </header>
-        </div>
-      </Router>
-    );
-  }
+   render() {
+      return (
+         <Router>
+            <div className="App">
+               <header className="App-header">
+                  <Nav />
+                  <Switch>
+                     <Route path="/" exact component={Weekview} />
+                     <Route path="/signin" component={SignIn} />
+                     <Route path="/dayview/:date?" component={Dayview} />
+                     <Route path="/weekview" component={Weekview} />
+                     <Route path="/trackview/:date?/:track?" component={Trackview} />
+                     <Route path="/scheduling/:date?" component={Scheduling} />
+                     <Route path="/tablet" component={RangeOfficerView} />
+                     <Route path="/usrmng" component={UserManagementView} />
+                  </Switch>
+               </header>
+            </div>
+         </Router>
+      );
+   }
 }
 
 export default App;
