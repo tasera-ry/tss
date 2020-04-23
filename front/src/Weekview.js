@@ -14,13 +14,15 @@ class Weekview extends Component {
         super(props);
         this.state = {
           weekNro: 0,
-          dayNro: 0
+          dayNro: 0,
+          yearNro: 0,
         };
     }
 
     //Updates week to current when page loads
     componentDidMount() {
         this.getWeek();
+        this.getYear();
         this.update();
       }
 
@@ -215,6 +217,13 @@ class Weekview extends Component {
         }
     }
 
+    getYear = () => {
+        let today = new Date();
+        let yyyy = today.getFullYear();
+        this.setState({yearNro: yyyy})
+        return yyyy;
+    }
+
     update() {
         // /dayview/2020-02-20
         let testi2;
@@ -263,7 +272,7 @@ class Weekview extends Component {
                     className="hoverHand arrow-left"
                     onClick={this.previousWeekClick}
                     ></div>
-                    <h1> Viikko {this.state.weekNro} </h1>
+                    <h1> Viikko {this.state.weekNro} , {this.state.yearNro} </h1>
                     {/* kuukausi jos tarvii: {monthToString(date.getMonth())} */}
                     <div
                     className="hoverHand arrow-right"
@@ -303,10 +312,10 @@ class Weekview extends Component {
                     <div class="info-flex">
 
                         <div id="open-info" class='box'></div>
-                        {/* Avoinna */} &nbsp;Päävalvoja paikalla&nbsp;&nbsp;&nbsp;&nbsp; <br></br> <br></br>
+                        {/* Avoinna */} &nbsp;Päävalvoja paikalla <br></br> <br></br>
 
                         <div id="closed-info2" class='box'></div>
-                        {/* Suljettu */} &nbsp;Päävalvoja matkalla <br></br><br></br>
+                        {/* Suljettu */} &nbsp;Seura asetettu, ei hyväksynyt vuoroa <br></br><br></br>
 
                     </div>                
                 </Grid>
@@ -317,11 +326,11 @@ class Weekview extends Component {
                     <div class="info-flex">
 
                         <div id="valvoja-info" class='box'></div>
-                        {/* Päävalvoja tulossa */} &nbsp;Päävalvoja määritetty<br></br> <br></br>
+                        {/* Päävalvoja tulossa */} &nbsp;Seura hyväksynyt vuoron, ei paikalla<br></br> <br></br>
 
 
                         <div id="no-info" class='box'></div>
-                        {/* Ei tietoa */} &nbsp;Ei asetettu
+                        {/* Ei tietoa */} &nbsp;Tietokantavirhe
 
                     </div>
                 </Grid>
