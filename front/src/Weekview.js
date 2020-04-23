@@ -3,10 +3,8 @@ import './App.css';
 import './Weekview.css'
 import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-import { callApi } from "./utils/helper.js";
+import { dayToString, getSchedulingWeek } from "./utils/Utils";
 import moment from 'moment'
-
-import { dayToString } from "./utils/Utils";
 
 class Weekview extends Component {
 
@@ -193,13 +191,20 @@ class Weekview extends Component {
 
                 //Luodaan väri 
 
-                rataStatus = this.state.paivat[j].status
+                rataStatus = this.state.paivat[j].rangeSupervision
+                console.log("ratastatus",rataStatus);
 
-                if (rataStatus === "closed") {
-                    colorFromBackEnd = "red"
-                } else if (rataStatus === "open") {
+                if (rataStatus === "present") {
                     colorFromBackEnd = "green"
-                } else if (rataStatus === "range officer unavailable") {
+                } else if (rataStatus === "confirmed") {
+                    colorFromBackEnd = "lightGreen"
+                } else if (rataStatus === "not confirmed") {
+                    colorFromBackEnd = "blue"
+                } else if (rataStatus === "en route") {
+                    colorFromBackEnd = "yellow"
+                } else if (rataStatus === "closed") {
+                    colorFromBackEnd = "red"
+                } else if (rataStatus === "absent") {
                     colorFromBackEnd = "white"
                 }
 
@@ -247,17 +252,19 @@ class Weekview extends Component {
             testi2 = this.state.dayNro.format("YYYY-MM-DD")
         }
 
-        let url = "/week/" + testi2
-        callApi("GET", url)
-           .then(res => {
-             //async joten tietoa päivittäessä voi välähtää Date.now antama
-             //ennen haluttua tietoa
-             //console.log(res);
-             this.setState({
-                 paivat: res.days
-             });
-           })
-           .catch(err => console.log(err));
+        let date = testi2;
+        const request = async () => {
+          const response = await getSchedulingWeek(date);
+
+          if(response !== false){
+            console.log("Results from api",response);
+
+            this.setState({
+              paivat:response.week
+            });
+          } else console.error("getting info failed");
+        } 
+        request();
       }
 
     render() {

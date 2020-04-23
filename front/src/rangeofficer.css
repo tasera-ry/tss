@@ -4,7 +4,10 @@
 }
 
 .midInfo {
-    margin-left: 10px
+    margin-left: 10px;
+    display:flex;
+    flex-flow: row wrap;
+    align-items: center;
 }
 
 .hoverHand:hover {
