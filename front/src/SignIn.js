@@ -49,7 +49,6 @@ const SignIn = () => {
     }).catch(error => {
       HandleError(error)
     })
-    Nav()
   }
 
   function RedirectToWeekview(data){
