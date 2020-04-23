@@ -54,7 +54,7 @@ const SignIn = () => {
   function RedirectToWeekview(data){
     localStorage.setItem("taseraUserName", name);
     localStorage.setItem("token", data);
-    history.push('/');
+    window.location.href="/"
   }
 
   const HandleError = error => {
