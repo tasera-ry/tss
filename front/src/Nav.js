@@ -9,10 +9,7 @@ import DialogWindow from './LoggedIn';
 import axios from 'axios';
 
 //TODO:
-//linkki käyttäjienhallintaan
-//kirjaudu ulos johtaa uloskirjautumiseen
-//autentikaatiotason selvitys jotta tiedetään mitkä menuitemit esiin,
-//nyt tsekataan vain onko kirjautuessa talletettu nimeä
+//user still needs to refresh page to see menu after logging in
 
 const SideMenu = ({setName, superuser}) => {
   const navStyle = {
@@ -35,13 +32,8 @@ const SideMenu = ({setName, superuser}) => {
 
   const HandleSignOut = () => {
     storage.clear();
-    
-    //tätä ei kai taideta käyttää edes
-    sessionStorage.clear();
-    
     setName("");
     HandleClose();
-
   }
 
   return (
@@ -56,14 +48,14 @@ const SideMenu = ({setName, superuser}) => {
        : ""
       }
 
-      {superuser ? <SuperMenu anchorEl={anchorEl} HandleClose={HandleClose}
+      {superuser===true ? <SuperMenu anchorEl={anchorEl} HandleClose={HandleClose}
                               setOpenDial={setOpenDial} HandleSignOut={HandleSignOut}
                                HandleClick={HandleClick} navStyle={navStyle} />
     : <BasicMenu anchorEl={anchorEl} HandleClose={HandleClose}
                               setOpenDial={setOpenDial} HandleSignOut={HandleSignOut}
-                              HandleClick={HandleClick} navStyle={navStyle}/>  }
+                               navStyle={navStyle}/>  }
 
-      {openDial ? <DialogWindow /> : <p></p> }
+      {openDial ? <DialogWindow /> : "" }
 
     </div>
   )
@@ -79,23 +71,15 @@ const BasicMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut, navStyle}
       onClose={HandleClose}>
 
       <Link style={navStyle}>
-        <MenuItem
-          onClick={() => setOpenDial(true)}>
-          Valvonnat
-        </MenuItem>
+        <MenuItem onClick={() => setOpenDial(true)}> Valvonnat </MenuItem>
       </Link>
 
       <Link style={navStyle} to="/tablet">
-        <MenuItem>
-          Tablettinäkymä
-        </MenuItem>
+      <MenuItem> Tablettinäkymä </MenuItem>
       </Link>
 
       <Link style={navStyle} to="/">
-        <MenuItem
-          onClick={HandleSignOut}>
-          Kirjaudu ulos
-        </MenuItem>
+        <MenuItem onClick={HandleSignOut}> Kirjaudu ulos </MenuItem>
       </Link>
     </Menu>
   )
@@ -111,67 +95,37 @@ const SuperMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut, HandleCli
       onClose={HandleClose}>
       
       <Link style={navStyle} to="/scheduling">
-        <MenuItem
-          onClick={HandleClick}>
-          Aikataulut
-        </MenuItem>
+        <MenuItem onClick={HandleClick}> Aikataulut </MenuItem>
       </Link>
 
       <Link style={navStyle} to="/usermanagement">
-        <MenuItem>
-          Käyttäjienhallinta
-        </MenuItem>
+        <MenuItem> Käyttäjienhallinta </MenuItem>
       </Link>
 
       <Link style={navStyle}>
-        <MenuItem
-          onClick={() => setOpenDial(true)}>
-          Valvonnat
-        </MenuItem>
+        <MenuItem onClick={() => setOpenDial(true)}> Valvonnat </MenuItem>
       </Link>
 
       <Link style={navStyle} to="/tablet">
-        <MenuItem>
-          Tablettinäkymä
-        </MenuItem>
+        <MenuItem> Tablettinäkymä </MenuItem>
       </Link>
 
       <Link style={navStyle} to="/">
-        <MenuItem
-          onClick={HandleSignOut}>
-          Kirjaudu ulos
-        </MenuItem>
+        <MenuItem onClick={HandleSignOut}> Kirjaudu ulos </MenuItem>
       </Link>
     </Menu>
   )
 }
 
-const UserInfo = ({name, setName}) => {
+function userInfo(name, setName){
   let username = localStorage.getItem("taseraUserName")
   if(username!==null) {
     setName(username)
   }
   console.log("username: ", name)
-
-  return (
-    <div>
-      {name==="" ?
-       <Link to="/signin">
-         <Button
-           size="small">
-           Kirjaudu sisään
-         </Button>
-       </Link>
-       :
-       <p>{name}</p>
-      }
-      
-    </div>
-  )
-
 }
 
-async function isSuperuser() {
+async function isSuperuser(setSuperuser) {
   let token = localStorage.getItem("token");
   const config = {
     headers: { Authorization: `Bearer ${token}` }
@@ -179,9 +133,9 @@ async function isSuperuser() {
   
   let query = "/api/user?name=" + localStorage.getItem("taseraUserName");
   let response = await axios.get(query, config);
-  let role = response.data[0].role;
+  let role = await response.data[0].role;
   console.log("logged in as", role);
-  return role==="superuser";
+  setSuperuser(role==="superuser");
 }
 
 const Nav = () => {
@@ -197,15 +151,19 @@ const Nav = () => {
   };
 
   const [name, setName] = useState("");
-  let superuser = null;
-  if(name!=="") {
-    superuser = isSuperuser();
+  const [superuser, setSuperuser] = useState();
+
+  if(name==="") {
+    userInfo(name, setName);
+  } else {
+    isSuperuser(setSuperuser);
   }
+
   var icon = (
-    <span class="logo">
-      <a href="/">
+    <span className="logo">
+      <Link to="/">
         <img style={logoStyle} src={logo} alt="Tasera" />
-      </a>
+      </Link>
     </span>
   );
 
@@ -215,7 +173,16 @@ const Nav = () => {
         {icon}
       </Link>
       
-      <UserInfo name={name} setName={setName} />
+      {name==="" ?
+       <Link to="/signin">
+         <Button
+           size="small">
+           Kirjaudu sisään
+         </Button>
+       </Link>
+       :
+       <p>{name}</p>
+      }
 
       <SideMenu setName={setName} superuser={superuser} />
       
