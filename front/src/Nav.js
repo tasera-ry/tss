@@ -4,40 +4,43 @@ import { Link } from "react-router-dom";
 import logo from "./Logo.png";
 
 function Nav() {
-  const navStyle = {
-    color: "black"
-  };
-  const logoStyle = {
-    textDecoration: "none",
-    height: "100%",
-    width: "60%",
-    display: "block"
-  };
+   const navStyle = {
+      color: "black",
+   };
+   const logoStyle = {
+      textDecoration: "none",
+      height: "100%",
+      width: "60%",
+      display: "block",
+   };
 
-  var icon = (
-    <span class="logo">
-      <a href="/">
-        <img style={logoStyle} src={logo} alt="Tasera" />
-      </a>
-    </span>
-  );
+   var icon = (
+      <span class="logo">
+         <a href="/">
+            <img style={logoStyle} src={logo} alt="Tasera" />
+         </a>
+      </span>
+   );
 
-  return (
-    <nav>
-      <Link style={logoStyle} to="/">
-        {icon}
-      </Link>
-      <Link style={navStyle} to="/scheduling">
-        Scheduling
-      </Link>
-      <Link style={navStyle} to="/tablet">
-        <p>Tablet</p>
-      </Link>
-      <Link style={navStyle} to="/signin">
-        <p>Kirjaudu sisään</p>
-      </Link>
-    </nav>
-  );
+   return (
+      <nav>
+         <Link style={logoStyle} to="/">
+            {icon}
+         </Link>
+         <Link style={navStyle} to="/usrmng">
+            <p>User Management</p>
+         </Link>
+         <Link style={navStyle} to="/scheduling">
+            Scheduling
+         </Link>
+         <Link style={navStyle} to="/tablet">
+            <p>Tablet</p>
+         </Link>
+         <Link style={navStyle} to="/signin">
+            <p>Kirjaudu sisään</p>
+         </Link>
+      </nav>
+   );
 }
 
 export default Nav;
