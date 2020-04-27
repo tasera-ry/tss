@@ -152,7 +152,6 @@ exports.getScheduleDate = async (req, res) => {
     tracks = tracks.map(item => {
       item = {
         ...item,
-        description: '',
         notice: '',
         trackSupervision: 'absent',
         scheduled: false
