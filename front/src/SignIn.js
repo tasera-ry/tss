@@ -45,18 +45,32 @@ const SignIn = () => {
       name: name,
       password: password
     }).then(response => {
-      RedirectToWeekview(response.data)
+      setInfo(response.data);
     }).catch(error => {
       HandleError(error)
     })
   }
 
-  function RedirectToWeekview(data){
-    localStorage.setItem("taseraUserName", name);
-    localStorage.setItem("token", data);
+  function RedirectToWeekview(){
     window.location.href="/"
   }
 
+  async function setInfo(data) {
+    localStorage.setItem("taseraUserName", name);
+    localStorage.setItem("token", data);
+    
+    const config = {
+      headers: { Authorization: `Bearer ${data}` }
+    };
+    
+    let query = "/api/user?name=" + name;
+    let response = await axios.get(query, config);
+    let role = await response.data[0].role;
+    localStorage.setItem("role", role);
+
+    RedirectToWeekview()
+  }
+  
   const HandleError = error => {
     setMistake(true);
     //message contains all errors, might be useful
@@ -87,9 +101,9 @@ const SignIn = () => {
             required
             fullWidth
             id="email"
-            label="Sähköpostiosoite"
-            name="email"
-            autoComplete="sähköposti"
+            label="Käyttäjänimi"
+            name="username"
+            autoComplete="Käyttäjänimi"
             autoFocus
             value={name}
             error={mistake}

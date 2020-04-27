@@ -8,9 +8,6 @@ import logo from "./Logo.png";
 import DialogWindow from './LoggedIn';
 import axios from 'axios';
 
-//TODO:
-//user still needs to refresh page to see menu after logging in
-
 const SideMenu = ({setName, superuser}) => {
   const navStyle = {
     color: "black",
@@ -70,12 +67,10 @@ const BasicMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut, navStyle}
       anchorEl={anchorEl}
       onClose={HandleClose}>
 
-      <Link style={navStyle}>
-        <MenuItem onClick={() => setOpenDial(true)}> Valvonnat </MenuItem>
-      </Link>
-
+      <MenuItem onClick={() => setOpenDial(true)}> Valvonnat </MenuItem>
+      
       <Link style={navStyle} to="/tablet">
-      <MenuItem> Tablettinäkymä </MenuItem>
+        <MenuItem> Tablettinäkymä </MenuItem>
       </Link>
 
       <Link style={navStyle} to="/">
@@ -102,9 +97,7 @@ const SuperMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut, HandleCli
         <MenuItem> Käyttäjienhallinta </MenuItem>
       </Link>
 
-      <Link style={navStyle}>
-        <MenuItem onClick={() => setOpenDial(true)}> Valvonnat </MenuItem>
-      </Link>
+      <MenuItem onClick={() => setOpenDial(true)}> Valvonnat </MenuItem>
 
       <Link style={navStyle} to="/tablet">
         <MenuItem> Tablettinäkymä </MenuItem>
@@ -117,25 +110,13 @@ const SuperMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut, HandleCli
   )
 }
 
-function userInfo(name, setName){
+function userInfo(name, setName, setSuperuser) {
   let username = localStorage.getItem("taseraUserName")
   if(username!==null) {
     setName(username)
+    let role = localStorage.getItem("role")
+    setSuperuser(role==="superuser")
   }
-  console.log("username: ", name)
-}
-
-async function isSuperuser(setSuperuser) {
-  let token = localStorage.getItem("token");
-  const config = {
-    headers: { Authorization: `Bearer ${token}` }
-  };
-  
-  let query = "/api/user?name=" + localStorage.getItem("taseraUserName");
-  let response = await axios.get(query, config);
-  let role = await response.data[0].role;
-  console.log("logged in as", role);
-  setSuperuser(role==="superuser");
 }
 
 const Nav = () => {
@@ -154,16 +135,15 @@ const Nav = () => {
   const [superuser, setSuperuser] = useState();
 
   if(name==="") {
-    userInfo(name, setName);
-  } else {
-    isSuperuser(setSuperuser);
+    userInfo(name, setName, setSuperuser);
   }
 
-  var icon = (
+  console.log("username: ", name)
+  console.log("is superuser", superuser)
+
+  const icon = (
     <span className="logo">
-      <Link to="/">
         <img style={logoStyle} src={logo} alt="Tasera" />
-      </Link>
     </span>
   );
 
@@ -189,5 +169,4 @@ const Nav = () => {
     </nav>
   )
 }
-
 export default Nav;
