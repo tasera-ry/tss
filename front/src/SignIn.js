@@ -5,9 +5,8 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
 import {Link, useHistory} from 'react-router-dom';
-import Weekview from './Weekview';
+import Nav from './Nav';
 import axios from 'axios'
 
 const useStyles = makeStyles(theme => ({
@@ -29,47 +28,51 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function SignIn() {
+const SignIn = () => {
   
   const classes = useStyles();
-
-  //function component hook as a quick and dirty? way to handle state
-  //other end: value={name} onInput={e => setName(e.target.value)}
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState('');
-  const [mokat, setMokat] = useState('');
+  const [mistake, setMistake] = useState(false);
   const history = useHistory();
-  let myStorage = window.localStorage;
   
   const login = (e) => {
     e.preventDefault();
-    //console.log({name, password})
+    console.log({name, password})
 
     let response = axios.post('api/sign', {
       name: name,
       password: password
     }).then(response => {
-      HandleResponse(response)
-      RedirectToWeekview()
+      setInfo(response.data);
     }).catch(error => {
       HandleError(error)
     })
+  }
+
+  function RedirectToWeekview(){
+    window.location.href="/"
+  }
+
+  async function setInfo(data) {
+    localStorage.setItem("taseraUserName", name);
+    localStorage.setItem("token", data);
     
-  }
+    const config = {
+      headers: { Authorization: `Bearer ${data}` }
+    };
+    
+    let query = "/api/user?name=" + name;
+    let response = await axios.get(query, config);
+    let role = await response.data[0].role;
+    localStorage.setItem("role", role);
 
-  const HandleResponse = response => {
-    setUser(response.data)
-    myStorage.setItem('token', response.data)
+    RedirectToWeekview()
   }
-
-  const RedirectToWeekview = () => {
-    history.push('/')
-  }
-
+  
   const HandleError = error => {
-    setMokat(true);
-
+    setMistake(true);
     //message contains all errors, might be useful
     let message = ''
     if(error.response.status===400) {
@@ -98,11 +101,12 @@ export default function SignIn() {
             required
             fullWidth
             id="email"
-            label="Sähköpostiosoite"
-            name="email"
-            autoComplete="sähköposti"
+            label="Käyttäjänimi"
+            name="username"
+            autoComplete="Käyttäjänimi"
             autoFocus
             value={name}
+            error={mistake}
             onInput={e => setName(e.target.value)}
           />
           <TextField
@@ -116,14 +120,10 @@ export default function SignIn() {
             id="password"
             autoComplete="current-password"
             value={password}
+            error={mistake}
+            helperText={mistake ? 'Väärä käyttäjänimi tai salasana' : ''}
             onInput={e => setPassword(e.target.value)}
           />
-
-          {(mokat) ?
-           <p style={{fontSize: 20, color: "red", textAlign: "center"}}>
-             Käyttäjänimi tai salasana väärin
-           </p> :
-           <p></p>}
 
           <Link>
             <Button
@@ -153,5 +153,7 @@ export default function SignIn() {
         </form>
       </div>
     </Container>
-  );
+  )
 }
+
+export default SignIn
