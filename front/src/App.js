@@ -27,7 +27,7 @@ class App extends Component {
                      <Route path="/trackview/:date?/:track?" component={Trackview} />
                      <Route path="/scheduling/:date?" component={Scheduling} />
                      <Route path="/tablet" component={RangeOfficerView} />
-                     <Route path="/usrmng" component={UserManagementView} />
+                     <Route path="/usermanagement" component={UserManagementView} />
                   </Switch>
                </header>
             </div>

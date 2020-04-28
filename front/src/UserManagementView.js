@@ -1,28 +1,27 @@
 import React, { Component } from "react";
 import "./App.css";
-import { Divider, Button, ListItemSecondaryAction, FormControl, InputLabel, Select } from "@material-ui/core";
-import Box from "@material-ui/core/Box";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import TextField from "@material-ui/core/TextField";
+import {
+   Divider,
+   Button,
+   FormControl,
+   InputLabel,
+   Select,
+   Box,
+   Table,
+   TableBody,
+   TableCell,
+   TableContainer,
+   TableHead,
+   TableRow,
+   Paper,
+   Dialog,
+   DialogActions,
+   DialogContent,
+   DialogContentText,
+   DialogTitle,
+   TextField,
+} from "@material-ui/core";
 import axios from "axios";
-
-/* WHERE AT:
-vaihdasalasana - dialogi toimii, toiminnallisuus ei jatka kohteeseen: handleChangeOwnPassDialogCloseAgree
-lisää käyttäjä - toimii
-vaihdasalasana muille - toimii
-käyttäjän poisto - toimii
-*/
 
 //Finds all users from database
 async function getUsers(token) {
@@ -104,8 +103,8 @@ async function addUser(token, namen, rolen, passwordn) {
    }
 }
 
-/*
- ** Main function
+/**
+ ** THE CLASS
  */
 class UserManagementView extends Component {
    constructor(props) {
@@ -131,6 +130,7 @@ class UserManagementView extends Component {
          oldPassword: "",
          newPassword: "",
          changeOwnPassFailed: false,
+         selectedUserName: "",
       };
 
       //need to bind these functions so they get access to the state
@@ -160,9 +160,7 @@ class UserManagementView extends Component {
             token: localStorage.getItem("token"),
          },
          function () {
-            console.log("token " + this.state.token);
-            console.log(localStorage);
-            if (this.state.token === "SECRET-TOKEN") {
+            if (this.state.token === "SECRET-TOKEN" || localStorage.role != "superuser") {
                this.props.history.push("/");
             } else {
                try {
@@ -188,8 +186,6 @@ class UserManagementView extends Component {
    }
 
    update() {
-      console.log("populating table with following data");
-      console.log(this.state.userList);
       var tempRows = [];
       for (var i in this.state.userList) {
          if (localStorage.taseraUserName !== this.state.userList[i].name) {
@@ -355,10 +351,14 @@ class UserManagementView extends Component {
     */
 
    //Opens dialog for changing password for some1 else
-   onChangePassClick(e) {
-      this.setState({
-         changePassDialogOpen: true,
+   async onChangePassClick(e) {
+      await this.setState({
          selectedROWID: e.currentTarget.id,
+      });
+      var name = this.findUserName();
+      this.setState({
+         selectedUserName: name,
+         changePassDialogOpen: true,
       });
    }
 
@@ -472,7 +472,7 @@ class UserManagementView extends Component {
          <div>
             {/*Dialog to add new user*/}
             <Dialog open={this.state.openAddNewUserDialog} keepMounted onClose={this.handleAddNewUserDialogClose}>
-               <DialogTitle>{"Create new user"}</DialogTitle>
+               <DialogTitle id="dialog-add-user-title">{"Luo uusi käyttäjä"}</DialogTitle>
                <DialogContent>
                   <TextField value={this.state.newUserName} margin="dense" id="name" label="Käyttäjänimi*" onChange={this.handleNewuserNameChange} fullWidth />
                   <TextField value={this.state.newUserPass} margin="dense" id="password" label="Salasana*" onChange={this.handleNewuserPassChange} fullWidth />
@@ -495,40 +495,34 @@ class UserManagementView extends Component {
                </DialogContent>
                <DialogActions>
                   <Button onClick={this.handleAddNewUserDialogClose} color="primary">
-                     Cancel
+                     Peruuta
                   </Button>
                   <Button onClick={this.handleAddNewUserDialogCloseConfirmed} color="primary">
-                     Confirm
+                     Vahvista
                   </Button>
                </DialogActions>
             </Dialog>
             {/*Dialog to remove user*/}
-            <Dialog
-               open={this.state.openRemoveWarning}
-               keepMounted
-               onClose={this.handleRemoveWarningClose}
-               aria-labelledby="alert-dialog-slide-title"
-               aria-describedby="alert-dialog-slide-description"
-            >
-               <DialogTitle id="alert-dialog-slide-title">{"Are you really sure?"}</DialogTitle>
-               <DialogContent>
-                  <DialogContentText id="alert-dialog-slide-description">This action will permanently remove the user {this.findUserName}</DialogContentText>
+            <Dialog open={this.state.openRemoveWarning} keepMounted onClose={this.handleRemoveWarningClose}>
+               <DialogTitle id="dialog-remove-user-title">{"Haluatko varmasti jatkaa"}</DialogTitle>
+               <DialogContent id="dialog-remove-user-contet">
+                  <DialogContentText id="dialog-remove-user-text">Tämä poistaa pysyvästi käyttäjän {this.state.selectedUserName}</DialogContentText>
                   {this.state.mokatPoistossa ? <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>Jokin meni pieleen </p> : <p></p>}
                </DialogContent>
                <DialogActions>
                   <Button onClick={this.handleRemoveWarningClose} color="primary">
-                     Cancel
+                     Peruuta
                   </Button>
                   <Button onClick={this.handleRemoveWarningCloseAgree} color="primary">
-                     Continue
+                     Vahvista
                   </Button>
                </DialogActions>
             </Dialog>
             {/*Dialog to change password of own user*/}
-            <Dialog open={this.state.changeOwnPassDialogOpen} onClose={this.handleChangeOwnPassDialogClose} aria-labelledby="form-dialog-title">
-               <DialogTitle id="form-dialog-title">Change Password</DialogTitle>
+            <Dialog open={this.state.changeOwnPassDialogOpen} onClose={this.handleChangeOwnPassDialogClose}>
+               <DialogTitle id="dialog-change-own-pass-title">Vaihda Salasana</DialogTitle>
                <DialogContent>
-                  <DialogContentText>To change password you have to give your old password and new one to change to</DialogContentText>
+                  <DialogContentText>Vaihtaaksesi salasanasi sinun tulee antaa vanha salasanasi sekä uusi joksi haluat sen vaihtaa</DialogContentText>
                   <TextField
                      type="password"
                      value={this.state.oldpassword}
@@ -557,16 +551,16 @@ class UserManagementView extends Component {
                </DialogContent>
                <DialogActions>
                   <Button onClick={this.handleChangeOwnPassDialogClose} color="primary">
-                     Cancel
+                     Peruuta
                   </Button>
                   <Button onClick={this.handleChangeOwnPassDialogCloseAgree} color="primary">
-                     Confirm
+                     Vahvista
                   </Button>
                </DialogActions>
             </Dialog>
             {/*Dialog to change password of other users*/}
-            <Dialog open={this.state.changePassDialogOpen} onClose={this.handleChangePassClose} aria-labelledby="form-dialog-title">
-               <DialogTitle id="form-dialog-title">Change Password for {this.findUserName}</DialogTitle>
+            <Dialog open={this.state.changePassDialogOpen} onClose={this.handleChangePassClose}>
+               <DialogTitle id="dialog-change-pass-title">Vaihda salasana käyttäjälle {this.state.selectedUserName}</DialogTitle>
                <DialogContent>
                   <TextField
                      type="text"
@@ -587,10 +581,10 @@ class UserManagementView extends Component {
                </DialogContent>
                <DialogActions>
                   <Button onClick={this.handleChangePassClose} color="primary">
-                     Cancel
+                     Peruuta
                   </Button>
                   <Button onClick={this.handleChangePassCloseConfirm} color="primary">
-                     Confirm
+                     Vahvista
                   </Button>
                </DialogActions>
             </Dialog>
@@ -600,7 +594,7 @@ class UserManagementView extends Component {
             <Box display="flex">
                <h3 style={{ marginLeft: 40 }}>Vaihda salasana:</h3>
                <Button onClick={this.handleOpenOwnPassChangeDialog} color="primary" variant="contained" style={{ margin: 15, marginLeft: 40 }}>
-                  vaihda salasana
+                  Vaihda salasana
                </Button>
             </Box>
             <Divider></Divider>
