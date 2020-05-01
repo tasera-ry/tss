@@ -18,7 +18,7 @@ const DropDowns = (props) => {
   let obj = props.changes.find(o => o.date===id);
   let text = "Vahvista saapuminen";
   let color = "white";
-  if(obj.range_supervisor==="confirmed") {
+  if(obj.range_supervisor==="confirmed" || obj.range_supervisor==="en route") {
     text = "Saavun paikalle";
     color = "green";
   }
@@ -112,7 +112,7 @@ const DropDowns = (props) => {
 
       &nbsp;
       {props.today===props.d ?
-       <Check HandleChange={props.HandleChange} />
+       <Check HandleChange={props.HandleChange} checked={props.checked} />
        : "" }
 
     </span>
@@ -120,20 +120,23 @@ const DropDowns = (props) => {
 }
 
 //prints matkalla-checkbox
-const Check = ({HandleChange}) => {
+const Check = ({HandleChange, checked}) => {
   return (
     <>
-      <FormControlLabel control={<Checkbox
-                                   style={{color:"orange"}}
-                                   onChange={HandleChange}
-                                 />}
-                        label="Matkalla" />
+      <FormControlLabel control={
+        <Checkbox
+          checked={checked}
+          style={{color:"orange"}}
+          onChange={HandleChange}
+        />}
+        label="Matkalla" />
+      
     </>
   )
 }
 
 //prints date info in rows
-const Rows = ({HandleChange, changes, setDone}) => {
+const Rows = ({HandleChange, changes, setDone, checked}) => {
   const styleA = {
     padding:30,
     marginLeft:30,
@@ -158,12 +161,12 @@ const Rows = ({HandleChange, changes, setDone}) => {
 
   return (   
     changes.map(d =>
-                  <div key={d.date} style={styleA}>
-                    {getWeekday(d.date)} {getDateString(d.date)}
-		    <DropDowns d={d.date} today={today} changes={changes}
-		               HandleChange={HandleChange}  />
-                  </div>  
-                 )
+                <div key={d.date} style={styleA}>
+                  {getWeekday(d.date)} {getDateString(d.date)}
+		  <DropDowns d={d.date} today={today} changes={changes}
+		             HandleChange={HandleChange} checked={checked}  />
+                </div>  
+               )
   )
 }
 
@@ -253,7 +256,7 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked) {
 const DialogWindow = () => {
   const [noSchedule, setNoSchedule] = useState(false);
   const [schedules, setSchedules] = useState([]);
-  const [checked, setChecked] = useState(); //user is "en route"
+  const [checked, setChecked] = useState(false); //user is "en route"
     console.log("en route", checked)
 
   //starting point
@@ -337,7 +340,8 @@ const Logic = ({schedules, setSchedules, noSchedule, checked, setChecked}) => {
         </DialogContent>
 
         {schedules.length!==0 ?
-         <Rows HandleChange={HandleChange} changes={changes} setDone={setDone} />
+         <Rows HandleChange={HandleChange} changes={changes}
+               setDone={setDone} checked={checked} />
          : ""}
 
         <DialogActions>
