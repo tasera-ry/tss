@@ -136,7 +136,7 @@ const Check = ({HandleChange, checked}) => {
 }
 
 //prints date info in rows
-const Rows = ({HandleChange, changes, setDone, checked}) => {
+const Rows = ({HandleChange, changes, checked, setDone}) => {
   const styleA = {
     padding:30,
     marginLeft:30,
@@ -144,9 +144,9 @@ const Rows = ({HandleChange, changes, setDone, checked}) => {
     display:"inline-flex",
     fontSize:18
   }
-  
-  setDone(true);
 
+  setDone(true);
+  
   function getWeekday(day) {
     day = moment(day).format('dddd')
     return day.charAt(0).toUpperCase() + day.slice(1);
@@ -213,7 +213,7 @@ async function getReservations(res) {
 }
 
 //obtain users schedule and range supervision states
-async function getSchedule(setSchedules, setNoSchedule, setChecked) {
+async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
   let userID = await getId();  
   let res = [];
   let temp = [];
@@ -241,7 +241,8 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked) {
   }
  
   if(res.length===0) {
-    setNoSchedule(true);
+    await setNoSchedule(true);
+    await setDone(true);
     return;
   }
   
@@ -256,18 +257,20 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked) {
 const DialogWindow = () => {
   const [noSchedule, setNoSchedule] = useState(false);
   const [schedules, setSchedules] = useState([]);
+  const [done, setDone] = useState(false);
   const [checked, setChecked] = useState(false); //user is "en route"
-    console.log("en route", checked)
+  console.log("en route", checked)
 
   //starting point
   useEffect(() => {
-    getSchedule(setSchedules, setNoSchedule, setChecked);
+    getSchedule(setSchedules, setNoSchedule, setChecked, setDone);
   }, [])
 
   return (
     <div>
       <Logic schedules={schedules} setSchedules={setSchedules}
-             noSchedule={noSchedule} checked={checked} setChecked={setChecked} />
+             noSchedule={noSchedule} checked={checked} setChecked={setChecked}
+             done={done} setDone={setDone}/>
     </div>
   )
 }
@@ -295,13 +298,12 @@ async function putSchedules(changes) {
 }
 
 //creates dialog-window
-const Logic = ({schedules, setSchedules, noSchedule, checked, setChecked}) => {
+const Logic = ({schedules, setSchedules, noSchedule, checked, setChecked, done, setDone}) => {
   const discardChanges = {
     color:"gray"
   }
-  
+
   const [open, setOpen] = useState(true);
-  const [done, setDone] = useState(false);
   let changes = [...schedules];
 
   const HandleChange = (event) => {
@@ -341,7 +343,7 @@ const Logic = ({schedules, setSchedules, noSchedule, checked, setChecked}) => {
 
         {schedules.length!==0 ?
          <Rows HandleChange={HandleChange} changes={changes}
-               setDone={setDone} checked={checked} />
+               checked={checked} setDone={setDone} />
          : ""}
 
         <DialogActions>
@@ -352,7 +354,7 @@ const Logic = ({schedules, setSchedules, noSchedule, checked, setChecked}) => {
             Sulje
           </Button>
 
-          {done ?
+          {done && !noSchedule ?
            <Button
              color='primary'
              variant='contained'
