@@ -695,7 +695,7 @@ class Scheduling extends Component {
             supervisorStatus = statusInState !== undefined ? statusInState : 'absent';
             
             let notice = this.state.tracks[key].notice;
-            if(notice === null || notice === ""){
+            if(notice === null){
               //undefined gets removed in object
               notice=undefined;
             }
