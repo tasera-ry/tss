@@ -12,17 +12,13 @@ import MenuItem from '@material-ui/core/MenuItem';
 import axios from 'axios';
 import moment from 'moment';
 
-//TODO:
-//button colors with styles
-//change config after relocating jwt
-
 //print drop down menus in rows
 const DropDowns = (props) => {
   let id = props.d;
   let obj = props.changes.find(o => o.date===id);
   let text = "Vahvista saapuminen";
   let color = "white";
-  if(obj.range_supervisor==="confirmed") {
+  if(obj.range_supervisor==="confirmed" || obj.range_supervisor==="en route") {
     text = "Saavun paikalle";
     color = "green";
   }
@@ -116,7 +112,7 @@ const DropDowns = (props) => {
 
       &nbsp;
       {props.today===props.d ?
-       <Check HandleChange={props.HandleChange} />
+       <Check HandleChange={props.HandleChange} checked={props.checked} />
        : "" }
 
     </span>
@@ -124,20 +120,23 @@ const DropDowns = (props) => {
 }
 
 //prints matkalla-checkbox
-const Check = ({HandleChange}) => {
+const Check = ({HandleChange, checked}) => {
   return (
     <>
-      <FormControlLabel control={<Checkbox
-                                   style={{color:"orange"}}
-                                   onChange={HandleChange}
-                                 />}
-                        label="Matkalla" />
+      <FormControlLabel control={
+        <Checkbox
+          checked={checked}
+          style={{color:"orange"}}
+          onChange={HandleChange}
+        />}
+        label="Matkalla" />
+      
     </>
   )
 }
 
 //prints date info in rows
-const Rows = ({HandleChange, changes}) => {
+const Rows = ({HandleChange, changes, checked, setDone}) => {
   const styleA = {
     padding:30,
     marginLeft:30,
@@ -146,6 +145,8 @@ const Rows = ({HandleChange, changes}) => {
     fontSize:18
   }
 
+  setDone(true);
+  
   function getWeekday(day) {
     day = moment(day).format('dddd')
     return day.charAt(0).toUpperCase() + day.slice(1);
@@ -160,12 +161,12 @@ const Rows = ({HandleChange, changes}) => {
 
   return (   
     changes.map(d =>
-                  <div key={d.date} style={styleA}>
-                    {getWeekday(d.date)} {getDateString(d.date)}
-		    <DropDowns d={d.date} today={today} changes={changes}
-		               HandleChange={HandleChange}  />
-                  </div>  
-                 )
+                <div key={d.date} style={styleA}>
+                  {getWeekday(d.date)} {getDateString(d.date)}
+		  <DropDowns d={d.date} today={today} changes={changes}
+		             HandleChange={HandleChange} checked={checked}  />
+                </div>  
+               )
   )
 }
 
@@ -193,17 +194,26 @@ async function getId() {
 //obtain date info
 async function getReservations(res) {
 
+  let today = moment().format().split("T")[0];
+  
   for(let i=0; i<res.length; i++) {
     let query = "api/reservation?available=true&id=" + res[i].reservation_id;
     let response = await axios.get(query);
-    res[i].date = await response.data[0].date.split("T")[0];
+    let d = moment(response.data[0].date).format("YYYY-MM-DD");
+    res[i].date = d
   }
+
+  res = res.filter(obj => obj.date >= today);
+
+  res.sort(function(a, b) {
+    return new Date(a.date) - new Date(b.date);
+  });
 
   return res;
 }
 
 //obtain users schedule and range supervision states
-async function getSchedule(setSchedules, setNoSchedule) {
+async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
   let userID = await getId();  
   let res = [];
   let temp = [];
@@ -229,31 +239,37 @@ async function getSchedule(setSchedules, setNoSchedule) {
 
     res = await res.concat(obj);
   }
-
-  console.log("scheduled for user: ", res.length)
-  console.log(res)
  
   if(res.length===0) {
-    setNoSchedule(true);
+    await setNoSchedule(true);
+    await setDone(true);
     return;
   }
   
   res = await getReservations(res);
   setSchedules(res);
+  setChecked(res[0].range_supervisor==="en route");
+
+  console.log("scheduled for user: ", res.length)
+  console.log(res)
 }
 
 const DialogWindow = () => {
   const [noSchedule, setNoSchedule] = useState(false);
   const [schedules, setSchedules] = useState([]);
+  const [done, setDone] = useState(false);
+  const [checked, setChecked] = useState(false); //user is "en route"
 
   //starting point
   useEffect(() => {
-    getSchedule(setSchedules, setNoSchedule);
+    getSchedule(setSchedules, setNoSchedule, setChecked, setDone);
   }, [])
 
   return (
     <div>
-      <Logic schedules={schedules} setSchedules={setSchedules} noSchedule={noSchedule} />
+      <Logic schedules={schedules} setSchedules={setSchedules}
+             noSchedule={noSchedule} checked={checked} setChecked={setChecked}
+             done={done} setDone={setDone}/>
     </div>
   )
 }
@@ -281,9 +297,12 @@ async function putSchedules(changes) {
 }
 
 //creates dialog-window
-const Logic = ({schedules, setSchedules, noSchedule}) => {
+const Logic = ({schedules, setSchedules, noSchedule, checked, setChecked, done, setDone}) => {
+  const discardChanges = {
+    color:"gray"
+  }
+
   const [open, setOpen] = useState(true);
-  const [checked, setChecked] = useState(false); //user is "en route"
   let changes = [...schedules];
 
   const HandleChange = (event) => {
@@ -291,25 +310,28 @@ const Logic = ({schedules, setSchedules, noSchedule}) => {
   }
 
   const HandleClose = () => {
-    setOpen(false)
 
-    if(checked) {
+    if(checked && changes[0].range_supervisor==="confirmed") {
       let today = moment().format().split("T")[0];
       let obj = changes.find(o => o.date===today);
       obj.range_supervisor = "en route";
       changes.map(o => (o.date===today ? obj : o))
     }
+    if(!checked && changes[0].range_supervisor==="en route") {
+      changes[0].range_supervisor="confirmed";
+    }
 
     if(changes.length>0) {
       putSchedules(changes);
     }
+    
+    setOpen(false)
   }
   
   return (
     <div>
       <Dialog
         open={open}
-        onClose={()=> setOpen(false)}
         aria-labelledby="otsikko"
         maxWidth='sm'
         fullWidth={true}>
@@ -317,20 +339,34 @@ const Logic = ({schedules, setSchedules, noSchedule}) => {
         <DialogTitle id="otsikko">Vahvistettavat valvonnat</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <br />
-            {noSchedule ? "Sinulla ei ole vahvistettavia vuoroja"
-             : "Haetaan vuoroja.."}
+            {noSchedule ? "Sinulla ei ole vahvistettavia vuoroja" : ""}
+            {done ? "" : "Haetaan vuoroja..."}
           </DialogContentText>
         </DialogContent>
 
         {schedules.length!==0 ?
-         <Rows HandleChange={HandleChange} changes={changes} />
+         <Rows HandleChange={HandleChange} changes={changes}
+               checked={checked} setDone={setDone} />
          : ""}
 
         <DialogActions>
-          <Button onClick={HandleClose}>
-            Ok
+
+          <Button
+            variant='contained'
+            onClick={()=> setOpen(false)}>
+            Sulje
           </Button>
+
+          {done && !noSchedule ?
+           <Button
+             color='primary'
+             variant='contained'
+             onClick={HandleClose}>
+             Tallenna
+           </Button>
+           : ""
+          }
+
         </DialogActions>
 
       </Dialog>
