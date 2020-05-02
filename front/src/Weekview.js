@@ -199,9 +199,9 @@ class Weekview extends Component {
                 } else if (rataStatus === "confirmed") {
                     colorFromBackEnd = "lightGreen"
                 } else if (rataStatus === "not confirmed") {
-                    colorFromBackEnd = "blue"
+                    colorFromBackEnd = "deepskyblue"
                 } else if (rataStatus === "en route") {
-                    colorFromBackEnd = "yellow"
+                    colorFromBackEnd = "orange"
                 } else if (rataStatus === "closed") {
                     colorFromBackEnd = "red"
                 } else if (rataStatus === "absent") {
@@ -311,10 +311,6 @@ class Weekview extends Component {
                 {/* To do: Tekstit ei toimi */}
                 <hr></hr>
                 <div className="infoContainer">
-                <div className="klockan">
-                    Aukiolo: 16-20 
-                </div>
-                <br></br>
                 <Grid>
                     <div class="info-flex">
 
@@ -322,7 +318,7 @@ class Weekview extends Component {
                         {/* Avoinna */} &nbsp;Päävalvoja paikalla <br></br> <br></br>
 
                         <div id="closed-info2" class='box'></div>
-                        {/* Suljettu */} &nbsp;Seura asetettu, ei hyväksynyt vuoroa <br></br><br></br>
+                        {/* Suljettu */} &nbsp;Päävalvoja määritetty, mutta ei varmistettu <br></br><br></br>
 
                     </div>                
                 </Grid>
@@ -333,7 +329,7 @@ class Weekview extends Component {
                     <div class="info-flex">
 
                         <div id="valvoja-info" class='box'></div>
-                        {/* Päävalvoja tulossa */} &nbsp;Seura hyväksynyt vuoron, ei paikalla<br></br> <br></br>
+                        {/* Päävalvoja tulossa */} &nbsp;Päävalvoja varmistettu <br></br> <br></br>
 
 
                         <div id="no-info" class='box'></div>

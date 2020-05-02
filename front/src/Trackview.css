@@ -39,6 +39,8 @@
   align-items: center;
   width: 60vw;
   margin-left: 19vw;
+  font-weight: bold;
+  font-size: larger;
 }
 
 .isClosed {
@@ -49,6 +51,8 @@
   align-items: center;
   width: 60vw;
   margin-left: 19vw;
+  font-weight: bold;
+  font-size: larger;
 }
 
 .isUnavailable {
@@ -59,16 +63,20 @@
   align-items: center;
   width: 60vw;
   margin-left: 19vw;
+  font-weight: bold;
+  font-size: large;
 }
 
 .isEnRoute {
-  background-color: yellow;
+  background-color: orange;
   color: black;
   padding: 12px;
   text-align: center;
   align-items: center;
   width: 60vw;
   margin-left: 19vw;
+  font-weight: bold;
+  font-size: larger;
 }
 
 .isConfirmed {
@@ -79,6 +87,8 @@
   align-items: center;
   width: 60vw;
   margin-left: 19vw;
+  font-weight: bold;
+  font-size: larger;
 }
 
 .isNotConfirmed {
@@ -89,6 +99,8 @@
   align-items: center;
   width: 60vw;
   margin-left: 19vw;
+  font-weight: bold;
+  font-size: larger;
 }
 
 .backLink > svg {
