@@ -111,26 +111,25 @@ class UserManagementView extends Component {
       super(props);
       this.state = {
          userList: {},
-         haha: "asd",
          rows: [],
          openPassWarning: false,
          openRemoveWarning: false,
-         selectedROWID: 1,
          changeOwnPassDialogOpen: false,
+         openAddNewUserDialog: false,
+         changePassDialogOpen: false,
+         changeOwnPassFailed: false,
+         mokat: false,
+         mokatPoistossa: false,
+         selectedROWID: 1,
          newUserName: "",
          newUserPass: "",
          newUserRole: "supervisor",
          newUserPhone: "",
-         openAddNewUserDialog: false,
-         mokat: false,
-         mokatPoistossa: false,
-         myStorage: window.localStorage,
          password: "",
-         changePassDialogOpen: false,
          oldPassword: "",
          newPassword: "",
-         changeOwnPassFailed: false,
          selectedUserName: "",
+         myStorage: window.localStorage,
       };
 
       //need to bind these functions so they get access to the state
@@ -323,7 +322,7 @@ class UserManagementView extends Component {
             return this.state.userList[i].name;
          }
       }
-      return "";
+      return "Username not found";
    }
 
    //Finds users id by selectedROWID in state
@@ -479,8 +478,8 @@ class UserManagementView extends Component {
                   <FormControl>
                      <InputLabel>Rooli</InputLabel>
                      <Select style={{ marginTop: 15 }} native value={this.state.newUserRole} onChange={this.handleChangeNewUserRole} id="role">
-                        <option aria-label="supervisor" value={"supervisor"}>
-                           supervisor
+                        <option aria-label="valvoja" value={"supervisor"}>
+                           valvoja
                         </option>
                         <option value={"superuser"}>superuser</option>
                      </Select>
@@ -494,7 +493,7 @@ class UserManagementView extends Component {
                   )}
                </DialogContent>
                <DialogActions>
-                  <Button onClick={this.handleAddNewUserDialogClose} color="primary">
+                  <Button onClick={this.handleAddNewUserDialogClose} color="secondary">
                      Peruuta
                   </Button>
                   <Button onClick={this.handleAddNewUserDialogCloseConfirmed} color="primary">
@@ -510,7 +509,7 @@ class UserManagementView extends Component {
                   {this.state.mokatPoistossa ? <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>Jokin meni pieleen </p> : <p></p>}
                </DialogContent>
                <DialogActions>
-                  <Button onClick={this.handleRemoveWarningClose} color="primary">
+                  <Button onClick={this.handleRemoveWarningClose} color="secondary">
                      Peruuta
                   </Button>
                   <Button onClick={this.handleRemoveWarningCloseAgree} color="primary">
@@ -550,7 +549,7 @@ class UserManagementView extends Component {
                   )}
                </DialogContent>
                <DialogActions>
-                  <Button onClick={this.handleChangeOwnPassDialogClose} color="primary">
+                  <Button onClick={this.handleChangeOwnPassDialogClose} color="secondary">
                      Peruuta
                   </Button>
                   <Button onClick={this.handleChangeOwnPassDialogCloseAgree} color="primary">
@@ -580,7 +579,7 @@ class UserManagementView extends Component {
                   )}
                </DialogContent>
                <DialogActions>
-                  <Button onClick={this.handleChangePassClose} color="primary">
+                  <Button onClick={this.handleChangePassClose} color="secondary">
                      Peruuta
                   </Button>
                   <Button onClick={this.handleChangePassCloseConfirm} color="primary">
