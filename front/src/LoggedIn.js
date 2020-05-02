@@ -259,7 +259,6 @@ const DialogWindow = () => {
   const [schedules, setSchedules] = useState([]);
   const [done, setDone] = useState(false);
   const [checked, setChecked] = useState(false); //user is "en route"
-  console.log("en route", checked)
 
   //starting point
   useEffect(() => {
@@ -311,18 +310,22 @@ const Logic = ({schedules, setSchedules, noSchedule, checked, setChecked, done, 
   }
 
   const HandleClose = () => {
-    setOpen(false)
 
-    if(checked) {
+    if(checked && changes[0].range_supervisor==="confirmed") {
       let today = moment().format().split("T")[0];
       let obj = changes.find(o => o.date===today);
       obj.range_supervisor = "en route";
       changes.map(o => (o.date===today ? obj : o))
     }
+    if(!checked && changes[0].range_supervisor==="en route") {
+      changes[0].range_supervisor="confirmed";
+    }
 
     if(changes.length>0) {
       putSchedules(changes);
     }
+    
+    setOpen(false)
   }
   
   return (
