@@ -1,9 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
-const jwt = require("jsonwebtoken");
-
-const { check, body, query, param, validationResult, matchedData } = require("express-validator");
+const _ = require('lodash')
 
 const path = require('path')
 const root = path.join(__dirname, '.')
@@ -23,13 +20,13 @@ router.route('/sign')
 
 router.route('/user')
   .all(
-    middlewares.jwt.read
-    , middlewares.user.hasProperty('role', 'superuser'))
+    middlewares.jwt.read)
   .get(
     middlewares.user.readFilter
     , controllers.user.readFilter)
   .post(
-    middlewares.user.create
+    middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.user.create
     , controllers.user.create)
 
 router.route('/user/:id')
@@ -54,7 +51,7 @@ router.route('/track-supervision')
     , controllers.trackSupervision.readFilter)
   .post(
     middlewares.jwt.read
-    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes)
     , middlewares.trackSupervision.create
     , controllers.trackSupervision.create)
 
@@ -64,7 +61,7 @@ router.route('/track-supervision/:scheduled_range_supervision_id/:track_id')
     , controllers.trackSupervision.read)
   .put(
     middlewares.jwt.read
-    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes)
     , middlewares.trackSupervision.update
     , controllers.trackSupervision.update)
   .delete(
@@ -72,7 +69,7 @@ router.route('/track-supervision/:scheduled_range_supervision_id/:track_id')
     , middlewares.user.hasProperty('role', 'superuser')
     , middlewares.trackSupervision.delete
     , controllers.trackSupervision.delete)
-    
+
 //Range supervision
 router.route('/range-supervision')
   .get(
@@ -80,7 +77,7 @@ router.route('/range-supervision')
     , controllers.rangeSupervision.readFilter)
   .post(
     middlewares.jwt.read
-    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes)
     , middlewares.rangeSupervision.create
     , controllers.rangeSupervision.create)
 
@@ -90,7 +87,7 @@ router.route('/range-supervision/:scheduled_range_supervision_id')
     , controllers.rangeSupervision.read)
   .put(
     middlewares.jwt.read
-    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes)
     , middlewares.rangeSupervision.update
     , controllers.rangeSupervision.update)
   .delete(
@@ -109,7 +106,7 @@ router.route('/reservation')
 router.route('/reservation/:id')
   .get(controllers.reservation.readStrict)
   .put(middlewares.jwt.read
-       , middlewares.user.hasProperty('role', 'superuser')
+       , middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes)
        , controllers.reservation.update)
   .delete(middlewares.jwt.read
           , middlewares.user.hasProperty('role', 'superuser')

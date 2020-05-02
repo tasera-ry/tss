@@ -12,13 +12,15 @@ class Weekview extends Component {
         super(props);
         this.state = {
           weekNro: 0,
-          dayNro: 0
+          dayNro: 0,
+          yearNro: 0,
         };
     }
 
     //Updates week to current when page loads
     componentDidMount() {
         this.getWeek();
+        this.getYear();
         this.update();
       }
 
@@ -90,22 +92,52 @@ class Weekview extends Component {
         //Date should come from be?
         let table = []
         let pv;
+        let oikeePaiva;
+        let linkki;
     
-        for (let j = 1; j < 8; j++) {
-            pv = dayToString(j);
-            //Korjausliike ku utilsseis sunnuntai on eka päivä
-            if (j === 7) {
-                pv = "Sunnuntai"
-            }
-            table.push(
-                <Link className="link">
-                <p id ="weekDay">
-                    {pv}
-                </p>
-                </Link>
-                )
-            }
-        return table
+        if (this.state.paivat === undefined) {
+            
+        }
+        else {
+            for (let j = 1; j < 8; j++) {
+                pv = dayToString(j);
+                //Korjausliike ku utilsseis sunnuntai on eka päivä
+                if (j === 1) {
+                    pv = "Ma";
+                }
+                if (j === 2) {
+                    pv = "Ti";
+                }
+                if (j === 3) {
+                    pv = "Ke";
+                }
+                if (j === 4) {
+                    pv = "To";
+                }
+                if (j === 5) {
+                    pv = "Pe";
+                }
+                if (j === 6) {
+                    pv = "La";
+                }
+                if (j === 7) {
+                    pv = "Su"
+                }
+                j--;
+                oikeePaiva = this.state.paivat[j].date
+                j++;
+                linkki = "/dayview/" + oikeePaiva
+    
+                table.push(
+                    <Link className="link" to={linkki}>
+                    <p id ="weekDay">
+                        {pv}
+                    </p>
+                    </Link>
+                    )
+                }
+            return table
+        }
     }
 
     //Creates 7 columns for days
@@ -120,12 +152,16 @@ class Weekview extends Component {
             let oikeePaiva;
             let fixed;
             let newDate;
+            let linkki;
             for (let j = 0; j < 7; j++) {
                 oikeePaiva = this.state.paivat[j].date
                 fixed = oikeePaiva.split("-")
                 newDate = fixed[2] + "." + fixed[1]
+
+                linkki = "/dayview/" + oikeePaiva
+
                 table.push(
-                    <Link class="link" to="/dayview">
+                    <Link class="link" to={linkki}>
                     <p style={{ fontSize: "medium" }}>
                     {newDate}
                     </p>
@@ -163,9 +199,9 @@ class Weekview extends Component {
                 } else if (rataStatus === "confirmed") {
                     colorFromBackEnd = "lightGreen"
                 } else if (rataStatus === "not confirmed") {
-                    colorFromBackEnd = "blue"
+                    colorFromBackEnd = "deepskyblue"
                 } else if (rataStatus === "en route") {
-                    colorFromBackEnd = "yellow"
+                    colorFromBackEnd = "orange"
                 } else if (rataStatus === "closed") {
                     colorFromBackEnd = "red"
                 } else if (rataStatus === "absent") {
@@ -184,6 +220,13 @@ class Weekview extends Component {
                 }   
             return table  
         }
+    }
+
+    getYear = () => {
+        let today = new Date();
+        let yyyy = today.getFullYear();
+        this.setState({yearNro: yyyy})
+        return yyyy;
     }
 
     update() {
@@ -236,7 +279,7 @@ class Weekview extends Component {
                     className="hoverHand arrow-left"
                     onClick={this.previousWeekClick}
                     ></div>
-                    <h1> Viikko {this.state.weekNro} </h1>
+                    <h1> Viikko {this.state.weekNro} , {this.state.yearNro} </h1>
                     {/* kuukausi jos tarvii: {monthToString(date.getMonth())} */}
                     <div
                     className="hoverHand arrow-right"
@@ -268,18 +311,14 @@ class Weekview extends Component {
                 {/* To do: Tekstit ei toimi */}
                 <hr></hr>
                 <div className="infoContainer">
-                <div className="klockan">
-                    Aukiolo: 16-20 
-                </div>
-                <br></br>
                 <Grid>
                     <div class="info-flex">
 
                         <div id="open-info" class='box'></div>
-                        {/* Avoinna */} &nbsp;Päävalvoja paikalla&nbsp;&nbsp;&nbsp;&nbsp; <br></br> <br></br>
+                        {/* Avoinna */} &nbsp;Päävalvoja paikalla <br></br> <br></br>
 
                         <div id="closed-info2" class='box'></div>
-                        {/* Suljettu */} &nbsp;Päävalvoja matkalla <br></br><br></br>
+                        {/* Suljettu */} &nbsp;Päävalvoja määritetty, mutta ei varmistettu <br></br><br></br>
 
                     </div>                
                 </Grid>
@@ -290,11 +329,11 @@ class Weekview extends Component {
                     <div class="info-flex">
 
                         <div id="valvoja-info" class='box'></div>
-                        {/* Päävalvoja tulossa */} &nbsp;Päävalvoja määritetty<br></br> <br></br>
+                        {/* Päävalvoja tulossa */} &nbsp;Päävalvoja varmistettu <br></br> <br></br>
 
 
                         <div id="no-info" class='box'></div>
-                        {/* Ei tietoa */} &nbsp;Ei asetettu
+                        {/* Ei tietoa */} &nbsp;Tietokantavirhe
 
                     </div>
                 </Grid>
