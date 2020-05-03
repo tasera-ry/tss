@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import './App.css';
 import './rangeofficer.css';
 import Grid from '@material-ui/core/Grid';
+import * as data from './texts/texts.json';
 import moment from 'moment'
 
 import { dayToString } from "./utils/Utils";
@@ -295,30 +296,30 @@ class RangeOfficerView extends Component {
         );
     }
 
-    createOfficerStatus = () => {
+    createOfficerStatus = (tablet, fin) => {
         let newColor = "blue";
         let table = [];
         let status;
 
         if (this.state.rangeSupervision === 'present') {
             newColor = "green";
-            status = "Päävalvoja paikalla";
+            status = tablet.SuperGreen[fin];
         } 
         else if (this.state.rangeSupervision === 'en route') {
             newColor = "orange";
-            status = "Päävalvoja tulossa";
+            status = tablet.SuperOrange[fin];
         } 
         else if (this.state.rangeSupervision === 'closed') {
             newColor = "red";
-            status = "Suljettu";
+            status = tablet.Red[fin];
         }
         else if (this.state.rangeSupervision === 'confirmed') {
             newColor = "lightGreen";
-            status = "Päävalvoja varmistettu";
+            status = tablet.SuperLightGreen[fin];
         }
         else if (this.state.rangeSupervision === 'not confirmed') {
             newColor = "blue";
-            status = "Päävalvoja ei varmistettu";
+            status = tablet.SuperBlue[fin];
         }
         else {
             newColor = "white";
@@ -350,7 +351,7 @@ class RangeOfficerView extends Component {
       );
     }
 
-    createTrackStatuses = () => {
+    createTrackStatuses = (tablet, fin) => {
         // If blue color is seen, something has gone wrong.
         let newColor = "blue";
         let table = [];
@@ -360,15 +361,15 @@ class RangeOfficerView extends Component {
             let trackToChange = `${key}`;
             if (this.state.tracks[key].trackSupervision === 'present') {
                 newColor = "green";
-                status = "Paikalla";
+                status = tablet.Green[fin];
             } 
             else if (this.state.tracks[key].trackSupervision === 'absent') {
                 newColor = "white";
-                status = "Vapaa, ei valvojaa";
+                status = tablet.White[fin];
             } 
             else if (this.state.tracks[key].trackSupervision === 'closed') {
                 newColor = "red";
-                status = "Suljettu";
+                status = tablet.Red[fin];
             }
 
             table.push(
@@ -385,7 +386,9 @@ class RangeOfficerView extends Component {
 
 
 
-    render() {
+  render() {
+        const fin = localStorage.getItem("language");
+        const {tablet} = data;
         console.log(this.state);
 
         return(
@@ -393,17 +396,17 @@ class RangeOfficerView extends Component {
 
                 <div className = "dateInfo">
                     <p> {dayToString(moment(this.state.date).format("d"))} {moment(this.state.date).format("DD.MM.YYYY")} </p>
-                    <p> Aukiolo: {moment(this.state.open).format('H.mm')}-{moment(this.state.close).format('H.mm')} </p>
+                    <p> {tablet.Open[fin]}: {moment(this.state.open).format('H.mm')}-{moment(this.state.close).format('H.mm')} </p>
                 </div>
 
                 {/* Tähän yksi iso laatikko, joka näyttää päävalvojan statuksen */}
 
-                {this.createOfficerStatus()}
+              {this.createOfficerStatus(tablet, fin)}
 
                 {/* Tähän alle kolme laatikkoa, joista valitaan päävalvojan status */}
 
                 <div className="midInfo">
-                    Valitse päävalvojan status napauttamalla väriä alta
+                  {tablet.HelperFirst[fin]}
                 </div>
 
                 <div className="midInfo">
@@ -411,26 +414,26 @@ class RangeOfficerView extends Component {
                         className = "changeStatus"
                         onClick={this.changeStatusOpen}
                         style={{ backgroundColor: "green" }}
-                    >  Paikalla </div>
+                    >  {tablet.Green[fin]} </div>
 
                     <div 
                         className = "changeStatus"
                         onClick={this.changeStatusComing}
                         style={{ backgroundColor: "orange" }}
-                    >  Tulossa </div>
+                    >  {tablet.Orange[fin]} </div>
 
                     <div 
                         className = "changeStatus"
                         onClick={this.changeStatusClosed}
                         style={{ backgroundColor: "red" }}
-                    >  Suljettu </div>
+                    >  {tablet.Red[fin]} </div>
                 </div>
                 <br></br><br></br><br></br>
 
                 {/* Tähän 7 laatikkoa, jotka ovat ratojen päävalvojien statukset */}
 
                 <div className="midInfo">
-                    Vaihda ratavalvojien statuksia napauttamalla värejä alta
+                  {tablet.HelperSecond[fin]}
                 </div>
 
                 <br></br>
@@ -442,7 +445,7 @@ class RangeOfficerView extends Component {
                 <br></br><br></br>
 
                 <div className="midInfo">
-                    {this.createTrackStatuses()}
+                  {this.createTrackStatuses(tablet, fin)}
                 </div>
 
             </div>

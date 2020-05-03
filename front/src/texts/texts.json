@@ -18,10 +18,10 @@
   },
   "sv": {
     "SC": ["Vahvistettavat valvonnat", "Confirm supervisions"],
-    "No": ["Sinulla ei ole vahvistettavia vuoroja", "You have no supervisions"],
+    "No": ["Sinulla ei ole vahvistettavia vuoroja", "Nothing to confirm"],
     "Wait": ["Haetaan vuoroja...", "Retrieving information..."],
     "Confirmed": ["Saavun paikalle", "Confirmed"],
-    "Present": ["Vahvista saapuminen", "Confirm"],
+    "Present": ["Vahvista saapuminen", "Confirm date"],
     "Absent": ["En pääse paikalle", "Absent"],
     "EnRoute": ["Matkalla", "En route"],
     "Cancel": ["Sulje", "Cancel"],
@@ -55,9 +55,9 @@
     "RM": ["Toista kuukausittain", "Repeat monthly"],
     "Amount": ["Toistojen määrä", "End repeat after"],
     "Save": ["Tallenna muutokset", "Save changes"],
-    "Success": ["Päivitys onnistui", "Update"],
-    "Warning": ["Päävalvoja aktiivinen ilman valvojaa", "Range officer"],
-    "Error": ["Päivitys epäonnistui", "Update"]
+    "Success": ["Päivitys onnistui", "Update successful"],
+    "Warning": ["Päävalvoja aktiivinen ilman valvojaa", "Warning"],
+    "Error": ["Päivitys epäonnistui", "Something went wrong"]
   },
   "manage": {
     "UM": ["Käyttäjien hallinta", "User management"],
@@ -85,7 +85,11 @@
   },
   "tablet": {
     "Open": ["Aukiolo", "Open"],
-    "Blue": ["Päävalvoja ei varmistettu", "Range officer predefined"],
+    "SuperBlue": ["Päävalvoja ei varmistettu", "Range officer predefined"],
+    "SuperLightGreen": ["Päävalvoja varmistettu", "Range officer confirmed"],
+    "SuperGreen": ["Päävalvoja paikalla", "Range officer present"],
+    "SuperOrange": ["Päävalvoja tulossa", "Range officer on the way"],
+    "SuperWhite": ["Päävalvoja ei asetettu", "Range officer undefined"],
     "Green": ["Paikalla", "Present"],
     "Orange": ["Tulossa", "On the way"],
     "Red": ["Suljettu", "Closed"],

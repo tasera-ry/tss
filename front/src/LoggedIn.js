@@ -9,8 +9,11 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import moment from 'moment';
+import 'moment/locale/en-ca';
 import * as data from './texts/texts.json'
 
 //print drop down menus in rows
@@ -148,6 +151,10 @@ const Rows = ({HandleChange, changes, checked, setDone, sv}) => {
     fontSize:18
   }
 
+  if(localStorage.getItem("language") === "1") {
+    moment.locale("en-ca");
+  }
+  
   setDone(true);
   
   function getWeekday(day) {
@@ -306,8 +313,18 @@ const Logic = ({schedules, setSchedules, noSchedule, checked,
   const discardChanges = {
     color:"gray"
   }
+                  
+  const useStyles = makeStyles((theme) => ({
+  root: {
+    position:'relative',
+    marginLeft:'50%'
+  },
+  }));
+                  
+  const classes = useStyles();
 
   const [open, setOpen] = useState(true);
+  const [wait, setWait] = useState(false);                
   const fin = localStorage.getItem("language");
   let changes = [...schedules];
 
@@ -315,7 +332,7 @@ const Logic = ({schedules, setSchedules, noSchedule, checked,
     setChecked(!checked)
   }
 
-  const HandleClose = () => {
+  async function HandleClose() {
 
     if(checked && changes[0].range_supervisor==="confirmed") {
       let today = moment().format().split("T")[0];
@@ -328,10 +345,12 @@ const Logic = ({schedules, setSchedules, noSchedule, checked,
     }
 
     if(changes.length>0) {
-      putSchedules(changes);
+      setWait(true);
+      await putSchedules(changes);
     }
     
     setOpen(false)
+    window.location.reload();
   }
   
   return (
@@ -353,6 +372,12 @@ const Logic = ({schedules, setSchedules, noSchedule, checked,
         {schedules.length!==0 ?
          <Rows HandleChange={HandleChange} changes={changes}
                checked={checked} setDone={setDone} sv={sv} />
+         : ""}
+
+        {wait ?
+           <div className={classes.root}>
+             <CircularProgress  />
+           </div>
          : ""}
 
         <DialogActions>
