@@ -7,7 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import logo from "./Logo.png";
 import DialogWindow from './LoggedIn';
 import axios from 'axios';
-import * as data from './texts/texts.json'
+import * as data from './texts/texts.json';
 
 const SideMenu = ({setName, superuser, nav, fin}) => {
   const navStyle = {

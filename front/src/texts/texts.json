@@ -54,7 +54,10 @@
     "RW": ["Toista viikottain", "Repeat weekly"],
     "RM": ["Toista kuukausittain", "Repeat monthly"],
     "Amount": ["Toistojen määrä", "End repeat after"],
-    "Save": ["Tallenna muutokset", "Save changes"]
+    "Save": ["Tallenna muutokset", "Save changes"],
+    "Success": ["Päivitys onnistui", "Update"],
+    "Warning": ["Päävalvoja aktiivinen ilman valvojaa", "Range officer"],
+    "Error": ["Päivitys epäonnistui", "Update"]
   },
   "manage": {
     "UM": ["Käyttäjien hallinta", "User management"],
@@ -68,6 +71,7 @@
     "NP": ["Uusi salasana", "New password"],
     "Cancel": ["Peruuta", "Cancel"],
     "Confirm": ["Vahvista", "Save changes"],
+    "ConfirmDelete": ["Vahvista", "Confirm"],
     "New": ["Luo uusi käyttäjä", "Create new user"],
     "Password": ["Salasana", "Password"],
     "Role": ["Rooli", "Role"],
@@ -75,7 +79,9 @@
     "Supervisor": ["Valvoja", "Range officer"],
     "ChangeFor": ["Vaihda salasana käyttäjälle", "Change password for"],
     "Ask": ["Haluatko varmasti jatkaa?", "Are you sure?"],
-    "AskDelete": ["Tämä poistaa pysyvästi käyttäjän", "This action will permanently remove user"]
+    "AskDelete": ["Tämä poistaa pysyvästi käyttäjän", "This action will permanently remove user"],
+    "Error": ["Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki", "Something went wrong"],
+    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"]
   },
   "tablet": {
     "Open": ["Aukiolo", "Open"],
