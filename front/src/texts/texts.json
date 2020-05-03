@@ -1,0 +1,90 @@
+{
+  "nav": {
+    "SI": ["Kirjaudu sisään", "Sign In"],
+    "Menu": ["Valikko", "Menu"],
+    "Schedule": ["Aikataulut", "Schedules"],
+    "UM": ["Käyttäjienhallinta", "User management"],
+    "Supervision": ["Valvonnat", "Supervisions"],
+    "Tablet": ["Tablettinäkymä", "Tablet view"],
+    "SO": ["Kirjaudu ulos", "Sign Out"]
+  },
+  "signin": {
+    "SI": ["Kirjaudu sisään", "Sign In"],
+    "Name": ["Käyttäjänimi", "Username"],
+    "PW": ["Salasana", "Password"],
+    "LI": ["Kirjaudu", "Log in"],
+    "Back": ["Takaisin", "Go back"],
+    "Helper": ["Väärä käyttäjänimi tai salasana", "Wrong username or password"]
+  },
+  "sv": {
+    "SC": ["Vahvistettavat valvonnat", "Confirm supervisions"],
+    "No": ["Sinulla ei ole vahvistettavia vuoroja", "You have no supervisions"],
+    "Wait": ["Haetaan vuoroja...", "Retrieving information..."],
+    "Confirmed": ["Saavun paikalle", "Confirmed"],
+    "Present": ["Vahvista saapuminen", "Confirm"],
+    "Absent": ["En pääse paikalle", "Absent"],
+    "EnRoute": ["Matkalla", "En route"],
+    "Cancel": ["Sulje", "Cancel"],
+    "Save": ["Tallenna", "Save"]
+  },
+  "week": {
+    "Week": ["Viikko", "Week"],
+    "Green": ["Päävalvoja paikalla", "Range officer present"],
+    "Lightgreen": ["Päävalvoja varmistettu", "Range officer confirmed"],
+    "Blue": ["Päävalvoja määritelty mutta ei varmistettu", "Range officer predefined"],
+    "Red": ["Keskus suljettu", "Range closed"],
+    "Orange": ["Päävalvoja matkalla", "Range officer on the way"],
+    "White": ["Tietokantavirhe", "Undefined"]
+  },
+  "sched": {
+    "Day": ["Valitse päivä", "Choose date"],
+    "Open": ["Keskus auki", "Open"],
+    "Supervisor": ["Päävalvoja", "Range officer"],
+    "CS": ["Valitse valvoja", "Select range officer"],
+    "OH": ["Aukioloaika", "Opening hours"],
+    "Start": ["Alku", "Start"],
+    "Stop": ["Loppu", "End"],
+    "SP": ["Valvoja paikalla", "Track officer present"],
+    "SA": ["Ei valvojaa", "Track officer absent"],
+    "Closed": ["Suljettu", "Closed"],
+    "OpenAll": ["Avaa kaikki", "Open All"],
+    "ClearAll": ["Tyhjennä kaikki", "Clear All"],
+    "CloseAll": ["Sulje kaikki", "Close All"],
+    "RD": ["Toista päivittäin", "Repeat daily"],
+    "RW": ["Toista viikottain", "Repeat weekly"],
+    "RM": ["Toista kuukausittain", "Repeat monthly"],
+    "Amount": ["Toistojen määrä", "End repeat after"],
+    "Save": ["Tallenna muutokset", "Save changes"]
+  },
+  "manage": {
+    "UM": ["Käyttäjien hallinta", "User management"],
+    "CP": ["Vaihda salasana", "Change password"],
+    "CU": ["Lisää käyttäjä", "Create new user"],
+    "Users": ["Käyttäjät", "User profiles"],
+    "UN": ["Käyttäjänimi", "Username"],
+    "RU": ["Poista käyttäjä", "Delete profile"],
+    "Helper": ["Vaihtaaksesi salasanasi sinun tulee antaa nykyinen salasanasi sekä uusi joksi haluat sen vaihtaa", "Give your current and new password"],
+    "OP": ["Nykyinen salasana", "Current password"],
+    "NP": ["Uusi salasana", "New password"],
+    "Cancel": ["Peruuta", "Cancel"],
+    "Confirm": ["Vahvista", "Save changes"],
+    "New": ["Luo uusi käyttäjä", "Create new user"],
+    "Password": ["Salasana", "Password"],
+    "Role": ["Rooli", "Role"],
+    "Superuser": ["Superuser", "Superuser"],
+    "Supervisor": ["Valvoja", "Range officer"],
+    "ChangeFor": ["Vaihda salasana käyttäjälle", "Change password for"],
+    "Ask": ["Haluatko varmasti jatkaa?", "Are you sure?"],
+    "AskDelete": ["Tämä poistaa pysyvästi käyttäjän", "This action will permanently remove user"]
+  },
+  "tablet": {
+    "Open": ["Aukiolo", "Open"],
+    "Blue": ["Päävalvoja ei varmistettu", "Range officer predefined"],
+    "Green": ["Paikalla", "Present"],
+    "Orange": ["Tulossa", "On the way"],
+    "Red": ["Suljettu", "Closed"],
+    "White": ["Vapaa, ei valvojaa", "Open, no predefined track officer"],
+    "HelperFirst": ["Valitse päävalvojan status napauttamalla väriä alta", "Define range officer status by choosing color"],
+    "HelperSecond": ["Vaihda ratavalvojien statuksia napauttamalla värejä alta", "Change track officer status by choosing color"]
+  }
+}
