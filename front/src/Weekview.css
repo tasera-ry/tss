@@ -14,6 +14,8 @@
    margin-bottom: 15px;
    border: 1px solid black;
    clear: both;
+   min-height: 20px;
+   min-width: 20px;
 }
 
 .red {
@@ -126,7 +128,7 @@
 
 #closed-info {
    display: flex;
-   background: red;
+   background: orange;
    margin-left: 20%;
 }
 
@@ -140,6 +142,12 @@
    display: flex;
    background: white;
    margin-left: 20%;
+}
+
+#onway-info {
+   display: flex;
+   background: red;
+   margin-left: 19.6%;
 }
 
 .info-flex {
@@ -160,8 +168,17 @@
 
 /* Average phones */
 @media only screen and (max-width: 600px) {
-   #open-info {
+
+   .date-header {
+      height: 12em;
       display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin-top: -4%;
+   }
+
+   #open-info {
       background: green;
       margin-left: 10%;
    }
@@ -171,9 +188,8 @@
    }
 
    #valvoja-info {
-      display: flex;
       background: lightgreen;
-      margin-left: 9%;
+      margin-left: 10%;
    }
 
    #closed-info {
@@ -183,8 +199,14 @@
    }
 
    #no-info {
-      display: flex;
       background: white;
+      margin-left: 10%;
+      display: flexbox;
+      float:left;
+   }
+
+   #closed-info2 {
+      background: lightblue;
       margin-left: 10%;
    }
 

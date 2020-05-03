@@ -22,7 +22,7 @@ class App extends Component {
               <Route path="/" exact component={Weekview} />
               <Route path="/signin" component={SignIn} />
               <Route path="/dayview/:date?" component={Dayview} />
-              <Route path="/weekview" component={Weekview} />
+              <Route path="/weekview/:date?" component={Weekview} />
               <Route path="/trackview/:date?/:track?" component={Trackview} />
               <Route path="/scheduling/:date?" component={Scheduling} />
               <Route path="/tablet" component={RangeOfficerView} />
