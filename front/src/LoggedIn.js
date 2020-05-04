@@ -29,6 +29,7 @@ const DropDowns = (props) => {
   const [buttonText, setButtonText] = useState(text);
   const [buttonColor, setButtonColor] = useState(color);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [disable, setDisable] = useState(buttonColor!=="green");
   
   const styleB = {
     left:270,
@@ -53,16 +54,19 @@ const DropDowns = (props) => {
     if(event.currentTarget.dataset.info==="") {
       setButtonText("Vahvista saapuminen")
       setButtonColor("white");
+      setDisable(true);
       obj.range_supervisor = "not confirmed";
     }
     if(event.currentTarget.dataset.info==="y") {
       setButtonText("Saavun paikalle")
       setButtonColor("green");
+      setDisable(false);
       obj.range_supervisor = "confirmed";
     }
     if(event.currentTarget.dataset.info==="n") {
       setButtonText("En pääse paikalle");
       setButtonColor("red");
+      setDisable(true);
       obj.range_supervisor = "absent";
     }
     props.changes.map(o => (o.date===id ? obj : o))
@@ -112,7 +116,7 @@ const DropDowns = (props) => {
 
       &nbsp;
       {props.today===props.d ?
-       <Check HandleChange={props.HandleChange} checked={props.checked} />
+       <Check HandleChange={props.HandleChange} checked={props.checked} disable={disable} />
        : "" }
 
     </span>
@@ -120,14 +124,14 @@ const DropDowns = (props) => {
 }
 
 //prints matkalla-checkbox
-const Check = ({HandleChange, checked}) => {
+const Check = ({HandleChange, checked, disable}) => {
   return (
     <>
-      <FormControlLabel control={
+      <FormControlLabel disabled={disable} control={
         <Checkbox
           checked={checked}
           style={{color:"orange"}}
-          onChange={HandleChange}
+        onChange={HandleChange}
         />}
         label="Matkalla" />
       
