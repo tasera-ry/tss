@@ -53,7 +53,7 @@ const DropDowns = (props) => {
     if(event.currentTarget.dataset.info==="") {
       setButtonText("Vahvista saapuminen")
       setButtonColor("white");
-      obj.range_supervisor = "present";
+      obj.range_supervisor = "not confirmed";
     }
     if(event.currentTarget.dataset.info==="y") {
       setButtonText("Saavun paikalle")
@@ -199,8 +199,10 @@ async function getReservations(res) {
   for(let i=0; i<res.length; i++) {
     let query = "api/reservation?available=true&id=" + res[i].reservation_id;
     let response = await axios.get(query);
-    let d = moment(response.data[0].date).format("YYYY-MM-DD");
-    res[i].date = d
+    if(response.data.length>0) {
+      let d = moment(response.data[0].date).format("YYYY-MM-DD");
+      res[i].date = d
+    }
   }
 
   res = res.filter(obj => obj.date >= today);
@@ -245,7 +247,7 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
     await setDone(true);
     return;
   }
-  
+
   res = await getReservations(res);
   setSchedules(res);
   setChecked(res[0].range_supervisor==="en route");
