@@ -153,6 +153,9 @@ const Rows = ({HandleChange, changes, checked, setDone}) => {
   
   function getWeekday(day) {
     day = moment(day).format('dddd')
+    if(window.innerWidth<800) {
+      return day.charAt(0).toUpperCase() + day.slice(1, 2);
+    }
     return day.charAt(0).toUpperCase() + day.slice(1);
   }
 
