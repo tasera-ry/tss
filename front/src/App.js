@@ -11,9 +11,12 @@ import RangeOfficerView from "./rangeofficer";
 import UserManagementView from "./UserManagementView";
 
 class App extends Component {
-   state = {};
+  state = {};
 
-   render() {
+  render() {
+    if(localStorage.getItem("language")===null) {
+      localStorage.setItem("language", 0)
+    }
       return (
          <Router>
             <div className="App">

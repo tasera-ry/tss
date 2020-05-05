@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import { dayToString, getSchedulingWeek } from "./utils/Utils";
 import moment from 'moment'
+import * as data from './texts/texts.json'
 
 class Weekview extends Component {
 
@@ -267,7 +268,9 @@ class Weekview extends Component {
         request();
       }
 
-    render() {
+  render() {
+    const {week} = data;
+    const fin = localStorage.getItem("language");
 
         return (
             
@@ -279,7 +282,7 @@ class Weekview extends Component {
                     className="hoverHand arrow-left"
                     onClick={this.previousWeekClick}
                     ></div>
-                    <h1> Viikko {this.state.weekNro} , {this.state.yearNro} </h1>
+            <h1> {week.Week[fin]} {this.state.weekNro} , {this.state.yearNro} </h1>
                     {/* kuukausi jos tarvii: {monthToString(date.getMonth())} */}
                     <div
                     className="hoverHand arrow-right"
@@ -315,10 +318,10 @@ class Weekview extends Component {
                     <div class="info-flex">
 
                         <div id="open-info" class='box'></div>
-                        {/* Avoinna */} &nbsp;Päävalvoja paikalla <br></br> <br></br>
+                      {/* Avoinna */} &nbsp;{week.Green[fin]} <br></br> <br></br>
 
                         <div id="closed-info2" class='box'></div>
-                        {/* Suljettu */} &nbsp;Päävalvoja määritetty, mutta ei varmistettu <br></br><br></br>
+                        {/* Suljettu */} &nbsp;{week.Blue[fin]} <br></br><br></br>
 
                     </div>                
                 </Grid>
@@ -329,11 +332,11 @@ class Weekview extends Component {
                     <div class="info-flex">
 
                         <div id="valvoja-info" class='box'></div>
-                        {/* Päävalvoja tulossa */} &nbsp;Päävalvoja varmistettu <br></br> <br></br>
+                        {/* Päävalvoja tulossa */} &nbsp;{week.Lightgreen[fin]} <br></br> <br></br>
 
 
                         <div id="no-info" class='box'></div>
-                        {/* Ei tietoa */} &nbsp;Tietokantavirhe
+                      {/* Ei tietoa */} &nbsp;{week.White[fin]}
 
                     </div>
                 </Grid>
@@ -345,7 +348,7 @@ class Weekview extends Component {
 
 
                         <div id="closed-info" class='box'></div>
-                        {/* Suljettu */} &nbsp;Keskus suljettu&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br></br><br></br>
+                        {/* Suljettu */} &nbsp;{week.Red[fin]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br></br><br></br>
 
                     </div>
                 </Grid>
