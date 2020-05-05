@@ -223,14 +223,14 @@ class UserManagementView extends Component {
   returnPassButton(id, manage, fin) {
       return (
          <Button id={id} color="primary" variant="contained" onClick={this.onChangePassClick}>
-          {manage.CP[fin]}
+          {manage.ChangePass[fin]}
          </Button>
       );
    }
   returnRemoveButton(id, manage, fin) {
       return (
          <Button id={id} color="secondary" variant="contained" onClick={this.onRemoveClick}>
-            {manage.RU[fin]}
+            {manage.RemoveUser[fin]}
          </Button>
       );
    }
@@ -479,7 +479,7 @@ class UserManagementView extends Component {
             <Dialog open={this.state.openAddNewUserDialog} keepMounted onClose={this.handleAddNewUserDialogClose}>
                <DialogTitle id="dialog-add-user-title">{manage.New[fin]}</DialogTitle>
                <DialogContent>
-          <TextField value={this.state.newUserName} margin="dense" id="name" label={manage.UN[fin]} onChange={this.handleNewuserNameChange} fullWidth />
+          <TextField value={this.state.newUserName} margin="dense" id="name" label={manage.Username[fin]} onChange={this.handleNewuserNameChange} fullWidth />
                   <TextField value={this.state.newUserPass} margin="dense" id="password" label={manage.Password[fin]} onChange={this.handleNewuserPassChange} fullWidth />
                   <FormControl>
                      <InputLabel>{manage.Role[fin]}</InputLabel>
@@ -525,7 +525,7 @@ class UserManagementView extends Component {
             </Dialog>
             {/*Dialog to change password of own user*/}
             <Dialog open={this.state.changeOwnPassDialogOpen} onClose={this.handleChangeOwnPassDialogClose}>
-               <DialogTitle id="dialog-change-own-pass-title">{manage.CP[fin]}</DialogTitle>
+               <DialogTitle id="dialog-change-own-pass-title">{manage.ChangePass[fin]}</DialogTitle>
                <DialogContent>
                   <DialogContentText>{manage.Helper[fin]}</DialogContentText>
                   <TextField
@@ -533,7 +533,7 @@ class UserManagementView extends Component {
                      value={this.state.oldpassword}
                      margin="dense"
                      id="oldpassword"
-                     label={manage.OP[fin]}
+                     label={manage.OldPass[fin]}
                      onChange={this.handleOldpassStringChange}
                      fullWidth
                   />
@@ -542,7 +542,7 @@ class UserManagementView extends Component {
                      value={this.state.newpassword}
                      margin="dense"
                      id="newpassword"
-                     label={manage.NP[fin]}
+                     label={manage.NewPass[fin]}
                      onChange={this.handleNewpassStringChange}
                      fullWidth
                   />
@@ -572,7 +572,7 @@ class UserManagementView extends Component {
                      value={this.state.password}
                      margin="dense"
                      id="name"
-                     label={manage.NP[fin]}
+                     label={manage.NewPass[fin]}
                      onChange={(e) => {
                         this.setState({ password: e.target.value });
                      }}
@@ -594,19 +594,19 @@ class UserManagementView extends Component {
                </DialogActions>
             </Dialog>
             {/*THE ACTUAL PAGE*/}
-            <h1 style={{ marginLeft: 100 }}>{manage.UM[fin]}</h1>
+            <h1 style={{ marginLeft: 100 }}>{manage.UserManage[fin]}</h1>
             <Divider></Divider>
             <Box display="flex">
-               <h3 style={{ marginLeft: 40 }}>{manage.CP[fin]}:</h3>
+               <h3 style={{ marginLeft: 40 }}>{manage.ChangePass[fin]}:</h3>
                <Button onClick={this.handleOpenOwnPassChangeDialog} color="primary" variant="contained" style={{ margin: 15, marginLeft: 40 }}>
-                  {manage.CP[fin]}
+                  {manage.ChangePass[fin]}
                </Button>
             </Box>
             <Divider></Divider>
             <Box display="flex">
-               <h3 style={{ marginLeft: 40 }}>{manage.CU[fin]}:</h3>
+               <h3 style={{ marginLeft: 40 }}>{manage.CreateUser[fin]}:</h3>
                <Button onClick={this.handleAddUserOpenDialog} color="primary" variant="contained" style={{ margin: 15, marginLeft: 58 }}>
-                  {manage.CU[fin]}
+                  {manage.CreateUser[fin]}
                </Button>
             </Box>
             <Divider></Divider>
@@ -616,9 +616,9 @@ class UserManagementView extends Component {
                   <Table style={{ minWidth: 600 }} aria-label="table of users">
                      <TableHead>
                         <TableRow>
-                           <TableCell>{manage.UN[fin]}</TableCell>
-                           <TableCell align="right">{manage.CP[fin]}</TableCell>
-                           <TableCell align="right">{manage.RU[fin]}</TableCell>
+                           <TableCell>{manage.Username[fin]}</TableCell>
+                           <TableCell align="right">{manage.ChangePass[fin]}</TableCell>
+                           <TableCell align="right">{manage.RemoveUser[fin]}</TableCell>
                         </TableRow>
                      </TableHead>
                      <TableBody>

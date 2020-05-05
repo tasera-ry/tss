@@ -361,7 +361,7 @@ const Logic = ({schedules, setSchedules, noSchedule, checked,
         maxWidth='sm'
         fullWidth={true}>
         
-      <DialogTitle id="otsikko">{sv.SC[fin]}</DialogTitle>
+      <DialogTitle id="otsikko">{sv.Header[fin]}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             {noSchedule ? sv.No[fin] : ""}

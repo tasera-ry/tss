@@ -94,7 +94,7 @@ const SignIn = () => {
       <CssBaseline />
       <div className={classes.paper}>
         <Typography component="h1" variant="h5">
-      {signin.SI[fin]}
+      {signin.SignIn[fin]}
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -117,7 +117,7 @@ const SignIn = () => {
             required
             fullWidth
             name="password"
-            label={signin.PW[fin]}
+            label={signin.Password[fin]}
             type="password"
             id="password"
             autoComplete="current-password"
@@ -136,7 +136,7 @@ const SignIn = () => {
               color="primary"
               className={classes.submit}
             >
-              {signin.LI[fin]}
+              {signin.LogIn[fin]}
             </Button>
           </Link>
 
