@@ -56,7 +56,7 @@
     "Amount": ["Toistojen määrä", "End repeat after"],
     "Save": ["Tallenna muutokset", "Save changes"],
     "Success": ["Päivitys onnistui", "Update successful"],
-    "Warning": ["Päävalvoja aktiivinen ilman valvojaa", "Warning"],
+    "Warning": ["Päävalvoja aktiivinen ilman valvojaa", "Range officer active with no selection"],
     "Error": ["Päivitys epäonnistui", "Something went wrong"]
   },
   "manage": {
