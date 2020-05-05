@@ -1,111 +1,197 @@
-import React from "react";
+import React, { Component } from "react";
 import "./App.css";
 import "./Trackview.css";
 import { Link } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-
-import { dayToString } from "./utils/Utils";
-
-/*
- ** Returns red or green box according to if rangeofficer is avaivable
- ** !!!!! Rewrite when start getting data from backend
- */
-function rangeAvaivability(binar) {
-  if (binar === 1) {
-    let returnable = <Box class="isAvaivable">Päävalvoja Paikalla</Box>;
-    return returnable;
-  }
-  if (binar === 0) {
-    let returnable = <Box class="isUnavaivable">Päävalvoja ei paikalla</Box>;
-    return returnable;
-  }
-}
-
-/*
- ** Returns red or green box according to if trackofficer is avaivable
- ** !!!!! Rewrite when start getting data from backend
- */
-function trackAvaivability(binar) {
-  if (binar === 1) {
-    let returnable = <Box class="isAvaivable">Ratavalvoja Paikalla</Box>;
-    return returnable;
-  }
-  if (binar === 0) {
-    let returnable = <Box class="isUnavaivable">Ratavalvoja ei paikalla</Box>;
-    return returnable;
-  }
-}
-
-/*
- ** !!!REWRITE WHEN ROUTING WORKS
- */
-function getParent() {
-  return "/dayview";
-}
-
-function getInfobox(){
-  return "Did you know octopuses don’t have tentacles; they have arms. A tentacle only has suckers at its end, while a cephalopod arm has suckers for most of its length. Did u also know boomari arm have no sucker to make swinging easier. Ja jtn et 255 char täyteee"
-}
+import { dayToString, getSchedulingDate } from "./utils/Utils";
 
 /*
  ** Main function
  */
-function Trackview() {
-  let date = new Date(Date.now());
+class Trackview extends Component {
+   constructor(props) {
+      super(props);
+      this.state = {
+         date: new Date(Date.now()),
+         opens: 16,
+         closes: 20,
+         rangeSupervision: false,
+         trackSupervision: false,
+         info: "",
+         parent: props.getParent,
+         name: "rata 1",
+         description: ""
+      };
+      this.update = this.update.bind(this);
+   }
+   
+   componentDidMount() {
+      this.update();
+   }
+   
+   update() {
+      // /dayview/2020-02-20
+      let date = this.props.match.params.date;
+      let track = this.props.match.params.track;
+      const request = async () => {
+        const response = await getSchedulingDate(date);
 
-  return (
-    /*    Whole view */
-    <div class="wholeScreenDiv">
-      {/*    Radan nimi ja kuvaus  */}
-      <div class="trackNameAndType">
-        <div>
-          <h1>Rata 1</h1>
-        </div>
-        <div>
-          <h3> Kivääri 200m</h3>
-        </div>
-      </div>
+        if(response !== false){
+          let selectedTrack = response.tracks.find((findItem) => findItem.name === track)
+          console.log("Results from api",response,selectedTrack);
+          
+          if(selectedTrack !== undefined){
+            this.setState({
+               date: new Date(response.date),
+               trackSupervision: selectedTrack.trackSupervision,
+               rangeSupervision: response.rangeSupervision,
+               name: selectedTrack.name,
+               description: "(" + selectedTrack.description + ")",
+               info: selectedTrack.notice
+            },function(){
+              document.getElementById("date").style.visibility = "visible";
+              document.getElementById("valvojat").style.visibility = "visible";
+              if (selectedTrack.notice > 0) {
+                 document.getElementById("infobox").style.visibility = "visible";
+              } else {
+                 document.getElementById("infobox").style.visibility = "disabled";
+              }
+            });
+          } else {
+            console.error("track undefined");
+            
+            this.setState({
+               name:
+                  'Rataa nimeltä "' +
+                  this.props.match.params.track +
+                  '" ei löydy.'
+            });
+            document.getElementById("date").style.visibility = "hidden"
+            document.getElementById("valvojat").style.visibility = "hidden"
+            document.getElementById("infobox").style.visibility = "hidden"
+          }
+        } else console.error("getting info failed");
+      } 
+      request();
+   }
 
-      {/*    Päivämäärä */}
-      <div>
-        <h2>
-          {dayToString(date.getDay())} {date.toLocaleDateString("fi-FI")}
-        </h2>
-      </div>
+   rangeAvailability() {
+      if (this.state.rangeSupervision === 'present') {
+         let returnable = <Box class="isAvailable">Päävalvoja Paikalla</Box>;
+         return returnable;
+      } else if(this.state.rangeSupervision === 'absent'){
+         let returnable = (
+            <Box class="isUnavailable">Päävalvoja ei paikalla</Box>
+         );
+         return returnable;
+      } else if(this.state.rangeSupervision === 'confirmed'){
+         let returnable = (
+            <Box class="isConfirmed">Päävalvoja varmistettu</Box>
+         );
+         return returnable;
+      } else if(this.state.rangeSupervision === 'not confirmed'){
+         let returnable = (
+            <Box class="isNotConfirmed">Päävalvoja ei varmistettu</Box>
+         );
+         return returnable;
+      } else if(this.state.rangeSupervision === 'en route'){
+         let returnable = (
+            <Box class="isEnRoute">Päävalvoja matkalla</Box>
+         );
+         return returnable;
+      } else if(this.state.rangeSupervision === 'closed'){
+         let returnable = (
+            <Box class="isClosed">Ampumakeskus suljettu</Box>
+         );
+         return returnable;
+      }
+   }
 
-      {/*    Päävalvojan ja ratavalvojan status  */}
-      <Grid
-        container
-        direction="column"
-        justify="center"
-        alignItems="left"
-        spacing={1}
-      >
-        {/*   pyydetään metodeilta boxit joissa radan tila */}
-        <Grid item xs={1} sm={6}>
-          {rangeAvaivability(1)}
-        </Grid>
-        <Grid item xs={1} sm={6}>
-          {trackAvaivability(0)}
-        </Grid>
-      </Grid>
+   trackAvailability() {
+      if (this.state.trackSupervision === 'present') {
+         let returnable = <Box class="isAvailable">Ratavalvoja Paikalla</Box>;
+         return returnable;
+      } 
+      else if(this.state.trackSupervision === 'absent'){
+         let returnable = (
+            <Box class="isUnavailable">Ratavalvoja ei paikalla</Box>
+         );
+         return returnable;
+      } 
+      else if(this.state.trackSupervision === 'closed'){
+        let returnable = (
+          <Box class="isClosed">Rata suljettu</Box>
+        );
+        return returnable;
+      }
+   }
 
-      {/*    Infobox  */}
+   backlink() {
+      return "/dayview/" + this.props.match.params.date;
+   }
 
-      <p>Lisätietoja:</p>
-      <div class="infoBox">
-        {getInfobox()}
-      </div>
+   render() {
+      //required for "this" to work in callback
+      //alternative way without binding in constructor:
+      this.update = this.update.bind(this);
+      return (
+         /*    Whole view */
+         <div class="wholeScreenDiv">
+            {/*    Radan nimi ja kuvaus  */}
+            <div class="trackNameAndType">
+               <div>
+                  <h1>{this.state.name}</h1>
+               </div>
+               <div>
+                  <h3> &nbsp;{this.state.description}</h3>
+               </div>
+            </div>
 
-      {/*    Linkki taaksepäin  */}
-      <Link className="backLink" style={{ color: "black" }} to={getParent()}>
-        <ArrowBackIcon />
-        Päivänäkymään
-      </Link>
-    </div>
-  );
+            {/*    Päivämäärä */}
+            <div id="date">
+               <h2>
+                  {dayToString(this.state.date.getDay())}{" "}
+                  {this.state.date.toLocaleDateString("fi-FI")}
+               </h2>
+            </div>
+
+            {/*    Päävalvojan ja ratavalvojan status  */}
+            <Grid
+               container
+               direction="column"
+               justify="center"
+               alignItems="left"
+               spacing={1}
+               id="valvojat"
+            >
+               {/*   pyydetään metodeilta boxit joissa radan tila */}
+               <Grid item xs={1} sm={6}>
+                  {this.rangeAvailability()}
+               </Grid>
+               <Grid item xs={1} sm={6}>
+                  {this.trackAvailability()}
+               </Grid>
+            </Grid>
+
+            {/*    Infobox  */}
+            <div id="infobox">
+               <p>Lisätietoja:</p>
+               <div class="infoBox">{this.state.info}</div>
+            </div>
+            {/*    Linkki taaksepäin  */}
+            <Link
+               className="backLink"
+               style={{ color: "black" }}
+               to={this.backlink()}
+            >
+               <ArrowBackIcon />
+               Päivänäkymään
+            </Link>
+         </div>
+      );
+   }
 }
 
 export default Trackview;

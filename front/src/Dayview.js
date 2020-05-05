@@ -4,8 +4,10 @@ import { Link } from "react-router-dom";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import { callApi } from "./utils/helper.js";
-import { dayToString } from "./utils/Utils";
+import { dayToString, getSchedulingDate } from "./utils/Utils";
+import moment from 'moment';
+
+
 
 class Dayview extends Component {
   constructor(props) {
@@ -14,7 +16,7 @@ class Dayview extends Component {
       date: new Date(Date.now()),
       opens: 16,
       closes: 20,
-      rangeOfficer: false,
+      rangeSupervision: false,
       tracks: {}
     };
 
@@ -33,19 +35,22 @@ class Dayview extends Component {
   update() {
     // /dayview/2020-02-20
     let date = this.props.match.params.date;
-    callApi("GET", "date/" + (date ? date : this.state.date.toISOString()))
-      .then(res => {
-        console.log(res);
+    const request = async () => {
+      const response = await getSchedulingDate(date);
 
-        //async joten tietoa päivittäessä voi välähtää Date.now antama
-        //ennen haluttua tietoa
+      if(response !== false){
+        console.log("Results from api",response);
+
         this.setState({
-          date: new Date(res.date),
-          tracks: res.tracks,
-          rangeOfficer: res.rangeOfficer
+          date: new Date(response.date),
+          tracks: response.tracks,
+          rangeSupervision: response.rangeSupervision,
+          opens: moment(response.open,'HH:mm').format('H.mm'),
+          closes: moment(response.close,'HH:mm').format('H.mm')
         });
-      })
-      .catch(err => console.log(err));
+      } else console.error("getting info failed");
+    } 
+    request();
   }
 
   previousDayClick(e) {
@@ -81,18 +86,28 @@ class Dayview extends Component {
       let text;
       let color;
 
-      if (props.available) {
+      if (props.rangeSupervision === 'present') {
         text = "Päävalvoja paikalla";
         color = "greenB";
       }
-      /*
-      else if(props.available === "soon tm") {
-        text = "Päävalvoja nimetty";
+      else if (props.rangeSupervision === 'absent') {
+        text = "Päävalvoja ei paikalla";
+        color = "whiteB";
+      }
+      else if (props.rangeSupervision === 'confirmed') {
+        text = "Päävalvoja varmistettu";
         color = "lightGreenB";
       }
-      */
-      else {
-        text = "Päävalvoja ei ole paikalla";
+      else if (props.rangeSupervision === 'not confirmed') {
+        text = "Päävalvoja ei varmistettu";
+        color = "blueB";
+      }
+      else if (props.rangeSupervision === 'en route') {
+        text = "Päävalvoja matkalla";
+        color = "yellowB";
+      }
+      else if (props.rangeSupervision === 'closed') {
+        text = "Ampumakeskus suljettu";
         color = "redB";
       }
 
@@ -109,7 +124,7 @@ class Dayview extends Component {
           <TrackBox
             key={key}
             name={props.tracks[key].name}
-            state={props.tracks[key].status}
+            state={props.tracks[key].trackSupervision}
             //TODO final react routing
             to={"/trackview/"+props.date.toISOString()+"/" + props.tracks[key].name}
           />
@@ -133,9 +148,11 @@ class Dayview extends Component {
     function TrackBox(props) {
       let color;
 
-      if (props.state === "open") {
+      if (props.state === "present") {
         //open
         color = "greenB";
+      } else if (props.state === "absent") {
+        color = "whiteB";
       } else if (props.state === "closed") {
         //closed
         color = "redB";
@@ -184,7 +201,7 @@ class Dayview extends Component {
           {/* Range info */}
           <Grid container direction="row" justify="center" alignItems="center">
             <Grid item xs={12}>
-              <OfficerBanner available={this.state.rangeOfficer} />
+              <OfficerBanner rangeSupervision={this.state.rangeSupervision} />
             </Grid>
           </Grid>
           {/* MUI grid */}
@@ -198,7 +215,7 @@ class Dayview extends Component {
             className="otherInfo"
           >
             <Grid item xs={6} sm={3}>
-              Aukiolo: {this.state.opens}-{this.state.closes}
+              Aukioloaika: {this.state.opens}-{this.state.closes}
             </Grid>
             <Grid item xs={6} sm={3}>
               <div className="colorInfo">

@@ -1,0 +1,9 @@
+[Unit]
+Description=Tasera scheduling software socket
+
+[Socket]
+ListenStream=80
+NoDelay=true
+
+[Install]
+WantedBy=tasera-scheduling-software.service

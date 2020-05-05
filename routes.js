@@ -1,158 +1,165 @@
-
 const express = require("express");
 const router = express.Router();
-const jwt = require("jsonwebtoken");
-const config = require("./config/config");
-const { check } = require("express-validator");
+const _ = require('lodash')
 
-//require controller
-const user = require("./controllers/user");
-const track = require("./controllers/track");
-const scheduleTrack = require("./controllers/scheduleTrack");
-const scheduleDate = require("./controllers/scheduleDate");
+const path = require('path')
+const root = path.join(__dirname, '.')
 
-/*
-*  Authorization requires jwt token given by login
-*  in the body of the request
-*/
+const config = require(path.join(root, 'config', 'config'))
 
-authorize = function(req, res, next) {
-  const token = req.body.token || req.cookies.access;
-  let auth = false;
+const validators = require(path.join(root, 'validators'))
+const middlewares = require(path.join(root, 'middlewares'))
+const controllers = require(path.join(root, 'controllers'))
 
-  if (token && res.locals.rank) {
-    console.log("AUTHORIZATION token: "+token);
+const oldSchedule = require(path.join(root, 'controllers', 'oldSchedule'))
 
-    //auth part, decode token
-    jwt.verify(token, config.jwt.secret, function(err, decoded) {
-      //decoding error
-      if(err) {
-        console.log(err);
-      }
-      //logged in
-      else if(decoded.auth !== true){
-        console.log("AUTHORIZATION login false")
-      }
-      //rank matches route requirement
-      else if(!res.locals.rank.includes(parseInt(decoded.rank))){
-        console.log("AUTHORIZATION Given rank: "+decoded.rank+" Required rank: "+res.locals.rank);
-      }
-      //authorization success
-      else {
-        console.log("AUTHORIZATION success");
-        auth = true;
-        next();
-      }
-    });
-  }
+router.route('/sign')
+  .post(
+    middlewares.user.sign
+    , controllers.user.sign)
 
-  if(!auth){
-    console.log("AUTHORIZATION failed")
-    return res.status(401).json({
-      auth: false,
-      err: "Unauthorized"
-    });
-  }
-}
+router.route('/user')
+  .all(
+    middlewares.jwt.read)
+  .get(
+    middlewares.user.readFilter
+    , controllers.user.readFilter)
+  .post(
+    middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.user.create
+    , controllers.user.create)
 
-/*
- *  Login with post
- *  requires body fields: name, password
- */
-router.post("/login", [
-  check('name').exists()
-    .custom((value) => (value == value.match(/[A-ZÖÄÅa-zöäå0-9 ]+/)))
-    .isLength({ min: 4, max: 30 }),
-  check('password').exists()
-                    .isAlphanumeric()
-                    .isLength({ min: 4, max: 30 })
-], user.login);
+router.route('/user/:id')
+  .all(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser'))
+  .get(
+    middlewares.user.read
+    , controllers.user.read)
+  .put(
+    middlewares.user.update
+    , controllers.user.update)
+  .delete(
+    middlewares.user.delete
+    , controllers.user.delete)
 
-/*
-*  Register with post
-*  requires body fields: name, password
-*
-*  1. Sets required rank
-*  2. Authorization with token and rank
-*  3. Validates params
-*  4. Uses register from user controller
-*/
-router.post("/register", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize, [
 
-  check('name').exists()
-    .custom((value) => (value == value.match(/[A-ZÖÄÅa-zöäå0-9 ]+/)))
-    .isLength({ min: 4, max: 30 }),
-  check('password').exists()
-                    .isAlphanumeric()
-                    .isLength({ min: 4, max: 30 })
-], user.register);
+//Track supervision
+router.route('/track-supervision')
+  .get(
+    middlewares.trackSupervision.readFilter
+    , controllers.trackSupervision.readFilter)
+  .post(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes)
+    , middlewares.trackSupervision.create
+    , controllers.trackSupervision.create)
 
-/*
-*  Date
-*/
-//also allows /date with the ? modifier
-router.get("/date/:date?", scheduleDate.date);
-router.get("/week/:date?", scheduleDate.week);
+router.route('/track-supervision/:scheduled_range_supervision_id/:track_id')
+  .get(
+    middlewares.trackSupervision.read
+    , controllers.trackSupervision.read)
+  .put(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes)
+    , middlewares.trackSupervision.update
+    , controllers.trackSupervision.update)
+  .delete(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.trackSupervision.delete
+    , controllers.trackSupervision.delete)
 
-router.post("/date", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize, scheduleDate.addDate);
+//Range supervision
+router.route('/range-supervision')
+  .get(
+    middlewares.rangeSupervision.readFilter
+    , controllers.rangeSupervision.readFilter)
+  .post(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes)
+    , middlewares.rangeSupervision.create
+    , controllers.rangeSupervision.create)
 
-router.delete("/date/:date", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,scheduleDate.deleteDate);
+router.route('/range-supervision/:scheduled_range_supervision_id')
+  .get(
+    middlewares.rangeSupervision.read
+    , controllers.rangeSupervision.read)
+  .put(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes)
+    , middlewares.rangeSupervision.update
+    , controllers.rangeSupervision.update)
+  .delete(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.rangeSupervision.delete
+    , controllers.rangeSupervision.delete)
 
-router.put("/date/:date", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,scheduleDate.updateDate);
+
+router.route('/reservation')
+  .get(controllers.reservation.read)
+  .post(middlewares.jwt.read
+        , middlewares.user.hasProperty('role', 'superuser')
+        , controllers.reservation.create)
+
+router.route('/reservation/:id')
+  .get(controllers.reservation.readStrict)
+  .put(middlewares.jwt.read
+       , middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes)
+       , controllers.reservation.update)
+  .delete(middlewares.jwt.read
+          , middlewares.user.hasProperty('role', 'superuser')
+          , controllers.reservation.delete)
+
+router.route('/schedule')
+  .get(controllers.schedule.read)
+  .post(middlewares.jwt.read
+        , middlewares.user.hasProperty('role', 'superuser')
+        , controllers.schedule.create)
+
+router.route('/schedule/:id')
+  .get(controllers.schedule.readStrict)
+  .put(middlewares.jwt.read
+       , middlewares.user.hasProperty('role', 'superuser')
+       , controllers.schedule.update)
+  .delete(middlewares.jwt.read
+          , middlewares.user.hasProperty('role', 'superuser')
+          , controllers.schedule.delete)
 
 /*
 *  Track
 */
-//TODO verify how to identify
-//get tracks
-router.get("/track", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,track.track);
-//add a track
-router.post("/track", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,track.addTrack);
-//delete one
-router.delete("/track/:id", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,track.deleteTrack);
-//update one
-router.put("/track/:id", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,track.updateTrack);
+router.route('/track')
+  .get(
+    validators.track.readAll
+    , middlewares.track.read
+    , controllers.track.read)
+  .post(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser')
+    , validators.track.create
+    , middlewares.track.create
+    , controllers.track.create)
 
-/*
-*  Schedule
-*/
-router.get("/date/:date/track/:id?", scheduleTrack.trackInfoForDay);
+router.route('/track/:track_id')
+  .all(
+    middlewares.jwt.read
+    , middlewares.user.hasProperty('role', 'superuser'))
+  .get(
+    validators.track.read
+    , middlewares.track.read
+    , controllers.track.read)
+  .put(
+    validators.track.update
+    , middlewares.track.update
+    , controllers.track.update)
+  .delete(
+    validators.track.delete
+    , middlewares.track.delete
+    , controllers.track.delete)
 
-router.post("/date/:date/track/:id", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize, scheduleTrack.addTrackInfoForDay);
-router.delete("/date/:date/track/:id", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,scheduleTrack.deleteTrackInfoForDay);
-router.put("/date/:date/track/:id", function(req,res,next){
-  res.locals.rank = [1,2];
-  next();
-}, authorize,scheduleTrack.updateTrackInfoForDay);
+//newer get with padded functionality
+router.get("/datesupreme/:date", oldSchedule.getScheduleDate);
 
 module.exports = router;

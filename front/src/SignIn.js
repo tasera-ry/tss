@@ -5,8 +5,9 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {Link} from 'react-router-dom';
-import {callApi} from './utils/helper.js';
+import {Link, useHistory} from 'react-router-dom';
+import Nav from './Nav';
+import axios from 'axios'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -27,28 +28,63 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function SignIn() {
+const SignIn = () => {
   
   const classes = useStyles();
-
-  //function component hook as a quick and dirty? way to handle state
-  //other end: value={name} onInput={e => setName(e.target.value)}
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [user, setUser] = useState('');
+  const [mistake, setMistake] = useState(false);
+  const history = useHistory();
   
   const login = (e) => {
     e.preventDefault();
     console.log({name, password})
-    //call backend login function
-    const params = {name: name, password: password};
-    callApi("POST","login",params)
-      .then(res => {
-        console.log(res)
-        //TODO real login redirection
-        window.location = "/";
-      })
-      .catch(err => console.log(err));
 
+    let response = axios.post('api/sign', {
+      name: name,
+      password: password
+    }).then(response => {
+      setInfo(response.data);
+    }).catch(error => {
+      HandleError(error)
+    })
+  }
+
+  function RedirectToWeekview(){
+    window.location.href="/"
+  }
+
+  async function setInfo(data) {
+    localStorage.setItem("taseraUserName", name);
+    localStorage.setItem("token", data);
+    
+    const config = {
+      headers: { Authorization: `Bearer ${data}` }
+    };
+    
+    let query = "/api/user?name=" + name;
+    let response = await axios.get(query, config);
+    let role = await response.data[0].role;
+    localStorage.setItem("role", role);
+
+    RedirectToWeekview()
+  }
+  
+  const HandleError = error => {
+    setMistake(true);
+    //message contains all errors, might be useful
+    let message = ''
+    if(error.response.status===400) {
+      for(let i=0; i<error.response.data.errors.length; i++) {
+        let param = error.response.data.errors[i].param;
+        let msg = error.response.data.errors[i].msg;
+        message+=(`${param} ${msg}\n`);
+      }
+    }
+    if(error.response.status===401) {
+      message = error.response.data
+    }
   }
 
   return (
@@ -65,11 +101,12 @@ export default function SignIn() {
             required
             fullWidth
             id="email"
-            label="Sähköpostiosoite"
-            name="email"
-            autoComplete="sähköposti"
+            label="Käyttäjänimi"
+            name="username"
+            autoComplete="Käyttäjänimi"
             autoFocus
             value={name}
+            error={mistake}
             onInput={e => setName(e.target.value)}
           />
           <TextField
@@ -83,36 +120,40 @@ export default function SignIn() {
             id="password"
             autoComplete="current-password"
             value={password}
+            error={mistake}
+            helperText={mistake ? 'Väärä käyttäjänimi tai salasana' : ''}
             onInput={e => setPassword(e.target.value)}
           />
 
-        <Link style={{textDecoration: 'none'}} to='/'>
-          <Button
-            onClick={login}
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Kirjaudu
-          </Button>
-        </Link>
-
-          <Link to='/'>
-          <Button
-            type="submit"
-            fullWidth
-            color="primary"
-            className={classes.submit}
+          <Link>
+            <Button
+              onClick={login}
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
             >
-            Peruuta
+              Kirjaudu
             </Button>
-        </Link>
+          </Link>
 
+          <Link>
+            <Button
+              onClick={() => history.goBack()}
+              type="submit"
+              fullWidth
+              color="primary"
+              className={classes.submit}
+            >
+              Takaisin
+            </Button>
+          </Link>
 
         </form>
       </div>
     </Container>
-  );
+  )
 }
+
+export default SignIn

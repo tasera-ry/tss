@@ -1,3 +1,7 @@
+const path = require('path')
+const root = path.join(__dirname, '..', '..', '..')
+const config = require(path.join(root, 'config'))
+
 const _ = require('lodash')
 const casual = require('casual')
 
@@ -9,7 +13,7 @@ exports.seed = function(knex) {
     .select('id')
     .then(ranges => {
       return _.flatten(
-        ranges.map(range => _.times(7, _.partial(casual._shooting_track, range.id))))
+        ranges.map(range => _.times(config.seeds.tracks, _.partial(casual._shooting_track, range.id))))
     }).then(tracks => knex('track')
             .insert(tracks))
 }

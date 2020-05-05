@@ -1,147 +1,359 @@
-import React from 'react';
+import React, { Component } from "react";
 import './App.css';
 import './Weekview.css'
 import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-import { monthToString } from "./utils/Utils";
+import { dayToString, getSchedulingWeek } from "./utils/Utils";
+import moment from 'moment'
 
-function Weekview() {
+class Weekview extends Component {
 
-    let date = new Date(Date.now());
+    constructor(props) {
+        super(props);
+        this.state = {
+          weekNro: 0,
+          dayNro: 0,
+          yearNro: 0,
+        };
+    }
 
-    var currentYear = date.toLocaleDateString().split(".")[2];
+    //Updates week to current when page loads
+    componentDidMount() {
+        this.getWeek();
+        this.getYear();
+        this.update();
+      }
 
-    var dateNow = 1
-    var monthNow = 1
-    var yearNow = 2020
+    //Changes week number state to previous one
+    previousWeekClick = () => {
 
-    var dayParams = "?q=" + dateNow + monthNow + yearNow;
-    var dayUrl = "/dayview" + dayParams;
+        let testi = moment(this.state.dayNro, "YYYYMMDD")
+        
+        testi.subtract(1, 'week')
 
-    return (
-        <div class="container">
-            {/* Header with arrows */}
-            <Grid class="date-header">
-                <h1> {monthToString(date.getMonth())} {currentYear}</h1>
-            </Grid>
+        let previous;
+        //Week logic cuz you can't go negative
+        if (this.state.weekNro === 1 ) {
+            previous = 52
+        } else {
+            previous = this.state.weekNro-1
+        }
+        this.setState(
+            {
+              dayNro: testi,
+              weekNro: previous
+            },
+            function() {
+              this.update();
+            }
+        );
+    }
 
-            {/* Date boxes */}
-            <Grid class="flex-container2">
-            <Link class="link" to={dayUrl}>
-                <p style={{ fontSize: "medium" }}>
-                {dateNow}.{monthNow}
-                </p>
-                </Link>
+    //Changes week number state to next one
+    nextWeekClick = () => {
 
-                <Link class="link" to="/dayview">
-                <p style={{ fontSize: "medium" }}>
-                {dateNow + 1}.{monthNow}
-                </p>
-                </Link>
+        let testi = moment(this.state.dayNro, "YYYYMMDD")
+        
+        testi.add(1, 'week')
 
-                <Link class="link" to="/dayview">
-                <p style={{ fontSize: "medium" }}>
-                {dateNow + 2}.{monthNow}
-                </p>
-                </Link>
+        let previous;
+        //Week logic cuz there's no 53 weeks
+        if (this.state.weekNro === 52 ) {
+            previous = 1
+        } else {
+            previous = this.state.weekNro+1
+        }
+        this.setState(
+            {
+              dayNro: testi,
+              weekNro: previous
+            },
+            function() {
+              this.update();
+            }
+        );
+    }
 
-                <Link class="link" to="/dayview">
-                <p style={{ fontSize: "medium" }}>
-                {dateNow + 3}.{monthNow}
-                </p>
-                </Link>
+    //Function for parsin current week number
+    getWeek = () => {
+        var date1 = new Date();
+        date1.setHours(0, 0, 0, 0);
+        date1.setDate(date1.getDate() + 3 - (date1.getDay() + 6) % 7);
+        var week1 = new Date(date1.getFullYear(), 0, 4);
+        var current = 1 + Math.round(((date1.getTime() - week1.getTime()) / 86400000
+        - 3 + (week1.getDay() + 6) % 7) / 7);
+        this.setState({weekNro: current})
+        return current;
+    }
 
-                <Link class="link" to="/dayview">
-                <p style={{ fontSize: "medium" }}>
-                {dateNow + 4}.{monthNow}
-                </p>
-                </Link>
+    //Creates 7 columns for days
+    createWeekDay = () => {
 
-                <Link class="link" to="/dayview">
-                <p style={{ fontSize: "medium" }}>
-                {dateNow + 5}.{monthNow}
-                </p>    
-                </Link>
-
-                <Link class="link" to="/dayview">
-                <p style={{ fontSize: "medium" }}>
-                {dateNow + 6}.{monthNow}
-                </p>
-                </Link>
-            </Grid>
-
-            <div>
-            {/* Colored boxes for dates */}
-            <Grid class="flex-container">
-                <Link style={{ backgroundColor: "orange" }} class="link" to="/dayview">
-                <p>
-                &nbsp;
-                </p>
-                </Link>
-
-                <Link style={{ backgroundColor: "green" }} class="link" to="/dayview">
-                <p style={{ fontSize: "medium" }}>
-                &nbsp;
-                </p>
-                </Link>
-
-                <Link style={{ backgroundColor: "red" }} class="link" to="/dayview">
-                <p style={{ fontSize: "medium" }}>
-                &nbsp;
-                </p>
-                </Link>
-
-                <Link style={{ backgroundColor: "green" }} class="link" to="/dayview">
-                <p style={{ fontSize: "medium" }}>
-                &nbsp;
-                </p>
-                </Link>
-
-                <Link style={{ backgroundColor: "white" }} class="link" to="/dayview">
-                <p style={{ fontSize: "medium" }}>
-                &nbsp;
-                </p>
-                </Link>
-
-                <Link style={{ backgroundColor: "green" }} class="link" to="/dayview">
-                <p style={{ fontSize: "medium" }}>
-                &nbsp;
-                </p>
-                </Link>
-
-                <Link style={{ backgroundColor: "red" }} class="link" to="/dayview">
-                <p style={{ fontSize: "medium" }}>
-                &nbsp;
-                </p>
-                </Link>
-            </Grid>
-            </div>
-
+        //Date should come from be?
+        let table = []
+        let pv;
+        let oikeePaiva;
+        let linkki;
+    
+        if (this.state.paivat === undefined) {
             
-            {/* Infoboxes */}
+        }
+        else {
+            for (let j = 1; j < 8; j++) {
+                pv = dayToString(j);
+                //Korjausliike ku utilsseis sunnuntai on eka päivä
+                if (j === 1) {
+                    pv = "Ma";
+                }
+                if (j === 2) {
+                    pv = "Ti";
+                }
+                if (j === 3) {
+                    pv = "Ke";
+                }
+                if (j === 4) {
+                    pv = "To";
+                }
+                if (j === 5) {
+                    pv = "Pe";
+                }
+                if (j === 6) {
+                    pv = "La";
+                }
+                if (j === 7) {
+                    pv = "Su"
+                }
+                j--;
+                oikeePaiva = this.state.paivat[j].date
+                j++;
+                linkki = "/dayview/" + oikeePaiva
+    
+                table.push(
+                    <Link className="link" to={linkki}>
+                    <p id ="weekDay">
+                        {pv}
+                    </p>
+                    </Link>
+                    )
+                }
+            return table
+        }
+    }
 
-            {/* Top row */}
-            {/* To do: Tekstit ei toimi */}
-            <Grid>
-                <div class="info-flex">
-                    <div id="open-info" class='box'></div>
-                    {/* Avoinna */}
-                    <div id="valvoja-info" class='box'></div>
-                    {/* Päävalvoja tulossa */}
-                </div>
-            </Grid>
+    //Creates 7 columns for days
+    createDate = () => {
 
-            {/* Bottom row */}
-            <Grid class="bottom-info">
-                <div class="info-flex">
-                    <div id="closed-info" class='box'></div>
-                    {/* Suljettu */}
-                    <div id="no-info" class='box'></div>
-                    {/* Ei tietoa */}
+        let table = []
+
+        if (this.state.paivat === undefined) {
+            
+        }
+        else {
+            let oikeePaiva;
+            let fixed;
+            let newDate;
+            let linkki;
+            for (let j = 0; j < 7; j++) {
+                oikeePaiva = this.state.paivat[j].date
+                fixed = oikeePaiva.split("-")
+                newDate = fixed[2] + "." + fixed[1]
+
+                linkki = "/dayview/" + oikeePaiva
+
+                table.push(
+                    <Link class="link" to={linkki}>
+                    <p style={{ fontSize: "medium" }}>
+                    {newDate}
+                    </p>
+                    </Link>
+                    )
+                }
+            return table 
+        }
+      }
+
+    //Creates 7 columns for päävalvoja info, colored boxes
+    createColorInfo = () => {
+
+        //Color from be?
+        //If blue, something is wrong
+        let colorFromBackEnd = "blue"
+        let table = []
+
+        if (this.state.paivat === undefined) {
+            
+        }
+        else {
+            let rataStatus;
+            let oikeePaiva;
+            let linkki;
+            for (let j = 0; j < 7; j++) {
+
+                //Luodaan väri 
+
+                rataStatus = this.state.paivat[j].rangeSupervision
+                console.log("ratastatus",rataStatus);
+
+                if (rataStatus === "present") {
+                    colorFromBackEnd = "green"
+                } else if (rataStatus === "confirmed") {
+                    colorFromBackEnd = "lightGreen"
+                } else if (rataStatus === "not confirmed") {
+                    colorFromBackEnd = "deepskyblue"
+                } else if (rataStatus === "en route") {
+                    colorFromBackEnd = "orange"
+                } else if (rataStatus === "closed") {
+                    colorFromBackEnd = "red"
+                } else if (rataStatus === "absent") {
+                    colorFromBackEnd = "white"
+                }
+
+                oikeePaiva = this.state.paivat[j].date
+                linkki = "/dayview/" + oikeePaiva
+                table.push(
+                    <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={linkki}>
+                    <p>
+                    &nbsp;
+                    </p>
+                    </Link>
+                    )
+                }   
+            return table  
+        }
+    }
+
+    getYear = () => {
+        let today = new Date();
+        let yyyy = today.getFullYear();
+        this.setState({yearNro: yyyy})
+        return yyyy;
+    }
+
+    update() {
+        // /dayview/2020-02-20
+        let testi2;
+        if (this.state.dayNro === 0) {
+            let today = new Date();
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            let yyyy = today.getFullYear();
+    
+            today = yyyy + '-' + mm + '-' + dd;
+
+            let testi = moment(yyyy + mm + dd, "YYYYMMDD")
+
+            this.setState({
+                dayNro: testi
+            })
+            console.log("tanaan on " + testi.format('L'))
+            testi2 = testi.format("YYYY-MM-DD")
+        }
+        else {
+            testi2 = this.state.dayNro.format("YYYY-MM-DD")
+        }
+
+        let date = testi2;
+        const request = async () => {
+          const response = await getSchedulingWeek(date);
+
+          if(response !== false){
+            console.log("Results from api",response);
+
+            this.setState({
+              paivat:response.week
+            });
+          } else console.error("getting info failed");
+        } 
+        request();
+      }
+
+    render() {
+
+        return (
+            
+        <div>
+            <div class="container">
+                {/* Header with arrows */}
+                <Grid class="date-header">
+                    <div
+                    className="hoverHand arrow-left"
+                    onClick={this.previousWeekClick}
+                    ></div>
+                    <h1> Viikko {this.state.weekNro} , {this.state.yearNro} </h1>
+                    {/* kuukausi jos tarvii: {monthToString(date.getMonth())} */}
+                    <div
+                    className="hoverHand arrow-right"
+                    onClick={this.nextWeekClick}
+                    ></div>
+                </Grid>
+
+                {/* Date boxes */}
+                <Grid class="flex-container2">
+                    {this.createWeekDay()}
+                </Grid>
+    
+                {/* Date boxes */}
+                <Grid class="flex-container2">
+                    {this.createDate()}
+                </Grid>
+    
+                <div>
+                {/* Colored boxes for dates */}
+                <Grid class="flex-container">
+                    {this.createColorInfo()}
+                </Grid>
                 </div>
-            </Grid>
-        </div>
-    );
+                </div>
+    
+                {/* Infoboxes */}
+    
+                {/* Top row */}
+                {/* To do: Tekstit ei toimi */}
+                <hr></hr>
+                <div className="infoContainer">
+                <Grid>
+                    <div class="info-flex">
+
+                        <div id="open-info" class='box'></div>
+                        {/* Avoinna */} &nbsp;Päävalvoja paikalla <br></br> <br></br>
+
+                        <div id="closed-info2" class='box'></div>
+                        {/* Suljettu */} &nbsp;Päävalvoja määritetty, mutta ei varmistettu <br></br><br></br>
+
+                    </div>                
+                </Grid>
+
+    
+                {/* Bottom row */}
+                <Grid class="bottom-info">
+                    <div class="info-flex">
+
+                        <div id="valvoja-info" class='box'></div>
+                        {/* Päävalvoja tulossa */} &nbsp;Päävalvoja varmistettu <br></br> <br></br>
+
+
+                        <div id="no-info" class='box'></div>
+                        {/* Ei tietoa */} &nbsp;Tietokantavirhe
+
+                    </div>
+                </Grid>
+
+
+                {/* Bottom row */}
+                <Grid class="bottom-info">
+                    <div class="info-flex">
+
+
+                        <div id="closed-info" class='box'></div>
+                        {/* Suljettu */} &nbsp;Keskus suljettu&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br></br><br></br>
+
+                    </div>
+                </Grid>
+                </div> 
+            </div>
+            
+        );
+    }
 }
 
 export default Weekview;
