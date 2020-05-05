@@ -156,8 +156,11 @@ const Rows = ({HandleChange, changes, checked, setDone, sv}) => {
     fontSize:18
   }
 
-  if(localStorage.getItem("language") === "1") {
+  let language = localStorage.getItem("language");
+  let num = 2;
+  if(language==="1") {
     moment.locale("en-ca");
+    num = 3;
   }
   
   setDone(true);
@@ -165,7 +168,7 @@ const Rows = ({HandleChange, changes, checked, setDone, sv}) => {
   function getWeekday(day) {
     day = moment(day).format('dddd')
     if(window.innerWidth<800) {
-      return day.charAt(0).toUpperCase() + day.slice(1, 2);
+      return day.charAt(0).toUpperCase() + day.slice(1, num);
     }
     return day.charAt(0).toUpperCase() + day.slice(1);
   }
