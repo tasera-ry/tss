@@ -25,6 +25,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { getSchedulingDate } from "./utils/Utils";
+import * as data from './texts/texts.json';
 import moment from 'moment';
 import "moment/locale/fi";
 moment.locale("fi");
@@ -305,6 +306,8 @@ class Scheduling extends Component {
   }
   
   saveChanges = async (event) => {
+    const {sched} = data;
+    const fin = localStorage.getItem("language");
     console.log("save")
     
     //start spinner
@@ -318,7 +321,7 @@ class Scheduling extends Component {
       await this.updateCall(date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat).then((res) => {
         this.setState({
           toast: true,
-          toastMessage: "Päivitys onnistui",
+          toastMessage: sched.Success[fin],
           toastSeverity: "success"
         });
       },
@@ -326,14 +329,14 @@ class Scheduling extends Component {
         console.error('Update rejection called: ' + error.message);
         if(error.message === 'Range officer enabled but no id'){
           this.setState({
-            toastMessage: "Päävalvoja aktiivinen ilman valvojaa",
+            toastMessage: sched.Warning[fin],
             toastSeverity: "warning",
             toast: true,
           });
         }
         else{
           this.setState({
-            toastMessage: "Päivitys epäonnistui",
+            toastMessage: sched.Error[fin],
             toastSeverity: "error",
             toast: true,
           });
@@ -775,6 +778,8 @@ class Scheduling extends Component {
 
   //builds tracklist
   createTrackList = () => {
+    const {sched} = data;
+    const fin = localStorage.getItem("language");
     let items = [];
     let tracks = this.state.tracks;
     for (var key in tracks) {
@@ -789,9 +794,9 @@ class Scheduling extends Component {
                 onChange={this.handleRadioChange}
                 value={ this.state[tracks[key].id] || 'absent'}
               >
-                <FormControlLabel value="present" control={<Radio />} label="Valvoja paikalla" />
-                <FormControlLabel value="absent" control={<Radio />} label="Ei valvojaa" />
-                <FormControlLabel value="closed" control={<Radio />} label="Suljettu" />
+                <FormControlLabel value="present" control={<Radio />} label={sched.SP[fin]} />
+                <FormControlLabel value="absent" control={<Radio />} label={sched.SA[fin]} />
+                <FormControlLabel value="closed" control={<Radio />} label={sched.Closed[fin]} />
               </RadioGroup>
               <TextareaAutosize
                 className="notice"
@@ -819,6 +824,8 @@ class Scheduling extends Component {
   createSupervisorSelect = () => {
     let items = [];
     let disabled = false;
+    const {sched} = data;
+    const fin = localStorage.getItem("language");
     
     for (var key in this.state.rangeSupervisors) {
       items.push(
@@ -832,7 +839,7 @@ class Scheduling extends Component {
 
     return (
       <FormControl>
-        <InputLabel id="chooserangeSupervisorLabel">Valitse valvoja</InputLabel>
+        <InputLabel id="chooserangeSupervisorLabel">{sched.CS[fin]}</InputLabel>
         <Select
           {...disabled && {disabled: true}}
           labelId="chooserangeSupervisorLabel"
@@ -851,6 +858,9 @@ class Scheduling extends Component {
     function Alert(props) {
       return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
+
+    const {sched} = data;
+    const fin = localStorage.getItem("language");
     
     return (
       <div className="schedulingRoot">
@@ -866,7 +876,7 @@ class Scheduling extends Component {
                 autoOk
                 margin="normal"
                 name="date"
-                label="Valitse päivä"
+                label={sched.Day[fin]}
                 value={this.state.date}
                 onChange={date => this.handleDateChange(date)}
                 onAccept={this.handleDatePickChange}
@@ -875,14 +885,14 @@ class Scheduling extends Component {
               />
             </MuiPickersUtilsProvider>
             <div className="continue">
-              <Button type="submit" variant="contained">Valitse päivä</Button>
+              <Button type="submit" variant="contained">{sched.Day[fin]}</Button>
             </div>
           </form>
         </div>
         <hr/>
         <div className="secondSection">
           <div className="topRow">
-            <div className="text">Keskus auki</div>
+            <div className="text">{sched.Open[fin]}</div>
             <Switch
               checked={ this.state.available }
               onChange={this.handleSwitchChange}
@@ -891,7 +901,7 @@ class Scheduling extends Component {
           </div>
           <div className="middleRow">
             <div className="roSwitch">
-              <div className="text">Päävalvoja</div>
+              <div className="text">{sched.Supervisor[fin]}</div>
               <Switch
                 className="officerSwitch"
                 checked={this.state.rangeSupervisorSwitch}
@@ -902,14 +912,14 @@ class Scheduling extends Component {
             {this.createSupervisorSelect()}
           </div>
           <div className="bottomRow">
-            <div className="text">Aukioloaika</div>
+            <div className="text">{sched.OH[fin]}</div>
             <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
               <KeyboardTimePicker
                 autoOk
                 ampm={false}
                 margin="normal"
                 name="start"
-                label="Alku"
+                label={sched.Start[fin]}
                 value={this.state.open}
                 onChange={this.handleTimeStartChange}
                 minutesStep={5}
@@ -923,7 +933,7 @@ class Scheduling extends Component {
                 ampm={false}
                 margin="normal"
                 name="end"
-                label="Loppu"
+                label={sched.Stop[fin]}
                 value={this.state.close}
                 onChange={this.handleTimeEndChange}
                 minutesStep={5}
@@ -938,16 +948,16 @@ class Scheduling extends Component {
             {this.createTrackList()}
           </div>
           <div className="rightSide">
-            <Button variant="contained" color="primary" onClick={this.openAllTracks}>Avaa kaikki</Button>
-            <Button variant="contained" onClick={this.emptyAllTracks}>Tyhjennä kaikki</Button>
-            <Button variant="contained" color="secondary" onClick={this.closeAllTracks}>Sulje kaikki</Button>
+            <Button variant="contained" color="primary" onClick={this.openAllTracks}>{sched.OpenAll[fin]}</Button>
+            <Button variant="contained" onClick={this.emptyAllTracks}>{sched.ClearAll[fin]}</Button>
+            <Button variant="contained" color="secondary" onClick={this.closeAllTracks}>{sched.CloseAll[fin]}</Button>
           </div>
         </div>
         <hr/>
         <div className="fourthSection">
           <div className="repetition">
             <div className="daily">
-              Toista päivittäin
+              {sched.RD[fin]}
               <Switch
                 checked={ this.state.daily }
                 onChange={this.handleRepeatChange}
@@ -955,7 +965,7 @@ class Scheduling extends Component {
               />
             </div>
             <div className="weekly">
-              Toista viikottain
+              {sched.RW[fin]}
               <Switch
                 checked={ this.state.weekly }
                 onChange={this.handleRepeatChange}
@@ -963,7 +973,7 @@ class Scheduling extends Component {
               />
             </div>
             <div className="monthly">
-              Toista kuukausittain
+              {sched.RM[fin]}
               <Switch
                 checked={ this.state.monthly }
                 onChange={this.handleRepeatChange}
@@ -971,7 +981,7 @@ class Scheduling extends Component {
               />
             </div>
             <div className="repeatCount">
-              Toistojen määrä
+              {sched.Amount[fin]}
               <TextField 
                 name="repeatCount"
                 type="number" 
@@ -982,7 +992,7 @@ class Scheduling extends Component {
             </div>
           </div>
           <div className="save">
-            <Button variant="contained" onClick={this.saveChanges}>Tallenna muutokset</Button>
+            <Button variant="contained" onClick={this.saveChanges}>{sched.Save[fin]}</Button>
             <div className="toast">
               <Snackbar open={this.state.toast} autoHideDuration={5000} onClose={this.handleSnackbarClose}>
                 <Alert onClose={this.handleSnackbarClose} severity={this.state.toastSeverity}>

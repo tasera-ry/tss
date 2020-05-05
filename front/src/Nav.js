@@ -7,8 +7,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import logo from "./Logo.png";
 import DialogWindow from './LoggedIn';
 import axios from 'axios';
+import * as data from './texts/texts.json';
 
-const SideMenu = ({setName, superuser}) => {
+const SideMenu = ({setName, superuser, nav, fin}) => {
   const navStyle = {
     color: "black",
     textDecoration: "none"
@@ -28,7 +29,9 @@ const SideMenu = ({setName, superuser}) => {
   }
 
   const HandleSignOut = () => {
-    storage.clear();
+    storage.removeItem("token");
+    storage.removeItem("taseraUserName");
+    storage.removeItem("role");
     setName("");
     HandleClose();
   }
@@ -40,17 +43,18 @@ const SideMenu = ({setName, superuser}) => {
        <Button
          onClick={HandleClick}
          size="small">
-         Valikko
+         {nav.Menu[fin]}
        </Button>
        : ""
       }
 
-      {superuser===true ? <SuperMenu anchorEl={anchorEl} HandleClose={HandleClose}
-                              setOpenDial={setOpenDial} HandleSignOut={HandleSignOut}
-                               HandleClick={HandleClick} navStyle={navStyle} />
-    : <BasicMenu anchorEl={anchorEl} HandleClose={HandleClose}
-                              setOpenDial={setOpenDial} HandleSignOut={HandleSignOut}
-                               navStyle={navStyle}/>  }
+      {superuser===true ?
+       <SuperMenu anchorEl={anchorEl} HandleClose={HandleClose}
+                  setOpenDial={setOpenDial} HandleSignOut={HandleSignOut}
+                  HandleClick={HandleClick} navStyle={navStyle} nav={nav} fin={fin} />
+       : <BasicMenu anchorEl={anchorEl} HandleClose={HandleClose}
+                    setOpenDial={setOpenDial} HandleSignOut={HandleSignOut}
+                    navStyle={navStyle} nav={nav} fin={fin} /> }
 
       {openDial ? <DialogWindow /> : "" }
 
@@ -58,7 +62,7 @@ const SideMenu = ({setName, superuser}) => {
   )
 }
 
-const BasicMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut, navStyle}) => {
+const BasicMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut, navStyle, nav, fin}) => {
   return (
     <Menu
       id="menu"
@@ -67,20 +71,21 @@ const BasicMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut, navStyle}
       anchorEl={anchorEl}
       onClose={HandleClose}>
 
-      <MenuItem onClick={() => setOpenDial(true)}> Valvonnat </MenuItem>
+      <MenuItem onClick={() => setOpenDial(true)}> {nav.Supervision[fin]} </MenuItem>
       
       <Link style={navStyle} to="/tablet">
-        <MenuItem> Tablettinäkymä </MenuItem>
+        <MenuItem> {nav.Tablet[fin]} </MenuItem>
       </Link>
 
       <Link style={navStyle} to="/">
-        <MenuItem onClick={HandleSignOut}> Kirjaudu ulos </MenuItem>
+        <MenuItem onClick={HandleSignOut}> {nav.SO[fin]} </MenuItem>
       </Link>
     </Menu>
   )
 }
 
-const SuperMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut, HandleClick, navStyle}) => {
+const SuperMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut,
+                    HandleClick, navStyle, nav, fin}) => {
   return (
     <Menu
       id="menu"
@@ -90,21 +95,21 @@ const SuperMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut, HandleCli
       onClose={HandleClose}>
       
       <Link style={navStyle} to="/scheduling">
-        <MenuItem onClick={HandleClick}> Aikataulut </MenuItem>
+        <MenuItem onClick={HandleClick}> {nav.Schedule[fin]} </MenuItem>
       </Link>
 
       <Link style={navStyle} to="/usermanagement">
-        <MenuItem> Käyttäjienhallinta </MenuItem>
+        <MenuItem> {nav.UM[fin]} </MenuItem>
       </Link>
 
-      <MenuItem onClick={() => setOpenDial(true)}> Valvonnat </MenuItem>
+      <MenuItem onClick={() => setOpenDial(true)}> {nav.Supervision[fin]} </MenuItem>
 
       <Link style={navStyle} to="/tablet">
-        <MenuItem> Tablettinäkymä </MenuItem>
+        <MenuItem> {nav.Tablet[fin]} </MenuItem>
       </Link>
 
       <Link style={navStyle} to="/">
-        <MenuItem onClick={HandleSignOut}> Kirjaudu ulos </MenuItem>
+        <MenuItem onClick={HandleSignOut}> {nav.SO[fin]} </MenuItem>
       </Link>
     </Menu>
   )
@@ -117,6 +122,11 @@ function userInfo(name, setName, setSuperuser) {
     let role = localStorage.getItem("role")
     setSuperuser(role==="superuser")
   }
+}
+
+function setLanguage(num) {
+  localStorage.setItem("language", num);
+  window.location.reload();
 }
 
 const Nav = () => {
@@ -133,6 +143,8 @@ const Nav = () => {
 
   const [name, setName] = useState("");
   const [superuser, setSuperuser] = useState();
+  const fin = localStorage.getItem("language"); //0: finnish, 1: english
+  const {nav} = data;
 
   if(name==="") {
     userInfo(name, setName, setSuperuser);
@@ -157,14 +169,19 @@ const Nav = () => {
        <Link to="/signin">
          <Button
            size="small">
-           Kirjaudu sisään
+           {nav.SI[fin]}
          </Button>
        </Link>
        :
        <p>{name}</p>
       }
 
-      <SideMenu setName={setName} superuser={superuser} />
+      <span>
+        <Button onClick={()=> setLanguage(1)}>EN</Button>
+        <Button onClick={()=> setLanguage(0)}>FI</Button>
+      </span>
+      
+      <SideMenu setName={setName} superuser={superuser} nav={nav} fin={fin} />
       
     </nav>
   )
