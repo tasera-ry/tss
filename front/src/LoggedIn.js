@@ -35,13 +35,9 @@ const DropDowns = (props) => {
   const [buttonColor, setButtonColor] = useState(color);
   const [anchorEl, setAnchorEl] = useState(null);
   const [disable, setDisable] = useState(buttonColor!=="#658f60");
-  
-  const styleB = {
-    left:270,
-    position:"absolute"
 
-  }
   const buttonStyle = {
+    width: 180,
     backgroundColor:`${buttonColor}`
   }
   const discardChanges = {
@@ -81,7 +77,7 @@ const DropDowns = (props) => {
   }
   
   return (
-    <span style={styleB}>
+    <span>
       
       <Button
         onClick={handleClick}
@@ -121,7 +117,8 @@ const DropDowns = (props) => {
 
       &nbsp;
       {props.today===props.d ?
-       <Check HandleChange={props.HandleChange} checked={props.checked} sv={props.sv} disable={disable} />
+       <Check HandleChange={props.HandleChange} checked={props.checked}
+              sv={props.sv} disable={disable} />
        : "" }
 
     </span>
@@ -130,17 +127,20 @@ const DropDowns = (props) => {
 
 //prints matkalla-checkbox
 const Check = ({HandleChange, checked, sv, disable}) => {
+  const checkboxStyle = {
+    color:'#f2c66d'
+  }
   let fin = localStorage.getItem("language");
 
   return (
     <>
-      <FormControlLabel disabled={disable} control={
+      <br />
+      <FormControlLabel label={sv.EnRoute[fin]} disabled={disable} control={
         <Checkbox
           checked={checked}
-          style={{color:"#f2c66d"}}
-        onChange={HandleChange}
-        />}
-                        label={sv.EnRoute[fin]} />
+          style={checkboxStyle}
+          onChange={HandleChange} />
+      } />
       
     </>
   )
@@ -149,11 +149,8 @@ const Check = ({HandleChange, checked, sv, disable}) => {
 //prints date info in rows
 const Rows = ({HandleChange, changes, checked, setDone, sv}) => {
   const styleA = {
-    padding:30,
-    marginLeft:30,
-    flexDirection:"row",
-    display:"inline-flex",
-    fontSize:18
+    padding:25,
+    textAlign: 'center'
   }
 
   let language = localStorage.getItem("language");
@@ -183,9 +180,10 @@ const Rows = ({HandleChange, changes, checked, setDone, sv}) => {
   return (   
     changes.map(d =>
                 <div key={d.date} style={styleA}>
-                  {getWeekday(d.date)} {getDateString(d.date)}
+                  {getWeekday(d.date)} {getDateString(d.date)} &nbsp;
 		  <DropDowns d={d.date} today={today} changes={changes}
 		             HandleChange={HandleChange} checked={checked} sv={sv}  />
+                  
                 </div>  
                )
   )
@@ -370,35 +368,34 @@ const Logic = ({schedules, setSchedules, noSchedule, checked,
     <div>
       <Dialog
         open={open}
-        aria-labelledby="otsikko"
-        maxWidth='sm'
-        fullWidth={true}>
+        aria-labelledby="otsikko">
         
-      <DialogTitle id="otsikko">{sv.Header[fin]}</DialogTitle>
+        <DialogTitle id="otsikko">{sv.Header[fin]}</DialogTitle>
         <DialogContent>
+          
           <DialogContentText>
             {noSchedule ? sv.No[fin] : ""}
             {done ? "" : sv.Wait[fin]}
           </DialogContentText>
+
+          {schedules.length!==0 ?
+           <Rows HandleChange={HandleChange} changes={changes}
+                 checked={checked} setDone={setDone} sv={sv} />
+           : ""}
         </DialogContent>
 
-        {schedules.length!==0 ?
-         <Rows HandleChange={HandleChange} changes={changes}
-               checked={checked} setDone={setDone} sv={sv} />
-         : ""}
+        <DialogActions>
 
-        {wait ?
+          {wait ?
            <div className={classes.root}>
              <CircularProgress  />
            </div>
-         : ""}
-
-        <DialogActions>
+           : ""}
 
           <Button
             variant='contained'
             onClick={()=> setOpen(false)}
-         style={{backgroundColor:'#ede9e1'}} >
+            style={{backgroundColor:'#ede9e1'}} >
             {sv.Cancel[fin]}
           </Button>
 
