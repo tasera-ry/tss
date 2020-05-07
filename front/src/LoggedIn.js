@@ -34,6 +34,7 @@ const DropDowns = (props) => {
   const [buttonText, setButtonText] = useState(text);
   const [buttonColor, setButtonColor] = useState(color);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [disable, setDisable] = useState(buttonColor!=="green");
   
   const styleB = {
     left:270,
@@ -58,16 +59,19 @@ const DropDowns = (props) => {
     if(event.currentTarget.dataset.info==="") {
       setButtonText(props.sv.Present[fin])
       setButtonColor("white");
-      obj.range_supervisor = "present";
+      setDisable(true);
+      obj.range_supervisor = "not confirmed";
     }
     if(event.currentTarget.dataset.info==="y") {
       setButtonText(props.sv.Confirmed[fin])
       setButtonColor("green");
+      setDisable(false);
       obj.range_supervisor = "confirmed";
     }
     if(event.currentTarget.dataset.info==="n") {
       setButtonText(props.sv.Absent[fin]);
       setButtonColor("red");
+      setDisable(true);
       obj.range_supervisor = "absent";
     }
     props.changes.map(o => (o.date===id ? obj : o))
@@ -117,7 +121,7 @@ const DropDowns = (props) => {
 
       &nbsp;
       {props.today===props.d ?
-       <Check HandleChange={props.HandleChange} checked={props.checked} sv={props.sv} />
+       <Check HandleChange={props.HandleChange} checked={props.checked} sv={props.sv} disable={disable} />
        : "" }
 
     </span>
@@ -125,15 +129,16 @@ const DropDowns = (props) => {
 }
 
 //prints matkalla-checkbox
-const Check = ({HandleChange, checked, sv}) => {
+const Check = ({HandleChange, checked, sv, disable}) => {
   let fin = localStorage.getItem("language");
+
   return (
     <>
-      <FormControlLabel control={
+      <FormControlLabel disabled={disable} control={
         <Checkbox
           checked={checked}
           style={{color:"orange"}}
-          onChange={HandleChange}
+        onChange={HandleChange}
         />}
                         label={sv.EnRoute[fin]} />
       
@@ -151,14 +156,20 @@ const Rows = ({HandleChange, changes, checked, setDone, sv}) => {
     fontSize:18
   }
 
-  if(localStorage.getItem("language") === "1") {
+  let language = localStorage.getItem("language");
+  let num = 2;
+  if(language==="1") {
     moment.locale("en-ca");
+    num = 3;
   }
   
   setDone(true);
   
   function getWeekday(day) {
     day = moment(day).format('dddd')
+    if(window.innerWidth<800) {
+      return day.charAt(0).toUpperCase() + day.slice(1, num);
+    }
     return day.charAt(0).toUpperCase() + day.slice(1);
   }
 
@@ -209,8 +220,10 @@ async function getReservations(res) {
   for(let i=0; i<res.length; i++) {
     let query = "api/reservation?available=true&id=" + res[i].reservation_id;
     let response = await axios.get(query);
-    let d = moment(response.data[0].date).format("YYYY-MM-DD");
-    res[i].date = d
+    if(response.data.length>0) {
+      let d = moment(response.data[0].date).format("YYYY-MM-DD");
+      res[i].date = d
+    }
   }
 
   res = res.filter(obj => obj.date >= today);
@@ -255,7 +268,7 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
     await setDone(true);
     return;
   }
-  
+
   res = await getReservations(res);
   setSchedules(res);
   setChecked(res[0].range_supervisor==="en route");
