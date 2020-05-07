@@ -29,9 +29,14 @@ import * as data from './texts/texts.json';
 import moment from 'moment';
 import "moment/locale/fi";
 
-const lang = localStorage.getItem("language") === '0' ? 'fi' : 'en'
+let lang = "fi"; //fallback
+if(localStorage.getItem("language") === '0') {
+  lang = 'fi';
+}
+else if(localStorage.getItem("language") === '1'){
+  lang = 'en';
+}
 moment.locale(lang);
-console.log("lang",lang,moment.localeData());
 
 async function getRangeSupervisors(token){
   try{
@@ -73,7 +78,8 @@ class Scheduling extends Component {
         weekly:false,
         monthly:false,
         repeatCount:1,
-        token:'SECRET-TOKEN'
+        token:'SECRET-TOKEN',
+        datePickerKey:1
       };
   }
   

@@ -45,15 +45,29 @@ export async function getSchedulingWeek(date) {
 }
 
 export function dayToString(i) {
-  const lang = localStorage.getItem("language") === '0' ? 'fi' : 'en';
+  let lang = "fi"; //fallback
+  if(localStorage.getItem("language") === '0') {
+    lang = 'fi';
+  }
+  else if(localStorage.getItem("language") === '1'){
+    lang = 'en';
+  }
   moment.locale(lang);
   //en/fi have different numbers for start date
   if(lang === 'fi') i--;
-  return moment().weekday(i).format('dddd').toUpperCase();
+  const dayString = moment().weekday(i).format('dddd');
+  //first letter only to uppercase
+  return dayString.charAt(0).toUpperCase() + dayString.slice(1);
 }
 
 export function monthToString(i) {
-  const lang = localStorage.getItem("language") === '0' ? 'fi' : 'en';
+  let lang = "fi"; //fallback
+  if(localStorage.getItem("language") === '0') {
+    lang = 'fi';
+  }
+  else if(localStorage.getItem("language") === '1'){
+    lang = 'en';
+  }
   moment.locale(lang);
   return moment().month(i).format('MMMM');
 }
