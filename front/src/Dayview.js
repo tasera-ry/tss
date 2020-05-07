@@ -186,16 +186,19 @@ class Dayview extends Component {
             direction="row"
             justify="space-around"
             alignItems="center"
+            className="dateHeader"
           >
             <div
               className="hoverHand arrow-left"
               onClick={this.previousDayClick}
             ></div>
-            <h1>
-              {dayToString(this.state.date.getDay())}
-              {console.log(this.state.date.getDay())}
-            </h1>
-            <div>{this.state.date.toLocaleDateString("fi-FI")}</div>
+            <div className="titleContainer">
+              <h1>
+                {dayToString(this.state.date.getDay())}
+                {console.log(this.state.date.getDay())}
+              </h1>
+              <div className="date">{this.state.date.toLocaleDateString("fi-FI")}</div>
+            </div>
             <div
               className="hoverHand arrow-right"
               onClick={this.nextDayClick}

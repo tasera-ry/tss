@@ -6,7 +6,7 @@ import Dayview from "./Dayview";
 import Weekview from "./Weekview";
 import Trackview from "./Trackview";
 import Scheduling from "./Scheduling";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { HashRouter as Router, Switch, Route } from "react-router-dom";
 import RangeOfficerView from "./rangeofficer";
 import UserManagementView from "./UserManagementView";
 
