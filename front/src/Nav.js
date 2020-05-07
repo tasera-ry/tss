@@ -102,8 +102,6 @@ const SuperMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut,
         <MenuItem> {nav.UserManagement[fin]} </MenuItem>
       </Link>
 
-      <MenuItem onClick={() => setOpenDial(true)}> {nav.Supervision[fin]} </MenuItem>
-
       <Link style={navStyle} to="/tablet">
         <MenuItem> {nav.Tablet[fin]} </MenuItem>
       </Link>
@@ -166,7 +164,7 @@ const Nav = () => {
       </Link>
       
       {name==="" ?
-       <Link to="/signin">
+       <Link style={{textDecoration:'none'}} to="/signin">
          <Button
            size="small">
            {nav.SignIn[fin]}

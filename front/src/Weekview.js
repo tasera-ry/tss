@@ -196,17 +196,17 @@ class Weekview extends Component {
                 console.log("ratastatus",rataStatus);
 
                 if (rataStatus === "present") {
-                    colorFromBackEnd = "green"
+                    colorFromBackEnd = "#658f60"
                 } else if (rataStatus === "confirmed") {
-                    colorFromBackEnd = "lightGreen"
+                    colorFromBackEnd = "#b2d9ad"
                 } else if (rataStatus === "not confirmed") {
-                    colorFromBackEnd = "deepskyblue"
+                    colorFromBackEnd = "#95d5db"
                 } else if (rataStatus === "en route") {
-                    colorFromBackEnd = "orange"
+                    colorFromBackEnd = "#f2c66d"
                 } else if (rataStatus === "closed") {
-                    colorFromBackEnd = "red"
+                    colorFromBackEnd = "#c97b7b"
                 } else if (rataStatus === "absent") {
-                    colorFromBackEnd = "white"
+                    colorFromBackEnd = "#f2f0eb"
                 }
 
                 oikeePaiva = this.state.paivat[j].date

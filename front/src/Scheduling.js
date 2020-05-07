@@ -794,9 +794,12 @@ class Scheduling extends Component {
                 onChange={this.handleRadioChange}
                 value={ this.state[tracks[key].id] || 'absent'}
               >
-                <FormControlLabel value="present" control={<Radio />} label={sched.OfficerPresent[fin]} />
-                <FormControlLabel value="absent" control={<Radio />} label={sched.OfficerAbsent[fin]} />
-                <FormControlLabel value="closed" control={<Radio />} label={sched.Closed[fin]} />
+                <FormControlLabel value="present" control={
+                  <Radio style={{fontColor:'black', color:'#5f77a1'}} />} label={sched.OfficerPresent[fin]} />
+                <FormControlLabel value="absent" control={
+                  <Radio style={{fontColor:'black', color:'#5f77a1'}} />} label={sched.OfficerAbsent[fin]} />
+                <FormControlLabel value="closed" control={
+                  <Radio style={{fontColor:'black', color:'#5f77a1'}} />} label={sched.Closed[fin]} />
               </RadioGroup>
               <TextareaAutosize
                 className="notice"
@@ -807,6 +810,7 @@ class Scheduling extends Component {
                 rowsMax={3}
                 onChange={this.handleNotice}
                 value={tracks[key].notice !== null ? tracks[key].notice : ''}
+                style={{backgroundColor:'#f2f0eb'}}
               />
           </FormControl>
         </React.Fragment>
@@ -885,7 +889,7 @@ class Scheduling extends Component {
               />
             </MuiPickersUtilsProvider>
             <div className="continue">
-              <Button type="submit" variant="contained">{sched.Day[fin]}</Button>
+              <Button type="submit" variant="contained" style={{backgroundColor:'#d1ccc2'}}>{sched.Day[fin]}</Button>
             </div>
           </form>
         </div>
@@ -897,6 +901,8 @@ class Scheduling extends Component {
               checked={ this.state.available }
               onChange={this.handleSwitchChange}
               name="available"
+              color="default"
+              style={{color:'#5f77a1'}}
             />
           </div>
           <div className="middleRow">
@@ -907,6 +913,8 @@ class Scheduling extends Component {
                 checked={this.state.rangeSupervisorSwitch}
                 onChange={this.handleSwitchChange}
                 name="rangeSupervisorSwitch"
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
             {this.createSupervisorSelect()}
@@ -948,9 +956,9 @@ class Scheduling extends Component {
             {this.createTrackList()}
           </div>
           <div className="rightSide">
-            <Button variant="contained" color="primary" onClick={this.openAllTracks}>{sched.OpenAll[fin]}</Button>
-            <Button variant="contained" onClick={this.emptyAllTracks}>{sched.ClearAll[fin]}</Button>
-            <Button variant="contained" color="secondary" onClick={this.closeAllTracks}>{sched.CloseAll[fin]}</Button>
+            <Button variant="contained" color="primary" onClick={this.openAllTracks} style={{color:'black', backgroundColor:'#5f77a1'}}>{sched.OpenAll[fin]}</Button>
+            <Button variant="contained" onClick={this.emptyAllTracks} style={{backgroundColor:'#d1ccc2'}}>{sched.ClearAll[fin]}</Button>
+        <Button variant="contained" color="secondary" onClick={this.closeAllTracks} style={{color:'black', backgroundColor:'#c97b7b'}}>{sched.CloseAll[fin]}</Button>
           </div>
         </div>
         <hr/>
@@ -962,6 +970,8 @@ class Scheduling extends Component {
                 checked={ this.state.daily }
                 onChange={this.handleRepeatChange}
                 id='daily'
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
             <div className="weekly">
@@ -970,6 +980,8 @@ class Scheduling extends Component {
                 checked={ this.state.weekly }
                 onChange={this.handleRepeatChange}
                 id='weekly'
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
             <div className="monthly">
@@ -978,6 +990,8 @@ class Scheduling extends Component {
                 checked={ this.state.monthly }
                 onChange={this.handleRepeatChange}
                 id='monthly'
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
             <div className="repeatCount">
@@ -992,7 +1006,7 @@ class Scheduling extends Component {
             </div>
           </div>
           <div className="save">
-            <Button variant="contained" onClick={this.saveChanges}>{sched.Save[fin]}</Button>
+            <Button variant="contained" onClick={this.saveChanges} style={{backgroundColor:'#d1ccc2'}}>{sched.Save[fin]}</Button>
             <div className="toast">
               <Snackbar open={this.state.toast} autoHideDuration={5000} onClose={this.handleSnackbarClose}>
                 <Alert onClose={this.handleSnackbarClose} severity={this.state.toastSeverity}>
