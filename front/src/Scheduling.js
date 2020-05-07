@@ -28,7 +28,15 @@ import { getSchedulingDate } from "./utils/Utils";
 import * as data from './texts/texts.json';
 import moment from 'moment';
 import "moment/locale/fi";
-moment.locale("fi");
+
+let lang = "fi"; //fallback
+if(localStorage.getItem("language") === '0') {
+  lang = 'fi';
+}
+else if(localStorage.getItem("language") === '1'){
+  lang = 'en';
+}
+moment.locale(lang);
 
 async function getRangeSupervisors(token){
   try{
@@ -70,14 +78,16 @@ class Scheduling extends Component {
         weekly:false,
         monthly:false,
         repeatCount:1,
-        token:'SECRET-TOKEN'
+        token:'SECRET-TOKEN',
+        datePickerKey:1
       };
   }
   
   componentDidMount(){
     console.log("MOUNTED",localStorage.getItem('token'));
     this.setState({
-      token: localStorage.getItem('token')
+      token: localStorage.getItem('token'),
+      datePickerKey: Math.random() //force datepicker to re-render when language changed
     },function(){
       if(this.state.token === 'SECRET-TOKEN'){
         this.props.history.push("/");
@@ -875,7 +885,7 @@ class Scheduling extends Component {
         </Modal>
         <div className="firstSection">
           <form onSubmit={this.continueWithDate}>
-            <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
+            <MuiPickersUtilsProvider utils={MomentUtils} locale={lang} key={this.state.datePickerKey}>
               <KeyboardDatePicker
                 autoOk
                 margin="normal"
