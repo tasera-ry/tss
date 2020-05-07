@@ -1,457 +1,197 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import './App.css';
 import './rangeofficer.css';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import * as data from './texts/texts.json';
 import moment from 'moment'
+import axios from 'axios';
 
 import { dayToString } from "./utils/Utils";
 
+async function getColors(tracks) {
+  const copy = [...tracks]
+  
+  for(let i=0; i<copy.length; i++) {
+    if(copy[i].trackSupervision==="present") {copy[i].trackSupervision="green"}
+    if(copy[i].trackSupervision==="closed") {copy[i].trackSupervision="red"}
+    if(copy[i].trackSupervision==="absent") {copy[i].trackSupervision="white"}
+  }
 
-class RangeOfficerView extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            date: moment(Date.now()).format("YYYY-MM-DD"),
-            reservationId: null,
-            scheduleId: null,
-            rangeSupervision: null,
-            rangeSupervisionScheduled: false,
-            open: 16,
-            close: 20,
-            // Statuses: absent, present, closed, en route, confirmed, not confirmed
-            rangeSupervision: 'absent',
-            tracks:{},
-            token:null,
-            canUpdate:false
-        };
-    }
-
-    componentDidMount() {
-      console.log("MOUNTED",localStorage.getItem('token'));
-      this.setState({
-        token: localStorage.getItem('token')
-      },function(){
-        if(this.state.token === null){
-          this.props.history.push("/");
-        }
-        else{
-          try{
-            this.update();
-          }
-          catch(error){
-            console.error("init failed",error);
-          }
-        }
-      })
-    }
-
-    update() {
-        var date = this.state.date;
-        // TODO fetch info for current date
-        fetch(`/api/datesupreme/${date}`)
-            .then(res => res.json())
-            .then(response => {
-                console.log("date",response);
-                this.setState({
-                    date: response.date,
-                    rangeId: response.rangeId,
-                    reservationId: response.reservationId,
-                    scheduleId: response.scheduleId,
-                    open: response.open !== null ? 
-                      moment(response.open, 'h:mm:ss').format() :
-                      moment(response.date)
-                      .hour(0)
-                      .minute(0)
-                      .second(0),
-                    close: response.close !== null ? 
-                      moment(response.close, 'h:mm:ss').format() :
-                      moment(response.date)
-                      .hour(0)
-                      .minute(0)
-                      .second(0),
-                    rangeSupervision: response.rangeSupervision,
-                    rangeSupervisionScheduled: response.rangeSupervisionScheduled,
-                    tracks: response.tracks
-                },function(){
-                  console.log("state after update",this.state)
-                    if(this.state.reservationId === null && this.state.scheduleId === null){
-                      alert("either/both reservation schedule missing");
-                      this.setState({
-                        canUpdate:false
-                      })
-                    }else{
-                      this.setState({
-                        canUpdate:true
-                      })
-                    }
-                })
-            });
-    }
-
-    changeTrackStatus = (key) => {
-        console.log("change track status",key,this.state.tracks[key])
-        let newStatus;
-        if (this.state.tracks[key].trackSupervision === 'closed') {
-            newStatus = 'absent';
-        }
-        else if (this.state.tracks[key].trackSupervision === 'absent') {
-            newStatus = 'present';
-        }
-        else if (this.state.tracks[key].trackSupervision === 'present') {
-            newStatus = 'closed';
-        }
-        
-        let tracks = this.state.tracks;
-        tracks[key] = {
-          ...this.state.tracks[key],
-          trackSupervision:newStatus
-        };
-        
-        this.setState(
-            {
-                tracks: tracks
-            }, () => {
-                if(this.state.canUpdate){
-                    if(this.state.tracks[key].scheduled){
-                      fetch(`/api/track-supervision/${this.state.scheduleId}/${this.state.tracks[key].id}`, {
-                          method: "PUT",
-                          body: JSON.stringify({track_supervisor: newStatus}),
-                          headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${this.state.token}`
-                          }
-                      })
-                      .then(status => console.log(status));
-                    }
-                    else{
-                      fetch(`/api/track-supervision`, {
-                          method: "POST",
-                          body: JSON.stringify({
-                            scheduled_range_supervision_id:this.state.scheduleId,
-                            track_id:this.state.tracks[key].id,
-                            track_supervisor: newStatus
-                          }),
-                          headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${this.state.token}`
-                          }
-                      })
-                      .then(status => console.log(status));
-                    }
-                }else console.error("cannot update some parts (reservation or schedule) missing");
-            }
-        );
-    }
-
-    changeStatusOpen = () => {
-        this.setState(
-            {
-                rangeSupervision: 'present'
-            }, () => {
-                //reservation and schedule exist
-                if(this.state.canUpdate){
-                    //range supervision exists
-                    if(this.state.rangeSupervisionScheduled){
-                        fetch(`/api/reservation/${this.state.reservationId}`, {
-                            method: "PUT",
-                            body: JSON.stringify({available: true}),
-                            headers: {
-                              'Accept': 'application/json',
-                              'Content-Type': 'application/json',
-                              Authorization: `Bearer ${this.state.token}`
-                            }
-                        })
-                        .then(status => {
-                          console.log(status)
-                          fetch(`/api/range-supervision/${this.state.scheduleId}`, {
-                              method: "PUT",
-                              body: JSON.stringify({range_supervisor: 'present'}),
-                              headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${this.state.token}`
-                              }
-                          })
-                          .then(status => console.log(status));
-                        });
-                    }
-                    else{
-                        fetch(`/api/reservation/${this.state.reservationId}`, {
-                            method: "PUT",
-                            body: JSON.stringify({available: true}),
-                            headers: {
-                              'Accept': 'application/json',
-                              'Content-Type': 'application/json',
-                              Authorization: `Bearer ${this.state.token}`
-                            }
-                        })
-                        .then(status => {
-                          console.log(status)
-                          fetch(`/api/range-supervision`, {
-                              method: "POST",
-                              body: JSON.stringify({
-                                scheduled_range_supervision_id:this.state.scheduleId,
-                                range_supervisor: 'present'
-                              }),
-                              headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${this.state.token}`
-                              }
-                          })
-                          .then(status => console.log(status));
-                        });
-                    }
-                }else console.error("cannot update some parts (reservation or schedule) missing");
-            }
-        );
-    }
-
-    changeStatusComing = () => {
-        this.setState(
-            {
-                rangeSupervision: 'en route'
-            }, () => {
-                //reservation and schedule exist
-                if(this.state.canUpdate){
-                    //range supervision exists
-                    if(this.state.rangeSupervisionScheduled){
-                        fetch(`/api/reservation/${this.state.reservationId}`, {
-                            method: "PUT",
-                            body: JSON.stringify({available: true}),
-                            headers: {
-                              'Accept': 'application/json',
-                              'Content-Type': 'application/json',
-                              Authorization: `Bearer ${this.state.token}`
-                            }
-                        })
-                        .then(status => {
-                          console.log(status)
-                          fetch(`/api/range-supervision/${this.state.scheduleId}`, {
-                              method: "PUT",
-                              body: JSON.stringify({range_supervisor: 'en route'}),
-                              headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${this.state.token}`
-                              }
-                          })
-                          .then(status => console.log(status));
-                        });
-                    }
-                    else{
-                        fetch(`/api/reservation/${this.state.reservationId}`, {
-                            method: "PUT",
-                            body: JSON.stringify({available: true}),
-                            headers: {
-                              'Accept': 'application/json',
-                              'Content-Type': 'application/json',
-                              Authorization: `Bearer ${this.state.token}`
-                            }
-                        })
-                        .then(status => {
-                          console.log(status)
-                          fetch(`/api/range-supervision`, {
-                              method: "POST",
-                              body: JSON.stringify({
-                                scheduled_range_supervision_id:this.state.scheduleId,
-                                range_supervisor: 'en route'
-                              }),
-                              headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${this.state.token}`
-                              }
-                          })
-                          .then(status => console.log(status));
-                        });
-                    }
-                }else console.error("cannot update some parts (reservation or schedule) missing");
-            }
-        );
-    }
-
-    changeStatusClosed = () => {
-        this.setState(
-            {
-                rangeSupervision: 'closed'
-            }, () => {
-                if(this.state.canUpdate){
-                    fetch(`/api/reservation/${this.state.reservationId}`, {
-                        method: "PUT",
-                        body: JSON.stringify({available: 'false'}),
-                        headers: {
-                          'Accept': 'application/json',
-                          'Content-Type': 'application/json',
-                          Authorization: `Bearer ${this.state.token}`
-                        }
-                    })
-                    .then(status => console.log(status));
-                }else console.error("cannot update some parts (reservation or schedule) missing");
-            }
-        );
-    }
-
-    createOfficerStatus = (tablet, fin) => {
-        let newColor = "blue";
-        let table = [];
-        let status;
-
-        if (this.state.rangeSupervision === 'present') {
-            newColor = "green";
-            status = tablet.SuperGreen[fin];
-        } 
-        else if (this.state.rangeSupervision === 'en route') {
-            newColor = "orange";
-            status = tablet.SuperOrange[fin];
-        } 
-        else if (this.state.rangeSupervision === 'closed') {
-            newColor = "red";
-            status = tablet.Red[fin];
-        }
-        else if (this.state.rangeSupervision === 'confirmed') {
-            newColor = "lightGreen";
-            status = tablet.SuperLightGreen[fin];
-        }
-        else if (this.state.rangeSupervision === 'not confirmed') {
-            newColor = "blue";
-            status = tablet.SuperBlue[fin];
-        }
-        else {
-            newColor = "white";
-            status = "Päävalvoja ei asetettu";
-        }
-
-        table.push(
-            <div style={{ backgroundColor: `${newColor}` }} className = "rangeOfficerStatus">
-                {status}
-            </div>
-            );
-    return table;  
-    }
-
-    createTrackList = () => {
-      let items = [];
-      for (var key in this.state.tracks) {
-        items.push(
-          <React.Fragment>
-            <div className = "trackName">{this.state.tracks[key].name}</div>
-          </React.Fragment>
-        );
-      }
-
-      return (
-        <React.Fragment>
-          {items}
-        </React.Fragment>
-      );
-    }
-
-    createTrackStatuses = (tablet, fin) => {
-        // If blue color is seen, something has gone wrong.
-        let newColor = "blue";
-        let table = [];
-        let status;
-
-        for (var key in this.state.tracks) {
-            let trackToChange = `${key}`;
-            if (this.state.tracks[key].trackSupervision === 'present') {
-                newColor = "green";
-                status = tablet.Green[fin];
-            } 
-            else if (this.state.tracks[key].trackSupervision === 'absent') {
-                newColor = "white";
-                status = tablet.White[fin];
-            } 
-            else if (this.state.tracks[key].trackSupervision === 'closed') {
-                newColor = "red";
-                status = tablet.Red[fin];
-            }
-
-            table.push(
-                (<div 
-                className = "changeTrack" 
-                onClick={() => this.changeTrackStatus(trackToChange)}
-                style={{ backgroundColor: `${newColor}` }}
-                > {status} </div>)
-            );
-        }
-
-        return table;
-    }
-
-
-
-  render() {
-        const fin = localStorage.getItem("language");
-        const {tablet} = data;
-        console.log(this.state);
-
-        return(
-            <div className = "containsAll">
-
-                <div className = "dateInfo">
-                    <p> {dayToString(moment(this.state.date).format("d"))} {moment(this.state.date).format("DD.MM.YYYY")} </p>
-                    <p> {tablet.Open[fin]}: {moment(this.state.open).format('H.mm')}-{moment(this.state.close).format('H.mm')} </p>
-                </div>
-
-                {/* Tähän yksi iso laatikko, joka näyttää päävalvojan statuksen */}
-
-              {this.createOfficerStatus(tablet, fin)}
-
-                {/* Tähän alle kolme laatikkoa, joista valitaan päävalvojan status */}
-
-                <div className="midInfo">
-                  {tablet.HelperFirst[fin]}
-                </div>
-
-                <div className="midInfo">
-                    <div 
-                        className = "changeStatus"
-                        onClick={this.changeStatusOpen}
-                        style={{ backgroundColor: "green" }}
-                    >  {tablet.Green[fin]} </div>
-
-                    <div 
-                        className = "changeStatus"
-                        onClick={this.changeStatusComing}
-                        style={{ backgroundColor: "orange" }}
-                    >  {tablet.Orange[fin]} </div>
-
-                    <div 
-                        className = "changeStatus"
-                        onClick={this.changeStatusClosed}
-                        style={{ backgroundColor: "red" }}
-                    >  {tablet.Red[fin]} </div>
-                </div>
-                <br></br><br></br><br></br>
-
-                {/* Tähän 7 laatikkoa, jotka ovat ratojen päävalvojien statukset */}
-
-                <div className="midInfo">
-                  {tablet.HelperSecond[fin]}
-                </div>
-
-                <br></br>
-
-                <div className="midInfo">
-                    {this.createTrackList()}
-                </div>
-
-                <br></br><br></br>
-
-                <div className="midInfo">
-                  {this.createTrackStatuses(tablet, fin)}
-                </div>
-
-            </div>
-
-        )
-    }
+  console.log(copy)
+  return copy;
 }
 
-export default RangeOfficerView;
+const Rows = ({tracks, tablet, fin}) => {
+  const rangeStyle = {
+    flexDirection: "center",
+    display: "inline-block",
+    alignItems: "center",
+    textAlign: "center",
+    justifyContents: "center",
+    padding: 20,
+    marginLeft: 15
+  }
+
+  
+
+  return (
+    tracks.map(track =>
+               <div key={track.id} style={rangeStyle}>
+
+                 <Typography
+                   align="center">
+                   {track.name}
+                 </Typography>
+                 
+                 <Button
+                   style={{backgroundColor:`${track.trackSupervision}`, borderRadius: 30, width: 100}}
+                   size='medium'>
+                   {track.trackSupervision}
+                 </Button>
+               </div>
+              )
+  )
+}
+
+//haetaan oikea teksti päävalvojan ilmoitukseen
+async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText) {
+
+  let date = moment(Date.now()).format("YYYY-MM-DD");
+
+  await fetch(`/api/datesupreme/${date}`)
+    .then(res => res.json())
+    .then(response => {
+      console.log(response)
+      setHours([moment(response.open, 'h:mm').format('H.mm'),
+                moment(response.close, 'h:mm').format('H.mm')]);
+      setTracks(response.tracks);
+
+      if (response.rangeSupervision === 'present') {
+        setStatusText(tablet.SuperGreen[fin]);
+      } 
+      else if (response.rangeSupervision === 'en route') {
+        setStatusText(tablet.SuperOrange[fin]);
+      } 
+      else if (response.rangeSupervision === 'closed') {
+        setStatusText(tablet.Red[fin]);
+      }
+      else if (response.rangeSupervision === 'confirmed') {
+        setStatusText(tablet.SuperLightGreen[fin]);
+      }
+      else if (response.rangeSupervision === 'not confirmed') {
+        setStatusText(tablet.SuperBlue[fin]);
+      }
+      else {
+        setStatusText("Päävalvoja ei asetettu");
+      }
+    })
+  
+  return "text";
+}
+
+//haetaan oikea väri päävalvojan ilmoitukseen
+function getStatusColor() {
+  return "green";
+}
+
+const Tabletview = () => {
+  const [statusColor, settatusColor] = useState("#c97b7b");
+  const [statusText, setStatusText] = useState();
+  const [hours, setHours] = useState([]);
+  const [tracks, setTracks] = useState([]);
+  const fin = localStorage.getItem("language");
+  const {tablet} = data;
+  let today = moment().format("DD.MM.YYYY");
+
+  useEffect(() => {
+    getData(tablet, fin, setHours, tracks, setTracks, setStatusText);
+    getStatusColor();
+  }, []);
+
+
+  const rowStyle = {
+    flexDirection: "row",
+    display: "flex",
+    justifyContent: "center",
+    alignItems:"center"
+  }
+
+  return (
+    <div>
+      <Typography
+        variant="body1"
+        align="center">
+        <br />
+        {today}
+      </Typography>
+      <Typography
+        variant="body1"
+        align="center">
+        {tablet.Open[fin]}: {hours[0]} - {hours[1]}
+      </Typography>
+      &nbsp;
+      
+      <div style={rowStyle}>
+        <Button
+          style={{color:"black", backgroundColor:statusColor, borderRadius: 30, width: 250}}
+          size='large'
+          fullwidth
+          disabled>
+          {statusText}
+        </Button>
+      </div>
+
+      <Typography
+        variant="body1"
+        align="center">
+        <br />
+        {tablet.HelperFirst[fin]}
+      </Typography>
+
+      &nbsp;
+      <div style={rowStyle}>
+        <Button
+          style={{fontSize: 20, backgroundColor: '#658f60', borderRadius: 50, width:250, height:100}}
+          size='large'
+          variant='contained'>
+          {tablet.Green[fin]}
+        </Button>
+        &nbsp;
+        <Button
+          style={{fontSize: 20, backgroundColor:'#f2c66d', borderRadius: 50, width:250, height:100}}
+          size='large'
+          variant='contained'>
+          {tablet.Orange[fin]}
+        </Button>
+        &nbsp;
+        <Button
+          style={{fontSize: 20, backgroundColor:'#c97b7b', borderRadius: 50, width:250, height:100}}
+          size='large'
+          variant='contained'>
+          {tablet.Red[fin]}
+        </Button>
+      </div>
+      
+      &nbsp;
+      <Typography
+        variant="body1"
+        align="center">
+        {tablet.HelperSecond[fin]}
+      </Typography>
+
+
+      <div>
+        <Rows tracks={tracks} />
+      </div>
+      
+    </div>
+    
+  )
+
+
+
+}
+
+export default Tabletview;
