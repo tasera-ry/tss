@@ -110,6 +110,7 @@ const SignIn = () => {
             value={name}
             error={mistake}
             onInput={e => setName(e.target.value)}
+            style={{color:'#5f77a1'}}
           />
           <TextField
             variant="outlined"
@@ -127,30 +128,23 @@ const SignIn = () => {
             onInput={e => setPassword(e.target.value)}
           />
 
-          <Link>
             <Button
               onClick={login}
-              type="submit"
               fullWidth
               variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
+              style={{backgroundColor:'#5f77a1'}}>
               {signin.LogIn[fin]}
             </Button>
-          </Link>
 
-          <Link>
+          &nbsp;
+          
             <Button
               onClick={() => history.goBack()}
               type="submit"
               fullWidth
-              color="primary"
-              className={classes.submit}
-            >
+              style={{color:'#5f77a1'}}>
               {signin.Back[fin]}
             </Button>
-          </Link>
 
         </form>
       </div>

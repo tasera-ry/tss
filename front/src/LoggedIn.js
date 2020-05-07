@@ -22,19 +22,19 @@ const DropDowns = (props) => {
   let id = props.d;
   let obj = props.changes.find(o => o.date===id);
   let text = props.sv.Present[fin];
-  let color = "white";
+  let color = "#f2f0eb";
   if(obj.range_supervisor==="confirmed" || obj.range_supervisor==="en route") {
     text = props.sv.Confirmed[fin];
-    color = "green";
+    color = "#658f60";
   }
   if(obj.range_supervisor==="absent") {
     text = props.sv.Absent[fin];
-    color = "red";
+    color = "#c97b7b";
   }  
   const [buttonText, setButtonText] = useState(text);
   const [buttonColor, setButtonColor] = useState(color);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [disable, setDisable] = useState(buttonColor!=="green");
+  const [disable, setDisable] = useState(buttonColor!=="#658f60");
   
   const styleB = {
     left:270,
@@ -45,7 +45,7 @@ const DropDowns = (props) => {
     backgroundColor:`${buttonColor}`
   }
   const discardChanges = {
-    color:"lightgray"
+    color:"#b0aca0"
   }
 
   const handleClick = (event) => {
@@ -58,19 +58,19 @@ const DropDowns = (props) => {
 
     if(event.currentTarget.dataset.info==="") {
       setButtonText(props.sv.Present[fin])
-      setButtonColor("white");
+      setButtonColor("#f2f0eb");
       setDisable(true);
       obj.range_supervisor = "not confirmed";
     }
     if(event.currentTarget.dataset.info==="y") {
       setButtonText(props.sv.Confirmed[fin])
-      setButtonColor("green");
+      setButtonColor("#658f60");
       setDisable(false);
       obj.range_supervisor = "confirmed";
     }
     if(event.currentTarget.dataset.info==="n") {
       setButtonText(props.sv.Absent[fin]);
-      setButtonColor("red");
+      setButtonColor("#c97b7b");
       setDisable(true);
       obj.range_supervisor = "absent";
     }
@@ -137,7 +137,7 @@ const Check = ({HandleChange, checked, sv, disable}) => {
       <FormControlLabel disabled={disable} control={
         <Checkbox
           checked={checked}
-          style={{color:"orange"}}
+          style={{color:"#f2c66d"}}
         onChange={HandleChange}
         />}
                         label={sv.EnRoute[fin]} />
@@ -397,15 +397,16 @@ const Logic = ({schedules, setSchedules, noSchedule, checked,
 
           <Button
             variant='contained'
-            onClick={()=> setOpen(false)}>
+            onClick={()=> setOpen(false)}
+         style={{backgroundColor:'#ede9e1'}} >
             {sv.Cancel[fin]}
           </Button>
 
           {done && !noSchedule ?
            <Button
-             color='primary'
              variant='contained'
-             onClick={HandleClose}>
+             onClick={HandleClose}
+             style={{backgroundColor:'#5f77a1'}}>
              {sv.Save[fin]}
            </Button>
            : ""
