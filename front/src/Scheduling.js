@@ -794,8 +794,8 @@ class Scheduling extends Component {
                 onChange={this.handleRadioChange}
                 value={ this.state[tracks[key].id] || 'absent'}
               >
-                <FormControlLabel value="present" control={<Radio />} label={sched.SP[fin]} />
-                <FormControlLabel value="absent" control={<Radio />} label={sched.SA[fin]} />
+                <FormControlLabel value="present" control={<Radio />} label={sched.OfficerPresent[fin]} />
+                <FormControlLabel value="absent" control={<Radio />} label={sched.OfficerAbsent[fin]} />
                 <FormControlLabel value="closed" control={<Radio />} label={sched.Closed[fin]} />
               </RadioGroup>
               <TextareaAutosize
@@ -839,7 +839,7 @@ class Scheduling extends Component {
 
     return (
       <FormControl>
-        <InputLabel id="chooserangeSupervisorLabel">{sched.CS[fin]}</InputLabel>
+        <InputLabel id="chooserangeSupervisorLabel">{sched.Select[fin]}</InputLabel>
         <Select
           {...disabled && {disabled: true}}
           labelId="chooserangeSupervisorLabel"
@@ -912,7 +912,7 @@ class Scheduling extends Component {
             {this.createSupervisorSelect()}
           </div>
           <div className="bottomRow">
-            <div className="text">{sched.OH[fin]}</div>
+            <div className="text">{sched.OpenHours[fin]}</div>
             <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
               <KeyboardTimePicker
                 autoOk
@@ -957,7 +957,7 @@ class Scheduling extends Component {
         <div className="fourthSection">
           <div className="repetition">
             <div className="daily">
-              {sched.RD[fin]}
+              {sched.RepeatDaily[fin]}
               <Switch
                 checked={ this.state.daily }
                 onChange={this.handleRepeatChange}
@@ -965,7 +965,7 @@ class Scheduling extends Component {
               />
             </div>
             <div className="weekly">
-              {sched.RW[fin]}
+              {sched.RepeatWeekly[fin]}
               <Switch
                 checked={ this.state.weekly }
                 onChange={this.handleRepeatChange}
@@ -973,7 +973,7 @@ class Scheduling extends Component {
               />
             </div>
             <div className="monthly">
-              {sched.RM[fin]}
+              {sched.RepeatMonthly[fin]}
               <Switch
                 checked={ this.state.monthly }
                 onChange={this.handleRepeatChange}

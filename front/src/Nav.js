@@ -78,7 +78,7 @@ const BasicMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut, navStyle,
       </Link>
 
       <Link style={navStyle} to="/">
-        <MenuItem onClick={HandleSignOut}> {nav.SO[fin]} </MenuItem>
+        <MenuItem onClick={HandleSignOut}> {nav.SignOut[fin]} </MenuItem>
       </Link>
     </Menu>
   )
@@ -99,7 +99,7 @@ const SuperMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut,
       </Link>
 
       <Link style={navStyle} to="/usermanagement">
-        <MenuItem> {nav.UM[fin]} </MenuItem>
+        <MenuItem> {nav.UserManagement[fin]} </MenuItem>
       </Link>
 
       <MenuItem onClick={() => setOpenDial(true)}> {nav.Supervision[fin]} </MenuItem>
@@ -109,7 +109,7 @@ const SuperMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut,
       </Link>
 
       <Link style={navStyle} to="/">
-        <MenuItem onClick={HandleSignOut}> {nav.SO[fin]} </MenuItem>
+        <MenuItem onClick={HandleSignOut}> {nav.SignOut[fin]} </MenuItem>
       </Link>
     </Menu>
   )
@@ -169,7 +169,7 @@ const Nav = () => {
        <Link to="/signin">
          <Button
            size="small">
-           {nav.SI[fin]}
+           {nav.SignIn[fin]}
          </Button>
        </Link>
        :
