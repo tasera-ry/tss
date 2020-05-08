@@ -10,20 +10,29 @@ import axios from 'axios';
 
 import { dayToString } from "./utils/Utils";
 
-async function getColors(tracks) {
+async function getColors(tracks, setTracks) {
+  const colors = {
+    green: '#658f60',
+    red: '#c97b7b',
+    white: '#f2f0eb',
+    orange: '#f2c66d'
+  }
   const copy = [...tracks]
   
   for(let i=0; i<copy.length; i++) {
-    if(copy[i].trackSupervision==="present") {copy[i].trackSupervision="green"}
-    if(copy[i].trackSupervision==="closed") {copy[i].trackSupervision="red"}
-    if(copy[i].trackSupervision==="absent") {copy[i].trackSupervision="white"}
+    let obj = copy[i];
+    if(copy[i].trackSupervision==="present") {obj.color=colors.green}
+    else if(copy[i].trackSupervision==="closed") {obj.color=colors.red}
+    else if(copy[i].trackSupervision==="absent") {obj.color=colors.white}
+    else if(copy[i].trackSupervision==="en route") {obj.color=colors.orange}
   }
 
-  console.log(copy)
-  return copy;
+  console.log(copy);
+  setTracks(copy)
 }
 
-const Rows = ({tracks, tablet, fin}) => {
+//shooting track rows
+const TrackRows = ({tracks, tablet, fin}) => {
   const rangeStyle = {
     flexDirection: "center",
     display: "inline-block",
@@ -34,25 +43,41 @@ const Rows = ({tracks, tablet, fin}) => {
     marginLeft: 15
   }
 
+
   
 
   return (
     tracks.map(track =>
                <div key={track.id} style={rangeStyle}>
-
+                 
                  <Typography
                    align="center">
                    {track.name}
                  </Typography>
-                 
-                 <Button
-                   style={{backgroundColor:`${track.trackSupervision}`, borderRadius: 30, width: 100}}
-                   size='medium'>
-                   {track.trackSupervision}
-                 </Button>
+
+                 <TrackButtons track={track} tablet={tablet} fin={fin}/>
+
                </div>
               )
   )
+}
+
+const TrackButtons = ({track, tablet, fin}) => {
+
+  let text = tablet.Present[fin];
+  if (track.trackSupervision==="absent") { text = tablet.Absent[fin]; }
+  else if (track.trackSupervision==="closed") { text = tablet.Closed[fin]; }
+
+  return (
+    
+    <Button
+      style={{backgroundColor:`${track.color}`, borderRadius: 30, width: 100}}
+      size='medium'>
+      {text}
+    </Button>
+
+  )
+  
 }
 
 //haetaan oikea teksti päävalvojan ilmoitukseen
@@ -66,7 +91,6 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText) 
       console.log(response)
       setHours([moment(response.open, 'h:mm').format('H.mm'),
                 moment(response.close, 'h:mm').format('H.mm')]);
-      setTracks(response.tracks);
 
       if (response.rangeSupervision === 'present') {
         setStatusText(tablet.SuperGreen[fin]);
@@ -86,7 +110,9 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText) 
       else {
         setStatusText("Päävalvoja ei asetettu");
       }
-    })
+      getColors(response.tracks, setTracks)
+    }
+	 )
   
   return "text";
 }
@@ -117,6 +143,12 @@ const Tabletview = () => {
     justifyContent: "center",
     alignItems:"center"
   }
+  const buttonStyle = {
+    color: "black",
+    backgroundColor: statusColor,
+    borderRadius: 30,
+    width: 250
+  }
 
   return (
     <div>
@@ -135,7 +167,7 @@ const Tabletview = () => {
       
       <div style={rowStyle}>
         <Button
-          style={{color:"black", backgroundColor:statusColor, borderRadius: 30, width: 250}}
+          style={buttonStyle}
           size='large'
           fullwidth
           disabled>
@@ -156,21 +188,21 @@ const Tabletview = () => {
           style={{fontSize: 20, backgroundColor: '#658f60', borderRadius: 50, width:250, height:100}}
           size='large'
           variant='contained'>
-          {tablet.Green[fin]}
+          {tablet.Present[fin]}
         </Button>
         &nbsp;
         <Button
           style={{fontSize: 20, backgroundColor:'#f2c66d', borderRadius: 50, width:250, height:100}}
           size='large'
           variant='contained'>
-          {tablet.Orange[fin]}
+          {tablet.EnRoute[fin]}
         </Button>
         &nbsp;
         <Button
           style={{fontSize: 20, backgroundColor:'#c97b7b', borderRadius: 50, width:250, height:100}}
           size='large'
           variant='contained'>
-          {tablet.Red[fin]}
+          {tablet.Closed[fin]}
         </Button>
       </div>
       
@@ -183,7 +215,7 @@ const Tabletview = () => {
 
 
       <div>
-        <Rows tracks={tracks} />
+      <TrackRows tracks={tracks} tablet={tablet} fin={fin} />
       </div>
       
     </div>
