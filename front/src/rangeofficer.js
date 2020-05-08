@@ -139,7 +139,6 @@ async function getColors(tracks, setTracks) {
   setTracks(copy)
 }
 
-//haetaan oikea teksti päävalvojan ilmoitukseen
 async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId) {
 
   let date = moment(Date.now()).format("YYYY-MM-DD");
@@ -172,12 +171,11 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
         setStatusColor(colors.blue);
       }
       else {
-        setStatusText("Päävalvoja ei asetettu");
+        setStatusText(tablet.SuperWhite[fin]);
+	setStatusColor(colors.white);
       }
       getColors(response.tracks, setTracks)
     })
-  
-  return "text";
 }
 
 const Tabletview = () => {
