@@ -10,13 +10,122 @@ import axios from 'axios';
 
 import { dayToString } from "./utils/Utils";
 
-async function getColors(tracks, setTracks) {
-  const colors = {
-    green: '#658f60',
-    red: '#c97b7b',
-    white: '#f2f0eb',
-    orange: '#f2c66d'
+const colors = {
+  green: '#658f60',
+  red: '#c97b7b',
+  white: '#f2f0eb',
+  orange: '#f2c66d',
+  lightgreen: '#b2d9ad',
+  blue: '#95d5db'
+}
+const rowStyle = {
+  flexDirection: "row",
+  display: "flex",
+  justifyContent: "center",
+  alignItems:"center"
+}
+const greenButtonStyle = {
+  fontSize: 17,
+  backgroundColor: colors.green,
+  borderRadius: 50,
+  width:250,
+  height:100
+}
+const orangeButtonStyle = {
+  fontSize: 17,
+  backgroundColor: colors.orange,
+  borderRadius: 50,
+  width:250,
+  height:100
+}
+const redButtonStyle = {
+  fontSize: 17,
+  backgroundColor: colors.red,
+  borderRadius: 50,
+  width:250,
+  height:100
+}
+const rangeStyle = {
+  flexDirection: "center",
+  display: "inline-block",
+  alignItems: "center",
+  textAlign: "center",
+  justifyContents: "center",
+  padding: 20,
+  marginLeft: 15
+}
+
+//shooting track rows
+const TrackRows = ({tracks, setTracks, scheduleId, tablet, fin}) => {
+  return (
+    tracks.map(track =>
+               <div key={track.id} style={rangeStyle}>
+                 <Typography
+                   align="center">
+                   {track.name}
+                 </Typography>
+
+                 <TrackButtons track={track} tracks={tracks} setTracks={setTracks}
+                               scheduleId={scheduleId}
+	                       tablet={tablet} fin={fin}/>
+               </div>
+              )
+  )
+}
+
+const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
+  const buttonStyle = {
+    backgroundColor:`${track.color}`,
+    borderRadius: 30,
+    width: 100
   }
+  
+  const [buttonColor, setButtonColor] = useState(track.color);
+
+  let text = tablet.Green[fin];
+  if (track.trackSupervision==="absent") { text = tablet.White[fin]; }
+  else if (track.trackSupervision==="closed") { text = tablet.Red[fin]; }
+
+  const HandleClick = () => {
+    let newSupervision = "absent";
+    track.color=colors.white;
+    
+    if(track.trackSupervision==="absent") {
+      newSupervision="closed";
+      track.color=colors.red;
+    }
+    else if(track.trackSupervision==="closed") {
+      newSupervision="present";
+      track.color=colors.green;
+    }
+
+    track.trackSupervision = newSupervision;
+    setButtonColor(track.color);
+    
+    let token = localStorage.getItem("token");
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    
+    let query = "/api/track-supervision/" + scheduleId + "/" + track.id;
+    axios.put(query,
+              {
+                track_supervisor: newSupervision
+              }, config)
+  }
+
+  return (
+    <Button
+      style={buttonStyle}
+      size='large'
+      variant={'contained'}
+      onClick={HandleClick}>
+      {text}
+    </Button>
+  )
+}
+
+async function getColors(tracks, setTracks) {
   const copy = [...tracks]
   
   for(let i=0; i<copy.length; i++) {
@@ -27,127 +136,100 @@ async function getColors(tracks, setTracks) {
     else if(copy[i].trackSupervision==="en route") {obj.color=colors.orange}
   }
 
-  console.log(copy);
   setTracks(copy)
 }
 
-//shooting track rows
-const TrackRows = ({tracks, tablet, fin}) => {
-  const rangeStyle = {
-    flexDirection: "center",
-    display: "inline-block",
-    alignItems: "center",
-    textAlign: "center",
-    justifyContents: "center",
-    padding: 20,
-    marginLeft: 15
-  }
-
-
-  
-
-  return (
-    tracks.map(track =>
-               <div key={track.id} style={rangeStyle}>
-                 
-                 <Typography
-                   align="center">
-                   {track.name}
-                 </Typography>
-
-                 <TrackButtons track={track} tablet={tablet} fin={fin}/>
-
-               </div>
-              )
-  )
-}
-
-const TrackButtons = ({track, tablet, fin}) => {
-
-  let text = tablet.Present[fin];
-  if (track.trackSupervision==="absent") { text = tablet.Absent[fin]; }
-  else if (track.trackSupervision==="closed") { text = tablet.Closed[fin]; }
-
-  return (
-    
-    <Button
-      style={{backgroundColor:`${track.color}`, borderRadius: 30, width: 100}}
-      size='medium'>
-      {text}
-    </Button>
-
-  )
-  
-}
-
 //haetaan oikea teksti päävalvojan ilmoitukseen
-async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText) {
+async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId) {
 
   let date = moment(Date.now()).format("YYYY-MM-DD");
 
   await fetch(`/api/datesupreme/${date}`)
     .then(res => res.json())
     .then(response => {
-      console.log(response)
+      setScheduleId(response.scheduleId);
       setHours([moment(response.open, 'h:mm').format('H.mm'),
                 moment(response.close, 'h:mm').format('H.mm')]);
 
       if (response.rangeSupervision === 'present') {
         setStatusText(tablet.SuperGreen[fin]);
+        setStatusColor(colors.green);
       } 
       else if (response.rangeSupervision === 'en route') {
         setStatusText(tablet.SuperOrange[fin]);
+        setStatusColor(colors.orange);
       } 
-      else if (response.rangeSupervision === 'closed') {
+      else if (response.rangeSupervision === 'absent') {
         setStatusText(tablet.Red[fin]);
+        setStatusColor(colors.red);
       }
       else if (response.rangeSupervision === 'confirmed') {
         setStatusText(tablet.SuperLightGreen[fin]);
+        setStatusColor(colors.lightgreen);
       }
       else if (response.rangeSupervision === 'not confirmed') {
         setStatusText(tablet.SuperBlue[fin]);
+        setStatusColor(colors.blue);
       }
       else {
         setStatusText("Päävalvoja ei asetettu");
       }
       getColors(response.tracks, setTracks)
-    }
-	 )
+    })
   
   return "text";
 }
 
-//haetaan oikea väri päävalvojan ilmoitukseen
-function getStatusColor() {
-  return "green";
-}
-
 const Tabletview = () => {
-  const [statusColor, settatusColor] = useState("#c97b7b");
+  const [statusColor, setStatusColor] = useState();
   const [statusText, setStatusText] = useState();
   const [hours, setHours] = useState([]);
   const [tracks, setTracks] = useState([]);
+  const [scheduleId, setScheduleId] = useState();
   const fin = localStorage.getItem("language");
   const {tablet} = data;
   let today = moment().format("DD.MM.YYYY");
 
-  useEffect(() => {
-    getData(tablet, fin, setHours, tracks, setTracks, setStatusText);
-    getStatusColor();
-  }, []);
-
-
-  const rowStyle = {
-    flexDirection: "row",
-    display: "flex",
-    justifyContent: "center",
-    alignItems:"center"
-  }
-  const buttonStyle = {
+  const statusStyle = {
     color: "black",
     backgroundColor: statusColor,
-    borderRadius: 30,
-    width: 250
+    borderRadius: 3,
+    width: 300
+  }
+  
+  useEffect(() => {
+    getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId);
+  }, []);
+
+  const HandlePresentClick = () => {
+    setStatusColor(colors.green);
+    setStatusText(tablet.SuperGreen[fin]);
+    updateSupervisor("present");
+  }
+
+  const HandleEnRouteClick = () => {
+    setStatusColor(colors.orange);
+    setStatusText(tablet.SuperOrange[fin]);
+    updateSupervisor("en route");
+  }
+
+  const HandleClosedClick = () => {
+    setStatusColor(colors.red);
+    setStatusText(tablet.Red[fin]);
+    updateSupervisor("absent");
+  }
+
+  async function updateSupervisor(status) {
+    let token = localStorage.getItem("token");
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+
+    let query = "api/range-supervision/" + scheduleId;
+    await axios.put(query,
+                    {
+                      range_supervisor:status
+                    }, config)
   }
 
   return (
@@ -167,8 +249,9 @@ const Tabletview = () => {
       
       <div style={rowStyle}>
         <Button
-          style={buttonStyle}
+          style={statusStyle}
           size='large'
+          variant='outlined'
           fullwidth
           disabled>
           {statusText}
@@ -182,27 +265,29 @@ const Tabletview = () => {
         {tablet.HelperFirst[fin]}
       </Typography>
 
-      &nbsp;
       <div style={rowStyle}>
         <Button
-          style={{fontSize: 20, backgroundColor: '#658f60', borderRadius: 50, width:250, height:100}}
+          style={greenButtonStyle}
           size='large'
-          variant='contained'>
-          {tablet.Present[fin]}
+          variant='contained'
+          onClick={HandlePresentClick}>
+          {tablet.Green[fin]}
         </Button>
         &nbsp;
         <Button
-          style={{fontSize: 20, backgroundColor:'#f2c66d', borderRadius: 50, width:250, height:100}}
+          style={orangeButtonStyle}
           size='large'
-          variant='contained'>
-          {tablet.EnRoute[fin]}
+          variant='contained'
+          onClick={HandleEnRouteClick}>
+          {tablet.Orange[fin]}
         </Button>
         &nbsp;
         <Button
-          style={{fontSize: 20, backgroundColor:'#c97b7b', borderRadius: 50, width:250, height:100}}
+          style={redButtonStyle}
           size='large'
-          variant='contained'>
-          {tablet.Closed[fin]}
+          variant='contained'
+          onClick={HandleClosedClick}>
+          {tablet.Red[fin]}
         </Button>
       </div>
       
@@ -213,17 +298,12 @@ const Tabletview = () => {
         {tablet.HelperSecond[fin]}
       </Typography>
 
-
-      <div>
-      <TrackRows tracks={tracks} tablet={tablet} fin={fin} />
-      </div>
+      <TrackRows tracks={tracks} tracks={tracks} setTracks={setTracks}
+                 scheduleId={scheduleId} tablet={tablet} fin={fin} />
       
     </div>
     
   )
-
-
-
 }
 
 export default Tabletview;
