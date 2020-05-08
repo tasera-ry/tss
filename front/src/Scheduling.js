@@ -28,7 +28,15 @@ import { getSchedulingDate } from "./utils/Utils";
 import * as data from './texts/texts.json';
 import moment from 'moment';
 import "moment/locale/fi";
-moment.locale("fi");
+
+let lang = "fi"; //fallback
+if(localStorage.getItem("language") === '0') {
+  lang = 'fi';
+}
+else if(localStorage.getItem("language") === '1'){
+  lang = 'en';
+}
+moment.locale(lang);
 
 async function getRangeSupervisors(token){
   try{
@@ -70,14 +78,16 @@ class Scheduling extends Component {
         weekly:false,
         monthly:false,
         repeatCount:1,
-        token:'SECRET-TOKEN'
+        token:'SECRET-TOKEN',
+        datePickerKey:1
       };
   }
   
   componentDidMount(){
     console.log("MOUNTED",localStorage.getItem('token'));
     this.setState({
-      token: localStorage.getItem('token')
+      token: localStorage.getItem('token'),
+      datePickerKey: Math.random() //force datepicker to re-render when language changed
     },function(){
       if(this.state.token === 'SECRET-TOKEN'){
         this.props.history.push("/");
@@ -794,9 +804,12 @@ class Scheduling extends Component {
                 onChange={this.handleRadioChange}
                 value={ this.state[tracks[key].id] || 'absent'}
               >
-                <FormControlLabel value="present" control={<Radio />} label={sched.SP[fin]} />
-                <FormControlLabel value="absent" control={<Radio />} label={sched.SA[fin]} />
-                <FormControlLabel value="closed" control={<Radio />} label={sched.Closed[fin]} />
+                <FormControlLabel value="present" control={
+                  <Radio style={{fontColor:'black', color:'#5f77a1'}} />} label={sched.OfficerPresent[fin]} />
+                <FormControlLabel value="absent" control={
+                  <Radio style={{fontColor:'black', color:'#5f77a1'}} />} label={sched.OfficerAbsent[fin]} />
+                <FormControlLabel value="closed" control={
+                  <Radio style={{fontColor:'black', color:'#5f77a1'}} />} label={sched.Closed[fin]} />
               </RadioGroup>
               <TextareaAutosize
                 className="notice"
@@ -807,6 +820,7 @@ class Scheduling extends Component {
                 rowsMax={3}
                 onChange={this.handleNotice}
                 value={tracks[key].notice !== null ? tracks[key].notice : ''}
+                style={{backgroundColor:'#f2f0eb'}}
               />
           </FormControl>
         </React.Fragment>
@@ -839,7 +853,7 @@ class Scheduling extends Component {
 
     return (
       <FormControl>
-        <InputLabel id="chooserangeSupervisorLabel">{sched.CS[fin]}</InputLabel>
+        <InputLabel id="chooserangeSupervisorLabel">{sched.Select[fin]}</InputLabel>
         <Select
           {...disabled && {disabled: true}}
           labelId="chooserangeSupervisorLabel"
@@ -871,7 +885,7 @@ class Scheduling extends Component {
         </Modal>
         <div className="firstSection">
           <form onSubmit={this.continueWithDate}>
-            <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
+            <MuiPickersUtilsProvider utils={MomentUtils} locale={lang} key={this.state.datePickerKey}>
               <KeyboardDatePicker
                 autoOk
                 margin="normal"
@@ -885,7 +899,7 @@ class Scheduling extends Component {
               />
             </MuiPickersUtilsProvider>
             <div className="continue">
-              <Button type="submit" variant="contained">{sched.Day[fin]}</Button>
+              <Button type="submit" variant="contained" style={{backgroundColor:'#d1ccc2'}}>{sched.Day[fin]}</Button>
             </div>
           </form>
         </div>
@@ -897,6 +911,8 @@ class Scheduling extends Component {
               checked={ this.state.available }
               onChange={this.handleSwitchChange}
               name="available"
+              color="default"
+              style={{color:'#5f77a1'}}
             />
           </div>
           <div className="middleRow">
@@ -907,12 +923,14 @@ class Scheduling extends Component {
                 checked={this.state.rangeSupervisorSwitch}
                 onChange={this.handleSwitchChange}
                 name="rangeSupervisorSwitch"
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
             {this.createSupervisorSelect()}
           </div>
           <div className="bottomRow">
-            <div className="text">{sched.OH[fin]}</div>
+            <div className="text">{sched.OpenHours[fin]}</div>
             <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
               <KeyboardTimePicker
                 autoOk
@@ -948,36 +966,42 @@ class Scheduling extends Component {
             {this.createTrackList()}
           </div>
           <div className="rightSide">
-            <Button variant="contained" color="primary" onClick={this.openAllTracks}>{sched.OpenAll[fin]}</Button>
-            <Button variant="contained" onClick={this.emptyAllTracks}>{sched.ClearAll[fin]}</Button>
-            <Button variant="contained" color="secondary" onClick={this.closeAllTracks}>{sched.CloseAll[fin]}</Button>
+            <Button variant="contained" color="primary" onClick={this.openAllTracks} style={{color:'black', backgroundColor:'#5f77a1'}}>{sched.OpenAll[fin]}</Button>
+            <Button variant="contained" onClick={this.emptyAllTracks} style={{backgroundColor:'#d1ccc2'}}>{sched.ClearAll[fin]}</Button>
+        <Button variant="contained" color="secondary" onClick={this.closeAllTracks} style={{color:'black', backgroundColor:'#c97b7b'}}>{sched.CloseAll[fin]}</Button>
           </div>
         </div>
         <hr/>
         <div className="fourthSection">
           <div className="repetition">
             <div className="daily">
-              {sched.RD[fin]}
+              {sched.RepeatDaily[fin]}
               <Switch
                 checked={ this.state.daily }
                 onChange={this.handleRepeatChange}
                 id='daily'
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
             <div className="weekly">
-              {sched.RW[fin]}
+              {sched.RepeatWeekly[fin]}
               <Switch
                 checked={ this.state.weekly }
                 onChange={this.handleRepeatChange}
                 id='weekly'
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
             <div className="monthly">
-              {sched.RM[fin]}
+              {sched.RepeatMonthly[fin]}
               <Switch
                 checked={ this.state.monthly }
                 onChange={this.handleRepeatChange}
                 id='monthly'
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
             <div className="repeatCount">
@@ -992,7 +1016,7 @@ class Scheduling extends Component {
             </div>
           </div>
           <div className="save">
-            <Button variant="contained" onClick={this.saveChanges}>{sched.Save[fin]}</Button>
+            <Button variant="contained" onClick={this.saveChanges} style={{backgroundColor:'#d1ccc2'}}>{sched.Save[fin]}</Button>
             <div className="toast">
               <Snackbar open={this.state.toast} autoHideDuration={5000} onClose={this.handleSnackbarClose}>
                 <Alert onClose={this.handleSnackbarClose} severity={this.state.toastSeverity}>

@@ -22,29 +22,26 @@ const DropDowns = (props) => {
   let id = props.d;
   let obj = props.changes.find(o => o.date===id);
   let text = props.sv.Present[fin];
-  let color = "white";
+  let color = "#f2f0eb";
   if(obj.range_supervisor==="confirmed" || obj.range_supervisor==="en route") {
     text = props.sv.Confirmed[fin];
-    color = "green";
+    color = "#658f60";
   }
   if(obj.range_supervisor==="absent") {
     text = props.sv.Absent[fin];
-    color = "red";
+    color = "#c97b7b";
   }  
   const [buttonText, setButtonText] = useState(text);
   const [buttonColor, setButtonColor] = useState(color);
   const [anchorEl, setAnchorEl] = useState(null);
-  
-  const styleB = {
-    left:270,
-    position:"absolute"
+  const [disable, setDisable] = useState(buttonColor!=="#658f60");
 
-  }
   const buttonStyle = {
+    width: 180,
     backgroundColor:`${buttonColor}`
   }
   const discardChanges = {
-    color:"lightgray"
+    color:"#b0aca0"
   }
 
   const handleClick = (event) => {
@@ -57,17 +54,20 @@ const DropDowns = (props) => {
 
     if(event.currentTarget.dataset.info==="") {
       setButtonText(props.sv.Present[fin])
-      setButtonColor("white");
-      obj.range_supervisor = "present";
+      setButtonColor("#f2f0eb");
+      setDisable(true);
+      obj.range_supervisor = "not confirmed";
     }
     if(event.currentTarget.dataset.info==="y") {
       setButtonText(props.sv.Confirmed[fin])
-      setButtonColor("green");
+      setButtonColor("#658f60");
+      setDisable(false);
       obj.range_supervisor = "confirmed";
     }
     if(event.currentTarget.dataset.info==="n") {
       setButtonText(props.sv.Absent[fin]);
-      setButtonColor("red");
+      setButtonColor("#c97b7b");
+      setDisable(true);
       obj.range_supervisor = "absent";
     }
     props.changes.map(o => (o.date===id ? obj : o))
@@ -77,7 +77,7 @@ const DropDowns = (props) => {
   }
   
   return (
-    <span style={styleB}>
+    <span>
       
       <Button
         onClick={handleClick}
@@ -117,7 +117,8 @@ const DropDowns = (props) => {
 
       &nbsp;
       {props.today===props.d ?
-       <Check HandleChange={props.HandleChange} checked={props.checked} sv={props.sv} />
+       <Check HandleChange={props.HandleChange} checked={props.checked}
+              sv={props.sv} disable={disable} />
        : "" }
 
     </span>
@@ -125,17 +126,21 @@ const DropDowns = (props) => {
 }
 
 //prints matkalla-checkbox
-const Check = ({HandleChange, checked, sv}) => {
+const Check = ({HandleChange, checked, sv, disable}) => {
+  const checkboxStyle = {
+    color:'#f2c66d'
+  }
   let fin = localStorage.getItem("language");
+
   return (
     <>
-      <FormControlLabel control={
+      <br />
+      <FormControlLabel label={sv.EnRoute[fin]} disabled={disable} control={
         <Checkbox
           checked={checked}
-          style={{color:"orange"}}
-          onChange={HandleChange}
-        />}
-                        label={sv.EnRoute[fin]} />
+          style={checkboxStyle}
+          onChange={HandleChange} />
+      } />
       
     </>
   )
@@ -144,21 +149,24 @@ const Check = ({HandleChange, checked, sv}) => {
 //prints date info in rows
 const Rows = ({HandleChange, changes, checked, setDone, sv}) => {
   const styleA = {
-    padding:30,
-    marginLeft:30,
-    flexDirection:"row",
-    display:"inline-flex",
-    fontSize:18
+    padding:25,
+    textAlign: 'center'
   }
 
-  if(localStorage.getItem("language") === "1") {
+  let language = localStorage.getItem("language");
+  let num = 2;
+  if(language==="1") {
     moment.locale("en-ca");
+    num = 3;
   }
   
   setDone(true);
   
   function getWeekday(day) {
     day = moment(day).format('dddd')
+    if(window.innerWidth<800) {
+      return day.charAt(0).toUpperCase() + day.slice(1, num);
+    }
     return day.charAt(0).toUpperCase() + day.slice(1);
   }
 
@@ -172,9 +180,10 @@ const Rows = ({HandleChange, changes, checked, setDone, sv}) => {
   return (   
     changes.map(d =>
                 <div key={d.date} style={styleA}>
-                  {getWeekday(d.date)} {getDateString(d.date)}
+                  {getWeekday(d.date)} {getDateString(d.date)} &nbsp;
 		  <DropDowns d={d.date} today={today} changes={changes}
 		             HandleChange={HandleChange} checked={checked} sv={sv}  />
+                  
                 </div>  
                )
   )
@@ -209,8 +218,10 @@ async function getReservations(res) {
   for(let i=0; i<res.length; i++) {
     let query = "api/reservation?available=true&id=" + res[i].reservation_id;
     let response = await axios.get(query);
-    let d = moment(response.data[0].date).format("YYYY-MM-DD");
-    res[i].date = d
+    if(response.data.length>0) {
+      let d = moment(response.data[0].date).format("YYYY-MM-DD");
+      res[i].date = d
+    }
   }
 
   res = res.filter(obj => obj.date >= today);
@@ -255,7 +266,7 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
     await setDone(true);
     return;
   }
-  
+
   res = await getReservations(res);
   setSchedules(res);
   setChecked(res[0].range_supervisor==="en route");
@@ -357,42 +368,42 @@ const Logic = ({schedules, setSchedules, noSchedule, checked,
     <div>
       <Dialog
         open={open}
-        aria-labelledby="otsikko"
-        maxWidth='sm'
-        fullWidth={true}>
+        aria-labelledby="otsikko">
         
-      <DialogTitle id="otsikko">{sv.SC[fin]}</DialogTitle>
+        <DialogTitle id="otsikko">{sv.Header[fin]}</DialogTitle>
         <DialogContent>
+          
           <DialogContentText>
             {noSchedule ? sv.No[fin] : ""}
             {done ? "" : sv.Wait[fin]}
           </DialogContentText>
+
+          {schedules.length!==0 ?
+           <Rows HandleChange={HandleChange} changes={changes}
+                 checked={checked} setDone={setDone} sv={sv} />
+           : ""}
         </DialogContent>
-
-        {schedules.length!==0 ?
-         <Rows HandleChange={HandleChange} changes={changes}
-               checked={checked} setDone={setDone} sv={sv} />
-         : ""}
-
-        {wait ?
-           <div className={classes.root}>
-             <CircularProgress  />
-           </div>
-         : ""}
 
         <DialogActions>
 
+          {wait ?
+           <div className={classes.root}>
+             <CircularProgress  />
+           </div>
+           : ""}
+
           <Button
             variant='contained'
-            onClick={()=> setOpen(false)}>
+            onClick={()=> setOpen(false)}
+            style={{backgroundColor:'#ede9e1'}} >
             {sv.Cancel[fin]}
           </Button>
 
           {done && !noSchedule ?
            <Button
-             color='primary'
              variant='contained'
-             onClick={HandleClose}>
+             onClick={HandleClose}
+             style={{backgroundColor:'#5f77a1'}}>
              {sv.Save[fin]}
            </Button>
            : ""

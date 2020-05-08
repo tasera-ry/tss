@@ -94,7 +94,7 @@ const SignIn = () => {
       <CssBaseline />
       <div className={classes.paper}>
         <Typography component="h1" variant="h5">
-      {signin.SI[fin]}
+      {signin.SignIn[fin]}
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -110,6 +110,7 @@ const SignIn = () => {
             value={name}
             error={mistake}
             onInput={e => setName(e.target.value)}
+            style={{color:'#5f77a1'}}
           />
           <TextField
             variant="outlined"
@@ -117,7 +118,7 @@ const SignIn = () => {
             required
             fullWidth
             name="password"
-            label={signin.PW[fin]}
+            label={signin.Password[fin]}
             type="password"
             id="password"
             autoComplete="current-password"
@@ -127,30 +128,23 @@ const SignIn = () => {
             onInput={e => setPassword(e.target.value)}
           />
 
-          <Link>
             <Button
               onClick={login}
-              type="submit"
               fullWidth
               variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              {signin.LI[fin]}
+              style={{backgroundColor:'#5f77a1'}}>
+              {signin.LogIn[fin]}
             </Button>
-          </Link>
 
-          <Link>
+          &nbsp;
+          
             <Button
               onClick={() => history.goBack()}
               type="submit"
               fullWidth
-              color="primary"
-              className={classes.submit}
-            >
+              style={{color:'#5f77a1'}}>
               {signin.Back[fin]}
             </Button>
-          </Link>
 
         </form>
       </div>
