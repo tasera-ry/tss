@@ -43,13 +43,14 @@ class Dayview extends Component {
 
         this.setState({
           date: new Date(response.date),
-          tracks: response.tracks,
+          tracks: response.tracks.sort((a, b) => a.name > b.name ? 1 : a.name === b.name ? 0 : -1),
           rangeSupervision: response.rangeSupervision,
           opens: moment(response.open,'HH:mm').format('H.mm'),
           closes: moment(response.close,'HH:mm').format('H.mm')
         });
       } else console.error("getting info failed");
-    } 
+      console.log(this.state)
+    }
     request();
   }
 
@@ -84,7 +85,7 @@ class Dayview extends Component {
   render() {
     const fin = localStorage.getItem("language");
     const {dayview} = data;
-    
+
     function OfficerBanner(props) {
       let text;
       let color;
