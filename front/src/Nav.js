@@ -14,7 +14,7 @@ const SideMenu = ({setName, superuser, nav, fin}) => {
     color: "black",
     textDecoration: "none"
   };
-  
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [openDial, setOpenDial] = useState(false);
   let storage = window.localStorage;
@@ -72,7 +72,7 @@ const BasicMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut, navStyle,
       onClose={HandleClose}>
 
       <MenuItem onClick={() => setOpenDial(true)}> {nav.Supervision[fin]} </MenuItem>
-      
+
       <Link style={navStyle} to="/tablet">
         <MenuItem> {nav.Tablet[fin]} </MenuItem>
       </Link>
@@ -93,7 +93,7 @@ const SuperMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut,
       keepMounted
       anchorEl={anchorEl}
       onClose={HandleClose}>
-      
+
       <Link style={navStyle} to="/scheduling">
         <MenuItem onClick={HandleClick}> {nav.Schedule[fin]} </MenuItem>
       </Link>
@@ -101,6 +101,12 @@ const SuperMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut,
       <Link style={navStyle} to="/usermanagement">
         <MenuItem> {nav.UserManagement[fin]} </MenuItem>
       </Link>
+
+      <Link style={navStyle} to="/tracks">
+        <MenuItem>{nav.trackCRUD[fin]}</MenuItem>
+      </Link>
+
+
 
       <Link style={navStyle} to="/tablet">
         <MenuItem> {nav.Tablet[fin]} </MenuItem>
@@ -162,7 +168,7 @@ const Nav = () => {
       <Link style={logoStyle} to="/">
         {icon}
       </Link>
-      
+
       {name==="" ?
        <Link style={{textDecoration:'none'}} to="/signin">
          <Button
@@ -178,9 +184,9 @@ const Nav = () => {
         <Button onClick={()=> setLanguage(1)}>EN</Button>
         <Button onClick={()=> setLanguage(0)}>FI</Button>
       </span>
-      
+
       <SideMenu setName={setName} superuser={superuser} nav={nav} fin={fin} />
-      
+
     </nav>
   )
 }

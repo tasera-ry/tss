@@ -6,6 +6,7 @@
     "UserManagement": ["Käyttäjienhallinta", "User management"],
     "Supervision": ["Valvonnat", "Supervisions"],
     "Tablet": ["Tablettinäkymä", "Tablet view"],
+    "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
     "SignOut": ["Kirjaudu ulos", "Sign Out"]
   },
   "signin": {
@@ -122,5 +123,25 @@
     "RangeRed": ["Rata suljettu", "Range closed"],
     "Info": ["Lisätietoja", "Info"],
     "DayviewLink": ["Päivänäkymään", "Back to dayview"]
+  },
+  "tracks": {
+    "tableHeaderName": ["Nimi", "Name"],
+    "tableHeaderDescription": ["Kuvaus", "Description"],
+    "tableHeaderActions": ["Toiminnot", "Actions"],
+    "tableTitle": ["Radat", "Tracks"],
+    "tableSearchHint": ["Hae", "Search"],
+    "rowUpdateFail": ["Radan muokkaus epäonnistui", "Track update failed"],
+    "rowUpdateSuccess": ["Rataa muokattu", "Track updated"],
+    "pagination": ["{from}-{to}/{count}", "{from}-{to} of {count}"],
+    "emptyDataSourceMessage": ["Ei rivejä", "No rows to display"],
+    "editTooltip": ["Muokkaa", "Edit"],
+    "searchPlaceholder": ["Hae", "Search"],
+    "labelRowsSelect": ["riviä", "rows"],
+    "saveTooltip": ["Tallenna", "Save"],
+    "cancelTooltip": ["Peruuta", "Cancel"],
+    "nextTooltip": ["Seuraava sivu", "Next page"],
+    "previousTooltip": ["Edellinen sivu", "Previous page"],
+    "firstTooltip": ["Ensimmäinen sivu", "First page"],
+    "lastTooltip": ["Viimeinen sivu", "Last page"]
   }
 }
