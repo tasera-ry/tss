@@ -43,7 +43,7 @@ class Dayview extends Component {
 
         this.setState({
           date: new Date(response.date),
-          tracks: response.tracks.sort((a, b) => a.name > b.name ? 1 : a.name === b.name ? 0 : -1),
+          tracks: response.tracks,
           rangeSupervision: response.rangeSupervision,
           opens: moment(response.open,'HH:mm').format('H.mm'),
           closes: moment(response.close,'HH:mm').format('H.mm')
