@@ -1,457 +1,307 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import './App.css';
 import './rangeofficer.css';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import * as data from './texts/texts.json';
 import moment from 'moment'
+import axios from 'axios';
 
 import { dayToString } from "./utils/Utils";
 
-
-class RangeOfficerView extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            date: moment(Date.now()).format("YYYY-MM-DD"),
-            reservationId: null,
-            scheduleId: null,
-            rangeSupervision: null,
-            rangeSupervisionScheduled: false,
-            open: 16,
-            close: 20,
-            // Statuses: absent, present, closed, en route, confirmed, not confirmed
-            rangeSupervision: 'absent',
-            tracks:{},
-            token:null,
-            canUpdate:false
-        };
-    }
-
-    componentDidMount() {
-      console.log("MOUNTED",localStorage.getItem('token'));
-      this.setState({
-        token: localStorage.getItem('token')
-      },function(){
-        if(this.state.token === null){
-          this.props.history.push("/");
-        }
-        else{
-          try{
-            this.update();
-          }
-          catch(error){
-            console.error("init failed",error);
-          }
-        }
-      })
-    }
-
-    update() {
-        var date = this.state.date;
-        // TODO fetch info for current date
-        fetch(`/api/datesupreme/${date}`)
-            .then(res => res.json())
-            .then(response => {
-                console.log("date",response);
-                this.setState({
-                    date: response.date,
-                    rangeId: response.rangeId,
-                    reservationId: response.reservationId,
-                    scheduleId: response.scheduleId,
-                    open: response.open !== null ? 
-                      moment(response.open, 'h:mm:ss').format() :
-                      moment(response.date)
-                      .hour(0)
-                      .minute(0)
-                      .second(0),
-                    close: response.close !== null ? 
-                      moment(response.close, 'h:mm:ss').format() :
-                      moment(response.date)
-                      .hour(0)
-                      .minute(0)
-                      .second(0),
-                    rangeSupervision: response.rangeSupervision,
-                    rangeSupervisionScheduled: response.rangeSupervisionScheduled,
-                    tracks: response.tracks
-                },function(){
-                  console.log("state after update",this.state)
-                    if(this.state.reservationId === null && this.state.scheduleId === null){
-                      alert("either/both reservation schedule missing");
-                      this.setState({
-                        canUpdate:false
-                      })
-                    }else{
-                      this.setState({
-                        canUpdate:true
-                      })
-                    }
-                })
-            });
-    }
-
-    changeTrackStatus = (key) => {
-        console.log("change track status",key,this.state.tracks[key])
-        let newStatus;
-        if (this.state.tracks[key].trackSupervision === 'closed') {
-            newStatus = 'absent';
-        }
-        else if (this.state.tracks[key].trackSupervision === 'absent') {
-            newStatus = 'present';
-        }
-        else if (this.state.tracks[key].trackSupervision === 'present') {
-            newStatus = 'closed';
-        }
-        
-        let tracks = this.state.tracks;
-        tracks[key] = {
-          ...this.state.tracks[key],
-          trackSupervision:newStatus
-        };
-        
-        this.setState(
-            {
-                tracks: tracks
-            }, () => {
-                if(this.state.canUpdate){
-                    if(this.state.tracks[key].scheduled){
-                      fetch(`/api/track-supervision/${this.state.scheduleId}/${this.state.tracks[key].id}`, {
-                          method: "PUT",
-                          body: JSON.stringify({track_supervisor: newStatus}),
-                          headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${this.state.token}`
-                          }
-                      })
-                      .then(status => console.log(status));
-                    }
-                    else{
-                      fetch(`/api/track-supervision`, {
-                          method: "POST",
-                          body: JSON.stringify({
-                            scheduled_range_supervision_id:this.state.scheduleId,
-                            track_id:this.state.tracks[key].id,
-                            track_supervisor: newStatus
-                          }),
-                          headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${this.state.token}`
-                          }
-                      })
-                      .then(status => console.log(status));
-                    }
-                }else console.error("cannot update some parts (reservation or schedule) missing");
-            }
-        );
-    }
-
-    changeStatusOpen = () => {
-        this.setState(
-            {
-                rangeSupervision: 'present'
-            }, () => {
-                //reservation and schedule exist
-                if(this.state.canUpdate){
-                    //range supervision exists
-                    if(this.state.rangeSupervisionScheduled){
-                        fetch(`/api/reservation/${this.state.reservationId}`, {
-                            method: "PUT",
-                            body: JSON.stringify({available: true}),
-                            headers: {
-                              'Accept': 'application/json',
-                              'Content-Type': 'application/json',
-                              Authorization: `Bearer ${this.state.token}`
-                            }
-                        })
-                        .then(status => {
-                          console.log(status)
-                          fetch(`/api/range-supervision/${this.state.scheduleId}`, {
-                              method: "PUT",
-                              body: JSON.stringify({range_supervisor: 'present'}),
-                              headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${this.state.token}`
-                              }
-                          })
-                          .then(status => console.log(status));
-                        });
-                    }
-                    else{
-                        fetch(`/api/reservation/${this.state.reservationId}`, {
-                            method: "PUT",
-                            body: JSON.stringify({available: true}),
-                            headers: {
-                              'Accept': 'application/json',
-                              'Content-Type': 'application/json',
-                              Authorization: `Bearer ${this.state.token}`
-                            }
-                        })
-                        .then(status => {
-                          console.log(status)
-                          fetch(`/api/range-supervision`, {
-                              method: "POST",
-                              body: JSON.stringify({
-                                scheduled_range_supervision_id:this.state.scheduleId,
-                                range_supervisor: 'present'
-                              }),
-                              headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${this.state.token}`
-                              }
-                          })
-                          .then(status => console.log(status));
-                        });
-                    }
-                }else console.error("cannot update some parts (reservation or schedule) missing");
-            }
-        );
-    }
-
-    changeStatusComing = () => {
-        this.setState(
-            {
-                rangeSupervision: 'en route'
-            }, () => {
-                //reservation and schedule exist
-                if(this.state.canUpdate){
-                    //range supervision exists
-                    if(this.state.rangeSupervisionScheduled){
-                        fetch(`/api/reservation/${this.state.reservationId}`, {
-                            method: "PUT",
-                            body: JSON.stringify({available: true}),
-                            headers: {
-                              'Accept': 'application/json',
-                              'Content-Type': 'application/json',
-                              Authorization: `Bearer ${this.state.token}`
-                            }
-                        })
-                        .then(status => {
-                          console.log(status)
-                          fetch(`/api/range-supervision/${this.state.scheduleId}`, {
-                              method: "PUT",
-                              body: JSON.stringify({range_supervisor: 'en route'}),
-                              headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${this.state.token}`
-                              }
-                          })
-                          .then(status => console.log(status));
-                        });
-                    }
-                    else{
-                        fetch(`/api/reservation/${this.state.reservationId}`, {
-                            method: "PUT",
-                            body: JSON.stringify({available: true}),
-                            headers: {
-                              'Accept': 'application/json',
-                              'Content-Type': 'application/json',
-                              Authorization: `Bearer ${this.state.token}`
-                            }
-                        })
-                        .then(status => {
-                          console.log(status)
-                          fetch(`/api/range-supervision`, {
-                              method: "POST",
-                              body: JSON.stringify({
-                                scheduled_range_supervision_id:this.state.scheduleId,
-                                range_supervisor: 'en route'
-                              }),
-                              headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${this.state.token}`
-                              }
-                          })
-                          .then(status => console.log(status));
-                        });
-                    }
-                }else console.error("cannot update some parts (reservation or schedule) missing");
-            }
-        );
-    }
-
-    changeStatusClosed = () => {
-        this.setState(
-            {
-                rangeSupervision: 'closed'
-            }, () => {
-                if(this.state.canUpdate){
-                    fetch(`/api/reservation/${this.state.reservationId}`, {
-                        method: "PUT",
-                        body: JSON.stringify({available: 'false'}),
-                        headers: {
-                          'Accept': 'application/json',
-                          'Content-Type': 'application/json',
-                          Authorization: `Bearer ${this.state.token}`
-                        }
-                    })
-                    .then(status => console.log(status));
-                }else console.error("cannot update some parts (reservation or schedule) missing");
-            }
-        );
-    }
-
-    createOfficerStatus = (tablet, fin) => {
-        let newColor = "blue";
-        let table = [];
-        let status;
-
-        if (this.state.rangeSupervision === 'present') {
-            newColor = "green";
-            status = tablet.SuperGreen[fin];
-        } 
-        else if (this.state.rangeSupervision === 'en route') {
-            newColor = "orange";
-            status = tablet.SuperOrange[fin];
-        } 
-        else if (this.state.rangeSupervision === 'closed') {
-            newColor = "red";
-            status = tablet.Red[fin];
-        }
-        else if (this.state.rangeSupervision === 'confirmed') {
-            newColor = "lightGreen";
-            status = tablet.SuperLightGreen[fin];
-        }
-        else if (this.state.rangeSupervision === 'not confirmed') {
-            newColor = "blue";
-            status = tablet.SuperBlue[fin];
-        }
-        else {
-            newColor = "white";
-            status = "Päävalvoja ei asetettu";
-        }
-
-        table.push(
-            <div style={{ backgroundColor: `${newColor}` }} className = "rangeOfficerStatus">
-                {status}
-            </div>
-            );
-    return table;  
-    }
-
-    createTrackList = () => {
-      let items = [];
-      for (var key in this.state.tracks) {
-        items.push(
-          <React.Fragment>
-            <div className = "trackName">{this.state.tracks[key].name}</div>
-          </React.Fragment>
-        );
-      }
-
-      return (
-        <React.Fragment>
-          {items}
-        </React.Fragment>
-      );
-    }
-
-    createTrackStatuses = (tablet, fin) => {
-        // If blue color is seen, something has gone wrong.
-        let newColor = "blue";
-        let table = [];
-        let status;
-
-        for (var key in this.state.tracks) {
-            let trackToChange = `${key}`;
-            if (this.state.tracks[key].trackSupervision === 'present') {
-                newColor = "green";
-                status = tablet.Green[fin];
-            } 
-            else if (this.state.tracks[key].trackSupervision === 'absent') {
-                newColor = "white";
-                status = tablet.White[fin];
-            } 
-            else if (this.state.tracks[key].trackSupervision === 'closed') {
-                newColor = "red";
-                status = tablet.Red[fin];
-            }
-
-            table.push(
-                (<div 
-                className = "changeTrack" 
-                onClick={() => this.changeTrackStatus(trackToChange)}
-                style={{ backgroundColor: `${newColor}` }}
-                > {status} </div>)
-            );
-        }
-
-        return table;
-    }
-
-
-
-  render() {
-        const fin = localStorage.getItem("language");
-        const {tablet} = data;
-        console.log(this.state);
-
-        return(
-            <div className = "containsAll">
-
-                <div className = "dateInfo">
-                    <p> {dayToString(moment(this.state.date).format("d"))} {moment(this.state.date).format("DD.MM.YYYY")} </p>
-                    <p> {tablet.Open[fin]}: {moment(this.state.open).format('H.mm')}-{moment(this.state.close).format('H.mm')} </p>
-                </div>
-
-                {/* Tähän yksi iso laatikko, joka näyttää päävalvojan statuksen */}
-
-              {this.createOfficerStatus(tablet, fin)}
-
-                {/* Tähän alle kolme laatikkoa, joista valitaan päävalvojan status */}
-
-                <div className="midInfo">
-                  {tablet.HelperFirst[fin]}
-                </div>
-
-                <div className="midInfo">
-                    <div 
-                        className = "changeStatus"
-                        onClick={this.changeStatusOpen}
-                        style={{ backgroundColor: "green" }}
-                    >  {tablet.Green[fin]} </div>
-
-                    <div 
-                        className = "changeStatus"
-                        onClick={this.changeStatusComing}
-                        style={{ backgroundColor: "orange" }}
-                    >  {tablet.Orange[fin]} </div>
-
-                    <div 
-                        className = "changeStatus"
-                        onClick={this.changeStatusClosed}
-                        style={{ backgroundColor: "red" }}
-                    >  {tablet.Red[fin]} </div>
-                </div>
-                <br></br><br></br><br></br>
-
-                {/* Tähän 7 laatikkoa, jotka ovat ratojen päävalvojien statukset */}
-
-                <div className="midInfo">
-                  {tablet.HelperSecond[fin]}
-                </div>
-
-                <br></br>
-
-                <div className="midInfo">
-                    {this.createTrackList()}
-                </div>
-
-                <br></br><br></br>
-
-                <div className="midInfo">
-                  {this.createTrackStatuses(tablet, fin)}
-                </div>
-
-            </div>
-
-        )
-    }
+const colors = {
+  green: '#658f60',
+  red: '#c97b7b',
+  white: '#f2f0eb',
+  orange: '#f2c66d',
+  lightgreen: '#b2d9ad',
+  blue: '#95d5db'
+}
+const rowStyle = {
+  flexDirection: "row",
+  display: "flex",
+  justifyContent: "center",
+  alignItems:"center"
+}
+const greenButtonStyle = {
+  fontSize: 17,
+  backgroundColor: colors.green,
+  borderRadius: 50,
+  width:250,
+  height:100
+}
+const orangeButtonStyle = {
+  fontSize: 17,
+  backgroundColor: colors.orange,
+  borderRadius: 50,
+  width:250,
+  height:100
+}
+const redButtonStyle = {
+  fontSize: 17,
+  backgroundColor: colors.red,
+  borderRadius: 50,
+  width:250,
+  height:100
+}
+const rangeStyle = {
+  flexDirection: "center",
+  display: "inline-block",
+  alignItems: "center",
+  textAlign: "center",
+  justifyContents: "center",
+  padding: 20,
+  marginLeft: 15
 }
 
-export default RangeOfficerView;
+//shooting track rows
+const TrackRows = ({tracks, setTracks, scheduleId, tablet, fin}) => {
+  return (
+    tracks.map(track =>
+               <div key={track.id} style={rangeStyle}>
+                 <Typography
+                   align="center">
+                   {track.name}
+                 </Typography>
+
+                 <TrackButtons track={track} tracks={tracks} setTracks={setTracks}
+                               scheduleId={scheduleId}
+	                       tablet={tablet} fin={fin}/>
+               </div>
+              )
+  )
+}
+
+const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
+  const buttonStyle = {
+    backgroundColor:`${track.color}`,
+    borderRadius: 30,
+    width: 100
+  }
+  
+  const [buttonColor, setButtonColor] = useState(track.color);
+
+  let text = tablet.Green[fin];
+  if (track.trackSupervision==="absent") { text = tablet.White[fin]; }
+  else if (track.trackSupervision==="closed") { text = tablet.Red[fin]; }
+
+  const HandleClick = () => {
+    let newSupervision = "absent";
+    track.color=colors.white;
+    
+    if(track.trackSupervision==="absent") {
+      newSupervision="closed";
+      track.color=colors.red;
+    }
+    else if(track.trackSupervision==="closed") {
+      newSupervision="present";
+      track.color=colors.green;
+    }
+
+    track.trackSupervision = newSupervision;
+    setButtonColor(track.color);
+    
+    let token = localStorage.getItem("token");
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    
+    let query = "/api/track-supervision/" + scheduleId + "/" + track.id;
+    axios.put(query,
+              {
+                track_supervisor: newSupervision
+              }, config)
+  }
+
+  return (
+    <Button
+      style={buttonStyle}
+      size='large'
+      variant={'contained'}
+      onClick={HandleClick}>
+      {text}
+    </Button>
+  )
+}
+
+async function getColors(tracks, setTracks) {
+  const copy = [...tracks]
+  
+  for(let i=0; i<copy.length; i++) {
+    let obj = copy[i];
+    if(copy[i].trackSupervision==="present") {obj.color=colors.green}
+    else if(copy[i].trackSupervision==="closed") {obj.color=colors.red}
+    else if(copy[i].trackSupervision==="absent") {obj.color=colors.white}
+    else if(copy[i].trackSupervision==="en route") {obj.color=colors.orange}
+  }
+
+  setTracks(copy)
+}
+
+async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId) {
+
+  let date = moment(Date.now()).format("YYYY-MM-DD");
+
+  await fetch(`/api/datesupreme/${date}`)
+    .then(res => res.json())
+    .then(response => {
+      setScheduleId(response.scheduleId);
+      setHours([moment(response.open, 'h:mm').format('H.mm'),
+                moment(response.close, 'h:mm').format('H.mm')]);
+
+      if (response.rangeSupervision === 'present') {
+        setStatusText(tablet.SuperGreen[fin]);
+        setStatusColor(colors.green);
+      } 
+      else if (response.rangeSupervision === 'en route') {
+        setStatusText(tablet.SuperOrange[fin]);
+        setStatusColor(colors.orange);
+      } 
+      else if (response.rangeSupervision === 'absent') {
+        setStatusText(tablet.Red[fin]);
+        setStatusColor(colors.red);
+      }
+      else if (response.rangeSupervision === 'confirmed') {
+        setStatusText(tablet.SuperLightGreen[fin]);
+        setStatusColor(colors.lightgreen);
+      }
+      else if (response.rangeSupervision === 'not confirmed') {
+        setStatusText(tablet.SuperBlue[fin]);
+        setStatusColor(colors.blue);
+      }
+      else {
+        setStatusText(tablet.SuperWhite[fin]);
+	setStatusColor(colors.white);
+      }
+      getColors(response.tracks, setTracks)
+    })
+}
+
+const Tabletview = () => {
+  const [statusColor, setStatusColor] = useState();
+  const [statusText, setStatusText] = useState();
+  const [hours, setHours] = useState([]);
+  const [tracks, setTracks] = useState([]);
+  const [scheduleId, setScheduleId] = useState();
+  const fin = localStorage.getItem("language");
+  const {tablet} = data;
+  let today = moment().format("DD.MM.YYYY");
+
+  const statusStyle = {
+    color: "black",
+    backgroundColor: statusColor,
+    borderRadius: 3,
+    width: 300
+  }
+  
+  useEffect(() => {
+    getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId);
+  }, []);
+
+  const HandlePresentClick = () => {
+    setStatusColor(colors.green);
+    setStatusText(tablet.SuperGreen[fin]);
+    updateSupervisor("present");
+  }
+
+  const HandleEnRouteClick = () => {
+    setStatusColor(colors.orange);
+    setStatusText(tablet.SuperOrange[fin]);
+    updateSupervisor("en route");
+  }
+
+  const HandleClosedClick = () => {
+    setStatusColor(colors.red);
+    setStatusText(tablet.Red[fin]);
+    updateSupervisor("absent");
+  }
+
+  async function updateSupervisor(status) {
+    let token = localStorage.getItem("token");
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+
+    let query = "api/range-supervision/" + scheduleId;
+    await axios.put(query,
+                    {
+                      range_supervisor:status
+                    }, config)
+  }
+
+  return (
+    <div>
+      <Typography
+        variant="body1"
+        align="center">
+        <br />
+        {today}
+      </Typography>
+      <Typography
+        variant="body1"
+        align="center">
+        {tablet.Open[fin]}: {hours[0]} - {hours[1]}
+      </Typography>
+      &nbsp;
+      
+      <div style={rowStyle}>
+        <Button
+          style={statusStyle}
+          size='large'
+          variant='outlined'
+          fullwidth
+          disabled>
+          {statusText}
+        </Button>
+      </div>
+
+      <Typography
+        variant="body1"
+        align="center">
+        <br />
+        {tablet.HelperFirst[fin]}
+      </Typography>
+
+      <div style={rowStyle}>
+        <Button
+          style={greenButtonStyle}
+          size='large'
+          variant='contained'
+          onClick={HandlePresentClick}>
+          {tablet.Green[fin]}
+        </Button>
+        &nbsp;
+        <Button
+          style={orangeButtonStyle}
+          size='large'
+          variant='contained'
+          onClick={HandleEnRouteClick}>
+          {tablet.Orange[fin]}
+        </Button>
+        &nbsp;
+        <Button
+          style={redButtonStyle}
+          size='large'
+          variant='contained'
+          onClick={HandleClosedClick}>
+          {tablet.Red[fin]}
+        </Button>
+      </div>
+      
+      &nbsp;
+      <Typography
+        variant="body1"
+        align="center">
+        {tablet.HelperSecond[fin]}
+      </Typography>
+
+      <TrackRows tracks={tracks} tracks={tracks} setTracks={setTracks}
+                 scheduleId={scheduleId} tablet={tablet} fin={fin} />
+      
+    </div>
+    
+  )
+}
+
+export default Tabletview;

@@ -94,7 +94,7 @@
     "Green": ["Paikalla", "Present"],
     "Orange": ["Tulossa", "On the way"],
     "Red": ["Suljettu", "Closed"],
-    "White": ["Vapaa, ei valvojaa", "Open, no predefined track officer"],
+    "White": ["Ei valvojaa", "No track officer"],
     "HelperFirst": ["Valitse päävalvojan status napauttamalla väriä alta", "Define range officer status by choosing color"],
     "HelperSecond": ["Vaihda ratavalvojien statuksia napauttamalla värejä alta", "Change track officer status by choosing color"]
   },
