@@ -3,7 +3,10 @@ import './App.css';
 import './Weekview.css'
 import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-import { dayToString, getSchedulingWeek } from "./utils/Utils";
+import { dayToString, getSchedulingWeek, getSchedulingDate } from "./utils/Utils";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
 import moment from 'moment'
 import * as data from './texts/texts.json'
 
@@ -12,10 +15,15 @@ class Weekview extends Component {
     constructor(props) {
         super(props);
         this.state = {
+          state: 'loading',
+          date: new Date(Date.now()),
           weekNro: 0,
           dayNro: 0,
           yearNro: 0,
         };
+        this.previousWeekClick = this.previousWeekClick.bind(this);
+        this.nextWeekClick = this.nextWeekClick.bind(this);
+        this.update = this.update.bind(this);
     }
 
     //Updates week to current when page loads
@@ -26,11 +34,25 @@ class Weekview extends Component {
       }
 
     //Changes week number state to previous one
-    previousWeekClick = () => {
+    previousWeekClick = (e) => {
 
+        this.setState({
+            state:'loading'
+        })
+
+        e.preventDefault();
         let testi = moment(this.state.dayNro, "YYYYMMDD")
         
         testi.subtract(1, 'week')
+
+        //alert(this.props.match.params.date);
+        //alert(this.state.date);
+
+        //let oikeePaiva = this.state.paivat[3].date
+        //this.props.history.replace("/weekview/" + oikeePaiva );
+
+        let oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() - 7));
+        this.props.history.replace("/weekview/" + oikeePaiva.toISOString());
 
         let previous;
         //Week logic cuz you can't go negative
@@ -41,6 +63,7 @@ class Weekview extends Component {
         }
         this.setState(
             {
+              date: oikeePaiva,
               dayNro: testi,
               weekNro: previous
             },
@@ -51,11 +74,17 @@ class Weekview extends Component {
     }
 
     //Changes week number state to next one
-    nextWeekClick = () => {
-
+    nextWeekClick = (e) => {
+        this.setState({
+            state:'loading'
+        })
+        e.preventDefault();
         let testi = moment(this.state.dayNro, "YYYYMMDD")
         
         testi.add(1, 'week')
+
+        let oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() + 7));
+        this.props.history.replace("/weekview/" + oikeePaiva.toISOString());
 
         let previous;
         //Week logic cuz there's no 53 weeks
@@ -66,6 +95,7 @@ class Weekview extends Component {
         }
         this.setState(
             {
+              date: oikeePaiva,
               dayNro: testi,
               weekNro: previous
             },
@@ -231,7 +261,22 @@ class Weekview extends Component {
     }
 
     update() {
+
         // /dayview/2020-02-20
+        let date = this.props.match.params.date;
+        const request1 = async () => {
+        const response1 = await getSchedulingDate(date);
+
+        if(response1 !== false){
+            console.log("Results from api",response1);
+
+            this.setState({
+            date: new Date(response1.date),
+            });
+        } else console.error("getting info failed");
+        } 
+        request1();
+
         let testi2;
         if (this.state.dayNro === 0) {
             let today = new Date();
@@ -253,19 +298,24 @@ class Weekview extends Component {
             testi2 = this.state.dayNro.format("YYYY-MM-DD")
         }
 
-        let date = testi2;
+        let date1 = testi2;
         const request = async () => {
-          const response = await getSchedulingWeek(date);
+          const response = await getSchedulingWeek(date1);
 
           if(response !== false){
             console.log("Results from api",response);
 
             this.setState({
-              paivat:response.week
+              paivat:response.week,
+              state:'ready'
             });
           } else console.error("getting info failed");
         } 
         request();
+
+        let oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate()));
+        this.props.history.replace("/weekview/" + oikeePaiva.toISOString());
+        //alert(oikeePaiva.toISOString());
       }
 
   render() {
@@ -276,6 +326,13 @@ class Weekview extends Component {
             
         <div>
             <div class="container">
+
+            <Modal open={this.state.state!=='ready'?true:false}>
+                <Backdrop open={this.state.state!=='ready'?true:false}>
+                    <CircularProgress disableShrink />
+                </Backdrop>
+            </Modal>
+
                 {/* Header with arrows */}
                 <Grid class="date-header">
                     <div
@@ -349,6 +406,9 @@ class Weekview extends Component {
 
                         <div id="closed-info" class='box'></div>
                         {/* Suljettu */} &nbsp;{week.Red[fin]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br></br><br></br>
+
+                        <div id="onway-info" class='box'> </div>
+                        {/* Ei tietoa */} &nbsp;Keskus suljettu
 
                     </div>
                 </Grid>
