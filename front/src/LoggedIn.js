@@ -210,7 +210,7 @@ async function getId() {
 }
 
 //obtain date info
-async function getReservations(res, setNoSchedule, setDone, setSchedules, setChecked) {
+async function getReservations(res, setNoSchedule) {
 
   let today = moment().format().split("T")[0];
   
@@ -273,12 +273,8 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
       });
   }
 
-  console.log(res)
+  res = await getReservations(res, setNoSchedule);
 
-  res = await getReservations(res, setNoSchedule, setDone, setSchedules, setChecked);
-
-  console.log(res)
-  
   if(res.length===0) {
     await setNoSchedule(true);
     await setDone(true);
