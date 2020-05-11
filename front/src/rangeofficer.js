@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
-import './App.css';
 import './rangeofficer.css';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import * as data from './texts/texts.json';
 import moment from 'moment'
 import axios from 'axios';
-
-import { dayToString } from "./utils/Utils";
 
 const colors = {
   green: '#658f60',
@@ -21,8 +17,13 @@ const colors = {
 const rowStyle = {
   flexDirection: "row",
   display: "flex",
+  justifyContent: "center"
+}
+const trackRowStyle = {
+  flexDirection: "row",
+  display: "flex",
   justifyContent: "center",
-  alignItems:"center"
+  flexWrap: "wrap"
 }
 const greenButtonStyle = {
   fontSize: 17,
@@ -46,11 +47,7 @@ const redButtonStyle = {
   height:100
 }
 const rangeStyle = {
-  flexDirection: "center",
-  display: "inline-block",
-  alignItems: "center",
   textAlign: "center",
-  justifyContents: "center",
   padding: 20,
   marginLeft: 15
 }
@@ -59,15 +56,17 @@ const rangeStyle = {
 const TrackRows = ({tracks, setTracks, scheduleId, tablet, fin}) => {
   return (
     tracks.map(track =>
-               <div key={track.id} style={rangeStyle}>
-                 <Typography
-                   align="center">
-                   {track.name}
-                 </Typography>
+               <div key={track.id}>
+                 <div style={rangeStyle}>
+                   <Typography
+                     align="center">
+                     {track.name}
+                   </Typography>
 
-                 <TrackButtons track={track} tracks={tracks} setTracks={setTracks}
-                               scheduleId={scheduleId}
-	                       tablet={tablet} fin={fin}/>
+                   <TrackButtons track={track} tracks={tracks} setTracks={setTracks}
+                                 scheduleId={scheduleId}
+	                         tablet={tablet} fin={fin}/>
+                 </div>
                </div>
               )
   )
@@ -98,9 +97,6 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
       newSupervision="present";
       track.color=colors.green;
     }
-
-    track.trackSupervision = newSupervision;
-    setButtonColor(track.color);
     
     let token = localStorage.getItem("token");
     const config = {
@@ -112,6 +108,15 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
               {
                 track_supervisor: newSupervision
               }, config)
+      .catch(error => {
+        //console.log(error)
+      })
+      .then(res => {
+	if(res) {
+          track.trackSupervision = newSupervision;
+          setButtonColor(track.color);
+	}
+      })
   }
 
   return (
@@ -176,6 +181,7 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
       }
       getColors(response.tracks, setTracks)
     })
+  
 }
 
 const Tabletview = () => {
@@ -200,24 +206,18 @@ const Tabletview = () => {
   }, []);
 
   const HandlePresentClick = () => {
-    setStatusColor(colors.green);
-    setStatusText(tablet.SuperGreen[fin]);
-    updateSupervisor("present");
+    updateSupervisor("present", colors.green, tablet.SuperGreen[fin]);
   }
 
   const HandleEnRouteClick = () => {
-    setStatusColor(colors.orange);
-    setStatusText(tablet.SuperOrange[fin]);
-    updateSupervisor("en route");
+    updateSupervisor("en route", colors.orange, tablet.SuperOrange[fin]);
   }
 
   const HandleClosedClick = () => {
-    setStatusColor(colors.red);
-    setStatusText(tablet.Red[fin]);
-    updateSupervisor("absent");
+    updateSupervisor("absent", colors.red, tablet.Red[fin]);
   }
 
-  async function updateSupervisor(status) {
+  async function updateSupervisor(status, color, text) {
     let token = localStorage.getItem("token");
     const config = {
       headers: { Authorization: `Bearer ${token}` }
@@ -228,6 +228,15 @@ const Tabletview = () => {
                     {
                       range_supervisor:status
                     }, config)
+      .then(res => {
+        if(res) {
+          setStatusColor(color);
+          setStatusText(text);
+        }
+      })
+      .catch(error => {
+        //console.log(error)
+      })
   }
 
   return (
@@ -250,7 +259,6 @@ const Tabletview = () => {
           style={statusStyle}
           size='large'
           variant='outlined'
-          fullwidth
           disabled>
           {statusText}
         </Button>
@@ -296,9 +304,10 @@ const Tabletview = () => {
         {tablet.HelperSecond[fin]}
       </Typography>
 
-      <TrackRows tracks={tracks} tracks={tracks} setTracks={setTracks}
-                 scheduleId={scheduleId} tablet={tablet} fin={fin} />
-      
+      <div style={trackRowStyle}>
+        <TrackRows tracks={tracks} setTracks={setTracks}
+                   scheduleId={scheduleId} tablet={tablet} fin={fin} />
+      </div>
     </div>
     
   )
