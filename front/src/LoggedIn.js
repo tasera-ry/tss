@@ -210,7 +210,7 @@ async function getId() {
 }
 
 //obtain date info
-async function getReservations(res) {
+async function getReservations(res, setNoSchedule, setDone, setSchedules, setChecked) {
 
   let today = moment().format().split("T")[0];
   
@@ -225,11 +225,18 @@ async function getReservations(res) {
 
   res = res.filter(obj => obj.date >= today);
 
+  if(res.length===0) {
+    await setNoSchedule(true);
+    await setDone(true);
+    return;
+  }
+
   res.sort(function(a, b) {
     return new Date(a.date) - new Date(b.date);
   });
 
-  return res;
+  setSchedules(res);
+  setChecked(res[0].range_supervisor==="en route");
 }
 
 //obtain users schedule and range supervision states
@@ -272,16 +279,14 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
         //console.log(error);
       });
   }
-  
+
   if(res.length===0) {
     await setNoSchedule(true);
     await setDone(true);
     return;
   }
 
-  res = await getReservations(res);
-  setSchedules(res);
-  setChecked(res[0].range_supervisor==="en route");
+  getReservations(res, setNoSchedule, setDone, setSchedules, setChecked);
 
   //console.log("scheduled for user: ", res.length)
   //console.log(res)
