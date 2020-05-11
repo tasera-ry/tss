@@ -22,6 +22,7 @@ import {
    TextField,
 } from "@material-ui/core";
 import axios from "axios";
+import * as data from './texts/texts.json';
 
 //Finds all users from database
 async function getUsers(token) {
@@ -184,11 +185,13 @@ class UserManagementView extends Component {
       );
    }
 
-   update() {
+  update() {
+      const fin = localStorage.getItem("language");
+      const {manage} = data;
       var tempRows = [];
       for (var i in this.state.userList) {
          if (localStorage.taseraUserName !== this.state.userList[i].name) {
-            var row = this.createData(this.state.userList[i].name, this.returnPassButton(this.state.userList[i].id), this.returnRemoveButton(this.state.userList[i].id));
+           var row = this.createData(this.state.userList[i].name, this.returnPassButton(this.state.userList[i].id, manage, fin), this.returnRemoveButton(this.state.userList[i].id, manage, fin));
             tempRows.push(row);
          }
       }
@@ -217,17 +220,17 @@ class UserManagementView extends Component {
    createData(name, ButtonToChangePassword, ButtonToRemoveUser) {
       return { name, ButtonToChangePassword, ButtonToRemoveUser };
    }
-   returnPassButton(id) {
+  returnPassButton(id, manage, fin) {
       return (
-         <Button id={id} color="primary" variant="contained" onClick={this.onChangePassClick}>
-            vaihda salasana
+         <Button id={id} style={{backgroundColor:'#5f77a1'}} variant="contained" onClick={this.onChangePassClick}>
+          {manage.ChangePass[fin]}
          </Button>
       );
    }
-   returnRemoveButton(id) {
+  returnRemoveButton(id, manage, fin) {
       return (
-         <Button id={id} color="secondary" variant="contained" onClick={this.onRemoveClick}>
-            Poista Käyttäjä
+         <Button id={id} style={{backgroundColor:'#c97b7b'}} variant="contained" onClick={this.onRemoveClick}>
+            {manage.RemoveUser[fin]}
          </Button>
       );
    }
@@ -466,68 +469,71 @@ class UserManagementView extends Component {
    /**
     **  ACTUAL PAGE RENDERING
     */
-   render() {
+  render() {
+
+      const fin = localStorage.getItem("language"); //0: finnish, 1: english
+      const {manage} = data;
       return (
          <div>
             {/*Dialog to add new user*/}
             <Dialog open={this.state.openAddNewUserDialog} keepMounted onClose={this.handleAddNewUserDialogClose}>
-               <DialogTitle id="dialog-add-user-title">{"Luo uusi käyttäjä"}</DialogTitle>
+               <DialogTitle id="dialog-add-user-title">{manage.New[fin]}</DialogTitle>
                <DialogContent>
-                  <TextField value={this.state.newUserName} margin="dense" id="name" label="Käyttäjänimi*" onChange={this.handleNewuserNameChange} fullWidth />
-                  <TextField value={this.state.newUserPass} margin="dense" id="password" label="Salasana*" onChange={this.handleNewuserPassChange} fullWidth />
+          <TextField value={this.state.newUserName} margin="dense" id="name" label={manage.Username[fin]} onChange={this.handleNewuserNameChange} fullWidth />
+                  <TextField value={this.state.newUserPass} margin="dense" id="password" label={manage.Password[fin]} onChange={this.handleNewuserPassChange} fullWidth />
                   <FormControl>
-                     <InputLabel>Rooli</InputLabel>
+                     <InputLabel>{manage.Role[fin]}</InputLabel>
                      <Select style={{ marginTop: 15 }} native value={this.state.newUserRole} onChange={this.handleChangeNewUserRole} id="role">
-                        <option aria-label="valvoja" value={"supervisor"}>
-                           valvoja
+                        <option aria-label={manage.Supervisor[fin]} value={"supervisor"}>
+                           {manage.Supervisor[fin]}
                         </option>
-                        <option value={"superuser"}>superuser</option>
+                        <option value={"superuser"}>{manage.Superuser[fin]}</option>
                      </Select>
                   </FormControl>
                   {this.state.mokat ? (
                      <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>
-                        Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki{" "}
+                      {manage.Error[fin]}{" "}
                      </p>
                   ) : (
                      <p></p>
                   )}
                </DialogContent>
                <DialogActions>
-                  <Button onClick={this.handleAddNewUserDialogClose} color="secondary">
-                     Peruuta
+                  <Button onClick={this.handleAddNewUserDialogClose} style={{color:'#c97b7b'}}>
+                     {manage.Cancel[fin]}
                   </Button>
-                  <Button onClick={this.handleAddNewUserDialogCloseConfirmed} color="primary">
-                     Vahvista
+                  <Button onClick={this.handleAddNewUserDialogCloseConfirmed} style={{color:'#5f77a1'}}>
+                     {manage.Confirm[fin]}
                   </Button>
                </DialogActions>
             </Dialog>
             {/*Dialog to remove user*/}
             <Dialog open={this.state.openRemoveWarning} keepMounted onClose={this.handleRemoveWarningClose}>
-               <DialogTitle id="dialog-remove-user-title">{"Haluatko varmasti jatkaa"}</DialogTitle>
+               <DialogTitle id="dialog-remove-user-title">{manage.Ask[fin]}</DialogTitle>
                <DialogContent id="dialog-remove-user-contet">
-                  <DialogContentText id="dialog-remove-user-text">Tämä poistaa pysyvästi käyttäjän {this.state.selectedUserName}</DialogContentText>
-                  {this.state.mokatPoistossa ? <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>Jokin meni pieleen </p> : <p></p>}
+                  <DialogContentText id="dialog-remove-user-text">{manage.AskDelete[fin]} {this.state.selectedUserName}</DialogContentText>
+                  {this.state.mokatPoistossa ? <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>{manage.ErrorSmall[fin]} </p> : <p></p>}
                </DialogContent>
                <DialogActions>
-                  <Button onClick={this.handleRemoveWarningClose} color="secondary">
-                     Peruuta
+                  <Button onClick={this.handleRemoveWarningClose} style={{color:'#c97b7b'}}>
+                     {manage.Cancel[fin]}
                   </Button>
-                  <Button onClick={this.handleRemoveWarningCloseAgree} color="primary">
-                     Vahvista
+                  <Button onClick={this.handleRemoveWarningCloseAgree} style={{color:'#5f77a1'}}>
+                     {manage.ConfirmDelete[fin]}
                   </Button>
                </DialogActions>
             </Dialog>
             {/*Dialog to change password of own user*/}
             <Dialog open={this.state.changeOwnPassDialogOpen} onClose={this.handleChangeOwnPassDialogClose}>
-               <DialogTitle id="dialog-change-own-pass-title">Vaihda Salasana</DialogTitle>
+               <DialogTitle id="dialog-change-own-pass-title">{manage.ChangePass[fin]}</DialogTitle>
                <DialogContent>
-                  <DialogContentText>Vaihtaaksesi salasanasi sinun tulee antaa vanha salasanasi sekä uusi joksi haluat sen vaihtaa</DialogContentText>
+                  <DialogContentText>{manage.Helper[fin]}</DialogContentText>
                   <TextField
                      type="password"
                      value={this.state.oldpassword}
                      margin="dense"
                      id="oldpassword"
-                     label="Vanha salasana"
+                     label={manage.OldPass[fin]}
                      onChange={this.handleOldpassStringChange}
                      fullWidth
                   />
@@ -536,83 +542,83 @@ class UserManagementView extends Component {
                      value={this.state.newpassword}
                      margin="dense"
                      id="newpassword"
-                     label="Uusi salasana"
+                     label={manage.NewPass[fin]}
                      onChange={this.handleNewpassStringChange}
                      fullWidth
                   />
                   {this.state.changeOwnPassFailed ? (
                      <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>
-                        Jokin meni pieleen, onhan vanha salasana oikein ja uusi salasana vähintään 6 merkkiä pitkä{" "}
+                        {manage.Error[fin]}{" "}
                      </p>
                   ) : (
                      <p></p>
                   )}
                </DialogContent>
                <DialogActions>
-                  <Button onClick={this.handleChangeOwnPassDialogClose} color="secondary">
-                     Peruuta
+                  <Button onClick={this.handleChangeOwnPassDialogClose} style={{color:'#c97b7b'}}>
+                     {manage.Cancel[fin]}
                   </Button>
-                  <Button onClick={this.handleChangeOwnPassDialogCloseAgree} color="primary">
-                     Vahvista
+                  <Button onClick={this.handleChangeOwnPassDialogCloseAgree} style={{color:'#5f77a1'}}>
+                     {manage.Confirm[fin]}
                   </Button>
                </DialogActions>
             </Dialog>
             {/*Dialog to change password of other users*/}
             <Dialog open={this.state.changePassDialogOpen} onClose={this.handleChangePassClose}>
-               <DialogTitle id="dialog-change-pass-title">Vaihda salasana käyttäjälle {this.state.selectedUserName}</DialogTitle>
+               <DialogTitle id="dialog-change-pass-title">{manage.ChangeFor[fin]} {this.state.selectedUserName}</DialogTitle>
                <DialogContent>
                   <TextField
                      type="text"
                      value={this.state.password}
                      margin="dense"
                      id="name"
-                     label="Uusi salasana"
+                     label={manage.NewPass[fin]}
                      onChange={(e) => {
                         this.setState({ password: e.target.value });
                      }}
                      fullWidth
                   />
                   {this.state.mokatVaihdossa ? (
-                     <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>Jokin meni pieleen, muistathan että salasanan tulee olla 6 merkkiä pitkä </p>
+                     <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>{manage.Error[fin]} </p>
                   ) : (
                      <p></p>
                   )}
                </DialogContent>
                <DialogActions>
-                  <Button onClick={this.handleChangePassClose} color="secondary">
-                     Peruuta
+                  <Button onClick={this.handleChangePassClose} style={{color:'#c97b7b'}}>
+                     {manage.Cancel[fin]}
                   </Button>
-                  <Button onClick={this.handleChangePassCloseConfirm} color="primary">
-                     Vahvista
+                  <Button onClick={this.handleChangePassCloseConfirm} style={{color:'#5f77a1'}}>
+                     {manage.Confirm[fin]}
                   </Button>
                </DialogActions>
             </Dialog>
             {/*THE ACTUAL PAGE*/}
-            <h1 style={{ marginLeft: 100 }}>Käyttäjien hallinta</h1>
+            <h1 style={{ marginLeft: 100 }}>{manage.UserManage[fin]}</h1>
             <Divider></Divider>
             <Box display="flex">
-               <h3 style={{ marginLeft: 40 }}>Vaihda salasana:</h3>
-               <Button onClick={this.handleOpenOwnPassChangeDialog} color="primary" variant="contained" style={{ margin: 15, marginLeft: 40 }}>
-                  Vaihda salasana
+               <h3 style={{ marginLeft: 40 }}>{manage.ChangePass[fin]}:</h3>
+          <Button onClick={this.handleOpenOwnPassChangeDialog}  variant="contained" style={{ backgroundColor:'#5f77a1', margin: 15, marginLeft: 40 }}>
+                  {manage.ChangePass[fin]}
                </Button>
             </Box>
             <Divider></Divider>
             <Box display="flex">
-               <h3 style={{ marginLeft: 40 }}>Lisää käyttäjä:</h3>
-               <Button onClick={this.handleAddUserOpenDialog} color="primary" variant="contained" style={{ margin: 15, marginLeft: 58 }}>
-                  Lisää käyttäjä
+               <h3 style={{ marginLeft: 40 }}>{manage.CreateUser[fin]}:</h3>
+               <Button onClick={this.handleAddUserOpenDialog} variant="contained" style={{ backgroundColor:'#5f77a1', margin: 15, marginLeft: 58 }}>
+                  {manage.CreateUser[fin]}
                </Button>
             </Box>
             <Divider></Divider>
             <Box display="flex">
-               <h3 style={{ marginLeft: 40 }}>Käyttäjät:</h3>
+               <h3 style={{ marginLeft: 40 }}>{manage.Users[fin]}:</h3>
                <TableContainer component={Paper} style={{ minWidth: 600, maxWidth: 800, marginLeft: 96, marginTop: 15 }}>
                   <Table style={{ minWidth: 600 }} aria-label="table of users">
                      <TableHead>
                         <TableRow>
-                           <TableCell>Käyttäjänimi</TableCell>
-                           <TableCell align="right">Vaihda salasana</TableCell>
-                           <TableCell align="right">Poista käyttäjä</TableCell>
+                           <TableCell>{manage.Username[fin]}</TableCell>
+                           <TableCell align="right">{manage.ChangePass[fin]}</TableCell>
+                           <TableCell align="right">{manage.RemoveUser[fin]}</TableCell>
                         </TableRow>
                      </TableHead>
                      <TableBody>

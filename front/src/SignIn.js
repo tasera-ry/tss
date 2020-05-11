@@ -8,6 +8,7 @@ import Container from '@material-ui/core/Container';
 import {Link, useHistory} from 'react-router-dom';
 import Nav from './Nav';
 import axios from 'axios'
+import * as data from './texts/texts.json'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -36,10 +37,11 @@ const SignIn = () => {
   const [user, setUser] = useState('');
   const [mistake, setMistake] = useState(false);
   const history = useHistory();
+  const {signin} = data;
+  const fin = localStorage.getItem("language");
   
   const login = (e) => {
     e.preventDefault();
-    console.log({name, password})
 
     let response = axios.post('api/sign', {
       name: name,
@@ -92,7 +94,7 @@ const SignIn = () => {
       <CssBaseline />
       <div className={classes.paper}>
         <Typography component="h1" variant="h5">
-          Kirjaudu sisään
+      {signin.SignIn[fin]}
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -101,13 +103,14 @@ const SignIn = () => {
             required
             fullWidth
             id="email"
-            label="Käyttäjänimi"
+            label={signin.Name[fin]}
             name="username"
-            autoComplete="Käyttäjänimi"
+            autoComplete={signin.Name[fin]}
             autoFocus
             value={name}
             error={mistake}
             onInput={e => setName(e.target.value)}
+            style={{color:'#5f77a1'}}
           />
           <TextField
             variant="outlined"
@@ -115,40 +118,33 @@ const SignIn = () => {
             required
             fullWidth
             name="password"
-            label="Salasana"
+            label={signin.Password[fin]}
             type="password"
             id="password"
             autoComplete="current-password"
             value={password}
             error={mistake}
-            helperText={mistake ? 'Väärä käyttäjänimi tai salasana' : ''}
+            helperText={mistake ? signin.Helper[fin] : ''}
             onInput={e => setPassword(e.target.value)}
           />
 
-          <Link>
             <Button
               onClick={login}
-              type="submit"
               fullWidth
               variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              Kirjaudu
+              style={{backgroundColor:'#5f77a1'}}>
+              {signin.LogIn[fin]}
             </Button>
-          </Link>
 
-          <Link>
+          &nbsp;
+          
             <Button
               onClick={() => history.goBack()}
               type="submit"
               fullWidth
-              color="primary"
-              className={classes.submit}
-            >
-              Takaisin
+              style={{color:'#5f77a1'}}>
+              {signin.Back[fin]}
             </Button>
-          </Link>
 
         </form>
       </div>
