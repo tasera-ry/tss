@@ -225,18 +225,11 @@ async function getReservations(res, setNoSchedule, setDone, setSchedules, setChe
 
   res = res.filter(obj => obj.date >= today);
 
-  if(res.length===0) {
-    await setNoSchedule(true);
-    await setDone(true);
-    return;
-  }
-
   res.sort(function(a, b) {
     return new Date(a.date) - new Date(b.date);
   });
 
-  setSchedules(res);
-  setChecked(res[0].range_supervisor==="en route");
+  return res;
 }
 
 //obtain users schedule and range supervision states
@@ -280,14 +273,21 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
       });
   }
 
+  console.log(res)
+
+  res = await getReservations(res, setNoSchedule, setDone, setSchedules, setChecked);
+
+  console.log(res)
+  
   if(res.length===0) {
     await setNoSchedule(true);
     await setDone(true);
     return;
   }
 
-  getReservations(res, setNoSchedule, setDone, setSchedules, setChecked);
-
+  setSchedules(res);
+  setChecked(res[0].range_supervisor==="en route");
+  
   //console.log("scheduled for user: ", res.length)
   //console.log(res)
 }
