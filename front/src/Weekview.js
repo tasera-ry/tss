@@ -222,14 +222,14 @@ class Weekview extends Component {
                 //Luodaan väri 
 
                 rataStatus = this.state.paivat[j].rangeSupervision
-                console.log("ratastatus",rataStatus);
+                //console.log("ratastatus",rataStatus);
 
                 if (rataStatus === "present") {
                     colorFromBackEnd = "green"
                 } else if (rataStatus === "confirmed") {
                     colorFromBackEnd = "lightGreen"
                 } else if (rataStatus === "not confirmed") {
-                    colorFromBackEnd = "lightBlue"
+                    colorFromBackEnd = "deepskyblue"
                 } else if (rataStatus === "en route") {
                     colorFromBackEnd = "orange"
                 } else if (rataStatus === "closed") {
@@ -267,7 +267,7 @@ class Weekview extends Component {
         const response1 = await getSchedulingDate(date);
 
         if(response1 !== false){
-            console.log("Results from api",response1);
+            //console.log("Results from api",response1);
 
             this.setState({
             date: new Date(response1.date),
@@ -290,7 +290,7 @@ class Weekview extends Component {
             this.setState({
                 dayNro: testi
             })
-            console.log("tanaan on " + testi.format('L'))
+            //console.log("tanaan on " + testi.format('L'))
             testi2 = testi.format("YYYY-MM-DD")
         }
         else {
@@ -302,7 +302,7 @@ class Weekview extends Component {
           const response = await getSchedulingWeek(date1);
 
           if(response !== false){
-            console.log("Results from api",response);
+            //console.log("Results from api",response);
 
             this.setState({
               paivat:response.week,

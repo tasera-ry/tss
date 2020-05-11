@@ -40,7 +40,7 @@ class Trackview extends Component {
 
         if(response !== false){
           let selectedTrack = response.tracks.find((findItem) => findItem.name === track)
-          console.log("Results from api",response,selectedTrack);
+          //console.log("Results from api",response,selectedTrack);
           
           if(selectedTrack !== undefined){
             this.setState({
