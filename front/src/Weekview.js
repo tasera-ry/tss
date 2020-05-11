@@ -392,8 +392,8 @@ class Weekview extends Component {
                         {/* Päävalvoja tulossa */} &nbsp;{week.Lightgreen[fin]} <br></br> <br></br>
 
 
-                        <div id="no-info" class='box'></div>
-                      {/* Ei tietoa */} &nbsp;{week.White[fin]}
+                        <div id="onway-info" class='box'></div>
+                      {/* Ei tietoa */}  &nbsp;{week.Orange[fin]}
 
                     </div>
                 </Grid>
@@ -407,8 +407,8 @@ class Weekview extends Component {
                         <div id="closed-info" class='box'></div>
                         {/* Suljettu */} &nbsp;{week.Red[fin]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br></br><br></br>
 
-                        <div id="onway-info" class='box'> </div>
-                        {/* Ei tietoa */} &nbsp;Keskus suljettu
+                        <div id="no-info" class='box'> </div>
+            {/* Ei tietoa */}  &nbsp;{week.White[fin]}
 
                     </div>
                 </Grid>
