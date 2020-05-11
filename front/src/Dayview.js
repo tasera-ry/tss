@@ -6,7 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import { dayToString, getSchedulingDate } from "./utils/Utils";
 import moment from 'moment';
-
+import * as data from './texts/texts.json';
 
 
 class Dayview extends Component {
@@ -49,7 +49,8 @@ class Dayview extends Component {
           closes: moment(response.close,'HH:mm').format('H.mm')
         });
       } else console.error("getting info failed");
-    } 
+      console.log(this.state)
+    }
     request();
   }
 
@@ -82,32 +83,35 @@ class Dayview extends Component {
   }
 
   render() {
+    const fin = localStorage.getItem("language");
+    const {dayview} = data;
+
     function OfficerBanner(props) {
       let text;
       let color;
 
       if (props.rangeSupervision === 'present') {
-        text = "Päävalvoja paikalla";
+        text = dayview.Green[fin];
         color = "greenB";
       }
       else if (props.rangeSupervision === 'absent') {
-        text = "Päävalvoja ei paikalla";
+        text = dayview.White[fin];
         color = "whiteB";
       }
       else if (props.rangeSupervision === 'confirmed') {
-        text = "Päävalvoja varmistettu";
+        text = dayview.Lightgreen[fin];
         color = "lightGreenB";
       }
       else if (props.rangeSupervision === 'not confirmed') {
-        text = "Päävalvoja ei varmistettu";
+        text = dayview.Blue[fin];
         color = "blueB";
       }
       else if (props.rangeSupervision === 'en route') {
-        text = "Päävalvoja matkalla";
+        text = dayview.Orange[fin];
         color = "yellowB";
       }
       else if (props.rangeSupervision === 'closed') {
-        text = "Ampumakeskus suljettu";
+        text = dayview.Red[fin];
         color = "redB";
       }
 
@@ -183,16 +187,19 @@ class Dayview extends Component {
             direction="row"
             justify="space-around"
             alignItems="center"
+            className="dateHeader"
           >
             <div
               className="hoverHand arrow-left"
               onClick={this.previousDayClick}
             ></div>
-            <h1>
-              {dayToString(this.state.date.getDay())}
-              {console.log(this.state.date.getDay())}
-            </h1>
-            <div>{this.state.date.toLocaleDateString("fi-FI")}</div>
+            <div className="titleContainer">
+              <h1>
+                {dayToString(this.state.date.getDay())}
+                {console.log(this.state.date.getDay())}
+              </h1>
+              <div className="date">{this.state.date.toLocaleDateString("fi-FI")}</div>
+            </div>
             <div
               className="hoverHand arrow-right"
               onClick={this.nextDayClick}
@@ -215,27 +222,27 @@ class Dayview extends Component {
             className="otherInfo"
           >
             <Grid item xs={6} sm={3}>
-              Aukioloaika: {this.state.opens}-{this.state.closes}
+              {dayview.OpenHours[fin]}: {this.state.opens}-{this.state.closes}
             </Grid>
             <Grid item xs={6} sm={3}>
               <div className="colorInfo">
                 <Box className="excolor greenB">&nbsp;</Box>
-                <p>Avoinna</p>
+                <p>{dayview.Open[fin]}</p>
               </div>
               <div className="colorInfo">
                 <Box className="excolor redB">&nbsp;</Box>
-                <p>Suljettu</p>
+                <p>{dayview.Closed[fin]}</p>
               </div>
               <div className="colorInfo">
                 <Box className="excolor whiteB">&nbsp;</Box>
-                <p>Ei valvojaa</p>
+                <p>{dayview.NotAvailable[fin]}</p>
               </div>
             </Grid>
           </Grid>
         </Grid>
         <Link className="back" style={{ color: "black" }} to="/weekview">
           <ArrowBackIcon />
-          Viikkonäkymään
+          {dayview.WeekviewLink[fin]}
         </Link>
       </div>
     );

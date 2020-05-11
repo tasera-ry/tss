@@ -58,6 +58,7 @@ const model = {
     return knex('track')
       .where(key)
       .select(fields)
+      .orderBy('name')
   }
 
   /**

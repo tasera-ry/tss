@@ -5,7 +5,7 @@
 
 .trackNameAndType {
   padding: 8;
-  background-color: "#ffffff";
+  background-color: "#f2f0eb";
   text-align: center;
   align-items: flex-end;
   display: grid;
@@ -17,7 +17,7 @@
 }
 
 .infoBox {
-  background-color: white;
+  background-color: #f2f0eb;
   outline: 2px solid black;
   color: black;
   width: 440px;
@@ -32,7 +32,7 @@
 }
 
 .isAvailable {
-  background-color: green;
+  background-color: #658f60;
   color: black;
   padding: 12px;
   text-align: center;
@@ -44,7 +44,7 @@
 }
 
 .isClosed {
-  background-color: red;
+  background-color: #c97b7b;
   color: black;
   padding: 12px;
   text-align: center;
@@ -56,7 +56,7 @@
 }
 
 .isUnavailable {
-  background-color: white;
+  background-color: #f2f0eb;
   color: black;
   padding: 12px;
   text-align: center;
@@ -68,7 +68,7 @@
 }
 
 .isEnRoute {
-  background-color: orange;
+  background-color: #f2c66d;
   color: black;
   padding: 12px;
   text-align: center;
@@ -80,7 +80,7 @@
 }
 
 .isConfirmed {
-  background-color: lightGreen;
+  background-color: #b2d9ad;
   color: black;
   padding: 12px;
   text-align: center;
@@ -92,7 +92,7 @@
 }
 
 .isNotConfirmed {
-  background-color: blue;
+  background-color: #95d5db;
   color: black;
   padding: 12px;
   text-align: center;
@@ -116,7 +116,7 @@
 
 @media only screen and (max-width: 768px) {
   .infoBox {
-    background-color: white;
+    background-color: #f2f0eb;
     outline: 2px solid black;
     color: black;
     width: 80%;
@@ -127,7 +127,7 @@
   }
 
   .isAvailable {
-    background-color: green;
+    background-color: #658f60;
     color: black;
     padding: 12px;
     width: 80vw;
@@ -135,7 +135,7 @@
   }
 
   .isClosed {
-    background-color: red;
+    background-color: #c97b7b;
     color: black;
     padding: 12px;
     width: 80vw;
@@ -143,7 +143,7 @@
   }
 
   .isUnavailable {
-    background-color: white;
+    background-color: #f2f0eb;
     color: black;
     padding: 12px;
     width: 80vw;
@@ -151,7 +151,7 @@
   }
   
   .isEnRoute {
-    background-color: yellow;
+    background-color: #f2c66d;
     color: black;
     padding: 12px;
     width: 80vw;
@@ -159,7 +159,7 @@
   }
   
   .isConfirmed {
-    background-color: lightGreen;
+    background-color: #b2d9ad;
     color: black;
     padding: 12px;
     width: 80vw;
@@ -167,7 +167,7 @@
   }
   
   .isNotConfirmed {
-    background-color: blue;
+    background-color: #95d5db;
     color: black;
     padding: 12px;
     width: 80vw;
@@ -180,7 +180,7 @@
   }
   .trackNameAndType {
     padding: 8;
-    background-color: "#ffffff";
+    background-color: "#f2f0eb";
     text-align: center;
     align-items: flex-end;
     display: grid;
