@@ -71,7 +71,7 @@ const DropDowns = (props) => {
       obj.range_supervisor = "absent";
     }
     props.changes.map(o => (o.date===id ? obj : o))
-    console.log(props.changes.find(o => o.date===id));
+    //console.log(props.changes.find(o => o.date===id));
     
     setAnchorEl(null);
   }
@@ -193,7 +193,7 @@ const Rows = ({HandleChange, changes, checked, setDone, sv}) => {
 //TODO: change config after relocating jwt
 async function getId() {
   let name = localStorage.getItem("taseraUserName");
-  console.log("username:", name);
+  //console.log("username:", name);
   
   let token = localStorage.getItem("token");
   const config = {
@@ -202,10 +202,9 @@ async function getId() {
   
   let query = "api/user?name=" + name;
   let response = await axios.get(query, config);
-  //let response = await axios.get(query);
-  
+
   let userID = response.data[0].id;
-  console.log("userID:", userID);
+  //console.log("userID:", userID);
 
   return userID;
 }
@@ -240,27 +239,40 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
   let temp = [];
 
   let query = "api/schedule?supervisor_id=" + userID;
-  let response = await axios.get(query);
-  temp = temp.concat(response.data);
+  let response = await axios.get(query)
+      .then(response => {
+        if(response) {
+          temp = temp.concat(response.data);
+        }
+      })
+      .catch(error => {
+        //console.log(error);
+      });
 
   for(let i=0; i<temp.length; i++) {
     let v = await temp[i];
 
     let rsquery = "api/range-supervision/" + v.id;
-    let rsresponse = await axios.get(rsquery);
+    await axios.get(rsquery)
+      .then(response => {
+        if(response) {
+          //object id is schedule id
+          let obj = {
+            "userID": userID,
+            "date": "",
+            "id": v.id,
+            "reservation_id": v.range_reservation_id,
+            "range_supervisor": response.data[0].range_supervisor
+          }
 
-    //object id is schedule id
-    let obj = {
-      "userID": userID,
-      "date": "",
-      "id": v.id,
-      "reservation_id": v.range_reservation_id,
-      "range_supervisor": rsresponse.data[0].range_supervisor
-    }
-
-    res = await res.concat(obj);
+          res = res.concat(obj);
+        }
+      })
+      .catch(error => {
+        //console.log(error);
+      });
   }
- 
+  
   if(res.length===0) {
     await setNoSchedule(true);
     await setDone(true);
@@ -271,8 +283,8 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
   setSchedules(res);
   setChecked(res[0].range_supervisor==="en route");
 
-  console.log("scheduled for user: ", res.length)
-  console.log(res)
+  //console.log("scheduled for user: ", res.length)
+  //console.log(res)
 }
 
 const DialogWindow = () => {
@@ -298,8 +310,8 @@ const DialogWindow = () => {
 
 //sends updated info to database
 async function putSchedules(changes) {
-  console.log("updating: ")
-  console.log(changes);
+  //console.log("updating: ")
+  //console.log(changes);
 
   let token = localStorage.getItem("token");
   const config = {
