@@ -7,12 +7,11 @@
 */
 
 .dayviewContainer h1 {
-  margin:2vh;
-  width:200px;
+  margin:2vmin;
 }
 
 .dayviewContainer h2 {
-  margin:2vh;
+  margin:2vmin;
 }
 
 .dayviewContainer {
@@ -28,6 +27,24 @@
 @media only screen and (max-width: 600px) {
   .dayviewContainer {
     padding:2vmin 2vmin 2vmin 2vmin;
+  }
+}
+
+.dayviewContainer .dateHeader {
+  flex-wrap:nowrap;
+}
+
+.dayviewContainer .dateHeader .titleContainer {
+  display:flex;
+  align-items:center;
+  text-align: start;
+  justify-content: space-around;
+  flex-wrap:wrap;
+}
+
+@media only screen and (min-width: 600px) {
+  .dayviewContainer .dateHeader .titleContainer {
+    width: 50vmin;
   }
 }
 
@@ -52,7 +69,7 @@
 }
 
 .dayviewContainer .track {
-  background:lightgray;
+  background:#b0aca0;
   border:solid 1px black;
   box-sizing: border-box;
 }
@@ -105,30 +122,33 @@
 }
 
 .dayviewContainer .greenB {
-  background:green;
+  background:#658f60;
 }
 
 .dayviewContainer .lightGreenB {
-  background:lightgreen;
+  background:#b2d9ad;
 }
 
 .dayviewContainer .blueB {
-  background:blue;
+  background:#95d5db;
 }
 
 .dayviewContainer .redB {
-  background:red;
+  background:#c97b7b;
 }
 
 .dayviewContainer .whiteB {
-  background:white;
+  background:#f2f0eb;
 }
 
 .dayviewContainer .yellowB {
-  background:yellow;
+  background:#f2c66d;
 }
 
 .dayviewContainer .arrow-right {
+  padding:0;
+  margin:0;
+  margin-left:5px;
   width: 0; 
   height: 0; 
   border-top: 20px solid transparent;
@@ -141,6 +161,9 @@
 }
 
 .dayviewContainer .arrow-left {
+  padding:0;
+  margin:0;
+  margin-right:5px;
   width: 0; 
   height: 0; 
   border-top: 20px solid transparent;

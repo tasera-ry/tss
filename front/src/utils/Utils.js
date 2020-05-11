@@ -45,64 +45,29 @@ export async function getSchedulingWeek(date) {
 }
 
 export function dayToString(i) {
-  if (i === 1) {
-    return "Maanantai";
+  let lang = "fi"; //fallback
+  if(localStorage.getItem("language") === '0') {
+    lang = 'fi';
   }
-  if (i === 2) {
-    return "Tiistai";
+  else if(localStorage.getItem("language") === '1'){
+    lang = 'en';
   }
-  if (i === 3) {
-    return "Keskiviikko";
-  }
-  if (i === 4) {
-    return "Torstai";
-  }
-  if (i === 5) {
-    return "Perjantai";
-  }
-  if (i === 6) {
-    return "Lauantai";
-  }
-  if (i === 0) {
-    return "Sunnuntai";
-  }
+  moment.locale(lang);
+  //en/fi have different numbers for start date
+  if(lang === 'fi') i--;
+  const dayString = moment().weekday(i).format('dddd');
+  //first letter only to uppercase
+  return dayString.charAt(0).toUpperCase() + dayString.slice(1);
 }
 
 export function monthToString(i) {
-  if (i === 0) {
-    return "Tammikuu";
+  let lang = "fi"; //fallback
+  if(localStorage.getItem("language") === '0') {
+    lang = 'fi';
   }
-  if (i === 1) {
-    return "Helmikuu";
+  else if(localStorage.getItem("language") === '1'){
+    lang = 'en';
   }
-  if (i === 2) {
-    return "Maaliskuu";
-  }
-  if (i === 3) {
-    return "Huhtikuu";
-  }
-  if (i === 4) {
-    return "Toukokuu";
-  }
-  if (i === 5) {
-    return "Kesäkuu";
-  }
-  if (i === 6) {
-    return "Heinäkuu";
-  }
-  if (i === 7) {
-    return "Elokuu";
-  }
-  if (i === 8) {
-    return "Syyskuu";
-  }
-  if (i === 9) {
-    return "Lokakuu";
-  }
-  if (i === 10) {
-    return "Marraskuu";
-  }
-  if (i === 11) {
-    return "Joulukuu";
-  }
+  moment.locale(lang);
+  return moment().month(i).format('MMMM');
 }

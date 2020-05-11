@@ -14,6 +14,8 @@
    margin-bottom: 15px;
    border: 1px solid black;
    clear: both;
+   min-height: 20px;
+   min-width: 20px;
 }
 
 .red {
@@ -114,32 +116,38 @@
 
 #open-info {
    display: flex;
-   background: green;
+   background: #658f60;
    margin-left: 20%;
 }
 
 #valvoja-info {
    display: flex;
-   background: lightgreen;
+   background: #b2d9ad;
    margin-left: 20%;
 }
 
 #closed-info {
    display: flex;
-   background: red;
+   background: #c97b7b;
    margin-left: 20%;
 }
 
 #closed-info2 {
    display: flex;
-   background: deepskyblue;
+   background: #95d5db;
    margin-left: 21.7%;
 }
 
 #no-info {
    display: flex;
-   background: white;
+   background: #f2f0eb;
    margin-left: 20%;
+}
+
+#onway-info {
+   display: flex;
+   background: red;
+   margin-left: 19.6%;
 }
 
 .info-flex {
@@ -160,9 +168,19 @@
 
 /* Average phones */
 @media only screen and (max-width: 600px) {
+
+   .date-header {
+      height: 12em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin-top: -4%;
+   }
+
    #open-info {
       display: flex;
-      background: green;
+      background: #658f60;
       margin-left: 10%;
    }
 
@@ -172,19 +190,26 @@
 
    #valvoja-info {
       display: flex;
-      background: lightgreen;
+      background: #b2d9ad;
       margin-left: 9%;
    }
 
    #closed-info {
       display: flex;
-      background: red;
+      background: #c97b7b;
       margin-left: 10%;
    }
 
    #no-info {
       display: flex;
-      background: white;
+      background: #f2f0eb;
+      margin-left: 10%;
+      display: flexbox;
+      float:left;
+   }
+
+   #closed-info2 {
+      background: lightblue;
       margin-left: 10%;
    }
 
