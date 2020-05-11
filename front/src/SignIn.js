@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   avatar: {
     margin: theme.spacing(1)
@@ -29,6 +29,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const textStyle = {
+  backgroundColor:'#fcfbf7',
+  borderRadius: 4
+}
+
 const SignIn = () => {
   
   const classes = useStyles();
@@ -39,6 +44,8 @@ const SignIn = () => {
   const history = useHistory();
   const {signin} = data;
   const fin = localStorage.getItem("language");
+
+  document.body.style = 'background: #eae7dc;';
   
   const login = (e) => {
     e.preventDefault();
@@ -94,8 +101,9 @@ const SignIn = () => {
       <CssBaseline />
       <div className={classes.paper}>
         <Typography component="h1" variant="h5">
-      {signin.SignIn[fin]}
+          {signin.SignIn[fin]}
         </Typography>
+
         <form className={classes.form} noValidate>
           <TextField
             variant="outlined"
@@ -110,7 +118,7 @@ const SignIn = () => {
             value={name}
             error={mistake}
             onInput={e => setName(e.target.value)}
-            style={{color:'#5f77a1'}}
+            style={textStyle}
           />
           <TextField
             variant="outlined"
@@ -124,9 +132,17 @@ const SignIn = () => {
             autoComplete="current-password"
             value={password}
             error={mistake}
-            helperText={mistake ? signin.Helper[fin] : ''}
             onInput={e => setPassword(e.target.value)}
+            style={textStyle}
           />
+
+          {mistake ?
+           <Typography
+             align="center"
+             style={{color: "#c23a3a"}}>
+             {signin.Helper[fin]}
+           </Typography>
+           : ""}
 
             <Button
               onClick={login}
