@@ -8,6 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import moment from 'moment'
+import * as data from './texts/texts.json'
 
 class Weekview extends Component {
 
@@ -225,17 +226,21 @@ class Weekview extends Component {
                 //console.log("ratastatus",rataStatus);
 
                 if (rataStatus === "present") {
-                    colorFromBackEnd = "green"
+                    colorFromBackEnd = "#658f60"
                 } else if (rataStatus === "confirmed") {
-                    colorFromBackEnd = "lightGreen"
+                    colorFromBackEnd = "#b2d9ad"
                 } else if (rataStatus === "not confirmed") {
+<<<<<<< HEAD
                     colorFromBackEnd = "deepskyblue"
+=======
+                    colorFromBackEnd = "#95d5db"
+>>>>>>> 01df2d11fc1e0da6105b1c5c1ed0dbc6b01325c4
                 } else if (rataStatus === "en route") {
-                    colorFromBackEnd = "orange"
+                    colorFromBackEnd = "#f2c66d"
                 } else if (rataStatus === "closed") {
-                    colorFromBackEnd = "red"
+                    colorFromBackEnd = "#c97b7b"
                 } else if (rataStatus === "absent") {
-                    colorFromBackEnd = "white"
+                    colorFromBackEnd = "#f2f0eb"
                 }
 
                 oikeePaiva = this.state.paivat[j].date
@@ -317,7 +322,9 @@ class Weekview extends Component {
         //alert(oikeePaiva.toISOString());
       }
 
-    render() {
+  render() {
+    const {week} = data;
+    const fin = localStorage.getItem("language");
 
         return (
             
@@ -336,7 +343,7 @@ class Weekview extends Component {
                     className="hoverHand arrow-left"
                     onClick={this.previousWeekClick}
                     ></div>
-                    <h1> Viikko {this.state.weekNro} , {this.state.yearNro} </h1>
+            <h1> {week.Week[fin]} {this.state.weekNro} , {this.state.yearNro} </h1>
                     {/* kuukausi jos tarvii: {monthToString(date.getMonth())} */}
                     <div
                     className="hoverHand arrow-right"
@@ -372,10 +379,10 @@ class Weekview extends Component {
                     <div class="info-flex">
 
                         <div id="open-info" class='box'></div>
-                        {/* Avoinna */} &nbsp;Päävalvoja paikalla <br></br> <br></br>
+                      {/* Avoinna */} &nbsp;{week.Green[fin]} <br></br> <br></br>
 
                         <div id="closed-info2" class='box'></div>
-                        {/* Suljettu */} &nbsp;Päävalvoja määritetty, mutta ei varmistettu <br></br><br></br>
+                        {/* Suljettu */} &nbsp;{week.Blue[fin]} <br></br><br></br>
 
                     </div>                
                 </Grid>
@@ -386,11 +393,11 @@ class Weekview extends Component {
                     <div class="info-flex">
 
                         <div id="valvoja-info" class='box'></div>
-                        {/* Päävalvoja tulossa */} &nbsp;Päävalvoja varmistettu <br></br> <br></br>
+                        {/* Päävalvoja tulossa */} &nbsp;{week.Lightgreen[fin]} <br></br> <br></br>
 
 
-                        <div id="no-info" class='box'> </div>
-                        {/* Ei tietoa */} &nbsp;Päävalvojaa ei asetettu
+                        <div id="no-info" class='box'></div>
+                      {/* Ei tietoa */} &nbsp;{week.White[fin]}
 
                     </div>
                 </Grid>
@@ -402,7 +409,7 @@ class Weekview extends Component {
 
 
                         <div id="closed-info" class='box'></div>
-                        {/* Suljettu */} &nbsp;Päävalvoja matkalla&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br></br><br></br>
+                        {/* Suljettu */} &nbsp;{week.Red[fin]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br></br><br></br>
 
                         <div id="onway-info" class='box'> </div>
                         {/* Ei tietoa */} &nbsp;Keskus suljettu

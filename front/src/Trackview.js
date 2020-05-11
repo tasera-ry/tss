@@ -6,6 +6,7 @@ import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { dayToString, getSchedulingDate } from "./utils/Utils";
+import * as data from './texts/texts.json';
 
 /*
  ** Main function
@@ -77,52 +78,52 @@ class Trackview extends Component {
       request();
    }
 
-   rangeAvailability() {
+  rangeAvailability(trackview, fin) {
       if (this.state.rangeSupervision === 'present') {
-         let returnable = <Box class="isAvailable">Päävalvoja Paikalla</Box>;
+        let returnable = <Box class="isAvailable">{trackview.SuperGreen[fin]}</Box>;
          return returnable;
       } else if(this.state.rangeSupervision === 'absent'){
          let returnable = (
-            <Box class="isUnavailable">Päävalvoja ei paikalla</Box>
+            <Box class="isUnavailable">{trackview.SuperRed[fin]}</Box>
          );
          return returnable;
       } else if(this.state.rangeSupervision === 'confirmed'){
          let returnable = (
-            <Box class="isConfirmed">Päävalvoja varmistettu</Box>
+            <Box class="isConfirmed">{trackview.SuperLightGreen[fin]}</Box>
          );
          return returnable;
       } else if(this.state.rangeSupervision === 'not confirmed'){
          let returnable = (
-            <Box class="isNotConfirmed">Päävalvoja ei varmistettu</Box>
+            <Box class="isNotConfirmed">{trackview.SuperBlue[fin]}</Box>
          );
          return returnable;
       } else if(this.state.rangeSupervision === 'en route'){
          let returnable = (
-            <Box class="isEnRoute">Päävalvoja matkalla</Box>
+            <Box class="isEnRoute">{trackview.SuperOrange[fin]}</Box>
          );
          return returnable;
       } else if(this.state.rangeSupervision === 'closed'){
          let returnable = (
-            <Box class="isClosed">Ampumakeskus suljettu</Box>
+            <Box class="isClosed">{trackview.Red[fin]}</Box>
          );
          return returnable;
       }
    }
 
-   trackAvailability() {
+  trackAvailability(trackview, fin) {
       if (this.state.trackSupervision === 'present') {
-         let returnable = <Box class="isAvailable">Ratavalvoja Paikalla</Box>;
+         let returnable = <Box class="isAvailable">{trackview.RangeGreen[fin]}</Box>;
          return returnable;
       } 
       else if(this.state.trackSupervision === 'absent'){
          let returnable = (
-            <Box class="isUnavailable">Ratavalvoja ei paikalla</Box>
+            <Box class="isUnavailable">{trackview.RangeWhite[fin]}</Box>
          );
          return returnable;
       } 
       else if(this.state.trackSupervision === 'closed'){
         let returnable = (
-          <Box class="isClosed">Rata suljettu</Box>
+          <Box class="isClosed">{trackview.RangeRed[fin]}</Box>
         );
         return returnable;
       }
@@ -136,6 +137,10 @@ class Trackview extends Component {
       //required for "this" to work in callback
       //alternative way without binding in constructor:
       this.update = this.update.bind(this);
+
+      const {trackview} = data;
+      const fin = localStorage.getItem("language");
+     
       return (
          /*    Whole view */
          <div class="wholeScreenDiv">
@@ -168,16 +173,16 @@ class Trackview extends Component {
             >
                {/*   pyydetään metodeilta boxit joissa radan tila */}
                <Grid item xs={1} sm={6}>
-                  {this.rangeAvailability()}
+                  {this.rangeAvailability(trackview, fin)}
                </Grid>
                <Grid item xs={1} sm={6}>
-                  {this.trackAvailability()}
+                  {this.trackAvailability(trackview, fin)}
                </Grid>
             </Grid>
 
             {/*    Infobox  */}
             <div id="infobox">
-               <p>Lisätietoja:</p>
+              <p>{trackview.Info[fin]}:</p>
                <div class="infoBox">{this.state.info}</div>
             </div>
             {/*    Linkki taaksepäin  */}
@@ -187,7 +192,7 @@ class Trackview extends Component {
                to={this.backlink()}
             >
                <ArrowBackIcon />
-               Päivänäkymään
+              {trackview.DayviewLink[fin]}
             </Link>
          </div>
       );

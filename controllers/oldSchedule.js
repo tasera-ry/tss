@@ -152,7 +152,6 @@ exports.getScheduleDate = async (req, res) => {
     tracks = tracks.map(item => {
       item = {
         ...item,
-        description: '',
         notice: '',
         trackSupervision: 'absent',
         scheduled: false
@@ -163,12 +162,13 @@ exports.getScheduleDate = async (req, res) => {
     const trackSupervision = await getTracksupervision(scheduleId);
     if(trackSupervision !== false && trackSupervision.length > 0) {
       tracks = tracks.map(item => {
+        const supervision = trackSupervision.find((findItem) => findItem.track_id === item.id);
         item = {
           ...item,
-          ...trackSupervision.find((findItem) => findItem.track_id === item.id),
-          scheduled: true
+          ...supervision,
+          trackSupervision: supervision !== undefined ? supervision.track_supervisor : 'absent',
+          scheduled: supervision !== undefined ? true : false
         }
-        item.trackSupervision = item.track_supervisor;
         return _.pick(item, ['id', 'name', 'description', 'notice', 'trackSupervision', 'scheduled']);
       });
     }

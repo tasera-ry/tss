@@ -23,10 +23,20 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { getSchedulingDate } from "./utils/Utils";
+import * as data from './texts/texts.json';
 import moment from 'moment';
 import "moment/locale/fi";
-moment.locale("fi");
+
+let lang = "fi"; //fallback
+if(localStorage.getItem("language") === '0') {
+  lang = 'fi';
+}
+else if(localStorage.getItem("language") === '1'){
+  lang = 'en';
+}
+moment.locale(lang);
 
 async function getRangeSupervisors(token){
   try{
@@ -68,14 +78,16 @@ class Scheduling extends Component {
         weekly:false,
         monthly:false,
         repeatCount:1,
-        token:'SECRET-TOKEN'
+        token:'SECRET-TOKEN',
+        datePickerKey:1
       };
   }
   
   componentDidMount(){
     console.log("MOUNTED",localStorage.getItem('token'));
     this.setState({
-      token: localStorage.getItem('token')
+      token: localStorage.getItem('token'),
+      datePickerKey: Math.random() //force datepicker to re-render when language changed
     },function(){
       if(this.state.token === 'SECRET-TOKEN'){
         this.props.history.push("/");
@@ -124,13 +136,13 @@ class Scheduling extends Component {
           open: response.open !== null ? 
             moment(response.open, 'h:mm:ss').format() :
             moment(response.date)
-            .hour(0)
+            .hour(17)
             .minute(0)
             .second(0),
           close:  response.close !== null ? 
             moment(response.close, 'h:mm:ss').format() :
             moment(response.date)
-            .hour(0)
+            .hour(20)
             .minute(0)
             .second(0),
           available:response.available !== null ? response.available : false,
@@ -145,6 +157,12 @@ class Scheduling extends Component {
           if(response.tracks[key].scheduled){
             this.setState({
               [this.state.tracks[key].id]: this.state.tracks[key].trackSupervision
+            });
+          }
+          //clears track states between date changes
+          else {
+            this.setState({
+              [this.state.tracks[key].id]: undefined
             });
           }
         }
@@ -181,6 +199,224 @@ class Scheduling extends Component {
       });
     }
   };
+
+  handleDateChange = (date) => {
+    this.setState({
+      date: date
+    });
+  };
+  
+  handleDatePickChange = (date) => {
+    this.setState({
+      date: date
+    },
+    function() {
+      this.continueWithDate();
+    });
+  };
+  
+  continueWithDate = (event) => {
+    if(event !== undefined && event.type !== undefined && event.type === 'submit'){
+      event.preventDefault();
+    }
+    this.setState({
+      state: 'loading',
+    },
+    function() {
+      console.log("TIME IS",this.state.date);
+      this.update();
+    });
+  }
+  
+  handleTimeStartChange = (date) => {
+    this.setState({
+       open: date
+    });
+  };
+ 
+  handleTimeEndChange = (date) => {
+    this.setState({
+       close: date
+    });
+  };
+  
+  handleSwitchChange = (event) => {
+    console.log("Switch",event.target.name, event.target.checked)
+    this.setState({
+       [event.target.name]: event.target.checked
+    });
+  };
+  
+  handleRepeatChange = (event) => {
+    console.log("Repeat",event.target.id, event.target.checked)
+    
+    let daily = false;
+    let weekly = false;
+    let monthly = false;
+    
+    if(event.target.id === 'daily'){
+      daily = !this.state.daily;
+    }
+    else if(event.target.id === 'weekly'){
+      weekly = !this.state.weekly;
+    }
+    else if(event.target.id === 'monthly'){
+      monthly = !this.state.monthly;
+    }
+    
+    this.setState({
+      daily: daily,
+      weekly: weekly,
+      monthly: monthly
+    });
+  };
+  
+  handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    
+    this.setState({
+      toast:false
+    });
+  };
+  
+  handleRadioChange = (event) => {
+    console.log("Radio",event.target.name, event.target)
+    //having the name be a int causes
+    //Failed prop type: Invalid prop `name` of type `number`
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+  };
+  
+  handleValueChange = (event) => {
+    console.log("Value change",event.target.name, event.target.value)
+    this.setState({
+       [event.target.name]: event.target.value
+    });
+  };
+  
+  handleBackdropClick = (event) => {
+    console.log("Backdrop clicked",event);
+    event.preventDefault();
+  };
+  
+  handleNotice = (event) => {
+    console.log("handle notice",event.target.id,event.target.value,this.state.tracks)
+    let idx = this.state.tracks.findIndex((findItem) => findItem.id === parseInt(event.target.id));
+    let tracks = this.state.tracks;
+    tracks[idx].notice = event.target.value;
+    
+    this.setState({
+       tracks:tracks
+    },function(){
+      console.debug(this.state);
+    });
+  }
+  
+  saveChanges = async (event) => {
+    const {sched} = data;
+    const fin = localStorage.getItem("language");
+    console.log("save")
+    
+    //start spinner
+    this.setState({
+      state: 'loading'
+    });
+    
+    //update call/error handling
+    const update = async (date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat) => {
+      console.log("Gonna call update",date,rsId,srsId,rangeSupervisionScheduled,tracks);
+      await this.updateCall(date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat).then((res) => {
+        this.setState({
+          toast: true,
+          toastMessage: sched.Success[fin],
+          toastSeverity: "success"
+        });
+      },
+      (error) => {
+        console.error('Update rejection called: ' + error.message);
+        if(error.message === 'Range officer enabled but no id'){
+          this.setState({
+            toastMessage: sched.Warning[fin],
+            toastSeverity: "warning",
+            toast: true,
+          });
+        }
+        else{
+          this.setState({
+            toastMessage: sched.Error[fin],
+            toastSeverity: "error",
+            toast: true,
+          });
+        }
+      })
+    }
+    
+    const repeat = async () => {
+      let date = moment(this.state.date).format('YYYY-MM-DD');
+      await update(
+        date,
+        this.state.reservationId,
+        this.state.scheduleId,
+        this.state.rangeSupervisionScheduled,
+        this.state.tracks,
+        false
+      );
+      
+      //repeat after me
+      if(this.state.daily === true || 
+         this.state.weekly === true || 
+         this.state.monthly === true
+      ){
+        for (var i = 0; i < this.state.repeatCount; i++) {
+          if(this.state.daily === true){
+            date = moment(date).add(1, 'days');
+          }
+          else if(this.state.weekly === true){
+            date = moment(date).add(1, 'weeks');
+          }
+          else if(this.state.monthly === true){
+            date = moment(date).add(1, 'months');
+          }
+          
+          let response = await this.updateRequirements(moment(date).format('YYYY-MM-DD'))
+          await update(
+            date,
+            response.reservationId,
+            response.scheduleId,
+            response.rangeSupervisionScheduled,
+            response.tracks,
+            true
+          );
+        }
+      }
+    }
+    await repeat();
+    //update here not necessarily needed but fixes 
+    //when saved to a new date with post and then immediately after
+    //saving again without updating ids.
+    this.update();
+    this.setState({
+      state: 'ready'
+    });
+  };
+  
+  //fetch new requirements for the next day
+  updateRequirements = async (date) => {
+    console.log("UPDATE REQUIREMENTS",date);
+    const request = async (date) => {
+      const response = await getSchedulingDate(date);
+
+      if(response !== false){
+        console.log("During update base results from api",response);
+      }
+      else console.error('Getting base info failed');
+      return response;
+    }
+    return await request(date);
+  }
 
   /*
   * requires:
@@ -415,15 +651,6 @@ class Scheduling extends Component {
                     Authorization: `Bearer ${token}`
                   }
                 })
-                fetch(`/api/reservation/${rsId}`, {
-                  method: "PUT",
-                  body: JSON.stringify({available: true}),
-                  headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                  }
-                })
                 .then(status => {
                   console.log(status)
                   console.log("put available",status)
@@ -475,9 +702,20 @@ class Scheduling extends Component {
           //track supervision
           //update only ones changed in state
           if(this.state[this.state.tracks[key].id] !== undefined || isRepeat){
-            let supervisorStatus = this.state[this.state.tracks[key].id];
+            let supervisorStatus;
+            let statusInState = this.state[this.state.tracks[key].id];
+            //if coming from repeat and status was cleared
+            supervisorStatus = statusInState !== undefined ? statusInState : 'absent';
+            
+            let notice = this.state.tracks[key].notice;
+            if(notice === null){
+              //undefined gets removed in object
+              notice=undefined;
+            }
+            
             let params = {
-              track_supervisor: supervisorStatus
+              track_supervisor: supervisorStatus,
+              notice:notice
             };            
             
             let srsp = '';
@@ -540,347 +778,168 @@ class Scheduling extends Component {
       return resolve("update success")
     })
   }
-
-  render() {
   
-    const selectedDate = this.state.date;
-    const handleDateChange = (date) => {
-      this.setState({
-        date: date
-      });
-    };
+  /*
+  *   Components
+  *
+  *   TrackList for individual track states
+  *   RangeSupervisorSelect for supervisor select box
+  */
+
+  //builds tracklist
+  createTrackList = () => {
+    const {sched} = data;
+    const fin = localStorage.getItem("language");
+    let items = [];
+    let tracks = this.state.tracks;
+    for (var key in tracks) {
+      items.push(
+        <React.Fragment
+        key={key}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">{tracks[key].name}</FormLabel>
+              <RadioGroup 
+                defaultValue="absent" 
+                name={tracks[key].id} 
+                onChange={this.handleRadioChange}
+                value={ this.state[tracks[key].id] || 'absent'}
+              >
+                <FormControlLabel value="present" control={
+                  <Radio style={{fontColor:'black', color:'#5f77a1'}} />} label={sched.OfficerPresent[fin]} />
+                <FormControlLabel value="absent" control={
+                  <Radio style={{fontColor:'black', color:'#5f77a1'}} />} label={sched.OfficerAbsent[fin]} />
+                <FormControlLabel value="closed" control={
+                  <Radio style={{fontColor:'black', color:'#5f77a1'}} />} label={sched.Closed[fin]} />
+              </RadioGroup>
+              <TextareaAutosize
+                className="notice"
+                //track_id
+                id={tracks[key].id}
+                aria-label="Ilmoitus" 
+                rowsMin={1}
+                rowsMax={3}
+                onChange={this.handleNotice}
+                value={tracks[key].notice !== null ? tracks[key].notice : ''}
+                style={{backgroundColor:'#f2f0eb'}}
+              />
+          </FormControl>
+        </React.Fragment>
+      );
+    }
+
+    return (
+      <React.Fragment>
+        {items}
+      </React.Fragment>
+    );
+  }
+  
+  //builds range officer select
+  createSupervisorSelect = () => {
+    let items = [];
+    let disabled = false;
+    const {sched} = data;
+    const fin = localStorage.getItem("language");
     
-    const handleDatePickChange = (date) => {
-      this.setState({
-        date: date
-      },
-      function() {
-        continueWithDate();
-      });
-    };
-    
-    const continueWithDate = (event) => {
-      if(event !== undefined && event.type !== undefined && event.type === 'submit'){
-        event.preventDefault();
-      }
-      this.setState({
-        state: 'loading',
-      },
-      function() {
-        console.log("TIME IS",this.state.date);
-        this.update();
-      });
+    for (var key in this.state.rangeSupervisors) {
+      items.push(
+        <MenuItem key={key} value={this.state.rangeSupervisors[key].id}>{this.state.rangeSupervisors[key].name}</MenuItem>
+      );
     }
     
-    const selectedTimeStart = this.state.open;
-    const handleTimeStartChange = (date) => {
-      this.setState({
-         open: date
-      });
+    if (this.state.rangeSupervisorSwitch === false) {
+      disabled=true
     };
-   
-    const selectedTimeEnd = this.state.close;
-    const handleTimeEndChange = (date) => {
-      this.setState({
-         close: date
-      });
-    };
-    
-    const handleSwitchChange = (event) => {
-      console.log("Switch",event.target.name, event.target.checked)
-      this.setState({
-         [event.target.name]: event.target.checked
-      });
-    };
-    
-    const handleRepeatChange = (event) => {
-      console.log("Repeat",event.target.id, event.target.checked)
-      
-      let daily = false;
-      let weekly = false;
-      let monthly = false;
-      
-      if(event.target.id === 'daily'){
-        daily = !this.state.daily;
-      }
-      else if(event.target.id === 'weekly'){
-        weekly = !this.state.weekly;
-      }
-      else if(event.target.id === 'monthly'){
-        monthly = !this.state.monthly;
-      }
-      
-      this.setState({
-        daily: daily,
-        weekly: weekly,
-        monthly: monthly
-      });
-    };
+
+    return (
+      <FormControl>
+        <InputLabel id="chooserangeSupervisorLabel">{sched.Select[fin]}</InputLabel>
+        <Select
+          {...disabled && {disabled: true}}
+          labelId="chooserangeSupervisorLabel"
+          name="rangeSupervisorId"
+          value={this.state.rangeSupervisorId}
+          onChange={this.handleValueChange}
+        >
+          {items}
+        </Select>
+      </FormControl>
+    );
+  }
+
+  render() {
     
     function Alert(props) {
       return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
-    
-    const handleSnackbarClose = (event, reason) => {
-      if (reason === 'clickaway') {
-        return;
-      }
-      
-      this.setState({
-        toast:false
-      });
-    };
-    
-    const handleRadioChange = (event) => {
-      console.log("Radio",event.target.name, event.target)
-      //having the name be a int causes
-      //Failed prop type: Invalid prop `name` of type `number`
-      this.setState({
-        [event.target.name]: event.target.value
-      });
-    };
-    
-    const handleValueChange = (event) => {
-      console.log("Value change",event.target.name, event.target.value)
-      this.setState({
-         [event.target.name]: event.target.value
-      });
-    };
-    
-    const handleBackdropClick = (event) => {
-      console.log("Backdrop clicked",event);
-      event.preventDefault();
-    };
-    
-    const saveChanges = async (event) => {
-      console.log("save")
-      
-      //start spinner
-      this.setState({
-        state: 'loading'
-      });
-      
-      //update call/error handling
-      const update = async (date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat) => {
-        console.log("Gonna call update",date,rsId,srsId,rangeSupervisionScheduled,tracks);
-        await this.updateCall(date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat).then((res) => {
-          this.setState({
-            toast: true,
-            toastMessage: "Päivitys onnistui",
-            toastSeverity: "success"
-          });
-        },
-        (error) => {
-          console.error('Update rejection called: ' + error.message);
-          if(error.message === 'Range officer enabled but no id'){
-            this.setState({
-              toastMessage: "Päävalvoja aktiivinen ilman valvojaa",
-              toastSeverity: "warning",
-              toast: true,
-            });
-          }
-          else{
-            this.setState({
-              toastMessage: "Päivitys epäonnistui",
-              toastSeverity: "error",
-              toast: true,
-            });
-          }
-        })
-      }
-      
-      const repeat = async () => {
-        let date = moment(this.state.date).format('YYYY-MM-DD');
-        await update(
-          date,
-          this.state.reservationId,
-          this.state.scheduleId,
-          this.state.rangeSupervisionScheduled,
-          this.state.tracks,
-          false
-        );
-        
-        //repeat after me
-        if(this.state.daily === true || 
-           this.state.weekly === true || 
-           this.state.monthly === true
-        ){
-          for (var i = 0; i < this.state.repeatCount; i++) {
-            if(this.state.daily === true){
-              date = moment(date).add(1, 'days');
-            }
-            else if(this.state.weekly === true){
-              date = moment(date).add(1, 'weeks');
-            }
-            else if(this.state.monthly === true){
-              date = moment(date).add(1, 'months');
-            }
-            
-            let response = await updateRequirements(moment(date).format('YYYY-MM-DD'))
-            await update(
-              date,
-              response.reservationId,
-              response.scheduleId,
-              response.rangeSupervisionScheduled,
-              response.tracks,
-              true
-            );
-          }
-        }
-      }
-      await repeat();
-      //update here not necessarily needed but fixes 
-      //when saved to a new date with post and then immediately after
-      //saving again without updating ids.
-      this.update();
-      this.setState({
-        state: 'ready'
-      });
-    };
-    
-    //fetch new requirements for the next day
-    const updateRequirements = async (date) => {
-      console.log("UPDATE REQUIREMENTS",date);
-      const request = async (date) => {
-        const response = await getSchedulingDate(date);
 
-        if(response !== false){
-          console.log("During update base results from api",response);
-        }
-        else console.error('Getting base info failed');
-        return response;
-      }
-      return await request(date);
-    }
-
-    //builds tracklist
-    function TrackList(props) {
-      let items = [];
-      for (var key in props.tracks) {
-        items.push(
-          <React.Fragment
-          key={key}>
-            <FormControl component="fieldset">
-              <FormLabel component="legend">{props.tracks[key].name}</FormLabel>
-                <RadioGroup 
-                  defaultValue="absent" 
-                  name={props.tracks[key].id} 
-                  onChange={handleRadioChange}
-                  value={ props.state[props.tracks[key].id] || 'absent'}
-                >
-                  <FormControlLabel value="present" control={<Radio />} label="Valvoja paikalla" />
-                  <FormControlLabel value="absent" control={<Radio />} label="Ei valvojaa" />
-                  <FormControlLabel value="closed" control={<Radio />} label="Suljettu" />
-                </RadioGroup>
-            </FormControl>
-          </React.Fragment>
-        );
-      }
-
-      return (
-        <React.Fragment>
-          {items}
-        </React.Fragment>
-      );
-    }
+    const {sched} = data;
+    const fin = localStorage.getItem("language");
     
-    //builds range officer select
-    function RangeSupervisorSelect (props) {
-      let items = [];
-      let disabled = false;
-      
-      for (var key in props.rangeSupervisors) {
-        items.push(
-          <MenuItem key={key} value={props.rangeSupervisors[key].id}>{props.rangeSupervisors[key].name}</MenuItem>
-        );
-      }
-      
-      if (props.state.rangeSupervisorSwitch === false) {
-        disabled=true
-      };
-
-      return (
-        <FormControl>
-          <InputLabel id="chooserangeSupervisorLabel">Valitse valvoja</InputLabel>
-          <Select
-            {...disabled && {disabled: true}}
-            labelId="chooserangeSupervisorLabel"
-            name="rangeSupervisorId"
-            value={props.state.rangeSupervisorId}
-            onChange={handleValueChange}
-          >
-            {items}
-          </Select>
-        </FormControl>
-      );
-    }
-    
-
-
     return (
       <div className="schedulingRoot">
-        <Modal open={this.state.state!=='ready'?true:false} onClick={handleBackdropClick}>
-          <Backdrop open={this.state.state!=='ready'?true:false} onClick={handleBackdropClick}>
+        <Modal open={this.state.state!=='ready'?true:false} onClick={this.handleBackdropClick}>
+          <Backdrop open={this.state.state!=='ready'?true:false} onClick={this.handleBackdropClick}>
             <CircularProgress disableShrink />
           </Backdrop>
         </Modal>
         <div className="firstSection">
-          <form onSubmit={continueWithDate}>
-            <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
+          <form onSubmit={this.continueWithDate}>
+            <MuiPickersUtilsProvider utils={MomentUtils} locale={lang} key={this.state.datePickerKey}>
               <KeyboardDatePicker
                 autoOk
                 margin="normal"
                 name="date"
-                label="Valitse päivä"
-                value={selectedDate}
-                onChange={date => handleDateChange(date)}
-                onAccept={handleDatePickChange}
+                label={sched.Day[fin]}
+                value={this.state.date}
+                onChange={date => this.handleDateChange(date)}
+                onAccept={this.handleDatePickChange}
                 format="DD.MM.YYYY"
                 showTodayButton
               />
             </MuiPickersUtilsProvider>
             <div className="continue">
-              <Button type="submit" variant="contained">Valitse päivä</Button>
+              <Button type="submit" variant="contained" style={{backgroundColor:'#d1ccc2'}}>{sched.Day[fin]}</Button>
             </div>
           </form>
         </div>
         <hr/>
         <div className="secondSection">
           <div className="topRow">
-            <div className="text">Keskus auki</div>
+            <div className="text">{sched.Open[fin]}</div>
             <Switch
               checked={ this.state.available }
-              onChange={handleSwitchChange}
+              onChange={this.handleSwitchChange}
               name="available"
+              color="default"
+              style={{color:'#5f77a1'}}
             />
           </div>
           <div className="middleRow">
             <div className="roSwitch">
-              <div className="text">Päävalvoja</div>
+              <div className="text">{sched.Supervisor[fin]}</div>
               <Switch
                 className="officerSwitch"
                 checked={this.state.rangeSupervisorSwitch}
-                onChange={handleSwitchChange}
+                onChange={this.handleSwitchChange}
                 name="rangeSupervisorSwitch"
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
-            {/*Butchered state?*/}
-            <RangeSupervisorSelect 
-              rangeSupervisors={this.state.rangeSupervisors}
-              state={this.state} 
-            />
+            {this.createSupervisorSelect()}
           </div>
           <div className="bottomRow">
-            <div className="text">Aukioloaika</div>
+            <div className="text">{sched.OpenHours[fin]}</div>
             <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
               <KeyboardTimePicker
                 autoOk
                 ampm={false}
                 margin="normal"
                 name="start"
-                label="Alku"
-                value={selectedTimeStart}
-                onChange={handleTimeStartChange}
+                label={sched.Start[fin]}
+                value={this.state.open}
+                onChange={this.handleTimeStartChange}
                 minutesStep={5}
                 showTodayButton
               />
@@ -892,9 +951,9 @@ class Scheduling extends Component {
                 ampm={false}
                 margin="normal"
                 name="end"
-                label="Loppu"
-                value={selectedTimeEnd}
-                onChange={handleTimeEndChange}
+                label={sched.Stop[fin]}
+                value={this.state.close}
+                onChange={this.handleTimeEndChange}
                 minutesStep={5}
                 showTodayButton
               />
@@ -904,61 +963,63 @@ class Scheduling extends Component {
         <hr/>
         <div className="thirdSection">
           <div className="leftSide">
-            {/*Butchered state?*/}
-            <TrackList 
-              tracks={this.state.tracks}
-              state={this.state} 
-            />
+            {this.createTrackList()}
           </div>
           <div className="rightSide">
-            <Button variant="contained" color="primary" onClick={this.openAllTracks}>Avaa kaikki</Button>
-            <Button variant="contained" onClick={this.emptyAllTracks}>Tyhjennä kaikki</Button>
-            <Button variant="contained" color="secondary" onClick={this.closeAllTracks}>Sulje kaikki</Button>
+            <Button variant="contained" color="primary" onClick={this.openAllTracks} style={{color:'black', backgroundColor:'#5f77a1'}}>{sched.OpenAll[fin]}</Button>
+            <Button variant="contained" onClick={this.emptyAllTracks} style={{backgroundColor:'#d1ccc2'}}>{sched.ClearAll[fin]}</Button>
+        <Button variant="contained" color="secondary" onClick={this.closeAllTracks} style={{color:'black', backgroundColor:'#c97b7b'}}>{sched.CloseAll[fin]}</Button>
           </div>
         </div>
         <hr/>
         <div className="fourthSection">
           <div className="repetition">
             <div className="daily">
-              Toista päivittäin
+              {sched.RepeatDaily[fin]}
               <Switch
                 checked={ this.state.daily }
-                onChange={handleRepeatChange}
+                onChange={this.handleRepeatChange}
                 id='daily'
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
             <div className="weekly">
-              Toista viikottain
+              {sched.RepeatWeekly[fin]}
               <Switch
                 checked={ this.state.weekly }
-                onChange={handleRepeatChange}
+                onChange={this.handleRepeatChange}
                 id='weekly'
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
             <div className="monthly">
-              Toista kuukausittain
+              {sched.RepeatMonthly[fin]}
               <Switch
                 checked={ this.state.monthly }
-                onChange={handleRepeatChange}
+                onChange={this.handleRepeatChange}
                 id='monthly'
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
             <div className="repeatCount">
-              Toistojen määrä
+              {sched.Amount[fin]}
               <TextField 
                 name="repeatCount"
                 type="number" 
                 value={this.state.repeatCount} 
-                onChange={handleValueChange}
+                onChange={this.handleValueChange}
                 InputProps={{ inputProps: { min: 1, max: 100 } }}
               />
             </div>
           </div>
           <div className="save">
-            <Button variant="contained" onClick={saveChanges}>Tallenna muutokset</Button>
+            <Button variant="contained" onClick={this.saveChanges} style={{backgroundColor:'#d1ccc2'}}>{sched.Save[fin]}</Button>
             <div className="toast">
-              <Snackbar open={this.state.toast} autoHideDuration={5000} onClose={handleSnackbarClose}>
-                <Alert onClose={handleSnackbarClose} severity={this.state.toastSeverity}>
+              <Snackbar open={this.state.toast} autoHideDuration={5000} onClose={this.handleSnackbarClose}>
+                <Alert onClose={this.handleSnackbarClose} severity={this.state.toastSeverity}>
                   {this.state.toastMessage}!
                 </Alert>
               </Snackbar>

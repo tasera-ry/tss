@@ -51,8 +51,8 @@ const fields = {
     const validator = requestObject('notice')
           .isString()
           .withMessage('must be a string')
-          .isLength({ min: 1, max: 255 })
-          .withMessage('must be between 1 and 255 characters')
+          .isLength({ min: 0, max: 255 })
+          .withMessage('must be between 0 and 255 characters')
     return validatorAdditions(validator, opts)
   }
 }
