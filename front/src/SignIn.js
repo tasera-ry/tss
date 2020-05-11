@@ -130,6 +130,7 @@ const SignIn = () => {
 
             <Button
               onClick={login}
+              type="submit"
               fullWidth
               variant="contained"
               style={{backgroundColor:'#5f77a1'}}>
