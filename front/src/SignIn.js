@@ -96,6 +96,10 @@ const SignIn = () => {
     }
   }
 
+  function backToPrev() {
+    history.goBack();
+  }
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -154,15 +158,14 @@ const SignIn = () => {
             </Button>
 
           &nbsp;
-          
+
             <Button
-              onClick={() => history.goBack()}
-              type="submit"
+              onClick={() => backToPrev()}
               fullWidth
               style={{color:'#5f77a1'}}>
               {signin.Back[fin]}
             </Button>
-
+          
         </form>
       </div>
     </Container>
