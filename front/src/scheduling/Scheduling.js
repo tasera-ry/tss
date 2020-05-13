@@ -97,7 +97,7 @@ class Scheduling extends Component {
       token: localStorage.getItem('token'),
       datePickerKey: Math.random() //force datepicker to re-render when language changed
     },function(){
-      if(this.state.token === 'SECRET-TOKEN'){
+      if(this.state.token === undefined){
         this.props.history.push("/");
       }
       else{
@@ -783,9 +783,9 @@ class Scheduling extends Component {
         }
       }
       
-      return resolve("update success")
-    })
-  }
+      return resolve("update success");
+    });
+  };
   
   /*
   *   Components
@@ -891,8 +891,12 @@ class Scheduling extends Component {
             <CircularProgress disableShrink />
           </Backdrop>
         </Modal>
+
+        {/* Section for selecting date */}
         <div className="firstSection">
           <form onSubmit={this.continueWithDate}>
+
+            { /* Datepicker */}
             <MuiPickersUtilsProvider utils={MomentUtils} locale={lang} key={this.state.datePickerKey}>
               <KeyboardDatePicker
                 autoOk
@@ -911,7 +915,10 @@ class Scheduling extends Component {
             </div>
           </form>
         </div>
+
         <hr/>
+
+        {/* Section for setting range officer status and open/close times of the tracks */}
         <div className="secondSection">
           <div className="topRow">
             <div className="text">{sched.Open[fin]}</div>
@@ -968,7 +975,10 @@ class Scheduling extends Component {
             </MuiPickersUtilsProvider>
           </div>
         </div>
+
         <hr/>
+
+        {/* Section for setting track-specific open/close/absent statuses */}
         <div className="thirdSection">
           <div className="leftSide">
             {this.createTrackList()}
@@ -1038,6 +1048,6 @@ class Scheduling extends Component {
       
     );
   }
-}
+};
 
 export default Scheduling;

@@ -66,7 +66,7 @@ const SignIn = () => {
   }
 
   function RedirectToWeekview(){
-    window.location.href="/"
+    window.location.href="/";
   }
 
   async function setInfo(data) {
@@ -82,7 +82,7 @@ const SignIn = () => {
     let role = await response.data[0].role;
     localStorage.setItem("role", role);
 
-    RedirectToWeekview()
+    RedirectToWeekview();
   }
   
   const HandleError = error => {

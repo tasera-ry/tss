@@ -79,20 +79,24 @@ const TrackRows = ({tracks, setTracks, scheduleId, tablet, fin}) => {
                </div>
               )
   )
-}
+};
 
 const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
   const buttonStyle = {
     backgroundColor:`${track.color}`,
     borderRadius: 30,
     width: 100
-  }
+  };
   
   const [buttonColor, setButtonColor] = useState(track.color);
 
   let text = tablet.Green[fin];
-  if (track.trackSupervision==="absent") { text = tablet.White[fin]; }
-  else if (track.trackSupervision==="closed") { text = tablet.Red[fin]; }
+  if (track.trackSupervision==="absent") { 
+    text = tablet.White[fin]; 
+  }
+  else if (track.trackSupervision==="closed") { 
+    text = tablet.Red[fin]; 
+  }
 
   const HandleClick = () => {
     let newSupervision = "absent";
@@ -125,8 +129,8 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
           track.trackSupervision = newSupervision;
           setButtonColor(track.color);
 	}
-      })
-  }
+      });
+  };
 
   return (
     <Button
@@ -136,8 +140,8 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
       onClick={HandleClick}>
       {text}
     </Button>
-  )
-}
+  );
+};
 
 async function getColors(tracks, setTracks) {
   const copy = [...tracks]
@@ -201,6 +205,7 @@ const Tabletview = () => {
   const [scheduleId, setScheduleId] = useState();
   const fin = localStorage.getItem("language");
   const {tablet} = data;
+  const token = localStorage.getItem('token');
   let today = moment().format("DD.MM.YYYY");
 
   const statusStyle = {
@@ -208,11 +213,20 @@ const Tabletview = () => {
     backgroundColor: statusColor,
     borderRadius: 3,
     width: 300
-  }
+  };
   
   useEffect(() => {
     getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId);
+
+    // TODO add check for expired token
+    if ( token === null ) {
+      RedirectToWeekview();
+    }
   }, []);
+
+  function RedirectToWeekview(){
+    window.location.href="/";
+  }
 
   const HandlePresentClick = () => {
     updateSupervisor("present", colors.green, tablet.SuperGreen[fin]);
@@ -319,7 +333,7 @@ const Tabletview = () => {
       </div>
     </div>
     
-  )
-}
+  );
+};
 
 export default Tabletview;
