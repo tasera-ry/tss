@@ -165,7 +165,7 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
   await fetch(`/api/datesupreme/${date}`)
     .then(res => res.json())
     .then(response => {
-      console.log(response);
+      // console.log(response);
       setScheduleId(response.scheduleId);
       setHours([moment(response.open, 'h:mm').format('H.mm'),
                 moment(response.close, 'h:mm').format('H.mm')]);
@@ -198,27 +198,31 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
     });
 };
 
+// Validate the login token
 async function validateLogin() {
-  // Validate the login token
-  try {
-    const token = localStorage.getItem('token');
-    console.log(token);
-    await fetch("api/validate", {
-      method: "GET",
-      headers: { 
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}` 
-      }
-    })
-    .then(res => res.json())
-    .then(res => {
-      console.log(res);
-      return true;
-    });
+  const token = localStorage.getItem('token');
+  let response;
+  if ( token !== null ) {
+    try {
+      response = await fetch("/api/validate", {
+        method: "GET",
+        headers: { 
+          Authorization: `Bearer ${token}` 
+        }
+      });
+    }
+    catch (error) {
+      // console.log won't have time to be read before user is rerouted, so commented out for future use
+      // console.log(`Authorization validation failed `, error);
+      return false;
+    }
   }
-  catch (error) {
+
+  if (response.status === 200) {
     return true;
+  }
+  else {
+    return false;
   }
 }
 

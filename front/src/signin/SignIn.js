@@ -15,6 +15,9 @@ import axios from 'axios';
 // Translations
 import * as data from '../texts/texts.json';
 
+/*
+  Signin is the component for signing in to the frontend
+*/
 const useStyles = makeStyles(theme => ({
   paper: {
     marginTop: theme.spacing(8),

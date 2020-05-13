@@ -89,7 +89,7 @@ class Scheduling extends Component {
         token:'SECRET-TOKEN',
         datePickerKey:1
       };
-  }
+  };
   
   componentDidMount(){
     console.log("MOUNTED",localStorage.getItem('token'));

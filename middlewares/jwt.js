@@ -4,6 +4,8 @@ const config = require(path.join(root, 'config', 'config'));
 const expressJWT = require('express-jwt')({ secret: config.jwt.secret });
 const services = require(path.join(root, 'services'));
 
+const jwt = require('jsonwebtoken');
+
 exports.read = [
   expressJWT
   , async function expandJWTContent(request, response, next) {
@@ -29,21 +31,30 @@ exports.read = [
 exports.validate = [
   expressJWT
   , async function validateJWTtoken(request, response, next) {
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    console.log(request);
-
-    let users;
     try {
-      users = await services.user.read(request.user);
-      //expressJWT.validate(request.token);
+      // Removing bearer_ from the auth headers to get only token
+      let token = request.headers.authorization.slice(7);
+
+      jwt.verify(token, config.jwt.secret, (err, decoded) => {
+        if ( err ) {
+          response.status(403);
+
+          return next(err);
+        }
+        else {
+          return response.status(200).send({
+            success: true,
+            message: 'Authentication successfull'
+          });
+        }
+      });
     }
     catch (error) {
-      //const err = Error('Token invalid');
-      //err.name = 'Authorization error';
+      console.log(error);
+
       return next(error);
     }
 
-    response.locals.user = users.pop();
     return next();
   }
 ]

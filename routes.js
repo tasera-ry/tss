@@ -164,6 +164,6 @@ router.route("/datesupreme/:date")
 
 router.route("/validate")
   .get(
-    middlewares.jwt.validate);
+    middlewares.jwt.validate)
 
 module.exports = router;

@@ -24,6 +24,10 @@ import 'moment/locale/en-ca';
 // Translations
 import * as data from '../texts/texts.json'
 
+/*
+  LoggedIn.js is the component for accepting and denying upcoming supervision turns
+*/
+
 //print drop down menus in rows
 const DropDowns = (props) => {
   let fin = localStorage.getItem("language");
