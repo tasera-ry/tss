@@ -14,7 +14,8 @@ import moment from 'moment';
 
 // Call-handling to backend
 import axios from 'axios';
-import { validate } from "@material-ui/pickers";
+
+import { validateLogin } from "../utils/Utils";
 
 const colors = {
   green: '#658f60',
@@ -197,34 +198,6 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
       getColors(response.tracks, setTracks);
     });
 };
-
-// Validate the login token
-async function validateLogin() {
-  const token = localStorage.getItem('token');
-  let response;
-  if ( token !== null ) {
-    try {
-      response = await fetch("/api/validate", {
-        method: "GET",
-        headers: { 
-          Authorization: `Bearer ${token}` 
-        }
-      });
-    }
-    catch (error) {
-      // console.log won't have time to be read before user is rerouted, so commented out for future use
-      // console.log(`Authorization validation failed `, error);
-      return false;
-    }
-  }
-
-  if (response.status === 200) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
 
 const Tabletview = () => {
   const [statusColor, setStatusColor] = useState();

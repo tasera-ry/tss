@@ -36,6 +36,9 @@ import { getSchedulingDate } from "../utils/Utils";
 // Translation
 import * as data from '../texts/texts.json';
 
+// Token validation
+import { validateLogin } from "../utils/Utils";
+
 
 let lang = "fi"; //fallback
 if(localStorage.getItem("language") === '0') {
@@ -97,34 +100,33 @@ class Scheduling extends Component {
       token: localStorage.getItem('token'),
       datePickerKey: Math.random() //force datepicker to re-render when language changed
     },function(){
-      if(this.state.token === undefined){
-        this.props.history.push("/");
-      }
-      else{
-        try{
-          const request = async () => {
-            const response = await getRangeSupervisors(this.state.token);
-            if(response !== false){
-              this.setState({
-                rangeSupervisors: response
-              });
-              this.update();
-              this.setState({
-                state: 'loading'
-              });
-            } 
-            else {
-              console.error("getting user failed, most likely sign in token invalid -> kicking to root");
-              this.props.history.push("/");
+      validateLogin()
+      .then(logInSuccess => {
+        if(!logInSuccess){
+          this.props.history.push("/");
+        }
+        else{
+          try{
+            const request = async () => {
+              const response = await getRangeSupervisors(this.state.token);
+              if(response !== false){
+                this.setState({
+                  rangeSupervisors: response
+                });
+                this.update();
+                this.setState({
+                  state: 'loading'
+                });
+              }
             }
+            request();
           }
-          request();
+          catch(error){
+            console.error("init failed",error);
+          }
         }
-        catch(error){
-          console.error("init failed",error);
-        }
-      }
-    })
+      });
+    });
   }
   
   update(){

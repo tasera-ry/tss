@@ -36,6 +36,9 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 
+// Token validation
+import { validateLogin } from "../utils/Utils";
+
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -56,8 +59,7 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-
-
+// Translations
 const l10n = l10nLines.tracks;
 const lang = localStorage.getItem("language");
 
@@ -242,20 +244,35 @@ const TrackCRUD = () => {
 
   useEffect(() => {
     (async () => {
-      try
-      {
-        const response = await axios.get('/api/track')
-        setTrackData(response.data.sort((a, b) => a.name > b.name))
-      }
-      catch(e)
-      {
-        // /api/track returns 404 when no tracks are set, should be fixed in
-        // server code
-        setTrackData([]);
-      }
-      setInitFinished(true);
+      validateLogin()
+      .then(logInSuccess => {
+        if (logInSuccess) {
+          try
+          {
+            axios.get('/api/track')
+            .then(response => {
+              setTrackData(response.data.sort((a, b) => a.name > b.name));
+            });
+          }
+          catch(e)
+          {
+            // /api/track returns 404 when no tracks are set, should be fixed in
+            // server code
+            setTrackData([]);
+          }
+          setInitFinished(true);
+        }
+        else {
+          RedirectToWeekview();
+        }
+      });
     })()
   }, [initFinished]);
+
+  function RedirectToWeekview(){
+    window.location.href="/";
+  };
+
 
   return (
     <ScopedCssBaseline>
