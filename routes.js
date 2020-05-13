@@ -1,17 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const _ = require('lodash')
+const _ = require('lodash');
 
-const path = require('path')
-const root = path.join(__dirname, '.')
+const path = require('path');
+const root = path.join(__dirname, '.');
 
-const config = require(path.join(root, 'config', 'config'))
+const validators = require(path.join(root, 'validators'));
+const middlewares = require(path.join(root, 'middlewares'));
+const controllers = require(path.join(root, 'controllers'));
 
-const validators = require(path.join(root, 'validators'))
-const middlewares = require(path.join(root, 'middlewares'))
-const controllers = require(path.join(root, 'controllers'))
-
-const oldSchedule = require(path.join(root, 'controllers', 'oldSchedule'))
+const oldSchedule = require(path.join(root, 'controllers', 'oldSchedule'));
 
 router.route('/sign')
   .post(
@@ -160,6 +158,12 @@ router.route('/track/:track_id')
     , controllers.track.delete)
 
 //newer get with padded functionality
-router.get("/datesupreme/:date", oldSchedule.getScheduleDate);
+router.route("/datesupreme/:date")
+  .get(
+    oldSchedule.getScheduleDate)
+
+router.route("/validate")
+  .get(
+    middlewares.jwt.validate)
 
 module.exports = router;

@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from "react";
+
 import './rangeofficer.css';
+
+// Material UI components
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import * as data from './texts/texts.json';
-import moment from 'moment'
+
+// Translations
+import * as data from '../texts/texts.json';
+
+// Date handling
+import moment from 'moment';
+
+// Call-handling to backend
 import axios from 'axios';
+
+import { validateLogin } from "../utils/Utils";
 
 const colors = {
   green: '#658f60',
@@ -70,20 +81,24 @@ const TrackRows = ({tracks, setTracks, scheduleId, tablet, fin}) => {
                </div>
               )
   )
-}
+};
 
 const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
   const buttonStyle = {
     backgroundColor:`${track.color}`,
     borderRadius: 30,
     width: 100
-  }
+  };
   
   const [buttonColor, setButtonColor] = useState(track.color);
 
   let text = tablet.Green[fin];
-  if (track.trackSupervision==="absent") { text = tablet.White[fin]; }
-  else if (track.trackSupervision==="closed") { text = tablet.Red[fin]; }
+  if (track.trackSupervision==="absent") { 
+    text = tablet.White[fin]; 
+  }
+  else if (track.trackSupervision==="closed") { 
+    text = tablet.Red[fin]; 
+  }
 
   const HandleClick = () => {
     let newSupervision = "absent";
@@ -116,8 +131,8 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
           track.trackSupervision = newSupervision;
           setButtonColor(track.color);
 	}
-      })
-  }
+      });
+  };
 
   return (
     <Button
@@ -127,8 +142,8 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
       onClick={HandleClick}>
       {text}
     </Button>
-  )
-}
+  );
+};
 
 async function getColors(tracks, setTracks) {
   const copy = [...tracks]
@@ -151,6 +166,7 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
   await fetch(`/api/datesupreme/${date}`)
     .then(res => res.json())
     .then(response => {
+      // console.log(response);
       setScheduleId(response.scheduleId);
       setHours([moment(response.open, 'h:mm').format('H.mm'),
                 moment(response.close, 'h:mm').format('H.mm')]);
@@ -177,12 +193,11 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
       }
       else {
         setStatusText(tablet.SuperWhite[fin]);
-	setStatusColor(colors.white);
+	      setStatusColor(colors.white);
       }
-      getColors(response.tracks, setTracks)
-    })
-  
-}
+      getColors(response.tracks, setTracks);
+    });
+};
 
 const Tabletview = () => {
   const [statusColor, setStatusColor] = useState();
@@ -199,11 +214,27 @@ const Tabletview = () => {
     backgroundColor: statusColor,
     borderRadius: 3,
     width: 300
-  }
+  };
   
+  /*
+    Basically the functional component version of componentdidmount
+  */
   useEffect(() => {
-    getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId);
+    validateLogin()
+      .then(logInSuccess => {
+        if (logInSuccess) {
+          getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId);
+        }
+        // Login failed, redirect to weekview
+        else {
+          RedirectToWeekview();
+        }
+      });
   }, []);
+
+  function RedirectToWeekview(){
+    window.location.href="/";
+  };
 
   const HandlePresentClick = () => {
     updateSupervisor("present", colors.green, tablet.SuperGreen[fin]);
@@ -310,7 +341,7 @@ const Tabletview = () => {
       </div>
     </div>
     
-  )
-}
+  );
+};
 
 export default Tabletview;

@@ -71,3 +71,31 @@ export function monthToString(i) {
   moment.locale(lang);
   return moment().month(i).format('MMMM');
 }
+
+// Validate the login token
+export async function validateLogin() {
+  const token = localStorage.getItem('token');
+  let response;
+  if ( token !== null ) {
+    try {
+      response = await fetch("/api/validate", {
+        method: "GET",
+        headers: { 
+          Authorization: `Bearer ${token}` 
+        }
+      });
+    }
+    catch (error) {
+      // console.log won't have time to be read before user is rerouted, so commented out for future use
+      // console.log(`Authorization validation failed `, error);
+      return false;
+    }
+  }
+
+  if (response && response.status && response.status === 200) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}

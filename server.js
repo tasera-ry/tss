@@ -19,11 +19,11 @@ app.use(cookieParser());
 app.use("/api", router);
 
 // Rendering the front-end react app
-app.use("/", express.static("front/build/"))
+app.use("/", express.static("front/build/"));
 
 app.listen(port, () => {
     console.log("Server on " + port)
-})
+});
 
 if(process.env.NODE_ENV === 'stable' && os.hostname() === 'tasera.netum.fi') {
   if(process.getgid() === 0 || process.getuid() === 0) {
