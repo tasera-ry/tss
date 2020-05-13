@@ -14,6 +14,7 @@ import moment from 'moment';
 
 // Call-handling to backend
 import axios from 'axios';
+import { validate } from "@material-ui/pickers";
 
 const colors = {
   green: '#658f60',
@@ -164,6 +165,7 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
   await fetch(`/api/datesupreme/${date}`)
     .then(res => res.json())
     .then(response => {
+      console.log(response);
       setScheduleId(response.scheduleId);
       setHours([moment(response.open, 'h:mm').format('H.mm'),
                 moment(response.close, 'h:mm').format('H.mm')]);
@@ -190,11 +192,24 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
       }
       else {
         setStatusText(tablet.SuperWhite[fin]);
-	setStatusColor(colors.white);
+	      setStatusColor(colors.white);
       }
-      getColors(response.tracks, setTracks)
-    })
-  
+      getColors(response.tracks, setTracks);
+    });
+};
+
+async function validateLogin() {
+  // Validate the login token
+  try {
+    await fetch(`api/validate`)
+    .then(res => res.json())
+    .then(res => {
+      console.log(res);
+    });
+  }
+  catch (error) {
+    return false;
+  }
 }
 
 const Tabletview = () => {
@@ -215,18 +230,25 @@ const Tabletview = () => {
     width: 300
   };
   
+  /*
+    Basically the functional component version of componentdidmount
+  */
   useEffect(() => {
-    getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId);
-
-    // TODO add check for expired token
-    if ( token === null ) {
-      RedirectToWeekview();
-    }
+    validateLogin()
+      .then(logInSuccess => {
+        if (logInSuccess) {
+          getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId);
+        }
+        // Login failed, redirect to weekview
+        else {
+          RedirectToWeekview();
+        }
+      });
   }, []);
 
   function RedirectToWeekview(){
     window.location.href="/";
-  }
+  };
 
   const HandlePresentClick = () => {
     updateSupervisor("present", colors.green, tablet.SuperGreen[fin]);

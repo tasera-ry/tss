@@ -1,11 +1,9 @@
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const _ = require('lodash')
+const _ = require('lodash');
 
-const path = require('path')
-const root = path.join(__dirname, '..')
-const services = require(path.join(root, 'services'))
-const config = require(path.join(root, 'config'))
+const path = require('path');
+const root = path.join(__dirname, '..');
+const config = require(path.join(root, 'config'));
 
 
 const controller = {
