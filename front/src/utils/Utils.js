@@ -92,7 +92,7 @@ export async function validateLogin() {
     }
   }
 
-  if (response && response.status === 200) {
+  if (response && response.status && response.status === 200) {
     return true;
   }
   else {
