@@ -14,6 +14,10 @@ import trackCRUD from "./tracks";
 class App extends Component {
   state = {};
 
+  componentDidMount() {
+     
+  }
+
   render() {
     if(localStorage.getItem("language")===null) {
       localStorage.setItem("language", 0)
