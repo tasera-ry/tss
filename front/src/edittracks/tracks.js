@@ -244,28 +244,25 @@ const TrackCRUD = () => {
 
   useEffect(() => {
     (async () => {
-      validateLogin()
-      .then(logInSuccess => {
-        if (logInSuccess) {
-          try
-          {
-            axios.get('/api/track')
-            .then(response => {
-              setTrackData(response.data.sort((a, b) => a.name > b.name));
-            });
-          }
-          catch(e)
-          {
-            // /api/track returns 404 when no tracks are set, should be fixed in
-            // server code
-            setTrackData([]);
-          }
-          setInitFinished(true);
+      let logInSuccess = await validateLogin();
+      if (logInSuccess) {
+        try
+        {
+          let response = await axios.get('/api/track');
+
+          setTrackData(response.data);
         }
-        else {
-          RedirectToWeekview();
+        catch(e)
+        {
+          // /api/track returns 404 when no tracks are set, should be fixed in
+          // server code
+          setTrackData([]);
         }
-      });
+        setInitFinished(true);
+      }
+      else {
+        RedirectToWeekview();
+      }
     })()
   }, [initFinished]);
 

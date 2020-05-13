@@ -106,9 +106,8 @@ class Scheduling extends Component {
           this.props.history.push("/");
         }
         else{
-          try{
-            const request = async () => {
-              const response = await getRangeSupervisors(this.state.token);
+            getRangeSupervisors(this.state.token)
+            .then((response) => {
               if(response !== false){
                 this.setState({
                   rangeSupervisors: response
@@ -118,12 +117,10 @@ class Scheduling extends Component {
                   state: 'loading'
                 });
               }
-            }
-            request();
-          }
-          catch(error){
-            console.error("init failed",error);
-          }
+            })
+            .catch((error) => {
+              console.error("init failed",error);
+            });
         }
       });
     });

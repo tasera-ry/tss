@@ -176,20 +176,19 @@ class UserManagementView extends Component {
                   this.props.history.push("/");
                }
                else {
-                  try {
-                     const request = async () => {
-                        const response = await getUsers(this.state.token);
-                        if (response !== false) {
-                           this.setState({
-                              userList: response,
-                           });
+                  getUsers(this.state.token)
+                  .then((response) => {
+                     if (response !== false) {
+                        this.setState({
+                           userList: response,
+                        }, () => {
                            this.update();
-                        }
-                     };
-                     request();
-                  } catch (error) {
+                        });
+                     }
+                  })
+                  .catch((error) => {
                      console.error("init failed", error);
-                  }
+                  });
                }
             });
          }

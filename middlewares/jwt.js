@@ -44,7 +44,7 @@ exports.validate = [
         else {
           return response.status(200).send({
             success: true,
-            message: 'Authentication successfull'
+            message: 'Authentication successful'
           });
         }
       });
