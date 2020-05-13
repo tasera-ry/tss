@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
+
+// Material UI components
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {Link, useHistory} from 'react-router-dom';
-import Nav from './Nav';
-import axios from 'axios'
-import * as data from './texts/texts.json'
+import {useHistory} from 'react-router-dom';
+
+// Call handling to backend
+import axios from 'axios';
+
+// Translations
+import * as data from '../texts/texts.json';
 
 const useStyles = makeStyles(theme => ({
   paper: {

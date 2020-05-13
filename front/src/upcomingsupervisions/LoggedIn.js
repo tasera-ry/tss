@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+
+// Material UI components
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -11,10 +13,16 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
+
+// Axios for call-handling to backend
 import axios from 'axios';
+
+// Moment for date handling
 import moment from 'moment';
 import 'moment/locale/en-ca';
-import * as data from './texts/texts.json'
+
+// Translations
+import * as data from '../texts/texts.json'
 
 //print drop down menus in rows
 const DropDowns = (props) => {

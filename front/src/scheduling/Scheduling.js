@@ -1,7 +1,14 @@
 import React, { Component } from "react";
-import './App.css';
-import './Scheduling.css'
+
+import '../App.css';
+import './Scheduling.css';
+
+// Date management
 import MomentUtils from '@date-io/moment';
+import moment from 'moment';
+import "moment/locale/fi";
+
+// Material UI components
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -24,10 +31,11 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import { getSchedulingDate } from "./utils/Utils";
-import * as data from './texts/texts.json';
-import moment from 'moment';
-import "moment/locale/fi";
+import { getSchedulingDate } from "../utils/Utils";
+
+// Translation
+import * as data from '../texts/texts.json';
+
 
 let lang = "fi"; //fallback
 if(localStorage.getItem("language") === '0') {

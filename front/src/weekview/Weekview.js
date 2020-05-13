@@ -1,14 +1,21 @@
 import React, { Component } from "react";
-import './App.css';
+
+import '../App.css';
 import './Weekview.css'
+
+// Material UI components
 import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-import { dayToString, getSchedulingWeek, getSchedulingDate } from "./utils/Utils";
+import { dayToString, getSchedulingWeek, getSchedulingDate } from "../utils/Utils";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
-import moment from 'moment'
-import * as data from './texts/texts.json'
+
+// Moment for date management
+import moment from 'moment';
+
+// Translation
+import * as data from '../texts/texts.json';
 
 class Weekview extends Component {
 

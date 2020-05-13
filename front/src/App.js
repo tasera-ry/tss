@@ -1,16 +1,24 @@
 import React, { Component } from "react";
-import "./App.css";
-import SignIn from "./SignIn";
-import Nav from "./Nav";
-import Dayview from "./Dayview";
-import Weekview from "./Weekview";
-import Trackview from "./Trackview";
-import Scheduling from "./Scheduling";
-import { HashRouter as Router, Switch, Route } from "react-router-dom";
-import RangeOfficerView from "./rangeofficer";
-import UserManagementView from "./UserManagementView";
-import trackCRUD from "./tracks";
 
+import "./App.css";
+
+// Custom components
+import SignIn from "./signin/SignIn";
+import Nav from "./navbar/Nav";
+import Dayview from "./dayview/Dayview";
+import Weekview from "./weekview/Weekview";
+import Trackview from "./trackview/Trackview";
+import Scheduling from "./scheduling/Scheduling";
+import RangeOfficerView from "./tabletview/rangeofficer";
+import UserManagementView from "./usermanagement/UserManagementView";
+import trackCRUD from "./edittracks/tracks";
+
+// React router. Hashrouter, because normal router won't work in apache
+import { HashRouter as Router, Switch, Route } from "react-router-dom";
+
+/*
+   The main component of the whole project.
+*/
 class App extends Component {
   state = {};
 

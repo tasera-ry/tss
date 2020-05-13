@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from "react";
+
 import './rangeofficer.css';
+
+// Material UI components
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import * as data from './texts/texts.json';
-import moment from 'moment'
+
+// Translations
+import * as data from '../texts/texts.json';
+
+// Date handling
+import moment from 'moment';
+
+// Call-handling to backend
 import axios from 'axios';
 
 const colors = {

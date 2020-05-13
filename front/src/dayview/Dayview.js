@@ -1,14 +1,26 @@
 import React, { Component } from "react";
+
 import "./Dayview.css";
+
+// Material UI components
 import { Link } from "react-router-dom";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import { dayToString, getSchedulingDate } from "./utils/Utils";
+
+// Utils
+import { dayToString, getSchedulingDate } from "../utils/Utils";
+
+// Moment for date handling
 import moment from 'moment';
-import * as data from './texts/texts.json';
 
+// Translations
+import * as data from '../texts/texts.json';
 
+/*
+  Dayview-component for handling day-specific view 
+  tracks for a certain date
+*/
 class Dayview extends Component {
   constructor(props) {
     super(props);
@@ -196,7 +208,7 @@ class Dayview extends Component {
             <div className="titleContainer">
               <h1>
                 {dayToString(this.state.date.getDay())}
-                {console.log(this.state.date.getDay())}
+                {/*console.log(this.state.date.getDay()) */}
               </h1>
               <div className="date">{this.state.date.toLocaleDateString("fi-FI")}</div>
             </div>

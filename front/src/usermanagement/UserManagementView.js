@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./App.css";
+import "../App.css";
 import {
    Divider,
    Button,
@@ -22,7 +22,7 @@ import {
    TextField,
 } from "@material-ui/core";
 import axios from "axios";
-import * as data from './texts/texts.json';
+import * as data from '../texts/texts.json';
 
 //Finds all users from database
 async function getUsers(token) {
