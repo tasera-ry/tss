@@ -163,7 +163,7 @@ router.route("/datesupreme/:date")
     oldSchedule.getScheduleDate)
 
 router.route("/validate")
-  .all(
-    middlewares.jwt.read);
+  .get(
+    middlewares.jwt.validate);
 
 module.exports = router;

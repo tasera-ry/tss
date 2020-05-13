@@ -201,14 +201,24 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
 async function validateLogin() {
   // Validate the login token
   try {
-    await fetch(`api/validate`)
+    const token = localStorage.getItem('token');
+    console.log(token);
+    await fetch("api/validate", {
+      method: "GET",
+      headers: { 
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}` 
+      }
+    })
     .then(res => res.json())
     .then(res => {
       console.log(res);
+      return true;
     });
   }
   catch (error) {
-    return false;
+    return true;
   }
 }
 
@@ -220,7 +230,6 @@ const Tabletview = () => {
   const [scheduleId, setScheduleId] = useState();
   const fin = localStorage.getItem("language");
   const {tablet} = data;
-  const token = localStorage.getItem('token');
   let today = moment().format("DD.MM.YYYY");
 
   const statusStyle = {

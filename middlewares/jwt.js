@@ -7,7 +7,7 @@ const services = require(path.join(root, 'services'));
 exports.read = [
   expressJWT
   , async function expandJWTContent(request, response, next) {
-    let users
+    let users;
 
     try {
       users = await services.user.read(request.user);
@@ -25,3 +25,25 @@ exports.read = [
     return next();
   }
 ];
+
+exports.validate = [
+  expressJWT
+  , async function validateJWTtoken(request, response, next) {
+    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    console.log(request);
+
+    let users;
+    try {
+      users = await services.user.read(request.user);
+      //expressJWT.validate(request.token);
+    }
+    catch (error) {
+      //const err = Error('Token invalid');
+      //err.name = 'Authorization error';
+      return next(error);
+    }
+
+    response.locals.user = users.pop();
+    return next();
+  }
+]
