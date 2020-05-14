@@ -182,6 +182,10 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
         setStatusColor(colors.orange);
       } 
       else if (response.rangeSupervision === 'absent') {
+        setStatusText(tablet.SuperWhite[fin]);
+        setStatusColor(colors.white);
+      }
+      else if (response.rangeSupervision === 'closed') {
         setStatusText(tablet.Red[fin]);
         setStatusColor(colors.red);
       }
@@ -249,7 +253,7 @@ const Tabletview = () => {
   }
 
   const HandleClosedClick = () => {
-    updateSupervisor("absent", colors.red, tablet.Red[fin]);
+    updateSupervisor("closed", colors.red, tablet.Red[fin]);
   }
 
   async function updateSupervisor(status, color, text) {

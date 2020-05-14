@@ -106,6 +106,7 @@ export async function validateLogin() {
 
 //on success true
 //else returns string trying to explain what broke
+//requires reservation and schedule to exist
 export async function rangeSupervision(rsId,srsId,rangeStatus,rsScheduled,token){
   try{
     if(rsId !== null && srsId !== null){
