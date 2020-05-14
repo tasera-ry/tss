@@ -103,3 +103,95 @@ export async function validateLogin() {
     return false;
   }
 }
+
+//on success true
+//else returns string trying to explain what broke
+export async function rangeSupervision(rsId,srsId,rangeStatus,rsScheduled,token){
+  try{
+    if(rsId !== null && srsId !== null){
+      //only closed is different from the 6 states
+      if(rangeStatus !== 'closed'){
+        //range supervision exists
+        if(rsScheduled){
+          //changing supervision force reservation open
+          await fetch(`/api/reservation/${rsId}`, {
+            method: "PUT",
+            body: JSON.stringify({available: true}),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          })
+          .then(status => {
+            if(!status.ok) throw new Error('scheduled reserv fail');
+          });
+          
+          //update supervision
+          await fetch(`/api/range-supervision/${srsId}`, {
+            method: "PUT",
+            body: JSON.stringify({range_supervisor: rangeStatus}),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          })
+          .then(status => {
+            if(!status.ok) throw new Error('scheduled superv fail');
+          });
+        }
+        //no supervision exists
+        else{
+          //changing supervision force reservation open
+          await fetch(`/api/reservation/${rsId}`, {
+            method: "PUT",
+            body: JSON.stringify({available: true}),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          })
+          .then(status => {
+            if(!status.ok) throw new Error('not scheduled reserv fail');
+          });
+          
+          //add new supervision
+          await fetch(`/api/range-supervision`, {
+            method: "POST",
+            body: JSON.stringify({
+              scheduled_range_supervision_id:srsId,
+              range_supervisor: rangeStatus
+            }),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          })
+          .then(status => {
+            if(!status.ok) throw new Error('not scheduled superv fail');
+          });
+        }
+      } else {
+        //range closed update reservation
+        await fetch(`/api/reservation/${rsId}`, {
+          method: "PUT",
+          body: JSON.stringify({available: 'false'}),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then(status => {
+          if(!status.ok) throw new Error('reservation update failed');
+        });
+      }
+    }else throw new Error('reservation or schedule missing');
+  }catch(e){
+    return 'general range supervision failure: '+ e;
+  }
+  return true;
+}
