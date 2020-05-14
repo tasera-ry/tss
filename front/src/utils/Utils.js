@@ -72,7 +72,11 @@ export function monthToString(i) {
   return moment().month(i).format('MMMM');
 }
 
-// Validate the login token
+/* 
+  Validates the login token
+
+  return: boolean, is token valid (true = yes)
+*/
 export async function validateLogin() {
   const token = localStorage.getItem('token');
   let response;
