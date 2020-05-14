@@ -25,19 +25,19 @@ class App extends Component {
   state = {};
 
   componentDidMount() {
-   validateLogin()
-   .then((tokenValid) => {
-      // If the token is expired, logout user
-      if ( !tokenValid ) {
-         if ( localStorage.getItem("token") !== null) {
+   if ( localStorage.getItem("token") !== null ) {
+      validateLogin()
+      .then((tokenValid) => {
+         // If the token is expired, logout user
+         if ( !tokenValid ) {
             localStorage.removeItem("token");
             localStorage.removeItem("taseraUserName");
             localStorage.removeItem("role");
 
             window.location.reload();
          }
-      }
-   })
+      })
+   }
   }
 
   render() {
