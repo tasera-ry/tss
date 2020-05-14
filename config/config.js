@@ -16,11 +16,16 @@ const config = {
   },
 
   seeds: {
-    users: 30,
+    seed: 0,
+    users: 50,
     ranges: 1,
     tracks: 7,
-    startDate: '2018-12-31',
-    days: 565
+    startDate: '2020-01-01',
+    endDate: '2020-12-31',
+    // chunkSize = how many rows are inserted in a single insertion, larger
+    // chunk size equals faster insertions, but a value that is too high causes
+    // errors. In case of errors, try dropping the factor down.
+    chunkSize: 10 ** 4
   }
 };
 
