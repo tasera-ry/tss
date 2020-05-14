@@ -15,7 +15,7 @@ import moment from 'moment';
 // Call-handling to backend
 import axios from 'axios';
 
-import { validateLogin } from "../utils/Utils";
+import { validateLogin, rangeSupervision } from "../utils/Utils";
 
 const colors = {
   green: '#658f60',
@@ -159,7 +159,7 @@ async function getColors(tracks, setTracks) {
   setTracks(copy)
 }
 
-async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId) {
+async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId, setReservationId, setRangeSupervisionScheduled) {
 
   let date = moment(Date.now()).format("YYYY-MM-DD");
 
@@ -168,6 +168,8 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
     .then(response => {
       // console.log(response);
       setScheduleId(response.scheduleId);
+      setReservationId(response.reservationId);
+      setRangeSupervisionScheduled(response.rangeSupervisionScheduled);
       setHours([moment(response.open, 'h:mm').format('H.mm'),
                 moment(response.close, 'h:mm').format('H.mm')]);
 
@@ -205,6 +207,8 @@ const Tabletview = () => {
   const [hours, setHours] = useState([]);
   const [tracks, setTracks] = useState([]);
   const [scheduleId, setScheduleId] = useState();
+  const [reservationId, setReservationId] = useState();
+  const [rangeSupervisionScheduled, setRangeSupervisionScheduled] = useState();
   const fin = localStorage.getItem("language");
   const {tablet} = data;
   let today = moment().format("DD.MM.YYYY");
@@ -223,7 +227,7 @@ const Tabletview = () => {
     validateLogin()
       .then(logInSuccess => {
         if (logInSuccess) {
-          getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId);
+          getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId, setReservationId, setRangeSupervisionScheduled);
         }
         // Login failed, redirect to weekview
         else {
@@ -250,24 +254,16 @@ const Tabletview = () => {
 
   async function updateSupervisor(status, color, text) {
     let token = localStorage.getItem("token");
-    const config = {
-      headers: { Authorization: `Bearer ${token}` }
-    };
 
-    let query = "api/range-supervision/" + scheduleId;
-    await axios.put(query,
-                    {
-                      range_supervisor:status
-                    }, config)
-      .then(res => {
-        if(res) {
-          setStatusColor(color);
-          setStatusText(text);
-        }
-      })
-      .catch(error => {
-        //console.log(error)
-      })
+    const res = await rangeSupervision(reservationId,scheduleId,status,rangeSupervisionScheduled,token);
+    if(res === true){
+      setStatusColor(color);
+      setStatusText(text);
+
+      if(rangeSupervisionScheduled === false){
+        setRangeSupervisionScheduled(true);
+      }
+    }
   }
 
   return (
