@@ -602,27 +602,28 @@ class UserManagementView extends Component {
         
         <h1 style={{ textAlign:"center" }}>{manage.UserManage[fin]}</h1>
         <Divider></Divider>
-        <Box display="flex">
-          <h3 style={{ marginLeft: 40 }}>{manage.ChangePass[fin]}:</h3>
-          <Button onClick={this.handleOpenOwnPassChangeDialog}  variant="contained" style={{ backgroundColor:'#5f77a1', margin: 15, marginLeft: 40 }}>
+        <Box style={{justifyContent: "center", display:"flex", flexWrap:"wrap"}}>
+          <h3 style={{ textAlign: "center" }}>{manage.ChangePass[fin]}:</h3>
+        <Button onClick={this.handleOpenOwnPassChangeDialog}  variant="contained" style={{ backgroundColor:'#5f77a1', margin: 15, textAlign: "center" }}>
             {manage.ChangePass[fin]}
           </Button>
         </Box>
         <Divider></Divider>
-        <Box display="flex">
-          <h3 style={{ marginLeft: 40 }}>{manage.CreateUser[fin]}:</h3>
-          <Button onClick={this.handleAddUserOpenDialog} variant="contained" style={{ backgroundColor:'#5f77a1', margin: 15, marginLeft: 58 }}>
+        <Box style={{justifyContent: "center", display:"flex", flexWrap:"wrap"}}>
+          <h3 style={{ textAlign: "center" }}>{manage.CreateUser[fin]}:</h3>
+          <Button onClick={this.handleAddUserOpenDialog} variant="contained" style={{ backgroundColor:'#5f77a1', margin: 15, textAlign: "center" }}>
             {manage.CreateUser[fin]}
           </Button>
         </Box>
         <Divider></Divider>
 
         {/*USER PROFILES TABLE*/}
-        
-           <Box>
-             <h3 style={{ marginLeft: 40 }}>{manage.Users[fin]}:</h3>
-             <TableContainer component={Paper} style={{ width: "auto", tableLayout: "auto" }}>
-               <Table aria-label="table of users" style={{ backgroundColor:"#F2F0EB" }}>
+
+	<h3 style={{ textAlign: "center" }}>{manage.Users[fin]}:</h3>
+        <Box style={{justifyContent: "center", display:"flex", flexWrap:"wrap"}}>
+             
+        <TableContainer component={Paper} style={{ maxWidth:500, tableLayout: "auto" }}>
+        <Table aria-label="table of users" style={{ backgroundColor:"#F2F0EB" }}>
                  <TableHead>
                    <TableRow>
                      <TableCell align="justify">{manage.Username[fin]}</TableCell>
