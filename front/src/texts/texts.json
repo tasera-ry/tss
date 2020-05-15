@@ -96,7 +96,13 @@
     "Red": ["Suljettu", "Closed"],
     "White": ["Ei valvojaa", "No track officer"],
     "HelperFirst": ["Valitse päävalvojan status napauttamalla väriä alta", "Define range officer status by choosing color"],
-    "HelperSecond": ["Vaihda ratavalvojien statuksia napauttamalla värejä alta", "Change track officer status by choosing color"]
+    "HelperSecond": ["Vaihda ratavalvojien statuksia napauttamalla värejä alta", "Change track officer status by choosing color"],
+    "PickTime": ["Valitse aukioloaika", "Set opening hours"],
+    "Start": ["Alku", "Start"],
+    "End": ["Loppu", "End"],
+    "Save": ["Tallenna", "Save"],
+    "Cancel": ["Peruuta", "Cancel"],
+    "Error": ["Päivitys epäonnistui", "Something went wrong"]
   },
   "dayview": {
     "OpenHours": ["Aukioloaika", "Opening hours"],
