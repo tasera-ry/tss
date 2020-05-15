@@ -10,6 +10,14 @@ import Backdrop from '@material-ui/core/Backdrop';
 import moment from 'moment'
 import * as data from './texts/texts.json'
 
+let lang = "fi"; //fallback
+if(localStorage.getItem("language") === '0') {
+  lang = 'fi';
+}
+else if(localStorage.getItem("language") === '1'){
+  lang = 'en';
+}
+
 class Weekview extends Component {
 
     constructor(props) {
@@ -52,7 +60,7 @@ class Weekview extends Component {
         //this.props.history.replace("/weekview/" + oikeePaiva );
 
         let oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() - 7));
-        this.props.history.replace("/weekview/" + oikeePaiva.toISOString());
+        this.props.history.replace("/weekview/" + testi.toISOString());
 
         let previous;
         //Week logic cuz you can't go negative
@@ -75,16 +83,19 @@ class Weekview extends Component {
 
     //Changes week number state to next one
     nextWeekClick = (e) => {
+
         this.setState({
             state:'loading'
         })
         e.preventDefault();
         let testi = moment(this.state.dayNro, "YYYYMMDD")
+
+        console.log("dayNro statessa: " + this.state.dayNro)
         
         testi.add(1, 'week')
 
         let oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() + 7));
-        this.props.history.replace("/weekview/" + oikeePaiva.toISOString());
+        this.props.history.replace("/weekview/" + testi.toISOString());
 
         let previous;
         //Week logic cuz there's no 53 weeks
@@ -113,7 +124,44 @@ class Weekview extends Component {
         var week1 = new Date(date1.getFullYear(), 0, 4);
         var current = 1 + Math.round(((date1.getTime() - week1.getTime()) / 86400000
         - 3 + (week1.getDay() + 6) % 7) / 7);
-        this.setState({weekNro: current})
+
+        //Tää asettaa sen mikä viikkonumero on alotusnäytöllä
+        //Nyt tarvis ottaa tähän url parametreistä se viikkonumero
+        //Jos ei parametrejä nii sit toi current. Muuten parametrien
+
+        //Urlista lasketaan oikee viikkonumero
+        try {
+            let fullUrl = window.location.href.split("/");
+            let urlParamDate = fullUrl[5];
+    
+            let urlParamDateSplit = urlParamDate.split("-")
+    
+            var weeknumber = moment(urlParamDate, "YYYYMMDD").week();
+            var daynumber = urlParamDate
+
+            let paramDay = urlParamDateSplit[2]
+            let paramMonth = urlParamDateSplit[1]
+            let paramYear = urlParamDateSplit[0]
+    
+            let paramDateCorrect = moment(paramYear + paramMonth + paramDay, "YYYYMMDD")
+    
+            //Jos viikkonumero ei oo oikee laitetaan current
+            if (isNaN(weeknumber)) {
+                this.setState({weekNro: current}) 
+                this.props.history.replace("/weekview/")
+            }
+            else {
+            //Jos on oikee nii laitetaan url params
+            //miksei date settaannu!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            this.setState({weekNro: weeknumber, date: paramDateCorrect})
+            console.log(this.state.date);
+            }   
+        }
+        catch {
+            this.setState({weekNro: current})
+            this.props.history.replace("/weekview/")
+        }
+
         return current;
     }
 
@@ -134,25 +182,53 @@ class Weekview extends Component {
                 pv = dayToString(j);
                 //Korjausliike ku utilsseis sunnuntai on eka päivä
                 if (j === 1) {
-                    pv = "Ma";
+                    if (localStorage.getItem("language") === '1') {
+                        pv = "Mon";
+                    } else {
+                        pv = "Ma"; 
+                    }
                 }
                 if (j === 2) {
-                    pv = "Ti";
+                    if (localStorage.getItem("language") === '1') {
+                        pv = "Tue";
+                    } else {
+                        pv = "Ti"; 
+                    }
                 }
                 if (j === 3) {
-                    pv = "Ke";
+                    if (localStorage.getItem("language") === '1') {
+                        pv = "Wed";
+                    } else {
+                        pv = "Ke"; 
+                    }
                 }
                 if (j === 4) {
-                    pv = "To";
+                    if (localStorage.getItem("language") === '1') {
+                        pv = "Thu";
+                    } else {
+                        pv = "To"; 
+                    }
                 }
                 if (j === 5) {
-                    pv = "Pe";
+                    if (localStorage.getItem("language") === '1') {
+                        pv = "Fri";
+                    } else {
+                        pv = "Pe"; 
+                    }
                 }
                 if (j === 6) {
-                    pv = "La";
+                    if (localStorage.getItem("language") === '1') {
+                        pv = "Sat";
+                    } else {
+                        pv = "La"; 
+                    }
                 }
                 if (j === 7) {
-                    pv = "Su"
+                    if (localStorage.getItem("language") === '1') {
+                        pv = "Sun";
+                    } else {
+                        pv = "Su"; 
+                    }
                 }
                 j--;
                 oikeePaiva = this.state.paivat[j].date
@@ -230,11 +306,7 @@ class Weekview extends Component {
                 } else if (rataStatus === "confirmed") {
                     colorFromBackEnd = "#b2d9ad"
                 } else if (rataStatus === "not confirmed") {
-<<<<<<< HEAD
-                    colorFromBackEnd = "deepskyblue"
-=======
                     colorFromBackEnd = "#95d5db"
->>>>>>> 01df2d11fc1e0da6105b1c5c1ed0dbc6b01325c4
                 } else if (rataStatus === "en route") {
                     colorFromBackEnd = "#f2c66d"
                 } else if (rataStatus === "closed") {
@@ -303,13 +375,70 @@ class Weekview extends Component {
         }
 
         let date1 = testi2;
+
+        // ELI DATE1 PITÄÄ OLLA SE URLISTA TULEVA PARAM!!!!!!!!!!!
+        
+        var date2 = new Date();
+        date2.setHours(0, 0, 0, 0);
+        date2.setDate(date2.getDate() + 3 - (date2.getDay() + 6) % 7);
+        var week1 = new Date(date2.getFullYear(), 0, 4);
+        var current = 1 + Math.round(((date2.getTime() - week1.getTime()) / 86400000
+        - 3 + (week1.getDay() + 6) % 7) / 7);
+
+        //Tää asettaa sen mikä viikkonumero on alotusnäytöllä
+        //Nyt tarvis ottaa tähän url parametreistä se viikkonumero
+        //Jos ei parametrejä nii sit toi current. Muuten parametrien
+
+        //Urlista lasketaan oikee viikkonumero
+        try {
+            let fullUrl = window.location.href.split("/");
+            let urlParamDate = fullUrl[5];
+    
+            let urlParamDateSplit = urlParamDate.split("-")
+    
+            var weeknumber = moment(urlParamDate, "YYYYMMDD").week();
+            var daynumber = moment(urlParamDate, "YYYYMMDD").day();
+
+            let paramDay = urlParamDateSplit[2]
+            let paramMonth = urlParamDateSplit[1]
+            let paramYear = urlParamDateSplit[0]
+
+            //Parametrinä olevan ajan antaa millisekunteina
+            var timeInMilliseconds = moment(urlParamDate).valueOf();
+            console.log("Parametrinä annetun päivämäärän millisekuntit: " + timeInMilliseconds)
+    
+            let paramDateCorrect = moment(paramYear + paramMonth + paramDay, "YYYYMMDD")
+    
+            //Jos viikkonumero ei oo oikee laitetaan current
+            if (isNaN(weeknumber)) {
+                this.setState({weekNro: current}) 
+                this.props.history.replace("/weekview/")
+            }
+            else {
+            //Jos on oikee nii laitetaan url params
+            //miksei date settaannu!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            this.setState({weekNro: weeknumber, date: paramDateCorrect})
+            date1 = paramDateCorrect
+            }   
+        }
+        catch {
+            this.setState({weekNro: current})
+            this.props.history.replace("/weekview/")
+        }
+
+        
+
+        // JUU YLEMPI HYVÄ
+
         const request = async () => {
           const response = await getSchedulingWeek(date1);
 
           if(response !== false){
             //console.log("Results from api",response);
 
+            console.log("response.week = " + response.week)
             this.setState({
+              //Tässä tehään päivät ja tän mukaan tulee se mikä on eka päivä
               paivat:response.week,
               state:'ready'
             });
@@ -317,8 +446,8 @@ class Weekview extends Component {
         } 
         request();
 
-        let oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate()));
-        this.props.history.replace("/weekview/" + oikeePaiva.toISOString());
+        //let oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate()));
+        //this.props.history.replace("/weekview/" + oikeePaiva.toISOString());
         //alert(oikeePaiva.toISOString());
       }
 
