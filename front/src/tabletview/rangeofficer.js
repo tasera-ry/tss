@@ -14,10 +14,17 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import * as data from './texts/texts.json';
-import moment from 'moment'
+
+// Translations
+import * as data from '../texts/texts.json';
+
+// Date handling
+import moment from 'moment';
+
+// Axios for backend calls
 import axios from 'axios';
 
+// Login validation
 import { validateLogin } from "../utils/Utils";
 
 const colors = {
