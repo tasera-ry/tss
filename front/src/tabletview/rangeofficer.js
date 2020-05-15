@@ -5,17 +5,6 @@ import './rangeofficer.css';
 // Material UI components
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-<<<<<<< HEAD:front/src/tabletview/rangeofficer.js
-
-// Translations
-import * as data from '../texts/texts.json';
-
-// Date handling
-import moment from 'moment';
-
-// Call-handling to backend
-=======
-import TextField from '@material-ui/core/TextField';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
@@ -24,11 +13,9 @@ import {
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import * as data from './texts/texts.json';
 import moment from 'moment'
->>>>>>> develop:front/src/rangeofficer.js
 import axios from 'axios';
 
 import { validateLogin } from "../utils/Utils";
