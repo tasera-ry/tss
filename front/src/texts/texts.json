@@ -61,7 +61,7 @@
     "Error": ["Päivitys epäonnistui", "Something went wrong"]
   },
   "manage": {
-    "UserManage": ["Käyttäjien hallinta", "User management"],
+    "UserManage": ["Käyttäjienhallinta", "User management"],
     "ChangePass": ["Vaihda salasana", "Change password"],
     "CreateUser": ["Lisää käyttäjä", "Create new user"],
     "Users": ["Käyttäjät", "User profiles"],
