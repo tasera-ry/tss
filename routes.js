@@ -121,7 +121,7 @@ router.route('/schedule')
 router.route('/schedule/:id')
   .get(controllers.schedule.readStrict)
   .put(middlewares.jwt.read
-       , middlewares.user.hasProperty('role', 'superuser')
+       , middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes)
        , controllers.schedule.update)
   .delete(middlewares.jwt.read
           , middlewares.user.hasProperty('role', 'superuser')

@@ -381,17 +381,13 @@ const Tabletview = () => {
         {tablet.Open[fin]}:
         &nbsp;
         
-        {role==="superuser" ?
-         <Button
-           size="small"
-           variant="outlined"
-           style={{borderRadius:15}}
-           onClick={()=> setDialogOpen(true)}>
-           {hours.start} - {hours.end}
-         </Button>
-         :
-         <span>{hours.start} - {hours.end}</span>
-        }
+        <Button
+          size="small"
+          variant="outlined"
+          style={{borderRadius:15}}
+          onClick={()=> setDialogOpen(true)}>
+          {hours.start} - {hours.end}
+        </Button>
         
       </Typography>
       &nbsp;
