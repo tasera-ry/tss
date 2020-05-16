@@ -59,7 +59,7 @@
 
 /* To have 7 boxes force size 100 / 7 = 14.28571428571429 */
 .dayviewContainer .sevenGrid > div {
-  max-width:14.28571428571429%;
+    max-width:14.28571428571429%;
 }
 
 @media only screen and (max-width: 600px) {
@@ -89,8 +89,8 @@
 .dayviewContainer .clickableBox {
   box-sizing: border-box;
   background:white;
-  padding:25% 2vh 25% 2vh;
-  text-align: left;
+  padding:25% 0vh 25% 0vh;
+  text-align: center;
 }
 
 @media only screen and (max-width: 600px) {
