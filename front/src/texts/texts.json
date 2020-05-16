@@ -32,10 +32,10 @@
     "Week": ["Viikko", "Week"],
     "Green": ["Päävalvoja paikalla", "Range officer present"],
     "Lightgreen": ["Päävalvoja varmistettu", "Range officer confirmed"],
-    "Blue": ["Päävalvoja määritetty mutta ei varmistettu", "Range officer predefined"],
+    "Blue": ["Päävalvoja määritetty mutta ei varmistettu", "Range officer predefined, not confirmed"],
     "Red": ["Keskus suljettu", "Range closed"],
     "Orange": ["Päävalvoja matkalla", "Range officer on the way"],
-    "White": ["Päävalvojaa ei asetettu", "Undefined"]
+    "White": ["Päävalvojaa ei asetettu", "Range officer undefined"]
   },
   "sched": {
     "Day": ["Valitse päivä", "Choose date"],

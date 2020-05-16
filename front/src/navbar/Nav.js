@@ -1,13 +1,21 @@
 import React, { useState } from "react";
-import "./App.css";
+
+import "../App.css";
+
+// TASERA logo
+import logo from "../logo/Logo.png";
+
+// Material UI elements
 import { Link } from "react-router-dom";
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import logo from "./Logo.png";
-import DialogWindow from './LoggedIn';
-import axios from 'axios';
-import * as data from './texts/texts.json';
+
+// Upcoming supervisions -view
+import DialogWindow from '../upcomingsupervisions/LoggedIn';
+
+// Translations
+import * as data from '../texts/texts.json';
 
 const SideMenu = ({setName, superuser, nav, fin}) => {
   const navStyle = {

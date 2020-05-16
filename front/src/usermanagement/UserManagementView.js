@@ -1,5 +1,8 @@
 import React, { Component } from "react";
-import "./App.css";
+
+import "../App.css";
+
+// Material UI components
 import {
    Divider,
    Button,
@@ -21,8 +24,15 @@ import {
    DialogTitle,
    TextField,
 } from "@material-ui/core";
+
+// axios for calls to backend
 import axios from "axios";
-import * as data from './texts/texts.json';
+
+// Translations
+import * as data from '../texts/texts.json';
+
+// Token validation
+import { validateLogin } from "../utils/Utils";
 
 //Finds all users from database
 async function getUsers(token) {
@@ -160,27 +170,27 @@ class UserManagementView extends Component {
             token: localStorage.getItem("token"),
          },
          function () {
-            if (this.state.token === "SECRET-TOKEN" || localStorage.role != "superuser") {
-               this.props.history.push("/");
-            } else {
-               try {
-                  const request = async () => {
-                     const response = await getUsers(this.state.token);
+            validateLogin()
+            .then(logInSuccess => {
+               if(!logInSuccess){
+                  this.props.history.push("/");
+               }
+               else {
+                  getUsers(this.state.token)
+                  .then((response) => {
                      if (response !== false) {
                         this.setState({
                            userList: response,
+                        }, () => {
+                           this.update();
                         });
-                        this.update();
-                     } else {
-                        console.error("getting user failed, most likely sign in token invalid -> kicking to root");
-                        this.props.history.push("/");
                      }
-                  };
-                  request();
-               } catch (error) {
-                  console.error("init failed", error);
+                  })
+                  .catch((error) => {
+                     console.error("init failed", error);
+                  });
                }
-            }
+            });
          }
       );
    }
