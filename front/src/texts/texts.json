@@ -82,7 +82,9 @@
     "Ask": ["Haluatko varmasti jatkaa?", "Are you sure?"],
     "AskDelete": ["Tämä poistaa pysyvästi käyttäjän", "This action will permanently remove user"],
     "Error": ["Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki", "Something went wrong"],
-    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"]
+    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"],
+    "Superuser": ["Superuser", "Superuser"],
+    "Supervisor": ["Valvoja", "Range officer"]
   },
   "tablet": {
     "Open": ["Aukiolo", "Open"],
