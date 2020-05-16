@@ -16,21 +16,12 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 // Translations
-<<<<<<< HEAD
-import * as data from './texts/texts.json';
-
-// Date handling
-import moment from 'moment'
-
-// Axios for calls to backend
-=======
 import * as data from '../texts/texts.json';
 
 // Date handling
 import moment from 'moment';
 
 // Axios for backend calls
->>>>>>> develop
 import axios from 'axios';
 
 // Login validation

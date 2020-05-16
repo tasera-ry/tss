@@ -9,16 +9,10 @@ import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
-<<<<<<< HEAD
-
-import { dayToString, getSchedulingDate } from "../utils/Utils";
-
-=======
 // Utils
 import { dayToString, getSchedulingDate } from "../utils/Utils";
 
 // Translations
->>>>>>> develop
 import * as data from '../texts/texts.json';
 
 /*
