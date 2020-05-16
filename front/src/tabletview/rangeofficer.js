@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+
 import './rangeofficer.css';
+
+// Material UI components
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
@@ -11,12 +13,23 @@ import {
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import * as data from './texts/texts.json';
-import moment from 'moment'
+
+// Translations
+import * as data from '../texts/texts.json';
+
+// Date handling
+import moment from 'moment';
+
+// Axios for backend calls
 import axios from 'axios';
 
+import { validateLogin, rangeSupervision } from "../utils/Utils";
+// Login validation
+
+/*
+  Styles not in the rangeofficer.js file
+*/
 const colors = {
   green: '#658f60',
   red: '#c97b7b',
@@ -90,20 +103,24 @@ const TrackRows = ({tracks, setTracks, scheduleId, tablet, fin}) => {
                </div>
               )
   )
-}
+};
 
 const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
   const buttonStyle = {
     backgroundColor:`${track.color}`,
     borderRadius: 30,
     width: 100
-  }
+  };
   
   const [buttonColor, setButtonColor] = useState(track.color);
 
   let text = tablet.Green[fin];
-  if (track.trackSupervision==="absent") { text = tablet.White[fin]; }
-  else if (track.trackSupervision==="closed") { text = tablet.Red[fin]; }
+  if (track.trackSupervision==="absent") { 
+    text = tablet.White[fin]; 
+  }
+  else if (track.trackSupervision==="closed") { 
+    text = tablet.Red[fin]; 
+  }
 
   const HandleClick = () => {
     let newSupervision = "absent";
@@ -136,8 +153,8 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
           track.trackSupervision = newSupervision;
           setButtonColor(track.color);
 	}
-      })
-  }
+      });
+  };
 
   return (
     <Button
@@ -147,8 +164,8 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
       onClick={HandleClick}>
       {text}
     </Button>
-  )
-}
+  );
+};
 
 async function getColors(tracks, setTracks) {
   const copy = [...tracks]
@@ -164,14 +181,17 @@ async function getColors(tracks, setTracks) {
   setTracks(copy)
 }
 
-async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId) {
+async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId, setReservationId, setRangeSupervisionScheduled) {
 
   let date = moment(Date.now()).format("YYYY-MM-DD");
 
   await fetch(`/api/datesupreme/${date}`)
     .then(res => res.json())
     .then(response => {
+      // console.log(response);
       setScheduleId(response.scheduleId);
+      setReservationId(response.reservationId);
+      setRangeSupervisionScheduled(response.rangeSupervisionScheduled);
       setHours({"start": moment(response.open, 'h:mm').format('HH:mm'),
                 "end": moment(response.close, 'h:mm').format('HH:mm')});
 
@@ -184,6 +204,10 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
         setStatusColor(colors.orange);
       } 
       else if (response.rangeSupervision === 'absent') {
+        setStatusText(tablet.SuperWhite[fin]);
+        setStatusColor(colors.white);
+      }
+      else if (response.rangeSupervision === 'closed') {
         setStatusText(tablet.Red[fin]);
         setStatusColor(colors.red);
       }
@@ -197,12 +221,11 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
       }
       else {
         setStatusText(tablet.SuperWhite[fin]);
-	setStatusColor(colors.white);
+	      setStatusColor(colors.white);
       }
-      getColors(response.tracks, setTracks)
-    })
-  
-}
+      getColors(response.tracks, setTracks);
+    });
+};
 
 const TimePick = ({tablet, fin, scheduleId, hours, setHours, dialogOpen, setDialogOpen}) => {
   const [newHours, setNewHours] = useState({...hours});
@@ -315,6 +338,8 @@ const Tabletview = () => {
   const [hours, setHours] = useState({});
   const [tracks, setTracks] = useState([]);
   const [scheduleId, setScheduleId] = useState();
+  const [reservationId, setReservationId] = useState();
+  const [rangeSupervisionScheduled, setRangeSupervisionScheduled] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
   const role = localStorage.getItem("role");
   const fin = localStorage.getItem("language");
@@ -326,11 +351,27 @@ const Tabletview = () => {
     backgroundColor: statusColor,
     borderRadius: 3,
     width: 300
-  }
+  };
   
+  /*
+    Basically the functional component version of componentdidmount
+  */
   useEffect(() => {
-    getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId);
+    validateLogin()
+      .then(logInSuccess => {
+        if (logInSuccess) {
+          getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId, setReservationId, setRangeSupervisionScheduled);
+        }
+        // Login failed, redirect to weekview
+        else {
+          RedirectToWeekview();
+        }
+      });
   }, []);
+
+  function RedirectToWeekview(){
+    window.location.href="/";
+  };
 
   const HandlePresentClick = () => {
     updateSupervisor("present", colors.green, tablet.SuperGreen[fin]);
@@ -341,29 +382,21 @@ const Tabletview = () => {
   }
 
   const HandleClosedClick = () => {
-    updateSupervisor("absent", colors.red, tablet.Red[fin]);
+    updateSupervisor("closed", colors.red, tablet.Red[fin]);
   }
 
   async function updateSupervisor(status, color, text) {
     let token = localStorage.getItem("token");
-    const config = {
-      headers: { Authorization: `Bearer ${token}` }
-    };
 
-    let query = "api/range-supervision/" + scheduleId;
-    await axios.put(query,
-                    {
-                      range_supervisor:status
-                    }, config)
-      .then(res => {
-        if(res) {
-          setStatusColor(color);
-          setStatusText(text);
-        }
-      })
-      .catch(error => {
-        //console.log(error)
-      })
+    const res = await rangeSupervision(reservationId,scheduleId,status,rangeSupervisionScheduled,token);
+    if(res === true){
+      setStatusColor(color);
+      setStatusText(text);
+
+      if(rangeSupervisionScheduled === false){
+        setRangeSupervisionScheduled(true);
+      }
+    }
   }
 
   return (
@@ -454,7 +487,7 @@ const Tabletview = () => {
       </div>
     </div>
     
-  )
-}
+  );
+};
 
 export default Tabletview;

@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require('path');
 
 module.exports = {
   // Development environment is for development purposes. The running
@@ -48,4 +48,4 @@ module.exports = {
       directory: path.join(__dirname, 'knex', 'stable', 'seeds')
     }
   }
-}
+};
