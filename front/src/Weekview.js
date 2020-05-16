@@ -455,101 +455,106 @@ class Weekview extends Component {
     const {week} = data;
     const fin = localStorage.getItem("language");
 
-        return (
-            
-        <div>
-            <div class="container">
+    return (
+      
+      <div>
+        <div class="container">
 
-            <Modal open={this.state.state!=='ready'?true:false}>
-                <Backdrop open={this.state.state!=='ready'?true:false}>
-                    <CircularProgress disableShrink />
-                </Backdrop>
-            </Modal>
 
-                {/* Header with arrows */}
-                <Grid class="date-header">
-                    <div
-                    className="hoverHand arrow-left"
-                    onClick={this.previousWeekClick}
-                    ></div>
+	  
+          {/* Header with arrows */}
+          <Grid class="date-header">
+            <div
+              className="hoverHand arrow-left"
+              onClick={this.previousWeekClick}
+            ></div>
             <h1> {week.Week[fin]} {this.state.weekNro} , {this.state.yearNro} </h1>
-                    {/* kuukausi jos tarvii: {monthToString(date.getMonth())} */}
-                    <div
-                    className="hoverHand arrow-right"
-                    onClick={this.nextWeekClick}
-                    ></div>
-                </Grid>
+            {/* kuukausi jos tarvii: {monthToString(date.getMonth())} */}
+            <div
+              className="hoverHand arrow-right"
+              onClick={this.nextWeekClick}
+            ></div>
+          </Grid>
 
-                {/* Date boxes */}
-                <Grid class="flex-container2">
-                    {this.createWeekDay()}
-                </Grid>
-    
-                {/* Date boxes */}
-                <Grid class="flex-container2">
-                    {this.createDate()}
-                </Grid>
-    
-                <div>
-                {/* Colored boxes for dates */}
-                <Grid class="flex-container">
-                    {this.createColorInfo()}
-                </Grid>
-                </div>
-                </div>
-    
-                {/* Infoboxes */}
-    
-                {/* Top row */}
-                {/* To do: Tekstit ei toimi */}
-                <hr></hr>
-                <div className="infoContainer">
-                <Grid>
-                    <div class="info-flex">
-
-                        <div id="open-info" class='box'></div>
-                      {/* Avoinna */} &nbsp;{week.Green[fin]} <br></br> <br></br>
-
-                        <div id="closed-info2" class='box'></div>
-                        {/* Suljettu */} &nbsp;{week.Blue[fin]} <br></br><br></br>
-
-                    </div>                
-                </Grid>
-
-    
-                {/* Bottom row */}
-                <Grid class="bottom-info">
-                    <div class="info-flex">
-
-                        <div id="valvoja-info" class='box'></div>
-                        {/* Päävalvoja tulossa */} &nbsp;{week.Lightgreen[fin]} <br></br> <br></br>
+          {/* Date boxes */}
+          <Grid class="flex-container2">
+            {this.createWeekDay()}
+          </Grid>
+          
+          {/* Date boxes */}
+          <Grid class="flex-container2">
+            {this.createDate()}
+          </Grid>
+          
+          <div>
+            {/* Colored boxes for dates */}
 
 
-                        <div id="onway-info" class='box'></div>
-                      {/* Ei tietoa */}  &nbsp;{week.Orange[fin]}
+            {this.state.state!=='ready'?
+             <div className="progress">
+               <CircularProgress disableShrink/>
+             </div>
+             :
+             <Grid class="flex-container">
+               {this.createColorInfo()}
+             </Grid>}
 
-                    </div>
-                </Grid>
-
-
-                {/* Bottom row */}
-                <Grid class="bottom-info">
-                    <div class="info-flex">
-
-
-                        <div id="closed-info" class='box'></div>
-                        {/* Suljettu */} &nbsp;{week.Red[fin]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br></br><br></br>
-
-                        <div id="no-info" class='box'> </div>
-            {/* Ei tietoa */}  &nbsp;{week.White[fin]}
-
-                    </div>
-                </Grid>
-                </div> 
-            </div>
             
-        );
-    }
+          </div>
+        </div>
+        
+        {/* Infoboxes */}
+        
+        {/* Top row */}
+        {/* To do: Tekstit ei toimi */}
+        <hr></hr>
+        <div className="infoContainer">
+          <Grid>
+            <div class="info-flex">
+
+              <div id="open-info" class='box'></div>
+              {/* Avoinna */} &nbsp;{week.Green[fin]} <br></br> <br></br>
+
+              <div id="closed-info2" class='box'></div>
+              {/* Suljettu */} &nbsp;{week.Blue[fin]} <br></br><br></br>
+
+            </div>                
+          </Grid>
+
+          
+          {/* Bottom row */}
+          <Grid class="bottom-info">
+            <div class="info-flex">
+
+              <div id="valvoja-info" class='box'></div>
+              {/* Päävalvoja tulossa */} &nbsp;{week.Lightgreen[fin]} <br></br> <br></br>
+
+
+              <div id="onway-info" class='box'></div>
+              {/* Ei tietoa */}  &nbsp;{week.Orange[fin]}
+
+            </div>
+          </Grid>
+
+
+          {/* Bottom row */}
+          <Grid class="bottom-info">
+            <div class="info-flex">
+
+
+              <div id="closed-info" class='box'></div>
+              {/* Suljettu */} &nbsp;{week.Red[fin]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br></br><br></br>
+
+              <div id="no-info" class='box'> </div>
+              {/* Ei tietoa */}  &nbsp;{week.White[fin]}
+
+            </div>
+          </Grid>
+        </div> 
+      </div>
+      
+    );
+  }
 }
 
 export default Weekview;

@@ -114,6 +114,12 @@
    align-items: center;
 }
 
+.progress {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
 #open-info {
    display: flex;
    background: #658f60;
