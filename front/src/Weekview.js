@@ -491,7 +491,9 @@ class Weekview extends Component {
           
           {/* Date boxes */}
           <Grid class="flex-container2">
-            {this.createDate()}
+            {this.state.state!=='ready' ?
+             "" :
+             this.createDate() }
           </Grid>
           
           <div>
