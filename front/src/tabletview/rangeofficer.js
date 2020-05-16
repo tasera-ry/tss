@@ -24,8 +24,8 @@ import moment from 'moment';
 // Axios for backend calls
 import axios from 'axios';
 
+import { validateLogin, rangeSupervision } from "../utils/Utils";
 // Login validation
-import { validateLogin } from "../utils/Utils";
 
 /*
   Styles not in the rangeofficer.js file
@@ -181,7 +181,7 @@ async function getColors(tracks, setTracks) {
   setTracks(copy)
 }
 
-async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId) {
+async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId, setReservationId, setRangeSupervisionScheduled) {
 
   let date = moment(Date.now()).format("YYYY-MM-DD");
 
@@ -190,6 +190,8 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
     .then(response => {
       // console.log(response);
       setScheduleId(response.scheduleId);
+      setReservationId(response.reservationId);
+      setRangeSupervisionScheduled(response.rangeSupervisionScheduled);
       setHours({"start": moment(response.open, 'h:mm').format('HH:mm'),
                 "end": moment(response.close, 'h:mm').format('HH:mm')});
 
@@ -202,6 +204,10 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
         setStatusColor(colors.orange);
       } 
       else if (response.rangeSupervision === 'absent') {
+        setStatusText(tablet.SuperWhite[fin]);
+        setStatusColor(colors.white);
+      }
+      else if (response.rangeSupervision === 'closed') {
         setStatusText(tablet.Red[fin]);
         setStatusColor(colors.red);
       }
@@ -332,6 +338,8 @@ const Tabletview = () => {
   const [hours, setHours] = useState({});
   const [tracks, setTracks] = useState([]);
   const [scheduleId, setScheduleId] = useState();
+  const [reservationId, setReservationId] = useState();
+  const [rangeSupervisionScheduled, setRangeSupervisionScheduled] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
   const fin = localStorage.getItem("language");
   const {tablet} = data;
@@ -351,7 +359,7 @@ const Tabletview = () => {
     validateLogin()
       .then(logInSuccess => {
         if (logInSuccess) {
-          getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId);
+          getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId, setReservationId, setRangeSupervisionScheduled);
         }
         // Login failed, redirect to weekview
         else {
@@ -373,29 +381,21 @@ const Tabletview = () => {
   }
 
   const HandleClosedClick = () => {
-    updateSupervisor("absent", colors.red, tablet.Red[fin]);
+    updateSupervisor("closed", colors.red, tablet.Red[fin]);
   }
 
   async function updateSupervisor(status, color, text) {
     let token = localStorage.getItem("token");
-    const config = {
-      headers: { Authorization: `Bearer ${token}` }
-    };
 
-    let query = "api/range-supervision/" + scheduleId;
-    await axios.put(query,
-                    {
-                      range_supervisor:status
-                    }, config)
-      .then(res => {
-        if(res) {
-          setStatusColor(color);
-          setStatusText(text);
-        }
-      })
-      .catch(error => {
-        //console.log(error)
-      })
+    const res = await rangeSupervision(reservationId,scheduleId,status,rangeSupervisionScheduled,token);
+    if(res === true){
+      setStatusColor(color);
+      setStatusText(text);
+
+      if(rangeSupervisionScheduled === false){
+        setRangeSupervisionScheduled(true);
+      }
+    }
   }
 
   return (

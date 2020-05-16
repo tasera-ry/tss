@@ -31,7 +31,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import { getSchedulingDate } from "../utils/Utils";
+import { getSchedulingDate, rangeSupervision } from "../utils/Utils";
 
 // Translation
 import * as data from '../texts/texts.json';
@@ -616,88 +616,12 @@ class Scheduling extends Component {
       else if(this.state.rangeSupervisorId !== null){
         rangeStatus = 'not confirmed';
       }
-      
-      const rangeSupervision = async (rsId,srsId,rangeStatus,rsScheduled,token) => {
-        console.log("range supvis params",rsId,srsId,rangeStatus,token);
-        try{
-          if(rsId !== null && srsId !== null){
-            //only closed is different from the 6 states
-            if(rangeStatus !== 'closed'){
-              //range supervision exists
-              if(rsScheduled){
-                fetch(`/api/reservation/${rsId}`, {
-                  method: "PUT",
-                  body: JSON.stringify({available: true}),
-                  headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                  }
-                })
-                .then(status => {
-                  console.log("put available",status)
-                  fetch(`/api/range-supervision/${srsId}`, {
-                    method: "PUT",
-                    body: JSON.stringify({range_supervisor: rangeStatus}),
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${token}`
-                    }
-                  })
-                  .then(status => console.log("put rangeSupervision",status));
-                });
-              }
-              else{
-                fetch(`/api/reservation/${rsId}`, {
-                  method: "PUT",
-                  body: JSON.stringify({available: true}),
-                  headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                  }
-                })
-                .then(status => {
-                  console.log(status)
-                  console.log("put available",status)
-                  fetch(`/api/range-supervision`, {
-                    method: "POST",
-                    body: JSON.stringify({
-                      scheduled_range_supervision_id:srsId,
-                      range_supervisor: rangeStatus
-                    }),
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${token}`
-                    }
-                  })
-                  .then(status => console.log("post rangeSupervision", status));
-                });
-              }
-            }
-            else{
-              fetch(`/api/reservation/${rsId}`, {
-                method: "PUT",
-                body: JSON.stringify({available: 'false'}),
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${this.state.token}`
-                }
-              })
-              .then(status => console.log("put available",status));
-            }
-          }else console.error("cannot update some parts (reservation or schedule) missing");
-        }catch(error){
-          console.error("range supervision",error);
-          return reject(new Error('general range supervision failure'));
-        }
-      }
+
       if(rangeStatus !== null){
         const rangeSupervisionRes = await rangeSupervision(rsId,srsId,rangeStatus,rangeSupervisionScheduled,this.state.token);
-        console.log("rangeSupervisionRes",rangeSupervisionRes,rangeSupervisionScheduled);
+        if(rangeSupervisionRes !== true){
+          return reject(new Error(rangeSupervisionRes));
+        }
       }
       else console.log("range status null")
       
