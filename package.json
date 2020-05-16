@@ -27,6 +27,7 @@
     "moment-timezone": "^0.5.28",
     "node-fetch": "^2.6.0",
     "nodemon": "^2.0.2",
+    "ora": "^4.0.4",
     "pg": "^7.18.1",
     "react-moment": "^0.9.7",
     "react-router-dom": "^5.1.2",

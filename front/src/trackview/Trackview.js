@@ -3,14 +3,16 @@ import React, { Component } from "react";
 import "../App.css";
 import "./Trackview.css";
 
-// Material UI components
 import { Link } from "react-router-dom";
+
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+
+// Utils
 import { dayToString, getSchedulingDate } from "../utils/Utils";
 
-// Translation
+// Translations
 import * as data from '../texts/texts.json';
 
 /*
@@ -46,7 +48,7 @@ class Trackview extends Component {
 
         if(response !== false){
           let selectedTrack = response.tracks.find((findItem) => findItem.name === track)
-          console.log("Results from api",response,selectedTrack);
+          //console.log("Results from api",response,selectedTrack);
           
           if(selectedTrack !== undefined){
             this.setState({
