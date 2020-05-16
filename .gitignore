@@ -1,6 +1,9 @@
 # Intellij config
 .idea
 
+# vscode config
+.vscode
+
 # Node modules
 node_modules
 

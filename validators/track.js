@@ -1,10 +1,10 @@
-const _ = require('lodash')
+const _ = require('lodash');
 
 const { body
         , query
         , param
         , validationResult
-        , matchedData } = require('express-validator')
+        , matchedData } = require('express-validator');
 
 function validatorAdditions(validator, opts) {
   console.log("VAL TRACK PARAM CHECKS");
@@ -22,7 +22,7 @@ function validatorAdditions(validator, opts) {
       .optional()
   }
 
-  return validator
+  return validator;
 }
 
 const fields = {
@@ -33,7 +33,7 @@ const fields = {
           .withMessage('must be an integer')
           .toInt()
 
-    return validatorAdditions(validator, opts)
+    return validatorAdditions(validator, opts);
   }
 
   , range_id: function idValidation(requestObject, ...opts) {
@@ -43,7 +43,7 @@ const fields = {
           .withMessage('must be an integer')
           .toInt()
 
-    return validatorAdditions(validator, opts)
+    return validatorAdditions(validator, opts);
   }
 
   //TODO sanitize?
@@ -54,7 +54,8 @@ const fields = {
           .withMessage('must be a string')
           .isLength({ min: 1, max: 255 })
           .withMessage('must be between 1 and 255 characters')
-    return validatorAdditions(validator, opts)
+
+    return validatorAdditions(validator, opts);
   }
 
   , description: function descriptionValidation(requestObject, ...opts) {
@@ -64,18 +65,19 @@ const fields = {
           .withMessage('must be a string')
           .isLength({ min: 1, max: 255 })
           .withMessage('must be between 1 and 255 characters')
-    return validatorAdditions(validator, opts)
+
+    return validatorAdditions(validator, opts);
   }
 }
 
 function handleValidationErrors(request, response, next) {
   console.log("VAL ERRORS");
-  const validationErrors = validationResult(request)
+  const validationErrors = validationResult(request);
   if(validationErrors.isEmpty() === false) {
-    return response.status(400).send(validationErrors)
+    return response.status(400).send(validationErrors);
   }
-  return next()
-}
+  return next();
+};
 
 module.exports = {
   read: [
@@ -83,8 +85,8 @@ module.exports = {
     , handleValidationErrors
     , function storeID(request, response, next) {
       console.log("VAL EXPORTS STORE: id");
-      response.locals.query = matchedData(request, { locations: ['params'] })
-      return next()
+      response.locals.query = matchedData(request, { locations: ['params'] });
+      return next();
     }
   ],  readAll: [
     fields.name(query, 'optional')
@@ -92,9 +94,9 @@ module.exports = {
     , handleValidationErrors
     ,  function storeID(request, response, next) {
       console.log("VAL EXPORTS STORE: id");
-      response.locals.filtered = !_.isEmpty(request.query)
-      response.locals.query = matchedData(request, { locations: ['params', 'query'] })
-      return next()
+      response.locals.filtered = !_.isEmpty(request.query);
+      response.locals.query = matchedData(request, { locations: ['params', 'query'] });
+      return next();
     }
   ],  create: [
     fields.name(body, 'exists')
@@ -103,8 +105,8 @@ module.exports = {
     , handleValidationErrors
     , function storeCreationRequest(request, response, next) {
       console.log("VAL EXPORTS STORE: name");
-      response.locals.query = matchedData(request, { locations: ['body'] })
-      return next()
+      response.locals.query = matchedData(request, { locations: ['body'] });
+      return next();
     }
   ], update: [
     fields.track_id(param, 'exists')
@@ -113,16 +115,16 @@ module.exports = {
     , handleValidationErrors
     , function storeUpdateRequest(request, response, next) {
       console.log("VAL EXPORTS STORE: update request");
-      response.locals.id = matchedData(request, { locations: ['params'] })
-      response.locals.updates = matchedData(request, { locations: ['body'] })
-      return next()
+      response.locals.id = matchedData(request, { locations: ['params'] });
+      response.locals.updates = matchedData(request, { locations: ['body'] });
+      return next();
     }
   ], delete: [
     fields.track_id(param, 'exists')
     , function storeDeleteRequest(request, response, next) {
       console.log("VAL EXPORTS STORE: delete request");
-      response.locals.query = matchedData(request, { locations: ['params'] })
-      return next()
+      response.locals.query = matchedData(request, { locations: ['params'] });
+      return next();
     }
   ]
 }
