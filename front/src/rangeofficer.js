@@ -316,6 +316,7 @@ const Tabletview = () => {
   const [tracks, setTracks] = useState([]);
   const [scheduleId, setScheduleId] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const role = localStorage.getItem("role");
   const fin = localStorage.getItem("language");
   const {tablet} = data;
   let today = moment().format("DD.MM.YYYY");
@@ -373,18 +374,25 @@ const Tabletview = () => {
         <br />
         {today}
       </Typography>
+      
       <Typography
         variant="body1"
         align="center">
         {tablet.Open[fin]}:
         &nbsp;
-        <Button
-          size="small"
-          variant="outlined"
-          style={{borderRadius:15}}
-          onClick={()=> setDialogOpen(true)}>
-          {hours.start} - {hours.end}
-        </Button>
+        
+        {role==="superuser" ?
+         <Button
+           size="small"
+           variant="outlined"
+           style={{borderRadius:15}}
+           onClick={()=> setDialogOpen(true)}>
+           {hours.start} - {hours.end}
+         </Button>
+         :
+         <span>{hours.start} - {hours.end}</span>
+        }
+        
       </Typography>
       &nbsp;
 
