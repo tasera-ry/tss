@@ -27,6 +27,9 @@ import axios from 'axios';
 // Login validation
 import { validateLogin } from "../utils/Utils";
 
+/*
+  Styles not in the rangeofficer.js file
+*/
 const colors = {
   green: '#658f60',
   red: '#c97b7b',

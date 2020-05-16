@@ -16,11 +16,29 @@ import trackCRUD from "./edittracks/tracks";
 // React router. Hashrouter, because normal router won't work in apache
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
 
+import { validateLogin } from "./utils/Utils";
+
 /*
    The main component of the whole project.
 */
 class App extends Component {
   state = {};
+
+  componentDidMount() {
+   if ( localStorage.getItem("token") !== null ) {
+      validateLogin()
+      .then((tokenValid) => {
+         // If the token is expired, logout user
+         if ( !tokenValid ) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("taseraUserName");
+            localStorage.removeItem("role");
+
+            window.location.reload();
+         }
+      })
+   }
+  }
 
   render() {
     if(localStorage.getItem("language")===null) {
