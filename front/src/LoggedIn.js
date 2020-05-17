@@ -271,8 +271,8 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
   setSchedules(res);
   setChecked(res[0].range_supervisor==="en route");
 
-  console.log("scheduled for user: ", res.length)
-  console.log(res)
+  //console.log("scheduled for user: ", res.length)
+  //console.log(res)
 }
 
 const DialogWindow = () => {

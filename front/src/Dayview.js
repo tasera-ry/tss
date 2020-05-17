@@ -39,7 +39,7 @@ class Dayview extends Component {
       const response = await getSchedulingDate(date);
 
       if(response !== false){
-        console.log("Results from api",response);
+        //console.log("Results from api",response);
 
         this.setState({
           date: new Date(response.date),
@@ -49,7 +49,7 @@ class Dayview extends Component {
           closes: moment(response.close,'HH:mm').format('H.mm')
         });
       } else console.error("getting info failed");
-      console.log(this.state)
+      //console.log(this.state)
     }
     request();
   }
@@ -122,8 +122,8 @@ class Dayview extends Component {
     function TrackList(props) {
       let items = [];
       for (var key in props.tracks) {
-        console.log(key);
-        console.log(props.tracks[key].name);
+        //console.log(key);
+        //console.log(props.tracks[key].name);
         items.push(
           <TrackBox
             key={key}
@@ -196,7 +196,7 @@ class Dayview extends Component {
             <div className="titleContainer">
               <h1>
                 {dayToString(this.state.date.getDay())}
-                {console.log(this.state.date.getDay())}
+                {/* {console.log(this.state.date.getDay())} */}
               </h1>
               <div className="date">{this.state.date.toLocaleDateString("fi-FI")}</div>
             </div>

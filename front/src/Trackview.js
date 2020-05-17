@@ -61,7 +61,7 @@ class Trackview extends Component {
               }
             });
           } else {
-            console.error("track undefined");
+            //console.error("track undefined");
             
             this.setState({
                name:

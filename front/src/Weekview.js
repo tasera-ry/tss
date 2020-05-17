@@ -67,7 +67,7 @@ class Weekview extends Component {
 
 
             let paramDateCorrect = moment(paramYear + paramMonth + paramDay, "YYYYMMDD")
-            console.log("paramDateCorrect: " + paramDateCorrect)
+            //console.log("paramDateCorrect: " + paramDateCorrect)
 
             testi = moment(paramDateCorrect, "YYYYMMDD")
         }
@@ -140,7 +140,7 @@ class Weekview extends Component {
 
 
             let paramDateCorrect = moment(paramYear + paramMonth + paramDay, "YYYYMMDD")
-            console.log("paramDateCorrect: " + paramDateCorrect)
+            //console.log("paramDateCorrect: " + paramDateCorrect)
 
             testi = moment(paramDateCorrect, "YYYYMMDD")
         }
@@ -151,8 +151,8 @@ class Weekview extends Component {
         //LOPPU
 
 
-        console.log("dayNro statessa: " + this.state.dayNro)
-        console.log("Testi statessa: " + testi)
+        //console.log("dayNro statessa: " + this.state.dayNro)
+        //console.log("Testi statessa: " + testi)
         
         testi.add(1, 'week')
 
@@ -211,7 +211,7 @@ class Weekview extends Component {
             let paramYear = urlParamDateSplit[0]
     
             let paramDateCorrect = moment(paramYear + paramMonth + paramDay, "YYYYMMDD")
-            console.log("paramDateCorrect: " + paramDateCorrect)
+            //console.log("paramDateCorrect: " + paramDateCorrect)
 
             var timeInMilliseconds = moment(urlParamDate).valueOf();
     
@@ -224,7 +224,7 @@ class Weekview extends Component {
             //Jos on oikee nii laitetaan url params
             //miksei date settaannu!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             this.setState({weekNro: weeknumber, date: paramDateCorrect})
-            console.log(this.state.date);
+            //console.log(this.state.date);
             }   
         }
         catch {
@@ -475,10 +475,10 @@ class Weekview extends Component {
 
             //Parametrinä olevan ajan antaa millisekunteina
             var timeInMilliseconds = moment(urlParamDate).valueOf();
-            console.log("Parametrinä annetun päivämäärän millisekuntit: " + timeInMilliseconds)
+            //console.log("Parametrinä annetun päivämäärän millisekuntit: " + timeInMilliseconds)
     
             let paramDateCorrect = moment(paramYear + paramMonth + paramDay, "YYYYMMDD")
-            console.log("paramDateCorrect: " + paramDateCorrect)
+            //console.log("paramDateCorrect: " + paramDateCorrect)
     
             //Jos viikkonumero ei oo oikee laitetaan current
             if (isNaN(weeknumber)) {
@@ -510,7 +510,7 @@ class Weekview extends Component {
           if(response !== false){
             //console.log("Results from api",response);
 
-            console.log("response.week = " + response.week)
+            //console.log("response.week = " + response.week)
             this.setState({
               //Tässä tehään päivät ja tän mukaan tulee se mikä on eka päivä
               paivat:response.week,
