@@ -53,6 +53,8 @@ class Weekview extends Component {
         
         testi.subtract(1, 'week')
 
+        let uusViikko = testi.week();
+
         //alert(this.props.match.params.date);
         //alert(this.state.date);
 
@@ -63,17 +65,24 @@ class Weekview extends Component {
         this.props.history.replace("/weekview/" + testi.toISOString());
 
         let previous;
+        let yyyy;
+
+        let testiViikko = moment(this.state.dayNro, "YYYYMMDD");
+        //testiViikko.add(1,'week');
+        let testiViikkoNumero = testiViikko.week();
+
         //Week logic cuz you can't go negative
-        if (this.state.weekNro === 1 ) {
-            previous = 52
+        if (testiViikkoNumero === 1 ) {
+            yyyy = this.state.yearNro-1
         } else {
-            previous = this.state.weekNro-1
+            yyyy = this.state.yearNro
         }
         this.setState(
             {
               date: oikeePaiva,
               dayNro: testi,
-              weekNro: previous
+              weekNro: uusViikko,
+              yearNro: yyyy
             },
             function() {
               this.update();
@@ -94,21 +103,25 @@ class Weekview extends Component {
         
         testi.add(1, 'week')
 
+        let uusViikko = testi.week();
+
         let oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() + 7));
         this.props.history.replace("/weekview/" + testi.toISOString());
 
         let previous;
+        let yyyy;
         //Week logic cuz there's no 53 weeks
-        if (this.state.weekNro === 52 ) {
-            previous = 1
+        if (uusViikko === 1 ) {
+            yyyy = this.state.yearNro+1
         } else {
-            previous = this.state.weekNro+1
+            yyyy = this.state.yearNro
         }
         this.setState(
             {
               date: oikeePaiva,
               dayNro: testi,
-              weekNro: previous
+              weekNro: uusViikko,
+              yearNro: yyyy
             },
             function() {
               this.update();
@@ -525,8 +538,8 @@ class Weekview extends Component {
                         {/* Päävalvoja tulossa */} &nbsp;{week.Lightgreen[fin]} <br></br> <br></br>
 
 
-                        <div id="onway-info" class='box'></div>
-                      {/* Ei tietoa */}  &nbsp;{week.Orange[fin]}
+                        <div id="no-info" class='box'></div>
+                      {/* Ei tietoa */} &nbsp;{week.White[fin]}
 
                     </div>
                 </Grid>
@@ -540,8 +553,8 @@ class Weekview extends Component {
                         <div id="closed-info" class='box'></div>
                         {/* Suljettu */} &nbsp;{week.Red[fin]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br></br><br></br>
 
-                        <div id="no-info" class='box'> </div>
-            {/* Ei tietoa */}  &nbsp;{week.White[fin]}
+                        <div id="onway-info" class='box'> </div>
+                        {/* Ei tietoa */} &nbsp;Keskus suljettu
 
                     </div>
                 </Grid>
