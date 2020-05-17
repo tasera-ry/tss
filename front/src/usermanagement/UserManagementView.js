@@ -34,6 +34,9 @@ import * as data from '../texts/texts.json';
 // Token validation
 import { validateLogin } from "../utils/Utils";
 
+const fin = localStorage.getItem("language");
+const {manage} = data;
+
 //Finds all users from database
 async function getUsers(token) {
    try {
@@ -196,12 +199,13 @@ class UserManagementView extends Component {
    }
 
   update() {
-      const fin = localStorage.getItem("language");
-      const {manage} = data;
       var tempRows = [];
       for (var i in this.state.userList) {
          if (localStorage.taseraUserName !== this.state.userList[i].name) {
-           var row = this.createData(this.state.userList[i].name, this.returnPassButton(this.state.userList[i].id, manage, fin), this.returnRemoveButton(this.state.userList[i].id, manage, fin));
+           var row = this.createData(this.state.userList[i].name,
+                                     this.state.userList[i].role,
+                                     this.returnPassButton(this.state.userList[i].id, manage, fin),
+                                     this.returnRemoveButton(this.state.userList[i].id, manage, fin));
             tempRows.push(row);
          }
       }
@@ -227,8 +231,9 @@ class UserManagementView extends Component {
       }
    }
 
-   createData(name, ButtonToChangePassword, ButtonToRemoveUser) {
-      return { name, ButtonToChangePassword, ButtonToRemoveUser };
+  createData(name, role, ButtonToChangePassword, ButtonToRemoveUser) {
+    let roleToPrint = role==="superuser" ? manage.Superuser[fin] : manage.Supervisor[fin];
+    return { name, roleToPrint, ButtonToChangePassword, ButtonToRemoveUser };
    }
   returnPassButton(id, manage, fin) {
       return (
@@ -485,8 +490,6 @@ class UserManagementView extends Component {
     */
   render() {
 
-    const fin = localStorage.getItem("language"); //0: finnish, 1: english
-    const {manage} = data;
     return (
       <div>
         {/*Dialog to add new user*/}
@@ -613,14 +616,14 @@ class UserManagementView extends Component {
         <h1 style={{ textAlign:"center" }}>{manage.UserManage[fin]}</h1>
         <Divider></Divider>
         <Box style={{justifyContent: "center", display:"flex", flexWrap:"wrap"}}>
-          <h3 style={{ textAlign: "center" }}>{manage.ChangePass[fin]}:</h3>
+          <h3 style={{ textAlign:"center" }}>{manage.ChangePass[fin]}:</h3>
         <Button onClick={this.handleOpenOwnPassChangeDialog}  variant="contained" style={{ backgroundColor:'#5f77a1', margin: 15, textAlign: "center" }}>
             {manage.ChangePass[fin]}
           </Button>
         </Box>
         <Divider></Divider>
         <Box style={{justifyContent: "center", display:"flex", flexWrap:"wrap"}}>
-          <h3 style={{ textAlign: "center" }}>{manage.CreateUser[fin]}:</h3>
+          <h3 style={{ textAlign:"center" }}>{manage.CreateUser[fin]}:</h3>
           <Button onClick={this.handleAddUserOpenDialog} variant="contained" style={{ backgroundColor:'#5f77a1', margin: 15, textAlign: "center" }}>
             {manage.CreateUser[fin]}
           </Button>
@@ -629,7 +632,7 @@ class UserManagementView extends Component {
 
         {/*USER PROFILES TABLE*/}
 
-	<h3 style={{ textAlign: "center" }}>{manage.Users[fin]}:</h3>
+	<h3 style={{ textAlign:"center" }}>{manage.Users[fin]}:</h3>
         <Box style={{justifyContent: "center", display:"flex", flexWrap:"wrap"}}>
              
         <TableContainer component={Paper} style={{ maxWidth:500, tableLayout: "auto" }}>
@@ -642,9 +645,10 @@ class UserManagementView extends Component {
                    </TableRow>
                  </TableHead>
                  <TableBody>
+                   
                    {this.state.rows.map((row) => (
                      <TableRow key={row.name} hover>
-                       <TableCell align="justify" component="th" scope="row">{row.name} </TableCell>
+                       <TableCell align="justify" component="th" scope="row">{row.name} <br/>{row.roleToPrint}</TableCell>
                        <TableCell align="justify">{row.ButtonToChangePassword}</TableCell>
                        <TableCell align="justify">{row.ButtonToRemoveUser}</TableCell>
                      </TableRow>

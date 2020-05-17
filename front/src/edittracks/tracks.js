@@ -63,6 +63,13 @@ const tableIcons = {
 const l10n = l10nLines.tracks;
 const lang = localStorage.getItem("language");
 
+const tableStyle = {
+  backgroundColor: "#f2f0eb"
+}
+const headerStyle = {
+  backgroundColor: "#ebe7df"
+}
+
 /* Get first element of an array */
 
 const RequestStatusAlert = ({statusSetter, requestStatus, text}) => {
@@ -91,6 +98,7 @@ const MaybeProgress = ({finished}) => finished
 const TrackTable = ({setTrackData, trackData, setRequestStatus, setRequestText, opts}) => {
   return (
     <MaterialTable
+      style={tableStyle}
       localization={{
         pagination: {
           nextTooltip: l10n.nextTooltip[lang],
@@ -101,7 +109,8 @@ const TrackTable = ({setTrackData, trackData, setRequestStatus, setRequestText, 
           labelRowsSelect: l10n.labelRowsSelect[lang]
         }
         , header: {
-          actions: l10n.tableHeaderActions[lang]
+          actions: l10n.tableHeaderActions[lang],
+          cellStyle: {backgroundColor: "#f2f0eb"}
         }
         , toolbar: {
           searchPlaceholder: l10n.searchPlaceholder[lang]
@@ -211,12 +220,17 @@ const TrackTable = ({setTrackData, trackData, setRequestStatus, setRequestText, 
         // }
       }}
       options={{
-        pageSize: 10
+        pageSize: 10,
+        headerStyle: headerStyle
       }}
       icons={tableIcons}
       columns={[
-        { title: l10n.tableHeaderName[lang], field: 'name' }
-        , { title: l10n.tableHeaderDescription[lang], field: 'description' },
+        { title: l10n.tableHeaderName[lang],
+          field: 'name' ,
+          headerStyle: headerStyle},
+        { title: l10n.tableHeaderDescription[lang],
+          field: 'description',
+          headerStyle: headerStyle },
       ]}
       data={trackData}
       title={ l10n.tableTitle[lang] }
