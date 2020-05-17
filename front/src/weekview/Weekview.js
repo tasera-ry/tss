@@ -166,9 +166,9 @@ class Weekview extends Component {
         //console.log("Testi statessa: " + testi)
         
         testi.add(1, 'week')
-
         let uusViikko = testi.week();
 
+      try {
         let oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() + 7));
 
         this.props.history.replace("/weekview/" + testi.toISOString());
@@ -192,6 +192,9 @@ class Weekview extends Component {
               this.update();
             }
         );
+      } catch(error) {
+        //console.log(error)
+      }
     }
 
     //Function for parsin current week number
