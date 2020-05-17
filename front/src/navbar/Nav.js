@@ -8,32 +8,52 @@ import logo from "../logo/Logo.png";
 // Material UI elements
 import { Link } from "react-router-dom";
 import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import Drawer from '@material-ui/core/Drawer';
+import Divider from '@material-ui/core/Divider';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
 
 // Upcoming supervisions -view
 import DialogWindow from '../upcomingsupervisions/LoggedIn';
 
 // Translations
 import * as data from '../texts/texts.json';
+const fin = localStorage.getItem("language"); //0: finnish, 1: english
+const {nav} = data;
 
-const SideMenu = ({setName, superuser, nav, fin}) => {
-  const navStyle = {
-    color: "black",
-    textDecoration: "none"
-  };
+//Styles
+const navStyle = {
+  color: "black",
+  textDecoration: "none"
+}
+const logoStyle = {
+  textDecoration: "none",
+  height: "100%",
+  width: "60%",
+  display: "block"
+}
+const drawerStyle = {
+  fontSize:17,
+  padding:10,
+  marginTop:10,
+  width:200
+}
+const elementStyle = {
+  marginTop:10
+}
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [openDial, setOpenDial] = useState(false);
+const SideMenu = ({setName, superuser}) => {
+  const [menu, setMenu] = useState({"right": false})
+  const [openDial, setOpenDial] = useState(false)
   let storage = window.localStorage;
 
-  const HandleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-    setOpenDial(false);
-  };
+  const HandleClick = () => {
+    setMenu({"right": false})
+  }
 
-  const HandleClose = (event) => {
-    setAnchorEl(null);
+  const HandleOpenDialog = () => {
+    setMenu({"right": false})
+    setOpenDial(true)
   }
 
   const HandleSignOut = () => {
@@ -41,89 +61,124 @@ const SideMenu = ({setName, superuser, nav, fin}) => {
     storage.removeItem("taseraUserName");
     storage.removeItem("role");
     setName("");
-    HandleClose();
+    setMenu({"right": false});
   }
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    setOpenDial(false)
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    setMenu({"right": open })
+  }
+
+  const superuserList = () => (
+    <div style={drawerStyle}>
+      <List>
+        <Link style={navStyle} to="/scheduling">
+          <ListItem
+            button
+            onClick={HandleClick}
+            style={elementStyle}>
+            {nav.Schedule[fin]}
+          </ListItem>
+        </Link>
+
+        <Link style={navStyle} to="/usermanagement">
+          <ListItem
+            button
+            onClick={HandleClick}
+            style={elementStyle}>
+            {nav.UserManagement[fin]}
+          </ListItem>
+        </Link>
+
+        <Link style={navStyle} to="/tracks">
+          <ListItem
+            button
+            onClick={HandleClick}
+            style={elementStyle}>
+            {nav.trackCRUD[fin]}
+          </ListItem>
+        </Link>
+
+        <Link style={navStyle} to="/tablet">
+          <ListItem
+            button
+            onClick={HandleClick}
+            style={elementStyle}>
+            {nav.Tablet[fin]}
+          </ListItem>
+        </Link>
+
+        <Divider style={elementStyle} />
+
+        <Link style={navStyle} to="/">
+          <ListItem
+            button
+            onClick={HandleSignOut}
+            style={elementStyle}>
+            {nav.SignOut[fin]}
+          </ListItem>
+        </Link>
+      </List>
+    </div>
+  )
+
+  const supervisorList = () => (
+    <div style={drawerStyle}>
+      <List>
+        <ListItem
+          button
+          onClick={HandleOpenDialog}
+          style={elementStyle}>
+          {nav.Supervision[fin]}
+        </ListItem>
+
+        <Link style={navStyle} to="/tablet">
+          <ListItem
+            button
+            onClick={HandleClick}
+            style={elementStyle}>
+            {nav.Tablet[fin]}
+          </ListItem>
+        </Link>
+
+        <Divider style={elementStyle} />
+
+        <Link style={navStyle} to="/">
+          <ListItem
+            button
+            onClick={HandleSignOut}
+            style={elementStyle}>
+            {nav.SignOut[fin]}
+          </ListItem>
+        </Link>
+      </List>
+    </div>
+  )
 
   return (
     <div>
-
       {storage.getItem("taseraUserName")!==null ?
        <Button
-         onClick={HandleClick}
-         size="small">
+         onClick={toggleDrawer("right", true)}>
          {nav.Menu[fin]}
        </Button>
-       : ""
-      }
-
-      {superuser===true ?
-       <SuperMenu anchorEl={anchorEl} HandleClose={HandleClose}
-                  setOpenDial={setOpenDial} HandleSignOut={HandleSignOut}
-                  HandleClick={HandleClick} navStyle={navStyle} nav={nav} fin={fin} />
-       : <BasicMenu anchorEl={anchorEl} HandleClose={HandleClose}
-                    setOpenDial={setOpenDial} HandleSignOut={HandleSignOut}
-                    navStyle={navStyle} nav={nav} fin={fin} /> }
+       : ""}
+      
+      <Drawer
+        anchor={"right"}
+        open={menu.right}
+        onClose={toggleDrawer("right", false)}>
+        {superuser?
+         superuserList("left")
+         : supervisorList("left")}
+      </Drawer>
 
       {openDial ? <DialogWindow /> : "" }
-
+      
     </div>
-  )
-}
-
-const BasicMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut, navStyle, nav, fin}) => {
-  return (
-    <Menu
-      id="menu"
-      open={Boolean(anchorEl)}
-      keepMounted
-      anchorEl={anchorEl}
-      onClose={HandleClose}>
-
-      <MenuItem onClick={() => setOpenDial(true)}> {nav.Supervision[fin]} </MenuItem>
-
-      <Link style={navStyle} to="/tablet">
-        <MenuItem> {nav.Tablet[fin]} </MenuItem>
-      </Link>
-
-      <Link style={navStyle} to="/">
-        <MenuItem onClick={HandleSignOut}> {nav.SignOut[fin]} </MenuItem>
-      </Link>
-    </Menu>
-  )
-}
-
-const SuperMenu = ({anchorEl, HandleClose, setOpenDial, HandleSignOut,
-                    HandleClick, navStyle, nav, fin}) => {
-  return (
-    <Menu
-      id="menu"
-      open={Boolean(anchorEl)}
-      keepMounted
-      anchorEl={anchorEl}
-      onClose={HandleClose}>
-
-      <Link style={navStyle} to="/scheduling">
-        <MenuItem onClick={HandleClick}> {nav.Schedule[fin]} </MenuItem>
-      </Link>
-
-      <Link style={navStyle} to="/usermanagement">
-        <MenuItem> {nav.UserManagement[fin]} </MenuItem>
-      </Link>
-
-      <Link style={navStyle} to="/tracks">
-        <MenuItem>{nav.trackCRUD[fin]}</MenuItem>
-      </Link>
-
-
-
-      <Link style={navStyle} to="/tablet">
-        <MenuItem> {nav.Tablet[fin]} </MenuItem>
-      </Link>
-
-      <Link style={navStyle} to="/">
-        <MenuItem onClick={HandleSignOut}> {nav.SignOut[fin]} </MenuItem>
-      </Link>
-    </Menu>
   )
 }
 
@@ -142,21 +197,8 @@ function setLanguage(num) {
 }
 
 const Nav = () => {
-  const navStyle = {
-    color: "black",
-    textDecoration: "none"
-  };
-  const logoStyle = {
-    textDecoration: "none",
-    height: "100%",
-    width: "60%",
-    display: "block"
-  };
-
   const [name, setName] = useState("");
   const [superuser, setSuperuser] = useState();
-  const fin = localStorage.getItem("language"); //0: finnish, 1: english
-  const {nav} = data;
 
   if(name==="") {
     userInfo(name, setName, setSuperuser);
@@ -179,8 +221,7 @@ const Nav = () => {
 
       {name==="" ?
        <Link style={{textDecoration:'none'}} to="/signin">
-         <Button
-           size="small">
+         <Button>
            {nav.SignIn[fin]}
          </Button>
        </Link>
@@ -193,7 +234,7 @@ const Nav = () => {
         <Button onClick={()=> setLanguage(0)}>FI</Button>
       </span>
 
-      <SideMenu setName={setName} superuser={superuser} nav={nav} fin={fin} />
+      <SideMenu setName={setName} superuser={superuser} />
 
     </nav>
   )
