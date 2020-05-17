@@ -373,9 +373,13 @@ class UserManagementView extends Component {
    }
 
    //Opens warning for removing user
-   onRemoveClick(e) {
-      this.setState({
+   async onRemoveClick(e) {
+      await this.setState({
          selectedROWID: e.currentTarget.id,
+      });
+      var name = this.findUserName();
+      this.setState({
+         selectedUserName: name,
          openRemoveWarning: true,
       });
    }

@@ -84,7 +84,7 @@ class Trackview extends Component {
          return returnable;
       } else if(this.state.rangeSupervision === 'absent'){
          let returnable = (
-            <Box class="isUnavailable">{trackview.SuperRed[fin]}</Box>
+            <Box class="isUnavailable">{trackview.SuperWhite[fin]}</Box>
          );
          return returnable;
       } else if(this.state.rangeSupervision === 'confirmed'){
