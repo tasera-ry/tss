@@ -76,6 +76,9 @@ const saveButtonStyle = {
 const cancelButtonStyle = {
   backgroundColor:'#ede9e1'
 }
+const simpleButton = {
+  borderRadius:15
+}
 const rangeStyle = {
   textAlign: "center",
   padding: 20,
@@ -341,6 +344,7 @@ const Tabletview = () => {
   const [reservationId, setReservationId] = useState();
   const [rangeSupervisionScheduled, setRangeSupervisionScheduled] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const role = localStorage.getItem("role");
   const fin = localStorage.getItem("language");
   const {tablet} = data;
   let today = moment().format("DD.MM.YYYY");
@@ -406,18 +410,21 @@ const Tabletview = () => {
         <br />
         {today}
       </Typography>
+      
       <Typography
         variant="body1"
         align="center">
         {tablet.Open[fin]}:
         &nbsp;
+        
         <Button
           size="small"
           variant="outlined"
-          style={{borderRadius:15}}
+          style={simpleButton}
           onClick={()=> setDialogOpen(true)}>
           {hours.start} - {hours.end}
         </Button>
+        
       </Typography>
       &nbsp;
 
