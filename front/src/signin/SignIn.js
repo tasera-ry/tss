@@ -1,21 +1,29 @@
 import React, { useState } from 'react';
+
+// Material UI components
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import {useHistory} from 'react-router-dom';
 
-import {Link, useHistory} from 'react-router-dom';
-import Weekview from './Weekview';
-import axios from 'axios'
+// Call handling to backend
+import axios from 'axios';
 
+// Translations
+import * as data from '../texts/texts.json';
+
+/*
+  Signin is the component for signing in to the frontend
+*/
 const useStyles = makeStyles(theme => ({
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   avatar: {
     margin: theme.spacing(1)
@@ -29,47 +37,59 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function SignIn() {
+const textStyle = {
+  backgroundColor:'#fcfbf7',
+  borderRadius: 4
+}
+
+const SignIn = () => {
   
   const classes = useStyles();
-
-  //function component hook as a quick and dirty? way to handle state
-  //other end: value={name} onInput={e => setName(e.target.value)}
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState('');
-  const [mokat, setMokat] = useState('');
+  const [mistake, setMistake] = useState(false);
   const history = useHistory();
-  let myStorage = window.localStorage;
+  const {signin} = data;
+  const fin = localStorage.getItem("language");
+
+  document.body.style = 'background: #eae7dc;';
   
   const login = (e) => {
     e.preventDefault();
-    //console.log({name, password})
 
     let response = axios.post('api/sign', {
       name: name,
       password: password
     }).then(response => {
-      HandleResponse(response)
-      RedirectToWeekview()
+      setInfo(response.data);
     }).catch(error => {
       HandleError(error)
     })
+  }
+
+  function RedirectToWeekview(){
+    window.location.href="/";
+  }
+
+  async function setInfo(data) {
+    localStorage.setItem("taseraUserName", name);
+    localStorage.setItem("token", data);
     
-  }
+    const config = {
+      headers: { Authorization: `Bearer ${data}` }
+    };
+    
+    let query = "/api/user?name=" + name;
+    let response = await axios.get(query, config);
+    let role = await response.data[0].role;
+    localStorage.setItem("role", role);
 
-  const HandleResponse = response => {
-    setUser(response.data)
-    myStorage.setItem('token', response.data)
+    RedirectToWeekview();
   }
-
-  const RedirectToWeekview = () => {
-    history.push('/')
-  }
-
+  
   const HandleError = error => {
-    setMokat(true);
-
+    setMistake(true);
     //message contains all errors, might be useful
     let message = ''
     if(error.response.status===400) {
@@ -84,13 +104,18 @@ export default function SignIn() {
     }
   }
 
+  function backToPrev() {
+    history.goBack();
+  }
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
         <Typography component="h1" variant="h5">
-          Kirjaudu sisään
+          {signin.SignIn[fin]}
         </Typography>
+
         <form className={classes.form} noValidate>
           <TextField
             variant="outlined"
@@ -98,12 +123,14 @@ export default function SignIn() {
             required
             fullWidth
             id="email"
-            label="Sähköpostiosoite"
-            name="email"
-            autoComplete="sähköposti"
+            label={signin.Name[fin]}
+            name="username"
+            autoComplete={signin.Name[fin]}
             autoFocus
             value={name}
+            error={mistake}
             onInput={e => setName(e.target.value)}
+            style={textStyle}
           />
           <TextField
             variant="outlined"
@@ -111,47 +138,46 @@ export default function SignIn() {
             required
             fullWidth
             name="password"
-            label="Salasana"
+            label={signin.Password[fin]}
             type="password"
             id="password"
             autoComplete="current-password"
             value={password}
+            error={mistake}
             onInput={e => setPassword(e.target.value)}
+            style={textStyle}
           />
 
-          {(mokat) ?
-           <p style={{fontSize: 20, color: "red", textAlign: "center"}}>
-             Käyttäjänimi tai salasana väärin
-           </p> :
-           <p></p>}
+          {mistake ?
+           <Typography
+             align="center"
+             style={{color: "#c23a3a"}}>
+             {signin.Helper[fin]}
+           </Typography>
+           : ""}
 
-          <Link>
             <Button
               onClick={login}
               type="submit"
               fullWidth
               variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              Kirjaudu
+              style={{backgroundColor:'#5f77a1'}}>
+              {signin.LogIn[fin]}
             </Button>
-          </Link>
 
-          <Link>
+          &nbsp;
+
             <Button
-              onClick={() => history.goBack()}
-              type="submit"
+              onClick={() => backToPrev()}
               fullWidth
-              color="primary"
-              className={classes.submit}
-            >
-              Takaisin
+              style={{color:'#5f77a1'}}>
+              {signin.Back[fin]}
             </Button>
-          </Link>
-
+          
         </form>
       </div>
     </Container>
-  );
+  )
 }
+
+export default SignIn

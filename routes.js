@@ -1,20 +1,15 @@
 const express = require("express");
 const router = express.Router();
+const _ = require('lodash');
 
-const jwt = require("jsonwebtoken");
+const path = require('path');
+const root = path.join(__dirname, '.');
 
-const { check, body, query, param, validationResult, matchedData } = require("express-validator");
+const validators = require(path.join(root, 'validators'));
+const middlewares = require(path.join(root, 'middlewares'));
+const controllers = require(path.join(root, 'controllers'));
 
-const path = require('path')
-const root = path.join(__dirname, '.')
-
-const config = require(path.join(root, 'config', 'config'))
-
-const validators = require(path.join(root, 'validators'))
-const middlewares = require(path.join(root, 'middlewares'))
-const controllers = require(path.join(root, 'controllers'))
-
-const oldSchedule = require(path.join(root, 'controllers', 'oldSchedule'))
+const oldSchedule = require(path.join(root, 'controllers', 'oldSchedule'));
 
 router.route('/sign')
   .post(
@@ -54,7 +49,7 @@ router.route('/track-supervision')
     , controllers.trackSupervision.readFilter)
   .post(
     middlewares.jwt.read
-    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes)
     , middlewares.trackSupervision.create
     , controllers.trackSupervision.create)
 
@@ -64,7 +59,7 @@ router.route('/track-supervision/:scheduled_range_supervision_id/:track_id')
     , controllers.trackSupervision.read)
   .put(
     middlewares.jwt.read
-    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes)
     , middlewares.trackSupervision.update
     , controllers.trackSupervision.update)
   .delete(
@@ -80,7 +75,7 @@ router.route('/range-supervision')
     , controllers.rangeSupervision.readFilter)
   .post(
     middlewares.jwt.read
-    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes)
     , middlewares.rangeSupervision.create
     , controllers.rangeSupervision.create)
 
@@ -90,7 +85,7 @@ router.route('/range-supervision/:scheduled_range_supervision_id')
     , controllers.rangeSupervision.read)
   .put(
     middlewares.jwt.read
-    , middlewares.user.hasProperty('role', 'superuser')
+    , middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes)
     , middlewares.rangeSupervision.update
     , controllers.rangeSupervision.update)
   .delete(
@@ -109,7 +104,7 @@ router.route('/reservation')
 router.route('/reservation/:id')
   .get(controllers.reservation.readStrict)
   .put(middlewares.jwt.read
-       , middlewares.user.hasProperty('role', 'superuser')
+       , middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes)
        , controllers.reservation.update)
   .delete(middlewares.jwt.read
           , middlewares.user.hasProperty('role', 'superuser')
@@ -124,7 +119,7 @@ router.route('/schedule')
 router.route('/schedule/:id')
   .get(controllers.schedule.readStrict)
   .put(middlewares.jwt.read
-       , middlewares.user.hasProperty('role', 'superuser')
+       , middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes)
        , controllers.schedule.update)
   .delete(middlewares.jwt.read
           , middlewares.user.hasProperty('role', 'superuser')
@@ -163,6 +158,12 @@ router.route('/track/:track_id')
     , controllers.track.delete)
 
 //newer get with padded functionality
-router.get("/datesupreme/:date", oldSchedule.getScheduleDate);
+router.route("/datesupreme/:date")
+  .get(
+    oldSchedule.getScheduleDate)
+
+router.route("/validate")
+  .get(
+    middlewares.jwt.validate)
 
 module.exports = router;

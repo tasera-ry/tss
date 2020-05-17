@@ -1,7 +1,14 @@
 import React, { Component } from "react";
-import './App.css';
-import './Scheduling.css'
+
+import '../App.css';
+import './Scheduling.css';
+
+// Date management
 import MomentUtils from '@date-io/moment';
+import moment from 'moment';
+import "moment/locale/fi";
+
+// Material UI components
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -24,10 +31,23 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import { getSchedulingDate } from "./utils/Utils";
-import moment from 'moment';
-import "moment/locale/fi";
-moment.locale("fi");
+import { getSchedulingDate, rangeSupervision } from "../utils/Utils";
+
+// Translation
+import * as data from '../texts/texts.json';
+
+// Token validation
+import { validateLogin } from "../utils/Utils";
+
+
+let lang = "fi"; //fallback
+if(localStorage.getItem("language") === '0') {
+  lang = 'fi';
+}
+else if(localStorage.getItem("language") === '1'){
+  lang = 'en';
+}
+moment.locale(lang);
 
 async function getRangeSupervisors(token){
   try{
@@ -69,43 +89,41 @@ class Scheduling extends Component {
         weekly:false,
         monthly:false,
         repeatCount:1,
-        token:'SECRET-TOKEN'
+        token:'SECRET-TOKEN',
+        datePickerKey:1
       };
-  }
+  };
   
   componentDidMount(){
     console.log("MOUNTED",localStorage.getItem('token'));
     this.setState({
-      token: localStorage.getItem('token')
+      token: localStorage.getItem('token'),
+      datePickerKey: Math.random() //force datepicker to re-render when language changed
     },function(){
-      if(this.state.token === 'SECRET-TOKEN'){
-        this.props.history.push("/");
-      }
-      else{
-        try{
-          const request = async () => {
-            const response = await getRangeSupervisors(this.state.token);
-            if(response !== false){
-              this.setState({
-                rangeSupervisors: response
-              });
-              this.update();
-              this.setState({
-                state: 'loading'
-              });
-            } 
-            else {
-              console.error("getting user failed, most likely sign in token invalid -> kicking to root");
-              this.props.history.push("/");
-            }
-          }
-          request();
+      validateLogin()
+      .then(logInSuccess => {
+        if(!logInSuccess){
+          this.props.history.push("/");
         }
-        catch(error){
-          console.error("init failed",error);
+        else{
+            getRangeSupervisors(this.state.token)
+            .then((response) => {
+              if(response !== false){
+                this.setState({
+                  rangeSupervisors: response
+                });
+                this.update();
+                this.setState({
+                  state: 'loading'
+                });
+              }
+            })
+            .catch((error) => {
+              console.error("init failed",error);
+            });
         }
-      }
-    })
+      });
+    });
   }
   
   update(){
@@ -305,6 +323,8 @@ class Scheduling extends Component {
   }
   
   saveChanges = async (event) => {
+    const {sched} = data;
+    const fin = localStorage.getItem("language");
     console.log("save")
     
     //start spinner
@@ -318,7 +338,7 @@ class Scheduling extends Component {
       await this.updateCall(date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat).then((res) => {
         this.setState({
           toast: true,
-          toastMessage: "Päivitys onnistui",
+          toastMessage: sched.Success[fin],
           toastSeverity: "success"
         });
       },
@@ -326,14 +346,14 @@ class Scheduling extends Component {
         console.error('Update rejection called: ' + error.message);
         if(error.message === 'Range officer enabled but no id'){
           this.setState({
-            toastMessage: "Päävalvoja aktiivinen ilman valvojaa",
+            toastMessage: sched.Warning[fin],
             toastSeverity: "warning",
             toast: true,
           });
         }
         else{
           this.setState({
-            toastMessage: "Päivitys epäonnistui",
+            toastMessage: sched.Error[fin],
             toastSeverity: "error",
             toast: true,
           });
@@ -596,88 +616,12 @@ class Scheduling extends Component {
       else if(this.state.rangeSupervisorId !== null){
         rangeStatus = 'not confirmed';
       }
-      
-      const rangeSupervision = async (rsId,srsId,rangeStatus,rsScheduled,token) => {
-        console.log("range supvis params",rsId,srsId,rangeStatus,token);
-        try{
-          if(rsId !== null && srsId !== null){
-            //only closed is different from the 6 states
-            if(rangeStatus !== 'closed'){
-              //range supervision exists
-              if(rsScheduled){
-                fetch(`/api/reservation/${rsId}`, {
-                  method: "PUT",
-                  body: JSON.stringify({available: true}),
-                  headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                  }
-                })
-                .then(status => {
-                  console.log("put available",status)
-                  fetch(`/api/range-supervision/${srsId}`, {
-                    method: "PUT",
-                    body: JSON.stringify({range_supervisor: rangeStatus}),
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${token}`
-                    }
-                  })
-                  .then(status => console.log("put rangeSupervision",status));
-                });
-              }
-              else{
-                fetch(`/api/reservation/${rsId}`, {
-                  method: "PUT",
-                  body: JSON.stringify({available: true}),
-                  headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                  }
-                })
-                .then(status => {
-                  console.log(status)
-                  console.log("put available",status)
-                  fetch(`/api/range-supervision`, {
-                    method: "POST",
-                    body: JSON.stringify({
-                      scheduled_range_supervision_id:srsId,
-                      range_supervisor: rangeStatus
-                    }),
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${token}`
-                    }
-                  })
-                  .then(status => console.log("post rangeSupervision", status));
-                });
-              }
-            }
-            else{
-              fetch(`/api/reservation/${rsId}`, {
-                method: "PUT",
-                body: JSON.stringify({available: 'false'}),
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${this.state.token}`
-                }
-              })
-              .then(status => console.log("put available",status));
-            }
-          }else console.error("cannot update some parts (reservation or schedule) missing");
-        }catch(error){
-          console.error("range supervision",error);
-          return reject(new Error('general range supervision failure'));
-        }
-      }
+
       if(rangeStatus !== null){
         const rangeSupervisionRes = await rangeSupervision(rsId,srsId,rangeStatus,rangeSupervisionScheduled,this.state.token);
-        console.log("rangeSupervisionRes",rangeSupervisionRes,rangeSupervisionScheduled);
+        if(rangeSupervisionRes !== true){
+          return reject(new Error(rangeSupervisionRes));
+        }
       }
       else console.log("range status null")
       
@@ -695,7 +639,7 @@ class Scheduling extends Component {
             supervisorStatus = statusInState !== undefined ? statusInState : 'absent';
             
             let notice = this.state.tracks[key].notice;
-            if(notice === null || notice === ""){
+            if(notice === null){
               //undefined gets removed in object
               notice=undefined;
             }
@@ -762,9 +706,9 @@ class Scheduling extends Component {
         }
       }
       
-      return resolve("update success")
-    })
-  }
+      return resolve("update success");
+    });
+  };
   
   /*
   *   Components
@@ -775,6 +719,8 @@ class Scheduling extends Component {
 
   //builds tracklist
   createTrackList = () => {
+    const {sched} = data;
+    const fin = localStorage.getItem("language");
     let items = [];
     let tracks = this.state.tracks;
     for (var key in tracks) {
@@ -789,9 +735,12 @@ class Scheduling extends Component {
                 onChange={this.handleRadioChange}
                 value={ this.state[tracks[key].id] || 'absent'}
               >
-                <FormControlLabel value="present" control={<Radio />} label="Valvoja paikalla" />
-                <FormControlLabel value="absent" control={<Radio />} label="Ei valvojaa" />
-                <FormControlLabel value="closed" control={<Radio />} label="Suljettu" />
+                <FormControlLabel value="present" control={
+                  <Radio style={{fontColor:'black', color:'#5f77a1'}} />} label={sched.OfficerPresent[fin]} />
+                <FormControlLabel value="absent" control={
+                  <Radio style={{fontColor:'black', color:'#5f77a1'}} />} label={sched.OfficerAbsent[fin]} />
+                <FormControlLabel value="closed" control={
+                  <Radio style={{fontColor:'black', color:'#5f77a1'}} />} label={sched.Closed[fin]} />
               </RadioGroup>
               <TextareaAutosize
                 className="notice"
@@ -802,6 +751,7 @@ class Scheduling extends Component {
                 rowsMax={3}
                 onChange={this.handleNotice}
                 value={tracks[key].notice !== null ? tracks[key].notice : ''}
+                style={{backgroundColor:'#f2f0eb'}}
               />
           </FormControl>
         </React.Fragment>
@@ -819,6 +769,8 @@ class Scheduling extends Component {
   createSupervisorSelect = () => {
     let items = [];
     let disabled = false;
+    const {sched} = data;
+    const fin = localStorage.getItem("language");
     
     for (var key in this.state.rangeSupervisors) {
       items.push(
@@ -832,7 +784,7 @@ class Scheduling extends Component {
 
     return (
       <FormControl>
-        <InputLabel id="chooserangeSupervisorLabel">Valitse valvoja</InputLabel>
+        <InputLabel id="chooserangeSupervisorLabel">{sched.Select[fin]}</InputLabel>
         <Select
           {...disabled && {disabled: true}}
           labelId="chooserangeSupervisorLabel"
@@ -851,6 +803,9 @@ class Scheduling extends Component {
     function Alert(props) {
       return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
+
+    const {sched} = data;
+    const fin = localStorage.getItem("language");
     
     return (
       <div className="schedulingRoot">
@@ -859,14 +814,18 @@ class Scheduling extends Component {
             <CircularProgress disableShrink />
           </Backdrop>
         </Modal>
+
+        {/* Section for selecting date */}
         <div className="firstSection">
           <form onSubmit={this.continueWithDate}>
-            <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
+
+            { /* Datepicker */}
+            <MuiPickersUtilsProvider utils={MomentUtils} locale={lang} key={this.state.datePickerKey}>
               <KeyboardDatePicker
                 autoOk
                 margin="normal"
                 name="date"
-                label="Valitse päivä"
+                label={sched.Day[fin]}
                 value={this.state.date}
                 onChange={date => this.handleDateChange(date)}
                 onAccept={this.handleDatePickChange}
@@ -875,41 +834,48 @@ class Scheduling extends Component {
               />
             </MuiPickersUtilsProvider>
             <div className="continue">
-              <Button type="submit" variant="contained">Valitse päivä</Button>
+              <Button type="submit" variant="contained" style={{backgroundColor:'#d1ccc2'}}>{sched.Day[fin]}</Button>
             </div>
           </form>
         </div>
+
         <hr/>
+
+        {/* Section for setting range officer status and open/close times of the tracks */}
         <div className="secondSection">
           <div className="topRow">
-            <div className="text">Keskus auki</div>
+            <div className="text">{sched.Open[fin]}</div>
             <Switch
               checked={ this.state.available }
               onChange={this.handleSwitchChange}
               name="available"
+              color="default"
+              style={{color:'#5f77a1'}}
             />
           </div>
           <div className="middleRow">
             <div className="roSwitch">
-              <div className="text">Päävalvoja</div>
+              <div className="text">{sched.Supervisor[fin]}</div>
               <Switch
                 className="officerSwitch"
                 checked={this.state.rangeSupervisorSwitch}
                 onChange={this.handleSwitchChange}
                 name="rangeSupervisorSwitch"
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
             {this.createSupervisorSelect()}
           </div>
           <div className="bottomRow">
-            <div className="text">Aukioloaika</div>
+            <div className="text">{sched.OpenHours[fin]}</div>
             <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
               <KeyboardTimePicker
                 autoOk
                 ampm={false}
                 margin="normal"
                 name="start"
-                label="Alku"
+                label={sched.Start[fin]}
                 value={this.state.open}
                 onChange={this.handleTimeStartChange}
                 minutesStep={5}
@@ -923,7 +889,7 @@ class Scheduling extends Component {
                 ampm={false}
                 margin="normal"
                 name="end"
-                label="Loppu"
+                label={sched.Stop[fin]}
                 value={this.state.close}
                 onChange={this.handleTimeEndChange}
                 minutesStep={5}
@@ -932,46 +898,55 @@ class Scheduling extends Component {
             </MuiPickersUtilsProvider>
           </div>
         </div>
+
         <hr/>
+
+        {/* Section for setting track-specific open/close/absent statuses */}
         <div className="thirdSection">
           <div className="leftSide">
             {this.createTrackList()}
           </div>
           <div className="rightSide">
-            <Button variant="contained" color="primary" onClick={this.openAllTracks}>Avaa kaikki</Button>
-            <Button variant="contained" onClick={this.emptyAllTracks}>Tyhjennä kaikki</Button>
-            <Button variant="contained" color="secondary" onClick={this.closeAllTracks}>Sulje kaikki</Button>
+            <Button variant="contained" color="primary" onClick={this.openAllTracks} style={{color:'black', backgroundColor:'#5f77a1'}}>{sched.OpenAll[fin]}</Button>
+            <Button variant="contained" onClick={this.emptyAllTracks} style={{backgroundColor:'#d1ccc2'}}>{sched.ClearAll[fin]}</Button>
+        <Button variant="contained" color="secondary" onClick={this.closeAllTracks} style={{color:'black', backgroundColor:'#c97b7b'}}>{sched.CloseAll[fin]}</Button>
           </div>
         </div>
         <hr/>
         <div className="fourthSection">
           <div className="repetition">
             <div className="daily">
-              Toista päivittäin
+              {sched.RepeatDaily[fin]}
               <Switch
                 checked={ this.state.daily }
                 onChange={this.handleRepeatChange}
                 id='daily'
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
             <div className="weekly">
-              Toista viikottain
+              {sched.RepeatWeekly[fin]}
               <Switch
                 checked={ this.state.weekly }
                 onChange={this.handleRepeatChange}
                 id='weekly'
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
             <div className="monthly">
-              Toista kuukausittain
+              {sched.RepeatMonthly[fin]}
               <Switch
                 checked={ this.state.monthly }
                 onChange={this.handleRepeatChange}
                 id='monthly'
+                color="default"
+                style={{color:'#5f77a1'}}
               />
             </div>
             <div className="repeatCount">
-              Toistojen määrä
+              {sched.Amount[fin]}
               <TextField 
                 name="repeatCount"
                 type="number" 
@@ -982,7 +957,7 @@ class Scheduling extends Component {
             </div>
           </div>
           <div className="save">
-            <Button variant="contained" onClick={this.saveChanges}>Tallenna muutokset</Button>
+            <Button variant="contained" onClick={this.saveChanges} style={{backgroundColor:'#d1ccc2'}}>{sched.Save[fin]}</Button>
             <div className="toast">
               <Snackbar open={this.state.toast} autoHideDuration={5000} onClose={this.handleSnackbarClose}>
                 <Alert onClose={this.handleSnackbarClose} severity={this.state.toastSeverity}>
@@ -996,6 +971,6 @@ class Scheduling extends Component {
       
     );
   }
-}
+};
 
 export default Scheduling;

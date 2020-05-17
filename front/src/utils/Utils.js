@@ -45,64 +45,154 @@ export async function getSchedulingWeek(date) {
 }
 
 export function dayToString(i) {
-  if (i === 1) {
-    return "Maanantai";
+  let lang = "fi"; //fallback
+  if(localStorage.getItem("language") === '0') {
+    lang = 'fi';
   }
-  if (i === 2) {
-    return "Tiistai";
+  else if(localStorage.getItem("language") === '1'){
+    lang = 'en';
   }
-  if (i === 3) {
-    return "Keskiviikko";
-  }
-  if (i === 4) {
-    return "Torstai";
-  }
-  if (i === 5) {
-    return "Perjantai";
-  }
-  if (i === 6) {
-    return "Lauantai";
-  }
-  if (i === 0) {
-    return "Sunnuntai";
-  }
+  moment.locale(lang);
+  //en/fi have different numbers for start date
+  if(lang === 'fi') i--;
+  const dayString = moment().weekday(i).format('dddd');
+  //first letter only to uppercase
+  return dayString.charAt(0).toUpperCase() + dayString.slice(1);
 }
 
 export function monthToString(i) {
-  if (i === 0) {
-    return "Tammikuu";
+  let lang = "fi"; //fallback
+  if(localStorage.getItem("language") === '0') {
+    lang = 'fi';
   }
-  if (i === 1) {
-    return "Helmikuu";
+  else if(localStorage.getItem("language") === '1'){
+    lang = 'en';
   }
-  if (i === 2) {
-    return "Maaliskuu";
+  moment.locale(lang);
+  return moment().month(i).format('MMMM');
+}
+
+/* 
+  Validates the login token
+
+  return: boolean, is token valid (true = yes)
+*/
+export async function validateLogin() {
+  const token = localStorage.getItem('token');
+  let response;
+  if ( token !== null ) {
+    try {
+      response = await fetch("/api/validate", {
+        method: "GET",
+        headers: { 
+          Authorization: `Bearer ${token}` 
+        }
+      });
+    }
+    catch (error) {
+      // console.log won't have time to be read before user is rerouted, so commented out for future use
+      // console.log(`Authorization validation failed `, error);
+      return false;
+    }
   }
-  if (i === 3) {
-    return "Huhtikuu";
+
+  if (response && response.status && response.status === 200) {
+    return true;
   }
-  if (i === 4) {
-    return "Toukokuu";
+  else {
+    return false;
   }
-  if (i === 5) {
-    return "Kesäkuu";
+}
+
+//on success true
+//else returns string trying to explain what broke
+//requires reservation and schedule to exist
+export async function rangeSupervision(rsId,srsId,rangeStatus,rsScheduled,token){
+  try{
+    if(rsId !== null && srsId !== null){
+      //only closed is different from the 6 states
+      if(rangeStatus !== 'closed'){
+        //range supervision exists
+        if(rsScheduled){
+          //changing supervision force reservation open
+          await fetch(`/api/reservation/${rsId}`, {
+            method: "PUT",
+            body: JSON.stringify({available: true}),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          })
+          .then(status => {
+            if(!status.ok) throw new Error('scheduled reserv fail');
+          });
+          
+          //update supervision
+          await fetch(`/api/range-supervision/${srsId}`, {
+            method: "PUT",
+            body: JSON.stringify({range_supervisor: rangeStatus}),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          })
+          .then(status => {
+            if(!status.ok) throw new Error('scheduled superv fail');
+          });
+        }
+        //no supervision exists
+        else{
+          //changing supervision force reservation open
+          await fetch(`/api/reservation/${rsId}`, {
+            method: "PUT",
+            body: JSON.stringify({available: true}),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          })
+          .then(status => {
+            if(!status.ok) throw new Error('not scheduled reserv fail');
+          });
+          
+          //add new supervision
+          await fetch(`/api/range-supervision`, {
+            method: "POST",
+            body: JSON.stringify({
+              scheduled_range_supervision_id:srsId,
+              range_supervisor: rangeStatus
+            }),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          })
+          .then(status => {
+            if(!status.ok) throw new Error('not scheduled superv fail');
+          });
+        }
+      } else {
+        //range closed update reservation
+        await fetch(`/api/reservation/${rsId}`, {
+          method: "PUT",
+          body: JSON.stringify({available: 'false'}),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then(status => {
+          if(!status.ok) throw new Error('reservation update failed');
+        });
+      }
+    }else throw new Error('reservation or schedule missing');
+  }catch(e){
+    return 'general range supervision failure: '+ e;
   }
-  if (i === 6) {
-    return "Heinäkuu";
-  }
-  if (i === 7) {
-    return "Elokuu";
-  }
-  if (i === 8) {
-    return "Syyskuu";
-  }
-  if (i === 9) {
-    return "Lokakuu";
-  }
-  if (i === 10) {
-    return "Marraskuu";
-  }
-  if (i === 11) {
-    return "Joulukuu";
-  }
+  return true;
 }
