@@ -154,8 +154,8 @@ const Nav = () => {
     userInfo(name, setName, setSuperuser);
   }
 
-  console.log("username: ", name)
-  console.log("is superuser", superuser)
+  //console.log("username: ", name)
+  //console.log("is superuser", superuser)
 
   const icon = (
     <span className="logo">

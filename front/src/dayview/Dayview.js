@@ -1,14 +1,27 @@
 import React, { Component } from "react";
+
 import "./Dayview.css";
+
+// Material UI components
 import { Link } from "react-router-dom";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import { dayToString, getSchedulingDate } from "./utils/Utils";
+import InfoIcon from '@material-ui/icons/Info';
+
+// Utils
+import { dayToString, getSchedulingDate } from "../utils/Utils";
+
+// Moment for date handling
 import moment from 'moment';
-import * as data from './texts/texts.json';
 
+// Translations
+import * as data from '../texts/texts.json';
 
+/*
+  Dayview-component for handling day-specific view 
+  tracks for a certain date
+*/
 class Dayview extends Component {
   constructor(props) {
     super(props);
@@ -122,13 +135,20 @@ class Dayview extends Component {
     function TrackList(props) {
       let items = [];
       for (var key in props.tracks) {
+<<<<<<< HEAD:front/src/Dayview.js
         //console.log(key);
         //console.log(props.tracks[key].name);
+=======
+	
+        console.log(key);
+        console.log(props.tracks[key].name);
+>>>>>>> origin/develop:front/src/dayview/Dayview.js
         items.push(
           <TrackBox
             key={key}
             name={props.tracks[key].name}
             state={props.tracks[key].trackSupervision}
+	    notice={props.tracks[key].notice}
             //TODO final react routing
             to={"/trackview/"+props.date.toISOString()+"/" + props.tracks[key].name}
           />
@@ -166,7 +186,14 @@ class Dayview extends Component {
         <Grid item className="track hoverHand" xs={12} sm={2}>
           <Link className="trackBoxLink" to={props.to}>
             <p>{props.name}</p>
-            <Box className={"clickableBox " + color}>&nbsp;</Box>
+            <Box className={"clickableBox " + color}>
+
+	      {props.notice.length===0 ?
+               <br />
+               :
+               <InfoIcon style={{maxHeight:15}} />}
+              
+	    </Box>
           </Link>
         </Grid>
       );
@@ -196,7 +223,11 @@ class Dayview extends Component {
             <div className="titleContainer">
               <h1>
                 {dayToString(this.state.date.getDay())}
+<<<<<<< HEAD:front/src/Dayview.js
                 {/* {console.log(this.state.date.getDay())} */}
+=======
+                {/*console.log(this.state.date.getDay()) */}
+>>>>>>> origin/develop:front/src/dayview/Dayview.js
               </h1>
               <div className="date">{this.state.date.toLocaleDateString("fi-FI")}</div>
             </div>

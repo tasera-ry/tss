@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+
+// Material UI components
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -11,10 +13,20 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
+
+// Axios for call-handling to backend
 import axios from 'axios';
+
+// Moment for date handling
 import moment from 'moment';
 import 'moment/locale/en-ca';
-import * as data from './texts/texts.json'
+
+// Translations
+import * as data from '../texts/texts.json'
+
+/*
+  LoggedIn.js is the component for accepting and denying upcoming supervision turns
+*/
 
 //print drop down menus in rows
 const DropDowns = (props) => {
@@ -202,8 +214,7 @@ async function getId() {
   
   let query = "api/user?name=" + name;
   let response = await axios.get(query, config);
-  //let response = await axios.get(query);
-  
+
   let userID = response.data[0].id;
   //console.log("userID:", userID);
 
@@ -211,7 +222,7 @@ async function getId() {
 }
 
 //obtain date info
-async function getReservations(res) {
+async function getReservations(res, setNoSchedule) {
 
   let today = moment().format().split("T")[0];
   
@@ -240,37 +251,55 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
   let temp = [];
 
   let query = "api/schedule?supervisor_id=" + userID;
-  let response = await axios.get(query);
-  temp = temp.concat(response.data);
+  let response = await axios.get(query)
+      .then(response => {
+        if(response) {
+          temp = temp.concat(response.data);
+        }
+      })
+      .catch(error => {
+        //console.log(error);
+      });
 
   for(let i=0; i<temp.length; i++) {
     let v = await temp[i];
 
     let rsquery = "api/range-supervision/" + v.id;
-    let rsresponse = await axios.get(rsquery);
+    await axios.get(rsquery)
+      .then(response => {
+        if(response) {
+          //object id is schedule id
+          let obj = {
+            "userID": userID,
+            "date": "",
+            "id": v.id,
+            "reservation_id": v.range_reservation_id,
+            "range_supervisor": response.data[0].range_supervisor
+          }
 
-    //object id is schedule id
-    let obj = {
-      "userID": userID,
-      "date": "",
-      "id": v.id,
-      "reservation_id": v.range_reservation_id,
-      "range_supervisor": rsresponse.data[0].range_supervisor
-    }
-
-    res = await res.concat(obj);
+          res = res.concat(obj);
+        }
+      })
+      .catch(error => {
+        //console.log(error);
+      });
   }
- 
+
+  res = await getReservations(res, setNoSchedule);
+
   if(res.length===0) {
     await setNoSchedule(true);
     await setDone(true);
     return;
   }
 
-  res = await getReservations(res);
   setSchedules(res);
   setChecked(res[0].range_supervisor==="en route");
+<<<<<<< HEAD:front/src/LoggedIn.js
 
+=======
+  
+>>>>>>> origin/develop:front/src/upcomingsupervisions/LoggedIn.js
   //console.log("scheduled for user: ", res.length)
   //console.log(res)
 }
