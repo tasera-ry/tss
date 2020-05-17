@@ -135,14 +135,9 @@ class Dayview extends Component {
     function TrackList(props) {
       let items = [];
       for (var key in props.tracks) {
-<<<<<<< HEAD:front/src/Dayview.js
+	
         //console.log(key);
         //console.log(props.tracks[key].name);
-=======
-	
-        console.log(key);
-        console.log(props.tracks[key].name);
->>>>>>> origin/develop:front/src/dayview/Dayview.js
         items.push(
           <TrackBox
             key={key}
@@ -223,11 +218,7 @@ class Dayview extends Component {
             <div className="titleContainer">
               <h1>
                 {dayToString(this.state.date.getDay())}
-<<<<<<< HEAD:front/src/Dayview.js
-                {/* {console.log(this.state.date.getDay())} */}
-=======
                 {/*console.log(this.state.date.getDay()) */}
->>>>>>> origin/develop:front/src/dayview/Dayview.js
               </h1>
               <div className="date">{this.state.date.toLocaleDateString("fi-FI")}</div>
             </div>

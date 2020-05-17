@@ -295,11 +295,7 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
 
   setSchedules(res);
   setChecked(res[0].range_supervisor==="en route");
-<<<<<<< HEAD:front/src/LoggedIn.js
-
-=======
   
->>>>>>> origin/develop:front/src/upcomingsupervisions/LoggedIn.js
   //console.log("scheduled for user: ", res.length)
   //console.log(res)
 }
