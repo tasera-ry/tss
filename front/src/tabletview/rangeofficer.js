@@ -115,7 +115,7 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
     width: 100
   };
   
-  const [buttonColor, setButtonColor] = useState(track.color);
+  const [buttonColor, setButtonColor] = useState(track.color);// eslint-disable-line
 
   let text = tablet.Green[fin];
   if (track.trackSupervision==="absent") { 
@@ -231,7 +231,7 @@ async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, 
 };
 
 const TimePick = ({tablet, fin, scheduleId, hours, setHours, dialogOpen, setDialogOpen}) => {
-  const [newHours, setNewHours] = useState({...hours});
+  const [newHours, setNewHours] = useState({...hours});// eslint-disable-line
   const [errorMessage, setErrorMessage] = useState();
   const [startDate, setStartDate] = useState(new Date(0,0,0, hours.start.split(":")[0], hours.start.split(":")[1], 0))
   const [endDate, setEndDate] = useState(new Date(0,0,0, hours.end.split(":")[0], hours.end.split(":")[1], 0))
@@ -344,7 +344,7 @@ const Tabletview = () => {
   const [reservationId, setReservationId] = useState();
   const [rangeSupervisionScheduled, setRangeSupervisionScheduled] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role");// eslint-disable-line
   const fin = localStorage.getItem("language");
   const {tablet} = data;
   let today = moment().format("DD.MM.YYYY");
@@ -370,7 +370,7 @@ const Tabletview = () => {
           RedirectToWeekview();
         }
       });
-  }, []);
+  }, []);// eslint-disable-line
 
   function RedirectToWeekview(){
     window.location.href="/";

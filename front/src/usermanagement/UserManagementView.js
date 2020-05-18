@@ -270,7 +270,7 @@ class UserManagementView extends Component {
    async handleRemoveWarningCloseAgree() {
       console.log("REMOVING USER " + this.findUserName() + " WITH ID " + this.findUserId() + " FROM DATABASE");
       var response = await deleteUser(this.state.token, this.findUserId());
-      if (response.errors != undefined) {
+      if (response.errors !==undefined) {
          this.setState({
             mokatPoistossa: true,
          });
@@ -289,7 +289,7 @@ class UserManagementView extends Component {
          mokat: false,
       });
       const req = await addUser(this.state.token, this.state.newUserName, this.state.newUserRole, this.state.newUserPass);
-      if (req.errors != undefined) {
+      if (req.errors !==undefined) {
          this.setState({
             mokat: true,
          });
@@ -336,7 +336,7 @@ class UserManagementView extends Component {
    //Finds username for selectedROWID in state
    findUserName() {
       for (var i in this.state.userList) {
-         if (this.state.userList[i].id == this.state.selectedROWID) {
+         if (this.state.userList[i].id === this.state.selectedROWID) {
             return this.state.userList[i].name;
          }
       }
@@ -346,7 +346,7 @@ class UserManagementView extends Component {
    //Finds users id by selectedROWID in state
    findUserId() {
       for (var i in this.state.userList) {
-         if (this.state.userList[i].id == this.state.selectedROWID) {
+         if (this.state.userList[i].id === this.state.selectedROWID) {
             return this.state.userList[i].id;
          }
       }
@@ -356,7 +356,7 @@ class UserManagementView extends Component {
    //finds logged in users id
    findOwnID() {
       for (var i in this.state.userList) {
-         if (localStorage.taseraUserName == this.state.userList[i].name) {
+         if (localStorage.taseraUserName === this.state.userList[i].name) {
             return this.state.userList[i].id;
          }
       }
