@@ -268,7 +268,7 @@ class UserManagementView extends Component {
 
    //Removes the user
    async handleRemoveWarningCloseAgree() {
-      console.log("REMOVING USER " + this.findUserName() + " WITH ID " + this.findUserId() + " FROM DATABASE");
+      //console.log("REMOVING USER " + this.findUserName() + " WITH ID " + this.findUserId() + " FROM DATABASE");
       var response = await deleteUser(this.state.token, this.findUserId());
       if (response.errors != undefined) {
          this.setState({

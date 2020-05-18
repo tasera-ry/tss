@@ -52,7 +52,7 @@ class Dayview extends Component {
       const response = await getSchedulingDate(date);
 
       if(response !== false){
-        console.log("Results from api",response);
+        //console.log("Results from api",response);
 
         this.setState({
           date: new Date(response.date),
@@ -62,7 +62,7 @@ class Dayview extends Component {
           closes: moment(response.close,'HH:mm').format('H.mm')
         });
       } else console.error("getting info failed");
-      console.log(this.state)
+      //console.log(this.state)
     }
     request();
   }
@@ -136,8 +136,8 @@ class Dayview extends Component {
       let items = [];
       for (var key in props.tracks) {
 	
-        console.log(key);
-        console.log(props.tracks[key].name);
+        //console.log(key);
+        //console.log(props.tracks[key].name);
         items.push(
           <TrackBox
             key={key}

@@ -1,14 +1,7 @@
 import React, { Component } from "react";
-
-import '../App.css';
-import './Scheduling.css';
-
-// Date management
+import './App.css';
+import './Scheduling.css'
 import MomentUtils from '@date-io/moment';
-import moment from 'moment';
-import "moment/locale/fi";
-
-// Material UI components
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -31,14 +24,10 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import { getSchedulingDate, rangeSupervision } from "../utils/Utils";
-
-// Translation
-import * as data from '../texts/texts.json';
-
-// Token validation
-import { validateLogin } from "../utils/Utils";
-
+import { getSchedulingDate } from "./utils/Utils";
+import * as data from './texts/texts.json';
+import moment from 'moment';
+import "moment/locale/fi";
 
 let lang = "fi"; //fallback
 if(localStorage.getItem("language") === '0') {
@@ -92,7 +81,7 @@ class Scheduling extends Component {
         token:'SECRET-TOKEN',
         datePickerKey:1
       };
-  };
+  }
   
   componentDidMount(){
     //console.log("MOUNTED",localStorage.getItem('token'));
@@ -100,30 +89,34 @@ class Scheduling extends Component {
       token: localStorage.getItem('token'),
       datePickerKey: Math.random() //force datepicker to re-render when language changed
     },function(){
-      validateLogin()
-      .then(logInSuccess => {
-        if(!logInSuccess){
-          this.props.history.push("/");
+      if(this.state.token === 'SECRET-TOKEN'){
+        this.props.history.push("/");
+      }
+      else{
+        try{
+          const request = async () => {
+            const response = await getRangeSupervisors(this.state.token);
+            if(response !== false){
+              this.setState({
+                rangeSupervisors: response
+              });
+              this.update();
+              this.setState({
+                state: 'loading'
+              });
+            } 
+            else {
+              console.error("getting user failed, most likely sign in token invalid -> kicking to root");
+              this.props.history.push("/");
+            }
+          }
+          request();
         }
-        else{
-            getRangeSupervisors(this.state.token)
-            .then((response) => {
-              if(response !== false){
-                this.setState({
-                  rangeSupervisors: response
-                });
-                this.update();
-                this.setState({
-                  state: 'loading'
-                });
-              }
-            })
-            .catch((error) => {
-              console.error("init failed",error);
-            });
+        catch(error){
+          console.error("init failed",error);
         }
-      });
-    });
+      }
+    })
   }
   
   update(){
@@ -616,12 +609,88 @@ class Scheduling extends Component {
       else if(this.state.rangeSupervisorId !== null){
         rangeStatus = 'not confirmed';
       }
-
+      
+      const rangeSupervision = async (rsId,srsId,rangeStatus,rsScheduled,token) => {
+        //console.log("range supvis params",rsId,srsId,rangeStatus,token);
+        try{
+          if(rsId !== null && srsId !== null){
+            //only closed is different from the 6 states
+            if(rangeStatus !== 'closed'){
+              //range supervision exists
+              if(rsScheduled){
+                fetch(`/api/reservation/${rsId}`, {
+                  method: "PUT",
+                  body: JSON.stringify({available: true}),
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                  }
+                })
+                .then(status => {
+                  //console.log("put available",status)
+                  fetch(`/api/range-supervision/${srsId}`, {
+                    method: "PUT",
+                    body: JSON.stringify({range_supervisor: rangeStatus}),
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${token}`
+                    }
+                  })
+                  // .then(status => console.log("put rangeSupervision",status));
+                });
+              }
+              else{
+                fetch(`/api/reservation/${rsId}`, {
+                  method: "PUT",
+                  body: JSON.stringify({available: true}),
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                  }
+                })
+                .then(status => {
+                  //console.log(status)
+                  //console.log("put available",status)
+                  fetch(`/api/range-supervision`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                      scheduled_range_supervision_id:srsId,
+                      range_supervisor: rangeStatus
+                    }),
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${token}`
+                    }
+                  })
+                  // .then(status => console.log("post rangeSupervision", status));
+                });
+              }
+            }
+            else{
+              fetch(`/api/reservation/${rsId}`, {
+                method: "PUT",
+                body: JSON.stringify({available: 'false'}),
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${this.state.token}`
+                }
+              })
+              // .then(status => console.log("put available",status));
+            }
+          }else console.error("cannot update some parts (reservation or schedule) missing");
+        }catch(error){
+          console.error("range supervision",error);
+          return reject(new Error('general range supervision failure'));
+        }
+      }
       if(rangeStatus !== null){
         const rangeSupervisionRes = await rangeSupervision(rsId,srsId,rangeStatus,rangeSupervisionScheduled,this.state.token);
-        if(rangeSupervisionRes !== true){
-          return reject(new Error(rangeSupervisionRes));
-        }
+        //console.log("rangeSupervisionRes",rangeSupervisionRes,rangeSupervisionScheduled);
       }
       //else console.log("range status null")
       
@@ -706,9 +775,9 @@ class Scheduling extends Component {
         }
       }
       
-      return resolve("update success");
-    });
-  };
+      return resolve("update success")
+    })
+  }
   
   /*
   *   Components
@@ -814,12 +883,8 @@ class Scheduling extends Component {
             <CircularProgress disableShrink />
           </Backdrop>
         </Modal>
-
-        {/* Section for selecting date */}
         <div className="firstSection">
           <form onSubmit={this.continueWithDate}>
-
-            { /* Datepicker */}
             <MuiPickersUtilsProvider utils={MomentUtils} locale={lang} key={this.state.datePickerKey}>
               <KeyboardDatePicker
                 autoOk
@@ -838,10 +903,7 @@ class Scheduling extends Component {
             </div>
           </form>
         </div>
-
         <hr/>
-
-        {/* Section for setting range officer status and open/close times of the tracks */}
         <div className="secondSection">
           <div className="topRow">
             <div className="text">{sched.Open[fin]}</div>
@@ -898,10 +960,7 @@ class Scheduling extends Component {
             </MuiPickersUtilsProvider>
           </div>
         </div>
-
         <hr/>
-
-        {/* Section for setting track-specific open/close/absent statuses */}
         <div className="thirdSection">
           <div className="leftSide">
             {this.createTrackList()}
@@ -958,10 +1017,6 @@ class Scheduling extends Component {
           </div>
           <div className="save">
             <Button variant="contained" onClick={this.saveChanges} style={{backgroundColor:'#d1ccc2'}}>{sched.Save[fin]}</Button>
-            <div
-              className="hoverHand arrow-right"
-              onClick={() => this.handleDatePickChange(moment(this.state.date).add(1, 'days').format('YYYY-MM-DD'))}
-            ></div>
             <div className="toast">
               <Snackbar open={this.state.toast} autoHideDuration={5000} onClose={this.handleSnackbarClose}>
                 <Alert onClose={this.handleSnackbarClose} severity={this.state.toastSeverity}>
@@ -975,6 +1030,6 @@ class Scheduling extends Component {
       
     );
   }
-};
+}
 
 export default Scheduling;
