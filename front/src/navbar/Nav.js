@@ -215,7 +215,7 @@ const Nav = () => {
 
   return (
     <nav>
-      <Link style={logoStyle} to="/">
+      <Link style={logoStyle} to={"/"}>
         {icon}
       </Link>
 

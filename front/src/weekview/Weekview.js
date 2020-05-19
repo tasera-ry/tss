@@ -44,7 +44,19 @@ class Weekview extends Component {
         this.getWeek();
         this.getYear();
         this.update();
-      }
+    }
+
+
+    // Re-renders the component and fetches new data when the logo to frontpage is clicked on weekview
+    componentWillReceiveProps() {
+        this.setState({
+          state: "loading"
+        }, () => {
+          this.getWeek();
+          this.getYear();
+          this.update();
+        });
+    } 
 
     //Changes week number state to previous one
     previousWeekClick = (e) => {
