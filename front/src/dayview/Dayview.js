@@ -227,14 +227,16 @@ class Dayview extends Component {
               onClick={this.nextDayClick}
             ></div>
           </Grid>
-          {/* Range info */}
+          {/* Range officer info */}
           <Grid container direction="row" justify="center" alignItems="center">
             <Grid item xs={12}>
               <OfficerBanner rangeSupervision={this.state.rangeSupervision} />
             </Grid>
           </Grid>
-          {/* MUI grid */}
+
+          {/* MUI grid - used for displaying the track info */}
           <TrackList tracks={this.state.tracks} date={this.state.date} />
+
           {/* Other info */}
           <Grid
             container
@@ -243,9 +245,12 @@ class Dayview extends Component {
             alignItems="flex-start"
             className="otherInfo"
           >
+            {/* open and close hours */}
             <Grid item xs={6} sm={3}>
               {dayview.OpenHours[fin]}: {this.state.opens}-{this.state.closes}
             </Grid>
+
+            {/* color info boxes */}
             <Grid item xs={6} sm={3}>
               <div className="colorInfo">
                 <Box className="excolor greenB">&nbsp;</Box>
@@ -262,7 +267,9 @@ class Dayview extends Component {
             </Grid>
           </Grid>
         </Grid>
-        <Link className="back" style={{ color: "black" }} to="/weekview">
+
+        {/* Link back to weekview */}
+        <Link className="back" style={{ color: "black" }} to={`/weekview/${this.state.date.toISOString()}`}>
           <ArrowBackIcon />
           {dayview.WeekviewLink[fin]}
         </Link>
