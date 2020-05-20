@@ -24,6 +24,21 @@ import 'moment/locale/en-ca';
 // Translations
 import * as data from '../texts/texts.json'
 
+//Styles
+const dialogStyle = {
+  backgroundColor:"#f2f0eb"
+}
+const discardChanges = {// eslint-disable-line
+  color:"gray"
+}
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    position:'relative',
+    marginLeft:'50%'
+  },
+}));
+
 /*
   LoggedIn.js is the component for accepting and denying upcoming supervision turns
 */
@@ -345,20 +360,8 @@ async function putSchedules(changes) {
 
 //creates dialog-window
 const Logic = ({schedules, setSchedules, noSchedule, checked,
-                setChecked, done, setDone, sv}) => {
-  const discardChanges = {// eslint-disable-line
-    color:"gray"
-  }
-                  
-  const useStyles = makeStyles((theme) => ({
-  root: {
-    position:'relative',
-    marginLeft:'50%'
-  },
-  }));
-                  
+                setChecked, done, setDone, sv}) => {                  
   const classes = useStyles();
-
   const [open, setOpen] = useState(true);
   const [wait, setWait] = useState(false);                
   const fin = localStorage.getItem("language");
@@ -392,24 +395,25 @@ const Logic = ({schedules, setSchedules, noSchedule, checked,
   return (
     <div>
       <Dialog
-        open={open}
-        aria-labelledby="otsikko">
-        
-        <DialogTitle id="otsikko">{sv.Header[fin]}</DialogTitle>
-        <DialogContent>
-          
-          <DialogContentText>
-            {noSchedule ? sv.No[fin] : ""}
-            {done ? "" : sv.Wait[fin]}
-          </DialogContentText>
+	open={open}
+	aria-labelledby="otsikko"
+      >
+	
+	<DialogTitle id="otsikko" style={dialogStyle}>{sv.Header[fin]}</DialogTitle>
+	<DialogContent style={dialogStyle}>
+	  
+	  <DialogContentText>
+	    {noSchedule ? sv.No[fin] : ""}
+	    {done ? "" : sv.Wait[fin]}
+	  </DialogContentText>
 
-          {schedules.length!==0 ?
-           <Rows HandleChange={HandleChange} changes={changes}
+	  {schedules.length!==0 ?
+	   <Rows HandleChange={HandleChange} changes={changes}
                  checked={checked} setDone={setDone} sv={sv} />
-           : ""}
-        </DialogContent>
+	   : ""}
+	</DialogContent>
 
-        <DialogActions>
+	<DialogActions style={dialogStyle}>
 
           {wait ?
            <div className={classes.root}>
