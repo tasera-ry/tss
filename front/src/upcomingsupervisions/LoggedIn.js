@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+
+// Material UI components
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -11,10 +13,20 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
+
+// Axios for call-handling to backend
 import axios from 'axios';
+
+// Moment for date handling
 import moment from 'moment';
 import 'moment/locale/en-ca';
-import * as data from './texts/texts.json'
+
+// Translations
+import * as data from '../texts/texts.json'
+
+/*
+  LoggedIn.js is the component for accepting and denying upcoming supervision turns
+*/
 
 //print drop down menus in rows
 const DropDowns = (props) => {
@@ -71,7 +83,7 @@ const DropDowns = (props) => {
       obj.range_supervisor = "absent";
     }
     props.changes.map(o => (o.date===id ? obj : o))
-    console.log(props.changes.find(o => o.date===id));
+    //console.log(props.changes.find(o => o.date===id));
     
     setAnchorEl(null);
   }
@@ -193,7 +205,7 @@ const Rows = ({HandleChange, changes, checked, setDone, sv}) => {
 //TODO: change config after relocating jwt
 async function getId() {
   let name = localStorage.getItem("taseraUserName");
-  console.log("username:", name);
+  //console.log("username:", name);
   
   let token = localStorage.getItem("token");
   const config = {
@@ -202,16 +214,15 @@ async function getId() {
   
   let query = "api/user?name=" + name;
   let response = await axios.get(query, config);
-  //let response = await axios.get(query);
-  
+
   let userID = response.data[0].id;
-  console.log("userID:", userID);
+  //console.log("userID:", userID);
 
   return userID;
 }
 
 //obtain date info
-async function getReservations(res) {
+async function getReservations(res, setNoSchedule) {
 
   let today = moment().format().split("T")[0];
   
@@ -240,39 +251,53 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
   let temp = [];
 
   let query = "api/schedule?supervisor_id=" + userID;
-  let response = await axios.get(query);
-  temp = temp.concat(response.data);
+  let response = await axios.get(query)// eslint-disable-line
+      .then(response => {
+        if(response) {
+          temp = temp.concat(response.data);
+        }
+      })
+      .catch(error => {
+        //console.log(error);
+      });
 
   for(let i=0; i<temp.length; i++) {
     let v = await temp[i];
 
     let rsquery = "api/range-supervision/" + v.id;
-    let rsresponse = await axios.get(rsquery);
+    await axios.get(rsquery)
+      .then(response => {// eslint-disable-line
+        if(response) {
+          //object id is schedule id
+          let obj = {
+            "userID": userID,
+            "date": "",
+            "id": v.id,
+            "reservation_id": v.range_reservation_id,
+            "range_supervisor": response.data[0].range_supervisor
+          }
 
-    //object id is schedule id
-    let obj = {
-      "userID": userID,
-      "date": "",
-      "id": v.id,
-      "reservation_id": v.range_reservation_id,
-      "range_supervisor": rsresponse.data[0].range_supervisor
-    }
-
-    res = await res.concat(obj);
+          res = res.concat(obj);
+        }
+      })
+      .catch(error => {
+        //console.log(error);
+      });
   }
- 
+
+  res = await getReservations(res, setNoSchedule);
+
   if(res.length===0) {
     await setNoSchedule(true);
     await setDone(true);
     return;
   }
 
-  res = await getReservations(res);
   setSchedules(res);
   setChecked(res[0].range_supervisor==="en route");
-
-  console.log("scheduled for user: ", res.length)
-  console.log(res)
+  
+  //console.log("scheduled for user: ", res.length)
+  //console.log(res)
 }
 
 const DialogWindow = () => {
@@ -298,8 +323,8 @@ const DialogWindow = () => {
 
 //sends updated info to database
 async function putSchedules(changes) {
-  console.log("updating: ")
-  console.log(changes);
+  //console.log("updating: ")
+  //console.log(changes);
 
   let token = localStorage.getItem("token");
   const config = {
@@ -321,7 +346,7 @@ async function putSchedules(changes) {
 //creates dialog-window
 const Logic = ({schedules, setSchedules, noSchedule, checked,
                 setChecked, done, setDone, sv}) => {
-  const discardChanges = {
+  const discardChanges = {// eslint-disable-line
     color:"gray"
   }
                   

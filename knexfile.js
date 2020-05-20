@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require('path');
 
 module.exports = {
   // Development environment is for development purposes. The running
@@ -9,10 +9,10 @@ module.exports = {
   development: {
     client: 'pg',
     connection: {
-      host: '127.0.0.1',
-      user: 'tssuser',
+      host: process.env.DB_HOST || '127.0.0.1',
+      user: process.env.DB_USER || 'tssuser',
       password: process.env.DB_PASSWORD,
-      database: process.env.USER || process.env.USERNAME,
+      database: process.env.DB || process.env.USER || process.env.USERNAME,
       charset: 'utf8'
     },
 
@@ -31,15 +31,15 @@ module.exports = {
   stable: {
     client: 'pg',
     connection: {
-      host: '127.0.0.1',
-      user: 'tssuser',
+      host: process.env.DB_HOST || '127.0.0.1',
+      user: process.env.DB_USER || 'tssuser',
       password: process.env.DB_PASSWORD,
-      database: 'stable',
+      database: process.env.DB || 'stable',
       charset: 'utf8'
     },
 
     debug: false,
-    
+
     migrations: {
       directory: path.join(__dirname, 'knex', 'stable', 'migrations')
     },
@@ -48,4 +48,4 @@ module.exports = {
       directory: path.join(__dirname, 'knex', 'stable', 'seeds')
     }
   }
-}
+};

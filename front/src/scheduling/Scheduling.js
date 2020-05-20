@@ -1,7 +1,14 @@
 import React, { Component } from "react";
-import './App.css';
-import './Scheduling.css'
+
+import '../App.css';
+import './Scheduling.css';
+
+// Date management
 import MomentUtils from '@date-io/moment';
+import moment from 'moment';
+import "moment/locale/fi";
+
+// Material UI components
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -24,10 +31,14 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import { getSchedulingDate } from "./utils/Utils";
-import * as data from './texts/texts.json';
-import moment from 'moment';
-import "moment/locale/fi";
+import { getSchedulingDate, rangeSupervision } from "../utils/Utils";
+
+// Translation
+import * as data from '../texts/texts.json';
+
+// Token validation
+import { validateLogin } from "../utils/Utils";
+
 
 let lang = "fi"; //fallback
 if(localStorage.getItem("language") === '0') {
@@ -81,52 +92,48 @@ class Scheduling extends Component {
         token:'SECRET-TOKEN',
         datePickerKey:1
       };
-  }
+  };
   
   componentDidMount(){
-    console.log("MOUNTED",localStorage.getItem('token'));
+    //console.log("MOUNTED",localStorage.getItem('token'));
     this.setState({
       token: localStorage.getItem('token'),
       datePickerKey: Math.random() //force datepicker to re-render when language changed
     },function(){
-      if(this.state.token === 'SECRET-TOKEN'){
-        this.props.history.push("/");
-      }
-      else{
-        try{
-          const request = async () => {
-            const response = await getRangeSupervisors(this.state.token);
-            if(response !== false){
-              this.setState({
-                rangeSupervisors: response
-              });
-              this.update();
-              this.setState({
-                state: 'loading'
-              });
-            } 
-            else {
-              console.error("getting user failed, most likely sign in token invalid -> kicking to root");
-              this.props.history.push("/");
-            }
-          }
-          request();
+      validateLogin()
+      .then(logInSuccess => {
+        if(!logInSuccess){
+          this.props.history.push("/");
         }
-        catch(error){
-          console.error("init failed",error);
+        else{
+            getRangeSupervisors(this.state.token)
+            .then((response) => {
+              if(response !== false){
+                this.setState({
+                  rangeSupervisors: response
+                });
+                this.update();
+                this.setState({
+                  state: 'loading'
+                });
+              }
+            })
+            .catch((error) => {
+              console.error("init failed",error);
+            });
         }
-      }
-    })
+      });
+    });
   }
   
   update(){
-    console.log("update state");
+    //console.log("update state");
     
     const request = async () => {
       const response = await getSchedulingDate(this.state.date);
 
       if(response !== false){
-        console.log("Results from api",response);
+        //console.log("Results from api",response);
 
         this.setState({
           date: moment(response.date),
@@ -174,7 +181,7 @@ class Scheduling extends Component {
   //if these all tracks can work with track changes only changed updates could be sent
   //there's a bug somewhere that makes state handling here a pain
   openAllTracks = () => {        
-    console.log("Open tracks");
+    //console.log("Open tracks");
     for (var key in this.state.tracks) {
       this.setState({
         [this.state.tracks[key].id]: 'present'
@@ -183,7 +190,7 @@ class Scheduling extends Component {
   };
   
   emptyAllTracks = () => {
-    console.log("Empty tracks");
+    //console.log("Empty tracks");
     for (var key in this.state.tracks) {
       this.setState({
         [this.state.tracks[key].id]: 'absent'
@@ -192,7 +199,7 @@ class Scheduling extends Component {
   };
 
   closeAllTracks = () => {
-    console.log("Close tracks");
+    //console.log("Close tracks");
     for (var key in this.state.tracks) {
       this.setState({
         [this.state.tracks[key].id]: 'closed'
@@ -223,7 +230,7 @@ class Scheduling extends Component {
       state: 'loading',
     },
     function() {
-      console.log("TIME IS",this.state.date);
+      //console.log("TIME IS",this.state.date);
       this.update();
     });
   }
@@ -241,14 +248,14 @@ class Scheduling extends Component {
   };
   
   handleSwitchChange = (event) => {
-    console.log("Switch",event.target.name, event.target.checked)
+    //console.log("Switch",event.target.name, event.target.checked)
     this.setState({
        [event.target.name]: event.target.checked
     });
   };
   
   handleRepeatChange = (event) => {
-    console.log("Repeat",event.target.id, event.target.checked)
+    //console.log("Repeat",event.target.id, event.target.checked)
     
     let daily = false;
     let weekly = false;
@@ -282,7 +289,7 @@ class Scheduling extends Component {
   };
   
   handleRadioChange = (event) => {
-    console.log("Radio",event.target.name, event.target)
+    //console.log("Radio",event.target.name, event.target)
     //having the name be a int causes
     //Failed prop type: Invalid prop `name` of type `number`
     this.setState({
@@ -291,19 +298,19 @@ class Scheduling extends Component {
   };
   
   handleValueChange = (event) => {
-    console.log("Value change",event.target.name, event.target.value)
+    //console.log("Value change",event.target.name, event.target.value)
     this.setState({
        [event.target.name]: event.target.value
     });
   };
   
   handleBackdropClick = (event) => {
-    console.log("Backdrop clicked",event);
+    //console.log("Backdrop clicked",event);
     event.preventDefault();
   };
   
   handleNotice = (event) => {
-    console.log("handle notice",event.target.id,event.target.value,this.state.tracks)
+    //console.log("handle notice",event.target.id,event.target.value,this.state.tracks)
     let idx = this.state.tracks.findIndex((findItem) => findItem.id === parseInt(event.target.id));
     let tracks = this.state.tracks;
     tracks[idx].notice = event.target.value;
@@ -318,7 +325,7 @@ class Scheduling extends Component {
   saveChanges = async (event) => {
     const {sched} = data;
     const fin = localStorage.getItem("language");
-    console.log("save")
+    //console.log("save")
     
     //start spinner
     this.setState({
@@ -327,7 +334,7 @@ class Scheduling extends Component {
     
     //update call/error handling
     const update = async (date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat) => {
-      console.log("Gonna call update",date,rsId,srsId,rangeSupervisionScheduled,tracks);
+      //console.log("Gonna call update",date,rsId,srsId,rangeSupervisionScheduled,tracks);
       await this.updateCall(date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat).then((res) => {
         this.setState({
           toast: true,
@@ -405,12 +412,12 @@ class Scheduling extends Component {
   
   //fetch new requirements for the next day
   updateRequirements = async (date) => {
-    console.log("UPDATE REQUIREMENTS",date);
+    //console.log("UPDATE REQUIREMENTS",date);
     const request = async (date) => {
       const response = await getSchedulingDate(date);
 
       if(response !== false){
-        console.log("During update base results from api",response);
+        //console.log("During update base results from api",response);
       }
       else console.error('Getting base info failed');
       return response;
@@ -436,7 +443,7 @@ class Scheduling extends Component {
   */
   async updateCall(date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat){
     return new Promise(async (resolve,reject) => {
-      console.log("UPDATE CALL",date,rsId,srsId);
+      //console.log("UPDATE CALL",date,rsId,srsId);
       
       let reservationMethod;
       let reservationPath = "";
@@ -457,9 +464,9 @@ class Scheduling extends Component {
         scheduledRangeSupervisionPath = "/"+srsId;
       } else scheduledRangeSupervisionMethod = 'POST';
 
-      console.log("PRE SEND",rsId===null,srsId===null);
-      console.log("PRE SEND",rsId,srsId);
-      console.log("PRE SEND",reservationMethod,scheduledRangeSupervisionMethod);
+      //console.log("PRE SEND",rsId===null,srsId===null);
+      //console.log("PRE SEND",rsId,srsId);
+      //console.log("PRE SEND",reservationMethod,scheduledRangeSupervisionMethod);
       
       let params = {
         range_id: this.state.rangeId,  
@@ -474,7 +481,7 @@ class Scheduling extends Component {
           date: moment(date).format('YYYY-MM-DD')
         }
       }
-      console.log("reservation params",params)      
+      //console.log("reservation params",params)      
       
       
       /*
@@ -493,7 +500,7 @@ class Scheduling extends Component {
             }
           })
           .then(res => {
-            console.log("reservation res",res)
+            //console.log("reservation res",res)
             //400 and so on
             if(res.ok === false){
               return reject(new Error('update reservation failed'));
@@ -504,12 +511,12 @@ class Scheduling extends Component {
             else return;
           })
           .then(json => {
-            console.log("reservation success",json);
+            //console.log("reservation success",json);
             if(typeof rsId !== 'number' && json !== undefined){
-              console.log("rsId grabbed from result")
+              //console.log("rsId grabbed from result")
               rsId = json.id;
             }
-            console.log("rsId",rsId,(typeof rsId !== 'number'),typeof rsId)
+            //console.log("rsId",rsId,(typeof rsId !== 'number'),typeof rsId)
             if(typeof rsId !== 'number'){
               return reject(new Error('no reservation id for schedule'));
             }
@@ -521,7 +528,7 @@ class Scheduling extends Component {
         }
       }
       const reservationRes = await reservation(rsId,params,reservationMethod,reservationPath);
-      console.log("reservationRes",reservationRes);
+      //console.log("reservationRes",reservationRes);
       //if res grabbed from previous post
       if(reservationRes !== undefined){
         rsId = reservationRes;
@@ -542,7 +549,7 @@ class Scheduling extends Component {
         }
         else return reject(new Error('Range officer enabled but no id'));
       }
-      console.log("schedule params",params)
+      //console.log("schedule params",params)
       
       
       /*
@@ -561,7 +568,7 @@ class Scheduling extends Component {
             }
           })
           .then(res => {
-            console.log("schedule res",res)
+            //console.log("schedule res",res)
             //400 and so on
             if(res.ok === false){
               return reject(new Error('update schedule failed'));
@@ -572,13 +579,13 @@ class Scheduling extends Component {
             else return;
           })
           .then(json => {
-            console.log("sched success",json);
+            //console.log("sched success",json);
             if(typeof srsId !== 'number' && json !== undefined){
-              console.log("srsId grabbed from result")
+              //console.log("srsId grabbed from result")
               srsId = json.id;
             }
             
-            console.log("srsId",srsId,(typeof srsId !== 'number'),typeof srsId)
+            //console.log("srsId",srsId,(typeof srsId !== 'number'),typeof srsId)
             if(typeof srsId !== 'number'){
               return reject(new Error('no schedule id for track supervision'));
             }
@@ -590,7 +597,7 @@ class Scheduling extends Component {
         }
       }
       const scheduleRes = await schedule(rsId,srsId,params,scheduledRangeSupervisionMethod,scheduledRangeSupervisionPath);
-      console.log("scheduleRes",scheduleRes);
+      //console.log("scheduleRes",scheduleRes);
       //if res grabbed from previous post
       if(scheduleRes !== undefined){
         srsId = scheduleRes;
@@ -609,90 +616,14 @@ class Scheduling extends Component {
       else if(this.state.rangeSupervisorId !== null){
         rangeStatus = 'not confirmed';
       }
-      
-      const rangeSupervision = async (rsId,srsId,rangeStatus,rsScheduled,token) => {
-        console.log("range supvis params",rsId,srsId,rangeStatus,token);
-        try{
-          if(rsId !== null && srsId !== null){
-            //only closed is different from the 6 states
-            if(rangeStatus !== 'closed'){
-              //range supervision exists
-              if(rsScheduled){
-                fetch(`/api/reservation/${rsId}`, {
-                  method: "PUT",
-                  body: JSON.stringify({available: true}),
-                  headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                  }
-                })
-                .then(status => {
-                  console.log("put available",status)
-                  fetch(`/api/range-supervision/${srsId}`, {
-                    method: "PUT",
-                    body: JSON.stringify({range_supervisor: rangeStatus}),
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${token}`
-                    }
-                  })
-                  .then(status => console.log("put rangeSupervision",status));
-                });
-              }
-              else{
-                fetch(`/api/reservation/${rsId}`, {
-                  method: "PUT",
-                  body: JSON.stringify({available: true}),
-                  headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                  }
-                })
-                .then(status => {
-                  console.log(status)
-                  console.log("put available",status)
-                  fetch(`/api/range-supervision`, {
-                    method: "POST",
-                    body: JSON.stringify({
-                      scheduled_range_supervision_id:srsId,
-                      range_supervisor: rangeStatus
-                    }),
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${token}`
-                    }
-                  })
-                  .then(status => console.log("post rangeSupervision", status));
-                });
-              }
-            }
-            else{
-              fetch(`/api/reservation/${rsId}`, {
-                method: "PUT",
-                body: JSON.stringify({available: 'false'}),
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${this.state.token}`
-                }
-              })
-              .then(status => console.log("put available",status));
-            }
-          }else console.error("cannot update some parts (reservation or schedule) missing");
-        }catch(error){
-          console.error("range supervision",error);
-          return reject(new Error('general range supervision failure'));
-        }
-      }
+
       if(rangeStatus !== null){
         const rangeSupervisionRes = await rangeSupervision(rsId,srsId,rangeStatus,rangeSupervisionScheduled,this.state.token);
-        console.log("rangeSupervisionRes",rangeSupervisionRes,rangeSupervisionScheduled);
+        if(rangeSupervisionRes !== true){
+          return reject(new Error(rangeSupervisionRes));
+        }
       }
-      else console.log("range status null")
+      //else console.log("range status null")
       
       /*
       *  Track supervision
@@ -734,7 +665,7 @@ class Scheduling extends Component {
                 track_id:this.state.tracks[key].id
               };
             }
-            console.log("track supvis params",params,"srsp",srsp,trackSupervisionMethod, "track scheduled:",this.state.tracks[key].scheduled);
+            //console.log("track supvis params",params,"srsp",srsp,trackSupervisionMethod, "track scheduled:",this.state.tracks[key].scheduled);
             
             return await fetch("/api/track-supervision"+srsp, {
               method: trackSupervisionMethod,
@@ -746,7 +677,7 @@ class Scheduling extends Component {
               }
             })
             .then(res => {
-              console.log("track supervision res",res)
+              //console.log("track supervision res",res)
               //400 and so on
               if(res.ok === false){
                 return reject(new Error('update track supervision failed'));
@@ -757,7 +688,7 @@ class Scheduling extends Component {
               else return;
             })
             .then(json => {
-              console.log("track supervision "+this.state.tracks[key].name+" "+this.state.tracks[key].name+" success",json);
+              //console.log("track supervision "+this.state.tracks[key].name+" "+this.state.tracks[key].name+" success",json);
               return;
             });
           }
@@ -769,15 +700,15 @@ class Scheduling extends Component {
       for (let key in this.state.tracks) {
         try{
           const trackSupervisionRes = await trackSupervision(srsId,key);
-          console.log("trackSupervisionRes",trackSupervisionRes);
+          //console.log("trackSupervisionRes",trackSupervisionRes);
         }catch(error){
           return reject(error);
         }
       }
       
-      return resolve("update success")
-    })
-  }
+      return resolve("update success");
+    });
+  };
   
   /*
   *   Components
@@ -883,8 +814,12 @@ class Scheduling extends Component {
             <CircularProgress disableShrink />
           </Backdrop>
         </Modal>
+
+        {/* Section for selecting date */}
         <div className="firstSection">
           <form onSubmit={this.continueWithDate}>
+
+            { /* Datepicker */}
             <MuiPickersUtilsProvider utils={MomentUtils} locale={lang} key={this.state.datePickerKey}>
               <KeyboardDatePicker
                 autoOk
@@ -903,7 +838,10 @@ class Scheduling extends Component {
             </div>
           </form>
         </div>
+
         <hr/>
+
+        {/* Section for setting range officer status and open/close times of the tracks */}
         <div className="secondSection">
           <div className="topRow">
             <div className="text">{sched.Open[fin]}</div>
@@ -960,7 +898,10 @@ class Scheduling extends Component {
             </MuiPickersUtilsProvider>
           </div>
         </div>
+
         <hr/>
+
+        {/* Section for setting track-specific open/close/absent statuses */}
         <div className="thirdSection">
           <div className="leftSide">
             {this.createTrackList()}
@@ -1017,6 +958,10 @@ class Scheduling extends Component {
           </div>
           <div className="save">
             <Button variant="contained" onClick={this.saveChanges} style={{backgroundColor:'#d1ccc2'}}>{sched.Save[fin]}</Button>
+            <div
+              className="hoverHand arrow-right"
+              onClick={() => this.handleDatePickChange(moment(this.state.date).add(1, 'days').format('YYYY-MM-DD'))}
+            ></div>
             <div className="toast">
               <Snackbar open={this.state.toast} autoHideDuration={5000} onClose={this.handleSnackbarClose}>
                 <Alert onClose={this.handleSnackbarClose} severity={this.state.toastSeverity}>
@@ -1030,6 +975,6 @@ class Scheduling extends Component {
       
     );
   }
-}
+};
 
 export default Scheduling;

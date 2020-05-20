@@ -1,14 +1,27 @@
 import React, { Component } from "react";
+
 import "./Dayview.css";
+
+// Material UI components
 import { Link } from "react-router-dom";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import { dayToString, getSchedulingDate } from "./utils/Utils";
+import InfoIcon from '@material-ui/icons/Info';
+
+// Utils
+import { dayToString, getSchedulingDate } from "../utils/Utils";
+
+// Moment for date handling
 import moment from 'moment';
-import * as data from './texts/texts.json';
 
+// Translations
+import * as data from '../texts/texts.json';
 
+/*
+  Dayview-component for handling day-specific view 
+  tracks for a certain date
+*/
 class Dayview extends Component {
   constructor(props) {
     super(props);
@@ -39,7 +52,7 @@ class Dayview extends Component {
       const response = await getSchedulingDate(date);
 
       if(response !== false){
-        console.log("Results from api",response);
+        //console.log("Results from api",response);
 
         this.setState({
           date: new Date(response.date),
@@ -49,7 +62,7 @@ class Dayview extends Component {
           closes: moment(response.close,'HH:mm').format('H.mm')
         });
       } else console.error("getting info failed");
-      console.log(this.state)
+      //console.log(this.state)
     }
     request();
   }
@@ -122,13 +135,15 @@ class Dayview extends Component {
     function TrackList(props) {
       let items = [];
       for (var key in props.tracks) {
-        console.log(key);
-        console.log(props.tracks[key].name);
+	
+        //console.log(key);
+        //console.log(props.tracks[key].name);
         items.push(
           <TrackBox
             key={key}
             name={props.tracks[key].name}
             state={props.tracks[key].trackSupervision}
+	    notice={props.tracks[key].notice}
             //TODO final react routing
             to={"/trackview/"+props.date.toISOString()+"/" + props.tracks[key].name}
           />
@@ -166,7 +181,14 @@ class Dayview extends Component {
         <Grid item className="track hoverHand" xs={12} sm={2}>
           <Link className="trackBoxLink" to={props.to}>
             <p>{props.name}</p>
-            <Box className={"clickableBox " + color}>&nbsp;</Box>
+            <Box className={"clickableBox " + color}>
+
+	      {props.notice.length===0 ?
+               <br />
+               :
+               <InfoIcon style={{maxHeight:15}} />}
+              
+	    </Box>
           </Link>
         </Grid>
       );
@@ -196,7 +218,7 @@ class Dayview extends Component {
             <div className="titleContainer">
               <h1>
                 {dayToString(this.state.date.getDay())}
-                {console.log(this.state.date.getDay())}
+                {/*console.log(this.state.date.getDay()) */}
               </h1>
               <div className="date">{this.state.date.toLocaleDateString("fi-FI")}</div>
             </div>
@@ -205,14 +227,16 @@ class Dayview extends Component {
               onClick={this.nextDayClick}
             ></div>
           </Grid>
-          {/* Range info */}
+          {/* Range officer info */}
           <Grid container direction="row" justify="center" alignItems="center">
             <Grid item xs={12}>
               <OfficerBanner rangeSupervision={this.state.rangeSupervision} />
             </Grid>
           </Grid>
-          {/* MUI grid */}
+
+          {/* MUI grid - used for displaying the track info */}
           <TrackList tracks={this.state.tracks} date={this.state.date} />
+
           {/* Other info */}
           <Grid
             container
@@ -221,9 +245,12 @@ class Dayview extends Component {
             alignItems="flex-start"
             className="otherInfo"
           >
+            {/* open and close hours */}
             <Grid item xs={6} sm={3}>
               {dayview.OpenHours[fin]}: {this.state.opens}-{this.state.closes}
             </Grid>
+
+            {/* color info boxes */}
             <Grid item xs={6} sm={3}>
               <div className="colorInfo">
                 <Box className="excolor greenB">&nbsp;</Box>
@@ -240,7 +267,9 @@ class Dayview extends Component {
             </Grid>
           </Grid>
         </Grid>
-        <Link className="back" style={{ color: "black" }} to="/weekview">
+
+        {/* Link back to weekview */}
+        <Link className="back" style={{ color: "black" }} to={`/weekview/${this.state.date.toISOString()}`}>
           <ArrowBackIcon />
           {dayview.WeekviewLink[fin]}
         </Link>

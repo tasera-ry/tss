@@ -1,21 +1,29 @@
 import React, { useState } from 'react';
+
+// Material UI components
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {Link, useHistory} from 'react-router-dom';
-import Nav from './Nav';
-import axios from 'axios'
-import * as data from './texts/texts.json'
+import {useHistory} from 'react-router-dom';
 
+// Call handling to backend
+import axios from 'axios';
+
+// Translations
+import * as data from '../texts/texts.json';
+
+/*
+  Signin is the component for signing in to the frontend
+*/
 const useStyles = makeStyles(theme => ({
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   avatar: {
     margin: theme.spacing(1)
@@ -29,21 +37,28 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const textStyle = {
+  backgroundColor:'#fcfbf7',
+  borderRadius: 4
+}
+
 const SignIn = () => {
   
   const classes = useStyles();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState('');// eslint-disable-line
   const [mistake, setMistake] = useState(false);
   const history = useHistory();
   const {signin} = data;
   const fin = localStorage.getItem("language");
+
+  document.body.style = 'background: #eae7dc;';
   
   const login = (e) => {
     e.preventDefault();
 
-    let response = axios.post('api/sign', {
+    let response = axios.post('api/sign', {// eslint-disable-line
       name: name,
       password: password
     }).then(response => {
@@ -54,7 +69,7 @@ const SignIn = () => {
   }
 
   function RedirectToWeekview(){
-    window.location.href="/"
+    window.location.href="/";
   }
 
   async function setInfo(data) {
@@ -70,13 +85,13 @@ const SignIn = () => {
     let role = await response.data[0].role;
     localStorage.setItem("role", role);
 
-    RedirectToWeekview()
+    RedirectToWeekview();
   }
   
   const HandleError = error => {
     setMistake(true);
     //message contains all errors, might be useful
-    let message = ''
+    let message = ''// eslint-disable-line
     if(error.response.status===400) {
       for(let i=0; i<error.response.data.errors.length; i++) {
         let param = error.response.data.errors[i].param;
@@ -89,13 +104,18 @@ const SignIn = () => {
     }
   }
 
+  function backToPrev() {
+    history.goBack();
+  }
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
         <Typography component="h1" variant="h5">
-      {signin.SignIn[fin]}
+          {signin.SignIn[fin]}
         </Typography>
+
         <form className={classes.form} noValidate>
           <TextField
             variant="outlined"
@@ -110,7 +130,7 @@ const SignIn = () => {
             value={name}
             error={mistake}
             onInput={e => setName(e.target.value)}
-            style={{color:'#5f77a1'}}
+            style={textStyle}
           />
           <TextField
             variant="outlined"
@@ -124,9 +144,17 @@ const SignIn = () => {
             autoComplete="current-password"
             value={password}
             error={mistake}
-            helperText={mistake ? signin.Helper[fin] : ''}
             onInput={e => setPassword(e.target.value)}
+            style={textStyle}
           />
+
+          {mistake ?
+           <Typography
+             align="center"
+             style={{color: "#c23a3a"}}>
+             {signin.Helper[fin]}
+           </Typography>
+           : ""}
 
             <Button
               onClick={login}
@@ -138,15 +166,14 @@ const SignIn = () => {
             </Button>
 
           &nbsp;
-          
+
             <Button
-              onClick={() => history.goBack()}
-              type="submit"
+              onClick={() => backToPrev()}
               fullWidth
               style={{color:'#5f77a1'}}>
               {signin.Back[fin]}
             </Button>
-
+          
         </form>
       </div>
     </Container>

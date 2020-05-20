@@ -4,47 +4,61 @@ const config = require(path.join(root, 'config'))
 
 const _ = require('lodash')
 const casual = require('casual')
+const ora = require('ora')
 
-casual.seed(0)
+casual.seed(config.seeds.seed)
 
-exports.seed = function(knex) {
+exports.seed = async function(knex) {
+  const ranges = config.seeds.ranges
+  const tracks = config.seeds.tracks
+  const total = ranges * tracks
 
-  return knex('range')
-    .select('id')
-    .then(ranges => {
-      return _.flatten(
-        ranges.map(range => _.times(config.seeds.tracks, _.partial(casual._shooting_track, range.id))))
-    }).then(tracks => knex('track')
-            .insert(tracks))
+  const generateTracks = Promise.all(
+    (await knex('range')
+     .select('id'))
+      .map(async ({id}) => casual.range(id)))
+
+  const generateSpinner = ora.promise(
+    generateTracks
+    , `Generating ${ranges} ranges * ${tracks} tracks = ${total} tracks`)
+  const _tracks = _.flatten(await generateTracks)
+
+  const insertTracks = Promise.all(
+    _.chunk(_tracks, config.seeds.chunkSize)
+      .map(async (trackChunk) => knex('track').insert(trackChunk)))
+
+  const insertSpinner = ora.promise(insertTracks, 'Inserting tracks')
+  const response = await insertTracks
 }
 
-casual.define('shooting_track_desc', function() {
-  track = {
-    name: [
-      'Pistol'
-      , 'Shotgun'
-      , 'Rifle'
-      , 'Indoor'
-    ]
-    , distance: [
-      '10m'
-      , '25m'
-      , '50m'
-      , '100m'
-      , '150m'
-      , '200m'
-      , '300m'
-    ]
-  }
+casual.define('track_description', function() {
+  const names = [
+    'Pistol'
+    , 'Shotgun'
+    , 'Rifle'
+    , 'Indoor'
+  ]
 
-  return track.name[casual.integer(0, track.name.length -1 )]
-    + ' ' + track.distance[casual.integer(0, track.distance.length - 1)]
+  const distances = [
+    '10m'
+    , '25m'
+    , '50m'
+    , '100m'
+    , '150m'
+    , '200m'
+    , '300m'
+  ]
+
+  const name = names[casual.integer(0, names.length - 1)]
+  const distance = distances[casual.integer(0, distances.length - 1)]
+  return `${name} ${distance}`
 })
-              
-casual.define('shooting_track', function(range_id, n) {
-  return {
-    range_id: range_id
-    , name: 'Shooting Track ' + (n + 1)
-    , description: casual.shooting_track_desc
-  }
+
+casual.define('range', async function(rangeId) {
+  const tracks = config.seeds.tracks
+  return _.times(tracks, (i) => ({
+    range_id: rangeId
+    , name: `Shooting Track ${i}`
+    , description: casual.track_description
+  }))
 })

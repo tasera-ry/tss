@@ -76,7 +76,7 @@ hr {
   padding-top:15px;
   display:flex;
   flex-flow: row wrap;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .schedulingRoot .thirdSection .MuiFormControl-root{
@@ -96,4 +96,23 @@ hr {
 
 .schedulingRoot .fourthSection .repeatCount{
   padding-bottom:10px;
+}
+
+.schedulingRoot .arrow-right {
+  padding:0;
+  margin:0;
+  margin-left:5px;
+  width: 0; 
+  height: 0; 
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  
+  border-left: 20px solid black;
+
+  display: flex;
+  align-items: center;
+}
+
+.schedulingRoot .hoverHand:hover {
+  cursor: pointer;
 }

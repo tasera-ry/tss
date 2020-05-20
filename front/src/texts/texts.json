@@ -32,10 +32,10 @@
     "Week": ["Viikko", "Week"],
     "Green": ["Päävalvoja paikalla", "Range officer present"],
     "Lightgreen": ["Päävalvoja varmistettu", "Range officer confirmed"],
-    "Blue": ["Päävalvoja määritetty mutta ei varmistettu", "Range officer predefined"],
+    "Blue": ["Päävalvoja määritetty mutta ei varmistettu", "Range officer predefined, not confirmed"],
     "Red": ["Keskus suljettu", "Range closed"],
     "Orange": ["Päävalvoja matkalla", "Range officer on the way"],
-    "White": ["Päävalvojaa ei asetettu", "Undefined"]
+    "White": ["Päävalvojaa ei asetettu", "Range officer undefined"]
   },
   "sched": {
     "Day": ["Valitse päivä", "Choose date"],
@@ -61,7 +61,7 @@
     "Error": ["Päivitys epäonnistui", "Something went wrong"]
   },
   "manage": {
-    "UserManage": ["Käyttäjien hallinta", "User management"],
+    "UserManage": ["Käyttäjienhallinta", "User management"],
     "ChangePass": ["Vaihda salasana", "Change password"],
     "CreateUser": ["Lisää käyttäjä", "Create new user"],
     "Users": ["Käyttäjät", "User profiles"],
@@ -82,7 +82,9 @@
     "Ask": ["Haluatko varmasti jatkaa?", "Are you sure?"],
     "AskDelete": ["Tämä poistaa pysyvästi käyttäjän", "This action will permanently remove user"],
     "Error": ["Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki", "Something went wrong"],
-    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"]
+    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"],
+    "Superuser": ["Superuser", "Superuser"],
+    "Supervisor": ["Valvoja", "Range officer"]
   },
   "tablet": {
     "Open": ["Aukiolo", "Open"],
@@ -96,7 +98,13 @@
     "Red": ["Suljettu", "Closed"],
     "White": ["Ei valvojaa", "No track officer"],
     "HelperFirst": ["Valitse päävalvojan status napauttamalla väriä alta", "Define range officer status by choosing color"],
-    "HelperSecond": ["Vaihda ratavalvojien statuksia napauttamalla värejä alta", "Change track officer status by choosing color"]
+    "HelperSecond": ["Vaihda ratavalvojien statuksia napauttamalla värejä alta", "Change track officer status by choosing color"],
+    "PickTime": ["Valitse aukioloaika", "Set opening hours"],
+    "Start": ["Alku", "Start"],
+    "End": ["Loppu", "End"],
+    "Save": ["Tallenna", "Save"],
+    "Cancel": ["Peruuta", "Cancel"],
+    "Error": ["Päivitys epäonnistui", "Something went wrong"]
   },
   "dayview": {
     "OpenHours": ["Aukioloaika", "Opening hours"],

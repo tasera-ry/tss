@@ -1,5 +1,8 @@
 import React, { Component } from "react";
-import "./App.css";
+
+import "../App.css";
+
+// Material UI components
 import {
    Divider,
    Button,
@@ -21,8 +24,18 @@ import {
    DialogTitle,
    TextField,
 } from "@material-ui/core";
+
+// axios for calls to backend
 import axios from "axios";
-import * as data from './texts/texts.json';
+
+// Translations
+import * as data from '../texts/texts.json';
+
+// Token validation
+import { validateLogin } from "../utils/Utils";
+
+const fin = localStorage.getItem("language");
+const {manage} = data;
 
 //Finds all users from database
 async function getUsers(token) {
@@ -160,38 +173,39 @@ class UserManagementView extends Component {
             token: localStorage.getItem("token"),
          },
          function () {
-            if (this.state.token === "SECRET-TOKEN" || localStorage.role != "superuser") {
-               this.props.history.push("/");
-            } else {
-               try {
-                  const request = async () => {
-                     const response = await getUsers(this.state.token);
+            validateLogin()
+            .then(logInSuccess => {
+               if(!logInSuccess){
+                  this.props.history.push("/");
+               }
+               else {
+                  getUsers(this.state.token)
+                  .then((response) => {
                      if (response !== false) {
                         this.setState({
                            userList: response,
+                        }, () => {
+                           this.update();
                         });
-                        this.update();
-                     } else {
-                        console.error("getting user failed, most likely sign in token invalid -> kicking to root");
-                        this.props.history.push("/");
                      }
-                  };
-                  request();
-               } catch (error) {
-                  console.error("init failed", error);
+                  })
+                  .catch((error) => {
+                     console.error("init failed", error);
+                  });
                }
-            }
+            });
          }
       );
    }
 
   update() {
-      const fin = localStorage.getItem("language");
-      const {manage} = data;
       var tempRows = [];
       for (var i in this.state.userList) {
          if (localStorage.taseraUserName !== this.state.userList[i].name) {
-           var row = this.createData(this.state.userList[i].name, this.returnPassButton(this.state.userList[i].id, manage, fin), this.returnRemoveButton(this.state.userList[i].id, manage, fin));
+           var row = this.createData(this.state.userList[i].name,
+                                     this.state.userList[i].role,
+                                     this.returnPassButton(this.state.userList[i].id, manage, fin),
+                                     this.returnRemoveButton(this.state.userList[i].id, manage, fin));
             tempRows.push(row);
          }
       }
@@ -217,19 +231,20 @@ class UserManagementView extends Component {
       }
    }
 
-   createData(name, ButtonToChangePassword, ButtonToRemoveUser) {
-      return { name, ButtonToChangePassword, ButtonToRemoveUser };
+  createData(name, role, ButtonToChangePassword, ButtonToRemoveUser) {
+    let roleToPrint = role==="superuser" ? manage.Superuser[fin] : manage.Supervisor[fin];
+    return { name, roleToPrint, ButtonToChangePassword, ButtonToRemoveUser };
    }
   returnPassButton(id, manage, fin) {
       return (
-         <Button id={id} style={{backgroundColor:'#5f77a1'}} variant="contained" onClick={this.onChangePassClick}>
+         <Button id={id} size="small" style={{backgroundColor:'#5f77a1'}} variant="contained" onClick={this.onChangePassClick}>
           {manage.ChangePass[fin]}
          </Button>
       );
    }
   returnRemoveButton(id, manage, fin) {
       return (
-         <Button id={id} style={{backgroundColor:'#c97b7b'}} variant="contained" onClick={this.onRemoveClick}>
+         <Button id={id} size="small" style={{backgroundColor:'#c97b7b'}} variant="contained" onClick={this.onRemoveClick}>
             {manage.RemoveUser[fin]}
          </Button>
       );
@@ -253,9 +268,9 @@ class UserManagementView extends Component {
 
    //Removes the user
    async handleRemoveWarningCloseAgree() {
-      console.log("REMOVING USER " + this.findUserName() + " WITH ID " + this.findUserId() + " FROM DATABASE");
+      //console.log("REMOVING USER " + this.findUserName() + " WITH ID " + this.findUserId() + " FROM DATABASE");
       var response = await deleteUser(this.state.token, this.findUserId());
-      if (response.errors != undefined) {
+      if (response.errors !==undefined) {
          this.setState({
             mokatPoistossa: true,
          });
@@ -274,7 +289,7 @@ class UserManagementView extends Component {
          mokat: false,
       });
       const req = await addUser(this.state.token, this.state.newUserName, this.state.newUserRole, this.state.newUserPass);
-      if (req.errors != undefined) {
+      if (req.errors !==undefined) {
          this.setState({
             mokat: true,
          });
@@ -321,7 +336,7 @@ class UserManagementView extends Component {
    //Finds username for selectedROWID in state
    findUserName() {
       for (var i in this.state.userList) {
-         if (this.state.userList[i].id == this.state.selectedROWID) {
+         if (this.state.userList[i].id === this.state.selectedROWID) {
             return this.state.userList[i].name;
          }
       }
@@ -331,7 +346,7 @@ class UserManagementView extends Component {
    //Finds users id by selectedROWID in state
    findUserId() {
       for (var i in this.state.userList) {
-         if (this.state.userList[i].id == this.state.selectedROWID) {
+         if (this.state.userList[i].id === this.state.selectedROWID) {
             return this.state.userList[i].id;
          }
       }
@@ -341,7 +356,7 @@ class UserManagementView extends Component {
    //finds logged in users id
    findOwnID() {
       for (var i in this.state.userList) {
-         if (localStorage.taseraUserName == this.state.userList[i].name) {
+         if (localStorage.taseraUserName === this.state.userList[i].name) {
             return this.state.userList[i].id;
          }
       }
@@ -475,170 +490,173 @@ class UserManagementView extends Component {
     */
   render() {
 
-      const fin = localStorage.getItem("language"); //0: finnish, 1: english
-      const {manage} = data;
-      return (
-         <div>
-            {/*Dialog to add new user*/}
-            <Dialog open={this.state.openAddNewUserDialog} keepMounted onClose={this.handleAddNewUserDialogClose}>
-               <DialogTitle id="dialog-add-user-title">{manage.New[fin]}</DialogTitle>
-               <DialogContent>
-          <TextField value={this.state.newUserName} margin="dense" id="name" label={manage.Username[fin]} onChange={this.handleNewuserNameChange} fullWidth />
-                  <TextField value={this.state.newUserPass} margin="dense" id="password" label={manage.Password[fin]} onChange={this.handleNewuserPassChange} fullWidth />
-                  <FormControl>
-                     <InputLabel>{manage.Role[fin]}</InputLabel>
-                     <Select style={{ marginTop: 15 }} native value={this.state.newUserRole} onChange={this.handleChangeNewUserRole} id="role">
-                        <option aria-label={manage.Supervisor[fin]} value={"supervisor"}>
-                           {manage.Supervisor[fin]}
-                        </option>
-                        <option value={"superuser"}>{manage.Superuser[fin]}</option>
-                     </Select>
-                  </FormControl>
-                  {this.state.mokat ? (
-                     <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>
-                      {manage.Error[fin]}{" "}
-                     </p>
-                  ) : (
-                     <p></p>
-                  )}
-               </DialogContent>
-               <DialogActions>
-                  <Button onClick={this.handleAddNewUserDialogClose} style={{color:'#c97b7b'}}>
-                     {manage.Cancel[fin]}
-                  </Button>
-                  <Button onClick={this.handleAddNewUserDialogCloseConfirmed} style={{color:'#5f77a1'}}>
-                     {manage.Confirm[fin]}
-                  </Button>
-               </DialogActions>
-            </Dialog>
-            {/*Dialog to remove user*/}
-            <Dialog open={this.state.openRemoveWarning} keepMounted onClose={this.handleRemoveWarningClose}>
-               <DialogTitle id="dialog-remove-user-title">{manage.Ask[fin]}</DialogTitle>
-               <DialogContent id="dialog-remove-user-contet">
-                  <DialogContentText id="dialog-remove-user-text">{manage.AskDelete[fin]} {this.state.selectedUserName}</DialogContentText>
-                  {this.state.mokatPoistossa ? <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>{manage.ErrorSmall[fin]} </p> : <p></p>}
-               </DialogContent>
-               <DialogActions>
-                  <Button onClick={this.handleRemoveWarningClose} style={{color:'#c97b7b'}}>
-                     {manage.Cancel[fin]}
-                  </Button>
-                  <Button onClick={this.handleRemoveWarningCloseAgree} style={{color:'#5f77a1'}}>
-                     {manage.ConfirmDelete[fin]}
-                  </Button>
-               </DialogActions>
-            </Dialog>
-            {/*Dialog to change password of own user*/}
-            <Dialog open={this.state.changeOwnPassDialogOpen} onClose={this.handleChangeOwnPassDialogClose}>
-               <DialogTitle id="dialog-change-own-pass-title">{manage.ChangePass[fin]}</DialogTitle>
-               <DialogContent>
-                  <DialogContentText>{manage.Helper[fin]}</DialogContentText>
-                  <TextField
-                     type="password"
-                     value={this.state.oldpassword}
-                     margin="dense"
-                     id="oldpassword"
-                     label={manage.OldPass[fin]}
-                     onChange={this.handleOldpassStringChange}
-                     fullWidth
-                  />
-                  <TextField
-                     type="password"
-                     value={this.state.newpassword}
-                     margin="dense"
-                     id="newpassword"
-                     label={manage.NewPass[fin]}
-                     onChange={this.handleNewpassStringChange}
-                     fullWidth
-                  />
-                  {this.state.changeOwnPassFailed ? (
-                     <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>
-                        {manage.Error[fin]}{" "}
-                     </p>
-                  ) : (
-                     <p></p>
-                  )}
-               </DialogContent>
-               <DialogActions>
-                  <Button onClick={this.handleChangeOwnPassDialogClose} style={{color:'#c97b7b'}}>
-                     {manage.Cancel[fin]}
-                  </Button>
-                  <Button onClick={this.handleChangeOwnPassDialogCloseAgree} style={{color:'#5f77a1'}}>
-                     {manage.Confirm[fin]}
-                  </Button>
-               </DialogActions>
-            </Dialog>
-            {/*Dialog to change password of other users*/}
-            <Dialog open={this.state.changePassDialogOpen} onClose={this.handleChangePassClose}>
-               <DialogTitle id="dialog-change-pass-title">{manage.ChangeFor[fin]} {this.state.selectedUserName}</DialogTitle>
-               <DialogContent>
-                  <TextField
-                     type="text"
-                     value={this.state.password}
-                     margin="dense"
-                     id="name"
-                     label={manage.NewPass[fin]}
-                     onChange={(e) => {
-                        this.setState({ password: e.target.value });
-                     }}
-                     fullWidth
-                  />
-                  {this.state.mokatVaihdossa ? (
-                     <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>{manage.Error[fin]} </p>
-                  ) : (
-                     <p></p>
-                  )}
-               </DialogContent>
-               <DialogActions>
-                  <Button onClick={this.handleChangePassClose} style={{color:'#c97b7b'}}>
-                     {manage.Cancel[fin]}
-                  </Button>
-                  <Button onClick={this.handleChangePassCloseConfirm} style={{color:'#5f77a1'}}>
-                     {manage.Confirm[fin]}
-                  </Button>
-               </DialogActions>
-            </Dialog>
-            {/*THE ACTUAL PAGE*/}
-            <h1 style={{ marginLeft: 100 }}>{manage.UserManage[fin]}</h1>
-            <Divider></Divider>
-            <Box display="flex">
-               <h3 style={{ marginLeft: 40 }}>{manage.ChangePass[fin]}:</h3>
-          <Button onClick={this.handleOpenOwnPassChangeDialog}  variant="contained" style={{ backgroundColor:'#5f77a1', margin: 15, marginLeft: 40 }}>
-                  {manage.ChangePass[fin]}
-               </Button>
-            </Box>
-            <Divider></Divider>
-            <Box display="flex">
-               <h3 style={{ marginLeft: 40 }}>{manage.CreateUser[fin]}:</h3>
-               <Button onClick={this.handleAddUserOpenDialog} variant="contained" style={{ backgroundColor:'#5f77a1', margin: 15, marginLeft: 58 }}>
-                  {manage.CreateUser[fin]}
-               </Button>
-            </Box>
-            <Divider></Divider>
-            <Box display="flex">
-               <h3 style={{ marginLeft: 40 }}>{manage.Users[fin]}:</h3>
-               <TableContainer component={Paper} style={{ minWidth: 600, maxWidth: 800, marginLeft: 96, marginTop: 15 }}>
-                  <Table style={{ minWidth: 600 }} aria-label="table of users">
-                     <TableHead>
-                        <TableRow>
-                           <TableCell>{manage.Username[fin]}</TableCell>
-                           <TableCell align="right">{manage.ChangePass[fin]}</TableCell>
-                           <TableCell align="right">{manage.RemoveUser[fin]}</TableCell>
-                        </TableRow>
-                     </TableHead>
-                     <TableBody>
-                        {this.state.rows.map((row) => (
-                           <TableRow key={row.name}>
-                              <TableCell component="th" scope="row">
-                                 {row.name}
-                              </TableCell>
-                              <TableCell align="right">{row.ButtonToChangePassword}</TableCell>
-                              <TableCell align="right">{row.ButtonToRemoveUser}</TableCell>
-                           </TableRow>
-                        ))}
-                     </TableBody>
-                  </Table>
-               </TableContainer>
-            </Box>
+    return (
+      <div>
+        {/*Dialog to add new user*/}
+        <Dialog open={this.state.openAddNewUserDialog} keepMounted onClose={this.handleAddNewUserDialogClose}>
+          <DialogTitle id="dialog-add-user-title">{manage.New[fin]}</DialogTitle>
+          <DialogContent>
+            <TextField value={this.state.newUserName} margin="dense" id="name" label={manage.Username[fin]} onChange={this.handleNewuserNameChange} fullWidth />
+            <TextField value={this.state.newUserPass} margin="dense" id="password" label={manage.Password[fin]} onChange={this.handleNewuserPassChange} fullWidth />
+            <FormControl>
+              <InputLabel>{manage.Role[fin]}</InputLabel>
+              <Select style={{ marginTop: 15 }} native value={this.state.newUserRole} onChange={this.handleChangeNewUserRole} id="role">
+                <option aria-label={manage.Supervisor[fin]} value={"supervisor"}>
+                  {manage.Supervisor[fin]}
+                </option>
+                <option value={"superuser"}>{manage.Superuser[fin]}</option>
+              </Select>
+            </FormControl>
+            {this.state.mokat ? (
+              <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>
+                {manage.Error[fin]}{" "}
+              </p>
+            ) : (
+              <p></p>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleAddNewUserDialogClose} style={{color:'#c97b7b'}}>
+              {manage.Cancel[fin]}
+            </Button>
+            <Button onClick={this.handleAddNewUserDialogCloseConfirmed} style={{color:'#5f77a1'}}>
+              {manage.Confirm[fin]}
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {/*Dialog to remove user*/}
+        <Dialog open={this.state.openRemoveWarning} keepMounted onClose={this.handleRemoveWarningClose}>
+          <DialogTitle id="dialog-remove-user-title">{manage.Ask[fin]}</DialogTitle>
+          <DialogContent id="dialog-remove-user-contet">
+            <DialogContentText id="dialog-remove-user-text">{manage.AskDelete[fin]} {this.state.selectedUserName}</DialogContentText>
+            {this.state.mokatPoistossa ? <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>{manage.ErrorSmall[fin]} </p> : <p></p>}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleRemoveWarningClose} style={{color:'#c97b7b'}}>
+              {manage.Cancel[fin]}
+            </Button>
+            <Button onClick={this.handleRemoveWarningCloseAgree} style={{color:'#5f77a1'}}>
+              {manage.ConfirmDelete[fin]}
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {/*Dialog to change password of own user*/}
+        <Dialog open={this.state.changeOwnPassDialogOpen} onClose={this.handleChangeOwnPassDialogClose}>
+          <DialogTitle id="dialog-change-own-pass-title">{manage.ChangePass[fin]}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>{manage.Helper[fin]}</DialogContentText>
+            <TextField
+              type="password"
+              value={this.state.oldpassword}
+              margin="dense"
+              id="oldpassword"
+              label={manage.OldPass[fin]}
+              onChange={this.handleOldpassStringChange}
+              fullWidth
+            />
+            <TextField
+              type="password"
+              value={this.state.newpassword}
+              margin="dense"
+              id="newpassword"
+              label={manage.NewPass[fin]}
+              onChange={this.handleNewpassStringChange}
+              fullWidth
+            />
+            {this.state.changeOwnPassFailed ? (
+              <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>
+                {manage.Error[fin]}{" "}
+              </p>
+            ) : (
+              <p></p>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleChangeOwnPassDialogClose} style={{color:'#c97b7b'}}>
+              {manage.Cancel[fin]}
+            </Button>
+            <Button onClick={this.handleChangeOwnPassDialogCloseAgree} style={{color:'#5f77a1'}}>
+              {manage.Confirm[fin]}
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {/*Dialog to change password of other users*/}
+        <Dialog open={this.state.changePassDialogOpen} onClose={this.handleChangePassClose}>
+          <DialogTitle id="dialog-change-pass-title">{manage.ChangeFor[fin]} {this.state.selectedUserName}</DialogTitle>
+          <DialogContent>
+            <TextField
+              type="text"
+              value={this.state.password}
+              margin="dense"
+              id="name"
+              label={manage.NewPass[fin]}
+              onChange={(e) => {
+                this.setState({ password: e.target.value });
+              }}
+              fullWidth
+            />
+            {this.state.mokatVaihdossa ? (
+              <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>{manage.Error[fin]} </p>
+            ) : (
+              <p></p>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleChangePassClose} style={{color:'#c97b7b'}}>
+              {manage.Cancel[fin]}
+            </Button>
+            <Button onClick={this.handleChangePassCloseConfirm} style={{color:'#5f77a1'}}>
+              {manage.Confirm[fin]}
+            </Button>
+          </DialogActions>
+        </Dialog>
+        
+        {/*THE ACTUAL PAGE*/}
+        
+        <h1 style={{ textAlign:"center" }}>{manage.UserManage[fin]}</h1>
+        <Divider></Divider>
+        <Box style={{justifyContent: "center", display:"flex", flexWrap:"wrap"}}>
+          <h3 style={{ textAlign:"center" }}>{manage.ChangePass[fin]}:</h3>
+        <Button onClick={this.handleOpenOwnPassChangeDialog}  variant="contained" style={{ backgroundColor:'#5f77a1', margin: 15, textAlign: "center" }}>
+            {manage.ChangePass[fin]}
+          </Button>
+        </Box>
+        <Divider></Divider>
+        <Box style={{justifyContent: "center", display:"flex", flexWrap:"wrap"}}>
+          <h3 style={{ textAlign:"center" }}>{manage.CreateUser[fin]}:</h3>
+          <Button onClick={this.handleAddUserOpenDialog} variant="contained" style={{ backgroundColor:'#5f77a1', margin: 15, textAlign: "center" }}>
+            {manage.CreateUser[fin]}
+          </Button>
+        </Box>
+        <Divider></Divider>
+
+        {/*USER PROFILES TABLE*/}
+
+	<h3 style={{ textAlign:"center" }}>{manage.Users[fin]}:</h3>
+        <Box style={{justifyContent: "center", display:"flex", flexWrap:"wrap"}}>
+             
+        <TableContainer component={Paper} style={{ maxWidth:500, tableLayout: "auto" }}>
+        <Table aria-label="table of users" style={{ backgroundColor:"#F2F0EB" }}>
+                 <TableHead>
+                   <TableRow>
+                     <TableCell align="justify">{manage.Username[fin]}</TableCell>
+                     <TableCell align="justify">{manage.ChangePass[fin]}</TableCell>
+                     <TableCell align="justify">{manage.RemoveUser[fin]}</TableCell>
+                   </TableRow>
+                 </TableHead>
+                 <TableBody>
+                   
+                   {this.state.rows.map((row) => (
+                     <TableRow key={row.name} hover>
+                       <TableCell align="justify" component="th" scope="row">{row.name} <br/>{row.roleToPrint}</TableCell>
+                       <TableCell align="justify">{row.ButtonToChangePassword}</TableCell>
+                       <TableCell align="justify">{row.ButtonToRemoveUser}</TableCell>
+                     </TableRow>
+                   ))}
+                 </TableBody>
+               </Table>
+             </TableContainer>
+           </Box>
          </div>
       );
    }
