@@ -125,6 +125,7 @@ module.exports = {
     }
   ], delete: [
     fields.id(param, 'exists')
+    , handleValidationErrors
     , function storeDeleteRequest(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['params'] })
       return next()
