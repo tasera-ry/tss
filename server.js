@@ -22,7 +22,7 @@ app.use("/api", router);
 app.use("/", express.static("front/build/"));
 
 app.listen(port, () => {
-    console.log("Server on " + port)
+    console.error("Server on " + port)
 });
 
 if(process.env.NODE_ENV === 'stable' && os.hostname() === 'tasera.netum.fi') {

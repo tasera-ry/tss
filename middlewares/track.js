@@ -4,8 +4,6 @@ const services = require(path.join(root, 'services'))
 
 const serviceCalls = {
   read: async function readTrack(request, response, next) {
-    console.log("MW TRACK READ");
-    
     const query = response.locals.query
     try {
       response.locals.queryResult = await services.track.read(query, [])
@@ -16,8 +14,6 @@ const serviceCalls = {
     return next()
   }
   , create: async function createTrack(request, response, next) {
-    console.log("MW TRACK CREATE");
-    
     const query = response.locals.query
     let id
     try {
@@ -38,8 +34,6 @@ const serviceCalls = {
     return next()
   }
   , update: async function updateTrack(request, response, next) {
-    console.log("MW TRACK UPDATE");
-    
     const id = response.locals.id
     const updates = response.locals.updates
 
@@ -58,8 +52,6 @@ const serviceCalls = {
     return next()
   }
   , delete: async function deleteTrack(request, response, next) {
-    console.log("MW TRACK DELETE");
-    
     const query = response.locals.query
     try {
       response.locals.queryResult = await services.track.delete(query)
