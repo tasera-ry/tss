@@ -845,13 +845,13 @@ class Scheduling extends Component {
         <div className="secondSection">
           <div className="topRow">
             <div className="text">{sched.Open[fin]}</div>
-            <Switch
+
+	    <Switch
               checked={ this.state.available }
               onChange={this.handleSwitchChange}
               name="available"
-              color="default"
-              style={{color:'#5f77a1'}}
-            />
+              color="primary"
+              style={{color:'#5f77a1'}} />
           </div>
           <div className="middleRow">
             <div className="roSwitch">
@@ -861,9 +861,8 @@ class Scheduling extends Component {
                 checked={this.state.rangeSupervisorSwitch}
                 onChange={this.handleSwitchChange}
                 name="rangeSupervisorSwitch"
-                color="default"
-                style={{color:'#5f77a1'}}
-              />
+                color="primary"
+                style={{color:'#5f77a1'}} />
             </div>
             {this.createSupervisorSelect()}
           </div>
