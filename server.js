@@ -9,6 +9,7 @@ const helmet = require('helmet');
 const router = require("./routes");
 const port = process.env.ALT_PORT || process.env.PORT || 8000; //azure gives port as an environment variable
 const os = require("os")
+const morgan = require('morgan')
 
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -16,7 +17,9 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 //server calls are all in the routes
+app.use("/api", morgan('short'))
 app.use("/api", router);
+
 
 // Rendering the front-end react app
 app.use("/", express.static("front/build/"));
