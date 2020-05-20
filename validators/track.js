@@ -121,6 +121,7 @@ module.exports = {
     }
   ], delete: [
     fields.track_id(param, 'exists')
+    , handleValidationErrors
     , function storeDeleteRequest(request, response, next) {
       console.log("VAL EXPORTS STORE: delete request");
       response.locals.query = matchedData(request, { locations: ['params'] });
