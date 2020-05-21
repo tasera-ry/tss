@@ -76,7 +76,7 @@ hr {
   padding-top:15px;
   display:flex;
   flex-flow: row wrap;
-  align-items: flex-start;
+  align-items: start;
 }
 
 .schedulingRoot .thirdSection .MuiFormControl-root{

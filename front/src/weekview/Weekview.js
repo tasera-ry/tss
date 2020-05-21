@@ -8,13 +8,15 @@ import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import { dayToString, getSchedulingWeek, getSchedulingDate } from "../utils/Utils";
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
 
 // Moment for date management
 import moment from 'moment';
 
 // Translation
 import * as data from '../texts/texts.json';
-// eslint-disable-next-line
+
 let lang = "fi"; //fallback
 if(localStorage.getItem("language") === '0') {
   lang = 'fi';
@@ -228,7 +230,7 @@ class Weekview extends Component {
             let urlParamDateSplit = urlParamDate.split("-")
     
             var weeknumber = moment(urlParamDate, "YYYYMMDD").week();
-            var daynumber = urlParamDate// eslint-disable-line
+            var daynumber = urlParamDate
 
             let paramDay = urlParamDateSplit[2]
             let paramMonth = urlParamDateSplit[1]
@@ -330,7 +332,7 @@ class Weekview extends Component {
                 linkki = "/dayview/" + oikeePaiva
     
                 table.push(
-                    <Link className="link" key={table.length} to={linkki}>
+                    <Link className="link" to={linkki}>
                     <p id ="weekDay">
                         {pv}
                     </p>
@@ -362,7 +364,7 @@ class Weekview extends Component {
                 linkki = "/dayview/" + oikeePaiva
 
                 table.push(
-                    <Link key={table.length} className="link" to={linkki}>
+                    <Link class="link" to={linkki}>
                     <p style={{ fontSize: "medium" }}>
                     {newDate}
                     </p>
@@ -412,7 +414,7 @@ class Weekview extends Component {
                 oikeePaiva = this.state.paivat[j].date
                 linkki = "/dayview/" + oikeePaiva
                 table.push(
-                    <Link key={table.length} style={{ backgroundColor: `${colorFromBackEnd}` }} className="link" to={linkki}>
+                    <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={linkki}>
                     <p>
                     &nbsp;
                     </p>
@@ -491,7 +493,7 @@ class Weekview extends Component {
             let urlParamDateSplit = urlParamDate.split("-")
     
             var weeknumber = moment(urlParamDate, "YYYYMMDD").week();
-            var daynumber = moment(urlParamDate, "YYYYMMDD").day();// eslint-disable-line
+            var daynumber = moment(urlParamDate, "YYYYMMDD").day();
 
             let paramDay = urlParamDateSplit[2]
             let paramMonth = urlParamDateSplit[1]
@@ -556,12 +558,12 @@ class Weekview extends Component {
     return (
       
       <div>
-        <div className="container">
+        <div class="container">
 
 
 	  
           {/* Header with arrows */}
-          <Grid className="date-header">
+          <Grid class="date-header">
             <div
               className="hoverHand arrow-left"
               onClick={this.previousWeekClick}
@@ -575,12 +577,12 @@ class Weekview extends Component {
           </Grid>
 
           {/* Date boxes */}
-          <Grid className="flex-container2">
+          <Grid class="flex-container2">
             {this.createWeekDay()}
           </Grid>
           
           {/* Date boxes */}
-          <Grid className="flex-container2">
+          <Grid class="flex-container2">
             {this.state.state!=='ready' ?
              "" :
              this.createDate() }
@@ -595,7 +597,7 @@ class Weekview extends Component {
                <CircularProgress disableShrink/>
              </div>
              :
-             <Grid className="flex-container">
+             <Grid class="flex-container">
                {this.createColorInfo()}
              </Grid>}
 
@@ -610,12 +612,12 @@ class Weekview extends Component {
         <hr></hr>
         <div className="infoContainer">
           <Grid>
-            <div className="info-flex">
+            <div class="info-flex">
 
-              <div id="open-info" className='box'></div>
+              <div id="open-info" class='box'></div>
               {/* Avoinna */} &nbsp;{week.Green[fin]} <br></br> <br></br>
 
-              <div id="closed-info2" className='box'></div>
+              <div id="closed-info2" class='box'></div>
               {/* Suljettu */} &nbsp;{week.Blue[fin]} <br></br><br></br>
 
             </div>                
@@ -623,14 +625,14 @@ class Weekview extends Component {
 
           
           {/* Bottom row */}
-          <Grid className="bottom-info">
-            <div className="info-flex">
+          <Grid class="bottom-info">
+            <div class="info-flex">
 
-              <div id="valvoja-info" className='box'></div>
+              <div id="valvoja-info" class='box'></div>
               {/* Päävalvoja tulossa */} &nbsp;{week.Lightgreen[fin]} <br></br> <br></br>
 
 
-              <div id="onway-info" className='box'></div>
+              <div id="onway-info" class='box'></div>
               {/* Ei tietoa */}  &nbsp;{week.Orange[fin]}
 
             </div>
@@ -638,14 +640,14 @@ class Weekview extends Component {
 
 
           {/* Bottom row */}
-          <Grid className="bottom-info">
-            <div className="info-flex">
+          <Grid class="bottom-info">
+            <div class="info-flex">
 
 
-              <div id="closed-info" className='box'></div>
+              <div id="closed-info" class='box'></div>
               {/* Suljettu */} &nbsp;{week.Red[fin]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br></br><br></br>
 
-              <div id="no-info" className='box'> </div>
+              <div id="no-info" class='box'> </div>
               {/* Ei tietoa */}  &nbsp;{week.White[fin]}
 
             </div>
