@@ -31,7 +31,13 @@ const dialogStyle = {
 const discardChanges = {// eslint-disable-line
   color:"gray"
 }
-
+const checkboxStyle = {
+  color:'#f2c66d'
+}
+const styleA = {
+  padding:25,
+  textAlign: 'center'
+}
 const useStyles = makeStyles((theme) => ({
   root: {
     position:'relative',
@@ -154,9 +160,6 @@ const DropDowns = (props) => {
 
 //prints matkalla-checkbox
 const Check = ({HandleChange, checked, sv, disable}) => {
-  const checkboxStyle = {
-    color:'#f2c66d'
-  }
   let fin = localStorage.getItem("language");
 
   return (
@@ -175,10 +178,6 @@ const Check = ({HandleChange, checked, sv, disable}) => {
 
 //prints date info in rows
 const Rows = ({HandleChange, changes, checked, setDone, sv}) => {
-  const styleA = {
-    padding:25,
-    textAlign: 'center'
-  }
 
   let language = localStorage.getItem("language");
   let num = 2;
