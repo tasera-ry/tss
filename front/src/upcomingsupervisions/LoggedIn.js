@@ -266,7 +266,7 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
   let temp = [];
 
   let query = "api/schedule?supervisor_id=" + userID;
-  let response = await axios.get(query)// eslint-disable-line
+  let response = await axios.get(query)
       .then(response => {
         if(response) {
           temp = temp.concat(response.data);
@@ -281,7 +281,7 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
 
     let rsquery = "api/range-supervision/" + v.id;
     await axios.get(rsquery)
-      .then(response => {// eslint-disable-line
+      .then(response => {
         if(response) {
           //object id is schedule id
           let obj = {
@@ -360,7 +360,8 @@ async function putSchedules(changes) {
 
 //creates dialog-window
 const Logic = ({schedules, setSchedules, noSchedule, checked,
-                setChecked, done, setDone, sv}) => {                  
+                setChecked, done, setDone, sv}) => {
+             
   const classes = useStyles();
   const [open, setOpen] = useState(true);
   const [wait, setWait] = useState(false);                
