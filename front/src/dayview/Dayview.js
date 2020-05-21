@@ -235,19 +235,12 @@ class Dayview extends Component {
           {/* Range officer info */}
           <Grid container direction="row" justify="center" alignItems="center">
             <Grid item xs={12}>
-
-              
-              
               {this.state.state!=='ready'?
-               ""
+               <br />
                :
                <OfficerBanner rangeSupervision={this.state.rangeSupervision} />}
-
-
-              
             </Grid>
           </Grid>
-          
 
           {/* MUI grid - used for displaying the track info */}
           {this.state.state!=='ready'?
@@ -257,7 +250,6 @@ class Dayview extends Component {
            :
            <TrackList tracks={this.state.tracks} date={this.state.date} />}
 
-          
           {/* Other info */}
           <Grid
             container
