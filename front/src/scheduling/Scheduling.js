@@ -920,7 +920,7 @@ class Scheduling extends Component {
                 checked={ this.state.daily }
                 onChange={this.handleRepeatChange}
                 id='daily'
-                color="default"
+                color="primary"
                 style={{color:'#5f77a1'}}
               />
             </div>
@@ -930,7 +930,7 @@ class Scheduling extends Component {
                 checked={ this.state.weekly }
                 onChange={this.handleRepeatChange}
                 id='weekly'
-                color="default"
+                color="primary"
                 style={{color:'#5f77a1'}}
               />
             </div>
@@ -940,7 +940,7 @@ class Scheduling extends Component {
                 checked={ this.state.monthly }
                 onChange={this.handleRepeatChange}
                 id='monthly'
-                color="default"
+                color="primary"
                 style={{color:'#5f77a1'}}
               />
             </div>
