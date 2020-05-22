@@ -9,7 +9,7 @@ const root = path.join(__dirname, '..')
 const knex = require(path.join(root, 'knex', 'knex'))
 
 const model = {
-  /** 
+  /**
    * Create a new supervision event for track
    *
    * @param {object} supVis - supervision properties, { scheduled_range_supervision_id, track_id, track_supervisor, notice? }
@@ -19,15 +19,13 @@ const model = {
    * model.create({ scheduled_range_supervision_id:1, track_id:1, track_supervisor:'present'})
    */
   create: async function createSupervision(supVis) {
-    console.log("TRACK SUPERVISION MODEL ",supVis);
-    
     const supervisionConstraints = {
       scheduled_range_supervision_id: {}
       , track_id: {}
       , track_supervisor: {}
       , notice: {}
     }
-    
+
     //check if already exists
     const id = await model
       .read(supVis, ['scheduled_range_supervision_id', 'track_id'])
@@ -40,7 +38,7 @@ const model = {
     }
 
     const general = validate.cleanAttributes(supVis, supervisionConstraints)
-   
+
     return await knex.transaction(trx => {
       return trx
         .returning(['scheduled_range_supervision_id','track_id'])

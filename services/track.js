@@ -18,12 +18,10 @@ const service = {
    * service.create({ range_id: 1, name: 'Shooting track 1', description: '100m Kohdistusrata' })
    */
   create: async function createTrack(info) {
-    console.log("SERV TRACK CREATE");
-
     return (await models.track.create(info)).pop()
   }
 
-  /** 
+  /**
    * Read (a) tracks' info.
    *
    * @param {object} key - The query information, {} returns all tracks. { range_id, name, description }
@@ -36,24 +34,18 @@ const service = {
    * exports.read({range_id:1}['name']) - All track names
    */
   , read: async function readTrack(key, fields) {
-    console.log("SERV TRACK READ");
-    console.log("SERV TRACK key: ",key)
-    console.log("SERV TRACK fields: ",fields)
-
     let combinedKey = key;
-    
+
     //id was ambiguous
     if(key.track_id !== undefined){
       combinedKey = Object.assign({'track.id': key.track_id}, combinedKey);
       combinedKey = _.omit(combinedKey, ['track_id']);
-      console.log("SERVICE_TRACK_CREATE combined: ",combinedKey);
     }
-    
+
     //name was ambiguous
     if(key.name !== undefined){
       combinedKey = Object.assign({'track.name': key.name}, combinedKey);
       combinedKey = _.omit(combinedKey, ['name']);
-      console.log("SERVICE_TRACK_CREATE combined: ",combinedKey);
     }
 
     return (await models.track.read(_.pick(combinedKey,'track.id', 'track.name', 'description')))
@@ -71,21 +63,18 @@ const service = {
    * exports.update({ name: 'Shooting track 1' }, { description: 'New and improved' })
    */
   , update: async function updateTrack(key, updates) {
-    console.log("SERV TRACK UPDATE");
-    
     let combinedKey = key;
-    
+
     //id was ambiguous
     if(key.track_id !== undefined){
       combinedKey = Object.assign({'track.id': key.track_id}, combinedKey);
       combinedKey = _.omit(combinedKey, ['track_id']);
-      console.log("SERVICE_TRACK_CREATE combined: ",combinedKey);
     }
 
     return models.track.update(combinedKey, updates)
   }
 
-    /** 
+    /**
      * Delete a track.
      *
      * @param {object} key - Tracks' identifying info. { range_id, id?, name?}
@@ -96,17 +85,14 @@ const service = {
      * service.delete({ name: 'Shooting track 1' })
      */
   , delete: async function deleteTrack(key) {
-    console.log("SERV TRACK DELETE");
-    
     let combinedKey = key;
-    
+
     //id was ambiguous
     if(key.track_id !== undefined){
       combinedKey = Object.assign({'track.id': key.track_id}, combinedKey);
       combinedKey = _.omit(combinedKey, ['track_id']);
-      console.log("SERVICE_TRACK_CREATE combined: ",combinedKey);
     }
-    
+
     return models.track.delete(combinedKey)
   }
 }
