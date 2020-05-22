@@ -28,14 +28,18 @@ import {
 // axios for calls to backend
 import axios from "axios";
 
-// Translations
-import * as data from '../texts/texts.json';
-
 // Token validation
 import { validateLogin } from "../utils/Utils";
 
+// Translations
+import * as data from '../texts/texts.json';
 const fin = localStorage.getItem("language");
 const {manage} = data;
+
+//Styles
+const dialogStyle = {
+  backgroundColor:"#f2f0eb"
+}
 
 //Finds all users from database
 async function getUsers(token) {
@@ -493,20 +497,50 @@ class UserManagementView extends Component {
     return (
       <div>
         {/*Dialog to add new user*/}
-        <Dialog open={this.state.openAddNewUserDialog} keepMounted onClose={this.handleAddNewUserDialogClose}>
-          <DialogTitle id="dialog-add-user-title">{manage.New[fin]}</DialogTitle>
-          <DialogContent>
-            <TextField value={this.state.newUserName} margin="dense" id="name" label={manage.Username[fin]} onChange={this.handleNewuserNameChange} fullWidth />
-            <TextField value={this.state.newUserPass} margin="dense" id="password" label={manage.Password[fin]} onChange={this.handleNewuserPassChange} fullWidth />
+        <Dialog
+          open={this.state.openAddNewUserDialog}
+          keepMounted
+          onClose={this.handleAddNewUserDialogClose}>
+          <DialogTitle
+            id="dialog-add-user-title"
+            style={dialogStyle}>
+            {manage.New[fin]}
+          </DialogTitle>
+          <DialogContent
+            style={dialogStyle}>
+            
+            <TextField
+              value={this.state.newUserName}
+              margin="dense"
+              id="name"
+              label={manage.Username[fin]}
+              onChange={this.handleNewuserNameChange}
+              fullWidth />
+            <TextField
+              value={this.state.newUserPass}
+              margin="dense"
+              id="password"
+              label={manage.Password[fin]}
+              onChange={this.handleNewuserPassChange}
+              fullWidth />
+            
             <FormControl>
               <InputLabel>{manage.Role[fin]}</InputLabel>
-              <Select style={{ marginTop: 15 }} native value={this.state.newUserRole} onChange={this.handleChangeNewUserRole} id="role">
+              <Select
+                style={{ marginTop: 15 }}
+                native
+                value={this.state.newUserRole}
+                onChange={this.handleChangeNewUserRole}
+                id="role">
                 <option aria-label={manage.Supervisor[fin]} value={"supervisor"}>
                   {manage.Supervisor[fin]}
                 </option>
-                <option value={"superuser"}>{manage.Superuser[fin]}</option>
+                <option value={"superuser"}>
+                  {manage.Superuser[fin]}
+                </option>
               </Select>
             </FormControl>
+            
             {this.state.mokat ? (
               <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>
                 {manage.Error[fin]}{" "}
@@ -514,8 +548,10 @@ class UserManagementView extends Component {
             ) : (
               <p></p>
             )}
+            
           </DialogContent>
-          <DialogActions>
+          <DialogActions
+            style={dialogStyle}>
             <Button onClick={this.handleAddNewUserDialogClose} style={{color:'#c97b7b'}}>
               {manage.Cancel[fin]}
             </Button>
@@ -524,14 +560,33 @@ class UserManagementView extends Component {
             </Button>
           </DialogActions>
         </Dialog>
+        
         {/*Dialog to remove user*/}
-        <Dialog open={this.state.openRemoveWarning} keepMounted onClose={this.handleRemoveWarningClose}>
-          <DialogTitle id="dialog-remove-user-title">{manage.Ask[fin]}</DialogTitle>
-          <DialogContent id="dialog-remove-user-contet">
-            <DialogContentText id="dialog-remove-user-text">{manage.AskDelete[fin]} {this.state.selectedUserName}</DialogContentText>
-            {this.state.mokatPoistossa ? <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>{manage.ErrorSmall[fin]} </p> : <p></p>}
+        <Dialog
+          open={this.state.openRemoveWarning}
+          keepMounted
+          onClose={this.handleRemoveWarningClose}>
+          <DialogTitle
+            id="dialog-remove-user-title"
+            style={dialogStyle}>
+            {manage.Ask[fin]}
+          </DialogTitle>
+          <DialogContent
+            id="dialog-remove-user-contet"
+            style={dialogStyle}>
+            <DialogContentText
+              id="dialog-remove-user-text">
+              {manage.AskDelete[fin]} {this.state.selectedUserName}
+            </DialogContentText>
+            
+            {this.state.mokatPoistossa ?
+             <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>
+               {manage.ErrorSmall[fin]} </p>
+             : <p></p>}
+            
           </DialogContent>
-          <DialogActions>
+          <DialogActions
+            style={dialogStyle}>
             <Button onClick={this.handleRemoveWarningClose} style={{color:'#c97b7b'}}>
               {manage.Cancel[fin]}
             </Button>
@@ -540,11 +595,22 @@ class UserManagementView extends Component {
             </Button>
           </DialogActions>
         </Dialog>
+        
         {/*Dialog to change password of own user*/}
-        <Dialog open={this.state.changeOwnPassDialogOpen} onClose={this.handleChangeOwnPassDialogClose}>
-          <DialogTitle id="dialog-change-own-pass-title">{manage.ChangePass[fin]}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>{manage.Helper[fin]}</DialogContentText>
+        <Dialog
+          open={this.state.changeOwnPassDialogOpen}
+          onClose={this.handleChangeOwnPassDialogClose}>
+          <DialogTitle
+            id="dialog-change-own-pass-title"
+            style={dialogStyle}>
+            {manage.ChangePass[fin]}
+          </DialogTitle>
+          <DialogContent
+            style={dialogStyle}>
+            <DialogContentText>
+              {manage.Helper[fin]}
+            </DialogContentText>
+            
             <TextField
               type="password"
               value={this.state.oldpassword}
@@ -563,6 +629,7 @@ class UserManagementView extends Component {
               onChange={this.handleNewpassStringChange}
               fullWidth
             />
+            
             {this.state.changeOwnPassFailed ? (
               <p style={{ fontSize: 20, color: "red", textAlign: "center" }}>
                 {manage.Error[fin]}{" "}
@@ -570,8 +637,10 @@ class UserManagementView extends Component {
             ) : (
               <p></p>
             )}
+            
           </DialogContent>
-          <DialogActions>
+          <DialogActions
+            style={dialogStyle}>
             <Button onClick={this.handleChangeOwnPassDialogClose} style={{color:'#c97b7b'}}>
               {manage.Cancel[fin]}
             </Button>
@@ -580,10 +649,18 @@ class UserManagementView extends Component {
             </Button>
           </DialogActions>
         </Dialog>
+        
         {/*Dialog to change password of other users*/}
-        <Dialog open={this.state.changePassDialogOpen} onClose={this.handleChangePassClose}>
-          <DialogTitle id="dialog-change-pass-title">{manage.ChangeFor[fin]} {this.state.selectedUserName}</DialogTitle>
-          <DialogContent>
+        <Dialog
+          open={this.state.changePassDialogOpen}
+          onClose={this.handleChangePassClose}>
+          <DialogTitle
+            id="dialog-change-pass-title"
+            style={dialogStyle}>
+            {manage.ChangeFor[fin]} {this.state.selectedUserName}
+          </DialogTitle>
+          <DialogContent
+            style={dialogStyle}>
             <TextField
               type="text"
               value={this.state.password}
@@ -601,7 +678,8 @@ class UserManagementView extends Component {
               <p></p>
             )}
           </DialogContent>
-          <DialogActions>
+          <DialogActions
+            style={dialogStyle}>
             <Button onClick={this.handleChangePassClose} style={{color:'#c97b7b'}}>
               {manage.Cancel[fin]}
             </Button>

@@ -12,6 +12,9 @@ import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import { makeStyles } from '@material-ui/core/styles';
+
+
 
 // Upcoming supervisions -view
 import DialogWindow from '../upcomingsupervisions/LoggedIn';
@@ -22,6 +25,11 @@ const fin = localStorage.getItem("language"); //0: finnish, 1: english
 const {nav} = data;
 
 //Styles
+const useStyles = makeStyles({
+  paper: {
+    background: '#f2f0eb'
+  }
+});
 const navStyle = {
   color: "black",
   textDecoration: "none"
@@ -43,6 +51,7 @@ const elementStyle = {
 }
 
 const SideMenu = ({setName, superuser}) => {
+  const styles = useStyles();
   const [menu, setMenu] = useState({"right": false})
   const [openDial, setOpenDial] = useState(false)
   let storage = window.localStorage;
@@ -166,16 +175,19 @@ const SideMenu = ({setName, superuser}) => {
          {nav.Menu[fin]}
        </Button>
        : ""}
-      
+
+      <div>
       <Drawer
         anchor={"right"}
         open={menu.right}
-        onClose={toggleDrawer("right", false)}>
+        onClose={toggleDrawer("right", false)}
+        classes={{ paper: styles.paper }}>
         {superuser?
          superuserList("left")
          : supervisorList("left")}
       </Drawer>
 
+    </div>
       {openDial ? <DialogWindow /> : "" }
       
     </div>
