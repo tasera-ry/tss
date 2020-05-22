@@ -5,7 +5,7 @@ const _ = require('lodash')
 const validate = require('validate.js')
 
 const model = {
-  /** 
+  /**
    * Create a new supervision event for range
    *
    * @param {object} supVis - supervision properties, { scheduled_range_supervision_id, range_supervisor, notice? }
@@ -15,14 +15,12 @@ const model = {
    * model.create({ scheduled_range_supervision_id:1, range_supervisor:'present'})
    */
   create: async function createSupervision(supVis) {
-    console.log("RANGE SUPERVISION MODEL ",supVis);
-    
     const supervisionConstraints = {
       scheduled_range_supervision_id: {}
       , range_supervisor: {}
       , notice: {}
     }
-    
+
     //check if already exists
     const id = await model
       .read(supVis, ['scheduled_range_supervision_id'])
@@ -35,7 +33,7 @@ const model = {
     }
 
     const general = validate.cleanAttributes(supVis, supervisionConstraints)
-   
+
     return await knex.transaction(trx => {
       return trx
         .returning('scheduled_range_supervision_id')

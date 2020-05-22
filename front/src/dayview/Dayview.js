@@ -8,6 +8,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import InfoIcon from '@material-ui/icons/Info';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Utils
 import { dayToString, getSchedulingDate } from "../utils/Utils";
@@ -26,6 +27,7 @@ class Dayview extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      state: 'loading',
       date: new Date(Date.now()),
       opens: 16,
       closes: 20,
@@ -55,6 +57,7 @@ class Dayview extends Component {
         //console.log("Results from api",response);
 
         this.setState({
+          state: 'ready',
           date: new Date(response.date),
           tracks: response.tracks,
           rangeSupervision: response.rangeSupervision,
@@ -73,6 +76,7 @@ class Dayview extends Component {
     this.props.history.replace("/dayview/" + date.toISOString());
     this.setState(
       {
+        state: 'loading',
         date: date
       },
       function() {
@@ -87,6 +91,7 @@ class Dayview extends Component {
     this.props.history.replace("/dayview/" + date.toISOString());
     this.setState(
       {
+        state: 'loading',
         date: date
       },
       function() {
@@ -230,12 +235,20 @@ class Dayview extends Component {
           {/* Range officer info */}
           <Grid container direction="row" justify="center" alignItems="center">
             <Grid item xs={12}>
-              <OfficerBanner rangeSupervision={this.state.rangeSupervision} />
+              {this.state.state!=='ready'?
+               <br />
+               :
+               <OfficerBanner rangeSupervision={this.state.rangeSupervision} />}
             </Grid>
           </Grid>
 
           {/* MUI grid - used for displaying the track info */}
-          <TrackList tracks={this.state.tracks} date={this.state.date} />
+          {this.state.state!=='ready'?
+           <div>
+             <CircularProgress disableShrink/>
+           </div>
+           :
+           <TrackList tracks={this.state.tracks} date={this.state.date} />}
 
           {/* Other info */}
           <Grid
@@ -252,7 +265,7 @@ class Dayview extends Component {
 
             {/* color info boxes */}
             <Grid item xs={6} sm={3}>
-              <div className="colorInfo">
+             <div className="colorInfo">
                 <Box className="excolor greenB">&nbsp;</Box>
                 <p>{dayview.Open[fin]}</p>
               </div>
@@ -263,7 +276,8 @@ class Dayview extends Component {
               <div className="colorInfo">
                 <Box className="excolor whiteB">&nbsp;</Box>
                 <p>{dayview.NotAvailable[fin]}</p>
-              </div>
+               </div>
+
             </Grid>
           </Grid>
         </Grid>

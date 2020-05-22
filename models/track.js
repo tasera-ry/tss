@@ -9,7 +9,7 @@ const root = path.join(__dirname, '..')
 const knex = require(path.join(root, 'knex', 'knex'))
 
 const model = {
-  /** 
+  /**
    * Create a new track.
    *
    * @param {object} track - Track's properties, { range_id, name, description }
@@ -18,8 +18,6 @@ const model = {
    * model.create({ range_id: 1, name: 'Shooting track 1', description: '100m Kohdistusrata'})
    */
   create: async function createTrack(trackInfo) {
-    console.log("MODEL TRACK CREATE");
-    
     const trackConstraints = {
       range_id: {}
       , name: {}
@@ -27,7 +25,7 @@ const model = {
     }
 
     const track = validate.cleanAttributes(trackInfo, trackConstraints)
-    
+
     return await knex.transaction(trx => {
       return trx
         .returning('id')
@@ -51,10 +49,6 @@ const model = {
    * model.read({ 'track.id': 8 }, ['description'])
    */
   , read: async function readTrack(key, fields) {
-    console.log("MODEL TRACK READ");
-    console.log("MODEL TRACK key: ",key);
-    console.log("MODEL TRACK fields: ",fields);
-    
     return knex('track')
       .where(key)
       .select(fields)
@@ -73,8 +67,6 @@ const model = {
    * exports.update({ 'track.id': 8 }, { description: '200m Kohdistusrata' })
    */
   , update: async function updateTrack(current, update) {
-    console.log("MODEL TRACK UPDATE");
-    
     const trackConstraints = {
       range_id: {}
       , name: {}
@@ -93,7 +85,7 @@ const model = {
       err.name = 'Unknown track'
       throw err
     }
-    
+
     return await knex.transaction(trx => {
       return trx('track')
         .where(id)
@@ -111,8 +103,6 @@ const model = {
    * exports.del({ 'track.id': 8 })
    */
   , delete: async function deleteTrack(key) {
-    console.log("MODEL TRACK DELETE");
-    
     const ids = await model.read(key, ['track.id'])
 
     return await knex.transaction(trx => {

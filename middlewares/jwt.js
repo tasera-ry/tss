@@ -50,8 +50,6 @@ exports.validate = [
       });
     }
     catch (error) {
-      console.log(error);
-
       return next(error);
     }
 

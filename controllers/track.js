@@ -7,8 +7,6 @@ const secret = require(path.join(root, 'config', 'config')).jwt.secret
 
 const controller = {
   read: async function readTrack(request, response) {
-    console.log("CONT TRACK READ");
-    
     //if no results end in 404 but for filters return empty list instead
     if(response.locals.queryResult.length === 0 && response.locals.filtered !== true) {
       return response
@@ -17,23 +15,19 @@ const controller = {
           error: 'Unknown track'
         })
     }
-    
+
     return response
       .status(200)
       .send(response.locals.queryResult)
   }
 
   , create: async function createTrack(request, response) {
-    console.log("CONT TRACK CREATE");
-    
     return response
       .status(201)
       .send(response.locals.queryResult)
   }
 
   , update: async function updateTrack(request, response) {
-    console.log("CONT TRACK UPDATE");
-
     //return 204 no content
     return response
       .status(204)
@@ -41,8 +35,6 @@ const controller = {
   }
 
   , delete: async function deleteTrack(request, response) {
-    console.log("CONT TRACK DELETE");
-    
     if(response.locals.queryResult === 0) {
       return response
         .status(404)

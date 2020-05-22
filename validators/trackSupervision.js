@@ -107,6 +107,7 @@ module.exports = {
   ], delete: [
     fields.scheduled_range_supervision_id(param, 'exists')
     , fields.track_id(param, 'exists')
+    , handleValidationErrors
     , function storeDeleteRequest(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['params'] })
       return next()

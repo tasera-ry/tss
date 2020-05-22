@@ -24,6 +24,27 @@ import 'moment/locale/en-ca';
 // Translations
 import * as data from '../texts/texts.json'
 
+//Styles
+const dialogStyle = {
+  backgroundColor:"#f2f0eb"
+}
+const discardChanges = {// eslint-disable-line
+  color:"gray"
+}
+const checkboxStyle = {
+  color:'#f2c66d'
+}
+const styleA = {
+  padding:25,
+  textAlign: 'center'
+}
+const useStyles = makeStyles((theme) => ({
+  root: {
+    position:'relative',
+    marginLeft:'50%'
+  },
+}));
+
 /*
   LoggedIn.js is the component for accepting and denying upcoming supervision turns
 */
@@ -139,9 +160,6 @@ const DropDowns = (props) => {
 
 //prints matkalla-checkbox
 const Check = ({HandleChange, checked, sv, disable}) => {
-  const checkboxStyle = {
-    color:'#f2c66d'
-  }
   let fin = localStorage.getItem("language");
 
   return (
@@ -160,10 +178,6 @@ const Check = ({HandleChange, checked, sv, disable}) => {
 
 //prints date info in rows
 const Rows = ({HandleChange, changes, checked, setDone, sv}) => {
-  const styleA = {
-    padding:25,
-    textAlign: 'center'
-  }
 
   let language = localStorage.getItem("language");
   let num = 2;
@@ -251,7 +265,7 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
   let temp = [];
 
   let query = "api/schedule?supervisor_id=" + userID;
-  let response = await axios.get(query)// eslint-disable-line
+  let response = await axios.get(query)
       .then(response => {
         if(response) {
           temp = temp.concat(response.data);
@@ -266,7 +280,7 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
 
     let rsquery = "api/range-supervision/" + v.id;
     await axios.get(rsquery)
-      .then(response => {// eslint-disable-line
+      .then(response => {
         if(response) {
           //object id is schedule id
           let obj = {
@@ -346,19 +360,8 @@ async function putSchedules(changes) {
 //creates dialog-window
 const Logic = ({schedules, setSchedules, noSchedule, checked,
                 setChecked, done, setDone, sv}) => {
-  const discardChanges = {// eslint-disable-line
-    color:"gray"
-  }
-                  
-  const useStyles = makeStyles((theme) => ({
-  root: {
-    position:'relative',
-    marginLeft:'50%'
-  },
-  }));
-                  
+             
   const classes = useStyles();
-
   const [open, setOpen] = useState(true);
   const [wait, setWait] = useState(false);                
   const fin = localStorage.getItem("language");
@@ -392,24 +395,25 @@ const Logic = ({schedules, setSchedules, noSchedule, checked,
   return (
     <div>
       <Dialog
-        open={open}
-        aria-labelledby="otsikko">
-        
-        <DialogTitle id="otsikko">{sv.Header[fin]}</DialogTitle>
-        <DialogContent>
-          
-          <DialogContentText>
-            {noSchedule ? sv.No[fin] : ""}
-            {done ? "" : sv.Wait[fin]}
-          </DialogContentText>
+	open={open}
+	aria-labelledby="otsikko"
+      >
+	
+	<DialogTitle id="otsikko" style={dialogStyle}>{sv.Header[fin]}</DialogTitle>
+	<DialogContent style={dialogStyle}>
+	  
+	  <DialogContentText>
+	    {noSchedule ? sv.No[fin] : ""}
+	    {done ? "" : sv.Wait[fin]}
+	  </DialogContentText>
 
-          {schedules.length!==0 ?
-           <Rows HandleChange={HandleChange} changes={changes}
+	  {schedules.length!==0 ?
+	   <Rows HandleChange={HandleChange} changes={changes}
                  checked={checked} setDone={setDone} sv={sv} />
-           : ""}
-        </DialogContent>
+	   : ""}
+	</DialogContent>
 
-        <DialogActions>
+	<DialogActions style={dialogStyle}>
 
           {wait ?
            <div className={classes.root}>

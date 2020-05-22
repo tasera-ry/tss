@@ -47,7 +47,7 @@ const SignIn = () => {
   const classes = useStyles();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState('');// eslint-disable-line
+  const [user, setUser] = useState('');
   const [mistake, setMistake] = useState(false);
   const history = useHistory();
   const {signin} = data;
@@ -58,7 +58,7 @@ const SignIn = () => {
   const login = (e) => {
     e.preventDefault();
 
-    let response = axios.post('api/sign', {// eslint-disable-line
+    let response = axios.post('api/sign', {
       name: name,
       password: password
     }).then(response => {
@@ -91,7 +91,7 @@ const SignIn = () => {
   const HandleError = error => {
     setMistake(true);
     //message contains all errors, might be useful
-    let message = ''// eslint-disable-line
+    let message = ''
     if(error.response.status===400) {
       for(let i=0; i<error.response.data.errors.length; i++) {
         let param = error.response.data.errors[i].param;

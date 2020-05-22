@@ -166,7 +166,7 @@ const TrackTable = ({setTrackData, trackData, setRequestStatus, setRequestText, 
 
             try
             {
-              const response = await axios.put(// eslint-disable-line
+              const response = await axios.put(
                 `/api/track/${trackInfo.id}`
                 , newData
                 , opts)
@@ -243,11 +243,11 @@ const TrackCRUD = () => {
   const [initFinished, setInitFinished] = useState(false);
   const [requestStatus, setRequestStatus] = useState(null);
   const [requestText, setRequestText] = useState(null);
-  const [rangeData, setRangeData] = useState([]);// eslint-disable-line
+  const [rangeData, setRangeData] = useState([]);
 
-  const partialFetch = lodash.partial(fetch, '/api/track');// eslint-disable-line
+  const partialFetch = lodash.partial(fetch, '/api/track');
 
-  const isSuperuser = localStorage.getItem('role') === 'superuser';// eslint-disable-line
+  const isSuperuser = localStorage.getItem('role') === 'superuser';
   const token = localStorage.getItem('token');
 
   const opts = {
