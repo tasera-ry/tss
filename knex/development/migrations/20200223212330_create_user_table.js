@@ -6,10 +6,15 @@ exports.up = function(knex) {
         .notNullable()
       user.binary('digest', 184)
         .notNullable()
-      user.enu('role'
-                , ['superuser', 'supervisor']
-                , { useNative: true, existingType: true, enumName: 'role' })
-        .notNullable()
+      user.enu(
+        'role',
+        ['superuser', 'supervisor'],
+        {
+          useNative: true,
+          existingType: true,
+          enumName: 'role'
+        }
+      ).notNullable()
     })
 }
 

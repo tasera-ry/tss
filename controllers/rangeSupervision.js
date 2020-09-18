@@ -10,9 +10,9 @@ const controller = {
     return response
       .status(200)
       .send(response.locals.queryResult)
-  }
+  },
 
-  , read: async function read(request, response) {
+  read: async function read(request, response) {
     if(response.locals.queryResult.length === 0) {
       return response
         .status(404)
@@ -20,24 +20,26 @@ const controller = {
           error: 'Query didn\'t match range supervision event'
         })
     }
+
     return response
       .status(200)
       .send(response.locals.queryResult)
-  }
+  },
 
-  , create: async function createSupervision(request, response) {
+  create: async function createSupervision(request, response) {
     return response
       .status(201)
       .send(response.locals.queryResult)
-  }
+  },
 
-  , update: async function updateSupervision(request, response) {
+  // no return here? may be a cause for a bug
+  update: async function updateSupervision(request, response) {
     response
       .status(204)
       .send()
-  }
+  },
 
-  , delete: async function deleteSupervision(request, response) {
+  delete: async function deleteSupervision(request, response) {
     if(response.locals.queryResult === 0) {
       return response
         .status(404)
@@ -45,6 +47,7 @@ const controller = {
           error: `No range supervision event exists matching id ${response.locals.query.scheduled_range_supervision_id}`
         })
     }
+
     return response
       .status(204)
       .send()

@@ -31,11 +31,12 @@ async function readSchedule(request, response, next) {
 async function updateSchedule(request, response, next) {
   const id = _.pick(response.locals.matched, 'id')
   const updates = _.pick(
-    response.locals.matched
-    , 'range_reservation_id'
-    , 'supervisor_id'
-    , 'open'
-    , 'close')
+    response.locals.matched,
+    'range_reservation_id',
+    'supervisor_id',
+    'open',
+    'close'
+  )
 
   try {
     response.locals.queryResult = await services.schedule.update(id, updates)
@@ -58,8 +59,8 @@ async function deleteSchedule(request, response, next) {
 }
 
 module.exports = {
-  create: createSchedule
-  , read: readSchedule
-  , update: updateSchedule
-  , delete: deleteSchedule
+  create: createSchedule,
+  read: readSchedule,
+  update: updateSchedule,
+  delete: deleteSchedule
 }

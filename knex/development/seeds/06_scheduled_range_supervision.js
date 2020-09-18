@@ -10,6 +10,7 @@ const config = require(path.join(root, 'config'))
 casual.seed(config.seeds.seed)
 
 exports.seed = async function(knex) {
+  // can we skip the promise creation somehow?
   const [availableReservations, supervisors] = await Promise.all([
     knex('range_reservation')
       .select('id')
@@ -20,12 +21,15 @@ exports.seed = async function(knex) {
 
   const generateSchedules = Promise.all(availableReservations.map(({id}) => (
     casual.supervision(
-      id
-      , supervisors[casual.integer(0, supervisors.length - 1)].user_id))))
+      id,
+      supervisors[casual.integer(0, supervisors.length - 1)].user_id
+    )
+  )))
 
   const generateSpinner = ora.promise(
-    generateSchedules
-    , `Generating ${availableReservations.length} schedules`)
+    generateSchedules,
+    `Generating ${availableReservations.length} schedules`
+  )
 
   const schedules = await generateSchedules
 
@@ -33,10 +37,15 @@ exports.seed = async function(knex) {
     _.chunk(schedules, config.seeds.chunkSize)
       .map(async (scheduleBatch) => (
         knex('scheduled_range_supervision')
-          .insert(scheduleBatch))))
+          .insert(scheduleBatch)
+      ))
+  )
+
   const insertSpinner = ora.promise(
-    insertSchedules
-    , 'Inserting schedules')
+    insertSchedules,
+    'Inserting schedules'
+  )
+
   const response = await insertSchedules
 }
 
@@ -49,9 +58,9 @@ casual.define('supervision', function(reservationId, supervisor) {
   const useSupervisor = !!casual.integer(0, 3)
 
   return {
-    range_reservation_id: reservationId
-    , supervisor_id: useSupervisor ? supervisor : null
-    , open: open
-    , close: close
+    range_reservation_id: reservationId,
+    supervisor_id: useSupervisor ? supervisor : null,
+    open: open,
+    close: close
   }
 })

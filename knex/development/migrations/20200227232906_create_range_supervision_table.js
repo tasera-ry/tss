@@ -10,12 +10,15 @@ exports.up = function(knex) {
       supervision.timestamp('updated_at', { useTz: true, precision: 6 })
         .defaultTo(knex.fn.now())
         .notNullable()
-      supervision.enu('range_supervisor'
-                      , ['absent', 'confirmed', 'en route', 'present']
-                      , { useNative: true
-                          , existingType: true
-                          , enumName: 'range_supervisor' })
-        .notNullable()
+      supervision.enu(
+        'range_supervisor',
+        ['absent', 'confirmed', 'en route', 'present'],
+        {
+          useNative: true,
+          existingType: true,
+          enumName: 'range_supervisor'
+        }
+      ).notNullable()
       supervision.string('notice')
     })
 }

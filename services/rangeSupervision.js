@@ -7,7 +7,7 @@ const config = require(path.join(root, 'config', 'config'))
 const validate = require('validate.js')
 const _ = require('lodash')
 
-const service = {  
+const service = {
   /**
    * Create a new supervision.
    *
@@ -17,7 +17,7 @@ const service = {
    */
   create: async function createSupervision(info) {
     return (await models.rangeSupervision.create(info)).pop()
-  }
+  },
 
   /**
    * Get the supervisions matching a key.
@@ -27,9 +27,9 @@ const service = {
    * @return {Promise<object[]>} Supervisions that matched the key
    *
    */
-  , read: async function readSupervision(key, fields) {
+  read: async function readSupervision(key, fields) {
     return (await models.rangeSupervision.read(_.pick(key, 'scheduled_range_supervision_id', 'range_supervisor', 'notice')))
-  }
+  },
 
   /**
    * Update a supervision events' info.
@@ -40,11 +40,11 @@ const service = {
    * @return {Promise<number[]>} Count of rows updated
    *
    */
-  , update: async function updateSupervision(key, updates) {
+  update: async function updateSupervision(key, updates) {
     return models.rangeSupervision.update(key, updates)
-  }
-  
-  /** 
+  },
+
+  /**
    * Delete a supervision.
    *
    * @param {object} key - supervisions' identifying info.
@@ -54,7 +54,7 @@ const service = {
    * @example
    * service.delete({name: 'mark'})
    */
-  , delete: async function deleteSupervision(key) {
+  delete: async function deleteSupervision(key) {
     return models.rangeSupervision.delete(key)
   }
 }

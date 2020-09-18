@@ -24,6 +24,7 @@ async function readScheduleStrict(request, response) {
         error: 'Query didn\'t match a schedule item'
       })
   }
+
   return response
     .status(200)
     .send(response.locals.queryResult)
@@ -43,6 +44,7 @@ async function deleteSchedule(request, response) {
         error: `No schedule item exists matching id ${response.locals.matched.id}`
       })
   }
+
   return response
     .status(204)
     .send()

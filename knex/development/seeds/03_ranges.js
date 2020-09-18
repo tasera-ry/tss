@@ -11,18 +11,22 @@ casual.seed(config.seeds.seed)
 exports.seed = async function(knex) {
   const generateRanges = Promise.all(
     _.times(
-      config.seeds.ranges
-      , casual._shooting_range))
+      config.seeds.ranges,
+      casual._shooting_range
+    )
+  )
 
   const generateSpinner = ora.promise(
-    generateRanges
-    , `Generating ${config.seeds.ranges} ranges`)
+    generateRanges,
+    `Generating ${config.seeds.ranges} ranges`
+  )
 
   const ranges = await generateRanges
 
   const insertRanges = Promise.all(
     _.chunk(ranges, config.seeds.chunkSize)
-      .map(async (rangeChunk) => knex('range').insert(rangeChunk)))
+    .map(async (rangeChunk) => knex('range').insert(rangeChunk))
+  )
   console.log('done')
 
   const insertSpinner = ora.promise(insertRanges, 'Inserting ranges')

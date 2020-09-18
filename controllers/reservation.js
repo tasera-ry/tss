@@ -17,7 +17,6 @@ async function readReservation(request, response) {
 }
 
 async function readReservationStrict(request, response) {
-
   if(response.locals.queryResult.length === 0) {
     return response
       .status(404)
@@ -45,6 +44,7 @@ async function deleteReservation(request, response) {
         error: `No reservation exists matching id ${response.locals.matched.id}`
       })
   }
+
   return response
     .status(204)
     .send()

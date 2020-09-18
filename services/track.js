@@ -19,7 +19,7 @@ const service = {
    */
   create: async function createTrack(info) {
     return (await models.track.create(info)).pop()
-  }
+  },
 
   /**
    * Read (a) tracks' info.
@@ -33,23 +33,23 @@ const service = {
    * exports.read({range_id, description: '100m Kohdistusrata' }) - Find all 100m Kohdistusrata
    * exports.read({range_id:1}['name']) - All track names
    */
-  , read: async function readTrack(key, fields) {
+  read: async function readTrack(key, fields) {
     let combinedKey = key;
 
     //id was ambiguous
-    if(key.track_id !== undefined){
+    if(key.track_id) {
       combinedKey = Object.assign({'track.id': key.track_id}, combinedKey);
       combinedKey = _.omit(combinedKey, ['track_id']);
     }
 
     //name was ambiguous
-    if(key.name !== undefined){
+    if(key.name) {
       combinedKey = Object.assign({'track.name': key.name}, combinedKey);
       combinedKey = _.omit(combinedKey, ['name']);
     }
 
     return (await models.track.read(_.pick(combinedKey,'track.id', 'track.name', 'description')))
-  }
+  },
 
   /**
    * Update a tracks' info.
@@ -62,17 +62,17 @@ const service = {
    * @example
    * exports.update({ name: 'Shooting track 1' }, { description: 'New and improved' })
    */
-  , update: async function updateTrack(key, updates) {
+  update: async function updateTrack(key, updates) {
     let combinedKey = key;
 
     //id was ambiguous
-    if(key.track_id !== undefined){
+    if(key.track_id) {
       combinedKey = Object.assign({'track.id': key.track_id}, combinedKey);
       combinedKey = _.omit(combinedKey, ['track_id']);
     }
 
     return models.track.update(combinedKey, updates)
-  }
+  },
 
     /**
      * Delete a track.
@@ -84,11 +84,11 @@ const service = {
      * @example
      * service.delete({ name: 'Shooting track 1' })
      */
-  , delete: async function deleteTrack(key) {
+  delete: async function deleteTrack(key) {
     let combinedKey = key;
 
     //id was ambiguous
-    if(key.track_id !== undefined){
+    if(key.track_id){
       combinedKey = Object.assign({'track.id': key.track_id}, combinedKey);
       combinedKey = _.omit(combinedKey, ['track_id']);
     }

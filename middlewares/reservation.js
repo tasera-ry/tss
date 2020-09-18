@@ -7,11 +7,13 @@ const _ = require('lodash')
 
 async function createReservation(request, response, next) {
   const query = response.locals.matched
+
   try {
     response.locals.queryResult = await services.reservation.create(query)
   } catch(e) {
     return next(e)
   }
+
   response.set('Location', `api/reservation/${response.locals.queryResult.id}`)
   return next()
 }
@@ -25,6 +27,7 @@ async function readReservation(request, response, next) {
   } catch(e) {
     return next(e)
   }
+
   return next()
 }
 
@@ -49,12 +52,13 @@ async function deleteReservation(request, response, next) {
   } catch(e) {
     return next(e)
   }
+
   return next()
 }
 
 module.exports = {
-  create: createReservation
-  , read: readReservation
-  , update: updateReservation
-  , delete: deleteReservation
+  create: createReservation,
+  read: readReservation,
+  update: updateReservation,
+  delete: deleteReservation
 }
