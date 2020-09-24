@@ -22,7 +22,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
      docker run --env POSTGRES_PASSWORD=some_password -d -p 5432:5432 postgres:12
      ```
 2. Clone this repository
-   - `git clone https://github.com/Pinnallinen/TSS.git`
+   - `git clone https://github.com/tasera-ry/tss.git`
 3. Install project packages
    - `npm install && cd front && npm install && cd ..`
 4. Run database migrations
