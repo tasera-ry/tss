@@ -1,10 +1,11 @@
 const casual = require('casual')
+const bcrypt = require('bcryptjs')
 
 const users = [
   {
     name:'supervisor'
-    , digest: 'password'
-    , role: 'supervisor'
+    , digest: bcrypt.hashSync('password', 0)
+    , role: 'superuser'
   }
 ]
 

@@ -136,6 +136,7 @@
   "tracks": {
     "tableHeaderName": ["Nimi", "Name"],
     "tableHeaderDescription": ["Kuvaus", "Description"],
+    "tableHeaderShort": ["Lyhyt kuvaus", "Short description"],
     "tableHeaderActions": ["Toiminnot", "Actions"],
     "tableTitle": ["Radat", "Tracks"],
     "tableSearchHint": ["Hae", "Search"],

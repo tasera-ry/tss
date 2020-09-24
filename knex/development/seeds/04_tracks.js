@@ -60,5 +60,6 @@ casual.define('range', async function(rangeId) {
     range_id: rangeId
     , name: `Shooting Track ${i}`
     , description: casual.track_description
+    , short_description: 's'
   }))
 })
