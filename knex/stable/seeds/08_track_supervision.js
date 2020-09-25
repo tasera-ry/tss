@@ -11,9 +11,9 @@ exports.seed = async function(knex) {
   schedule.forEach(({ id }) => {
     tracks.forEach(track => {
       supervisions.push({
-        scheduled_range_supervision_id: id
-        , track_id: track.id
-        , track_supervisor: 'present'
+        scheduled_range_supervision_id: id,
+        track_id: track.id,
+        track_supervisor: 'present'
       })
     })
   })

@@ -13,22 +13,25 @@ exports.seed = async function(knex) {
     await knex('track')
       .join('range', 'range.id', 'track.range_id')
       .join('range_reservation', 'range_reservation.range_id', 'range.id')
-      .join('scheduled_range_supervision'
-            , 'scheduled_range_supervision.range_reservation_id'
-            , 'range_reservation.id')
+      .join('scheduled_range_supervision',
+            'scheduled_range_supervision.range_reservation_id',
+            'range_reservation.id')
       .column({
-        trackId: 'track.id'
-        , supervisionId: 'scheduled_range_supervision.id'
+        trackId: 'track.id',
+        supervisionId: 'scheduled_range_supervision.id'
       })
       .whereNotNull('scheduled_range_supervision.supervisor_id'))
 
   const generateSupervisions = Promise.all(
     schedule.map(({trackId, supervisionId}) => (
-      casual.track_supervision(trackId, supervisionId))))
+      casual.track_supervision(trackId, supervisionId)
+    ))
+  )
 
   const generateSpinner = ora.promise(
-    generateSupervisions
-    , `Generating ${schedule.length} track supervisions`)
+    generateSupervisions,
+    `Generating ${schedule.length} track supervisions`
+  )
 
   const supervisions = await generateSupervisions
 
@@ -36,11 +39,14 @@ exports.seed = async function(knex) {
     _.chunk(supervisions, config.seeds.chunkSize)
       .map(async (supervisionChunk) => (
         await knex('track_supervision')
-          .insert(supervisionChunk))))
+          .insert(supervisionChunk)
+      ))
+  )
 
   const insertSpinner = ora.promise(
-    insertSupervisions
-    , 'Inserting track supervisions')
+    insertSupervisions,
+    'Inserting track supervisions'
+  )
 
   const response = await insertSupervisions
 }
@@ -48,9 +54,9 @@ exports.seed = async function(knex) {
 casual.define('track_supervision', async (trackId, supervisionId) => {
   const state = ['absent', 'present', 'closed']
   return {
-    scheduled_range_supervision_id: supervisionId
-    , track_id: trackId
-    , track_supervisor: state[casual.integer(0, state.length - 1)]
-    , notice: casual.description.substring(0, 255)
+    scheduled_range_supervision_id: supervisionId,
+    track_id: trackId,
+    track_supervisor: state[casual.integer(0, state.length - 1)],
+    notice: casual.description.substring(0, 255)
   }
 })

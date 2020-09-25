@@ -3,7 +3,7 @@ const root = path.join(__dirname, '..')
 const knex = require(path.join(root, 'knex', 'knex'))
 const _ = require('lodash')
 
-/** 
+/**
  * Create a new reservation.
  *
  * @param {object} reservationDetails - The reservations details { id, date, available }.
@@ -33,8 +33,9 @@ async function createReservation(reservationDetails) {
  */
 async function readReservation(key, fields, from, to) {
   let query = knex('range_reservation')
-  
-  if(from !== undefined && to !== undefined) {
+
+  // a bit messy
+  if(from && to) {
     const dateInterval = knex
           .raw('\
 natural right join\
@@ -61,7 +62,7 @@ natural right join\
  * @param {object} current - The current identifying info of the reservation.
  * @param {object} updates - New information for the reservation
  *
- * @return {Promise<object[]>} Updated rows 
+ * @return {Promise<object[]>} Updated rows
  *
  * @example
  * updateReservation({ date: '2020-01-01' }, { available: false })
@@ -74,7 +75,7 @@ async function updateReservation(current, updates) {
     err.name = 'Unknown reservation'
     throw err
   }
-  
+
   return knex('range_reservation')
     .whereIn('id', ids)
     .update(updates)
@@ -97,8 +98,8 @@ async function deleteReservation(key) {
 }
 
 module.exports = {
-  create: createReservation
-  , read: readReservation
-  , update: updateReservation
-  , delete: deleteReservation
+  create: createReservation,
+  read: readReservation,
+  update: updateReservation,
+  delete: deleteReservation
 }

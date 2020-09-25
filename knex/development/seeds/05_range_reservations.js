@@ -18,6 +18,7 @@ exports.seed = async function(knex) {
   const ranges = await knex('range')
         .select('id')
 
+  // there might be a better way of doing this
   const generateReservations = Promise.all(_.flatten(_.times(days, (i) => {
     const day = start.clone().add(i, 'days')
     return ranges
@@ -25,9 +26,8 @@ exports.seed = async function(knex) {
   })))
 
   const generateSpinner = ora.promise(
-    generateReservations
-    , `From ${start.format('L')} to ${end.format('L')} (${days} days)
-Generating ${ranges.length} ranges * ${days} days = ${ranges.length * days} reservations`)
+    generateReservations,
+    `From ${start.format('L')} to ${end.format('L')} (${days} days)\nGenerating ${ranges.length} ranges * ${days} days = ${ranges.length * days} reservations`)
 
   const reservations = await generateReservations
 
@@ -35,11 +35,15 @@ Generating ${ranges.length} ranges * ${days} days = ${ranges.length * days} rese
     _.chunk(reservations, config.seeds.chunkSize)
       .map(async (reservationBatch) => (
         knex('range_reservation')
-          .insert(reservationBatch))))
+          .insert(reservationBatch)
+      ))
+  )
 
   const insertSpinner = ora.promise(
-    insertReservations
-    , 'Inserting reservations')
+    insertReservations,
+    'Inserting reservations'
+  )
+
   const response = await insertReservations
 }
 

@@ -2,9 +2,9 @@ const casual = require('casual')
 
 const users = [
   {
-    name:'supervisor'
-    , digest: 'password'
-    , role: 'supervisor'
+    name:'supervisor',
+    digest: 'password',
+    role: 'supervisor'
   }
 ]
 
@@ -15,8 +15,8 @@ exports.seed = function(knex) {
     .then(ids => {
       return ids.map(id => {
         return {
-          user_id: id
-          , phone: undefined
+          user_id: id,
+          phone: undefined
         }
       })
     }).then(supervisors => {
