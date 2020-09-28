@@ -34,7 +34,7 @@ const controller = {
 
   // no returning response here?
   update: async function updateSupervision(request, response) {
-    response
+    return response
       .status(204)
       .send()
   },

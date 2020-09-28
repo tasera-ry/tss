@@ -93,7 +93,7 @@ class Scheduling extends Component {
         datePickerKey:1
       };
   };
-  
+
   componentDidMount(){
     //console.log("MOUNTED",localStorage.getItem('token'));
     this.setState({
@@ -125,10 +125,10 @@ class Scheduling extends Component {
       });
     });
   }
-  
+
   update(){
     //console.log("update state");
-    
+
     const request = async () => {
       const response = await getSchedulingDate(this.state.date);
 
@@ -140,13 +140,13 @@ class Scheduling extends Component {
           rangeId: response.rangeId,
           reservationId: response.reservationId,
           scheduleId: response.scheduleId,
-          open: response.open !== null ? 
+          open: response.open !== null ?
             moment(response.open, 'h:mm:ss').format() :
             moment(response.date)
             .hour(17)
             .minute(0)
             .second(0),
-          close:  response.close !== null ? 
+          close:  response.close !== null ?
             moment(response.close, 'h:mm:ss').format() :
             moment(response.date)
             .hour(20)
@@ -174,13 +174,13 @@ class Scheduling extends Component {
           }
         }
       } else console.error("getting info failed");
-    } 
+    }
     request();
   }
-  
+
   //if these all tracks can work with track changes only changed updates could be sent
   //there's a bug somewhere that makes state handling here a pain
-  openAllTracks = () => {        
+  openAllTracks = () => {
     //console.log("Open tracks");
     for (var key in this.state.tracks) {
       this.setState({
@@ -188,7 +188,7 @@ class Scheduling extends Component {
       });
     }
   };
-  
+
   emptyAllTracks = () => {
     //console.log("Empty tracks");
     for (var key in this.state.tracks) {
@@ -212,7 +212,7 @@ class Scheduling extends Component {
       date: date
     });
   };
-  
+
   handleDatePickChange = (date) => {
     this.setState({
       date: date
@@ -221,7 +221,7 @@ class Scheduling extends Component {
       this.continueWithDate();
     });
   };
-  
+
   continueWithDate = (event) => {
     if(event !== undefined && event.type !== undefined && event.type === 'submit'){
       event.preventDefault();
@@ -234,33 +234,33 @@ class Scheduling extends Component {
       this.update();
     });
   }
-  
+
   handleTimeStartChange = (date) => {
     this.setState({
        open: date
     });
   };
- 
+
   handleTimeEndChange = (date) => {
     this.setState({
        close: date
     });
   };
-  
+
   handleSwitchChange = (event) => {
     //console.log("Switch",event.target.name, event.target.checked)
     this.setState({
        [event.target.name]: event.target.checked
     });
   };
-  
+
   handleRepeatChange = (event) => {
     //console.log("Repeat",event.target.id, event.target.checked)
-    
+
     let daily = false;
     let weekly = false;
     let monthly = false;
-    
+
     if(event.target.id === 'daily'){
       daily = !this.state.daily;
     }
@@ -270,24 +270,24 @@ class Scheduling extends Component {
     else if(event.target.id === 'monthly'){
       monthly = !this.state.monthly;
     }
-    
+
     this.setState({
       daily: daily,
       weekly: weekly,
       monthly: monthly
     });
   };
-  
+
   handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
-    
+
     this.setState({
       toast:false
     });
   };
-  
+
   handleRadioChange = (event) => {
     //console.log("Radio",event.target.name, event.target)
     //having the name be a int causes
@@ -296,42 +296,42 @@ class Scheduling extends Component {
       [event.target.name]: event.target.value
     });
   };
-  
+
   handleValueChange = (event) => {
     //console.log("Value change",event.target.name, event.target.value)
     this.setState({
        [event.target.name]: event.target.value
     });
   };
-  
+
   handleBackdropClick = (event) => {
     //console.log("Backdrop clicked",event);
     event.preventDefault();
   };
-  
+
   handleNotice = (event) => {
     //console.log("handle notice",event.target.id,event.target.value,this.state.tracks)
     let idx = this.state.tracks.findIndex((findItem) => findItem.id === parseInt(event.target.id));
     let tracks = this.state.tracks;
     tracks[idx].notice = event.target.value;
-    
+
     this.setState({
        tracks:tracks
     },function(){
       console.debug(this.state);
     });
   }
-  
+
   saveChanges = async (event) => {
     const {sched} = data;
     const fin = localStorage.getItem("language");
     //console.log("save")
-    
+
     //start spinner
     this.setState({
       state: 'loading'
     });
-    
+
     //update call/error handling
     const update = async (date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat) => {
       //console.log("Gonna call update",date,rsId,srsId,rangeSupervisionScheduled,tracks);
@@ -360,7 +360,7 @@ class Scheduling extends Component {
         }
       })
     }
-    
+
     const repeat = async () => {
       let date = moment(this.state.date).format('YYYY-MM-DD');
       await update(
@@ -371,10 +371,10 @@ class Scheduling extends Component {
         this.state.tracks,
         false
       );
-      
+
       //repeat after me
-      if(this.state.daily === true || 
-         this.state.weekly === true || 
+      if(this.state.daily === true ||
+         this.state.weekly === true ||
          this.state.monthly === true
       ){
         for (var i = 0; i < this.state.repeatCount; i++) {
@@ -387,7 +387,7 @@ class Scheduling extends Component {
           else if(this.state.monthly === true){
             date = moment(date).add(1, 'months');
           }
-          
+
           let response = await this.updateRequirements(moment(date).format('YYYY-MM-DD'))
           await update(
             date,
@@ -401,7 +401,7 @@ class Scheduling extends Component {
       }
     }
     await repeat();
-    //update here not necessarily needed but fixes 
+    //update here not necessarily needed but fixes
     //when saved to a new date with post and then immediately after
     //saving again without updating ids.
     this.update();
@@ -409,7 +409,7 @@ class Scheduling extends Component {
       state: 'ready'
     });
   };
-  
+
   //fetch new requirements for the next day
   updateRequirements = async (date) => {
     //console.log("UPDATE REQUIREMENTS",date);
@@ -444,12 +444,12 @@ class Scheduling extends Component {
   async updateCall(date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat){
     return new Promise(async (resolve,reject) => {
       //console.log("UPDATE CALL",date,rsId,srsId);
-      
+
       let reservationMethod;
       let reservationPath = "";
       let scheduledRangeSupervisionMethod;
       let scheduledRangeSupervisionPath = "";
-      
+
       //determine exist or not with:
       //reservationId:'',
       //scheduledRangeSupervisionId:'',
@@ -458,7 +458,7 @@ class Scheduling extends Component {
         reservationMethod = 'PUT';
         reservationPath = "/"+rsId;
       } else reservationMethod = 'POST';
-      
+
       if(srsId !== null){
         scheduledRangeSupervisionMethod = 'PUT';
         scheduledRangeSupervisionPath = "/"+srsId;
@@ -467,23 +467,23 @@ class Scheduling extends Component {
       //console.log("PRE SEND",rsId===null,srsId===null);
       //console.log("PRE SEND",rsId,srsId);
       //console.log("PRE SEND",reservationMethod,scheduledRangeSupervisionMethod);
-      
+
       let params = {
-        range_id: this.state.rangeId,  
+        range_id: this.state.rangeId,
         available: this.state.available
       };
-      
+
       if(reservationMethod === 'POST'){
-        //reservation can result in a duplicate which causes http 500 
+        //reservation can result in a duplicate which causes http 500
         //error: duplicate key value violates unique constraint "range_reservation_range_id_date_unique"
         params = {
           ...params,
           date: moment(date).format('YYYY-MM-DD')
         }
       }
-      //console.log("reservation params",params)      
-      
-      
+      //console.log("reservation params",params)
+
+
       /*
       *  Reservation
       */
@@ -533,10 +533,10 @@ class Scheduling extends Component {
       if(reservationRes !== undefined){
         rsId = reservationRes;
       }
-      
+
       params = {
         range_reservation_id: rsId,
-        open: moment(this.state.open).format('HH:mm'), 
+        open: moment(this.state.open).format('HH:mm'),
         close: moment(this.state.close).format('HH:mm'),
         supervisor_id: null
       };
@@ -550,8 +550,8 @@ class Scheduling extends Component {
         else return reject(new Error('Range officer enabled but no id'));
       }
       //console.log("schedule params",params)
-      
-      
+
+
       /*
       *  Schedule
       */
@@ -584,7 +584,7 @@ class Scheduling extends Component {
               //console.log("srsId grabbed from result")
               srsId = json.id;
             }
-            
+
             //console.log("srsId",srsId,(typeof srsId !== 'number'),typeof srsId)
             if(typeof srsId !== 'number'){
               return reject(new Error('no schedule id for track supervision'));
@@ -602,7 +602,7 @@ class Scheduling extends Component {
       if(scheduleRes !== undefined){
         srsId = scheduleRes;
       }
-      
+
       /*
       *  Range supervision
       */
@@ -624,7 +624,7 @@ class Scheduling extends Component {
         }
       }
       //else console.log("range status null")
-      
+
       /*
       *  Track supervision
       */
@@ -637,25 +637,25 @@ class Scheduling extends Component {
             let statusInState = this.state[this.state.tracks[key].id];
             //if coming from repeat and status was cleared
             supervisorStatus = statusInState !== undefined ? statusInState : 'absent';
-            
+
             let notice = this.state.tracks[key].notice;
             if(notice === null){
               //undefined gets removed in object
               notice=undefined;
             }
-            
+
             let params = {
               track_supervisor: supervisorStatus,
               notice:notice
-            };            
-            
+            };
+
             let srsp = '';
             let trackSupervisionMethod = '';
             //if scheduled track supervision exists -> put otherwise -> post
             if(tracks[key].scheduled){
               trackSupervisionMethod = 'PUT';
               srsp = "/" + srsId + '/' + this.state.tracks[key].id;
-            } 
+            }
             else
             {
               trackSupervisionMethod = 'POST';
@@ -666,7 +666,6 @@ class Scheduling extends Component {
               };
             }
             //console.log("track supvis params",params,"srsp",srsp,trackSupervisionMethod, "track scheduled:",this.state.tracks[key].scheduled);
-            
             return await fetch("/api/track-supervision"+srsp, {
               method: trackSupervisionMethod,
               body: JSON.stringify(params),
@@ -705,11 +704,11 @@ class Scheduling extends Component {
           return reject(error);
         }
       }
-      
+
       return resolve("update success");
     });
   };
-  
+
   /*
   *   Components
   *
@@ -729,9 +728,9 @@ class Scheduling extends Component {
         key={key}>
           <FormControl component="fieldset">
             <FormLabel component="legend">{tracks[key].name}</FormLabel>
-              <RadioGroup 
-                defaultValue="absent" 
-                name={tracks[key].id} 
+              <RadioGroup
+                defaultValue="absent"
+                name={tracks[key].id}
                 onChange={this.handleRadioChange}
                 value={ this.state[tracks[key].id] || 'absent'}
               >
@@ -746,7 +745,7 @@ class Scheduling extends Component {
                 className="notice"
                 //track_id
                 id={tracks[key].id}
-                aria-label="Ilmoitus" 
+                aria-label="Ilmoitus"
                 rowsMin={1}
                 rowsMax={3}
                 onChange={this.handleNotice}
@@ -764,20 +763,20 @@ class Scheduling extends Component {
       </React.Fragment>
     );
   }
-  
+
   //builds range officer select
   createSupervisorSelect = () => {
     let items = [];
     let disabled = false;
     const {sched} = data;
     const fin = localStorage.getItem("language");
-    
+
     for (var key in this.state.rangeSupervisors) {
       items.push(
         <MenuItem key={key} value={this.state.rangeSupervisors[key].id}>{this.state.rangeSupervisors[key].name}</MenuItem>
       );
     }
-    
+
     if (this.state.rangeSupervisorSwitch === false) {
       disabled=true
     };
@@ -799,14 +798,14 @@ class Scheduling extends Component {
   }
 
   render() {
-    
+
     function Alert(props) {
       return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
 
     const {sched} = data;
     const fin = localStorage.getItem("language");
-    
+
     return (
       <div className="schedulingRoot">
         <Modal open={this.state.state!=='ready'?true:false} onClick={this.handleBackdropClick}>
@@ -946,10 +945,10 @@ class Scheduling extends Component {
             </div>
             <div className="repeatCount">
               {sched.Amount[fin]}
-              <TextField 
+              <TextField
                 name="repeatCount"
-                type="number" 
-                value={this.state.repeatCount} 
+                type="number"
+                value={this.state.repeatCount}
                 onChange={this.handleValueChange}
                 InputProps={{ inputProps: { min: 1, max: 100 } }}
               />
@@ -971,7 +970,7 @@ class Scheduling extends Component {
           </div>
         </div>
       </div>
-      
+
     );
   }
 };
