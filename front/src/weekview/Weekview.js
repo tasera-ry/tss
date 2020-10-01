@@ -102,7 +102,7 @@ class Weekview extends Component {
 
     try {
       const oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() - 7));
-      this.props.history.replace("/weekview/" + uusPaiva.toISOString());
+      this.props.history.replace("/weekview/" + moment(uusPaiva, "YYYYMMDD").add(1, 'day').toISOString());
 
       const viikkoNumero = moment(this.state.dayNro, "YYYYMMDD").week();
 
@@ -161,7 +161,7 @@ class Weekview extends Component {
 
     try {
       const oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() + 7));
-      this.props.history.replace("/weekview/" + uusPaiva.toISOString());
+      this.props.history.replace("/weekview/" + moment(uusPaiva, "YYYYMMDD").add(1, 'day').toISOString());
 
       // Week logic cuz there's no 53 weeks
       const uusVuosi = uusViikko === 1
