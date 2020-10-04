@@ -135,7 +135,6 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin, socket
   const [textState, setTextState] = useState(text);
   socket.on('trackUpdate', msg => {
     if(msg.id === track.id){
-      console.log(msg)
       if(msg.super === 'present'){
         track.trackSupervision = 'absent'
         track.color = colors.green
@@ -156,7 +155,6 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin, socket
     }
   })
   const HandleClick = () => {
-    console.log(track.trackSupervision)
     let newSupervision = "absent";
     let token = localStorage.getItem("token");
     const config = {
