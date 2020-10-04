@@ -135,15 +135,19 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin, socket
   const [textState, setTextState] = useState(text);
   socket.on('trackUpdate', msg => {
     if(msg.id === track.id){
+      console.log(msg)
       if(msg.super === 'present'){
+        track.trackSupervision = 'absent'
         track.color = colors.green
         text = tablet.Green[fin]
       }
       else if(msg.super === "closed"){
+        track.trackSupervision = 'present'
         track.color = colors.red
         text = tablet.Red[fin]
       }
       else if(msg.super === 'absent'){
+        track.trackSupervision = 'closed'
         track.color = colors.white
         text = tablet.White[fin]
       }
@@ -152,6 +156,7 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin, socket
     }
   })
   const HandleClick = () => {
+    console.log(track.trackSupervision)
     let newSupervision = "absent";
     let token = localStorage.getItem("token");
     const config = {
@@ -220,7 +225,10 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin, socket
         if(res) {
           track.scheduled = res.data[0];
           track.trackSupervision = newSupervision;
-          socket.emit('trackUpdate', track.trackSupervision)
+          socket.emit('trackUpdate', {
+            'super':track.trackSupervision,
+            'id':track.id
+          })
           setButtonColor(track.color);
         }
       });
@@ -440,7 +448,6 @@ const Tabletview = () => {
       })
     setSocket(socketIOClient()
       .on('rangeUpdate', (msg) => {
-        console.log(msg)
         setStatusColor(msg.color);
         setStatusText(msg.text);
         if(rangeSupervisionScheduled === false){
