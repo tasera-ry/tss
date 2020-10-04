@@ -24,8 +24,10 @@ import moment from 'moment';
 // Axios for backend calls
 import axios from 'axios';
 
-import { validateLogin, rangeSupervision } from "../utils/Utils";
 // Login validation
+import { validateLogin, rangeSupervision } from "../utils/Utils";
+
+import socketIOClient from "socket.io-client";
 
 /*
   Styles not in the rangeofficer.js file
@@ -89,7 +91,7 @@ const dialogStyle = {
 }
 
 //shooting track rows
-const TrackRows = ({tracks, setTracks, scheduleId, tablet, fin}) => {
+const TrackRows = ({tracks, setTracks, scheduleId, tablet, fin, socket}) => {
   return (
     tracks.map(track =>
                <div key={track.id}>
@@ -99,9 +101,14 @@ const TrackRows = ({tracks, setTracks, scheduleId, tablet, fin}) => {
                      {track.name}
                    </Typography>
 
-                   <TrackButtons track={track} tracks={tracks} setTracks={setTracks}
-                                 scheduleId={scheduleId}
-	                         tablet={tablet} fin={fin}/>
+                   <TrackButtons 
+                    track={track}
+                    tracks={tracks}
+                    setTracks={setTracks}
+                    scheduleId={scheduleId}
+                    tablet={tablet}
+                    fin={fin}
+                    socket={socket}/>
                  </div>
                </div>
               )
@@ -371,6 +378,7 @@ const TimePick = ({tablet, fin, scheduleId, hours, setHours, dialogOpen, setDial
 
 const Tabletview = () => {
   const [statusColor, setStatusColor] = useState();
+  const [socket, setSocket] = useState();
   const [statusText, setStatusText] = useState();
   const [hours, setHours] = useState({});
   const [tracks, setTracks] = useState([]);
@@ -403,7 +411,15 @@ const Tabletview = () => {
         else {
           RedirectToWeekview();
         }
-      });
+      })
+    setSocket(socketIOClient().on('rangeUpdate', (msg) => {
+      console.log(msg)
+      setStatusColor(msg.color);
+      setStatusText(msg.text);
+      if(rangeSupervisionScheduled === false){
+        setRangeSupervisionScheduled(true);
+      }
+    }))
   }, []);
 
   function RedirectToWeekview(){
@@ -411,14 +427,29 @@ const Tabletview = () => {
   };
 
   const HandlePresentClick = () => {
+    socket.emit('rangeUpdate', {
+      status: "present", 
+      color: colors.green, 
+      text: tablet.SuperGreen[fin]
+    })
     updateSupervisor("present", colors.green, tablet.SuperGreen[fin]);
   }
 
   const HandleEnRouteClick = () => {
+    socket.emit('rangeUpdate', {
+      status: "en route", 
+      color: colors.orange, 
+      text: tablet.SuperOrange[fin]
+    })
     updateSupervisor("en route", colors.orange, tablet.SuperOrange[fin]);
   }
 
   const HandleClosedClick = () => {
+    socket.emit('rangeUpdate', {
+      status: "closed", 
+      color: colors.red, 
+      text: tablet.Red[fin]
+    })
     updateSupervisor("closed", colors.red, tablet.Red[fin]);
   }
 
@@ -519,8 +550,12 @@ const Tabletview = () => {
       </Typography>
 
       <div style={trackRowStyle}>
-        <TrackRows tracks={tracks} setTracks={setTracks}
-                   scheduleId={scheduleId} tablet={tablet} fin={fin} />
+        <TrackRows tracks={tracks}
+                   setTracks={setTracks}
+                   scheduleId={scheduleId}
+                   tablet={tablet}
+                   fin={fin}
+                   socket={socket} />
       </div>
     </div>
 

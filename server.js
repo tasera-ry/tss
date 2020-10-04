@@ -10,23 +10,35 @@ const router = require("./routes");
 const port = process.env.ALT_PORT || process.env.PORT || 8000; //azure gives port as an environment variable
 const os = require("os")
 const morgan = require('morgan')
+//const io = require("socket.io")
 
-app.use(helmet());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cookieParser());
+app.use(helmet())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+app.use(cookieParser())
 
 //server calls are all in the routes
-app.use("/api", morgan('short'))
+//app.use("/api", morgan('short'))
 app.use("/api", router);
 
 
 // Rendering the front-end react app
 app.use("/", express.static("front/build/"));
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.error("Server on " + port)
 });
+
+const io = require("socket.io").listen(server, {
+  serveClient: false
+})
+
+io.on('connection', (socket) => {
+  socket.on('rangeUpdate', (status) => {
+    console.log(status)
+    socket.broadcast.emit('rangeUpdate', status)
+  })
+})
 
 if(process.env.NODE_ENV === 'stable' && os.hostname() === 'tasera.netum.fi') {
   if(process.getgid() === 0 || process.getuid() === 0) {
