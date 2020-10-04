@@ -438,14 +438,19 @@ const Tabletview = () => {
           RedirectToWeekview();
         }
       })
-    setSocket(socketIOClient().on('rangeUpdate', (msg) => {
-      console.log(msg)
-      setStatusColor(msg.color);
-      setStatusText(msg.text);
-      if(rangeSupervisionScheduled === false){
-        setRangeSupervisionScheduled(true);
-      }
-    }))
+    setSocket(socketIOClient()
+      .on('rangeUpdate', (msg) => {
+        console.log(msg)
+        setStatusColor(msg.color);
+        setStatusText(msg.text);
+        if(rangeSupervisionScheduled === false){
+          setRangeSupervisionScheduled(true);
+        }
+      })
+      .on('refresh', () => {
+        window.location.reload()
+      })
+    )
   }, []);
 
   function RedirectToWeekview(){

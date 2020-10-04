@@ -32,6 +32,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { getSchedulingDate, rangeSupervision } from "../utils/Utils";
+import socketIOClient from "socket.io-client";
 
 // Translation
 import * as data from '../texts/texts.json';
@@ -606,6 +607,9 @@ class Scheduling extends Component {
       /*
       *  Range supervision
       */
+
+      const socket = socketIOClient()
+
       let rangeStatus = null;
       if(this.state.available === false){
         rangeStatus = 'closed';
@@ -618,6 +622,7 @@ class Scheduling extends Component {
       }
 
       if(rangeStatus !== null){
+        socket.emit('refresh')
         const rangeSupervisionRes = await rangeSupervision(rsId,srsId,rangeStatus,rangeSupervisionScheduled,this.state.token);
         if(rangeSupervisionRes !== true){
           return reject(new Error(rangeSupervisionRes));

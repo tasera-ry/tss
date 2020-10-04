@@ -40,6 +40,10 @@ io.on('connection', (socket) => {
   socket.on('trackUpdate', (msg) => {
     socket.broadcast.emit('trackUpdate', msg)
   })
+  socket.on('refresh', () => {
+    console.log('got refresh')
+    socket.broadcast.emit('refresh')
+  })
 })
 
 if(process.env.NODE_ENV === 'stable' && os.hostname() === 'tasera.netum.fi') {
