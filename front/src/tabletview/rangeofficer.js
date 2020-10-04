@@ -115,7 +115,7 @@ const TrackRows = ({tracks, setTracks, scheduleId, tablet, fin, socket}) => {
   )
 };
 
-const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
+const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin, socket}) => {
   // get this somewhere else
   const buttonStyle = {
     backgroundColor:`${track.color}`,
@@ -132,6 +132,25 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
     text = tablet.Red[fin];
   }
 
+  const [textState, setTextState] = useState(text);
+  socket.on('trackUpdate', msg => {
+    if(msg.id === track.id){
+      if(msg.super === 'present'){
+        track.color = colors.green
+        text = tablet.Green[fin]
+      }
+      else if(msg.super === "closed"){
+        track.color = colors.red
+        text = tablet.Red[fin]
+      }
+      else if(msg.super === 'absent'){
+        track.color = colors.white
+        text = tablet.White[fin]
+      }
+      setButtonColor(track.color)
+      setTextState(text)
+    }
+  })
   const HandleClick = () => {
     let newSupervision = "absent";
     let token = localStorage.getItem("token");
@@ -139,14 +158,17 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
       headers: { Authorization: `Bearer ${token}` }
     };
     track.color = colors.white;
+    setTextState(tablet.White[fin])
 
     if (track.trackSupervision === "absent") {
       newSupervision = "closed";
       track.color = colors.red;
+      setTextState(tablet.Red[fin])
     }
     else if (track.trackSupervision === "closed") {
       newSupervision = "present";
       track.color = colors.green;
+      setTextState(tablet.Green[fin])
     }
 
     let notice = track.notice;
@@ -173,6 +195,10 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
       }).then(res => {
         if(res) {
           track.trackSupervision = newSupervision;
+          socket.emit('trackUpdate', {
+            'super':track.trackSupervision,
+            'id':track.id
+          })
           setButtonColor(track.color);
         }
       });
@@ -194,19 +220,19 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin}) => {
         if(res) {
           track.scheduled = res.data[0];
           track.trackSupervision = newSupervision;
+          socket.emit('trackUpdate', track.trackSupervision)
           setButtonColor(track.color);
         }
       });
     }
   };
-
   return (
     <Button
-      style={buttonStyle}
+      style={{...buttonStyle, backgroundColor:buttonColor}}
       size='large'
       variant={'contained'}
       onClick={HandleClick}>
-      {text}
+      {textState}
     </Button>
   );
 };
