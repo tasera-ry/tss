@@ -155,6 +155,8 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin, socket
     }
   })
   const HandleClick = () => {
+    console.log(socket)
+    console.log(window.location.hostname)
     let newSupervision = "absent";
     let token = localStorage.getItem("token");
     const config = {
@@ -446,7 +448,7 @@ const Tabletview = () => {
 
   }, []);
 
-  const socket = socketIOClient('http://localhost:8000/')
+  const socket = socketIOClient(`${window.location.hostname}:8000/`)
     .on('rangeUpdate', (msg) => {
       setStatusColor(msg.color);
       setStatusText(msg.text);
@@ -505,6 +507,7 @@ const Tabletview = () => {
 
   return (
     <div>
+      <span>test</span> {/*TODO*/}
       <Typography
         variant="body1"
         align="center">
