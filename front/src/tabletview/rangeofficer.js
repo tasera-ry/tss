@@ -448,7 +448,7 @@ const Tabletview = () => {
 
   }, []);
 
-  const socket = socketIOClient(`${window.location.hostname}:8000/`)
+  const socket = socketIOClient(window.location.hostname)
     .on('rangeUpdate', (msg) => {
       setStatusColor(msg.color);
       setStatusText(msg.text);
