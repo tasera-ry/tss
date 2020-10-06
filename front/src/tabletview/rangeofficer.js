@@ -448,7 +448,7 @@ const Tabletview = () => {
 
   }, []);
 
-  const socket = socketIOClient(window.location.hostname)
+  const socket = socketIOClient()
     .on('rangeUpdate', (msg) => {
       setStatusColor(msg.color);
       setStatusText(msg.text);
@@ -507,7 +507,6 @@ const Tabletview = () => {
 
   return (
     <div>
-      <span>test</span> {/*TODO*/}
       <Typography
         variant="body1"
         align="center">
