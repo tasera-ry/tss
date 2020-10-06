@@ -410,7 +410,6 @@ const TimePick = ({tablet, fin, scheduleId, hours, setHours, dialogOpen, setDial
 
 const Tabletview = () => {
   const [statusColor, setStatusColor] = useState();
-  const [socket, setSocket] = useState();
   const [statusText, setStatusText] = useState();
   const [hours, setHours] = useState({});
   const [tracks, setTracks] = useState([]);
@@ -444,19 +443,20 @@ const Tabletview = () => {
           RedirectToWeekview();
         }
       })
-    setSocket(socketIOClient()
-      .on('rangeUpdate', (msg) => {
-        setStatusColor(msg.color);
-        setStatusText(msg.text);
-        if(rangeSupervisionScheduled === false){
-          setRangeSupervisionScheduled(true);
-        }
-      })
-      .on('refresh', () => {
-        window.location.reload()
-      })
-    )
+
   }, []);
+
+  const socket = socketIOClient('http://localhost:8000/')
+    .on('rangeUpdate', (msg) => {
+      setStatusColor(msg.color);
+      setStatusText(msg.text);
+      if(rangeSupervisionScheduled === false){
+        setRangeSupervisionScheduled(true);
+      }
+    })
+    .on('refresh', () => {
+      window.location.reload()
+    })
 
   function RedirectToWeekview(){
     window.location.href="/";
