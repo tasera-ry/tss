@@ -96,7 +96,7 @@ const TrackRows = ({tracks, setTracks, scheduleId, tablet, fin}) => {
                  <div style={rangeStyle}>
                    <Typography
                      align="center">
-                     {track.name}
+                     {track.name} / {track.description}
                    </Typography>
 
                    <TrackButtons track={track} tracks={tracks} setTracks={setTracks}
