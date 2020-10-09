@@ -137,26 +137,24 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin, socket
     if(msg.id === track.id){
       if(msg.super === 'present'){
         track.trackSupervision = 'absent'
-        track.color = colors.green
-        text = tablet.Green[fin]
+        setButtonColor(colors.green)
+        setTextState(tablet.Green[fin])
       }
       else if(msg.super === "closed"){
         track.trackSupervision = 'present'
-        track.color = colors.red
-        text = tablet.Red[fin]
+        setButtonColor(colors.red)
+        setTextState(tablet.Red[fin])
       }
       else if(msg.super === 'absent'){
         track.trackSupervision = 'closed'
-        track.color = colors.white
-        text = tablet.White[fin]
+        setButtonColor(colors.white)
+        setTextState(tablet.White[fin])
       }
-      setButtonColor(track.color)
-      setTextState(text)
+      // setButtonColor(track.color)
+      // setTextState(text)
     }
   })
   const HandleClick = () => {
-    console.log(socket)
-    console.log(window.location.hostname)
     let newSupervision = "absent";
     let token = localStorage.getItem("token");
     const config = {
@@ -190,9 +188,8 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin, socket
     let srsp = '';
     //if scheduled track supervision exists -> put otherwise -> post
     if (track.scheduled) {
-      srsp = "/" + scheduleId + '/' + track.id;
       axios.put(
-        "/api/track-supervision" + srsp,
+        `/api/track-supervision/${scheduled}/${track.id}`,
         params,
         config
       ).catch(error => {
@@ -208,7 +205,7 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin, socket
         }
       });
     }
-    else {
+    else if(scheduleId) {
       params = {
         ...params,
         scheduled_range_supervision_id: scheduleId,
@@ -233,6 +230,7 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin, socket
         }
       });
     }
+    //if not during scheduled range supervision 
   };
   return (
     <Button
