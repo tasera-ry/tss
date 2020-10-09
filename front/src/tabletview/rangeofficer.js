@@ -185,11 +185,10 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin, socket
       notice: notice
     };
 
-    let srsp = '';
     //if scheduled track supervision exists -> put otherwise -> post
     if (track.scheduled) {
       axios.put(
-        `/api/track-supervision/${scheduled}/${track.id}`,
+        `/api/track-supervision/${scheduleId}/${track.id}`,
         params,
         config
       ).catch(error => {
@@ -205,7 +204,7 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin, socket
         }
       });
     }
-    else if(scheduleId) {
+    else {
       params = {
         ...params,
         scheduled_range_supervision_id: scheduleId,
@@ -230,7 +229,6 @@ const TrackButtons = ({track, tracks, setTracks, scheduleId, tablet, fin, socket
         }
       });
     }
-    //if not during scheduled range supervision 
   };
   return (
     <Button
