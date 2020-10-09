@@ -10,6 +10,7 @@ import { dayToString, getSchedulingWeek, getSchedulingDate } from "../utils/Util
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
+import InfoIcon from '@material-ui/icons/Info';
 
 // Moment for date management
 import moment from 'moment';
@@ -347,7 +348,6 @@ class Weekview extends Component {
     createDate = () => {
 
         let table = []
-
         if (this.state.paivat === undefined) {
             
         }
@@ -382,7 +382,7 @@ class Weekview extends Component {
         //If blue, something is wrong
         let colorFromBackEnd = "blue"
         let table = []
-
+        
         if (this.state.paivat === undefined) {
             
         }
@@ -390,6 +390,8 @@ class Weekview extends Component {
             let rataStatus;
             let oikeePaiva;
             let linkki;
+            let Attention;
+            let infospace;
             for (let j = 0; j < 7; j++) {
 
                 //Luodaan väri 
@@ -412,11 +414,25 @@ class Weekview extends Component {
                 }
 
                 oikeePaiva = this.state.paivat[j].date
+                //1= ei lisäilmoituksia radoilla. oletuksena siis kaikki ok
+                infospace="1"
+                //loopataan päivän radat läpi      
+                for (var key in this.state.paivat[j].tracks){                 
+                   //Tallennetaan radan lisätiedot Attention muuttujaan
+                   Attention = this.state.paivat[j].tracks[key].notice
+                   //jos lisätiedot ei ole tyhjä muuta infospace -->2. jos infospace ei ole 1 printtaa iconi.             
+                   if(Attention.length !== 0){
+                      infospace = "2"
+                   }
+                }
                 linkki = "/dayview/" + oikeePaiva
                 table.push(
                     <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={linkki}>
                     <p>
-                    &nbsp;
+                    {infospace==1 ?
+                       <br />
+                       :
+                       <InfoIcon/>}
                     </p>
                     </Link>
                     )
