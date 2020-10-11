@@ -60,6 +60,16 @@ const fields = {
 
     return validatorAdditions(validator, opts);
   }
+
+  , short_description: function shortDescriptionValidation(requestObject, ...opts) {
+    const validator = requestObject('short_description')
+          .isString()
+          .withMessage('must be a string')
+          .isLength({ min: 1, max: 25 })
+          .withMessage('must be between 1 and 25 characters')
+
+    return validatorAdditions(validator, opts);
+  }
 }
 
 function handleValidationErrors(request, response, next) {
@@ -81,6 +91,7 @@ module.exports = {
   ],  readAll: [
     fields.name(query, 'optional')
     , fields.description(query, 'optional')
+    , fields.short_description(query, 'optional')
     , handleValidationErrors
     ,  function storeID(request, response, next) {
       response.locals.filtered = !_.isEmpty(request.query);
@@ -90,6 +101,7 @@ module.exports = {
   ],  create: [
     fields.name(body, 'exists')
     , fields.description(body, 'exists')
+    , fields.short_description(body, 'exists')
     , fields.range_id(body, 'exists')
     , handleValidationErrors
     , function storeCreationRequest(request, response, next) {
@@ -100,6 +112,7 @@ module.exports = {
     fields.track_id(param, 'exists')
     , fields.name(body, 'optional')
     , fields.description(body, 'optional')
+    , fields.short_description(body, 'optional')
     , handleValidationErrors
     , function storeUpdateRequest(request, response, next) {
       response.locals.id = matchedData(request, { locations: ['params'] });
