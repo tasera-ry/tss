@@ -68,7 +68,6 @@ const model = {
    * exports.update({ 'track.id': 8 }, { description: '200m Kohdistusrata' })
    */
   , update: async function updateTrack(current, update) {
-    console.log('model', update)
     const trackConstraints = {
       range_id: {}
       , name: {}

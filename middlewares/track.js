@@ -36,7 +36,6 @@ const serviceCalls = {
   , update: async function updateTrack(request, response, next) {
     const id = response.locals.id
     const updates = response.locals.updates
-    console.log('mw', updates)
     try {
       response.locals.queryResult = await services.track.update(id, updates)
     } catch(e) {
