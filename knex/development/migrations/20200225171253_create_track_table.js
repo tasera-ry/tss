@@ -10,6 +10,8 @@ exports.up = function(knex) {
         .notNullable()
       track.string('description')
         .notNullable()
+      track.string('short_description')
+        .notNullable()
     })
 }
 

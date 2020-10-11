@@ -231,6 +231,9 @@ const TrackTable = ({setTrackData, trackData, setRequestStatus, setRequestText, 
         { title: l10n.tableHeaderDescription[lang],
           field: 'description',
           headerStyle: headerStyle },
+        { title: l10n.tableHeaderShort[lang],
+          field: 'short_description',
+          headerStyle: headerStyle },
       ]}
       data={trackData}
       title={ l10n.tableTitle[lang] }

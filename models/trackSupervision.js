@@ -20,10 +20,10 @@ const model = {
    */
   create: async function createSupervision(supVis) {
     const supervisionConstraints = {
-      scheduled_range_supervision_id: {}
-      , track_id: {}
-      , track_supervisor: {}
-      , notice: {}
+      scheduled_range_supervision_id: {},
+      track_id: {},
+      track_supervisor: {},
+      notice: {}
     }
 
     //check if already exists
@@ -31,7 +31,7 @@ const model = {
       .read(supVis, ['scheduled_range_supervision_id', 'track_id'])
       .then(rows => rows[0])
 
-    if(id !== undefined) {
+    if(id) {
       const err = Error('Supervision even already exists')
       err.name = 'Supervision exists'
       throw err
@@ -46,7 +46,7 @@ const model = {
         .into('track_supervision')
         .catch(trx.rollback)
     })
-  }
+  },
 
   /**
    * Get the supervisions matching a key.
@@ -59,11 +59,11 @@ const model = {
    * model.read({ scheduled_range_supervision_id:1, track_id:1 }, ['track_supervisor'])
    * model.read({ track_id:1} )
    */
-  , read: async function readSupervision(key, fields) {
+  read: async function readSupervision(key, fields) {
     return knex('track_supervision')
       .where(key)
       .select(fields)
-  }
+  },
 
   /**
    * Update a supervision events' info.
@@ -76,14 +76,14 @@ const model = {
    * @example
    * model.update({ scheduled_range_supervision_id:1, track_id:1 }, { track_supervisor: 'absent' })
    */
-  , update: async function updateSupervision(current, update) {
+  update: async function updateSupervision(current, update) {
     const supVis = _.pick(update, 'track_supervisor', 'notice')
 
     const id = await model
           .read(current, ['scheduled_range_supervision_id', 'track_id'])
           .then(rows => rows[0])
 
-    if(id === undefined) {
+    if(!id) {
       const err = Error('Didn\'t identify supervision(s) to update')
       err.name = 'Unknown supervision'
       throw err
@@ -95,7 +95,7 @@ const model = {
         .update(supVis)
         .catch(trx.rollback)
     })
-  }
+  },
 
   /**
    * Delete the trackSupervision event matching a key.
@@ -106,7 +106,7 @@ const model = {
    * @example
    * model.delete({ scheduled_range_supervision_id:1, track_id:1 })
    */
-  , delete: async function deleteSupervision(supVis) {
+  delete: async function deleteSupervision(supVis) {
     return await knex.transaction(trx => {
       return trx('track_supervision')
         .where(supVis)

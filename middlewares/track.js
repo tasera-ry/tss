@@ -5,17 +5,21 @@ const services = require(path.join(root, 'services'))
 const serviceCalls = {
   read: async function readTrack(request, response, next) {
     const query = response.locals.query
+
     try {
       response.locals.queryResult = await services.track.read(query, [])
     }
     catch(e) {
       return next(e)
     }
+
     return next()
-  }
-  , create: async function createTrack(request, response, next) {
+  },
+
+  create: async function createTrack(request, response, next) {
     const query = response.locals.query
     let id
+
     try {
       id = await services.track.create(query)
     }
@@ -32,11 +36,11 @@ const serviceCalls = {
 
     response.set('Location', `/api/track/${id}`)
     return next()
-  }
-  , update: async function updateTrack(request, response, next) {
+  },
+
+  update: async function updateTrack(request, response, next) {
     const id = response.locals.id
     const updates = response.locals.updates
-
     try {
       response.locals.queryResult = await services.track.update(id, updates)
     } catch(e) {
@@ -47,17 +51,22 @@ const serviceCalls = {
             error: e.name
           })
       }
+
       return next(e)
     }
+
     return next()
-  }
-  , delete: async function deleteTrack(request, response, next) {
+  },
+
+  delete: async function deleteTrack(request, response, next) {
     const query = response.locals.query
+
     try {
       response.locals.queryResult = await services.track.delete(query)
     } catch(e) {
       return next(e)
     }
+
     return next()
   }
 }

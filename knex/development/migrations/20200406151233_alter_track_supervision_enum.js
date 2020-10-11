@@ -1,4 +1,3 @@
-
 exports.up = function(knex) {
   return knex.schema
     .table('track_supervision', function (table) {
@@ -10,8 +9,8 @@ exports.up = function(knex) {
     .raw('drop type track_supervisor')
     .raw("create type track_supervisor_closed as enum('absent', 'present', 'closed')")
     .alterTable('track_supervision', supervision => {
-      supervision.enu('track_supervisor', null, { 
-        useNative: true, 
+      supervision.enu('track_supervisor', null, {
+        useNative: true,
         existingType: true,
         enumName: 'track_supervisor_closed'
       })
@@ -19,8 +18,8 @@ exports.up = function(knex) {
       .defaultTo('absent')
     })
     .alterTable('track_supervision_history', supervision => {
-      supervision.enu('track_supervisor', null, { 
-        useNative: true, 
+      supervision.enu('track_supervisor', null, {
+        useNative: true,
         existingType: true,
         enumName: 'track_supervisor_closed'
       })
@@ -40,8 +39,8 @@ exports.down = function(knex) {
     .raw('drop type track_supervisor_closed')
     .raw("create type track_supervisor as enum('absent', 'present')")
     .alterTable('track_supervision', supervision => {
-      supervision.enu('track_supervisor', null, { 
-        useNative: true, 
+      supervision.enu('track_supervisor', null, {
+        useNative: true,
         existingType: true,
         enumName: 'track_supervisor'
       })
@@ -49,8 +48,8 @@ exports.down = function(knex) {
       .defaultTo('absent')
     })
     .alterTable('track_supervision_history', supervision => {
-      supervision.enu('track_supervisor', null, { 
-        useNative: true, 
+      supervision.enu('track_supervisor', null, {
+        useNative: true,
         existingType: true,
         enumName: 'track_supervisor'
       })

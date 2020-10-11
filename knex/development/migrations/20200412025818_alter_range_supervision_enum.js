@@ -8,10 +8,11 @@ exports.up = function(knex) {
       table.dropColumn('range_supervisor')
     })
     .raw('drop type range_supervisor')
+    // odd type name for enum
     .raw("create type range_supervisor_not_confirmed as enum('absent', 'confirmed', 'not confirmed', 'en route', 'present')")
     .alterTable('range_supervision', supervision => {
-      supervision.enu('range_supervisor', null, { 
-        useNative: true, 
+      supervision.enu('range_supervisor', null, {
+        useNative: true,
         existingType: true,
         enumName: 'range_supervisor_not_confirmed'
       })
@@ -19,8 +20,8 @@ exports.up = function(knex) {
       .defaultTo('absent')
     })
     .alterTable('range_supervision_history', supervision => {
-      supervision.enu('range_supervisor', null, { 
-        useNative: true, 
+      supervision.enu('range_supervisor', null, {
+        useNative: true,
         existingType: true,
         enumName: 'range_supervisor_not_confirmed'
       })
@@ -40,8 +41,8 @@ exports.down = function(knex) {
     .raw('drop type range_supervisor_not_confirmed')
     .raw("create type range_supervisor as enum('absent', 'confirmed', 'en route', 'present')")
     .alterTable('range_supervision', supervision => {
-      supervision.enu('range_supervisor', null, { 
-        useNative: true, 
+      supervision.enu('range_supervisor', null, {
+        useNative: true,
         existingType: true,
         enumName: 'range_supervisor'
       })
@@ -49,8 +50,8 @@ exports.down = function(knex) {
       .defaultTo('absent')
     })
     .alterTable('range_supervision_history', supervision => {
-      supervision.enu('range_supervisor', null, { 
-        useNative: true, 
+      supervision.enu('range_supervisor', null, {
+        useNative: true,
         existingType: true,
         enumName: 'range_supervisor'
       })

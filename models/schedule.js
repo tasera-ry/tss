@@ -2,7 +2,7 @@ const path = require('path')
 const root = path.join(__dirname, '..')
 const knex = require(path.join(root, 'knex', 'knex'))
 
-/** 
+/**
  * Create a new schedule item.
  *
  * @param {object} details - The schedule's details { id?, range_reservation_id, supervisor_id?, open, close }.
@@ -75,8 +75,8 @@ async function deleteSchedule(key) {
 }
 
 module.exports = {
-  create: createSchedule
-  , read: readSchedule
-  , update: updateSchedule
-  , delete: deleteSchedule
+  create: createSchedule,
+  read: readSchedule,
+  update: updateSchedule,
+  delete: deleteSchedule
 }

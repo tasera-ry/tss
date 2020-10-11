@@ -1,9 +1,11 @@
-const { body
-        , check
-        , query
-        , param
-        , validationResult
-        , matchedData } = require('express-validator')
+const {
+  body,
+  check,
+  query,
+  param,
+  validationResult,
+  matchedData
+} = require('express-validator')
 
 function idValidator(requestObject, opts) {
 
@@ -22,6 +24,7 @@ function idValidator(requestObject, opts) {
     validator = validator
       .optional()
   }
+
   return validator
 }
 
@@ -40,6 +43,7 @@ function rangeValidator(requestObject, opts) {
     validator = validator
       .optional()
   }
+
   return validator
 }
 
@@ -58,6 +62,7 @@ function dateValidator(requestObject, opts) {
     validator = validator
       .optional()
   }
+
   return validator
 }
 
@@ -65,7 +70,7 @@ function fromValidator(requestObject, opts) {
   let validator = requestObject('from')
       .isISO8601({ strict: true })
       .withMessage('must be an ISO8601 date')
-  
+
   if(opts.exists) {
     validator = validator
       .exists({ checkNull: true, checkFalsy: true })
@@ -76,6 +81,7 @@ function fromValidator(requestObject, opts) {
     validator = validator
       .optional()
   }
+
   return validator
 }
 
@@ -83,7 +89,7 @@ function toValidator(requestObject, opts) {
   let validator = requestObject('to')
       .isISO8601({ strict: true })
       .withMessage('must be an ISO8601 date')
-  
+
   if(opts.exists) {
     validator = validator
       .exists({ checkNull: true, checkFalsy: true })
@@ -94,6 +100,7 @@ function toValidator(requestObject, opts) {
     validator = validator
       .optional()
   }
+
   return validator
 }
 
@@ -113,6 +120,7 @@ function availabilityValidator(requestObject, opts) {
     validator = validator
       .optional()
   }
+
   return validator
 }
 
@@ -135,38 +143,38 @@ function storeRequest(request, response, next) {
 
 module.exports = {
   create: [
-    rangeValidator(body, { exists: true })
-    , dateValidator(body, { exists: true })
-    , availabilityValidator(body, { exists: true })
-    , handleValidationErrors
-    , storeRequest
-  ]
-  , read: [
-    idValidator(query, { optional: true })
-    , rangeValidator(query, { optional: true })
-    , dateValidator(query, { optional: true })
-    , availabilityValidator(query, { optional: true })
-    , fromValidator(query, { optional: true })
-    , toValidator(query, { optional: true })
-    , handleValidationErrors
-    , storeRequest
-  ]
-  , readStrict: [
-    idValidator(param, { exists: true })
-    , handleValidationErrors
-    , storeRequest
-  ]
-  , update: [
-    idValidator(param, { exists: true })
-    , rangeValidator(body, { optional: true })
-    , dateValidator(body, { optional: true })
-    , availabilityValidator(body, { optional: true })
-    , handleValidationErrors
-    , storeRequest
-  ]
-  , delete: [
-    idValidator(param, { exists: true })
-    , handleValidationErrors
-    , storeRequest
+    rangeValidator(body, { exists: true }),
+    dateValidator(body, { exists: true }),
+    availabilityValidator(body, { exists: true }),
+    handleValidationErrors,
+    storeRequest
+  ],
+  read: [
+    idValidator(query, { optional: true }),
+    rangeValidator(query, { optional: true }),
+    dateValidator(query, { optional: true }),
+    availabilityValidator(query, { optional: true }),
+    fromValidator(query, { optional: true }),
+    toValidator(query, { optional: true }),
+    handleValidationErrors,
+    storeRequest
+  ],
+  readStrict: [
+    idValidator(param, { exists: true }),
+    handleValidationErrors,
+    storeRequest
+  ],
+  update: [
+    idValidator(param, { exists: true }),
+    rangeValidator(body, { optional: true }),
+    dateValidator(body, { optional: true }),
+    availabilityValidator(body, { optional: true }),
+    handleValidationErrors,
+    storeRequest
+  ],
+  delete: [
+    idValidator(param, { exists: true }),
+    handleValidationErrors,
+    storeRequest
   ]
 }

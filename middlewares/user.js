@@ -43,6 +43,7 @@ exports.hasProperty = function userHasProperty(propertyName, value, equalityFn) 
 const serviceCalls = {
   sign: async function signUser(request, response, next) {
     const credentials = response.locals.credentials;
+
     try {
       response.locals.id = await services.user.authenticate(credentials);
     }
@@ -67,10 +68,13 @@ const serviceCalls = {
         return next(e);
       }
     }
+
     return next();
-  }
-  , readFilter: async function readFilterUser(request, response, next) {
+  },
+
+  readFilter: async function readFilterUser(request, response, next) {
     const query = response.locals.query
+
     try {
       response.locals.queryResult = await services.user.read(query, []);
     }
@@ -78,21 +82,27 @@ const serviceCalls = {
       // Connection and other unexpected errors
       return next(e);
     }
+
     return next();
-  }
-  , read: async function readUser(request, response, next) {
+  },
+
+  read: async function readUser(request, response, next) {
     const query = response.locals.query
+
     try {
       response.locals.queryResult = await services.user.read(query, []);
     }
     catch(e) {
       return next(e);
     }
+
     return next();
-  }
-  , create: async function createUser(request, response, next) {
+  },
+
+  create: async function createUser(request, response, next) {
     const query = response.locals.query;
     let id;
+
     try {
       id = await services.user.create(query);
     }
@@ -106,10 +116,12 @@ const serviceCalls = {
     catch(e) {
       return next(e);
     }
+
     response.set('Location', `/api/user/${id}`);
     return next();
-  }
-  , update: async function updateUser(request, response, next) {
+  },
+
+  update: async function updateUser(request, response, next) {
     const id = response.locals.id;
     const updates = response.locals.updates;
 
@@ -123,48 +135,53 @@ const serviceCalls = {
             error: e.name
           });
       }
+
       return next(e);
     }
+
     return next();
-  }
-  , delete: async function deleteUser(request, response, next) {
+  },
+
+  delete: async function deleteUser(request, response, next) {
     const query = response.locals.query
+
     try {
       response.locals.queryResult = await services.user.delete(query);
     } catch(e) {
       return next(e);
     }
+
     return next();
   }
 }
 
 exports.sign = [
-  validators.user.sign
-  , serviceCalls.sign
+  validators.user.sign,
+  serviceCalls.sign
 ];
 
 exports.readFilter = [
-  validators.user.readFilter
-  , canRead
-  , serviceCalls.readFilter
+  validators.user.readFilter,
+  canRead,
+  serviceCalls.readFilter
 ];
 
 exports.read = [
-  validators.user.read
-  , serviceCalls.read
+  validators.user.read,
+  serviceCalls.read
 ];
 
 exports.create = [
-  validators.user.create
-  , serviceCalls.create
+  validators.user.create,
+  serviceCalls.create
 ];
 
 exports.update = [
-  validators.user.update
-  , serviceCalls.update
+  validators.user.update,
+  serviceCalls.update
 ];
 
 exports.delete = [
-  validators.user.delete
-  , serviceCalls.delete
+  validators.user.delete,
+  serviceCalls.delete
 ];

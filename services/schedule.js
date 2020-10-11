@@ -4,7 +4,7 @@ const models = require(path.join(root, 'models'))
 const _ = require('lodash')
 const moment = require('moment')
 
-/** 
+/**
  * Create a new schedule item.
  *
  * @param {object} details - The schedule's details { range_reservation_id, supervisor_id?, open, close }.
@@ -63,8 +63,8 @@ async function deleteSchedule(key) {
 }
 
 module.exports = {
-  create: createSchedule
-  , read: readSchedule
-  , update: updateSchedule
-  , delete: deleteSchedule
+  create: createSchedule,
+  read: readSchedule,
+  update: updateSchedule,
+  delete: deleteSchedule
 }

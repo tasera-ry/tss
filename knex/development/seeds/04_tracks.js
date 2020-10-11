@@ -14,39 +14,43 @@ exports.seed = async function(knex) {
   const total = ranges * tracks
 
   const generateTracks = Promise.all(
-    (await knex('range')
-     .select('id'))
-      .map(async ({id}) => casual.range(id)))
+    (await knex('range').select('id'))
+      .map(async ({id}) => casual.range(id))
+  )
 
   const generateSpinner = ora.promise(
-    generateTracks
-    , `Generating ${ranges} ranges * ${tracks} tracks = ${total} tracks`)
+    generateTracks,
+    `Generating ${ranges} ranges * ${tracks} tracks = ${total} tracks`
+  )
+
   const _tracks = _.flatten(await generateTracks)
 
   const insertTracks = Promise.all(
     _.chunk(_tracks, config.seeds.chunkSize)
-      .map(async (trackChunk) => knex('track').insert(trackChunk)))
+      .map(async (trackChunk) => knex('track').insert(trackChunk))
+  )
 
   const insertSpinner = ora.promise(insertTracks, 'Inserting tracks')
   const response = await insertTracks
 }
 
+// these strings only for test purposes?
 casual.define('track_description', function() {
   const names = [
-    'Pistol'
-    , 'Shotgun'
-    , 'Rifle'
-    , 'Indoor'
+    'Pistol',
+    'Shotgun',
+    'Rifle',
+    'Indoor'
   ]
 
   const distances = [
-    '10m'
-    , '25m'
-    , '50m'
-    , '100m'
-    , '150m'
-    , '200m'
-    , '300m'
+    '10m',
+    '25m',
+    '50m',
+    '100m',
+    '150m',
+    '200m',
+    '300m'
   ]
 
   const name = names[casual.integer(0, names.length - 1)]
@@ -57,8 +61,9 @@ casual.define('track_description', function() {
 casual.define('range', async function(rangeId) {
   const tracks = config.seeds.tracks
   return _.times(tracks, (i) => ({
-    range_id: rangeId
-    , name: `Shooting Track ${i}`
-    , description: casual.track_description
+    range_id: rangeId,
+    name: `Shooting Track ${i}`,
+    description: casual.track_description,
+    short_description: `s ${i}`
   }))
 })
