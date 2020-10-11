@@ -126,6 +126,8 @@ class Scheduling extends Component {
         }
       });
     });
+    this.socket = socketIOClient();
+
   }
 
   update(){
@@ -409,6 +411,7 @@ class Scheduling extends Component {
     this.setState({
       state: 'ready'
     });
+    this.socket.emit('refresh')
   };
 
   //fetch new requirements for the next day
@@ -587,8 +590,6 @@ class Scheduling extends Component {
       *  Range supervision
       */
 
-      const socket = socketIOClient()
-
       let rangeStatus = null;
 
       if (!this.state.available) {
@@ -603,7 +604,6 @@ class Scheduling extends Component {
       }
 
       if (rangeStatus !== null) {
-        socket.emit('refresh')
         const rangeSupervisionRes = await rangeSupervision(rsId, srsId, rangeStatus, rangeSupervisionScheduled, this.state.token);
         if (rangeSupervisionRes !== true) {
           return reject(new Error(rangeSupervisionRes));

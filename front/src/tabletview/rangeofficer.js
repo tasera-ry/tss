@@ -415,6 +415,7 @@ const Tabletview = () => {
   const [reservationId, setReservationId] = useState();
   const [rangeSupervisionScheduled, setRangeSupervisionScheduled] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [socket, setSocket] = useState();
   const role = localStorage.getItem("role");
   const fin = localStorage.getItem("language");
   const {tablet} = data;
@@ -441,20 +442,18 @@ const Tabletview = () => {
           RedirectToWeekview();
         }
       })
-
+      setSocket(socketIOClient()
+      .on('rangeUpdate', (msg) => {
+        setStatusColor(msg.color);
+        setStatusText(msg.text);
+        if(rangeSupervisionScheduled === false){
+          setRangeSupervisionScheduled(true);
+        }
+      })
+      .on('refresh', () => {
+        window.location.reload()
+      }))
   }, []);
-
-  const socket = socketIOClient()
-    .on('rangeUpdate', (msg) => {
-      setStatusColor(msg.color);
-      setStatusText(msg.text);
-      if(rangeSupervisionScheduled === false){
-        setRangeSupervisionScheduled(true);
-      }
-    })
-    .on('refresh', () => {
-      window.location.reload()
-    })
 
   function RedirectToWeekview(){
     window.location.href="/";
