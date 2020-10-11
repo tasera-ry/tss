@@ -32,6 +32,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { getSchedulingDate, rangeSupervision } from "../utils/Utils";
+import socketIOClient from "socket.io-client";
 
 // Translation
 import * as data from '../texts/texts.json';
@@ -125,6 +126,8 @@ class Scheduling extends Component {
         }
       });
     });
+    this.socket = socketIOClient();
+
   }
 
   update(){
@@ -408,6 +411,7 @@ class Scheduling extends Component {
     this.setState({
       state: 'ready'
     });
+    this.socket.emit('refresh')
   };
 
   //fetch new requirements for the next day
@@ -585,6 +589,7 @@ class Scheduling extends Component {
       /*
       *  Range supervision
       */
+
       let rangeStatus = null;
 
       if (!this.state.available) {
