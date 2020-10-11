@@ -382,7 +382,7 @@ class Weekview extends Component {
         //If blue, something is wrong
         let colorFromBackEnd = "blue"
         let table = []
-        
+
         if (this.state.paivat === undefined) {
             
         }
@@ -391,14 +391,9 @@ class Weekview extends Component {
             let oikeePaiva;
             let linkki;
             let Attention;
-            let infospace;
+            let info;
             for (let j = 0; j < 7; j++) {
-
-                //Luodaan väri 
-
                 rataStatus = this.state.paivat[j].rangeSupervision
-                //console.log("ratastatus",rataStatus);
-
                 if (rataStatus === "present") {
                     colorFromBackEnd = "#658f60"
                 } else if (rataStatus === "confirmed") {
@@ -414,25 +409,21 @@ class Weekview extends Component {
                 }
 
                 oikeePaiva = this.state.paivat[j].date
-                //1= ei lisäilmoituksia radoilla. oletuksena siis kaikki ok
-                infospace="1"
-                //loopataan päivän radat läpi      
+                info=false
                 for (var key in this.state.paivat[j].tracks){                 
-                   //Tallennetaan radan lisätiedot Attention muuttujaan
                    Attention = this.state.paivat[j].tracks[key].notice
-                   //jos lisätiedot ei ole tyhjä muuta infospace -->2. jos infospace ei ole 1 printtaa iconi.             
                    if(Attention.length !== 0){
-                      infospace = "2"
+                      info = true
                    }
                 }
                 linkki = "/dayview/" + oikeePaiva
                 table.push(
                     <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={linkki}>
                     <p>
-                    {infospace==1 ?
-                       <br />
-                       :
-                       <InfoIcon/>}
+                    {info ?
+                        <InfoIcon/>
+                        :
+                        <br />}
                     </p>
                     </Link>
                     )
