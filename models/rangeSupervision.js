@@ -16,9 +16,9 @@ const model = {
    */
   create: async function createSupervision(supVis) {
     const supervisionConstraints = {
-      scheduled_range_supervision_id: {}
-      , range_supervisor: {}
-      , notice: {}
+      scheduled_range_supervision_id: {},
+      range_supervisor: {},
+      notice: {}
     }
 
     //check if already exists
@@ -26,7 +26,7 @@ const model = {
       .read(supVis, ['scheduled_range_supervision_id'])
       .then(rows => rows[0])
 
-    if(id !== undefined) {
+    if(id) {
       const err = Error('Supervision event already exists')
       err.name = 'Supervision exists'
       throw err
@@ -41,7 +41,7 @@ const model = {
         .into('range_supervision')
         .catch(trx.rollback)
     })
-  }
+  },
 
   /**
    * Get the supervisions matching a key.
@@ -53,11 +53,11 @@ const model = {
    * @example
    * model.read({ scheduled_range_supervision_id:1 }, ['range_supervisor'])
    */
-  , read: async function readSupervision(key, fields) {
+  read: async function readSupervision(key, fields) {
     return knex('range_supervision')
       .where(key)
       .select(fields)
-  }
+  },
 
   /**
    * Update a supervision events' info.
@@ -70,14 +70,14 @@ const model = {
    * @example
    * model.update({ scheduled_range_supervision_id:1 }, { range_supervisor: 'absent' })
    */
-  , update: async function updateSupervision(current, update) {
+  update: async function updateSupervision(current, update) {
     const supVis = _.pick(update, 'range_supervisor', 'notice')
 
     const id = await model
           .read(current, ['scheduled_range_supervision_id'])
           .then(rows => rows[0])
 
-    if(id === undefined) {
+    if(!id) {
       const err = Error('Didn\'t identify supervision(s) to update')
       err.name = 'Unknown supervision'
       throw err
@@ -89,7 +89,7 @@ const model = {
         .update(supVis)
         .catch(trx.rollback)
     })
-  }
+  },
 
   /**
    * Delete the supervision event matching a key.
@@ -100,7 +100,7 @@ const model = {
    * @example
    * model.delete({ scheduled_range_supervision_id:1 })
    */
-  , delete: async function deleteSupervision(supVis) {
+  delete: async function deleteSupervision(supVis) {
     return await knex.transaction(trx => {
       return trx('range_supervision')
         .where(supVis)

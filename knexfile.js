@@ -16,6 +16,7 @@ module.exports = {
       charset: 'utf8'
     },
 
+    // why is true in string format?
     debug: process.env.DB_DEBUG === 'true' || false,
 
     migrations: {

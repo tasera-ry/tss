@@ -7,12 +7,15 @@ exports.up = function(knex) {
       .notNullable()
     history.timestamp('updated_at', { useTz: true, precision: 6 })
       .notNullable()
-    history.enu('range_supervisor'
-                , ['absent', 'confirmed', 'en route', 'present']
-                , {useNative:
-                   true, existingType: true,
-                   enumName: 'range_supervisor'})
-      .notNullable()
+    history.enu(
+      'range_supervisor',
+      ['absent', 'confirmed', 'en route', 'present'],
+      {
+        useNative: true,
+        existingType: true,
+        enumName: 'range_supervisor'
+      }
+    ).notNullable()
     history.string('notice')
   })
 }

@@ -4,7 +4,7 @@ const models = require(path.join(root, 'models'))
 
 const _ = require('lodash')
 
-/** 
+/**
  * Create a new reservation.
  *
  * @param {object} reservationDetails - The reservations details { date, available }.
@@ -43,7 +43,7 @@ async function readReservation(key, fields, from, to) {
  * @param {object} current - The current identifying info of the reservation.
  * @param {object} update - New information for the reservation
  *
- * @return {Promise<object[]>} Updated rows 
+ * @return {Promise<object[]>} Updated rows
  *
  * @example
  * updateReservation({ date: '2020-01-01' }, { available: false })
@@ -69,8 +69,8 @@ async function deleteReservation(key) {
 }
 
 module.exports = {
-  create: createReservation
-  , read: readReservation
-  , update: updateReservation
-  , delete: deleteReservation
+  create: createReservation,
+  read: readReservation,
+  update: updateReservation,
+  delete: deleteReservation
 }

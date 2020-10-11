@@ -13,25 +13,32 @@ const serviceCalls = {
       // Connection and other unexpected errors
       return next(e)
     }
+
     return next()
-  }
-  , read: async function readSupervision(request, response, next) {
+  },
+
+  read: async function readSupervision(request, response, next) {
     const query = response.locals.query
+
     try {
       response.locals.queryResult = await services.rangeSupervision.read(query)
     }
     catch(e) {
       return next(e)
     }
+
     return next()
-  }
-  , create: async function createSupervision(request, response, next) {
+  },
+
+  create: async function createSupervision(request, response, next) {
     const query = response.locals.query
     let id
+
     try {
       id = await services.rangeSupervision.create(query)
     }
     catch(e) {
+      // could be a constant?
       if(e.name === 'Supervision exists') {
         return response
           .status(400)
@@ -39,6 +46,7 @@ const serviceCalls = {
             error: e.name
           })
       }
+
       return next(e)
     }
 
@@ -48,10 +56,12 @@ const serviceCalls = {
     catch(e) {
       return next(e)
     }
+
     response.set('Location', `/api/range-supervision/${id}`)
     return next()
-  }
-  , update: async function updateSupervision(request, response, next) {
+  },
+
+  update: async function updateSupervision(request, response, next) {
     const id = response.locals.id
     const updates = response.locals.updates
 
@@ -65,42 +75,47 @@ const serviceCalls = {
             error: e.name
           })
       }
+
       return next(e)
     }
+
     return next()
-  }
-  , delete: async function deleteSupervision(request, response, next) {
+  },
+
+  delete: async function deleteSupervision(request, response, next) {
     const query = response.locals.query
+
     try {
       response.locals.queryResult = await services.rangeSupervision.delete(query)
     } catch(e) {
       return next(e)
     }
+
     return next()
   }
 }
 
 exports.readFilter = [
-  validators.rangeSupervision.readFilter
-  , serviceCalls.readFilter
+  validators.rangeSupervision.readFilter,
+  serviceCalls.readFilter
 ]
 
 exports.read = [
-  validators.rangeSupervision.read
-  , serviceCalls.read
+  validators.rangeSupervision.read,
+  serviceCalls.read
 ]
 
 exports.create = [
-  validators.rangeSupervision.create
-  , serviceCalls.create
+  validators.rangeSupervision.create,
+  serviceCalls.create
 ]
 
 exports.update = [
-  validators.rangeSupervision.update
-  , serviceCalls.update
+  validators.rangeSupervision.update,
+  serviceCalls.update
 ]
 
 exports.delete = [
-  validators.rangeSupervision.delete
-  , serviceCalls.delete
+  validators.rangeSupervision.delete,
+  serviceCalls.delete
 ]

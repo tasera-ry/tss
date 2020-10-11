@@ -9,7 +9,7 @@ const root = path.join(__dirname, '..')
 const knex = require(path.join(root, 'knex', 'knex'))
 
 const model = {
-  /** 
+  /**
    * Create a new persistent user.
    *
    * @param {object} user - User's properties, { id?, name, digest, role, phone? }
@@ -20,10 +20,10 @@ const model = {
    */
   create: async function createUser(user) {
     const userConstraints = {
-      id: {}
-      , name: {}
-      , digest: {}
-      , role: {}
+      id: {},
+      name: {},
+      digest: {},
+      role: {}
     }
 
     const supervisorConstraints = {
@@ -32,7 +32,7 @@ const model = {
 
     const general = validate.cleanAttributes(user, userConstraints)
     const supervisor = validate.cleanAttributes(user, supervisorConstraints)
-    
+
     return await knex.transaction(trx => {
       return trx
         .returning('id')
@@ -52,7 +52,7 @@ const model = {
         }).then(trx.commit)
         .catch(trx.rollback)
     })
-  }
+  },
 
   /**
    * Get the users matching a key.
@@ -64,12 +64,12 @@ const model = {
    * @example
    * model.read({ name: 'Mark' }, ['role'])
    */
-  , read: async function readUser(key, fields) {
+  read: async function readUser(key, fields) {
     return knex('user')
       .leftJoin('supervisor', 'supervisor.user_id', 'user.id')
       .where(key)
       .select(fields)
-  }
+  },
 
   /**
    * Update a users' info.
@@ -82,7 +82,7 @@ const model = {
    * @example
    * exports.update({ name: 'Mark }, { digest: 'new_password_digest' })
    */
-  , update: async function updateUser(current, update) {
+  update: async function updateUser(current, update) {
     const user = _.pick(update, 'name', 'digest')
     const supervisor = _.pick(update, 'phone')
 
@@ -90,7 +90,7 @@ const model = {
           .read(current, ['id'])
           .then(rows => rows[0])
 
-    if(id === undefined) {
+    if(!id) {
       const err = Error('Didn\'t identify user(s) to update')
       err.name = 'Unknown user'
       throw err
@@ -110,7 +110,7 @@ const model = {
         }).then(trx.commit)
         .catch(trx.rollback)
     })
-  }
+  },
 
   /**
    * Delete the users matching a key.
@@ -121,7 +121,7 @@ const model = {
    * @example
    * exports.del({ name: 'Mark })
    */
-  , delete: async function deleteUser(user) {
+  delete: async function deleteUser(user) {
     return await knex.transaction(trx => {
       return trx('user')
         .where(user)

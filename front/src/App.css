@@ -3,7 +3,8 @@ nav {
    justify-content: space-around;
    align-items: center;
    min-height: 10vh;
-   background-color: #d8c3a5;
+   /* background-color: #d8c3a5; */
+   background-color: cyan;
    color: black;
 }
 
@@ -14,7 +15,8 @@ body {
       "Helvetica Neue", sans-serif;
    -webkit-font-smoothing: antialiased;
    -moz-osx-font-smoothing: grayscale;
-   background-color: #eae7dc;
+   /* background-color: #eae7dc; */
+   background-color: pink;
 }
 
 code {

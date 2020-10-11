@@ -19,10 +19,10 @@ const model = {
    */
   create: async function createTrack(trackInfo) {
     const trackConstraints = {
-      range_id: {}
-      , name: {}
-      , description: {}
-      , short_description: {}
+      range_id: {},
+      name: {},
+      description: {},
+      short_description: {}
     }
 
     const track = validate.cleanAttributes(trackInfo, trackConstraints)
@@ -37,7 +37,7 @@ const model = {
         }).then(trx.commit)
         .catch(trx.rollback)
     })
-  }
+  },
 
   /**
    * Get the tracks matching a key.
@@ -49,12 +49,12 @@ const model = {
    * @example
    * model.read({ 'track.id': 8 }, ['description'])
    */
-  , read: async function readTrack(key, fields) {
+  read: async function readTrack(key, fields) {
     return knex('track')
       .where(key)
       .select(fields)
       .orderBy('name')
-  }
+  },
 
   /**
    * Update a tracks' info.
@@ -67,12 +67,12 @@ const model = {
    * @example
    * exports.update({ 'track.id': 8 }, { description: '200m Kohdistusrata' })
    */
-  , update: async function updateTrack(current, update) {
+  update: async function updateTrack(current, update) {
     const trackConstraints = {
-      range_id: {}
-      , name: {}
-      , description: {}
-      , short_description: {}
+      range_id: {},
+      name: {},
+      description: {},
+      short_description: {}
     }
 
     const track = validate.cleanAttributes(update, trackConstraints)
@@ -82,7 +82,7 @@ const model = {
           .read(current, ['track.id'])
           .then(rows => rows[0])
 
-    if(id === undefined) {
+    if(!id) {
       const err = Error('Didn\'t identify track(s) to update')
       err.name = 'Unknown track'
       throw err
@@ -93,7 +93,7 @@ const model = {
         .where(id)
         .update(track)
     })
-  }
+  },
 
   /**
    * Delete the tracks matching a key.
@@ -104,7 +104,7 @@ const model = {
    * @example
    * exports.del({ 'track.id': 8 })
    */
-  , delete: async function deleteTrack(key) {
+  delete: async function deleteTrack(key) {
     const ids = await model.read(key, ['track.id'])
 
     return await knex.transaction(trx => {

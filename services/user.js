@@ -43,10 +43,10 @@ const service = {
       err.name = 'Incorrect password'
       throw err
     }
-    
+
     return user.id
-  }
-  
+  },
+
   /**
    * Create a new user.
    *
@@ -56,14 +56,14 @@ const service = {
    * @example
    * service.create({ name: 'Mark', password: 'password', role: 'superuser' })
    */
-  , create: async function createUser(info) {
+  create: async function createUser(info) {
     const digest = await hash(info.password)
     delete info.password
     info.digest = digest
     return (await models.user.create(info)).pop()
-  }
+  },
 
-  /** 
+  /**
    * Read (a) users' info.
    *
    * @param {object} key - The query information, {} returns all users.
@@ -74,10 +74,10 @@ const service = {
    * @example
    * exports.read({ role: 'supervisor' }) - Find all supervisors
    */
-  , read: async function readUser(key, fields) {
+  read: async function readUser(key, fields) {
     return (await models.user.read(_.pick(key, 'id', 'name', 'role', 'phone')))
       .map(_.partialRight(_.omit, 'digest', 'user_id'))
-  }
+  },
 
   /**
    * Update a users' info.
@@ -90,7 +90,7 @@ const service = {
    * @example
    * exports.update({ name: 'mark' }, { name:'mark shuttleworth' })
    */
-  , update: async function updateUser(key, updates) {
+  update: async function updateUser(key, updates) {
     if('password' in updates) {
       const digest = await hash(updates.password)
       delete updates.password
@@ -98,9 +98,9 @@ const service = {
     }
 
     return models.user.update(key, updates)
-  }
-  
-  /** 
+  },
+
+  /**
    * Delete a user.
    *
    * @param {object} key - Users' identifying info.
@@ -110,7 +110,7 @@ const service = {
    * @example
    * service.delete({name: 'mark'})
    */
-  , delete: async function deleteUser(key) {
+  delete: async function deleteUser(key) {
     return models.user.delete(key)
   }
 }

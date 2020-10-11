@@ -1,3 +1,5 @@
+// shouldn't this be deleted?
+
 const config = require("../config/config");
 const moment = require("moment-timezone");
 const fetch = require("node-fetch");
@@ -16,6 +18,7 @@ const _ = require('lodash');
       available: true,              we only care about condition: available === false
       rangeSupervisorId: 1,
       rangeSupervisionScheduled: true,    does range_supervision exist for schedule
+      // USE ENUM FOR THIS
       rangeSupervision:'present',
         //present=green,            from range_supervision.range_supervisor
         //absent=white,             from range_supervision.range_supervisor
@@ -38,9 +41,13 @@ const _ = require('lodash');
       ]
     }
 */
+
+// how about moving the functions outta here?
 exports.getScheduleDate = async (req, res) => {
   async function getTracks() {
     try{
+      // enum paths
+      // use then?
       let response = await fetch(config.server.host+"/api/track", {
         method: 'GET',
         headers: {
@@ -54,7 +61,7 @@ exports.getScheduleDate = async (req, res) => {
       return false;
     }
   }
-  
+
   async function getReservation(date) {
     try{
       let response = await fetch(config.server.host+"/api/reservation?date="+moment(date).format('YYYY-MM-DD'), {
@@ -70,7 +77,7 @@ exports.getScheduleDate = async (req, res) => {
       return false;
     }
   }
-  
+
   async function getSchedule(reservationId) {
     try{
       let response = await fetch(config.server.host+"/api/schedule?range_reservation_id="+reservationId, {
@@ -86,7 +93,7 @@ exports.getScheduleDate = async (req, res) => {
       return false;
     }
   }
-  
+
   async function getTracksupervision(scheduleId) {
     try{
       let response = await fetch(config.server.host+"/api/track-supervision?scheduled_range_supervision_id="+scheduleId, {
@@ -102,7 +109,7 @@ exports.getScheduleDate = async (req, res) => {
       return false;
     }
   }
-  
+
   async function getRangesupervision(scheduleId) {
     try{
       let response = await fetch(config.server.host+"/api/range-supervision?scheduled_range_supervision_id="+scheduleId, {
@@ -118,10 +125,10 @@ exports.getScheduleDate = async (req, res) => {
       return false;
     }
   }
-  
+
   //actually constructing the return
   if(moment(req.params.date, 'YYYY-MM-DD', true).isValid()){
-    
+
     let date = req.params.date;
     let tracks = await getTracks();
     let rangeId = config.development.range_id;
@@ -132,16 +139,18 @@ exports.getScheduleDate = async (req, res) => {
     let open = null;
     let close = null;
     let rangeSupervisionState = 'absent';
+    // could this be removed somehow?
     let rangeSupervisionScheduled = false;
-         
+
+    // lousy, should probably return only one, not an array eq
     const reservation = await getReservation(date);
-    if(reservation !== false && reservation.length > 0) {
+    if(reservation && reservation.length > 0) {
       reservationId = reservation[0].id;
       available = reservation[0].available;
     } else reservationId = null;
 
     const schedule = await getSchedule(reservationId);
-    if(schedule !== false && schedule.length > 0) {
+    if(schedule && schedule.length > 0) {
       scheduleId = schedule[0].id;
       rangeSupervisorId = schedule[0].supervisor_id;
       open = schedule[0].open;
@@ -149,7 +158,9 @@ exports.getScheduleDate = async (req, res) => {
     } else scheduleId = null;
 
     //track defaults
+    // does map alter the original?
     tracks = tracks.map(item => {
+      // is there a better way?
       item = {
         ...item,
         notice: '',
@@ -160,39 +171,40 @@ exports.getScheduleDate = async (req, res) => {
     });
 
     const trackSupervision = await getTracksupervision(scheduleId);
-    if(trackSupervision !== false && trackSupervision.length > 0) {
+    if(trackSupervision && trackSupervision.length > 0) {
       tracks = tracks.map(item => {
         const supervision = trackSupervision.find((findItem) => findItem.track_id === item.id);
         item = {
           ...item,
           ...supervision,
-          trackSupervision: supervision !== undefined ? supervision.track_supervisor : 'absent',
-          scheduled: supervision !== undefined ? true : false
+          trackSupervision: supervision ? supervision.track_supervisor : 'absent',
+          scheduled: supervision
         }
         return _.pick(item, ['id', 'name', 'description', 'notice', 'trackSupervision', 'scheduled']);
       });
     }
 
     const rangeSupervision = await getRangesupervision(scheduleId);
-    if(rangeSupervision !== false && rangeSupervision.length > 0) {
+    if(rangeSupervision && rangeSupervision.length > 0) {
       rangeSupervisionState = rangeSupervision[0].range_supervisor;
       rangeSupervisionScheduled = true;
     } else rangeSupervisionScheduled = false;
 
     let result = {
-      date:date,
-      rangeId:rangeId,
-      reservationId:reservationId,
-      scheduleId:scheduleId,
-      open:open,
-      close:close,
-      available:available,
-      rangeSupervisorId:rangeSupervisorId,
-      rangeSupervision:(available === false ? 'closed' : rangeSupervisionState),
-      rangeSupervisionScheduled:rangeSupervisionScheduled,
-      tracks:tracks
+      date: date,
+      rangeId: rangeId,
+      reservationId: reservationId,
+      scheduleId: scheduleId,
+      open: open,
+      close: close,
+      available: available,
+      rangeSupervisorId: rangeSupervisorId,
+      rangeSupervision: (!available ? 'closed' : rangeSupervisionState),
+      rangeSupervisionScheduled: rangeSupervisionScheduled,
+      tracks: tracks
     }
-    
+
+    // shouldn't we return earlier? saves processing time & power
     if(tracks && reservation && schedule){
       res.status(200).json(result);
     }
