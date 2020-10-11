@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import { getSchedulingWeek, getSchedulingDate } from "../utils/Utils";
 import CircularProgress from '@material-ui/core/CircularProgress';
+import InfoIcon from '@material-ui/icons/Info';
 
 // Moment for date management
 import moment from 'moment';
@@ -303,6 +304,8 @@ class Weekview extends Component {
     let rataStatus;
     let oikeePaiva;
     let linkki;
+    let Attention;
+    let info;
 
     for (let j = 0; j < 7; j++) {
       //Luodaan väri
@@ -323,16 +326,25 @@ class Weekview extends Component {
       }
 
       oikeePaiva = this.state.paivat[j].date
+      info=false
+      for (var key in this.state.paivat[j].tracks){                 
+        Attention = this.state.paivat[j].tracks[key].notice
+        if(Attention.length !== 0){
+          info = true
+        }
+      }
       linkki = "/dayview/" + oikeePaiva
       table.push(
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={linkki}>
           <p>
-            &nbsp;
+            {info ?
+            <InfoIcon/>
+            :
+            <br />}
           </p>
         </Link>
       )
     }
-
     return table
   }
 
