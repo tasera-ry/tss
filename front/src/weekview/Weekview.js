@@ -3,6 +3,8 @@ import React, { Component } from "react";
 import '../App.css';
 import './Weekview.css'
 
+import exclamation from "../logo/Exclamation_mark_valmis.png";
+
 // Material UI components
 import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
@@ -608,50 +610,46 @@ class Weekview extends Component {
         {/* Infoboxes */}
         
         {/* Top row */}
-        {/* To do: Tekstit ei toimi */}
         <hr></hr>
-        <div className="infoContainer">
-          <Grid>
+
             <div class="info-flex">
+                <div class="info-item">
+                    <p id="open-info" class='box no-flex'/>
+                    {/* Avoinna */} <p class="info-text no-flex">{week.Green[fin]}</p>
+                </div>
 
-              <div id="open-info" class='box'></div>
-              {/* Avoinna */} &nbsp;{week.Green[fin]} <br></br> <br></br>
+                <div class="info-item">
+                    <p id="closed-info2" class='box no-flex'/>
+                    {/* Suljettu */} <p class="info-text no-flex">{week.Blue[fin]}</p>
+                </div>
 
-              <div id="closed-info2" class='box'></div>
-              {/* Suljettu */} &nbsp;{week.Blue[fin]} <br></br><br></br>
+                <div class="info-item">
+                    <p id="valvoja-info" class='box no-flex'/>
+                    {/* Päävalvoja tulossa */} <p class="info-text no-flex">{week.Lightgreen[fin]}</p>
+                </div>
 
-            </div>                
-          </Grid>
+                <div class="info-item">
+                    <p id="onway-info" class='box no-flex'/>
+                    {/* Päävalvoja matkalla */}  <p class="info-text no-flex">{week.Orange[fin]}</p>
+                </div>
 
-          
-          {/* Bottom row */}
-          <Grid class="bottom-info">
-            <div class="info-flex">
+                <div class="info-item">
+                    <p id="closed-info" class='box no-flex'/>
+                    {/* Suljettu */} <p class="info-text no-flex">{week.Red[fin]}</p>
+                </div>
 
-              <div id="valvoja-info" class='box'></div>
-              {/* Päävalvoja tulossa */} &nbsp;{week.Lightgreen[fin]} <br></br> <br></br>
+                <div class="info-item">
+                    <p id="no-info" class='box no-flex'/>
+                    {/* Päävalvojaa ei asetettu */}  <p class="info-text no-flex">{week.White[fin]}</p>
+                </div>
 
-
-              <div id="onway-info" class='box'></div>
-              {/* Ei tietoa */}  &nbsp;{week.Orange[fin]}
-
-            </div>
-          </Grid>
-
-
-          {/* Bottom row */}
-          <Grid class="bottom-info">
-            <div class="info-flex">
-
-
-              <div id="closed-info" class='box'></div>
-              {/* Suljettu */} &nbsp;{week.Red[fin]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br></br><br></br>
-
-              <div id="no-info" class='box'> </div>
-              {/* Ei tietoa */}  &nbsp;{week.White[fin]}
-
-            </div>
-          </Grid>
+                <div class="info-item-img">
+                    <p class="empty-box no-flex">
+                    <img class='exclamation no-flex' src={exclamation}/>
+                    </p>
+                    {/* Päävalvojaa ei asetettu */}  <p class="info-text relative-text no-flex">{week.Notice[fin]}</p>
+                </div>
+            
         </div> 
       </div>
       

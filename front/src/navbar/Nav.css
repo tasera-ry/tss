@@ -1,0 +1,77 @@
+nav {
+   display: flex;
+   justify-content: space-around;
+   align-items: center;
+   min-height: 10vh;
+   background-color: #d8c3a5;
+   color: black;
+}
+
+.logoStyle {
+	min-width: 80%;
+	text-Decoration: none;
+	height: 100%;
+	width: 60%;
+	display: block;
+}
+
+/* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
+@media only screen and (min-width:320px) {
+.pc {
+	display: none;
+}
+.phone {
+	margin-right: 1em;
+	min-width: 48px;
+}
+}
+/* smartphones, Android phones, landscape iPhone */
+@media only screen and (min-width:480px) {
+.logoStyle {
+
+}
+}
+/* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
+@media only screen and (min-width:600px) {
+nav {
+	flex-wrap: wrap;
+	min-height: 20vh;
+}
+.phone {
+	display: none;
+}
+
+.pc {
+	display: inline;
+}
+
+.logoStyle {
+	min-width: 95%;
+}
+
+.clickable {
+	display: flex;
+	min-height: 10vh;
+	justify-content: center;
+  	align-items: center;
+}
+}
+/* tablet, landscape iPad, lo-res laptops ands desktops */
+@media only screen and (min-width:801px) {
+nav{
+	flex-wrap: nowrap;
+}
+
+.logoStyle {
+	min-width: 0%;
+	width: 70%;
+}
+}
+/* big landscape tablets, laptops, and desktops */
+@media only screen and (min-width:1025px) {
+
+}
+/* hi-res laptops and desktops */
+@media only screen and (min-width:1281px) {
+
+}

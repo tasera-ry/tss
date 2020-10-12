@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 
 import "../App.css";
+import './Nav.css';
 
-// TASERA logo
+// TASERA logo & Burger icon
 import logo from "../logo/Logo.png";
+import Burger from "../logo/Burger.png";
 
 // Material UI elements
 import { Link } from "react-router-dom";
@@ -33,12 +35,6 @@ const useStyles = makeStyles({
 const navStyle = {
   color: "black",
   textDecoration: "none"
-}
-const logoStyle = {
-  textDecoration: "none",
-  height: "100%",
-  width: "60%",
-  display: "block"
 }
 const drawerStyle = {
   fontSize:17,
@@ -80,6 +76,14 @@ const SideMenu = ({setName, superuser}) => {
     }
     setMenu({"right": open })
   }
+
+ /* const toggleBurger = (anchor, open) => (event) => {
+    setOpenDial(false)
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    setMenu({"right": open })
+  } */
 
   const superuserList = () => (
     <div style={drawerStyle}>
@@ -167,10 +171,24 @@ const SideMenu = ({setName, superuser}) => {
     </div>
   )
 
+ /* const BurgerList = () => (
+    <div style={drawerStyle}>
+      <List>
+        <ListItem>
+          <Link className="pc" style={{textDecoration:'none'}} to="/signin">
+            <Button>
+              {nav.SignIn[fin]}
+            </Button>
+          </Link>
+        </ListItem>
+      </List>
+    </div>
+  ) */
+
   return (
-    <div>
+    <div className="pc">
       {storage.getItem("taseraUserName")!==null ?
-       <Button
+       <Button className="clickable"
          onClick={toggleDrawer("right", true)}>
          {nav.Menu[fin]}
        </Button>
@@ -191,7 +209,9 @@ const SideMenu = ({setName, superuser}) => {
       {openDial ? <DialogWindow /> : "" }
       
     </div>
+
   )
+
 }
 
 function userInfo(name, setName, setSuperuser) {
@@ -221,34 +241,41 @@ const Nav = () => {
 
   const icon = (
     <span className="logo">
-        <img style={logoStyle} src={logo} alt="Tasera" />
+        <img className="logoStyle" src={logo} alt="Tasera" />
     </span>
   );
 
   return (
     <nav>
-      <Link style={logoStyle} to={"/"}>
+      <Link className="logoStyle" to={"/"}>
         {icon}
       </Link>
 
       {name==="" ?
-       <Link style={{textDecoration:'none'}} to="/signin">
+       <Link className="pc clickable" style={{textDecoration:'none'}} to="/signin">
          <Button>
            {nav.SignIn[fin]}
          </Button>
        </Link>
        :
-       <p>{name}</p>
+       <p className="pc">{name}</p>
       }
 
-      <span>
+
+      <span className="pc clickable">
         <Button onClick={()=> setLanguage(1)}>EN</Button>
         <Button onClick={()=> setLanguage(0)}>FI</Button>
       </span>
 
       <SideMenu setName={setName} superuser={superuser} />
 
+      <div className="phone">
+        <img className="logoStyle" src={Burger} alt="Burger-icon">
+        </img>
+      </div>
+
     </nav>
   )
+
 }
 export default Nav;

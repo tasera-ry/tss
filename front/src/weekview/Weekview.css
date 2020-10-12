@@ -11,8 +11,22 @@
    float: left;
    height: 20px;
    width: 20px;
-   margin-bottom: 15px;
+   margin-right: 16px;
+   margin-bottom: 0px;
    border: 1px solid black;
+   clear: both;
+   min-height: 20px;
+   min-width: 20px;
+}
+
+.exclamation {
+   position: absolute;
+   left: 1px;
+   bottom: 1px;
+   height: 20px;
+   width: 20px;
+   margin-right: 16px;
+   margin-bottom: 0px;
    clear: both;
    min-height: 20px;
    min-width: 20px;
@@ -94,7 +108,7 @@
 
    border-left: 20px solid black;
 
-   margin-left: 17vw;
+   margin-left: 5vw;
    display: flex;
    float: right;
    align-items: center;
@@ -109,7 +123,7 @@
    border-right: 20px solid black;
    text-align: right;
 
-   margin-right: 17vw;
+   margin-right: 5vw;
    display: flex;
    align-items: center;
 }
@@ -123,45 +137,47 @@
 #open-info {
    display: flex;
    background: #658f60;
-   margin-left: 20%;
 }
 
 #valvoja-info {
    display: flex;
    background: #b2d9ad;
-   margin-left: 20%;
 }
 
 #closed-info {
    display: flex;
    background: #c97b7b;
-   margin-left: 20%;
 }
 
 #closed-info2 {
    display: flex;
    background: #95d5db;
-   margin-left: 21.7%;
 }
 
 #no-info {
    display: flex;
    background: #f2f0eb;
-   margin-left: 20%;
 }
 
 #onway-info {
    display: flex;
    background: #f2c66d;
-   margin-left: 19.6%;
 }
 
 .info-flex {
    display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
    /*
   float: none;
   display: block;
   */
+}
+
+.info-text {
+   display: inline;
+   overflow: auto;
+   margin-bottom: 0;
 }
 
 .hoverHand:hover {
@@ -171,6 +187,33 @@
 .klockan {
    margin-left: 16vw;
 }
+
+.info-item {
+   display: flex;
+   min-width: 320px;
+   width: 30vw;
+   justify-content: left;
+}
+
+.info-item-img {
+   position: relative;
+   display: flex;
+   min-width: 320px;
+   width: 30vw;
+   justify-content: left;
+}
+
+.no-flex {
+   display: inline-block;
+}
+
+.relative-text {
+   position: absolute;
+   bottom: 0;
+   left: 38px;
+}
+
+/* media files */
 
 /* Average phones */
 @media only screen and (max-width: 600px) {
@@ -184,39 +227,8 @@
       margin-top: -4%;
    }
 
-   #open-info {
-      display: flex;
-      background: #658f60;
-      margin-left: 10%;
-   }
-
    #weekDay {
       font-size: 0;
-   }
-
-   #valvoja-info {
-      display: flex;
-      background: #b2d9ad;
-      margin-left: 9%;
-   }
-
-   #closed-info {
-      display: flex;
-      background: #c97b7b;
-      margin-left: 10%;
-   }
-
-   #no-info {
-      display: flex;
-      background: #f2f0eb;
-      margin-left: 10%;
-      display: flexbox;
-      float:left;
-   }
-
-   #closed-info2 {
-      background: lightblue;
-      margin-left: 10%;
    }
 
    .infoContainer {
@@ -253,10 +265,6 @@
       margin: 0% -15% 0% -15%;
    }
 
-   .infoContainer {
-      padding: 5vw 5vw 5vw 5vw;
-      margin-left: -10%;
-   }
    #weekDay {
       font-size: 0;
    }
@@ -271,11 +279,6 @@
       margin-right: -15%;
    }
 
-   .infoContainer {
-      padding: 5vw 5vw 5vw 5vw;
-      margin-left: -10%;
-      margin-top: -3%;
-   }
    #weekDay {
       font-size: 2;
    }
@@ -288,11 +291,6 @@
       margin-top: 2%;
    }
 
-   .infoContainer {
-      padding: 5vw 5vw 5vw 5vw;
-      margin-left: -10%;
-      margin-top: -3%;
-   }
    #weekDay {
       font-size: 2;
    }
@@ -302,9 +300,5 @@
 @media only screen and (min-height: 800px) and (max-width: 500px) {
    .container {
       padding: 11vw 35vw 11vw 35vw;
-   }
-
-   .infoContainer {
-      padding: 5vw 10vw 5vw 10vw;
    }
 }
