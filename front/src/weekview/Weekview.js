@@ -16,6 +16,10 @@ import moment from 'moment';
 // Translation
 import * as data from '../texts/texts.json';
 
+// function for checking whether we should show banner
+// DialogWindow for supervisors to confirm their supervisions
+import { checkSupervisorReservations, DialogWindow } from '../upcomingsupervisions/LoggedIn';
+
 let lang = "fi"; // fallback
 if (localStorage.getItem("language") === '0') {
   lang = 'fi';
@@ -43,10 +47,13 @@ class Weekview extends Component {
       weekNro: 0,
       dayNro: 0,
       yearNro: 0,
+      userHasSupervisions: false,
+      supervisionsOpen: false
     };
 
     this.previousWeekClick = this.previousWeekClick.bind(this);
     this.nextWeekClick = this.nextWeekClick.bind(this);
+    this.supervisionNotification = this.supervisionNotification.bind(this);
     this.update = this.update.bind(this);
   }
 
@@ -54,6 +61,7 @@ class Weekview extends Component {
   componentDidMount() {
     this.getWeek();
     this.getYear();
+    this.supervisionNotification();
     this.update();
   }
 
@@ -64,19 +72,26 @@ class Weekview extends Component {
     }, () => {
       this.getWeek();
       this.getYear();
+      this.supervisionNotification();
       this.update();
     });
   }
 
-  //Changes week number state to previous one
+  displaySupervisions = (e) => {
+    this.setState({
+      supervisionsOpen: true
+    })
+  }
+
+  // Changes week number state to previous one
   previousWeekClick = (e) => {
     this.setState({
-      state:'loading'
+      state: 'loading'
     })
 
     e.preventDefault();
 
-    //Otetaan parametreistä päivät seuraavalle viikolle
+    // Otetaan parametreistä päivät seuraavalle viikolle
     let uusPaiva;
 
     // I'm sure this part can be done easier
@@ -182,6 +197,16 @@ class Weekview extends Component {
       );
     } catch(error) {
       //console.log(error)
+    }
+  }
+
+  supervisionNotification = async () => {
+    const reservations = await checkSupervisorReservations();
+    console.log(reservations);
+    if (reservations) {
+      this.setState({
+        userHasSupervisions: true
+      })
     }
   }
 
@@ -327,7 +352,7 @@ class Weekview extends Component {
 
       oikeePaiva = this.state.paivat[j].date
       info=false
-      for (var key in this.state.paivat[j].tracks){                 
+      for (var key in this.state.paivat[j].tracks) {
         Attention = this.state.paivat[j].tracks[key].notice
         if(Attention.length !== 0){
           info = true
@@ -466,6 +491,13 @@ class Weekview extends Component {
 
     return (
       <div>
+        {this.state.userHasSupervisions ?
+          <p
+            onClick={this.displaySupervisions}
+            >Hey chumbo, it seems that you have something to do
+          </p> : null
+        }
+        {this.state.supervisionsOpen ? <DialogWindow/> : ""}
         <div class="container">
           {/* Header with arrows */}
           <Grid class="date-header">

@@ -14,17 +14,15 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from '@material-ui/core/styles';
 
-
-
-// Upcoming supervisions -view
-import DialogWindow from '../upcomingsupervisions/LoggedIn';
+// supervisions view
+import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
 
 // Translations
 import * as data from '../texts/texts.json';
 const fin = localStorage.getItem("language"); //0: finnish, 1: english
 const {nav} = data;
 
-//Styles
+// Styles
 const useStyles = makeStyles({
   paper: {
     background: '#f2f0eb'
@@ -189,7 +187,6 @@ const SideMenu = ({setName, superuser}) => {
 
     </div>
       {openDial ? <DialogWindow /> : "" }
-      
     </div>
   )
 }

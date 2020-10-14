@@ -63,7 +63,7 @@ const DropDowns = (props) => {
   if(obj.range_supervisor==="absent") {
     text = props.sv.Absent[fin];
     color = "#c97b7b";
-  }  
+  }
   const [buttonText, setButtonText] = useState(text);
   const [buttonColor, setButtonColor] = useState(color);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -105,13 +105,12 @@ const DropDowns = (props) => {
     }
     props.changes.map(o => (o.date===id ? obj : o))
     //console.log(props.changes.find(o => o.date===id));
-    
+
     setAnchorEl(null);
   }
-  
+
   return (
     <span>
-      
       <Button
         onClick={handleClick}
         variant="outlined"
@@ -119,41 +118,34 @@ const DropDowns = (props) => {
         style={buttonStyle}>
         {buttonText}
       </Button>
-      
       <Menu
         id={props.d}
         open={Boolean(anchorEl)}
         keepMounted
         anchorEl={anchorEl}
         onClose={HandleClose}>
-        
         <MenuItem
           onClick={HandleClose}
           data-info=""
           style={discardChanges}>
           {props.sv.Present[fin]}
         </MenuItem>
-        
         <MenuItem
           onClick={HandleClose}
           data-info="y">
           {props.sv.Confirmed[fin]}
         </MenuItem>
-        
         <MenuItem
           onClick={HandleClose}
           data-info="n">
           {props.sv.Absent[fin]}
         </MenuItem>
-
       </Menu>
-
       &nbsp;
       {props.today===props.d ?
        <Check HandleChange={props.HandleChange} checked={props.checked}
               sv={props.sv} disable={disable} />
        : "" }
-
     </span>
   )
 }
@@ -171,7 +163,6 @@ const Check = ({HandleChange, checked, sv, disable}) => {
           style={checkboxStyle}
           onChange={HandleChange} />
       } />
-      
     </>
   )
 }
@@ -185,9 +176,9 @@ const Rows = ({HandleChange, changes, checked, setDone, sv}) => {
     moment.locale("en-ca");
     num = 3;
   }
-  
+
   setDone(true);
-  
+
   function getWeekday(day) {
     day = moment(day).format('dddd')
     if(window.innerWidth<800) {
@@ -200,37 +191,37 @@ const Rows = ({HandleChange, changes, checked, setDone, sv}) => {
     let parts = day.split("-")
     return `${parts[2]}.${parts[1]}.${parts[0]}`
   }
-  
+
   let today = moment().format().split("T")[0];
 
-  return (   
+  return (
     changes.map(d =>
-                <div key={d.date} style={styleA}>
-                  {getWeekday(d.date)} {getDateString(d.date)} &nbsp;
-		  <DropDowns d={d.date} today={today} changes={changes}
-		             HandleChange={HandleChange} checked={checked} sv={sv}  />
-                  
-                </div>  
-               )
+      <div key={d.date} style={styleA}>
+        {getWeekday(d.date)} {getDateString(d.date)} &nbsp;
+		    <DropDowns d={d.date} today={today} changes={changes}
+          HandleChange={HandleChange} checked={checked} sv={sv}
+        />
+      </div>
+    )
   )
 }
 
 
-//TODO: change config after relocating jwt
+// TODO: change config after relocating jwt
 async function getId() {
   let name = localStorage.getItem("taseraUserName");
-  //console.log("username:", name);
-  
+
   let token = localStorage.getItem("token");
   const config = {
     headers: { Authorization: `Bearer ${token}` }
   };
-  
+
+  if (!name) return;
+
   let query = "api/user?name=" + name;
   let response = await axios.get(query, config);
 
   let userID = response.data[0].id;
-  //console.log("userID:", userID);
 
   return userID;
 }
@@ -239,7 +230,7 @@ async function getId() {
 async function getReservations(res, setNoSchedule) {
 
   let today = moment().format().split("T")[0];
-  
+
   for(let i=0; i<res.length; i++) {
     let query = "api/reservation?available=true&id=" + res[i].reservation_id;
     let response = await axios.get(query);
@@ -258,9 +249,29 @@ async function getReservations(res, setNoSchedule) {
   return res;
 }
 
-//obtain users schedule and range supervision states
+// yeah I know I'm gonna edit this whole API sequence later
+// this sucks btw don't imitate this it's just a hotfix
+async function checkSupervisorReservations() {
+  const userID = await getId();
+
+  if (!userID) {
+    return false;
+  }
+
+  const query = "api/schedule?supervisor_id=" + userID;
+
+  let response = await axios.get(query)
+    .then(response => {
+      // check and return boolean about whether there's any reservations
+      return (response.data.length >= 1);
+    })
+
+  return response;
+}
+
+// obtain users schedule and range supervision states
 async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
-  let userID = await getId();  
+  let userID = await getId();
   let res = [];
   let temp = [];
 
@@ -275,7 +286,7 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
         //console.log(error);
       });
 
-  for(let i=0; i<temp.length; i++) {
+  for (let i = 0; i < temp.length; i++) {
     let v = await temp[i];
 
     let rsquery = "api/range-supervision/" + v.id;
@@ -301,17 +312,14 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
 
   res = await getReservations(res, setNoSchedule);
 
-  if(res.length===0) {
+  if(res.length === 0) {
     await setNoSchedule(true);
     await setDone(true);
     return;
   }
 
   setSchedules(res);
-  setChecked(res[0].range_supervisor==="en route");
-  
-  //console.log("scheduled for user: ", res.length)
-  //console.log(res)
+  setChecked(res[0].range_supervisor === "en route");
 }
 
 const DialogWindow = () => {
@@ -353,17 +361,16 @@ async function putSchedules(changes) {
                     {
                       range_supervisor:s
                     }, config)
-    
   }
 }
 
 //creates dialog-window
 const Logic = ({schedules, setSchedules, noSchedule, checked,
                 setChecked, done, setDone, sv}) => {
-             
+
   const classes = useStyles();
   const [open, setOpen] = useState(true);
-  const [wait, setWait] = useState(false);                
+  const [wait, setWait] = useState(false);
   const fin = localStorage.getItem("language");
   let changes = [...schedules];
 
@@ -387,47 +394,40 @@ const Logic = ({schedules, setSchedules, noSchedule, checked,
       setWait(true);
       await putSchedules(changes);
     }
-    
+
     setOpen(false)
     window.location.reload();
   }
-  
+
   return (
     <div>
       <Dialog
 	open={open}
 	aria-labelledby="otsikko"
       >
-	
 	<DialogTitle id="otsikko" style={dialogStyle}>{sv.Header[fin]}</DialogTitle>
 	<DialogContent style={dialogStyle}>
-	  
 	  <DialogContentText>
 	    {noSchedule ? sv.No[fin] : ""}
 	    {done ? "" : sv.Wait[fin]}
 	  </DialogContentText>
-
 	  {schedules.length!==0 ?
-	   <Rows HandleChange={HandleChange} changes={changes}
-                 checked={checked} setDone={setDone} sv={sv} />
+	    <Rows HandleChange={HandleChange} changes={changes}
+        checked={checked} setDone={setDone} sv={sv} />
 	   : ""}
 	</DialogContent>
-
 	<DialogActions style={dialogStyle}>
-
           {wait ?
            <div className={classes.root}>
              <CircularProgress  />
            </div>
            : ""}
-
           <Button
             variant='contained'
             onClick={()=> setOpen(false)}
             style={{backgroundColor:'#ede9e1'}} >
             {sv.Cancel[fin]}
           </Button>
-
           {done && !noSchedule ?
            <Button
              variant='contained'
@@ -437,12 +437,10 @@ const Logic = ({schedules, setSchedules, noSchedule, checked,
            </Button>
            : ""
           }
-
         </DialogActions>
-
       </Dialog>
     </div>
   )
 }
 
-export default DialogWindow
+export { checkSupervisorReservations, DialogWindow };
