@@ -9,6 +9,8 @@ import Grid from '@material-ui/core/Grid';
 import { getSchedulingWeek, getSchedulingDate } from "../utils/Utils";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import InfoIcon from '@material-ui/icons/Info';
+import Alert from '@material-ui/lab/Alert';
+import Button from '@material-ui/core/Button';
 
 // Moment for date management
 import moment from 'moment';
@@ -72,13 +74,13 @@ class Weekview extends Component {
     }, () => {
       this.getWeek();
       this.getYear();
-      this.supervisionNotification();
       this.update();
     });
   }
 
   displaySupervisions = (e) => {
     this.setState({
+      userHasSupervisions: false,
       supervisionsOpen: true
     })
   }
@@ -202,7 +204,6 @@ class Weekview extends Component {
 
   supervisionNotification = async () => {
     const reservations = await checkSupervisorReservations();
-    console.log(reservations);
     if (reservations) {
       this.setState({
         userHasSupervisions: true
@@ -492,10 +493,16 @@ class Weekview extends Component {
     return (
       <div>
         {this.state.userHasSupervisions ?
-          <p
+          <Alert
+            severity="info"
+            action={
+              <Button color="inherit" size="small">
+                {week.Check[fin]}
+              </Button>
+            }
             onClick={this.displaySupervisions}
-            >Hey chumbo, it seems that you have something to do
-          </p> : null
+            >{week.Notification[fin]}
+          </Alert> : null
         }
         {this.state.supervisionsOpen ? <DialogWindow/> : ""}
         <div class="container">

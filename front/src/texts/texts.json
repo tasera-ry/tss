@@ -35,7 +35,9 @@
     "Blue": ["Päävalvoja määritetty mutta ei varmistettu", "Range officer predefined, not confirmed"],
     "Red": ["Keskus suljettu", "Range closed"],
     "Orange": ["Päävalvoja matkalla", "Range officer on the way"],
-    "White": ["Päävalvojaa ei asetettu", "Range officer undefined"]
+    "White": ["Päävalvojaa ei asetettu", "Range officer undefined"],
+    "Notification": ["Sinulla on varmistamattomia päävalvojavuoroja!", "You have unconfirmed range officer reservations!"],
+    "Check": ["TARKISTA", "CHECK"]
   },
   "sched": {
     "Day": ["Valitse päivä", "Choose date"],
