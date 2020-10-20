@@ -63,11 +63,29 @@ class SupervisorNotification extends Component {
     this.checkSupervisions();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.loggingOut) {
+      this.setState({
+        userHasSupervisions: false
+      })
+      nextProps.setLoggingOut(false);
+    }
+    else if (nextProps.checkSupervisions) {
+      this.checkSupervisions();
+      nextProps.setCheckSupervisions(false);
+    }
+  }
+
   checkSupervisions = async () => {
     const reservations = await checkSupervisorReservations();
     if (reservations) {
       this.setState({
         userHasSupervisions: true
+      })
+    }
+    else {
+      this.setState({
+        userHasSupervisions: false
       })
     }
   }
@@ -100,7 +118,7 @@ class SupervisorNotification extends Component {
   }
 }
 
-const SideMenu = ({setName, superuser}) => {
+const SideMenu = ({setName, superuser, setLoggingOut}) => {
   const styles = useStyles();
   const [menu, setMenu] = useState({"right": false})
   const [openDial, setOpenDial] = useState(false)
@@ -116,6 +134,7 @@ const SideMenu = ({setName, superuser}) => {
   }
 
   const HandleSignOut = () => {
+    setLoggingOut(true);
     storage.removeItem("token");
     storage.removeItem("taseraUserName");
     storage.removeItem("role");
@@ -260,6 +279,8 @@ function setLanguage(num) {
 const Nav = () => {
   const [name, setName] = useState("");
   const [superuser, setSuperuser] = useState();
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [checkSupervisions, setCheckSupervisions] = useState(false);
 
   if(name === "") {
     userInfo(name, setName, setSuperuser);
@@ -274,11 +295,10 @@ const Nav = () => {
   return (
     <div>
       <nav>
-        <Link style={logoStyle} to={"/"}>
+        <Link style={logoStyle} to={"/"} onClick={() => setCheckSupervisions(true)}>
           {icon}
         </Link>
-
-        {name==="" ?
+        {name === "" ?
          <Link style={{textDecoration:'none'}} to="/signin">
            <Button>
              {nav.SignIn[fin]}
@@ -287,16 +307,22 @@ const Nav = () => {
          :
          <p>{name}</p>
         }
-
         <span>
-          <Button onClick={()=> setLanguage(1)}>EN</Button>
-          <Button onClick={()=> setLanguage(0)}>FI</Button>
+          <Button onClick={() => setLanguage(1)}>EN</Button>
+          <Button onClick={() => setLanguage(0)}>FI</Button>
         </span>
-
-        <SideMenu setName={setName} superuser={superuser} />
-
+        <SideMenu
+          setName={setName}
+          superuser={superuser}
+          setLoggingOut={setLoggingOut}
+        />
       </nav>
-      <SupervisorNotification />
+      <SupervisorNotification
+        loggingOut={loggingOut}
+        setLoggingOut={setLoggingOut}
+        checkSupervisions={checkSupervisions}
+        setCheckSupervisions={setCheckSupervisions}
+      />
     </div>
   )
 }
