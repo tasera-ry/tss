@@ -9,18 +9,12 @@ import Grid from '@material-ui/core/Grid';
 import { getSchedulingWeek, getSchedulingDate } from "../utils/Utils";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import InfoIcon from '@material-ui/icons/Info';
-import Alert from '@material-ui/lab/Alert';
-import Button from '@material-ui/core/Button';
 
 // Moment for date management
 import moment from 'moment';
 
 // Translation
 import * as data from '../texts/texts.json';
-
-// function for checking whether we should show banner
-// DialogWindow for supervisors to confirm their supervisions
-import { checkSupervisorReservations, DialogWindow } from '../upcomingsupervisions/LoggedIn';
 
 let lang = "fi"; // fallback
 if (localStorage.getItem("language") === '0') {
@@ -49,13 +43,10 @@ class Weekview extends Component {
       weekNro: 0,
       dayNro: 0,
       yearNro: 0,
-      userHasSupervisions: false,
-      supervisionsOpen: false
     };
 
     this.previousWeekClick = this.previousWeekClick.bind(this);
     this.nextWeekClick = this.nextWeekClick.bind(this);
-    this.supervisionNotification = this.supervisionNotification.bind(this);
     this.update = this.update.bind(this);
   }
 
@@ -63,7 +54,6 @@ class Weekview extends Component {
   componentDidMount() {
     this.getWeek();
     this.getYear();
-    this.supervisionNotification();
     this.update();
   }
 
@@ -76,13 +66,6 @@ class Weekview extends Component {
       this.getYear();
       this.update();
     });
-  }
-
-  displaySupervisions = (e) => {
-    this.setState({
-      userHasSupervisions: false,
-      supervisionsOpen: true
-    })
   }
 
   // Changes week number state to previous one
@@ -199,15 +182,6 @@ class Weekview extends Component {
       );
     } catch(error) {
       //console.log(error)
-    }
-  }
-
-  supervisionNotification = async () => {
-    const reservations = await checkSupervisorReservations();
-    if (reservations) {
-      this.setState({
-        userHasSupervisions: true
-      })
     }
   }
 
@@ -382,7 +356,6 @@ class Weekview extends Component {
   }
 
   // TODO: update testi variables to more sensible names
-  // The bug NFR01 also seems to be here
   update() {
     // /dayview/2020-02-20
     const date = this.props.match.params.date;
@@ -492,19 +465,6 @@ class Weekview extends Component {
 
     return (
       <div>
-        {this.state.userHasSupervisions ?
-          <Alert
-            severity="info"
-            action={
-              <Button color="inherit" size="small">
-                {week.Check[fin]}
-              </Button>
-            }
-            onClick={this.displaySupervisions}
-            >{week.Notification[fin]}
-          </Alert> : null
-        }
-        {this.state.supervisionsOpen ? <DialogWindow/> : ""}
         <div class="container">
           {/* Header with arrows */}
           <Grid class="date-header">

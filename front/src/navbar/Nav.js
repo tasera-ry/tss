@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Component } from "react";
 
 import "../App.css";
 
@@ -7,6 +7,7 @@ import logo from "../logo/Logo.png";
 
 // Material UI elements
 import { Link } from "react-router-dom";
+import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
@@ -14,8 +15,9 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from '@material-ui/core/styles';
 
-// supervisions view
-import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
+// function for checking whether we should show banner
+// DialogWindow for supervisors to confirm their supervisions
+import { checkSupervisorReservations, DialogWindow } from '../upcomingsupervisions/LoggedIn';
 
 // Translations
 import * as data from '../texts/texts.json';
@@ -46,6 +48,56 @@ const drawerStyle = {
 }
 const elementStyle = {
   marginTop:10
+}
+
+class SupervisorNotification extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userHasSupervisions: false,
+      supervisionsOpen: false
+    };
+  }
+
+  componentDidMount() {
+    this.checkSupervisions();
+  }
+
+  checkSupervisions = async () => {
+    const reservations = await checkSupervisorReservations();
+    if (reservations) {
+      this.setState({
+        userHasSupervisions: true
+      })
+    }
+  }
+
+  displaySupervisions = (e) => {
+    this.setState({
+      userHasSupervisions: false,
+      supervisionsOpen: true
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        {this.state.userHasSupervisions ?
+          <Alert
+            severity="info"
+            action={
+              <Button color="inherit" size="small">
+                {nav.Check[fin]}
+              </Button>
+            }
+            onClick={this.displaySupervisions}
+          >{nav.Notification[fin]}
+          </Alert> : null
+        }
+        {this.state.supervisionsOpen ? <DialogWindow/> : ""}
+      </div>
+    )
+  }
 }
 
 const SideMenu = ({setName, superuser}) => {
@@ -167,7 +219,7 @@ const SideMenu = ({setName, superuser}) => {
 
   return (
     <div>
-      {storage.getItem("taseraUserName")!==null ?
+      {storage.getItem("taseraUserName") !== null ?
        <Button
          onClick={toggleDrawer("right", true)}>
          {nav.Menu[fin]}
@@ -193,10 +245,10 @@ const SideMenu = ({setName, superuser}) => {
 
 function userInfo(name, setName, setSuperuser) {
   let username = localStorage.getItem("taseraUserName")
-  if(username!==null) {
+  if(username !== null) {
     setName(username)
     let role = localStorage.getItem("role")
-    setSuperuser(role==="superuser")
+    setSuperuser(role === "superuser")
   }
 }
 
@@ -209,12 +261,9 @@ const Nav = () => {
   const [name, setName] = useState("");
   const [superuser, setSuperuser] = useState();
 
-  if(name==="") {
+  if(name === "") {
     userInfo(name, setName, setSuperuser);
   }
-
-  //console.log("username: ", name)
-  //console.log("is superuser", superuser)
 
   const icon = (
     <span className="logo">
@@ -223,29 +272,32 @@ const Nav = () => {
   );
 
   return (
-    <nav>
-      <Link style={logoStyle} to={"/"}>
-        {icon}
-      </Link>
+    <div>
+      <nav>
+        <Link style={logoStyle} to={"/"}>
+          {icon}
+        </Link>
 
-      {name==="" ?
-       <Link style={{textDecoration:'none'}} to="/signin">
-         <Button>
-           {nav.SignIn[fin]}
-         </Button>
-       </Link>
-       :
-       <p>{name}</p>
-      }
+        {name==="" ?
+         <Link style={{textDecoration:'none'}} to="/signin">
+           <Button>
+             {nav.SignIn[fin]}
+           </Button>
+         </Link>
+         :
+         <p>{name}</p>
+        }
 
-      <span>
-        <Button onClick={()=> setLanguage(1)}>EN</Button>
-        <Button onClick={()=> setLanguage(0)}>FI</Button>
-      </span>
+        <span>
+          <Button onClick={()=> setLanguage(1)}>EN</Button>
+          <Button onClick={()=> setLanguage(0)}>FI</Button>
+        </span>
 
-      <SideMenu setName={setName} superuser={superuser} />
+        <SideMenu setName={setName} superuser={superuser} />
 
-    </nav>
+      </nav>
+      <SupervisorNotification />
+    </div>
   )
 }
 export default Nav;

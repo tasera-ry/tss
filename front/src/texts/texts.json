@@ -7,7 +7,9 @@
     "Supervision": ["Valvonnat", "Supervisions"],
     "Tablet": ["Tablettinäkymä", "Tablet view"],
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
-    "SignOut": ["Kirjaudu ulos", "Sign Out"]
+    "SignOut": ["Kirjaudu ulos", "Sign Out"],
+    "Notification": ["Sinulla on varmistamattomia päävalvojavuoroja!", "You have unconfirmed range officer reservations!"],
+    "Check": ["TARKISTA", "CHECK"]
   },
   "signin": {
     "SignIn": ["Kirjaudu sisään", "Sign In"],
@@ -35,9 +37,7 @@
     "Blue": ["Päävalvoja määritetty mutta ei varmistettu", "Range officer predefined, not confirmed"],
     "Red": ["Keskus suljettu", "Range closed"],
     "Orange": ["Päävalvoja matkalla", "Range officer on the way"],
-    "White": ["Päävalvojaa ei asetettu", "Range officer undefined"],
-    "Notification": ["Sinulla on varmistamattomia päävalvojavuoroja!", "You have unconfirmed range officer reservations!"],
-    "Check": ["TARKISTA", "CHECK"]
+    "White": ["Päävalvojaa ei asetettu", "Range officer undefined"]
   },
   "sched": {
     "Day": ["Valitse päivä", "Choose date"],
