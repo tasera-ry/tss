@@ -463,7 +463,6 @@ class Weekview extends Component {
     const { week } = data;
     // not like this, remove in the future
     const fin = localStorage.getItem("language");
-
     return (
       <div>
         <div class="container">

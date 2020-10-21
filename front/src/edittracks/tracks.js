@@ -59,10 +59,6 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-// Translations
-const l10n = l10nLines.tracks;
-const lang = localStorage.getItem("language");
-
 const tableStyle = {
   backgroundColor: "#f2f0eb"
 }
@@ -95,7 +91,14 @@ const MaybeProgress = ({finished}) => finished
   Main table for showing track information
   Parts commented out = adding or removing tracks.
 */
-const TrackTable = ({setTrackData, trackData, setRequestStatus, setRequestText, opts}) => {
+const TrackTable = ({
+  setTrackData, 
+  trackData, 
+  setRequestStatus, 
+  setRequestText, 
+  opts,
+  l10n,
+  lang}) => {
   return (
     <MaterialTable
       style={tableStyle}
@@ -105,7 +108,7 @@ const TrackTable = ({setTrackData, trackData, setRequestStatus, setRequestText, 
           previousTooltip: l10n.previousTooltip[lang],
           firstTooltip: l10n.firstTooltip[lang],
           lastTooltip: l10n.lastTooltip[lang],
-          labelDisplayedRows: l10n.pagination[lang],
+          // labelDisplayedRows: l10n.pagination[lang],
           labelRowsSelect: l10n.labelRowsSelect[lang]
         }
         , header: {
@@ -287,6 +290,9 @@ const TrackCRUD = () => {
     window.location.href="/";
   };
 
+  // Translations
+  const l10n = l10nLines.tracks;
+  const lang = localStorage.getItem("language");
 
   return (
     <ScopedCssBaseline>
@@ -297,7 +303,9 @@ const TrackCRUD = () => {
           trackData={trackData}
           setRequestStatus={setRequestStatus}
           setRequestText={setRequestText}
-          opts={opts} />
+          opts={opts} 
+          l10n={l10n}
+          lang={lang} />
         <RequestStatusAlert
           statusSetter={setRequestStatus}
           requestStatus={requestStatus}
