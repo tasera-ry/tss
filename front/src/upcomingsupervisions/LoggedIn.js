@@ -249,8 +249,6 @@ async function getReservations(res, setNoSchedule) {
   return res;
 }
 
-// yeah I know I'm gonna edit this whole API sequence later
-// this sucks btw don't imitate this it's just a hotfix
 async function checkSupervisorReservations() {
   const userID = await getId();
 
@@ -258,12 +256,16 @@ async function checkSupervisorReservations() {
     return false;
   }
 
-  const query = "api/schedule?supervisor_id=" + userID;
+  // TODO: Make it be in form ?id=
+  const query = "api/range-supervision/usersupervisions/" + userID;
 
   let response = await axios.get(query)
     .then(response => {
-      // check and return boolean about whether there's any reservations
-      return (response.data.length >= 1);
+      // check and return boolean about whether there's any unconfirmed reservations
+      return (response.data.some((sprvsn) => sprvsn.range_supervisor === "not confirmed"));
+    })
+    .catch(error => {
+      console.log(error);
     })
 
   return response;

@@ -79,6 +79,11 @@ router.route('/range-supervision')
     middlewares.rangeSupervision.create,
     controllers.rangeSupervision.create)
 
+router.route('/range-supervision/usersupervisions/:id')
+  .get(
+    middlewares.rangeSupervision.userSupervisions,
+    controllers.rangeSupervision.userSupervisions)
+
 router.route('/range-supervision/:scheduled_range_supervision_id')
   .get(
     middlewares.rangeSupervision.read,

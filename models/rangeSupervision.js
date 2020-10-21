@@ -59,6 +59,28 @@ const model = {
       .select(fields)
   },
 
+  // might need optimization? select should be at the top
+  /**
+   * Get the supervisions matching a user key.
+   *
+   * @param {object} key - Identifying user key, { id?, name?, digest?, role?, phone? }
+   * @param {object} fields - Attributes about the supervision to select { scheduled_range_supervision_id?, range_supervisor?, notice? }
+   * @return {Promise<object[]>} Supervisions that matched the user key
+   *
+   * @example
+   * model.read({ id: 1 }, ['range_supervisor'])
+   */
+
+  userSupervisions: async function getUserSupervisions(key, fields) {
+    return await knex
+      .from('user')
+      .leftJoin('supervisor', 'user.id', 'supervisor.user_id')
+      .leftJoin('scheduled_range_supervision', 'supervisor.user_id', 'scheduled_range_supervision.supervisor_id')
+      .leftJoin('range_supervision', 'scheduled_range_supervision.id', 'range_supervision.scheduled_range_supervision_id')
+      .where({ 'user.id': key['id'] })
+      .select(fields)
+  },
+
   /**
    * Update a supervision events' info.
    *

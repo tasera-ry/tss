@@ -32,6 +32,18 @@ const service = {
   },
 
   /**
+   * Get the supervisions matching a user key.
+   *
+   * @param {object} key - Identifying user key, { id?, name?, digest?, role?, phone? }
+   * @param {object} fields - Attributes about the supervision to select { scheduled_range_supervision_id?, range_supervisor?, notice? }
+   * @return {Promise<object[]>} Supervisions that matched the user key
+   *
+   */
+  userSupervisions: async function getUserSupervisions(key, fields) {
+    return (await models.rangeSupervision.userSupervisions(_.pick(key, 'id', 'name', 'role', 'phone'), fields))
+  },
+
+  /**
    * Update a supervision events' info.
    *
    * @param {object} current - The current identifying info of the supervision. { scheduled_range_supervision_id }
