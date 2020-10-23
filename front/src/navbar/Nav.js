@@ -15,6 +15,8 @@ import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from '@material-ui/core/styles';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 
 
@@ -76,14 +78,6 @@ const SideMenu = ({setName, superuser}) => {
     }
     setMenu({"right": open })
   }
-
- /* const toggleBurger = (anchor, open) => (event) => {
-    setOpenDial(false)
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-      return;
-    }
-    setMenu({"right": open })
-  } */
 
   const superuserList = () => (
     <div style={drawerStyle}>
@@ -171,20 +165,6 @@ const SideMenu = ({setName, superuser}) => {
     </div>
   )
 
- /* const BurgerList = () => (
-    <div style={drawerStyle}>
-      <List>
-        <ListItem>
-          <Link className="pc" style={{textDecoration:'none'}} to="/signin">
-            <Button>
-              {nav.SignIn[fin]}
-            </Button>
-          </Link>
-        </ListItem>
-      </List>
-    </div>
-  ) */
-
   return (
     <div className="pc">
       {storage.getItem("taseraUserName")!==null ?
@@ -213,6 +193,8 @@ const SideMenu = ({setName, superuser}) => {
   )
 
 }
+
+
 
 function userInfo(name, setName, setSuperuser) {
   let username = localStorage.getItem("taseraUserName")
@@ -268,11 +250,6 @@ const Nav = () => {
       </span>
 
       <SideMenu setName={setName} superuser={superuser} />
-
-      <div className="phone">
-        <img className="logoStyle" src={Burger} alt="Burger-icon">
-        </img>
-      </div>
 
     </nav>
   )
