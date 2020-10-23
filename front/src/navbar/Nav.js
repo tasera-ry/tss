@@ -1,4 +1,4 @@
-import React, { useState, Component } from "react";
+import React, { useState } from "react";
 
 import "../App.css";
 
@@ -7,7 +7,6 @@ import logo from "../logo/Logo.png";
 
 // Material UI elements
 import { Link } from "react-router-dom";
-import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
@@ -15,9 +14,9 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from '@material-ui/core/styles';
 
-// function for checking whether we should show banner
-// DialogWindow for supervisors to confirm their supervisions
-import { checkSupervisorReservations, DialogWindow } from '../upcomingsupervisions/LoggedIn';
+import SupervisorNotification from './SupervisorNotification';
+
+import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
 
 // Translations
 import * as data from '../texts/texts.json';
@@ -48,74 +47,6 @@ const drawerStyle = {
 }
 const elementStyle = {
   marginTop:10
-}
-
-class SupervisorNotification extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      userHasSupervisions: false,
-      supervisionsOpen: false
-    };
-  }
-
-  componentDidMount() {
-    this.checkSupervisions();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.loggingOut) {
-      this.setState({
-        userHasSupervisions: false
-      })
-      nextProps.setLoggingOut(false);
-    }
-    else if (nextProps.checkSupervisions) {
-      this.checkSupervisions();
-      nextProps.setCheckSupervisions(false);
-    }
-  }
-
-  checkSupervisions = async () => {
-    const reservations = await checkSupervisorReservations();
-    if (reservations) {
-      this.setState({
-        userHasSupervisions: true
-      })
-    }
-    else {
-      this.setState({
-        userHasSupervisions: false
-      })
-    }
-  }
-
-  displaySupervisions = (e) => {
-    this.setState({
-      supervisionsOpen: true
-    })
-  }
-
-  render() {
-    return (
-      <div>
-        {this.state.userHasSupervisions ?
-          <Alert
-            severity="warning"
-            variant="filled"
-            action={
-              <Button color="inherit" size="small">
-                {nav.Check[fin]}
-              </Button>
-            }
-            onClick={this.displaySupervisions}
-          >{nav.Notification[fin]}
-          </Alert> : null
-        }
-        {this.state.supervisionsOpen ? <DialogWindow/> : ""}
-      </div>
-    )
-  }
 }
 
 const SideMenu = ({setName, superuser, setLoggingOut}) => {
