@@ -92,7 +92,6 @@ class SupervisorNotification extends Component {
 
   displaySupervisions = (e) => {
     this.setState({
-      userHasSupervisions: false,
       supervisionsOpen: true
     })
   }
@@ -102,7 +101,8 @@ class SupervisorNotification extends Component {
       <div>
         {this.state.userHasSupervisions ?
           <Alert
-            severity="info"
+            severity="warning"
+            variant="filled"
             action={
               <Button color="inherit" size="small">
                 {nav.Check[fin]}
