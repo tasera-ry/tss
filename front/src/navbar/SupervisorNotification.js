@@ -38,6 +38,12 @@ class SupervisorNotification extends Component {
     }
   }
 
+  refreshSupervisionsOpen = () => {
+    this.setState({
+      supervisionsOpen: false
+    })
+  }
+
   checkSupervisions = async () => {
     const reservations = await checkSupervisorReservations();
     if (reservations) {
@@ -74,7 +80,12 @@ class SupervisorNotification extends Component {
           >{banner.Notification[fin]}
           </Alert> : null
         }
-        {this.state.supervisionsOpen ? <DialogWindow/> : ""}
+        {this.state.supervisionsOpen ?
+          <DialogWindow
+            onCancel={
+              () => this.refreshSupervisionsOpen()
+            }
+          /> : ""}
       </div>
     )
   }

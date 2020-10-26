@@ -324,12 +324,16 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
   setChecked(res[0].range_supervisor === "en route");
 }
 
-const DialogWindow = () => {
+const DialogWindow = ({onCancel}) => {
   const [noSchedule, setNoSchedule] = useState(false);
   const [schedules, setSchedules] = useState([]);
   const [done, setDone] = useState(false);
   const [checked, setChecked] = useState(false);
   const {sv} = data;
+
+  if (onCancel === undefined) {
+    onCancel = () => {}
+  }
 
   //starting point
   useEffect(() => {
@@ -340,7 +344,7 @@ const DialogWindow = () => {
     <div>
       <Logic schedules={schedules} setSchedules={setSchedules}
              noSchedule={noSchedule} checked={checked} setChecked={setChecked}
-    done={done} setDone={setDone} sv={sv} />
+    done={done} setDone={setDone} sv={sv} onCancel={onCancel}/>
     </div>
   )
 }
@@ -368,7 +372,7 @@ async function putSchedules(changes) {
 
 //creates dialog-window
 const Logic = ({schedules, setSchedules, noSchedule, checked,
-                setChecked, done, setDone, sv}) => {
+                setChecked, done, setDone, sv, onCancel}) => {
 
   const classes = useStyles();
   const [open, setOpen] = useState(true);
@@ -426,7 +430,10 @@ const Logic = ({schedules, setSchedules, noSchedule, checked,
            : ""}
           <Button
             variant='contained'
-            onClick={()=> setOpen(false)}
+            onClick={() => {
+              setOpen(false)
+              onCancel()
+            }}
             style={{backgroundColor:'#ede9e1'}} >
             {sv.Cancel[fin]}
           </Button>
