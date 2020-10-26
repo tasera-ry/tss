@@ -24,15 +24,8 @@ else if (localStorage.getItem("language") === '1'){
   lang = 'en';
 }
 
-const weekDayLocs = [
-  ['Mon', 'Ma'],
-  ['Tue', 'Ti'],
-  ['Wed', 'Ke'],
-  ['Thu', 'To'],
-  ['Fri', 'Pe'],
-  ['Sat', 'La'],
-  ['Sun', 'Su']
-]
+const { week, weekdayShorthand } = data;
+const fin = localStorage.getItem("language");
 
 class Weekview extends Component {
   constructor(props) {
@@ -237,6 +230,7 @@ class Weekview extends Component {
     let table = []
     let oikeePaiva;
     let linkki;
+    let dayNumber;
 
     if (this.state.paivat === undefined) {
       return;
@@ -245,11 +239,14 @@ class Weekview extends Component {
     for (let j = 0; j < 7; j++) {
       oikeePaiva = this.state.paivat[j].date
       linkki = "/dayview/" + oikeePaiva
+      dayNumber = j.toString()
 
       table.push(
         <Link className="link" to={linkki}>
           <p id ="weekDay">
-            {lang === 'en' ? weekDayLocs[j][0] : weekDayLocs[j][1]}
+            {lang === 'en' ?
+              weekdayShorthand[dayNumber][1] :
+              weekdayShorthand[dayNumber][0]}
           </p>
         </Link>
       )
@@ -459,10 +456,6 @@ class Weekview extends Component {
   }
 
   render() {
-    const { week } = data;
-    // not like this, remove in the future
-    const fin = localStorage.getItem("language");
-
     return (
       <div>
         <div class="container">
