@@ -189,7 +189,6 @@ const SideMenu = ({setName, superuser}) => {
       {openDial ? <DialogWindow /> : "" }
       
     </div>
-
   )
 
 }

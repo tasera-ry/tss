@@ -339,11 +339,11 @@ class Weekview extends Component {
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={linkki}>
           <p>
                {info ?
-               <br />
-               :
                <div className="centered">
                <img className = "exclamation-2" src={exclamation} />
-               </div>}
+               </div>
+               :
+               <br />}
               
 
           </p>
