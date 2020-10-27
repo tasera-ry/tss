@@ -26,16 +26,8 @@ else if (localStorage.getItem("language") === '1'){
   lang = 'en';
 }
 
-// Pitäisikö näisä hyödyntää text.jsonia ja tehdä sinne??
-const weekDayLocs = [
-  ['Mon', 'Ma'],
-  ['Tue', 'Ti'],
-  ['Wed', 'Ke'],
-  ['Thu', 'To'],
-  ['Fri', 'Pe'],
-  ['Sat', 'La'],
-  ['Sun', 'Su']
-]
+const { week, weekdayShorthand } = data;
+const fin = localStorage.getItem("language");
 
 class Weekview extends Component {
   constructor(props) {
@@ -106,7 +98,7 @@ class Weekview extends Component {
 
     try {
       const oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() - 7));
-      this.props.history.replace("/weekview/" + uusPaiva.toISOString());
+      this.props.history.replace("/weekview/" + moment(uusPaiva, "YYYYMMDD").add(1, 'day').toISOString());
 
       const viikkoNumero = moment(this.state.dayNro, "YYYYMMDD").week();
 
@@ -165,7 +157,8 @@ class Weekview extends Component {
 
     try {
       const oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() + 7));
-      this.props.history.replace("/weekview/" + uusPaiva.toISOString());
+      this.props.history.replace("/weekview/" + moment(uusPaiva, "YYYYMMDD").add(1, 'day').toISOString());
+
 
       // Week logic cuz there's no 53 weeks
       const uusVuosi = uusViikko === 1
@@ -240,6 +233,7 @@ class Weekview extends Component {
     let table = []
     let oikeePaiva;
     let linkki;
+    let dayNumber;
 
     if (this.state.paivat === undefined) {
       return;
@@ -249,10 +243,14 @@ class Weekview extends Component {
       oikeePaiva = this.state.paivat[j].date
       linkki = "/dayview/" + oikeePaiva
 
+      dayNumber = j.toString()
+
       table.push(
-        <Link className="link centered" to={linkki}>
-          <p id ="weekDay" className="weekDay">
-            {lang === 'en' ? weekDayLocs[j][0] : weekDayLocs[j][1]}
+        <Link className="link" to={linkki}>
+          <p id ="weekDay">
+            {lang === 'en' ?
+              weekdayShorthand[dayNumber][1] :
+              weekdayShorthand[dayNumber][0]}
           </p>
         </Link>
       )
@@ -308,12 +306,12 @@ class Weekview extends Component {
     let oikeePaiva;
     let linkki;
     let Attention;
-    let infospace;
+    let info;
 
     for (let j = 0; j < 7; j++) {
       //Luodaan väri
       rataStatus = this.state.paivat[j].rangeSupervision
-      
+
       if (rataStatus === "present") {
         colorFromBackEnd = "#658f60"
       } else if (rataStatus === "confirmed") {
@@ -327,25 +325,20 @@ class Weekview extends Component {
       } else if (rataStatus === "absent") {
         colorFromBackEnd = "#f2f0eb"
       }
-      oikeePaiva = this.state.paivat[j].date
-      //1= ei lisäilmoituksia radoilla. oletuksena siis kaikki ok
-      infospace="1"
-      //loopataan päivän radat läpi      
-      for (var key in this.state.paivat[j].tracks){                 
-         //Tallennetaan radan lisätiedot Attention muuttujaan
-         Attention = this.state.paivat[j].tracks[key].notice
-         //jos lisätiedot ei ole tyhjä muuta infospace -->2. jos infospace ei ole 1 printtaa iconi.             
-         if(Attention.length !== 0){
-            infospace = "2"
-         }
-      }
 
-      
+      oikeePaiva = this.state.paivat[j].date
+      info=false
+      for (var key in this.state.paivat[j].tracks){
+        Attention = this.state.paivat[j].tracks[key].notice
+        if(Attention.length !== 0){
+          info = true
+        }
+      }
       linkki = "/dayview/" + oikeePaiva
       table.push(
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={linkki}>
           <p>
-               {infospace==1 ?
+               {info ?
                <br />
                :
                <div className="centered">
@@ -357,7 +350,6 @@ class Weekview extends Component {
         </Link>
       )
     }
-
     return table
   }
 
@@ -418,6 +410,7 @@ class Weekview extends Component {
     const current = 1 + Math.round(((date2.getTime() - week1.getTime()) / 86400000
       - 3 + (week1.getDay() + 6) % 7) / 7);
 
+
     // Tää asettaa sen mikä viikkonumero on alotusnäytöllä
     // Nyt tarvis ottaa tähän url parametreistä se viikkonumero
     // Jos ei parametrejä nii sit toi current. Muuten parametrien
@@ -473,10 +466,6 @@ class Weekview extends Component {
   }
 
   render() {
-    const { week } = data;
-    // not like this, remove in the future
-    const fin = localStorage.getItem("language");
-
     return (
       <div>
         <div class="container">
@@ -519,9 +508,9 @@ class Weekview extends Component {
             }
           </div>
         </div>
-        
+
         {/* Infoboxes */}
-        
+
         {/* Top row */}
         <hr></hr>
 
@@ -565,7 +554,6 @@ class Weekview extends Component {
             
         </div> 
       </div>
-      
     );
   }
 }

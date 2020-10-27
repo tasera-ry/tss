@@ -24,9 +24,25 @@ app.use("/api", router);
 // Rendering the front-end react app
 app.use("/", express.static("front/build/"));
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.error("Server on " + port)
 });
+
+const io = require("socket.io").listen(server, {
+  serveClient: false
+})
+
+io.on('connection', (socket) => {
+  socket.on('rangeUpdate', (status) => {
+    socket.broadcast.emit('rangeUpdate', status)
+  })
+  socket.on('trackUpdate', (msg) => {
+    socket.broadcast.emit('trackUpdate', msg)
+  })
+  socket.on('refresh', () => {
+    socket.broadcast.emit('refresh')
+  })
+})
 
 if(process.env.NODE_ENV === 'stable' && os.hostname() === 'tasera.netum.fi') {
   if(process.getgid() === 0 || process.getuid() === 0) {

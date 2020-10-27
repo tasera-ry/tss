@@ -15,13 +15,14 @@ const model = {
    * @param {object} track - Track's properties, { range_id, name, description }
    * @return {Promise<number[]>} The added tracks id
    *
-   * model.create({ range_id: 1, name: 'Shooting track 1', description: '100m Kohdistusrata'})
+   * model.create({ range_id: 1, name: 'Shooting track 1', description: '100m Kohdistusrata', short_description: '100m Kohdistus'})
    */
   create: async function createTrack(trackInfo) {
     const trackConstraints = {
       range_id: {},
       name: {},
-      description: {}
+      description: {},
+      short_description: {}
     }
 
     const track = validate.cleanAttributes(trackInfo, trackConstraints)
@@ -70,7 +71,8 @@ const model = {
     const trackConstraints = {
       range_id: {},
       name: {},
-      description: {}
+      description: {},
+      short_description: {}
     }
 
     const track = validate.cleanAttributes(update, trackConstraints)
