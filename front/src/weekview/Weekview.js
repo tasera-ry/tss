@@ -61,15 +61,15 @@ class Weekview extends Component {
     });
   }
 
-  //Changes week number state to previous one
+  // Changes week number state to previous one
   previousWeekClick = (e) => {
     this.setState({
-      state:'loading'
+      state: 'loading'
     })
 
     e.preventDefault();
 
-    //Otetaan parametreistä päivät seuraavalle viikolle
+    // Otetaan parametreistä päivät seuraavalle viikolle
     let uusPaiva;
 
     // I'm sure this part can be done easier
@@ -324,7 +324,7 @@ class Weekview extends Component {
 
       oikeePaiva = this.state.paivat[j].date
       info=false
-      for (var key in this.state.paivat[j].tracks){
+      for (var key in this.state.paivat[j].tracks) {
         Attention = this.state.paivat[j].tracks[key].notice
         if(Attention.length !== 0){
           info = true
@@ -353,7 +353,6 @@ class Weekview extends Component {
   }
 
   // TODO: update testi variables to more sensible names
-  // The bug NFR01 also seems to be here
   update() {
     // /dayview/2020-02-20
     const date = this.props.match.params.date;

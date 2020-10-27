@@ -14,17 +14,16 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from '@material-ui/core/styles';
 
+import SupervisorNotification from './SupervisorNotification';
 
-
-// Upcoming supervisions -view
-import DialogWindow from '../upcomingsupervisions/LoggedIn';
+import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
 
 // Translations
 import * as data from '../texts/texts.json';
 const fin = localStorage.getItem("language"); //0: finnish, 1: english
 const {nav} = data;
 
-//Styles
+// Styles
 const useStyles = makeStyles({
   paper: {
     background: '#f2f0eb'
@@ -50,7 +49,7 @@ const elementStyle = {
   marginTop:10
 }
 
-const SideMenu = ({setName, superuser}) => {
+const SideMenu = ({setName, superuser, setLoggingOut}) => {
   const styles = useStyles();
   const [menu, setMenu] = useState({"right": false})
   const [openDial, setOpenDial] = useState(false)
@@ -66,6 +65,7 @@ const SideMenu = ({setName, superuser}) => {
   }
 
   const HandleSignOut = () => {
+    setLoggingOut(true);
     storage.removeItem("token");
     storage.removeItem("taseraUserName");
     storage.removeItem("role");
@@ -169,7 +169,7 @@ const SideMenu = ({setName, superuser}) => {
 
   return (
     <div>
-      {storage.getItem("taseraUserName")!==null ?
+      {storage.getItem("taseraUserName") !== null ?
        <Button
          onClick={toggleDrawer("right", true)}>
          {nav.Menu[fin]}
@@ -189,17 +189,16 @@ const SideMenu = ({setName, superuser}) => {
 
     </div>
       {openDial ? <DialogWindow /> : "" }
-      
     </div>
   )
 }
 
 function userInfo(name, setName, setSuperuser) {
   let username = localStorage.getItem("taseraUserName")
-  if(username!==null) {
+  if(username !== null) {
     setName(username)
     let role = localStorage.getItem("role")
-    setSuperuser(role==="superuser")
+    setSuperuser(role === "superuser")
   }
 }
 
@@ -211,13 +210,12 @@ function setLanguage(num) {
 const Nav = () => {
   const [name, setName] = useState("");
   const [superuser, setSuperuser] = useState();
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [checkSupervisions, setCheckSupervisions] = useState(false);
 
-  if(name==="") {
+  if(name === "") {
     userInfo(name, setName, setSuperuser);
   }
-
-  //console.log("username: ", name)
-  //console.log("is superuser", superuser)
 
   const icon = (
     <span className="logo">
@@ -226,29 +224,37 @@ const Nav = () => {
   );
 
   return (
-    <nav>
-      <Link style={logoStyle} to={"/"}>
-        {icon}
-      </Link>
-
-      {name==="" ?
-       <Link style={{textDecoration:'none'}} to="/signin">
-         <Button>
-           {nav.SignIn[fin]}
-         </Button>
-       </Link>
-       :
-       <p>{name}</p>
-      }
-
-      <span>
-        <Button onClick={()=> setLanguage(1)}>EN</Button>
-        <Button onClick={()=> setLanguage(0)}>FI</Button>
-      </span>
-
-      <SideMenu setName={setName} superuser={superuser} />
-
-    </nav>
+    <div>
+      <nav>
+        <Link style={logoStyle} to={"/"} onClick={() => setCheckSupervisions(true)}>
+          {icon}
+        </Link>
+        {name === "" ?
+         <Link style={{textDecoration:'none'}} to="/signin">
+           <Button>
+             {nav.SignIn[fin]}
+           </Button>
+         </Link>
+         :
+         <p>{name}</p>
+        }
+        <span>
+          <Button onClick={() => setLanguage(1)}>EN</Button>
+          <Button onClick={() => setLanguage(0)}>FI</Button>
+        </span>
+        <SideMenu
+          setName={setName}
+          superuser={superuser}
+          setLoggingOut={setLoggingOut}
+        />
+      </nav>
+      <SupervisorNotification
+        loggingOut={loggingOut}
+        setLoggingOut={setLoggingOut}
+        checkSupervisions={checkSupervisions}
+        setCheckSupervisions={setCheckSupervisions}
+      />
+    </div>
   )
 }
 export default Nav;

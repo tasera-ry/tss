@@ -30,6 +30,20 @@ const serviceCalls = {
     return next()
   },
 
+  userSupervisions: async function getUserSupervisions(request, response, next) {
+    const query = response.locals.query
+
+    try {
+      // TODO: try testing the fields in (key, fields) of the function
+      response.locals.queryResult = await services.rangeSupervision.userSupervisions(query)
+    }
+    catch(e) {
+      return next(e)
+    }
+
+    return next()
+  },
+
   create: async function createSupervision(request, response, next) {
     const query = response.locals.query
     let id
@@ -103,6 +117,11 @@ exports.readFilter = [
 exports.read = [
   validators.rangeSupervision.read,
   serviceCalls.read
+]
+
+exports.userSupervisions = [
+  validators.rangeSupervision.userSupervisions,
+  serviceCalls.userSupervisions
 ]
 
 exports.create = [
