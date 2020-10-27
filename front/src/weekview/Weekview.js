@@ -466,6 +466,9 @@ class Weekview extends Component {
   }
 
   render() {
+    const fin = localStorage.getItem("language");
+    const {week} = data;
+    
     return (
       <div>
         <div class="container">
