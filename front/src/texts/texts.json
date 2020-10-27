@@ -9,6 +9,10 @@
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
     "SignOut": ["Kirjaudu ulos", "Sign Out"]
   },
+  "banner": {
+    "Notification": ["Sinulla on varmistamattomia päävalvojavuoroja!", "You have unconfirmed range officer reservations!"],
+    "Check": ["TARKISTA", "CHECK"]
+  },
   "signin": {
     "SignIn": ["Kirjaudu sisään", "Sign In"],
     "Name": ["Käyttäjänimi", "Username"],
