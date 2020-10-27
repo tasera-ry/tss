@@ -516,7 +516,7 @@ class Weekview extends Component {
             <div class="info-flex">
 
               <div id="open-info" class='box'></div>
-              {/* Avoinna */} &nbsp;{week.Green[fin]} <br></br> <br></br>
+              {/* Avoinna */} &nbsp;<span>{week.Green[fin]}</span> <br></br> <br></br>
 
               <div id="closed-info2" class='box'></div>
               {/* Suljettu */} &nbsp;{week.Blue[fin]} <br></br><br></br>

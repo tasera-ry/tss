@@ -10,6 +10,7 @@ export async function getSchedulingDate(date) {
         'Content-Type': 'application/json'
       }
     });
+    console.log(response)
     return await response.json();
   }catch(err){
     console.error(err);
