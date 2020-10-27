@@ -53,13 +53,56 @@
   background:lightgreen;
 }
 
+.dayviewContainer .eightGrid {
+  border:solid 1px black;
+}
+
+/* To have 6 boxes force size 100% / 6 = 16.666666666666667% */
+.dayviewContainer .eightGrid > div {
+    max-width:16.666666666666667%;
+    text-align: ce;
+    align-items: stretch;
+    flex-wrap:wrap;
+    flex-direction: row;
+}
+
 .dayviewContainer .sevenGrid {
   border:solid 1px black;
 }
 
-/* To have 7 boxes force size 100 / 7 = 14.28571428571429 */
+/* To have 7 boxes force size 100% / 7 = 14.28571428571429% */
 .dayviewContainer .sevenGrid > div {
     max-width:14.28571428571429%;
+    text-align: ce;
+    align-items: stretch;
+    flex-wrap:wrap;
+    flex-direction: row;
+}
+
+.dayviewContainer .eightGrid {
+  border:solid 1px black;
+}
+
+/* To have 8 boxes force size 100% / 8 = 12.5% */
+.dayviewContainer .eightGrid > div {
+    max-width:12.5%;
+    text-align: ce;
+    align-items: stretch;
+    flex-wrap:wrap;
+    flex-direction: row;
+}
+
+.dayviewContainer .tenGrid {
+  border:solid 1px black;
+}
+
+/* To have 10 boxes force size 100% / 5 = 20% */
+.dayviewContainer .tenGrid > div {
+    max-width:20%;
+    text-align: ce;
+    align-items: center;
+    flex-wrap:wrap;
+    flex-direction: row;
 }
 
 @media only screen and (max-width: 600px) {

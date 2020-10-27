@@ -148,20 +148,35 @@ class Dayview extends Component {
             key={key}
             name={props.tracks[key].name}
             state={props.tracks[key].trackSupervision}
-	    notice={props.tracks[key].notice}
+	          notice={props.tracks[key].notice}
             //TODO final react routing
             to={"/trackview/"+props.date.toISOString()+"/" + props.tracks[key].name}
           />
         );
       }
-
+      if (items.length == 6) {
+        var classNames = "sixGrid";
+      }
+      else if (items.length == 7) {
+        var classNames = "sevenGrid";
+      }
+      else if (items.length == 8) {
+        var classNames = "eightGrid";
+      }
+      else if (items.length == 10) {
+        var classNames = "tenGrid";
+        console.log(items.length);
+      }
+      else {
+        var classNames = "sevenGrid";
+      }
       return (
         <Grid
           container
           direction="row"
           justify="flex-start"
           alignItems="flex-start"
-          className="sevenGrid"
+          className={classNames}
         >
           {items}
         </Grid>

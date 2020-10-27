@@ -127,30 +127,30 @@ const TrackTable = ({setTrackData, trackData, setRequestStatus, setRequestText, 
       // Other views only support viewing 7 tracks, so no adding or deleting
       // tracks.
       editable={{
-        // onRowAdd: ({name, description}) => {
-        //   return new Promise(async (resolve, reject) => {
-        //     try
-        //     {
-        //       const response = await axios.post(
-        //         '/api/track'
-        //         , {name: name
-        //            , description: description
-        //            , range_id: trackData[0].range_id
-        //           }, opts)
-        //       setTrackData(trackData.concat(response.data))
-        //       setRequestStatus('success')
-        //       setRequestText('Rata lisätty')
-        //       resolve()
-        //     }
-        //     catch(e)
-        //     {
-        //       setRequestStatus('error')
-        //       setRequestText('Radan lisäys epäonnistui')
-        //       reject()
-        //     }
-        //   })
-        // }
-        onRowUpdate: (newData, oldData) => {
+        onRowAdd: ({name, description}) => {
+           return new Promise(async (resolve, reject) => {
+             try
+             {
+               const response = await axios.post(
+                 '/api/track'
+                 , {name: name
+                    , description: description
+                    , range_id: trackData[0].range_id
+                   }, opts)
+               setTrackData(trackData.concat(response.data))
+               setRequestStatus('success')
+               setRequestText('Rata lisätty')
+               resolve()
+             }
+             catch(e)
+             {
+               setRequestStatus('error')
+               setRequestText('Radan lisäys epäonnistui')
+               reject()
+             }
+           })
+        }
+        , onRowUpdate: (newData, oldData) => {
           return new Promise(async (resolve, reject) => {
             resolve()
             const trackInfo = trackData
@@ -185,39 +185,38 @@ const TrackTable = ({setTrackData, trackData, setRequestStatus, setRequestText, 
             resolve()
           })
         }
-        // , onRowDelete: ({name, description}) => {
-        //   return new Promise(async (resolve, reject) => {
+         , onRowDelete: ({name, description}) => {
+           return new Promise(async (resolve, reject) => {
 
-        //     const trackInfo = trackData
-        //           .filter(track => track.name === name
-        //                   && track.description === description)
-        //           .head()
+             const trackInfo = trackData
+                   .filter(track => track.name === name
+                           && track.description === description)[0]
 
-        //     // Should never happen
-        //     if(trackInfo === undefined)
-        //     {
-        //       setRequestStatus('error')
-        //       setRequestText('Radan poisto epäonnistui')
-        //       reject()
-        //     }
+             // Should never happen
+             if(trackInfo === undefined)
+             {
+               setRequestStatus('error')
+               setRequestText('Radan poisto epäonnistui')
+               reject()
+             }
 
-        //     try
-        //     {
-        //       const response = await axios.delete(`/api/track/${trackInfo.id}`, opts)
-        //       setTrackData(trackData.filter(track => track.id !== trackInfo.id))
-        //       setRequestStatus('success')
-        //       setRequestText('Rata poistettu')
-        //       resolve()
-        //     }
-        //     catch(e)
-        //     {
-        //       setRequestStatus('error')
-        //       setRequestText('Radan poisto epäonnistui')
-        //       reject()
-        //     }
+             try
+             {
+               const response = await axios.delete(`/api/track/${trackInfo.id}`, opts)
+               setTrackData(trackData.filter(track => track.id !== trackInfo.id))
+               setRequestStatus('success')
+               setRequestText('Rata poistettu')
+               resolve()
+             }
+             catch(e)
+             {
+               setRequestStatus('error')
+               setRequestText('Radan poisto epäonnistui')
+               reject()
+             }
 
-        //   })
-        // }
+           })
+         }
       }}
       options={{
         pageSize: 10,
