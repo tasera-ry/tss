@@ -244,9 +244,9 @@ const Nav = () => {
       }
 
 
-      <span className="pc clickable">
-        <Button onClick={()=> setLanguage(1)}>EN</Button>
-        <Button onClick={()=> setLanguage(0)}>FI</Button>
+      <span className="pc">
+        <Button className="clickable" onClick={()=> setLanguage(1)}>EN</Button>
+        <Button className="clickable" onClick={()=> setLanguage(0)}>FI</Button>
       </span>
 
       <SideMenu setName={setName} superuser={superuser} />

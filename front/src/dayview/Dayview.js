@@ -2,6 +2,8 @@ import React, { Component } from "react";
 
 import "./Dayview.css";
 
+import info from "../logo/Info.png";
+
 // Material UI components
 import { Link } from "react-router-dom";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
@@ -147,6 +149,7 @@ class Dayview extends Component {
           <TrackBox
             key={key}
             name={props.tracks[key].name}
+            description={props.tracks[key].description}
             state={props.tracks[key].trackSupervision}
 	    notice={props.tracks[key].notice}
             //TODO final react routing
@@ -156,13 +159,7 @@ class Dayview extends Component {
       }
 
       return (
-        <Grid
-          container
-          direction="row"
-          justify="flex-start"
-          alignItems="flex-start"
-          className="sevenGrid"
-        >
+        <Grid className="sevenGrid">
           {items}
         </Grid>
       );
@@ -183,74 +180,96 @@ class Dayview extends Component {
       }
 
       return (
-        <Grid item className="track hoverHand" xs={12} sm={2}>
+        <Grid item className={"track hoverHand " + color} xs={12} sm={2}>
           <Link className="trackBoxLink" to={props.to}>
-            <p>{props.name}</p>
-            <Box className={"clickableBox " + color}>
-
-	      {props.notice.length===0 ?
+            <span className="bold">
+            {props.name}
+            </span>
+            <span className="hidden">-
+            </span>
+            <span className="linebreak"><br></br>
+            </span>
+            <span className="overflowHidden">
+            {/*Vaihda short descriptioniin tässä ja rivillä 152*/}
+            {props.description}
+            </span>
+	          {props.notice.length===0 ?
                <br />
                :
-               <InfoIcon style={{maxHeight:15}} />}
-              
-	    </Box>
+               <div className="DayviewInfo">
+               <img className = "infoImg-2" src={info} />
+               </div>}
           </Link>
         </Grid>
       );
     }
 
     return (
-      <div className="dayviewContainer">
-        {/* Whole view */}
-        <Grid
-          container
-          direction="column"
-          justify="flex-start"
-          alignItems="center"
-        >
-          {/* Date header */}
-          <Grid
-            container
-            direction="row"
-            justify="space-around"
-            alignItems="center"
-            className="dateHeader"
-          >
-            <div
-              className="hoverHand arrow-left"
-              onClick={this.previousDayClick}
-            ></div>
-            <div className="titleContainer">
-              <h1>
-                {dayToString(this.state.date.getDay())}
-                {/*console.log(this.state.date.getDay()) */}
-              </h1>
-              <div className="date">{this.state.date.toLocaleDateString("fi-FI")}</div>
-            </div>
-            <div
-              className="hoverHand arrow-right"
-              onClick={this.nextDayClick}
-            ></div>
-          </Grid>
-          {/* Range officer info */}
-          <Grid container direction="row" justify="center" alignItems="center">
-            <Grid item xs={12}>
-              {this.state.state!=='ready'?
-               <br />
-               :
-               <OfficerBanner rangeSupervision={this.state.rangeSupervision} />}
+      <div>
+        <div className="dayviewContainer">
+        {/* Date header */}
+            <Grid
+              container
+              direction="row"
+              justify="space-around"
+              alignItems="center"
+              className="dateHeader"
+            >
+              <div
+                className="hoverHand arrow-left"
+                onClick={this.previousDayClick}
+              ></div>
+              <div className="titleContainer">
+                <h1 className="headerText">
+                  {dayToString(this.state.date.getDay())}
+                  {/*console.log(this.state.date.getDay()) */}
+                  &nbsp;&nbsp;
+                  {this.state.date.toLocaleDateString("fi-FI")}
+                </h1>
+                
+              </div>
+              <div
+                className="hoverHand arrow-right"
+                onClick={this.nextDayClick}
+              ></div>
             </Grid>
-          </Grid>
+            {/* Range officer info */}
+            <Grid container direction="row" justify="center" alignItems="center">
+              <Grid item xs={12}>
+                {this.state.state!=='ready'?
+                 <br />
+                 :
+                 <OfficerBanner rangeSupervision={this.state.rangeSupervision} />}
+              </Grid>
+            </Grid>
 
-          {/* MUI grid - used for displaying the track info */}
-          {this.state.state!=='ready'?
-           <div>
-             <CircularProgress disableShrink/>
-           </div>
-           :
-           <TrackList tracks={this.state.tracks} date={this.state.date} />}
+            {/* open and close hours */}
+              <h2 className="headerText">
+                {dayview.OpenHours[fin]}: {this.state.opens}-{this.state.closes}
+              </h2>
+          {/* Whole view */}
+          <div className="dayviewTrackContainer">
+            
 
-          {/* Other info */}
+            {/* MUI grid - used for displaying the track info */}
+            {this.state.state!=='ready'?
+             <div>
+               <CircularProgress disableShrink/>
+             </div>
+             :
+             <TrackList tracks={this.state.tracks} date={this.state.date} />}
+
+            {/* Other info */}
+            
+          </div>
+
+          <Link className="back" style={{ color: "black" }} to={`/weekview/${this.state.date.toISOString()}`}>
+          <ArrowBackIcon />
+          {dayview.WeekviewLink[fin]}
+          </Link>
+
+          <hr></hr>
+
           <Grid
             container
             direction="row"
@@ -258,36 +277,31 @@ class Dayview extends Component {
             alignItems="flex-start"
             className="otherInfo"
           >
-            {/* open and close hours */}
-            <Grid item xs={6} sm={3}>
-              {dayview.OpenHours[fin]}: {this.state.opens}-{this.state.closes}
-            </Grid>
 
             {/* color info boxes */}
-            <Grid item xs={6} sm={3}>
-             <div className="colorInfo">
-                <Box className="excolor greenB">&nbsp;</Box>
-                <p>{dayview.Open[fin]}</p>
-              </div>
-              <div className="colorInfo">
-                <Box className="excolor redB">&nbsp;</Box>
-                <p>{dayview.Closed[fin]}</p>
-              </div>
-              <div className="colorInfo">
-                <Box className="excolor whiteB">&nbsp;</Box>
-                <p>{dayview.NotAvailable[fin]}</p>
-               </div>
-
-            </Grid>
+            <div class="info-item">
+                    <p class='box no-flex greenB'/>
+                    {/* Avoinna */} <p>{dayview.Open[fin]}</p>
+                </div>
+            <div class="info-item">
+                    <p class='box no-flex redB'/>
+                    {/* Suljettu */} <p>{dayview.Closed[fin]}</p>
+                </div>
+            <div class="info-item">
+                    <p class='box no-flex whiteB'/>
+                    {/* Ei valvojaa */} <p>{dayview.NotAvailable[fin]}</p>
+                </div>
+            <div class="info-item-img">
+                  <p class="empty-box no-flex">
+                  <img class='infoImg no-flex' src={info}/>
+                  </p>
+                  {/* Radalla lisätietoa */}  <p class="info-text relative-text no-flex">{dayview.Notice[fin]}</p>
+            </div>
           </Grid>
-        </Grid>
 
-        {/* Link back to weekview */}
-        <Link className="back" style={{ color: "black" }} to={`/weekview/${this.state.date.toISOString()}`}>
-          <ArrowBackIcon />
-          {dayview.WeekviewLink[fin]}
-        </Link>
-      </div>
+        </div>
+        
+        </div>
     );
   }
 }

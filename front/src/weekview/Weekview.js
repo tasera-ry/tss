@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import '../App.css';
 import './Weekview.css'
 
-import exclamation from "../logo/Exclamation_mark_valmis.png";
+import exclamation from "../logo/Info.png";
 
 // Material UI components
 import { Link } from 'react-router-dom';
