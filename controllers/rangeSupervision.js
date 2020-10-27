@@ -13,11 +13,25 @@ const controller = {
   },
 
   read: async function read(request, response) {
-    if(response.locals.queryResult.length === 0) {
+    if (response.locals.queryResult.length === 0) {
       return response
         .status(404)
         .send({
           error: 'Query didn\'t match range supervision event'
+        })
+    }
+
+    return response
+      .status(200)
+      .send(response.locals.queryResult)
+  },
+
+  userSupervisions: async function getUserSupervisions(request, response) {
+    if (response.locals.queryResult.length === 0) {
+      return response
+        .status(404)
+        .send({
+          error: 'User has no supervisions or there is no such user'
         })
     }
 

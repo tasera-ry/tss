@@ -27,7 +27,6 @@ const fields = {
           .isInt()
           .withMessage('must be an integer')
           .toInt()
-
     return validatorAdditions(validator, opts)
   },
 
@@ -46,6 +45,14 @@ const fields = {
           .withMessage('must be a string')
           .isLength({ min: 1, max: 255 })
           .withMessage('must be between 1 and 255 characters')
+    return validatorAdditions(validator, opts)
+  },
+
+  user_id: function idValidation(requestObject, ...opts) {
+    const validator = requestObject('id')
+          .isInt()
+          .withMessage('must be an integer')
+          .toInt()
     return validatorAdditions(validator, opts)
   }
 }
@@ -76,6 +83,14 @@ module.exports = {
     fields.scheduled_range_supervision_id(param, 'exists'),
     handleValidationErrors,
     function storeID(request, response, next) {
+      response.locals.query = matchedData(request, { locations: ['params'] })
+      return next()
+    }
+  ],
+  userSupervisions: [
+    fields.user_id(param, 'exists'),
+    handleValidationErrors,
+    function storeUserID(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['params'] })
       return next()
     }

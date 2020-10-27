@@ -9,6 +9,10 @@
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
     "SignOut": ["Kirjaudu ulos", "Sign Out"]
   },
+  "banner": {
+    "Notification": ["Sinulla on varmistamattomia päävalvojavuoroja!", "You have unconfirmed range officer reservations!"],
+    "Check": ["TARKISTA", "CHECK"]
+  },
   "signin": {
     "SignIn": ["Kirjaudu sisään", "Sign In"],
     "Name": ["Käyttäjänimi", "Username"],
@@ -16,6 +20,15 @@
     "LogIn": ["Kirjaudu", "Log in"],
     "Back": ["Takaisin", "Go back"],
     "Helper": ["Väärä käyttäjänimi tai salasana", "Wrong username or password"]
+  },
+  "weekdayShorthand": {
+    "0": ["Ma", "Mon"],
+    "1": ["Ti", "Tue"],
+    "2": ["Ke", "Wed"],
+    "3": ["To", "Thu"],
+    "4": ["Pe", "Fri"],
+    "5": ["La", "Sat"],
+    "6": ["Su", "Sun"]
   },
   "sv": {
     "Header": ["Vahvistettavat valvonnat", "Confirm supervisions"],
@@ -35,7 +48,8 @@
     "Blue": ["Päävalvoja määritetty mutta ei varmistettu", "Range officer predefined, not confirmed"],
     "Red": ["Keskus suljettu", "Range closed"],
     "Orange": ["Päävalvoja matkalla", "Range officer on the way"],
-    "White": ["Päävalvojaa ei asetettu", "Range officer undefined"]
+    "White": ["Päävalvojaa ei asetettu", "Range officer undefined"],
+    "Notice": ["Radalla Lisätietoja", "Track has additional information"]
   },
   "sched": {
     "Day": ["Valitse päivä", "Choose date"],
@@ -117,7 +131,8 @@
     "Blue": ["Päävalvoja ei varmistettu", "Range officer predefined"],
     "Red": ["Ampumakeskus suljettu", "Range closed"],
     "Orange": ["Päävalvoja matkalla", "Range officer on the way"],
-    "White": ["Päävalvojaa ei asetettu", "No defined range officer"]
+    "White": ["Päävalvojaa ei asetettu", "No defined range officer"],
+    "Notice": ["Radalla Lisätietoja", "Track has additional information"]
   },
   "trackview": {
     "SuperGreen": ["Päävalvoja paikalla", "Range officer present"],

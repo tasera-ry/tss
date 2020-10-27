@@ -3,6 +3,8 @@ import React, { Component } from "react";
 import '../App.css';
 import './Weekview.css'
 
+import exclamation from "../logo/Info.png";
+
 // Material UI components
 import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
@@ -24,15 +26,8 @@ else if (localStorage.getItem("language") === '1'){
   lang = 'en';
 }
 
-const weekDayLocs = [
-  ['Mon', 'Ma'],
-  ['Tue', 'Ti'],
-  ['Wed', 'Ke'],
-  ['Thu', 'To'],
-  ['Fri', 'Pe'],
-  ['Sat', 'La'],
-  ['Sun', 'Su']
-]
+const { week, weekdayShorthand } = data;
+const fin = localStorage.getItem("language");
 
 class Weekview extends Component {
   constructor(props) {
@@ -68,15 +63,15 @@ class Weekview extends Component {
     });
   }
 
-  //Changes week number state to previous one
+  // Changes week number state to previous one
   previousWeekClick = (e) => {
     this.setState({
-      state:'loading'
+      state: 'loading'
     })
 
     e.preventDefault();
 
-    //Otetaan parametreistä päivät seuraavalle viikolle
+    // Otetaan parametreistä päivät seuraavalle viikolle
     let uusPaiva;
 
     // I'm sure this part can be done easier
@@ -164,6 +159,7 @@ class Weekview extends Component {
       const oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() + 7));
       this.props.history.replace("/weekview/" + moment(uusPaiva, "YYYYMMDD").add(1, 'day').toISOString());
 
+
       // Week logic cuz there's no 53 weeks
       const uusVuosi = uusViikko === 1
         ? this.state.yearNro + 1
@@ -237,6 +233,7 @@ class Weekview extends Component {
     let table = []
     let oikeePaiva;
     let linkki;
+    let dayNumber;
 
     if (this.state.paivat === undefined) {
       return;
@@ -246,10 +243,14 @@ class Weekview extends Component {
       oikeePaiva = this.state.paivat[j].date
       linkki = "/dayview/" + oikeePaiva
 
+      dayNumber = j.toString()
+
       table.push(
         <Link className="link" to={linkki}>
           <p id ="weekDay">
-            {lang === 'en' ? weekDayLocs[j][0] : weekDayLocs[j][1]}
+            {lang === 'en' ?
+              weekdayShorthand[dayNumber][1] :
+              weekdayShorthand[dayNumber][0]}
           </p>
         </Link>
       )
@@ -327,7 +328,7 @@ class Weekview extends Component {
 
       oikeePaiva = this.state.paivat[j].date
       info=false
-      for (var key in this.state.paivat[j].tracks){                 
+      for (var key in this.state.paivat[j].tracks) {
         Attention = this.state.paivat[j].tracks[key].notice
         if(Attention.length !== 0){
           info = true
@@ -337,10 +338,14 @@ class Weekview extends Component {
       table.push(
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={linkki}>
           <p>
-            {info ?
-            <InfoIcon/>
-            :
-            <br />}
+               {info ?
+               <div className="centered">
+               <img className = "exclamation-2" src={exclamation} />
+               </div>
+               :
+               <br />}
+              
+
           </p>
         </Link>
       )
@@ -356,7 +361,6 @@ class Weekview extends Component {
   }
 
   // TODO: update testi variables to more sensible names
-  // The bug NFR01 also seems to be here
   update() {
     // /dayview/2020-02-20
     const date = this.props.match.params.date;
@@ -404,6 +408,7 @@ class Weekview extends Component {
     const week1 = new Date(date2.getFullYear(), 0, 4);
     const current = 1 + Math.round(((date2.getTime() - week1.getTime()) / 86400000
       - 3 + (week1.getDay() + 6) % 7) / 7);
+
 
     // Tää asettaa sen mikä viikkonumero on alotusnäytöllä
     // Nyt tarvis ottaa tähän url parametreistä se viikkonumero
@@ -509,47 +514,47 @@ class Weekview extends Component {
         {/* Infoboxes */}
 
         {/* Top row */}
-        {/* To do: Tekstit ei toimi */}
         <hr></hr>
-        <div className="infoContainer">
-          <Grid>
+
             <div class="info-flex">
+                <div class="info-item">
+                    <p id="open-info" class='box no-flex'/>
+                    {/* Avoinna */} <p class="info-text no-flex">{week.Green[fin]}</p>
+                </div>
 
-              <div id="open-info" class='box'></div>
-              {/* Avoinna */} &nbsp;<span>{week.Green[fin]}</span> <br></br> <br></br>
+                <div class="info-item">
+                    <p id="closed-info2" class='box no-flex'/>
+                    {/* Suljettu */} <p class="info-text no-flex">{week.Blue[fin]}</p>
+                </div>
 
-              <div id="closed-info2" class='box'></div>
-              {/* Suljettu */} &nbsp;{week.Blue[fin]} <br></br><br></br>
+                <div class="info-item">
+                    <p id="valvoja-info" class='box no-flex'/>
+                    {/* Päävalvoja tulossa */} <p class="info-text no-flex">{week.Lightgreen[fin]}</p>
+                </div>
 
-            </div>
-          </Grid>
+                <div class="info-item">
+                    <p id="onway-info" class='box no-flex'/>
+                    {/* Päävalvoja matkalla */}  <p class="info-text no-flex">{week.Orange[fin]}</p>
+                </div>
 
-          {/* Bottom row */}
-          <Grid class="bottom-info">
-            <div class="info-flex">
+                <div class="info-item">
+                    <p id="closed-info" class='box no-flex'/>
+                    {/* Suljettu */} <p class="info-text no-flex">{week.Red[fin]}</p>
+                </div>
 
-              <div id="valvoja-info" class='box'></div>
-              {/* Päävalvoja tulossa */} &nbsp;{week.Lightgreen[fin]} <br></br> <br></br>
+                <div class="info-item">
+                    <p id="no-info" class='box no-flex'/>
+                    {/* Päävalvojaa ei asetettu */}  <p class="info-text no-flex">{week.White[fin]}</p>
+                </div>
 
-              <div id="onway-info" class='box'></div>
-              {/* Ei tietoa */}  &nbsp;{week.Orange[fin]}
-
-            </div>
-          </Grid>
-
-          {/* Bottom row */}
-          <Grid class="bottom-info">
-            <div class="info-flex">
-
-              <div id="closed-info" class='box'></div>
-              {/* Suljettu */} &nbsp;{week.Red[fin]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br></br><br></br>
-
-              <div id="no-info" class='box'> </div>
-              {/* Ei tietoa */}  &nbsp;{week.White[fin]}
-
-            </div>
-          </Grid>
-        </div>
+                <div class="info-item-img">
+                    <p class="empty-box no-flex">
+                    <img class='exclamation no-flex' src={exclamation}/>
+                    </p>
+                    {/* Radalla lisätietoa */}  <p class="info-text relative-text no-flex">{week.Notice[fin]}</p>
+                </div>
+            
+        </div> 
       </div>
     );
   }

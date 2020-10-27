@@ -1,13 +1,3 @@
-nav {
-   display: flex;
-   justify-content: space-around;
-   align-items: center;
-   min-height: 10vh;
-   /* background-color: #d8c3a5; */
-   background-color: cyan;
-   color: black;
-}
-
 body {
    margin: 0;
    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
