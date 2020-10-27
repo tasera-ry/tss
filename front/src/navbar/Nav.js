@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 
 import "../App.css";
+import './Nav.css';
 
-// TASERA logo
+// TASERA logo & Burger icon
 import logo from "../logo/Logo.png";
+import Burger from "../logo/Burger.png";
 
 // Material UI elements
 import { Link } from "react-router-dom";
@@ -13,6 +15,8 @@ import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from '@material-ui/core/styles';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import SupervisorNotification from './SupervisorNotification';
 
@@ -32,12 +36,6 @@ const useStyles = makeStyles({
 const navStyle = {
   color: "black",
   textDecoration: "none"
-}
-const logoStyle = {
-  textDecoration: "none",
-  height: "100%",
-  width: "60%",
-  display: "block"
 }
 const drawerStyle = {
   fontSize:17,
@@ -168,9 +166,9 @@ const SideMenu = ({setName, superuser, setLoggingOut}) => {
   )
 
   return (
-    <div>
-      {storage.getItem("taseraUserName") !== null ?
-       <Button
+    <div className="pc">
+      {storage.getItem("taseraUserName")!==null ?
+       <Button className="clickable"
          onClick={toggleDrawer("right", true)}>
          {nav.Menu[fin]}
        </Button>
@@ -191,7 +189,10 @@ const SideMenu = ({setName, superuser, setLoggingOut}) => {
       {openDial ? <DialogWindow /> : "" }
     </div>
   )
+
 }
+
+
 
 function userInfo(name, setName, setSuperuser) {
   let username = localStorage.getItem("taseraUserName")
@@ -219,42 +220,48 @@ const Nav = () => {
 
   const icon = (
     <span className="logo">
-        <img style={logoStyle} src={logo} alt="Tasera" />
+        <img className="logoStyle" src={logo} alt="Tasera" />
     </span>
   );
 
   return (
     <div>
       <nav>
-        <Link style={logoStyle} to={"/"} onClick={() => setCheckSupervisions(true)}>
+        <Link className="logoStyle" to={"/"} onClick={() => setCheckSupervisions(true)}>
           {icon}
         </Link>
-        {name === "" ?
-         <Link style={{textDecoration:'none'}} to="/signin">
-           <Button>
-             {nav.SignIn[fin]}
-           </Button>
-         </Link>
-         :
-         <p>{name}</p>
+
+        {name=== "" ?
+        <Link className="pc clickable" style={{textDecoration:'none'}} to="/signin">
+          <Button>
+            {nav.SignIn[fin]}
+          </Button>
+        </Link>
+        :
+        <p className="pc">{name}</p>
         }
-        <span>
-          <Button onClick={() => setLanguage(1)}>EN</Button>
-          <Button onClick={() => setLanguage(0)}>FI</Button>
+
+
+        <span className="pc">
+          <Button className="clickable" onClick={()=> setLanguage(1)}>EN</Button>
+          <Button className="clickable" onClick={()=> setLanguage(0)}>FI</Button>
         </span>
+
         <SideMenu
           setName={setName}
           superuser={superuser}
           setLoggingOut={setLoggingOut}
         />
+
       </nav>
-      <SupervisorNotification
-        loggingOut={loggingOut}
-        setLoggingOut={setLoggingOut}
-        checkSupervisions={checkSupervisions}
-        setCheckSupervisions={setCheckSupervisions}
-      />
+        <SupervisorNotification
+          loggingOut={loggingOut}
+          setLoggingOut={setLoggingOut}
+          checkSupervisions={checkSupervisions}
+          setCheckSupervisions={setCheckSupervisions}
+        />
     </div>
   )
+
 }
 export default Nav;
