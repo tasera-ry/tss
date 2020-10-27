@@ -4,6 +4,7 @@ const config = require("../config/config");
 const moment = require("moment-timezone");
 const fetch = require("node-fetch");
 const _ = require('lodash');
+const { short_description } = require("casual");
 
 /*
 *  Get complete scheduling for a date
@@ -167,7 +168,7 @@ exports.getScheduleDate = async (req, res) => {
         trackSupervision: 'absent',
         scheduled: false
       }
-      return _.pick(item, ['id', 'name', 'description', 'notice', 'trackSupervision', 'scheduled']);
+      return _.pick(item, ['id', 'name', 'description', 'short_description', 'notice', 'trackSupervision', 'scheduled']);
     });
 
     const trackSupervision = await getTracksupervision(scheduleId);
@@ -180,7 +181,7 @@ exports.getScheduleDate = async (req, res) => {
           trackSupervision: supervision ? supervision.track_supervisor : 'absent',
           scheduled: supervision
         }
-        return _.pick(item, ['id', 'name', 'description', 'notice', 'trackSupervision', 'scheduled']);
+        return _.pick(item, ['id', 'name', 'description', 'short_description', 'notice', 'trackSupervision', 'scheduled']);
       });
     }
 

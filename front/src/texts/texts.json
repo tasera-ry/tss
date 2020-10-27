@@ -17,6 +17,15 @@
     "Back": ["Takaisin", "Go back"],
     "Helper": ["Väärä käyttäjänimi tai salasana", "Wrong username or password"]
   },
+  "weekdayShorthand": {
+    "0": ["Ma", "Mon"],
+    "1": ["Ti", "Tue"],
+    "2": ["Ke", "Wed"],
+    "3": ["To", "Thu"],
+    "4": ["Pe", "Fri"],
+    "5": ["La", "Sat"],
+    "6": ["Su", "Sun"]
+  },
   "sv": {
     "Header": ["Vahvistettavat valvonnat", "Confirm supervisions"],
     "No": ["Sinulla ei ole vahvistettavia vuoroja", "Nothing to confirm"],
@@ -136,6 +145,7 @@
   "tracks": {
     "tableHeaderName": ["Nimi", "Name"],
     "tableHeaderDescription": ["Kuvaus", "Description"],
+    "tableHeaderShort": ["Lyhyt kuvaus", "Short description"],
     "tableHeaderActions": ["Toiminnot", "Actions"],
     "tableTitle": ["Radat", "Tracks"],
     "tableSearchHint": ["Hae", "Search"],

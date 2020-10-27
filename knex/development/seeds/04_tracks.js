@@ -63,6 +63,7 @@ casual.define('range', async function(rangeId) {
   return _.times(tracks, (i) => ({
     range_id: rangeId,
     name: `Shooting Track ${i}`,
-    description: casual.track_description
+    description: casual.track_description,
+    short_description: `s ${i}`
   }))
 })
