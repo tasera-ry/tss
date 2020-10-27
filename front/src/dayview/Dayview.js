@@ -149,7 +149,7 @@ class Dayview extends Component {
           <TrackBox
             key={key}
             name={props.tracks[key].name}
-            description={props.tracks[key].description}
+            short_description={props.tracks[key].short_description}
             state={props.tracks[key].trackSupervision}
 	    notice={props.tracks[key].notice}
             //TODO final react routing
@@ -191,7 +191,7 @@ class Dayview extends Component {
             </span>
             <span className="overflowHidden">
             {/*Vaihda short descriptioniin tässä ja rivillä 152*/}
-            {props.description}
+            {props.short_description}
             </span>
 	          {props.notice.length===0 ?
                <br />
