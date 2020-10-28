@@ -1,5 +1,5 @@
 import React from 'react';
-import Dayview from './Dayview'
+import SignIn from './SignIn'
 import { HashRouter as Router } from "react-router-dom";
 import { createMemoryHistory } from 'history'
 import '@testing-library/jest-dom/extend-expect'
@@ -10,8 +10,8 @@ import {
 } from '@testing-library/react'
 import * as utils from '../utils/Utils';
 
-describe('testing Dayview component', () => {
-  it('should render Dayview', async () => {
+describe('testing SignIn component', () => {
+  it('should render SignIn', async () => {
     const history = createMemoryHistory()
     const date = new Date('2020-10-21T11:30:57.000Z')
     
@@ -26,14 +26,14 @@ describe('testing Dayview component', () => {
     Date.now = jest.fn(() => '2020-10-21T11:30:57.000Z')
     render(
     <Router>
-      <Dayview
+      <SignIn
         history={history} 
         match={{params: { date: date }}}
         state={ state } />
       </Router>
     );
     await waitFor( () =>
-      expect(screen.getByText("Back to weekview"))
+      expect(screen.getByText("Sign In"))
         .toBeInTheDocument()
     );
   });
