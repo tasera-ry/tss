@@ -477,7 +477,7 @@ class Weekview extends Component {
               className="hoverHand arrow-left"
               onClick={this.previousWeekClick}
             ></div>
-            <h1> {week.Week[fin]} {this.state.weekNro} , {this.state.yearNro} </h1>
+            <h1> {`${week.Week[fin]} ${this.state.weekNro} , ${this.state.yearNro}`} </h1>
             {/* kuukausi jos tarvii: {monthToString(date.getMonth())} */}
             <div
               className="hoverHand arrow-right"
