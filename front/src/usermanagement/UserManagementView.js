@@ -493,7 +493,7 @@ class UserManagementView extends Component {
     **  ACTUAL PAGE RENDERING
     */
   render() {
-
+   const fin = localStorage.getItem("language");
     return (
       <div>
         {/*Dialog to add new user*/}
@@ -710,7 +710,7 @@ class UserManagementView extends Component {
 
         {/*USER PROFILES TABLE*/}
 
-	<h3 style={{ textAlign:"center" }}>{manage.Users[fin]}:</h3>
+	<h3 style={{ textAlign:"center" }}>{manage.Users[fin] + ':'}</h3>
         <Box style={{justifyContent: "center", display:"flex", flexWrap:"wrap"}}>
              
         <TableContainer component={Paper} style={{ maxWidth:500, tableLayout: "auto" }}>

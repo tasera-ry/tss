@@ -8,7 +8,6 @@ import {
   screen,
   waitFor
 } from '@testing-library/react'
-import * as utils from '../utils/Utils';
 
 describe('testing Dayview component', () => {
   it('should render Dayview', async () => {

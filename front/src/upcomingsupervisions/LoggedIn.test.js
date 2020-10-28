@@ -5,28 +5,24 @@ import {
   render,
   screen,
 } from '@testing-library/react'
-import Scheduling from './Scheduling'
+import { DialogWindow } from './LoggedIn'
 import { HashRouter as Router } from "react-router-dom"
-import { createMemoryHistory } from 'history'
 import { act } from 'react-dom/test-utils';
 
 
-describe('testing scheduling', () => {
-  it('should render scheduling', async () => {
-    const history = createMemoryHistory()
-
+describe('testing LoggedIn', () => {
+  it('should render LoggedIn', async () => {
+    
     localStorage.setItem('language', '1');
-    await act(async () => {
+    act(() => {
       render(
         <Router>
-          <Scheduling 
-            history={history}
-            />
+          <DialogWindow />
         </Router>
       )
     })
     await waitFor(() =>
-      expect(screen.getByText('Save changes'))
+      expect(screen.getByText('Confirm supervisions'))
        .toBeInTheDocument()
     );
   })

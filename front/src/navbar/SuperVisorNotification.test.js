@@ -5,28 +5,27 @@ import {
   render,
   screen,
 } from '@testing-library/react'
-import Scheduling from './Scheduling'
+import SupervisorNotification from './SupervisorNotification'
 import { HashRouter as Router } from "react-router-dom"
-import { createMemoryHistory } from 'history'
 import { act } from 'react-dom/test-utils';
+import * as checkSuper from '../upcomingsupervisions/LoggedIn';
 
 
-describe('testing scheduling', () => {
-  it('should render scheduling', async () => {
-    const history = createMemoryHistory()
+describe('testing SupervisorNotification', () => {
+  it('should render SupervisorNotification', async () => {
 
+    checkSuper.checkSupervisorReservations = jest.fn(() => true)
     localStorage.setItem('language', '1');
+
     await act(async () => {
       render(
         <Router>
-          <Scheduling 
-            history={history}
-            />
+          <SupervisorNotification />
         </Router>
       )
     })
     await waitFor(() =>
-      expect(screen.getByText('Save changes'))
+      expect(screen.getByText('You have unconfirmed range officer reservations!'))
        .toBeInTheDocument()
     );
   })

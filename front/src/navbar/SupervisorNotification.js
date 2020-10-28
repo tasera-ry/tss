@@ -65,6 +65,8 @@ class SupervisorNotification extends Component {
   }
 
   render() {
+    const fin = localStorage.getItem("language");
+    console.log(this.state)
     return (
       <div>
         {this.state.userHasSupervisions ?

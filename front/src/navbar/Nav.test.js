@@ -5,28 +5,24 @@ import {
   render,
   screen,
 } from '@testing-library/react'
-import Scheduling from './Scheduling'
+import Nav from './Nav'
 import { HashRouter as Router } from "react-router-dom"
-import { createMemoryHistory } from 'history'
 import { act } from 'react-dom/test-utils';
 
 
-describe('testing scheduling', () => {
-  it('should render scheduling', async () => {
-    const history = createMemoryHistory()
-
+describe('testing Nav', () => {
+  it('should render Nav', async () => {
     localStorage.setItem('language', '1');
     await act(async () => {
       render(
         <Router>
-          <Scheduling 
-            history={history}
+          <Nav 
             />
         </Router>
       )
     })
     await waitFor(() =>
-      expect(screen.getByText('Save changes'))
+      expect(screen.getByText('FI'))
        .toBeInTheDocument()
     );
   })

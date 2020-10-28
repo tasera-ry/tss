@@ -5,28 +5,27 @@ import {
   render,
   screen,
 } from '@testing-library/react'
-import Scheduling from './Scheduling'
+import UserManagementView from './UserManagementView'
 import { HashRouter as Router } from "react-router-dom"
 import { createMemoryHistory } from 'history'
 import { act } from 'react-dom/test-utils';
 
 
-describe('testing scheduling', () => {
-  it('should render scheduling', async () => {
+describe('testing UserManagementView', () => {
+  it('should render UserManagementView', async () => {
     const history = createMemoryHistory()
-
     localStorage.setItem('language', '1');
     await act(async () => {
       render(
         <Router>
-          <Scheduling 
-            history={history}
+          <UserManagementView 
+            history={history} 
             />
         </Router>
       )
     })
     await waitFor(() =>
-      expect(screen.getByText('Save changes'))
+      expect(screen.getByText('User management'))
        .toBeInTheDocument()
     );
   })
