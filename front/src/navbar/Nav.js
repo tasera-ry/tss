@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Component } from "react";
 
 import "../App.css";
 import './Nav.css';
@@ -213,6 +213,8 @@ const Nav = () => {
   const [superuser, setSuperuser] = useState();
   const [loggingOut, setLoggingOut] = useState(false);
   const [checkSupervisions, setCheckSupervisions] = useState(false);
+  const fin = localStorage.getItem("language"); //0: finnish, 1: english
+  const {nav} = data;
 
   if(name === "") {
     userInfo(name, setName, setSuperuser);
