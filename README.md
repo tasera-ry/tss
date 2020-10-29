@@ -66,7 +66,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
        DB_PASSWORD=some_password \
        DB=postgres \
        NODE_ENV=stable \
-       npm start
+       bash -c 'cd back && npm start'
    ```
 
    A systemd unit file is also provided, though it requires some manual
