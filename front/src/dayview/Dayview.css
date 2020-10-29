@@ -1,10 +1,69 @@
-/* Breakpoints
-    xs, extra-small: 0px
-    sm, small: 600px
-    md, medium: 960px
-    lg, large: 1280px
-    xl, extra-large: 1920px
-*/
+.sevenGrid {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.DayviewInfo {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+}
+
+.overflowHidden {
+  overflow: hidden;
+  display: inline;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.hidden {
+  margin-right: 8px;
+  margin-left: 8px;
+  font-weight: bold;
+}
+
+.linebreak {
+  display: none;
+}
+
+.Track {
+  font-size: 32px;
+}
+
+h1.headerText{
+  font-size: 24px;
+}
+
+h2.headerText{
+  font-size: 16px;
+  text-align: center
+}
+
+.infoImg {
+   position: absolute;
+   left: 7px;
+   bottom: 1px;
+   height: 22px;
+   width: 22px;
+   margin-right: 8px;
+   margin-bottom: 0px;
+   clear: both;
+   min-height: 22px;
+   min-width: 22px;
+}
+
+.infoImg-2 {
+   position: relative;
+   margin: 0;
+   width: 32px;
+   max-height: 32px;
+   max-width: 32px;
+}
 
 .dayviewContainer h1 {
   margin:2vmin;
@@ -14,24 +73,14 @@
   margin:2vmin;
 }
 
-.dayviewContainer {
-  padding:5vmin 20vmin 5vmin 20vmin;
-}
-
-@media only screen and (max-width: 1280px) {
-  .dayviewContainer {
-    padding:5vmin 10vmin 5vmin 10vmin;
-  }
-}
-
-@media only screen and (max-width: 600px) {
-  .dayviewContainer {
-    padding:2vmin 2vmin 2vmin 2vmin;
-  }
-}
-
 .dayviewContainer .dateHeader {
   flex-wrap:nowrap;
+}
+
+.dayviewTrackContainer{
+  display: flex;
+  margin-bottom: 16px;
+  justify-content: center;
 }
 
 .dayviewContainer .dateHeader .titleContainer {
@@ -53,37 +102,16 @@
   background:lightgreen;
 }
 
-.dayviewContainer .sevenGrid {
-  border:solid 1px black;
-}
-
-/* To have 7 boxes force size 100 / 7 = 14.28571428571429 */
-.dayviewContainer .sevenGrid > div {
-    max-width:14.28571428571429%;
-}
-
-@media only screen and (max-width: 600px) {
   .dayviewContainer .sevenGrid > div {
     max-width:100%;
-  }
 }
 
 .dayviewContainer .track {
+  position: relative;
   background:#b0aca0;
   border:solid 1px black;
   box-sizing: border-box;
-}
-
-.dayviewContainer .track > a > p {
-  padding-left:2vh;
-  overflow:hidden;
-  font-size:100%;
-}
-
-@media only screen and (min-width: 600px) and (max-width: 800px) {
-  .dayviewContainer .track > a > p {
-    font-size:60%;
-  }
+  min-height: 100px;
 }
 
 .dayviewContainer .clickableBox {
@@ -91,34 +119,6 @@
   background:white;
   padding:25% 0vh 25% 0vh;
   text-align: center;
-}
-
-@media only screen and (max-width: 600px) {
-  .dayviewContainer .clickableBox {
-    background:white;
-    padding:2vh;
-  }
-}
-
-.dayviewContainer .otherInfo {
-  margin-top:2vh;
-}
-
-.dayviewContainer .colorInfo {
-  margin-bottom:1vh;
-}
-
-.dayviewContainer .excolor {
-  border:solid 1px black;
-  width:20px;
-  margin-right:5px;
-  display:inline-block;
-}
-
-.dayviewContainer .colorInfo > p {
-  margin:0;
-  padding:0;
-  display:inline-block;
 }
 
 .dayviewContainer .greenB {
@@ -186,8 +186,86 @@
 }
 
 .dayviewContainer .trackBoxLink{
-  display: inline-block;
-  width: 100%;
+  display: block;
+  width: 96%;
+  height: 100%;
   text-decoration: none;
   color:black;
+  padding-left: 2%;
+  padding-right: 2%;
+
+}
+
+/* media files */
+
+/* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
+@media only screen and (min-width:320px) {
+
+}
+/* smartphones, Android phones, landscape iPhone */
+@media only screen and (min-width:480px) {
+h1.headerText{
+  font-size: 32px;
+}
+
+h2.headerText{
+  font-size: 24px;
+}
+
+}
+/* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
+@media only screen and (min-width:600px) {
+.sevenGrid {
+  display: flex;
+  flex-direction: row;
+  justify-content:center;
+  width: 100%;
+}
+/* To have 7 boxes force size 100 / 7 = 14.28571428571429 */
+.dayviewContainer .sevenGrid > div {
+    width:14.28571428571429%;
+    max-width: 150px;
+    height: 150px;
+}
+.hidden {
+  display: none;
+}
+.linebreak {
+  display: inline;
+}
+.dayviewContainer .trackBoxLink{
+  width: 90%;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+.overflowHidden {
+  overflow: hidden;
+  max-height: 60%;
+  display: inline-block;
+}
+
+
+}
+/* tablet, landscape iPad, lo-res laptops ands desktops */
+@media only screen and (min-width:801px) {
+
+}
+/* big landscape tablets, laptops, and desktops */
+@media only screen and (min-width:1025px) {
+  .infoImg-2 {
+   width: 44px;
+   max-height: 44px;
+   max-width: 44px;
+}
+}
+/* hi-res laptops and desktops */
+@media only screen and (min-width:1281px) {
+.dayviewContainer .sevenGrid > div {
+    max-width: 150px;
+    height: 150px;
+}
+}
+
+@media only screen and (orientation: landscape) {
+
 }

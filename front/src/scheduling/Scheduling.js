@@ -32,6 +32,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { getSchedulingDate, rangeSupervision } from "../utils/Utils";
+import socketIOClient from "socket.io-client";
 
 // Translation
 import * as data from '../texts/texts.json';
@@ -72,28 +73,29 @@ class Scheduling extends Component {
       super(props);
       this.state = {
         state: 'loading', //loading, ready
-        toast:false,
-        toastMessage:'Nope',
-        toastSeverity:'success',
+        toast: false,
+        toastMessage: 'Nope',
+        toastSeverity: 'success',
         date: new Date(),
         rangeId: '',
-        reservationId:'',
-        scheduleId:'',
+        reservationId: '',
+        scheduleId: '',
         open: new Date(),
         close: new Date(),
         available: false,
         rangeSupervisorSwitch: false,
         rangeSupervisorId: '',
+        rangeSupervisorOriginal: '',
         rangeSupervisionScheduled: false,
-        daily:false,
-        weekly:false,
-        monthly:false,
-        repeatCount:1,
-        token:'SECRET-TOKEN',
-        datePickerKey:1
+        daily: false,
+        weekly: false,
+        monthly: false,
+        repeatCount: 1,
+        token: 'SECRET-TOKEN',
+        datePickerKey: 1
       };
   };
-  
+
   componentDidMount(){
     //console.log("MOUNTED",localStorage.getItem('token'));
     this.setState({
@@ -124,11 +126,11 @@ class Scheduling extends Component {
         }
       });
     });
+    this.socket = socketIOClient();
+
   }
-  
+
   update(){
-    //console.log("update state");
-    
     const request = async () => {
       const response = await getSchedulingDate(this.state.date);
 
@@ -140,13 +142,13 @@ class Scheduling extends Component {
           rangeId: response.rangeId,
           reservationId: response.reservationId,
           scheduleId: response.scheduleId,
-          open: response.open !== null ? 
+          open: response.open !== null ?
             moment(response.open, 'h:mm:ss').format() :
             moment(response.date)
             .hour(17)
             .minute(0)
             .second(0),
-          close:  response.close !== null ? 
+          close:  response.close !== null ?
             moment(response.close, 'h:mm:ss').format() :
             moment(response.date)
             .hour(20)
@@ -155,9 +157,10 @@ class Scheduling extends Component {
           available:response.available !== null ? response.available : false,
           rangeSupervisorSwitch: response.rangeSupervisorId !== null ? true : false,
           rangeSupervisorId: response.rangeSupervisorId,
+          rangeSupervisorOriginal: response.rangeSupervisorId,
           rangeSupervisionScheduled: response.rangeSupervisionScheduled,
           tracks: response.tracks,
-          state:'ready'
+          state: 'ready'
         });
         //set current track state for scheduled
         for (var key in response.tracks) {
@@ -174,13 +177,13 @@ class Scheduling extends Component {
           }
         }
       } else console.error("getting info failed");
-    } 
+    }
     request();
   }
-  
+
   //if these all tracks can work with track changes only changed updates could be sent
   //there's a bug somewhere that makes state handling here a pain
-  openAllTracks = () => {        
+  openAllTracks = () => {
     //console.log("Open tracks");
     for (var key in this.state.tracks) {
       this.setState({
@@ -188,7 +191,7 @@ class Scheduling extends Component {
       });
     }
   };
-  
+
   emptyAllTracks = () => {
     //console.log("Empty tracks");
     for (var key in this.state.tracks) {
@@ -212,7 +215,7 @@ class Scheduling extends Component {
       date: date
     });
   };
-  
+
   handleDatePickChange = (date) => {
     this.setState({
       date: date
@@ -221,7 +224,7 @@ class Scheduling extends Component {
       this.continueWithDate();
     });
   };
-  
+
   continueWithDate = (event) => {
     if(event !== undefined && event.type !== undefined && event.type === 'submit'){
       event.preventDefault();
@@ -234,33 +237,33 @@ class Scheduling extends Component {
       this.update();
     });
   }
-  
+
   handleTimeStartChange = (date) => {
     this.setState({
        open: date
     });
   };
- 
+
   handleTimeEndChange = (date) => {
     this.setState({
        close: date
     });
   };
-  
+
   handleSwitchChange = (event) => {
     //console.log("Switch",event.target.name, event.target.checked)
     this.setState({
        [event.target.name]: event.target.checked
     });
   };
-  
+
   handleRepeatChange = (event) => {
     //console.log("Repeat",event.target.id, event.target.checked)
-    
+
     let daily = false;
     let weekly = false;
     let monthly = false;
-    
+
     if(event.target.id === 'daily'){
       daily = !this.state.daily;
     }
@@ -270,24 +273,24 @@ class Scheduling extends Component {
     else if(event.target.id === 'monthly'){
       monthly = !this.state.monthly;
     }
-    
+
     this.setState({
       daily: daily,
       weekly: weekly,
       monthly: monthly
     });
   };
-  
+
   handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
-    
+
     this.setState({
       toast:false
     });
   };
-  
+
   handleRadioChange = (event) => {
     //console.log("Radio",event.target.name, event.target)
     //having the name be a int causes
@@ -296,71 +299,72 @@ class Scheduling extends Component {
       [event.target.name]: event.target.value
     });
   };
-  
+
   handleValueChange = (event) => {
     //console.log("Value change",event.target.name, event.target.value)
     this.setState({
        [event.target.name]: event.target.value
     });
   };
-  
+
   handleBackdropClick = (event) => {
     //console.log("Backdrop clicked",event);
     event.preventDefault();
   };
-  
+
   handleNotice = (event) => {
     //console.log("handle notice",event.target.id,event.target.value,this.state.tracks)
     let idx = this.state.tracks.findIndex((findItem) => findItem.id === parseInt(event.target.id));
     let tracks = this.state.tracks;
     tracks[idx].notice = event.target.value;
-    
+
     this.setState({
        tracks:tracks
     },function(){
       console.debug(this.state);
     });
   }
-  
+
   saveChanges = async (event) => {
-    const {sched} = data;
+    const { sched } = data;
     const fin = localStorage.getItem("language");
-    //console.log("save")
-    
-    //start spinner
+
     this.setState({
       state: 'loading'
     });
-    
-    //update call/error handling
-    const update = async (date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat) => {
-      //console.log("Gonna call update",date,rsId,srsId,rangeSupervisionScheduled,tracks);
-      await this.updateCall(date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat).then((res) => {
-        this.setState({
-          toast: true,
-          toastMessage: sched.Success[fin],
-          toastSeverity: "success"
-        });
-      },
-      (error) => {
-        console.error('Update rejection called: ' + error.message);
-        if(error.message === 'Range officer enabled but no id'){
+
+    // update call/error handling
+    const update = async (date, rsId, srsId, rangeSupervisionScheduled, tracks, isRepeat) => {
+      await this.updateCall(date, rsId, srsId, rangeSupervisionScheduled, tracks, isRepeat)
+        .then((res) => {
           this.setState({
-            toastMessage: sched.Warning[fin],
-            toastSeverity: "warning",
             toast: true,
+            toastMessage: sched.Success[fin],
+            toastSeverity: "success"
           });
-        }
-        else{
-          this.setState({
-            toastMessage: sched.Error[fin],
-            toastSeverity: "error",
-            toast: true,
-          });
-        }
-      })
+        },
+        (error) => {
+          console.error('Update rejection called: ' + error.message);
+          if (error.message === 'Range officer enabled but no id') {
+            this.setState({
+              toastMessage: sched.Warning[fin],
+              toastSeverity: "warning",
+              toast: true,
+            });
+          }
+          else {
+            this.setState({
+              toastMessage: sched.Error[fin],
+              toastSeverity: "error",
+              toast: true,
+            });
+          }
+        })
     }
-    
+
+    // this function calls the api repeatedly
+    // this approach causes lag
+    // this needs to be fixed
     const repeat = async () => {
       let date = moment(this.state.date).format('YYYY-MM-DD');
       await update(
@@ -371,24 +375,22 @@ class Scheduling extends Component {
         this.state.tracks,
         false
       );
-      
-      //repeat after me
-      if(this.state.daily === true || 
-         this.state.weekly === true || 
-         this.state.monthly === true
+      if (this.state.daily ||
+         this.state.weekly ||
+         this.state.monthly
       ){
         for (var i = 0; i < this.state.repeatCount; i++) {
-          if(this.state.daily === true){
+          if (this.state.daily) {
             date = moment(date).add(1, 'days');
           }
-          else if(this.state.weekly === true){
+          else if (this.state.weekly) {
             date = moment(date).add(1, 'weeks');
           }
-          else if(this.state.monthly === true){
+          else if (this.state.monthly) {
             date = moment(date).add(1, 'months');
           }
-          
-          let response = await this.updateRequirements(moment(date).format('YYYY-MM-DD'))
+
+          let response = await this.updateRequirements(moment(date).format('YYYY-MM-DD'));
           await update(
             date,
             response.reservationId,
@@ -400,16 +402,18 @@ class Scheduling extends Component {
         }
       }
     }
+
     await repeat();
-    //update here not necessarily needed but fixes 
-    //when saved to a new date with post and then immediately after
-    //saving again without updating ids.
+    // update here not necessarily needed but fixes
+    // when saved to a new date with post and then immediately after
+    // saving again without updating ids.
     this.update();
     this.setState({
       state: 'ready'
     });
+    this.socket.emit('refresh')
   };
-  
+
   //fetch new requirements for the next day
   updateRequirements = async (date) => {
     //console.log("UPDATE REQUIREMENTS",date);
@@ -441,56 +445,46 @@ class Scheduling extends Component {
   * this.state.tracks
   * supervisorStatus = this.state[this.state.tracks[key].id]
   */
-  async updateCall(date,rsId,srsId,rangeSupervisionScheduled,tracks,isRepeat){
+  async updateCall(date, rsId, srsId, rangeSupervisionScheduled, tracks, isRepeat) {
     return new Promise(async (resolve,reject) => {
-      //console.log("UPDATE CALL",date,rsId,srsId);
-      
       let reservationMethod;
       let reservationPath = "";
       let scheduledRangeSupervisionMethod;
       let scheduledRangeSupervisionPath = "";
-      
-      //determine exist or not with:
-      //reservationId:'',
-      //scheduledRangeSupervisionId:'',
-      //trackSupervisionId:'',
-      if(rsId !== null){
-        reservationMethod = 'PUT';
-        reservationPath = "/"+rsId;
-      } else reservationMethod = 'POST';
-      
-      if(srsId !== null){
-        scheduledRangeSupervisionMethod = 'PUT';
-        scheduledRangeSupervisionPath = "/"+srsId;
-      } else scheduledRangeSupervisionMethod = 'POST';
 
-      //console.log("PRE SEND",rsId===null,srsId===null);
-      //console.log("PRE SEND",rsId,srsId);
-      //console.log("PRE SEND",reservationMethod,scheduledRangeSupervisionMethod);
-      
+      // determine exist or not with:
+      // reservationId: '',
+      // scheduledRangeSupervisionId: '',
+      // trackSupervisionId: '',
+      if (rsId !== null) {
+        reservationMethod = 'PUT';
+        reservationPath = "/" + rsId;
+      }
+      else reservationMethod = 'POST';
+
+      if (srsId !== null) {
+        scheduledRangeSupervisionMethod = 'PUT';
+        scheduledRangeSupervisionPath = "/" + srsId;
+      }
+      else scheduledRangeSupervisionMethod = 'POST';
+
       let params = {
-        range_id: this.state.rangeId,  
+        range_id: this.state.rangeId,
         available: this.state.available
       };
-      
-      if(reservationMethod === 'POST'){
-        //reservation can result in a duplicate which causes http 500 
-        //error: duplicate key value violates unique constraint "range_reservation_range_id_date_unique"
+
+      if (reservationMethod === 'POST') {
+        // reservation can result in a duplicate which causes http 500
+        // error: duplicate key value violates unique constraint "range_reservation_range_id_date_unique"
         params = {
           ...params,
           date: moment(date).format('YYYY-MM-DD')
         }
       }
-      //console.log("reservation params",params)      
-      
-      
-      /*
-      *  Reservation
-      */
-      const reservation = async (rsId,params,method,path) => {
-        //reservation
-        try{
-          return await fetch("/api/reservation"+path, {
+
+      const reservation = async (rsId, params, method, path) => {
+        try {
+          return await fetch("/api/reservation" + path, {
             method: method,
             body: JSON.stringify(params),
             headers: {
@@ -500,48 +494,47 @@ class Scheduling extends Component {
             }
           })
           .then(res => {
-            //console.log("reservation res",res)
-            //400 and so on
-            if(res.ok === false){
+            // 400 and so on
+            if (!res.ok) {
               return reject(new Error('update reservation failed'));
             }
-            else if(res.status !== 204){
+            else if (res.status !== 204) {
               return res.json();
             }
             else return;
           })
           .then(json => {
-            //console.log("reservation success",json);
-            if(typeof rsId !== 'number' && json !== undefined){
-              //console.log("rsId grabbed from result")
+            // pretty sure the code paths could be done better
+            if (typeof rsId !== 'number' && json !== undefined) {
               rsId = json.id;
             }
-            //console.log("rsId",rsId,(typeof rsId !== 'number'),typeof rsId)
-            if(typeof rsId !== 'number'){
+            if (typeof rsId !== 'number') {
               return reject(new Error('no reservation id for schedule'));
             }
             else return rsId;
           });
-        }catch(error){
-          console.error("reservation",error);
+        }
+        catch (error) {
+          console.error("reservation", error);
           return reject(new Error('general reservation failure'));
         }
       }
-      const reservationRes = await reservation(rsId,params,reservationMethod,reservationPath);
-      //console.log("reservationRes",reservationRes);
-      //if res grabbed from previous post
-      if(reservationRes !== undefined){
+
+      const reservationRes = await reservation(rsId, params, reservationMethod, reservationPath);
+      // if res grabbed from previous post
+      if (reservationRes !== undefined) {
         rsId = reservationRes;
       }
-      
+
       params = {
         range_reservation_id: rsId,
-        open: moment(this.state.open).format('HH:mm'), 
+        open: moment(this.state.open).format('HH:mm'),
         close: moment(this.state.close).format('HH:mm'),
         supervisor_id: null
       };
-      if(this.state.rangeSupervisorSwitch === true){
-        if(this.state.rangeSupervisorId !== null){
+
+      if (this.state.rangeSupervisorSwitch) {
+        if (this.state.rangeSupervisorId !== null) {
           params = {
             ...params,
             supervisor_id: this.state.rangeSupervisorId
@@ -549,16 +542,10 @@ class Scheduling extends Component {
         }
         else return reject(new Error('Range officer enabled but no id'));
       }
-      //console.log("schedule params",params)
-      
-      
-      /*
-      *  Schedule
-      */
-      const schedule = async (rsId,srsId,params,method,path) => {
-        //scheduled range supervision
-        try{
-          return await fetch("/api/schedule"+path, {
+
+      const schedule = async (rsId, srsId, params, method, path) => {
+        try {
+          return await fetch("/api/schedule" + path, {
             method: method,
             body: JSON.stringify(params),
             headers: {
@@ -568,106 +555,97 @@ class Scheduling extends Component {
             }
           })
           .then(res => {
-            //console.log("schedule res",res)
-            //400 and so on
-            if(res.ok === false){
+            // 400 and so on
+            if (res.ok === false) {
               return reject(new Error('update schedule failed'));
             }
-            else if(res.status !== 204){
+            else if (res.status !== 204) {
               return res.json();
             }
             else return;
           })
           .then(json => {
-            //console.log("sched success",json);
-            if(typeof srsId !== 'number' && json !== undefined){
-              //console.log("srsId grabbed from result")
+            if (typeof srsId !== 'number' && json !== undefined) {
               srsId = json.id;
             }
-            
-            //console.log("srsId",srsId,(typeof srsId !== 'number'),typeof srsId)
-            if(typeof srsId !== 'number'){
+            if (typeof srsId !== 'number') {
               return reject(new Error('no schedule id for track supervision'));
             }
             else return srsId;
           });
-        }catch(error){
+        }
+        catch (error) {
           console.error("schedule",error);
           return reject(new Error('general schedule failure'));
         }
       }
-      const scheduleRes = await schedule(rsId,srsId,params,scheduledRangeSupervisionMethod,scheduledRangeSupervisionPath);
-      //console.log("scheduleRes",scheduleRes);
-      //if res grabbed from previous post
-      if(scheduleRes !== undefined){
+
+      const scheduleRes = await schedule(rsId, srsId, params, scheduledRangeSupervisionMethod, scheduledRangeSupervisionPath);
+      // if res grabbed from previous post
+      if (scheduleRes !== undefined) {
         srsId = scheduleRes;
       }
-      
+
       /*
       *  Range supervision
       */
+
       let rangeStatus = null;
-      if(this.state.available === false){
+
+      if (!this.state.available) {
         rangeStatus = 'closed';
       }
-      else if(this.state.rangeSupervisorSwitch === false){
+      else if (!this.state.rangeSupervisorSwitch) {
         rangeStatus = 'absent';
       }
-      else if(this.state.rangeSupervisorId !== null){
+      else if (this.state.rangeSupervisorId !== null
+               && this.state.rangeSupervisorOriginal !== this.state.rangeSupervisorId) {
         rangeStatus = 'not confirmed';
       }
 
-      if(rangeStatus !== null){
-        const rangeSupervisionRes = await rangeSupervision(rsId,srsId,rangeStatus,rangeSupervisionScheduled,this.state.token);
-        if(rangeSupervisionRes !== true){
+      if (rangeStatus !== null) {
+        const rangeSupervisionRes = await rangeSupervision(rsId, srsId, rangeStatus, rangeSupervisionScheduled, this.state.token);
+        if (rangeSupervisionRes !== true) {
           return reject(new Error(rangeSupervisionRes));
         }
       }
-      //else console.log("range status null")
-      
-      /*
-      *  Track supervision
-      */
-      const trackSupervision = async (srsId,key) => {
-        try{
-          //track supervision
-          //update only ones changed in state
-          if(this.state[this.state.tracks[key].id] !== undefined || isRepeat){
+
+      const trackSupervision = async (srsId, key) => {
+        try {
+          // update only ones changed in state
+          if (this.state[this.state.tracks[key].id] !== undefined || isRepeat) {
             let supervisorStatus;
             let statusInState = this.state[this.state.tracks[key].id];
-            //if coming from repeat and status was cleared
+            // if coming from repeat and status was cleared
             supervisorStatus = statusInState !== undefined ? statusInState : 'absent';
-            
+
             let notice = this.state.tracks[key].notice;
-            if(notice === null){
-              //undefined gets removed in object
-              notice=undefined;
+            if (notice === null) {
+              // undefined gets removed in object
+              notice = undefined;
             }
-            
+
             let params = {
               track_supervisor: supervisorStatus,
-              notice:notice
-            };            
-            
+              notice: notice
+            };
+
             let srsp = '';
             let trackSupervisionMethod = '';
             //if scheduled track supervision exists -> put otherwise -> post
-            if(tracks[key].scheduled){
+            if (tracks[key].scheduled) {
               trackSupervisionMethod = 'PUT';
               srsp = "/" + srsId + '/' + this.state.tracks[key].id;
-            } 
-            else
-            {
+            }
+            else {
               trackSupervisionMethod = 'POST';
               params = {
                 ...params,
-                scheduled_range_supervision_id:srsId,
-                track_id:this.state.tracks[key].id
+                scheduled_range_supervision_id: srsId,
+                track_id: this.state.tracks[key].id
               };
             }
-            //console.log("track supvis params",params,"srsp",srsp,trackSupervisionMethod, "track scheduled:",this.state.tracks[key].scheduled);
-            
-            return await fetch("/api/track-supervision"+srsp, {
+            return await fetch("/api/track-supervision" + srsp, {
               method: trackSupervisionMethod,
               body: JSON.stringify(params),
               headers: {
@@ -677,39 +655,35 @@ class Scheduling extends Component {
               }
             })
             .then(res => {
-              //console.log("track supervision res",res)
-              //400 and so on
-              if(res.ok === false){
+              // 400 and so on
+              if (res.ok === false) {
                 return reject(new Error('update track supervision failed'));
               }
-              else if(res.status !== 204){
+              else if (res.status !== 204) {
                 return res.json();
               }
               else return;
             })
-            .then(json => {
-              //console.log("track supervision "+this.state.tracks[key].name+" "+this.state.tracks[key].name+" success",json);
-              return;
-            });
           }
-        }catch(error){
-          console.error("track supervision",error);
+        }
+        catch (error) {
+          console.error("track supervision", error);
           return reject(new Error('general track supervision failure'));
         }
       }
       for (let key in this.state.tracks) {
-        try{
+        try {
           const trackSupervisionRes = await trackSupervision(srsId,key);
-          //console.log("trackSupervisionRes",trackSupervisionRes);
-        }catch(error){
+        }
+        catch (error) {
           return reject(error);
         }
       }
-      
+
       return resolve("update success");
     });
   };
-  
+
   /*
   *   Components
   *
@@ -729,9 +703,9 @@ class Scheduling extends Component {
         key={key}>
           <FormControl component="fieldset">
             <FormLabel component="legend">{tracks[key].name}</FormLabel>
-              <RadioGroup 
-                defaultValue="absent" 
-                name={tracks[key].id} 
+              <RadioGroup
+                defaultValue="absent"
+                name={tracks[key].id}
                 onChange={this.handleRadioChange}
                 value={ this.state[tracks[key].id] || 'absent'}
               >
@@ -746,7 +720,7 @@ class Scheduling extends Component {
                 className="notice"
                 //track_id
                 id={tracks[key].id}
-                aria-label="Ilmoitus" 
+                aria-label="Ilmoitus"
                 rowsMin={1}
                 rowsMax={3}
                 onChange={this.handleNotice}
@@ -764,20 +738,20 @@ class Scheduling extends Component {
       </React.Fragment>
     );
   }
-  
+
   //builds range officer select
   createSupervisorSelect = () => {
     let items = [];
     let disabled = false;
     const {sched} = data;
     const fin = localStorage.getItem("language");
-    
+
     for (var key in this.state.rangeSupervisors) {
       items.push(
         <MenuItem key={key} value={this.state.rangeSupervisors[key].id}>{this.state.rangeSupervisors[key].name}</MenuItem>
       );
     }
-    
+
     if (this.state.rangeSupervisorSwitch === false) {
       disabled=true
     };
@@ -799,14 +773,14 @@ class Scheduling extends Component {
   }
 
   render() {
-    
+
     function Alert(props) {
       return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
 
     const {sched} = data;
     const fin = localStorage.getItem("language");
-    
+
     return (
       <div className="schedulingRoot">
         <Modal open={this.state.state!=='ready'?true:false} onClick={this.handleBackdropClick}>
@@ -946,10 +920,10 @@ class Scheduling extends Component {
             </div>
             <div className="repeatCount">
               {sched.Amount[fin]}
-              <TextField 
+              <TextField
                 name="repeatCount"
-                type="number" 
-                value={this.state.repeatCount} 
+                type="number"
+                value={this.state.repeatCount}
                 onChange={this.handleValueChange}
                 InputProps={{ inputProps: { min: 1, max: 100 } }}
               />
@@ -971,7 +945,7 @@ class Scheduling extends Component {
           </div>
         </div>
       </div>
-      
+
     );
   }
 };
