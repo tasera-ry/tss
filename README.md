@@ -58,7 +58,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
        DB_PASSWORD=some_password \
        DB=postgres \
        NODE_ENV=stable \
-       sh -c 'npx knex migrate:latest && npx knex seed:run'
+       sh -c 'cd back && npx knex migrate:latest && npx knex seed:run && cd ..'
    ```
 4. Run the project
    ```sh

@@ -22,7 +22,7 @@ app.use("/api", router);
 
 
 // Rendering the front-end react app
-app.use("/", express.static("front/build/"));
+app.use("/", express.static("../front/build/"));
 
 const server = app.listen(port, () => {
     console.error("Server on " + port)
