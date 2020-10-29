@@ -37,7 +37,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
    env DB_USER=postgres \
        DB_PASSWORD=some_password \
        DB=postgres \
-       npm run dev
+       cd back && npm run dev:withFront
    ```
 6. The program should start up
 
