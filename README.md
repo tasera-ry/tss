@@ -24,20 +24,20 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 2. Clone this repository
    - `git clone https://github.com/tasera-ry/tss.git`
 3. Install project packages
-   - `npm install && cd front && npm install && cd ..`
+   - `cd back && npm install && cd ../front && npm install && cd ..`
 4. Run database migrations
    ```sh
    env DB_USER=postgres \
        DB_PASSWORD=some_password \
        DB=postgres \
-       sh -c 'npx knex migrate:latest && npx knex seed:run'
+       sh -c 'cd back && npx knex migrate:latest && npx knex seed:run && cd ..'
    ```
 5. Run the project
    ```sh
    env DB_USER=postgres \
        DB_PASSWORD=some_password \
        DB=postgres \
-       cd back && npm run dev:withFront
+       bash -c 'cd back && npm run dev:withFront'
    ```
 6. The program should start up
 
