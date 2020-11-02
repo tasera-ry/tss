@@ -74,7 +74,7 @@ const SignIn = () => {
   const HandleError = (error) => {
     setMistake(true);
     // message contains all errors, might be useful
-    let message = '';
+    let message = ''; // eslint-disable-line
     if (error.response.status === 400) {
       for (let i = 0; i < error.response.data.errors.length; i += 1) {
         const { param } = error.response.data.errors[i];

@@ -7,7 +7,6 @@ import './Weekview.css';
 import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import InfoIcon from '@material-ui/icons/Info';
 
 // Moment for date management
 import moment from 'moment';
@@ -24,8 +23,7 @@ if (localStorage.getItem('language') === '0') {
   lang = 'en';
 }
 
-const { week, weekdayShorthand } = data;
-const fin = localStorage.getItem('language');
+const weekdayShorthand = data;
 
 class Weekview extends Component {
   constructor(props) {
@@ -51,7 +49,7 @@ class Weekview extends Component {
   }
 
   // Re-renders the component and fetches new data when the logo to frontpage is clicked on weekview
-  componentWillReceiveProps() {
+  componentWillReceiveProps() { // eslint-disable-line
     this.setState({
       state: 'loading',
     }, () => {
@@ -180,10 +178,10 @@ class Weekview extends Component {
   getWeek = () => {
     const date1 = new Date();
     date1.setHours(0, 0, 0, 0);
-    date1.setDate(date1.getDate() + 3 - (date1.getDay() + 6) % 7);
+    date1.setDate(date1.getDate() + 3 - (date1.getDay() + 6) % 7); // eslint-disable-line
     const week1 = new Date(date1.getFullYear(), 0, 4);
     const current = 1 + Math.round(((date1.getTime() - week1.getTime()) / 86400000
-      - 3 + (week1.getDay() + 6) % 7) / 7);
+      - 3 + (week1.getDay() + 6) % 7) / 7); // eslint-disable-line
 
     // Tää asettaa sen mikä viikkonumero on alotusnäytöllä
     // Nyt tarvis ottaa tähän url parametreistä se viikkonumero
@@ -205,7 +203,7 @@ class Weekview extends Component {
       const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYYMMDD');
 
       // Jos viikkonumero ei oo oikee laitetaan current
-      if (isNaN(weeknumber)) {
+      if (isNaN(weeknumber)) { // eslint-disable-line
         this.setState({ weekNro: current });
         this.props.history.replace('/weekview/');
       } else {
@@ -232,7 +230,7 @@ class Weekview extends Component {
       return;
     }
 
-    for (let j = 0; j < 7; j++) {
+    for (let j = 0; j < 7; j += 1) {
       oikeePaiva = this.state.paivat[j].date;
       linkki = `/dayview/${oikeePaiva}`;
 
@@ -249,7 +247,7 @@ class Weekview extends Component {
       );
     }
 
-    return table;
+    return table; // eslint-disable-line
   }
 
   // Creates 7 columns for days
@@ -265,7 +263,7 @@ class Weekview extends Component {
     let newDate;
     let linkki;
 
-    for (let j = 0; j < 7; j++) {
+    for (let j = 0; j < 7; j += 1) {
       oikeePaiva = this.state.paivat[j].date;
       fixed = oikeePaiva.split('-');
       newDate = `${fixed[2]}.${fixed[1]}`;
@@ -281,7 +279,7 @@ class Weekview extends Component {
       );
     }
 
-    return table;
+    return table; // eslint-disable-line
   }
 
   // Creates 7 columns for päävalvoja info, colored boxes
@@ -301,7 +299,7 @@ class Weekview extends Component {
     let Attention;
     let info;
 
-    for (let j = 0; j < 7; j++) {
+    for (let j = 0; j < 7; j += 1) {
       // Luodaan väri
       rataStatus = this.state.paivat[j].rangeSupervision;
 
@@ -321,11 +319,13 @@ class Weekview extends Component {
 
       oikeePaiva = this.state.paivat[j].date;
       info = false;
-      for (const key in this.state.paivat[j].tracks) {
-        Attention = this.state.paivat[j].tracks[key].notice;
-        if (Attention.length !== 0) {
-          info = true;
-        }
+      if (this.state.paivat[j].tracks) {
+        this.state.paivat[j].tracks.forEach((key) => {
+          Attention = this.state.paivat[j].tracks[key].notice;
+          if (Attention.length !== 0) {
+            info = true;
+          }
+        });
       }
       linkki = `/dayview/${oikeePaiva}`;
       table.push(
@@ -343,7 +343,7 @@ class Weekview extends Component {
         </Link>,
       );
     }
-    return table;
+    return table; // eslint-disable-line
   }
 
   getYear = () => {
@@ -395,10 +395,10 @@ class Weekview extends Component {
 
     const date2 = new Date();
     date2.setHours(0, 0, 0, 0);
-    date2.setDate(date2.getDate() + 3 - (date2.getDay() + 6) % 7);
+    date2.setDate(date2.getDate() + 3 - (date2.getDay() + 6) % 7); // eslint-disable-line
     const week1 = new Date(date2.getFullYear(), 0, 4);
     const current = 1 + Math.round(((date2.getTime() - week1.getTime()) / 86400000
-      - 3 + (week1.getDay() + 6) % 7) / 7);
+      - 3 + (week1.getDay() + 6) % 7) / 7); // eslint-disable-line
 
     // Tää asettaa sen mikä viikkonumero on alotusnäytöllä
     // Nyt tarvis ottaa tähän url parametreistä se viikkonumero
@@ -420,7 +420,7 @@ class Weekview extends Component {
       const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYYMMDD');
 
       // Jos viikkonumero ei oo oikee laitetaan current
-      if (isNaN(weeknumber)) {
+      if (isNaN(weeknumber)) { // eslint-disable-line
         this.setState({ weekNro: current });
         // Tähän viel että parametriks tulee tän hetkinen viikko
         const now = moment().format();
@@ -453,7 +453,7 @@ class Weekview extends Component {
 
   render() {
     const fin = localStorage.getItem('language');
-    const { week } = data;
+    const week = data.week; // eslint-disable-line
 
     return (
       <div>

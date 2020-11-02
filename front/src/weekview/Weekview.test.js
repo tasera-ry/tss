@@ -4,7 +4,6 @@ import {
   waitFor,
   render,
   screen,
-  MatcherFunction,
 } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';

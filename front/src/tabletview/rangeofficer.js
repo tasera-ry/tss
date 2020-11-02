@@ -247,7 +247,7 @@ const TrackButtons = ({
 async function getColors(tracks, setTracks) {
   const copy = [...tracks];
 
-  for (let i = 0; i < copy.length; i++) {
+  for (let i = 0; i < copy.length; i += 1) {
     const obj = copy[i];
     if (copy[i].trackSupervision === 'present') { obj.color = colors.green; } else if (copy[i].trackSupervision === 'closed') { obj.color = colors.red; } else if (copy[i].trackSupervision === 'absent') { obj.color = colors.white; } else if (copy[i].trackSupervision === 'en route') { obj.color = colors.orange; }
   }
@@ -300,7 +300,7 @@ async function getData(
         setStatusColor(colors.blue);
       } else {
         setStatusText(tablet.SuperWhite[fin]);
-	      setStatusColor(colors.white);
+        setStatusColor(colors.white);
       }
       getColors(response.tracks, setTracks);
     });
@@ -309,7 +309,6 @@ async function getData(
 const TimePick = ({
   tablet, fin, scheduleId, hours, setHours, dialogOpen, setDialogOpen,
 }) => {
-  const [newHours, setNewHours] = useState({ ...hours });
   const [errorMessage, setErrorMessage] = useState();
   const [startDate, setStartDate] = useState(new Date(0, 0, 0, hours.start.split(':')[0], hours.start.split(':')[1], 0));
   const [endDate, setEndDate] = useState(new Date(0, 0, 0, hours.end.split(':')[0], hours.end.split(':')[1], 0));
@@ -429,7 +428,6 @@ const Tabletview = () => {
   const [rangeSupervisionScheduled, setRangeSupervisionScheduled] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [socket, setSocket] = useState();
-  const role = localStorage.getItem('role');
   const fin = localStorage.getItem('language');
   const { tablet } = data;
   const today = moment().format('DD.MM.YYYY');
@@ -444,14 +442,26 @@ const Tabletview = () => {
   /*
     Basically the functional component version of componentdidmount
   */
+
+  function RedirectToWeekview() {
+    window.location.href = '/';
+  }
+
   useEffect(() => {
     validateLogin()
       .then((logInSuccess) => {
         if (logInSuccess) {
-          getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId, setReservationId, setRangeSupervisionScheduled);
-        }
-        // Login failed, redirect to weekview
-        else {
+          getData(tablet,
+            fin,
+            setHours,
+            tracks,
+            setTracks,
+            setStatusText,
+            setStatusColor,
+            setScheduleId,
+            setReservationId,
+            setRangeSupervisionScheduled);
+        } else { // Login failed, redirect to weekview
           RedirectToWeekview();
         }
       });
@@ -468,8 +478,22 @@ const Tabletview = () => {
       }));
   }, []);
 
-  function RedirectToWeekview() {
-    window.location.href = '/';
+  async function updateSupervisor(status, color, text) {
+    const token = localStorage.getItem('token');
+
+    const res = await rangeSupervision(reservationId,
+      scheduleId,
+      status,
+      rangeSupervisionScheduled,
+      token);
+    if (res === true) {
+      setStatusColor(color);
+      setStatusText(text);
+
+      if (rangeSupervisionScheduled === false) {
+        setRangeSupervisionScheduled(true);
+      }
+    }
   }
 
   const HandlePresentClick = () => {
@@ -498,20 +522,6 @@ const Tabletview = () => {
     });
     updateSupervisor('closed', colors.red, tablet.Red[fin]);
   };
-
-  async function updateSupervisor(status, color, text) {
-    const token = localStorage.getItem('token');
-
-    const res = await rangeSupervision(reservationId, scheduleId, status, rangeSupervisionScheduled, token);
-    if (res === true) {
-      setStatusColor(color);
-      setStatusText(text);
-
-      if (rangeSupervisionScheduled === false) {
-        setRangeSupervisionScheduled(true);
-      }
-    }
-  }
 
   return (
     <div>

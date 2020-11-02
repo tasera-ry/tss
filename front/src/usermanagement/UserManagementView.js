@@ -336,7 +336,7 @@ class UserManagementView extends Component {
   }
 
   // Closes dialog for changing password for some1 else
-  handleChangePassClose(e) {
+  handleChangePassClose(e) { // eslint-disable-line
     this.setState({
       password: '',
       changePassDialogOpen: false,
@@ -398,7 +398,7 @@ class UserManagementView extends Component {
   // Close dialog for changing password
   handlePassWarningClose() {
     this.setState({
-      openPassWarning: false,
+      openPassWarning: false, // eslint-disable-line
     });
   }
 
