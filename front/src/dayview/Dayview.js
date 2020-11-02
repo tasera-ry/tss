@@ -1,28 +1,27 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import "./Dayview.css";
-
-import info from "../logo/Info.png";
+import './Dayview.css';
 
 // Material UI components
-import { Link } from "react-router-dom";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
+import { Link } from 'react-router-dom';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 import InfoIcon from '@material-ui/icons/Info';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Utils
-import { dayToString, getSchedulingDate } from "../utils/Utils";
+import moment from 'moment';
+import { dayToString, getSchedulingDate } from '../utils/Utils';
 
 // Moment for date handling
-import moment from 'moment';
+import info from '../logo/Info.png';
 
 // Translations
 import * as data from '../texts/texts.json';
 
 /*
-  Dayview-component for handling day-specific view 
+  Dayview-component for handling day-specific view
   tracks for a certain date
 */
 class Dayview extends Component {
@@ -34,12 +33,12 @@ class Dayview extends Component {
       opens: 16,
       closes: 20,
       rangeSupervision: false,
-      tracks: {}
+      tracks: {},
     };
 
-    //required for "this" to work in callback
-    //alternative way without binding in constructor:
-    //public class fields syntax a.k.a. nextDayClick = (newObject) => {
+    // required for "this" to work in callback
+    // alternative way without binding in constructor:
+    // public class fields syntax a.k.a. nextDayClick = (newObject) => {
     this.previousDayClick = this.previousDayClick.bind(this);
     this.nextDayClick = this.nextDayClick.bind(this);
     this.update = this.update.bind(this);
@@ -51,60 +50,60 @@ class Dayview extends Component {
 
   update() {
     // /dayview/2020-02-20
-    let date = this.props.match.params.date;
+    const { date } = this.props.match.params;
     const request = async () => {
       const response = await getSchedulingDate(date);
 
-      if(response !== false){
-        //console.log("Results from api",response);
+      if (response !== false) {
+        // console.log("Results from api",response);
 
         this.setState({
           state: 'ready',
           date: new Date(response.date),
           tracks: response.tracks,
           rangeSupervision: response.rangeSupervision,
-          opens: moment(response.open,'HH:mm').format('H.mm'),
-          closes: moment(response.close,'HH:mm').format('H.mm')
+          opens: moment(response.open, 'HH:mm').format('H.mm'),
+          closes: moment(response.close, 'HH:mm').format('H.mm'),
         });
-      } else console.error("getting info failed");
-      //console.log(this.state)
-    }
+      } else console.error('getting info failed');
+      // console.log(this.state)
+    };
     request();
   }
 
   previousDayClick(e) {
     e.preventDefault();
-    let date = new Date(this.state.date.setDate(this.state.date.getDate() - 1));
-    this.props.history.replace("/dayview/" + date.toISOString());
+    const date = new Date(this.state.date.setDate(this.state.date.getDate() - 1));
+    this.props.history.replace(`/dayview/${date.toISOString()}`);
     this.setState(
       {
         state: 'loading',
-        date: date
+        date,
       },
-      function() {
+      function () {
         this.update();
-      }
+      },
     );
   }
 
   nextDayClick(e) {
     e.preventDefault();
-    let date = new Date(this.state.date.setDate(this.state.date.getDate() + 1));
-    this.props.history.replace("/dayview/" + date.toISOString());
+    const date = new Date(this.state.date.setDate(this.state.date.getDate() + 1));
+    this.props.history.replace(`/dayview/${date.toISOString()}`);
     this.setState(
       {
         state: 'loading',
-        date: date
+        date,
       },
-      function() {
+      function () {
         this.update();
-      }
+      },
     );
   }
 
   render() {
-    const fin = localStorage.getItem("language");
-    const {dayview} = data;
+    const fin = localStorage.getItem('language');
+    const { dayview } = data;
 
     function OfficerBanner(props) {
       let text;
@@ -112,49 +111,43 @@ class Dayview extends Component {
 
       if (props.rangeSupervision === 'present') {
         text = dayview.Green[fin];
-        color = "greenB";
-      }
-      else if (props.rangeSupervision === 'absent') {
+        color = 'greenB';
+      } else if (props.rangeSupervision === 'absent') {
         text = dayview.White[fin];
-        color = "whiteB";
-      }
-      else if (props.rangeSupervision === 'confirmed') {
+        color = 'whiteB';
+      } else if (props.rangeSupervision === 'confirmed') {
         text = dayview.Lightgreen[fin];
-        color = "lightGreenB";
-      }
-      else if (props.rangeSupervision === 'not confirmed') {
+        color = 'lightGreenB';
+      } else if (props.rangeSupervision === 'not confirmed') {
         text = dayview.Blue[fin];
-        color = "blueB";
-      }
-      else if (props.rangeSupervision === 'en route') {
+        color = 'blueB';
+      } else if (props.rangeSupervision === 'en route') {
         text = dayview.Orange[fin];
-        color = "yellowB";
-      }
-      else if (props.rangeSupervision === 'closed') {
+        color = 'yellowB';
+      } else if (props.rangeSupervision === 'closed') {
         text = dayview.Red[fin];
-        color = "redB";
+        color = 'redB';
       }
 
-      return <h2 className={"info " + color}>{text}</h2>;
+      return <h2 className={`info ${color}`}>{text}</h2>;
     }
 
-    //builds tracklist with grid
+    // builds tracklist with grid
     function TrackList(props) {
-      let items = [];
-      for (var key in props.tracks) {
-	
-        //console.log(key);
-        //console.log(props.tracks[key].name);
+      const items = [];
+      for (const key in props.tracks) {
+        // console.log(key);
+        // console.log(props.tracks[key].name);
         items.push(
           <TrackBox
             key={key}
             name={props.tracks[key].name}
             short_description={props.tracks[key].short_description}
             state={props.tracks[key].trackSupervision}
-	    notice={props.tracks[key].notice}
-            //TODO final react routing
-            to={"/trackview/"+props.date.toISOString()+"/" + props.tracks[key].name}
-          />
+            notice={props.tracks[key].notice}
+            // TODO final react routing
+            to={`/trackview/${props.date.toISOString()}/${props.tracks[key].name}`}
+          />,
         );
       }
 
@@ -165,40 +158,43 @@ class Dayview extends Component {
       );
     }
 
-    //single track
+    // single track
     function TrackBox(props) {
       let color;
 
-      if (props.state === "present") {
-        //open
-        color = "greenB";
-      } else if (props.state === "absent") {
-        color = "whiteB";
-      } else if (props.state === "closed") {
-        //closed
-        color = "redB";
+      if (props.state === 'present') {
+        // open
+        color = 'greenB';
+      } else if (props.state === 'absent') {
+        color = 'whiteB';
+      } else if (props.state === 'closed') {
+        // closed
+        color = 'redB';
       }
 
       return (
-        <Grid item className={"track hoverHand " + color} xs={12} sm={2}>
+        <Grid item className={`track hoverHand ${color}`} xs={12} sm={2}>
           <Link className="trackBoxLink" to={props.to}>
             <span className="bold">
-            {props.name}
+              {props.name}
             </span>
-            <span className="hidden">-
+            <span className="hidden">
+              -
             </span>
-            <span className="linebreak"><br></br>
+            <span className="linebreak">
+              <br />
             </span>
             <span className="overflowHidden">
-            {/*Vaihda short descriptioniin tässä ja rivillä 152*/}
-            {props.short_description}
+              {/* Vaihda short descriptioniin tässä ja rivillä 152 */}
+              {props.short_description}
             </span>
-	          {props.notice.length===0 ?
-               <br />
-               :
-               <div className="DayviewInfo">
-               <img className = "infoImg-2" src={info} />
-               </div>}
+            {props.notice.length === 0
+              ? <br />
+              : (
+                <div className="DayviewInfo">
+                  <img className="infoImg-2" src={info} />
+                </div>
+              )}
           </Link>
         </Grid>
       );
@@ -207,68 +203,71 @@ class Dayview extends Component {
     return (
       <div>
         <div className="dayviewContainer">
-        {/* Date header */}
-            <Grid
-              container
-              direction="row"
-              justify="space-around"
-              alignItems="center"
-              className="dateHeader"
-            >
-              <div
-                className="hoverHand arrow-left"
-                onClick={this.previousDayClick}
-              ></div>
-              <div className="titleContainer">
-                <h1 className="headerText">
-                  {dayToString(this.state.date.getDay())}
-                  {/*console.log(this.state.date.getDay()) */}
+          {/* Date header */}
+          <Grid
+            container
+            direction="row"
+            justify="space-around"
+            alignItems="center"
+            className="dateHeader"
+          >
+            <div
+              className="hoverHand arrow-left"
+              onClick={this.previousDayClick}
+            />
+            <div className="titleContainer">
+              <h1 className="headerText">
+                {dayToString(this.state.date.getDay())}
+                {/* console.log(this.state.date.getDay()) */}
                   &nbsp;&nbsp;
-                  {this.state.date.toLocaleDateString("fi-FI")}
-                </h1>
-                
-              </div>
-              <div
-                className="hoverHand arrow-right"
-                onClick={this.nextDayClick}
-              ></div>
-            </Grid>
-            {/* Range officer info */}
-            <Grid container direction="row" justify="center" alignItems="center">
-              <Grid item xs={12}>
-                {this.state.state!=='ready'?
-                 <br />
-                 :
-                 <OfficerBanner rangeSupervision={this.state.rangeSupervision} />}
-              </Grid>
-            </Grid>
+                {this.state.date.toLocaleDateString('fi-FI')}
+              </h1>
 
-            {/* open and close hours */}
-              <h2 className="headerText">
-                {dayview.OpenHours[fin]}: {this.state.opens}-{this.state.closes}
-              </h2>
+            </div>
+            <div
+              className="hoverHand arrow-right"
+              onClick={this.nextDayClick}
+            />
+          </Grid>
+          {/* Range officer info */}
+          <Grid container direction="row" justify="center" alignItems="center">
+            <Grid item xs={12}>
+              {this.state.state !== 'ready'
+                ? <br />
+                : <OfficerBanner rangeSupervision={this.state.rangeSupervision} />}
+            </Grid>
+          </Grid>
+
+          {/* open and close hours */}
+          <h2 className="headerText">
+            {dayview.OpenHours[fin]}
+            :
+            {this.state.opens}
+            -
+            {this.state.closes}
+          </h2>
           {/* Whole view */}
           <div className="dayviewTrackContainer">
-            
 
             {/* MUI grid - used for displaying the track info */}
-            {this.state.state!=='ready'?
-             <div>
-               <CircularProgress disableShrink/>
-             </div>
-             :
-             <TrackList tracks={this.state.tracks} date={this.state.date} />}
+            {this.state.state !== 'ready'
+              ? (
+                <div>
+                  <CircularProgress disableShrink />
+                </div>
+              )
+              : <TrackList tracks={this.state.tracks} date={this.state.date} />}
 
             {/* Other info */}
-            
+
           </div>
 
-          <Link className="back" style={{ color: "black" }} to={`/weekview/${this.state.date.toISOString()}`}>
-          <ArrowBackIcon />
-          {dayview.WeekviewLink[fin]}
+          <Link className="back" style={{ color: 'black' }} to={`/weekview/${this.state.date.toISOString()}`}>
+            <ArrowBackIcon />
+            {dayview.WeekviewLink[fin]}
           </Link>
 
-          <hr></hr>
+          <hr />
 
           <Grid
             container
@@ -279,29 +278,37 @@ class Dayview extends Component {
           >
 
             {/* color info boxes */}
-            <div class="info-item">
-                    <p class='box no-flex greenB'/>
-                    {/* Avoinna */} <p>{dayview.Open[fin]}</p>
-                </div>
-            <div class="info-item">
-                    <p class='box no-flex redB'/>
-                    {/* Suljettu */} <p>{dayview.Closed[fin]}</p>
-                </div>
-            <div class="info-item">
-                    <p class='box no-flex whiteB'/>
-                    {/* Ei valvojaa */} <p>{dayview.NotAvailable[fin]}</p>
-                </div>
-            <div class="info-item-img">
-                  <p class="empty-box no-flex">
-                  <img class='infoImg no-flex' src={info}/>
-                  </p>
-                  {/* Radalla lisätietoa */}  <p class="info-text relative-text no-flex">{dayview.Notice[fin]}</p>
+            <div className="info-item">
+              <p className="box no-flex greenB" />
+              {/* Avoinna */}
+              {' '}
+              <p>{dayview.Open[fin]}</p>
+            </div>
+            <div className="info-item">
+              <p className="box no-flex redB" />
+              {/* Suljettu */}
+              {' '}
+              <p>{dayview.Closed[fin]}</p>
+            </div>
+            <div className="info-item">
+              <p className="box no-flex whiteB" />
+              {/* Ei valvojaa */}
+              {' '}
+              <p>{dayview.NotAvailable[fin]}</p>
+            </div>
+            <div className="info-item-img">
+              <p className="empty-box no-flex">
+                <img className="infoImg no-flex" src={info} />
+              </p>
+              {/* Radalla lisätietoa */}
+              {' '}
+              <p className="info-text relative-text no-flex">{dayview.Notice[fin]}</p>
             </div>
           </Grid>
 
         </div>
-        
-        </div>
+
+      </div>
     );
   }
 }

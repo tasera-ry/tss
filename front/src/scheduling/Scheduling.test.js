@@ -1,33 +1,30 @@
-import React from 'react'
-import '@testing-library/jest-dom/extend-expect'
+import React from 'react';
+import '@testing-library/jest-dom/extend-expect';
 import {
   waitFor,
   render,
   screen,
-} from '@testing-library/react'
-import Scheduling from './Scheduling'
-import { HashRouter as Router } from "react-router-dom"
-import { createMemoryHistory } from 'history'
+} from '@testing-library/react';
+import { HashRouter as Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
 import { act } from 'react-dom/test-utils';
-
+import Scheduling from './Scheduling';
 
 describe('testing scheduling', () => {
   it('should render scheduling', async () => {
-    const history = createMemoryHistory()
+    const history = createMemoryHistory();
 
     localStorage.setItem('language', '1');
     await act(async () => {
       render(
         <Router>
-          <Scheduling 
+          <Scheduling
             history={history}
-            />
-        </Router>
-      )
-    })
-    await waitFor(() =>
-      expect(screen.getByText('Save changes'))
-       .toBeInTheDocument()
-    );
-  })
-})
+          />
+        </Router>,
+      );
+    });
+    await waitFor(() => expect(screen.getByText('Save changes'))
+      .toBeInTheDocument());
+  });
+});
