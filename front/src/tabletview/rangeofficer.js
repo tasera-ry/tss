@@ -121,7 +121,7 @@ const TrackRows = ({
 );
 
 const TrackButtons = ({
-  track, tracks, setTracks, scheduleId, tablet, fin, socket,
+  track, scheduleId, tablet, fin, socket,
 }) => {
   // get this somewhere else
   const buttonStyle = {
@@ -142,15 +142,15 @@ const TrackButtons = ({
   socket.on('trackUpdate', (msg) => {
     if (msg.id === track.id) {
       if (msg.super === 'present') {
-        track.trackSupervision = 'absent';
+        track.trackSupervision = 'absent'; // eslint-disable-line
         setButtonColor(colors.green);
         setTextState(tablet.Green[fin]);
       } else if (msg.super === 'closed') {
-        track.trackSupervision = 'present';
+        track.trackSupervision = 'present'; // eslint-disable-line
         setButtonColor(colors.red);
         setTextState(tablet.Red[fin]);
       } else if (msg.super === 'absent') {
-        track.trackSupervision = 'closed';
+        track.trackSupervision = 'closed'; // eslint-disable-line
         setButtonColor(colors.white);
         setTextState(tablet.White[fin]);
       }
@@ -164,16 +164,16 @@ const TrackButtons = ({
     const config = {
       headers: { Authorization: `Bearer ${token}` },
     };
-    track.color = colors.white;
+    track.color = colors.white; // eslint-disable-line
     setTextState(tablet.White[fin]);
 
     if (track.trackSupervision === 'absent') {
       newSupervision = 'closed';
-      track.color = colors.red;
+      track.color = colors.red; // eslint-disable-line
       setTextState(tablet.Red[fin]);
     } else if (track.trackSupervision === 'closed') {
       newSupervision = 'present';
-      track.color = colors.green;
+      track.color = colors.green; // eslint-disable-line
       setTextState(tablet.Green[fin]);
     }
 
@@ -198,7 +198,7 @@ const TrackButtons = ({
         console.log(error);
       }).then((res) => {
         if (res) {
-          track.trackSupervision = newSupervision;
+          track.trackSupervision = newSupervision; // eslint-disable-line
           socket.emit('trackUpdate', {
             super: track.trackSupervision,
             id: track.id,
@@ -221,8 +221,8 @@ const TrackButtons = ({
         console.log(error);
       }).then((res) => {
         if (res) {
-          track.scheduled = res.data[0];
-          track.trackSupervision = newSupervision;
+          track.scheduled = res.data[0]; // eslint-disable-line
+          track.trackSupervision = newSupervision; // eslint-disable-line
           socket.emit('trackUpdate', {
             super: track.trackSupervision,
             id: track.id,
@@ -255,7 +255,17 @@ async function getColors(tracks, setTracks) {
   setTracks(copy);
 }
 
-async function getData(tablet, fin, setHours, tracks, setTracks, setStatusText, setStatusColor, setScheduleId, setReservationId, setRangeSupervisionScheduled) {
+async function getData(
+  tablet,
+  fin,
+  setHours,
+  setTracks,
+  setStatusText,
+  setStatusColor,
+  setScheduleId,
+  setReservationId,
+  setRangeSupervisionScheduled,
+) {
   const date = moment(Date.now()).format('YYYY-MM-DD');
 
   await fetch(`/api/datesupreme/${date}`)

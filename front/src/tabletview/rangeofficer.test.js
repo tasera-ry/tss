@@ -6,9 +6,7 @@ import {
   screen,
 } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
 import { act } from 'react-dom/test-utils';
-import * as utils from '../utils/Utils';
 import Tabletview from './rangeofficer';
 
 describe('testing rangeofficer', () => {

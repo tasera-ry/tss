@@ -26,7 +26,7 @@ export async function getSchedulingWeek(date) {
     const current = moment(begin);
     const next = moment.prototype.add.bind(current, 1, 'day');
 
-    const week = await Promise.all(lodash.times(7, (i) => {
+    const week = await Promise.all(lodash.times(7, (i) => { // eslint-disable-line
       const request = getSchedulingDate(current);
       next();
       return request;
@@ -53,7 +53,7 @@ export function dayToString(i) {
   }
   moment.locale(lang);
   // en/fi have different numbers for start date
-  if (lang === 'fi') i--;
+  if (lang === 'fi') i -= 1; // eslint-disable-line
   const dayString = moment().weekday(i).format('dddd');
   // first letter only to uppercase
   return dayString.charAt(0).toUpperCase() + dayString.slice(1);
@@ -87,7 +87,8 @@ export async function validateLogin() {
         },
       });
     } catch (error) {
-      // console.log won't have time to be read before user is rerouted, so commented out for future use
+      // console.log won't have time to be read before user is rerouted
+      // so commented out for future use
       // console.log(`Authorization validation failed `, error);
       return false;
     }
@@ -137,9 +138,7 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, to
             .then((status) => {
               if (!status.ok) throw new Error('scheduled superv fail');
             });
-        }
-        // no supervision exists
-        else {
+        } else { // no supervision exists
           // changing supervision force reservation open
           await fetch(`/api/reservation/${rsId}`, {
             method: 'PUT',

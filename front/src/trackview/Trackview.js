@@ -23,12 +23,12 @@ class Trackview extends Component {
     super(props);
     this.state = {
       date: new Date(Date.now()),
-      opens: 16,
-      closes: 20,
+      opens: 16, // eslint-disable-line
+      closes: 20, // eslint-disable-line
       rangeSupervision: false,
       trackSupervision: false,
       info: '',
-      parent: props.getParent,
+      parent: props.getParent, // eslint-disable-line
       name: 'rata 1',
       description: '',
     };
@@ -85,7 +85,7 @@ class Trackview extends Component {
     request();
   }
 
-  rangeAvailability(trackview, fin) {
+  rangeAvailability(trackview, fin) { // eslint-disable-line
     if (this.state.rangeSupervision === 'present') {
       const returnable = <Box class="isAvailable">{trackview.SuperGreen[fin]}</Box>;
       return returnable;
@@ -117,7 +117,7 @@ class Trackview extends Component {
     }
   }
 
-  trackAvailability(trackview, fin) {
+  trackAvailability(trackview, fin) { // eslint-disable-line
     if (this.state.trackSupervision === 'present') {
       const returnable = <Box class="isAvailable">{trackview.RangeGreen[fin]}</Box>;
       return returnable;

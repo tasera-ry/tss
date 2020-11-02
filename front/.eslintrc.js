@@ -25,5 +25,7 @@ module.exports = {
     'react/no-access-state-in-setstate': [0],
     radix: [0],
     'no-await-in-loop': [0],
+    'no-loop-func': [0],
+    'class-methods-use-this': [0],
   },
 };

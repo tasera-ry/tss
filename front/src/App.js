@@ -22,7 +22,7 @@ import { validateLogin } from './utils/Utils';
    The main component of the whole project.
 */
 class App extends Component {
-  state = {};
+  state = {}; // eslint-disable-line
 
   componentDidMount() {
     if (localStorage.getItem('token') !== null) {

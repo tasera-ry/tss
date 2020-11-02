@@ -38,7 +38,7 @@ const styleA = {
   padding: 25,
   textAlign: 'center',
 };
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({ // eslint-disable-line
   root: {
     position: 'relative',
     marginLeft: '50%',
@@ -73,7 +73,7 @@ const DropDowns = (props) => {
     width: 180,
     backgroundColor: `${buttonColor}`,
   };
-  const discardChanges = {
+  const discardChanges = { // eslint-disable-line
     color: '#b0aca0',
   };
 
@@ -199,7 +199,7 @@ const Rows = ({
   setDone(true);
 
   function getWeekday(day) {
-    day = moment(day).format('dddd');
+    day = moment(day).format('dddd'); // eslint-disable-line
     if (window.innerWidth < 800) {
       return day.charAt(0).toUpperCase() + day.slice(1, num);
     }
@@ -250,14 +250,14 @@ async function getId() {
 
   const userID = response.data[0].id;
 
-  return userID;
+  return userID; // eslint-disable-line
 }
 
 // obtain date info
-async function getReservations(res, setNoSchedule) {
+async function getReservations(res, setNoSchedule) { // eslint-disable-line
   const today = moment().format().split('T')[0];
 
-  for (let i = 0; i < res.length; i++) {
+  for (let i = 0; i < res.length; i += 1) {
     const query = `api/reservation?available=true&id=${res[i].reservation_id}`;
     const response = await axios.get(query);
     if (response.data.length > 0) {
@@ -266,7 +266,7 @@ async function getReservations(res, setNoSchedule) {
     }
   }
 
-  res = res.filter((obj) => obj.date >= today);
+  res = res.filter((obj) => obj.date >= today); // eslint-disable-line
 
   res.sort((a, b) => new Date(a.date) - new Date(b.date));
 
@@ -284,9 +284,9 @@ async function checkSupervisorReservations() {
   const query = `api/range-supervision/usersupervisions/${userID}`;
 
   const response = await axios.get(query)
-    .then((response) =>
+    .then((response) => ( // eslint-disable-line
       // check and return boolean about whether there's any unconfirmed reservations
-      (response.data.some((sprvsn) => sprvsn.range_supervisor === 'not confirmed')))
+      response.data.some((sprvsn) => sprvsn.range_supervisor === 'not confirmed')))
     .catch((error) => {
       console.log(error);
     });
@@ -301,22 +301,22 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
   let temp = [];
 
   const query = `api/schedule?supervisor_id=${userID}`;
-  const response = await axios.get(query)
-    .then((response) => {
+  const response = await axios.get(query) // eslint-disable-line
+    .then((response) => { // eslint-disable-line
       if (response) {
         temp = temp.concat(response.data);
       }
     })
-    .catch((error) => {
+    .catch((error) => { // eslint-disable-line
       // console.log(error);
     });
 
-  for (let i = 0; i < temp.length; i++) {
+  for (let i = 0; i < temp.length; i += 1) {
     const v = await temp[i];
 
     const rsquery = `api/range-supervision/${v.id}`;
     await axios.get(rsquery)
-      .then((response) => {
+      .then((response) => { // eslint-disable-line
         if (response) {
           // object id is schedule id
           const obj = {
@@ -330,7 +330,7 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
           res = res.concat(obj);
         }
       })
-      .catch((error) => {
+      .catch((error) => { // eslint-disable-line
         // console.log(error);
       });
   }
@@ -355,7 +355,7 @@ const DialogWindow = ({ onCancel }) => {
   const { sv } = data;
 
   if (onCancel === undefined) {
-    onCancel = () => {};
+    onCancel = () => {}; // eslint-disable-line
   }
 
   // starting point
@@ -390,7 +390,7 @@ async function putSchedules(changes) {
     headers: { Authorization: `Bearer ${token}` },
   };
 
-  for (let i = 0; i < changes.length; i++) {
+  for (let i = 0; i < changes.length; i += 1) {
     const { id } = changes[i];
     const query = `api/range-supervision/${id}`;
     const s = changes[i].range_supervisor;
@@ -403,8 +403,14 @@ async function putSchedules(changes) {
 
 // creates dialog-window
 const Logic = ({
-  schedules, setSchedules, noSchedule, checked,
-  setChecked, done, setDone, sv, onCancel,
+  schedules,
+  noSchedule,
+  checked,
+  setChecked,
+  done,
+  setDone,
+  sv,
+  onCancel,
 }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(true);
@@ -412,7 +418,7 @@ const Logic = ({
   const fin = localStorage.getItem('language');
   const changes = [...schedules];
 
-  const HandleChange = (event) => {
+  const HandleChange = (event) => { // eslint-disable-line
     setChecked(!checked);
   };
 
@@ -449,16 +455,16 @@ const Logic = ({
             {done ? '' : sv.Wait[fin]}
           </DialogContentText>
           {schedules.length !== 0
-	    ? (
-  <Rows
-    HandleChange={HandleChange}
-    changes={changes}
-    checked={checked}
-    setDone={setDone}
-    sv={sv}
-  />
+            ? (
+              <Rows
+                HandleChange={HandleChange}
+                changes={changes}
+                checked={checked}
+                setDone={setDone}
+                sv={sv}
+              />
             )
-	   : ''}
+            : ''}
         </DialogContent>
         <DialogActions style={dialogStyle}>
           {wait

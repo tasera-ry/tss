@@ -126,29 +126,35 @@ class Scheduling extends Component {
   // there's a bug somewhere that makes state handling here a pain
   openAllTracks = () => {
     // console.log("Open tracks");
-    this.state.tracks.forEach((key) => {
-      this.setState({
-        [this.state.tracks[key].id]: 'present',
+    if (this.state.tracks) {
+      this.state.tracks.forEach((key) => {
+        this.setState({
+          [this.state.tracks[key].id]: 'present',
+        });
       });
-    });
-  };
+    }
+  }
 
   emptyAllTracks = () => {
-    // console.log("Empty tracks");
-    this.state.tracks.forEach((key) => {
-      this.setState({
-        [this.state.tracks[key].id]: 'absent',
+    if (this.state.tracks) {
+      // console.log("Empty tracks");
+      this.state.tracks.forEach((key) => {
+        this.setState({
+          [this.state.tracks[key].id]: 'absent',
+        });
       });
-    });
+    }
   };
 
   closeAllTracks = () => {
     // console.log("Close tracks");
-    this.state.tracks.forEach((key) => {
-      this.setState({
-        [this.state.tracks[key].id]: 'closed',
+    if (this.state.tracks) {
+      this.state.tracks.forEach((key) => {
+        this.setState({
+          [this.state.tracks[key].id]: 'closed',
+        });
       });
-    });
+    }
   };
 
   handleDateChange = (date) => {
@@ -396,56 +402,58 @@ class Scheduling extends Component {
     const fin = localStorage.getItem('language');
     const items = [];
     const { tracks } = this.state;
-    tracks.forEach((key) => {
-      items.push(
-        <React.Fragment
-          key={key}
-        >
-          <FormControl component="fieldset">
-            <FormLabel component="legend">{tracks[key].name}</FormLabel>
-            <RadioGroup
-              defaultValue="absent"
-              name={tracks[key].id}
-              onChange={this.handleRadioChange}
-              value={this.state[tracks[key].id] || 'absent'}
-            >
-              <FormControlLabel
-                value="present"
-                control={
-                  <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
-}
-                label={sched.OfficerPresent[fin]}
+    if (tracks) {
+      tracks.forEach((key) => {
+        items.push(
+          <React.Fragment
+            key={key}
+          >
+            <FormControl component="fieldset">
+              <FormLabel component="legend">{tracks[key].name}</FormLabel>
+              <RadioGroup
+                defaultValue="absent"
+                name={tracks[key].id}
+                onChange={this.handleRadioChange}
+                value={this.state[tracks[key].id] || 'absent'}
+              >
+                <FormControlLabel
+                  value="present"
+                  control={
+                    <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
+  }
+                  label={sched.OfficerPresent[fin]}
+                />
+                <FormControlLabel
+                  value="absent"
+                  control={
+                    <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
+  }
+                  label={sched.OfficerAbsent[fin]}
+                />
+                <FormControlLabel
+                  value="closed"
+                  control={
+                    <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
+  }
+                  label={sched.Closed[fin]}
+                />
+              </RadioGroup>
+              <TextareaAutosize
+                className="notice"
+                  // track_id
+                id={tracks[key].id}
+                aria-label="Ilmoitus"
+                rowsMin={1}
+                rowsMax={3}
+                onChange={this.handleNotice}
+                value={tracks[key].notice !== null ? tracks[key].notice : ''}
+                style={{ backgroundColor: '#f2f0eb' }}
               />
-              <FormControlLabel
-                value="absent"
-                control={
-                  <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
-}
-                label={sched.OfficerAbsent[fin]}
-              />
-              <FormControlLabel
-                value="closed"
-                control={
-                  <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
-}
-                label={sched.Closed[fin]}
-              />
-            </RadioGroup>
-            <TextareaAutosize
-              className="notice"
-                // track_id
-              id={tracks[key].id}
-              aria-label="Ilmoitus"
-              rowsMin={1}
-              rowsMax={3}
-              onChange={this.handleNotice}
-              value={tracks[key].notice !== null ? tracks[key].notice : ''}
-              style={{ backgroundColor: '#f2f0eb' }}
-            />
-          </FormControl>
-        </React.Fragment>,
-      );
-    });
+            </FormControl>
+          </React.Fragment>,
+        );
+      });
+    }
 
     return (
       <>
@@ -460,17 +468,18 @@ class Scheduling extends Component {
     let disabled = false;
     const { sched } = data;
     const fin = localStorage.getItem('language');
-
-    this.state.rangeSupervisors.forEach((key) => {
-      items.push(
-        <MenuItem
-          key={key}
-          value={this.state.rangeSupervisors[key].id}
-        >
-          {this.state.rangeSupervisors[key].name}
-        </MenuItem>,
-      );
-    });
+    if (this.state.rangeSupervisors) {
+      this.state.rangeSupervisors.forEach((key) => {
+        items.push(
+          <MenuItem
+            key={key}
+            value={this.state.rangeSupervisors[key].id}
+          >
+            {this.state.rangeSupervisors[key].name}
+          </MenuItem>,
+        );
+      });
+    }
 
     if (this.state.rangeSupervisorSwitch === false) {
       disabled = true;
@@ -711,13 +720,15 @@ class Scheduling extends Component {
           return reject(new Error('general track supervision failure'));
         }
       };
-      this.state.tracks.forEach(async (key) => { // eslint-disable-line
-        try {
-          await trackSupervision(srsId, key);
-        } catch (error) {
-          return reject(error);
-        }
-      });
+      if (this.state.tracks) {
+        this.state.tracks.forEach(async (key) => { // eslint-disable-line
+          try {
+            await trackSupervision(srsId, key);
+          } catch (error) {
+            return reject(error);
+          }
+        });
+      }
 
       return resolve('update success');
     });

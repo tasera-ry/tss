@@ -131,7 +131,7 @@ class UserManagementView extends Component {
     this.state = {
       userList: {},
       rows: [],
-      openPassWarning: false,
+      openPassWarning: false, // eslint-disable-line
       openRemoveWarning: false,
       changeOwnPassDialogOpen: false,
       openAddNewUserDialog: false,
@@ -143,12 +143,12 @@ class UserManagementView extends Component {
       newUserName: '',
       newUserPass: '',
       newUserRole: 'supervisor',
-      newUserPhone: '',
+      newUserPhone: '', // eslint-disable-line
       password: '',
       oldPassword: '',
       newPassword: '',
       selectedUserName: '',
-      myStorage: window.localStorage,
+      myStorage: window.localStorage, // eslint-disable-line
     };
 
     // need to bind these functions so they get access to the state
@@ -164,7 +164,7 @@ class UserManagementView extends Component {
     this.handleNewuserNameChange = this.handleNewuserNameChange.bind(this);
     this.handleNewuserPassChange = this.handleNewuserPassChange.bind(this);
     this.handleAddNewUserDialogClose = this.handleAddNewUserDialogClose.bind(this);
-    this.handleAddNewUserDialogCloseConfirmed = this.handleAddNewUserDialogCloseConfirmed.bind(this);
+    this.handleAddNewUserDialogCloseConfirmed = this.handleAddNewUserDialogCloseConfirmed.bind(this);  // eslint-disable-line
     this.handleChangePassCloseConfirm = this.handleChangePassCloseConfirm.bind(this);
     this.handleChangePassClose = this.handleChangePassClose.bind(this);
     this.handleChangeNewUserRole = this.handleChangeNewUserRole.bind(this);
@@ -202,110 +202,71 @@ class UserManagementView extends Component {
     );
   }
 
-  update() {
-    const tempRows = [];
-    for (const i in this.state.userList) {
-      if (localStorage.taseraUserName !== this.state.userList[i].name) {
-        const row = this.createData(this.state.userList[i].name,
-          this.state.userList[i].role,
-          this.returnPassButton(this.state.userList[i].id, manage, fin),
-          this.returnRemoveButton(this.state.userList[i].id, manage, fin));
-        tempRows.push(row);
-      }
-    }
-    this.setState({
-      rows: tempRows,
-    });
-  }
-
-  async makeDataFreshAgain() {
-    try {
-      const response = await getUsers(this.state.token);
-      if (response !== false) {
-        this.setState({
-          userList: response,
-        });
-        this.update();
-      } else {
-        console.error('getting users failed, most likely sign in token invalid -> kicking to root');
-        this.props.history.push('/');
-      }
-    } catch (error) {
-      console.error('init failed', error);
-    }
-  }
-
-  createData(name, role, ButtonToChangePassword, ButtonToRemoveUser) {
-    const roleToPrint = role === 'superuser' ? manage.Superuser[fin] : manage.Supervisor[fin];
-    return {
-      name, roleToPrint, ButtonToChangePassword, ButtonToRemoveUser,
-    };
-  }
-
-  returnPassButton(id, manage, fin) {
-    return (
-      <Button id={id} size="small" style={{ backgroundColor: '#5f77a1' }} variant="contained" onClick={this.onChangePassClick}>
-        {manage.ChangePass[fin]}
-      </Button>
-    );
-  }
-
-  returnRemoveButton(id, manage, fin) {
-    return (
-      <Button id={id} size="small" style={{ backgroundColor: '#c97b7b' }} variant="contained" onClick={this.onRemoveClick}>
-        {manage.RemoveUser[fin]}
-      </Button>
-    );
-  }
-
   /**
     **  FUNCTIONS
     */
 
-  // Changes password for some1 else by their ID
-  async handleChangePassCloseConfirm() {
-    const response = await changePassword(this.state.token, this.findUserId(), this.state.password);
-    if (!response) {
-      this.setState({
-        mokatVaihdossa: true,
-      });
-    } else {
-      this.handleChangePassClose();
-    }
-  }
-
-  // Removes the user
-  async handleRemoveWarningCloseAgree() {
-    // console.log("REMOVING USER " + this.findUserName() + " WITH ID " + this.findUserId() + " FROM DATABASE");
-    const response = await deleteUser(this.state.token, this.findUserId());
-    if (response.errors != undefined) {
-      this.setState({
-        mokatPoistossa: true,
-      });
-    } else {
-      this.setState({
-        openRemoveWarning: false,
-      });
-      this.handleRemoveWarningClose();
-      this.makeDataFreshAgain();
-    }
-  }
-
-  // Handles adding new users
-  async handleAddNewUserDialogCloseConfirmed() {
-    this.setState({
-      mokat: false,
+  // Opens warning for removing user
+  async onRemoveClick(e) {
+    await this.setState({
+      selectedROWID: e.currentTarget.id,
     });
-    const req = await addUser(this.state.token, this.state.newUserName, this.state.newUserRole, this.state.newUserPass);
-    if (req.errors != undefined) {
-      this.setState({
-        mokat: true,
-      });
-    } else {
-      this.handleAddNewUserDialogClose();
-      this.makeDataFreshAgain();
-    }
+    const name = this.findUserName();
+    this.setState({
+      selectedUserName: name,
+      openRemoveWarning: true,
+    });
   }
+
+  // Opens dialog for changing password for some1 else
+  async onChangePassClick(e) {
+    await this.setState({
+      selectedROWID: e.currentTarget.id,
+    });
+    const name = this.findUserName();
+    this.setState({
+      selectedUserName: name,
+      changePassDialogOpen: true,
+    });
+  }
+
+  /**
+    **ALGORITHMS
+    */
+
+  // Finds username for selectedROWID in state
+  findUserName() {
+    this.state.userList.forEach((i) => { // eslint-disable-line
+      if (this.state.userList[i].id === this.state.selectedROWID) {
+        return this.state.userList[i].name;
+      }
+    });
+    return 'Username not found';
+  }
+
+  // Finds users id by selectedROWID in state
+  findUserId() {
+    this.state.userList.forEach((i) => { // eslint-disable-line
+      if (this.state.userList[i].id === this.state.selectedROWID) {
+        return this.state.userList[i].id;
+      }
+    });
+    return undefined;
+  }
+
+  // finds logged in users id
+  findOwnID() { // eslint-disable-line
+    this.state.userList.forEach((i) => { // eslint-disable-line
+      if (localStorage.taseraUserName === this.state.userList[i].name) {
+        return this.state.userList[i].id;
+      }
+    });
+  }
+
+  /**
+    **  HANDLE DIALOGS
+    **  opening and closings
+    */
 
   // handles changing own password
   async handleChangeOwnPassDialogCloseAgree() {
@@ -337,54 +298,41 @@ class UserManagementView extends Component {
     }
   }
 
-  /**
-    **ALGORITHMS
-    */
-
-  // Finds username for selectedROWID in state
-  findUserName() {
-    for (const i in this.state.userList) {
-      if (this.state.userList[i].id == this.state.selectedROWID) {
-        return this.state.userList[i].name;
-      }
-    }
-    return 'Username not found';
-  }
-
-  // Finds users id by selectedROWID in state
-  findUserId() {
-    for (const i in this.state.userList) {
-      if (this.state.userList[i].id == this.state.selectedROWID) {
-        return this.state.userList[i].id;
-      }
-    }
-    return undefined;
-  }
-
-  // finds logged in users id
-  findOwnID() {
-    for (const i in this.state.userList) {
-      if (localStorage.taseraUserName == this.state.userList[i].name) {
-        return this.state.userList[i].id;
-      }
-    }
-  }
-
-  /**
-    **  HANDLE DIALOGS
-    **  opening and closings
-    */
-
-  // Opens dialog for changing password for some1 else
-  async onChangePassClick(e) {
-    await this.setState({
-      selectedROWID: e.currentTarget.id,
-    });
-    const name = this.findUserName();
+  // Handles adding new users
+  async handleAddNewUserDialogCloseConfirmed() {
     this.setState({
-      selectedUserName: name,
-      changePassDialogOpen: true,
+      mokat: false,
     });
+    const req = await addUser(
+      this.state.token,
+      this.state.newUserName,
+      this.state.newUserRole,
+      this.state.newUserPass,
+    );
+    if (req.errors !== undefined) {
+      this.setState({
+        mokat: true,
+      });
+    } else {
+      this.handleAddNewUserDialogClose();
+      this.makeDataFreshAgain();
+    }
+  }
+
+  // Removes the user
+  async handleRemoveWarningCloseAgree() {
+    const response = await deleteUser(this.state.token, this.findUserId());
+    if (response.errors !== undefined) {
+      this.setState({
+        mokatPoistossa: true,
+      });
+    } else {
+      this.setState({
+        openRemoveWarning: false,
+      });
+      this.handleRemoveWarningClose();
+      this.makeDataFreshAgain();
+    }
   }
 
   // Closes dialog for changing password for some1 else
@@ -395,16 +343,56 @@ class UserManagementView extends Component {
     });
   }
 
-  // Opens warning for removing user
-  async onRemoveClick(e) {
-    await this.setState({
-      selectedROWID: e.currentTarget.id,
-    });
-    const name = this.findUserName();
-    this.setState({
-      selectedUserName: name,
-      openRemoveWarning: true,
-    });
+  // Changes password for some1 else by their ID
+  async handleChangePassCloseConfirm() {
+    const response = await changePassword(this.state.token, this.findUserId(), this.state.password);
+    if (!response) {
+      this.setState({
+        mokatVaihdossa: true,
+      });
+    } else {
+      this.handleChangePassClose();
+    }
+  }
+
+  returnRemoveButton(id, manage, fin) { // eslint-disable-line
+    return (
+      <Button id={id} size="small" style={{ backgroundColor: '#c97b7b' }} variant="contained" onClick={this.onRemoveClick}>
+        {manage.RemoveUser[fin]}
+      </Button>
+    );
+  }
+
+  returnPassButton(id, manage, fin) { // eslint-disable-line
+    return (
+      <Button id={id} size="small" style={{ backgroundColor: '#5f77a1' }} variant="contained" onClick={this.onChangePassClick}>
+        {manage.ChangePass[fin]}
+      </Button>
+    );
+  }
+
+  createData(name, role, ButtonToChangePassword, ButtonToRemoveUser) {
+    const roleToPrint = role === 'superuser' ? manage.Superuser[fin] : manage.Supervisor[fin];
+    return {
+      name, roleToPrint, ButtonToChangePassword, ButtonToRemoveUser,
+    };
+  }
+
+  async makeDataFreshAgain() {
+    try {
+      const response = await getUsers(this.state.token);
+      if (response !== false) {
+        this.setState({
+          userList: response,
+        });
+        this.update();
+      } else {
+        console.error('getting users failed, most likely sign in token invalid -> kicking to root');
+        this.props.history.push('/');
+      }
+    } catch (error) {
+      console.error('init failed', error);
+    }
   }
 
   // Close dialog for changing password
@@ -494,11 +482,27 @@ class UserManagementView extends Component {
     });
   }
 
+  update() {
+    const tempRows = [];
+    this.state.userList.forEach((i) => {
+      if (localStorage.taseraUserName !== this.state.userList[i].name) {
+        const row = this.createData(this.state.userList[i].name,
+          this.state.userList[i].role,
+          this.returnPassButton(this.state.userList[i].id, manage, fin),
+          this.returnRemoveButton(this.state.userList[i].id, manage, fin));
+        tempRows.push(row);
+      }
+    });
+    this.setState({
+      rows: tempRows,
+    });
+  }
+
   /**
     **  ACTUAL PAGE RENDERING
     */
   render() {
-    const fin = localStorage.getItem('language');
+    const fin = localStorage.getItem('language'); // eslint-disable-line
     return (
       <div>
         {/* Dialog to add new user */}
