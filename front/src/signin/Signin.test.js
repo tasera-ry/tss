@@ -1,5 +1,4 @@
 import React from 'react';
-import SignIn from './SignIn';
 import { HashRouter as Router } from 'react-router-dom';
 import '@testing-library/jest-dom/extend-expect';
 import {
@@ -7,6 +6,7 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
+import SignIn from './SignIn';
 
 describe('testing SignIn component', () => {
   it('should render SignIn', async () => {

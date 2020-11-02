@@ -13,19 +13,18 @@ import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from '@material-ui/core/styles';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import Burger from '../logo/Burger.png';
 import logo from '../logo/Logo.png';
 
-import SupervisorNotification from './SupervisorNotification';
+import SupervisorNotification from './SupervisorNotification'; // eslint-disable-line
 
 import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
 
 // Translations
 import * as data from '../texts/texts.json';
 
-const fin = localStorage.getItem('language'); // 0: finnish, 1: english
+// 0: finnish, 1: english
+const fin = localStorage.getItem('language'); // eslint-disable-line
 const { nav } = data;
 
 // Styles
@@ -224,8 +223,8 @@ const Nav = () => {
   const [superuser, setSuperuser] = useState();
   const [loggingOut, setLoggingOut] = useState(false);
   const [checkSupervisions, setCheckSupervisions] = useState(false);
-  const fin = localStorage.getItem('language'); // 0: finnish, 1: english
-  const { nav } = data;
+  const fin = localStorage.getItem('language'); // eslint-disable-line
+  const { nav } = data; // eslint-disable-line
 
   if (name === '') {
     userInfo(name, setName, setSuperuser);

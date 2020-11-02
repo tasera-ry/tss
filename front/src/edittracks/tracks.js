@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 
 import './tracks.css';
 
@@ -18,7 +18,6 @@ import lodash from 'lodash';
 import axios from 'axios';
 
 // Icon setup
-import { forwardRef } from 'react';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -151,7 +150,7 @@ const TrackTable = ({
       //     }
       //   })
       // }
-      onRowUpdate: (newData, oldData) => new Promise(async (resolve, reject) => {
+      onRowUpdate: (newData, oldData) => new Promise(async (resolve, reject) => { // eslint-disable-line
         resolve();
         const trackInfo = trackData
           .filter((track) => track.name === oldData.name
@@ -164,7 +163,7 @@ const TrackTable = ({
         }
 
         try {
-          const response = await axios.put(
+          await axios.put(
             `/api/track/${trackInfo.id}`,
             newData,
             opts,
@@ -247,11 +246,9 @@ const TrackCRUD = () => {
   const [initFinished, setInitFinished] = useState(false);
   const [requestStatus, setRequestStatus] = useState(null);
   const [requestText, setRequestText] = useState(null);
-  const [rangeData, setRangeData] = useState([]);
 
-  const partialFetch = lodash.partial(fetch, '/api/track');
+  const partialFetch = lodash.partial(fetch, '/api/track'); // eslint-disable-line
 
-  const isSuperuser = localStorage.getItem('role') === 'superuser';
   const token = localStorage.getItem('token');
 
   const opts = {
@@ -259,6 +256,10 @@ const TrackCRUD = () => {
       Authorization: `Bearer ${token}`,
     },
   };
+
+  function RedirectToWeekview() {
+    window.location.href = '/';
+  }
 
   useEffect(() => {
     (async () => {
@@ -279,10 +280,6 @@ const TrackCRUD = () => {
       }
     })();
   }, [initFinished]);
-
-  function RedirectToWeekview() {
-    window.location.href = '/';
-  }
 
   // Translations
   const l10n = l10nLines.tracks;

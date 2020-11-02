@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
@@ -9,15 +9,16 @@ import { checkSupervisorReservations, DialogWindow } from '../upcomingsupervisio
 
 // Translations
 import * as data from '../texts/texts.json';
-const fin = localStorage.getItem("language"); //0: finnish, 1: english
-const {banner} = data
+
+const fin = localStorage.getItem('language');  // eslint-disable-line
+const { banner } = data;
 
 class SupervisorNotification extends Component {
   constructor(props) {
     super(props);
     this.state = {
       userHasSupervisions: false,
-      supervisionsOpen: false
+      supervisionsOpen: false,
     };
   }
 
@@ -25,71 +26,73 @@ class SupervisorNotification extends Component {
     this.checkSupervisions();
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {  // eslint-disable-line
     if (nextProps.loggingOut) {
       this.setState({
-        userHasSupervisions: false
-      })
+        userHasSupervisions: false,
+      });
       nextProps.setLoggingOut(false);
-    }
-    else if (nextProps.checkSupervisions) {
+    } else if (nextProps.checkSupervisions) {
       this.checkSupervisions();
       nextProps.setCheckSupervisions(false);
     }
   }
 
-  refreshSupervisionsOpen = () => {
+  refreshSupervisionsOpen = () => {  // eslint-disable-line
     this.setState({
-      supervisionsOpen: false
-    })
+      supervisionsOpen: false,
+    });
   }
 
   checkSupervisions = async () => {
     const reservations = await checkSupervisorReservations();
     if (reservations) {
       this.setState({
-        userHasSupervisions: true
-      })
-    }
-    else {
+        userHasSupervisions: true,
+      });
+    } else {
       this.setState({
-        userHasSupervisions: false
-      })
+        userHasSupervisions: false,
+      });
     }
   }
 
-  displaySupervisions = (e) => {
+  displaySupervisions = (e) => {  // eslint-disable-line
     this.setState({
-      supervisionsOpen: true
-    })
+      supervisionsOpen: true,
+    });
   }
 
   render() {
-    const fin = localStorage.getItem("language");
-    console.log(this.state)
+    const fin = localStorage.getItem('language'); // eslint-disable-line
+    console.log(this.state);
     return (
       <div>
-        {this.state.userHasSupervisions ?
-          <Alert
-            severity="warning"
-            variant="filled"
-            action={
-              <Button color="inherit" size="small">
-                {banner.Check[fin]}
-              </Button>
-            }
-            onClick={this.displaySupervisions}
-          >{banner.Notification[fin]}
-          </Alert> : null
-        }
-        {this.state.supervisionsOpen ?
-          <DialogWindow
-            onCancel={
+        {this.state.userHasSupervisions
+          ? (
+            <Alert
+              severity="warning"
+              variant="filled"
+              action={(
+                <Button color="inherit" size="small">
+                  {banner.Check[fin]}
+                </Button>
+            )}
+              onClick={this.displaySupervisions}
+            >
+              {banner.Notification[fin]}
+            </Alert>
+          ) : null}
+        {this.state.supervisionsOpen
+          ? (
+            <DialogWindow
+              onCancel={
               () => this.refreshSupervisionsOpen()
             }
-          /> : ""}
+            />
+          ) : ''}
       </div>
-    )
+    );
   }
 }
 

@@ -1,6 +1,7 @@
 module.exports = {
   env: {
     'jest/globals': true,
+    browser: true,
   },
   extends: [
     'airbnb',
@@ -9,6 +10,7 @@ module.exports = {
     'react',
     'jest',
   ],
+  parser: 'babel-eslint',
   rules: {
     'react/jsx-filename-extension': [0],
     'jsx-a11y/alt-text': [0],
@@ -18,5 +20,10 @@ module.exports = {
     'no-console': [0],
     'func-names': [0],
     'import/no-extraneous-dependencies': [0],
+    'react/jsx-props-no-spreading': [0],
+    'react/prop-types': [0],
+    'react/no-access-state-in-setstate': [0],
+    radix: [0],
+    'no-await-in-loop': [0],
   },
 };

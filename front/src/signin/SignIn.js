@@ -46,32 +46,16 @@ const SignIn = () => {
   const classes = useStyles();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState('');
   const [mistake, setMistake] = useState(false);
   const history = useHistory();
   const { signin } = data;
   const fin = localStorage.getItem('language');
 
   document.body.style = 'background: #eae7dc;';
-
-  const login = (e) => {
-    e.preventDefault();
-
-    const response = axios.post('api/sign', {
-      name,
-      password,
-    }).then((response) => {
-      setInfo(response.data);
-    }).catch((error) => {
-      HandleError(error);
-    });
-  };
-
   function RedirectToWeekview() {
     window.location.href = '/';
   }
-
-  async function setInfo(data) {
+  async function setInfo(data) { // eslint-disable-line
     localStorage.setItem('taseraUserName', name);
     localStorage.setItem('token', data);
 
@@ -92,15 +76,28 @@ const SignIn = () => {
     // message contains all errors, might be useful
     let message = '';
     if (error.response.status === 400) {
-      for (let i = 0; i < error.response.data.errors.length; i++) {
+      for (let i = 0; i < error.response.data.errors.length; i += 1) {
         const { param } = error.response.data.errors[i];
         const { msg } = error.response.data.errors[i];
         message += (`${param} ${msg}\n`);
       }
     }
     if (error.response.status === 401) {
-      message = error.response.data;
+      message = error.response.data; // eslint-disable-line
     }
+  };
+
+  const login = (e) => {
+    e.preventDefault();
+
+    axios.post('api/sign', {
+      name,
+      password,
+    }).then((response) => {
+      setInfo(response.data);
+    }).catch((error) => {
+      HandleError(error);
+    });
   };
 
   function backToPrev() {

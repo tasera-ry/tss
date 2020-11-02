@@ -1,7 +1,5 @@
 import React from 'react';
-import TrackCRUD from './tracks';
 import { HashRouter as Router } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
 import '@testing-library/jest-dom/extend-expect';
 import {
   render,
@@ -10,6 +8,7 @@ import {
 } from '@testing-library/react';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';
+import TrackCRUD from './tracks';
 import * as utils from '../utils/Utils';
 
 jest.mock('axios');
@@ -27,9 +26,9 @@ describe('testing TrackCRUD component', () => {
 
     const data = { data: mockTracks };
     axios.get.mockImplementationOnce(() => Promise.resolve(data));
-    utils.validateLogin = jest.fn((x) => true);
+    utils.validateLogin = jest.fn(() => true);
     await act(async () => {
-      localStorage.setItem('language', '1');
+      localStorage.setItem('language', '1'); // eslint-disable-line
       render(
         <Router>
           <TrackCRUD

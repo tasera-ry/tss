@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 import '../App.css';
 import './Scheduling.css';
@@ -6,7 +6,7 @@ import './Scheduling.css';
 // Date management
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
-import "moment/locale/fi";
+import 'moment/locale/fi';
 
 // Material UI components
 import {
@@ -31,253 +31,192 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import { getSchedulingDate, rangeSupervision } from "../utils/Utils";
-import socketIOClient from "socket.io-client";
+import socketIOClient from 'socket.io-client';
+import { getSchedulingDate, rangeSupervision, validateLogin } from '../utils/Utils';
 
 // Translation
 import * as data from '../texts/texts.json';
 
-// Token validation
-import { validateLogin } from "../utils/Utils";
-
-
-let lang = "fi"; //fallback
-if(localStorage.getItem("language") === '0') {
+let lang = 'fi'; // fallback
+if (localStorage.getItem('language') === '0') {
   lang = 'fi';
-}
-else if(localStorage.getItem("language") === '1'){
+} else if (localStorage.getItem('language') === '1') {
   lang = 'en';
 }
 moment.locale(lang);
 
-async function getRangeSupervisors(token){
-  try{
-    let response = await fetch("/api/user?role=supervisor", {
+async function getRangeSupervisors(token) {
+  try {
+    const response = await fetch('/api/user?role=supervisor', {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     return await response.json();
-  }catch(err){
-    console.error("GETTING USER FAILED",err);
+  } catch (err) {
+    console.error('GETTING USER FAILED', err);
     return false;
   }
 }
 
 class Scheduling extends Component {
-
   constructor(props) {
-      super(props);
-      this.state = {
-        state: 'loading', //loading, ready
-        toast: false,
-        toastMessage: 'Nope',
-        toastSeverity: 'success',
-        date: new Date(),
-        rangeId: '',
-        reservationId: '',
-        scheduleId: '',
-        open: new Date(),
-        close: new Date(),
-        available: false,
-        rangeSupervisorSwitch: false,
-        rangeSupervisorId: '',
-        rangeSupervisorOriginal: '',
-        rangeSupervisionScheduled: false,
-        daily: false,
-        weekly: false,
-        monthly: false,
-        repeatCount: 1,
-        token: 'SECRET-TOKEN',
-        datePickerKey: 1
-      };
-  };
+    super(props);
+    this.state = {
+      state: 'loading', // loading, ready
+      toast: false,
+      toastMessage: 'Nope',
+      toastSeverity: 'success',
+      date: new Date(),
+      rangeId: '',
+      reservationId: '',
+      scheduleId: '',
+      open: new Date(),
+      close: new Date(),
+      available: false,
+      rangeSupervisorSwitch: false,
+      rangeSupervisorId: '',
+      rangeSupervisorOriginal: '',
+      rangeSupervisionScheduled: false,
+      daily: false,
+      weekly: false,
+      monthly: false,
+      repeatCount: 1,
+      token: 'SECRET-TOKEN',
+      datePickerKey: 1,
+    };
+  }
 
-  componentDidMount(){
-    //console.log("MOUNTED",localStorage.getItem('token'));
+  componentDidMount() {
+    // console.log("MOUNTED",localStorage.getItem('token'));
     this.setState({
       token: localStorage.getItem('token'),
-      datePickerKey: Math.random() //force datepicker to re-render when language changed
-    },function(){
+      datePickerKey: Math.random(), // force datepicker to re-render when language changed
+    }, function () {
       validateLogin()
-      .then(logInSuccess => {
-        if(!logInSuccess){
-          this.props.history.push("/");
-        }
-        else{
+        .then((logInSuccess) => {
+          if (!logInSuccess) {
+            this.props.history.push('/');
+          } else {
             getRangeSupervisors(this.state.token)
-            .then((response) => {
-              if(response !== false){
-                this.setState({
-                  rangeSupervisors: response
-                });
-                this.update();
-                this.setState({
-                  state: 'loading'
-                });
-              }
-            })
-            .catch((error) => {
-              console.error("init failed",error);
-            });
-        }
-      });
+              .then((response) => {
+                if (response !== false) {
+                  this.setState({
+                    rangeSupervisors: response,
+                  });
+                  this.update();
+                  this.setState({
+                    state: 'loading',
+                  });
+                }
+              })
+              .catch((error) => {
+                console.error('init failed', error);
+              });
+          }
+        });
     });
     this.socket = socketIOClient();
-
   }
 
-  update(){
-    const request = async () => {
-      const response = await getSchedulingDate(this.state.date);
-
-      if(response !== false){
-        //console.log("Results from api",response);
-
-        this.setState({
-          date: moment(response.date),
-          rangeId: response.rangeId,
-          reservationId: response.reservationId,
-          scheduleId: response.scheduleId,
-          open: response.open !== null ?
-            moment(response.open, 'h:mm:ss').format() :
-            moment(response.date)
-            .hour(17)
-            .minute(0)
-            .second(0),
-          close:  response.close !== null ?
-            moment(response.close, 'h:mm:ss').format() :
-            moment(response.date)
-            .hour(20)
-            .minute(0)
-            .second(0),
-          available:response.available !== null ? response.available : false,
-          rangeSupervisorSwitch: response.rangeSupervisorId !== null ? true : false,
-          rangeSupervisorId: response.rangeSupervisorId,
-          rangeSupervisorOriginal: response.rangeSupervisorId,
-          rangeSupervisionScheduled: response.rangeSupervisionScheduled,
-          tracks: response.tracks,
-          state: 'ready'
-        });
-        //set current track state for scheduled
-        for (var key in response.tracks) {
-          if(response.tracks[key].scheduled){
-            this.setState({
-              [this.state.tracks[key].id]: this.state.tracks[key].trackSupervision
-            });
-          }
-          //clears track states between date changes
-          else {
-            this.setState({
-              [this.state.tracks[key].id]: undefined
-            });
-          }
-        }
-      } else console.error("getting info failed");
-    }
-    request();
-  }
-
-  //if these all tracks can work with track changes only changed updates could be sent
-  //there's a bug somewhere that makes state handling here a pain
+  // if these all tracks can work with track changes only changed updates could be sent
+  // there's a bug somewhere that makes state handling here a pain
   openAllTracks = () => {
-    //console.log("Open tracks");
-    for (var key in this.state.tracks) {
+    // console.log("Open tracks");
+    this.state.tracks.forEach((key) => {
       this.setState({
-        [this.state.tracks[key].id]: 'present'
+        [this.state.tracks[key].id]: 'present',
       });
-    }
+    });
   };
 
   emptyAllTracks = () => {
-    //console.log("Empty tracks");
-    for (var key in this.state.tracks) {
+    // console.log("Empty tracks");
+    this.state.tracks.forEach((key) => {
       this.setState({
-        [this.state.tracks[key].id]: 'absent'
+        [this.state.tracks[key].id]: 'absent',
       });
-    }
+    });
   };
 
   closeAllTracks = () => {
-    //console.log("Close tracks");
-    for (var key in this.state.tracks) {
+    // console.log("Close tracks");
+    this.state.tracks.forEach((key) => {
       this.setState({
-        [this.state.tracks[key].id]: 'closed'
+        [this.state.tracks[key].id]: 'closed',
       });
-    }
+    });
   };
 
   handleDateChange = (date) => {
     this.setState({
-      date: date
+      date,
     });
   };
 
   handleDatePickChange = (date) => {
     this.setState({
-      date: date
+      date,
     },
-    function() {
+    function () {
       this.continueWithDate();
     });
   };
 
   continueWithDate = (event) => {
-    if(event !== undefined && event.type !== undefined && event.type === 'submit'){
+    if (event !== undefined && event.type !== undefined && event.type === 'submit') {
       event.preventDefault();
     }
     this.setState({
       state: 'loading',
     },
-    function() {
-      //console.log("TIME IS",this.state.date);
+    function () {
+      // console.log("TIME IS",this.state.date);
       this.update();
     });
   }
 
   handleTimeStartChange = (date) => {
     this.setState({
-       open: date
+      open: date,
     });
   };
 
   handleTimeEndChange = (date) => {
     this.setState({
-       close: date
+      close: date,
     });
   };
 
   handleSwitchChange = (event) => {
-    //console.log("Switch",event.target.name, event.target.checked)
+    // console.log("Switch",event.target.name, event.target.checked)
     this.setState({
-       [event.target.name]: event.target.checked
+      [event.target.name]: event.target.checked,
     });
   };
 
   handleRepeatChange = (event) => {
-    //console.log("Repeat",event.target.id, event.target.checked)
+    // console.log("Repeat",event.target.id, event.target.checked)
 
     let daily = false;
     let weekly = false;
     let monthly = false;
 
-    if(event.target.id === 'daily'){
+    if (event.target.id === 'daily') {
       daily = !this.state.daily;
-    }
-    else if(event.target.id === 'weekly'){
+    } else if (event.target.id === 'weekly') {
       weekly = !this.state.weekly;
-    }
-    else if(event.target.id === 'monthly'){
+    } else if (event.target.id === 'monthly') {
       monthly = !this.state.monthly;
     }
 
     this.setState({
-      daily: daily,
-      weekly: weekly,
-      monthly: monthly
+      daily,
+      weekly,
+      monthly,
     });
   };
 
@@ -287,80 +226,81 @@ class Scheduling extends Component {
     }
 
     this.setState({
-      toast:false
+      toast: false,
     });
   };
 
   handleRadioChange = (event) => {
-    //console.log("Radio",event.target.name, event.target)
-    //having the name be a int causes
-    //Failed prop type: Invalid prop `name` of type `number`
+    // console.log("Radio",event.target.name, event.target)
+    // having the name be a int causes
+    // Failed prop type: Invalid prop `name` of type `number`
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
 
   handleValueChange = (event) => {
-    //console.log("Value change",event.target.name, event.target.value)
+    // console.log("Value change",event.target.name, event.target.value)
     this.setState({
-       [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
 
   handleBackdropClick = (event) => {
-    //console.log("Backdrop clicked",event);
+    // console.log("Backdrop clicked",event);
     event.preventDefault();
   };
 
   handleNotice = (event) => {
-    //console.log("handle notice",event.target.id,event.target.value,this.state.tracks)
-    let idx = this.state.tracks.findIndex((findItem) => findItem.id === parseInt(event.target.id));
-    let tracks = this.state.tracks;
+    // console.log("handle notice",event.target.id,event.target.value,this.state.tracks)
+    const idx = this.state.tracks.findIndex(
+      (findItem) => findItem.id === parseInt(event.target.id),
+    );
+    const { tracks } = this.state;
     tracks[idx].notice = event.target.value;
 
     this.setState({
-       tracks:tracks
-    },function(){
+      tracks,
+    }, function () {
       console.debug(this.state);
     });
   }
 
-  saveChanges = async (event) => {
+  saveChanges = async () => {
     const { sched } = data;
-    const fin = localStorage.getItem("language");
+    const fin = localStorage.getItem('language');
 
     this.setState({
-      state: 'loading'
+      state: 'loading',
     });
 
     // update call/error handling
     const update = async (date, rsId, srsId, rangeSupervisionScheduled, tracks, isRepeat) => {
       await this.updateCall(date, rsId, srsId, rangeSupervisionScheduled, tracks, isRepeat)
-        .then((res) => {
+        .then(() => {
           this.setState({
             toast: true,
             toastMessage: sched.Success[fin],
-            toastSeverity: "success"
+            toastSeverity: 'success',
           });
         },
         (error) => {
-          console.error('Update rejection called: ' + error.message);
+          console.error(`Update rejection called: ${error.message}`);
           if (error.message === 'Range officer enabled but no id') {
             this.setState({
               toastMessage: sched.Warning[fin],
-              toastSeverity: "warning",
+              toastSeverity: 'warning',
               toast: true,
             });
-          }
-          else {
+          } else {
             this.setState({
               toastMessage: sched.Error[fin],
-              toastSeverity: "error",
+              toastSeverity: 'error',
               toast: true,
             });
           }
-        })
-    }
+        });
+    };
 
     // this function calls the api repeatedly
     // this approach causes lag
@@ -373,35 +313,33 @@ class Scheduling extends Component {
         this.state.scheduleId,
         this.state.rangeSupervisionScheduled,
         this.state.tracks,
-        false
+        false,
       );
-      if (this.state.daily ||
-         this.state.weekly ||
-         this.state.monthly
-      ){
-        for (var i = 0; i < this.state.repeatCount; i++) {
+      if (this.state.daily
+         || this.state.weekly
+         || this.state.monthly
+      ) {
+        for (let i = 0; i < this.state.repeatCount; i += 1) {
           if (this.state.daily) {
             date = moment(date).add(1, 'days');
-          }
-          else if (this.state.weekly) {
+          } else if (this.state.weekly) {
             date = moment(date).add(1, 'weeks');
-          }
-          else if (this.state.monthly) {
+          } else if (this.state.monthly) {
             date = moment(date).add(1, 'months');
           }
 
-          let response = await this.updateRequirements(moment(date).format('YYYY-MM-DD'));
+          const response = await this.updateRequirements(moment(date).format('YYYY-MM-DD'));
           await update(
             date,
             response.reservationId,
             response.scheduleId,
             response.rangeSupervisionScheduled,
             response.tracks,
-            true
+            true,
           );
         }
       }
-    }
+    };
 
     await repeat();
     // update here not necessarily needed but fixes
@@ -409,24 +347,23 @@ class Scheduling extends Component {
     // saving again without updating ids.
     this.update();
     this.setState({
-      state: 'ready'
+      state: 'ready',
     });
-    this.socket.emit('refresh')
+    this.socket.emit('refresh');
   };
 
-  //fetch new requirements for the next day
+  // fetch new requirements for the next day
   updateRequirements = async (date) => {
-    //console.log("UPDATE REQUIREMENTS",date);
-    const request = async (date) => {
+    // console.log("UPDATE REQUIREMENTS",date);
+    const request = async (date) => { // eslint-disable-line
       const response = await getSchedulingDate(date);
 
-      if(response !== false){
-        //console.log("During update base results from api",response);
-      }
-      else console.error('Getting base info failed');
+      if (response !== false) {
+        // console.log("During update base results from api",response);
+      } else console.error('Getting base info failed');
       return response;
-    }
-    return await request(date);
+    };
+    return await request(date); // eslint-disable-line
   }
 
   /*
@@ -445,244 +382,6 @@ class Scheduling extends Component {
   * this.state.tracks
   * supervisorStatus = this.state[this.state.tracks[key].id]
   */
-  async updateCall(date, rsId, srsId, rangeSupervisionScheduled, tracks, isRepeat) {
-    return new Promise(async (resolve,reject) => {
-      let reservationMethod;
-      let reservationPath = "";
-      let scheduledRangeSupervisionMethod;
-      let scheduledRangeSupervisionPath = "";
-
-      // determine exist or not with:
-      // reservationId: '',
-      // scheduledRangeSupervisionId: '',
-      // trackSupervisionId: '',
-      if (rsId !== null) {
-        reservationMethod = 'PUT';
-        reservationPath = "/" + rsId;
-      }
-      else reservationMethod = 'POST';
-
-      if (srsId !== null) {
-        scheduledRangeSupervisionMethod = 'PUT';
-        scheduledRangeSupervisionPath = "/" + srsId;
-      }
-      else scheduledRangeSupervisionMethod = 'POST';
-
-      let params = {
-        range_id: this.state.rangeId,
-        available: this.state.available
-      };
-
-      if (reservationMethod === 'POST') {
-        // reservation can result in a duplicate which causes http 500
-        // error: duplicate key value violates unique constraint "range_reservation_range_id_date_unique"
-        params = {
-          ...params,
-          date: moment(date).format('YYYY-MM-DD')
-        }
-      }
-
-      const reservation = async (rsId, params, method, path) => {
-        try {
-          return await fetch("/api/reservation" + path, {
-            method: method,
-            body: JSON.stringify(params),
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${this.state.token}`
-            }
-          })
-          .then(res => {
-            // 400 and so on
-            if (!res.ok) {
-              return reject(new Error('update reservation failed'));
-            }
-            else if (res.status !== 204) {
-              return res.json();
-            }
-            else return;
-          })
-          .then(json => {
-            // pretty sure the code paths could be done better
-            if (typeof rsId !== 'number' && json !== undefined) {
-              rsId = json.id;
-            }
-            if (typeof rsId !== 'number') {
-              return reject(new Error('no reservation id for schedule'));
-            }
-            else return rsId;
-          });
-        }
-        catch (error) {
-          console.error("reservation", error);
-          return reject(new Error('general reservation failure'));
-        }
-      }
-
-      const reservationRes = await reservation(rsId, params, reservationMethod, reservationPath);
-      // if res grabbed from previous post
-      if (reservationRes !== undefined) {
-        rsId = reservationRes;
-      }
-
-      params = {
-        range_reservation_id: rsId,
-        open: moment(this.state.open).format('HH:mm'),
-        close: moment(this.state.close).format('HH:mm'),
-        supervisor_id: null
-      };
-
-      if (this.state.rangeSupervisorSwitch) {
-        if (this.state.rangeSupervisorId !== null) {
-          params = {
-            ...params,
-            supervisor_id: this.state.rangeSupervisorId
-          };
-        }
-        else return reject(new Error('Range officer enabled but no id'));
-      }
-
-      const schedule = async (rsId, srsId, params, method, path) => {
-        try {
-          return await fetch("/api/schedule" + path, {
-            method: method,
-            body: JSON.stringify(params),
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${this.state.token}`
-            }
-          })
-          .then(res => {
-            // 400 and so on
-            if (res.ok === false) {
-              return reject(new Error('update schedule failed'));
-            }
-            else if (res.status !== 204) {
-              return res.json();
-            }
-            else return;
-          })
-          .then(json => {
-            if (typeof srsId !== 'number' && json !== undefined) {
-              srsId = json.id;
-            }
-            if (typeof srsId !== 'number') {
-              return reject(new Error('no schedule id for track supervision'));
-            }
-            else return srsId;
-          });
-        }
-        catch (error) {
-          console.error("schedule",error);
-          return reject(new Error('general schedule failure'));
-        }
-      }
-
-      const scheduleRes = await schedule(rsId, srsId, params, scheduledRangeSupervisionMethod, scheduledRangeSupervisionPath);
-      // if res grabbed from previous post
-      if (scheduleRes !== undefined) {
-        srsId = scheduleRes;
-      }
-
-      /*
-      *  Range supervision
-      */
-
-      let rangeStatus = null;
-
-      if (!this.state.available) {
-        rangeStatus = 'closed';
-      }
-      else if (!this.state.rangeSupervisorSwitch) {
-        rangeStatus = 'absent';
-      }
-      else if (this.state.rangeSupervisorId !== null
-               && this.state.rangeSupervisorOriginal !== this.state.rangeSupervisorId) {
-        rangeStatus = 'not confirmed';
-      }
-
-      if (rangeStatus !== null) {
-        const rangeSupervisionRes = await rangeSupervision(rsId, srsId, rangeStatus, rangeSupervisionScheduled, this.state.token);
-        if (rangeSupervisionRes !== true) {
-          return reject(new Error(rangeSupervisionRes));
-        }
-      }
-
-      const trackSupervision = async (srsId, key) => {
-        try {
-          // update only ones changed in state
-          if (this.state[this.state.tracks[key].id] !== undefined || isRepeat) {
-            let supervisorStatus;
-            let statusInState = this.state[this.state.tracks[key].id];
-            // if coming from repeat and status was cleared
-            supervisorStatus = statusInState !== undefined ? statusInState : 'absent';
-
-            let notice = this.state.tracks[key].notice;
-            if (notice === null) {
-              // undefined gets removed in object
-              notice = undefined;
-            }
-
-            let params = {
-              track_supervisor: supervisorStatus,
-              notice: notice
-            };
-
-            let srsp = '';
-            let trackSupervisionMethod = '';
-            //if scheduled track supervision exists -> put otherwise -> post
-            if (tracks[key].scheduled) {
-              trackSupervisionMethod = 'PUT';
-              srsp = "/" + srsId + '/' + this.state.tracks[key].id;
-            }
-            else {
-              trackSupervisionMethod = 'POST';
-              params = {
-                ...params,
-                scheduled_range_supervision_id: srsId,
-                track_id: this.state.tracks[key].id
-              };
-            }
-            return await fetch("/api/track-supervision" + srsp, {
-              method: trackSupervisionMethod,
-              body: JSON.stringify(params),
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${this.state.token}`
-              }
-            })
-            .then(res => {
-              // 400 and so on
-              if (res.ok === false) {
-                return reject(new Error('update track supervision failed'));
-              }
-              else if (res.status !== 204) {
-                return res.json();
-              }
-              else return;
-            })
-          }
-        }
-        catch (error) {
-          console.error("track supervision", error);
-          return reject(new Error('general track supervision failure'));
-        }
-      }
-      for (let key in this.state.tracks) {
-        try {
-          const trackSupervisionRes = await trackSupervision(srsId,key);
-        }
-        catch (error) {
-          return reject(error);
-        }
-      }
-
-      return resolve("update success");
-    });
-  };
 
   /*
   *   Components
@@ -691,76 +390,97 @@ class Scheduling extends Component {
   *   RangeSupervisorSelect for supervisor select box
   */
 
-  //builds tracklist
+  // builds tracklist
   createTrackList = () => {
-    const {sched} = data;
-    const fin = localStorage.getItem("language");
-    let items = [];
-    let tracks = this.state.tracks;
-    for (var key in tracks) {
+    const { sched } = data;
+    const fin = localStorage.getItem('language');
+    const items = [];
+    const { tracks } = this.state;
+    tracks.forEach((key) => {
       items.push(
         <React.Fragment
-        key={key}>
+          key={key}
+        >
           <FormControl component="fieldset">
             <FormLabel component="legend">{tracks[key].name}</FormLabel>
-              <RadioGroup
-                defaultValue="absent"
-                name={tracks[key].id}
-                onChange={this.handleRadioChange}
-                value={ this.state[tracks[key].id] || 'absent'}
-              >
-                <FormControlLabel value="present" control={
-                  <Radio style={{fontColor:'black', color:'#5f77a1'}} />} label={sched.OfficerPresent[fin]} />
-                <FormControlLabel value="absent" control={
-                  <Radio style={{fontColor:'black', color:'#5f77a1'}} />} label={sched.OfficerAbsent[fin]} />
-                <FormControlLabel value="closed" control={
-                  <Radio style={{fontColor:'black', color:'#5f77a1'}} />} label={sched.Closed[fin]} />
-              </RadioGroup>
-              <TextareaAutosize
-                className="notice"
-                //track_id
-                id={tracks[key].id}
-                aria-label="Ilmoitus"
-                rowsMin={1}
-                rowsMax={3}
-                onChange={this.handleNotice}
-                value={tracks[key].notice !== null ? tracks[key].notice : ''}
-                style={{backgroundColor:'#f2f0eb'}}
+            <RadioGroup
+              defaultValue="absent"
+              name={tracks[key].id}
+              onChange={this.handleRadioChange}
+              value={this.state[tracks[key].id] || 'absent'}
+            >
+              <FormControlLabel
+                value="present"
+                control={
+                  <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
+}
+                label={sched.OfficerPresent[fin]}
               />
+              <FormControlLabel
+                value="absent"
+                control={
+                  <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
+}
+                label={sched.OfficerAbsent[fin]}
+              />
+              <FormControlLabel
+                value="closed"
+                control={
+                  <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
+}
+                label={sched.Closed[fin]}
+              />
+            </RadioGroup>
+            <TextareaAutosize
+              className="notice"
+                // track_id
+              id={tracks[key].id}
+              aria-label="Ilmoitus"
+              rowsMin={1}
+              rowsMax={3}
+              onChange={this.handleNotice}
+              value={tracks[key].notice !== null ? tracks[key].notice : ''}
+              style={{ backgroundColor: '#f2f0eb' }}
+            />
           </FormControl>
-        </React.Fragment>
+        </React.Fragment>,
       );
-    }
+    });
 
     return (
-      <React.Fragment>
+      <>
         {items}
-      </React.Fragment>
+      </>
     );
   }
 
-  //builds range officer select
+  // builds range officer select
   createSupervisorSelect = () => {
-    let items = [];
+    const items = [];
     let disabled = false;
-    const {sched} = data;
-    const fin = localStorage.getItem("language");
+    const { sched } = data;
+    const fin = localStorage.getItem('language');
 
-    for (var key in this.state.rangeSupervisors) {
+    this.state.rangeSupervisors.forEach((key) => {
       items.push(
-        <MenuItem key={key} value={this.state.rangeSupervisors[key].id}>{this.state.rangeSupervisors[key].name}</MenuItem>
+        <MenuItem
+          key={key}
+          value={this.state.rangeSupervisors[key].id}
+        >
+          {this.state.rangeSupervisors[key].name}
+        </MenuItem>,
       );
-    }
+    });
 
     if (this.state.rangeSupervisorSwitch === false) {
-      disabled=true
-    };
+      disabled = true;
+    }
 
     return (
       <FormControl>
         <InputLabel id="chooserangeSupervisorLabel">{sched.Select[fin]}</InputLabel>
         <Select
-          {...disabled && {disabled: true}}
+          {...disabled && { disabled: true }}
           labelId="chooserangeSupervisorLabel"
           name="rangeSupervisorId"
           value={this.state.rangeSupervisorId}
@@ -772,19 +492,298 @@ class Scheduling extends Component {
     );
   }
 
-  render() {
+  async updateCall(date, rsId, srsId, rangeSupervisionScheduled, tracks, isRepeat) {
+    return new Promise(async (resolve, reject) => { // eslint-disable-line
+      let reservationMethod;
+      let reservationPath = '';
+      let scheduledRangeSupervisionMethod;
+      let scheduledRangeSupervisionPath = '';
 
+      // determine exist or not with:
+      // reservationId: '',
+      // scheduledRangeSupervisionId: '',
+      // trackSupervisionId: '',
+      if (rsId !== null) {
+        reservationMethod = 'PUT';
+        reservationPath = `/${rsId}`;
+      } else reservationMethod = 'POST';
+
+      if (srsId !== null) {
+        scheduledRangeSupervisionMethod = 'PUT';
+        scheduledRangeSupervisionPath = `/${srsId}`;
+      } else scheduledRangeSupervisionMethod = 'POST';
+
+      let params = {
+        range_id: this.state.rangeId,
+        available: this.state.available,
+      };
+
+      if (reservationMethod === 'POST') {
+        // reservation can result in a duplicate which causes http 500
+        params = {
+          ...params,
+          date: moment(date).format('YYYY-MM-DD'),
+        };
+      }
+
+      const reservation = async (rsId, params, method, path) => { // eslint-disable-line
+        try {
+          return await fetch(`/api/reservation${path}`, {
+            method,
+            body: JSON.stringify(params),
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${this.state.token}`,
+            },
+          })
+            .then((res) => { // eslint-disable-line
+            // 400 and so on
+              if (!res.ok) {
+                return reject(new Error('update reservation failed'));
+              } if (res.status !== 204) {
+                return res.json();
+              }
+            })
+            .then((json) => {
+            // pretty sure the code paths could be done better
+              if (typeof rsId !== 'number' && json !== undefined) {
+                rsId = json.id;  // eslint-disable-line
+              }
+              if (typeof rsId !== 'number') {
+                return reject(new Error('no reservation id for schedule'));
+              } return rsId;
+            });
+        } catch (error) {
+          console.error('reservation', error);
+          return reject(new Error('general reservation failure'));
+        }
+      };
+
+      const reservationRes = await reservation(rsId, params, reservationMethod, reservationPath);
+      // if res grabbed from previous post
+      if (reservationRes !== undefined) {
+        rsId = reservationRes; // eslint-disable-line
+      }
+
+      params = {
+        range_reservation_id: rsId,
+        open: moment(this.state.open).format('HH:mm'),
+        close: moment(this.state.close).format('HH:mm'),
+        supervisor_id: null,
+      };
+
+      if (this.state.rangeSupervisorSwitch) {
+        if (this.state.rangeSupervisorId !== null) {
+          params = {
+            ...params,
+            supervisor_id: this.state.rangeSupervisorId,
+          };
+        } else return reject(new Error('Range officer enabled but no id'));
+      }
+
+      const schedule = async (rsId, srsId, params, method, path) => {  // eslint-disable-line
+        try {
+          return await fetch(`/api/schedule${path}`, {
+            method,
+            body: JSON.stringify(params),
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${this.state.token}`,
+            },
+          })
+            .then((res) => { // eslint-disable-line
+            // 400 and so on
+              if (res.ok === false) {
+                return reject(new Error('update schedule failed'));
+              } if (res.status !== 204) {
+                return res.json();
+              }
+            })
+            .then((json) => {
+              if (typeof srsId !== 'number' && json !== undefined) {
+                srsId = json.id; // eslint-disable-line
+              }
+              if (typeof srsId !== 'number') {
+                return reject(new Error('no schedule id for track supervision'));
+              } return srsId;
+            });
+        } catch (error) {
+          console.error('schedule', error);
+          return reject(new Error('general schedule failure'));
+        }
+      };
+
+      const scheduleRes = await schedule(
+        rsId,
+        srsId,
+        params,
+        scheduledRangeSupervisionMethod,
+        scheduledRangeSupervisionPath,
+      );
+      // if res grabbed from previous post
+      if (scheduleRes !== undefined) {
+        srsId = scheduleRes; // eslint-disable-line
+      }
+
+      /*
+      *  Range supervision
+      */
+
+      let rangeStatus = null;
+
+      if (!this.state.available) {
+        rangeStatus = 'closed';
+      } else if (!this.state.rangeSupervisorSwitch) {
+        rangeStatus = 'absent';
+      } else if (this.state.rangeSupervisorId !== null
+               && this.state.rangeSupervisorOriginal !== this.state.rangeSupervisorId) {
+        rangeStatus = 'not confirmed';
+      }
+
+      if (rangeStatus !== null) {
+        const rangeSupervisionRes = await rangeSupervision(
+          rsId,
+          srsId,
+          rangeStatus,
+          rangeSupervisionScheduled,
+          this.state.token,
+        );
+        if (rangeSupervisionRes !== true) {
+          return reject(new Error(rangeSupervisionRes));
+        }
+      }
+
+      const trackSupervision = async (srsId, key) => { // eslint-disable-line
+        try {
+          // update only ones changed in state
+          if (this.state[this.state.tracks[key].id] !== undefined || isRepeat) {
+            const statusInState = this.state[this.state.tracks[key].id];
+            // if coming from repeat and status was cleared
+            const supervisorStatus = statusInState !== undefined ? statusInState : 'absent';
+
+            let { notice } = this.state.tracks[key];
+            if (notice === null) {
+              // undefined gets removed in object
+              notice = undefined;
+            }
+
+            let params = { // eslint-disable-line
+              track_supervisor: supervisorStatus,
+              notice,
+            };
+
+            let srsp = '';
+            let trackSupervisionMethod = '';
+            // if scheduled track supervision exists -> put otherwise -> post
+            if (tracks[key].scheduled) {
+              trackSupervisionMethod = 'PUT';
+              srsp = `/${srsId}/${this.state.tracks[key].id}`;
+            } else {
+              trackSupervisionMethod = 'POST';
+              params = {
+                ...params,
+                scheduled_range_supervision_id: srsId,
+                track_id: this.state.tracks[key].id,
+              };
+            }
+            return await fetch(`/api/track-supervision${srsp}`, {
+              method: trackSupervisionMethod,
+              body: JSON.stringify(params),
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.state.token}`,
+              },
+            })
+              .then((res) => { // eslint-disable-line
+              // 400 and so on
+                if (res.ok === false) {
+                  return reject(new Error('update track supervision failed'));
+                } if (res.status !== 204) {
+                  return res.json();
+                }
+              });
+          }
+        } catch (error) {
+          console.error('track supervision', error);
+          return reject(new Error('general track supervision failure'));
+        }
+      };
+      this.state.tracks.forEach(async (key) => { // eslint-disable-line
+        try {
+          await trackSupervision(srsId, key);
+        } catch (error) {
+          return reject(error);
+        }
+      });
+
+      return resolve('update success');
+    });
+  }
+
+  update() {
+    const request = async () => {
+      const response = await getSchedulingDate(this.state.date);
+
+      if (response !== false) {
+        // console.log("Results from api",response);
+
+        this.setState({
+          date: moment(response.date),
+          rangeId: response.rangeId,
+          reservationId: response.reservationId,
+          scheduleId: response.scheduleId,
+          open: response.open !== null
+            ? moment(response.open, 'h:mm:ss').format()
+            : moment(response.date)
+              .hour(17)
+              .minute(0)
+              .second(0),
+          close: response.close !== null
+            ? moment(response.close, 'h:mm:ss').format()
+            : moment(response.date)
+              .hour(20)
+              .minute(0)
+              .second(0),
+          available: response.available !== null ? response.available : false,
+          rangeSupervisorSwitch: response.rangeSupervisorId !== null,
+          rangeSupervisorId: response.rangeSupervisorId,
+          rangeSupervisorOriginal: response.rangeSupervisorId,
+          rangeSupervisionScheduled: response.rangeSupervisionScheduled,
+          tracks: response.tracks,
+          state: 'ready',
+        });
+        // set current track state for scheduled
+        response.tracks.forEach((key) => {
+          if (response.tracks[key].scheduled) {
+            this.setState({
+              [this.state.tracks[key].id]: this.state.tracks[key].trackSupervision,
+            });
+          } else { // clears track states between date changes
+            this.setState({
+              [this.state.tracks[key].id]: undefined,
+            });
+          }
+        });
+      } else console.error('getting info failed');
+    };
+    request();
+  }
+
+  render() {
     function Alert(props) {
       return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
 
-    const {sched} = data;
-    const fin = localStorage.getItem("language");
+    const { sched } = data;
+    const fin = localStorage.getItem('language');
 
     return (
       <div className="schedulingRoot">
-        <Modal open={this.state.state!=='ready'?true:false} onClick={this.handleBackdropClick}>
-          <Backdrop open={this.state.state!=='ready'?true:false} onClick={this.handleBackdropClick}>
+        <Modal open={this.state.state !== 'ready'} onClick={this.handleBackdropClick}>
+          <Backdrop open={this.state.state !== 'ready'} onClick={this.handleBackdropClick}>
             <CircularProgress disableShrink />
           </Backdrop>
         </Modal>
@@ -794,38 +793,43 @@ class Scheduling extends Component {
           <form onSubmit={this.continueWithDate}>
 
             { /* Datepicker */}
-            <MuiPickersUtilsProvider utils={MomentUtils} locale={lang} key={this.state.datePickerKey}>
+            <MuiPickersUtilsProvider
+              utils={MomentUtils}
+              locale={lang}
+              key={this.state.datePickerKey}
+            >
               <KeyboardDatePicker
                 autoOk
                 margin="normal"
                 name="date"
                 label={sched.Day[fin]}
                 value={this.state.date}
-                onChange={date => this.handleDateChange(date)}
+                onChange={(date) => this.handleDateChange(date)}
                 onAccept={this.handleDatePickChange}
                 format="DD.MM.YYYY"
                 showTodayButton
               />
             </MuiPickersUtilsProvider>
             <div className="continue">
-              <Button type="submit" variant="contained" style={{backgroundColor:'#d1ccc2'}}>{sched.Day[fin]}</Button>
+              <Button type="submit" variant="contained" style={{ backgroundColor: '#d1ccc2' }}>{sched.Day[fin]}</Button>
             </div>
           </form>
         </div>
 
-        <hr/>
+        <hr />
 
         {/* Section for setting range officer status and open/close times of the tracks */}
         <div className="secondSection">
           <div className="topRow">
             <div className="text">{sched.Open[fin]}</div>
 
-	    <Switch
-              checked={ this.state.available }
+            <Switch
+              checked={this.state.available}
               onChange={this.handleSwitchChange}
               name="available"
               color="primary"
-              style={{color:'#5f77a1'}} />
+              style={{ color: '#5f77a1' }}
+            />
           </div>
           <div className="middleRow">
             <div className="roSwitch">
@@ -836,13 +840,14 @@ class Scheduling extends Component {
                 onChange={this.handleSwitchChange}
                 name="rangeSupervisorSwitch"
                 color="primary"
-                style={{color:'#5f77a1'}} />
+                style={{ color: '#5f77a1' }}
+              />
             </div>
             {this.createSupervisorSelect()}
           </div>
           <div className="bottomRow">
             <div className="text">{sched.OpenHours[fin]}</div>
-            <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
+            <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
               <KeyboardTimePicker
                 autoOk
                 ampm={false}
@@ -856,7 +861,7 @@ class Scheduling extends Component {
               />
             </MuiPickersUtilsProvider>
             <div className="dash">-</div>
-            <MuiPickersUtilsProvider utils={MomentUtils} locale={'fi'}>
+            <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
               <KeyboardTimePicker
                 autoOk
                 ampm={false}
@@ -872,7 +877,7 @@ class Scheduling extends Component {
           </div>
         </div>
 
-        <hr/>
+        <hr />
 
         {/* Section for setting track-specific open/close/absent statuses */}
         <div className="thirdSection">
@@ -880,42 +885,42 @@ class Scheduling extends Component {
             {this.createTrackList()}
           </div>
           <div className="rightSide">
-            <Button variant="contained" color="primary" onClick={this.openAllTracks} style={{color:'black', backgroundColor:'#5f77a1'}}>{sched.OpenAll[fin]}</Button>
-            <Button variant="contained" onClick={this.emptyAllTracks} style={{backgroundColor:'#d1ccc2'}}>{sched.ClearAll[fin]}</Button>
-        <Button variant="contained" color="secondary" onClick={this.closeAllTracks} style={{color:'black', backgroundColor:'#c97b7b'}}>{sched.CloseAll[fin]}</Button>
+            <Button variant="contained" color="primary" onClick={this.openAllTracks} style={{ color: 'black', backgroundColor: '#5f77a1' }}>{sched.OpenAll[fin]}</Button>
+            <Button variant="contained" onClick={this.emptyAllTracks} style={{ backgroundColor: '#d1ccc2' }}>{sched.ClearAll[fin]}</Button>
+            <Button variant="contained" color="secondary" onClick={this.closeAllTracks} style={{ color: 'black', backgroundColor: '#c97b7b' }}>{sched.CloseAll[fin]}</Button>
           </div>
         </div>
-        <hr/>
+        <hr />
         <div className="fourthSection">
           <div className="repetition">
             <div className="daily">
               {sched.RepeatDaily[fin]}
               <Switch
-                checked={ this.state.daily }
+                checked={this.state.daily}
                 onChange={this.handleRepeatChange}
-                id='daily'
+                id="daily"
                 color="primary"
-                style={{color:'#5f77a1'}}
+                style={{ color: '#5f77a1' }}
               />
             </div>
             <div className="weekly">
               {sched.RepeatWeekly[fin]}
               <Switch
-                checked={ this.state.weekly }
+                checked={this.state.weekly}
                 onChange={this.handleRepeatChange}
-                id='weekly'
+                id="weekly"
                 color="primary"
-                style={{color:'#5f77a1'}}
+                style={{ color: '#5f77a1' }}
               />
             </div>
             <div className="monthly">
               {sched.RepeatMonthly[fin]}
               <Switch
-                checked={ this.state.monthly }
+                checked={this.state.monthly}
                 onChange={this.handleRepeatChange}
-                id='monthly'
+                id="monthly"
                 color="primary"
-                style={{color:'#5f77a1'}}
+                style={{ color: '#5f77a1' }}
               />
             </div>
             <div className="repeatCount">
@@ -930,15 +935,20 @@ class Scheduling extends Component {
             </div>
           </div>
           <div className="save">
-            <Button variant="contained" onClick={this.saveChanges} style={{backgroundColor:'#d1ccc2'}}>{sched.Save[fin]}</Button>
+            <Button variant="contained" onClick={this.saveChanges} style={{ backgroundColor: '#d1ccc2' }}>{sched.Save[fin]}</Button>
             <div
               className="hoverHand arrow-right"
               onClick={() => this.handleDatePickChange(moment(this.state.date).add(1, 'days').format('YYYY-MM-DD'))}
-            ></div>
+            />
             <div className="toast">
-              <Snackbar open={this.state.toast} autoHideDuration={5000} onClose={this.handleSnackbarClose}>
+              <Snackbar
+                open={this.state.toast}
+                autoHideDuration={5000}
+                onClose={this.handleSnackbarClose}
+              >
                 <Alert onClose={this.handleSnackbarClose} severity={this.state.toastSeverity}>
-                  {this.state.toastMessage}!
+                  {this.state.toastMessage}
+                  !
                 </Alert>
               </Snackbar>
             </div>
@@ -948,6 +958,6 @@ class Scheduling extends Component {
 
     );
   }
-};
+}
 
 export default Scheduling;
