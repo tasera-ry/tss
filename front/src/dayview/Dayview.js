@@ -6,8 +6,6 @@ import './Dayview.css';
 import { Link } from 'react-router-dom';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import InfoIcon from '@material-ui/icons/Info';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Utils
@@ -50,7 +48,7 @@ class Dayview extends Component {
 
   update() {
     // /dayview/2020-02-20
-    const { date } = this.props.match.params;
+    const { date } = this.props.match.params; // eslint-disable-line
     const request = async () => {
       const response = await getSchedulingDate(date);
 
@@ -73,8 +71,8 @@ class Dayview extends Component {
 
   previousDayClick(e) {
     e.preventDefault();
-    const date = new Date(this.state.date.setDate(this.state.date.getDate() - 1));
-    this.props.history.replace(`/dayview/${date.toISOString()}`);
+    const date = new Date(this.state.date.setDate(this.state.date.getDate() - 1)); // eslint-disable-line
+    this.props.history.replace(`/dayview/${date.toISOString()}`); // eslint-disable-line
     this.setState(
       {
         state: 'loading',
@@ -88,8 +86,8 @@ class Dayview extends Component {
 
   nextDayClick(e) {
     e.preventDefault();
-    const date = new Date(this.state.date.setDate(this.state.date.getDate() + 1));
-    this.props.history.replace(`/dayview/${date.toISOString()}`);
+    const date = new Date(this.state.date.setDate(this.state.date.getDate() + 1)); // eslint-disable-line
+    this.props.history.replace(`/dayview/${date.toISOString()}`); // eslint-disable-line
     this.setState(
       {
         state: 'loading',
@@ -102,7 +100,7 @@ class Dayview extends Component {
   }
 
   render() {
-    const fin = localStorage.getItem('language');
+    const fin = localStorage.getItem('language'); // eslint-disable-line
     const { dayview } = data;
 
     function OfficerBanner(props) {
@@ -135,7 +133,7 @@ class Dayview extends Component {
     // builds tracklist with grid
     function TrackList(props) {
       const items = [];
-      for (const key in props.tracks) {
+      props.tracks.forEach((key) => {
         // console.log(key);
         // console.log(props.tracks[key].name);
         items.push(
@@ -149,7 +147,7 @@ class Dayview extends Component {
             to={`/trackview/${props.date.toISOString()}/${props.tracks[key].name}`}
           />,
         );
-      }
+      });
 
       return (
         <Grid className="sevenGrid">

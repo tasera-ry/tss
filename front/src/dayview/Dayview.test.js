@@ -1,5 +1,4 @@
 import React from 'react';
-import Dayview from './Dayview';
 import { HashRouter as Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import '@testing-library/jest-dom/extend-expect';
@@ -8,13 +7,14 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
+import Dayview from './Dayview';
 
 describe('testing Dayview component', () => {
   it('should render Dayview', async () => {
     const history = createMemoryHistory();
     const date = new Date('2020-10-21T11:30:57.000Z');
 
-    localStorage.setItem('language', '1');
+    localStorage.setItem('language', '1'); // eslint-disable-line
     const state = {
       state: 'loading',
       date,
@@ -32,7 +32,9 @@ describe('testing Dayview component', () => {
         />
       </Router>,
     );
-    await waitFor(() => expect(screen.getByText('Back to weekview'))
+    await waitFor(() => expect(
+      screen.getByText('Back to weekview'),
+    )
       .toBeInTheDocument());
   });
 });
