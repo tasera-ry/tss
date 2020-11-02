@@ -27,5 +27,7 @@ module.exports = {
     'no-await-in-loop': [0],
     'no-loop-func': [0],
     'class-methods-use-this': [0],
+    'no-restricted-syntax': [0],
+    'guard-for-in': [0],
   },
 };

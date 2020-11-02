@@ -14,7 +14,7 @@ import { getSchedulingWeek, getSchedulingDate } from '../utils/Utils';
 import exclamation from '../logo/Info.png';
 
 // Translation
-import * as data from '../texts/texts.json';
+import texts from '../texts/texts.json';
 
 let lang = 'fi'; // fallback
 if (localStorage.getItem('language') === '0') {
@@ -23,7 +23,7 @@ if (localStorage.getItem('language') === '0') {
   lang = 'en';
 }
 
-const weekdayShorthand = data;
+const { weekdayShorthand } = texts;
 
 class Weekview extends Component {
   constructor(props) {
@@ -320,8 +320,8 @@ class Weekview extends Component {
       oikeePaiva = this.state.paivat[j].date;
       info = false;
       if (this.state.paivat[j].tracks) {
-        this.state.paivat[j].tracks.forEach((key) => {
-          Attention = this.state.paivat[j].tracks[key].notice;
+        this.state.paivat[j].tracks.forEach((track) => {
+          Attention = track.notice;
           if (Attention.length !== 0) {
             info = true;
           }
@@ -453,7 +453,7 @@ class Weekview extends Component {
 
   render() {
     const fin = localStorage.getItem('language');
-    const week = data.week; // eslint-disable-line
+    const { week } = texts;
 
     return (
       <div>

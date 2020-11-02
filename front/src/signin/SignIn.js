@@ -13,7 +13,7 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 // Translations
-import * as data from '../texts/texts.json';
+import data from '../texts/texts.json';
 
 /*
   Signin is the component for signing in to the frontend

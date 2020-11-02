@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import { checkSupervisorReservations, DialogWindow } from '../upcomingsupervisions/LoggedIn';
 
 // Translations
-import * as data from '../texts/texts.json';
+import data from '../texts/texts.json';
 
 const fin = localStorage.getItem('language');  // eslint-disable-line
 const { banner } = data;

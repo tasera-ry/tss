@@ -32,7 +32,7 @@ import axios from 'axios';
 import { validateLogin } from '../utils/Utils';
 
 // Translations
-import * as data from '../texts/texts.json';
+import data from '../texts/texts.json';
 
 const fin = localStorage.getItem('language');
 const { manage } = data;
@@ -236,9 +236,9 @@ class UserManagementView extends Component {
 
   // Finds username for selectedROWID in state
   findUserName() {
-    this.state.userList.forEach((i) => { // eslint-disable-line
-      if (this.state.userList[i].id === this.state.selectedROWID) {
-        return this.state.userList[i].name;
+    this.state.userList.forEach((user) => { // eslint-disable-line
+      if (user.id === this.state.selectedROWID) {
+        return user.name;
       }
     });
     return 'Username not found';
@@ -246,9 +246,9 @@ class UserManagementView extends Component {
 
   // Finds users id by selectedROWID in state
   findUserId() {
-    this.state.userList.forEach((i) => { // eslint-disable-line
-      if (this.state.userList[i].id === this.state.selectedROWID) {
-        return this.state.userList[i].id;
+    this.state.userList.forEach((user) => { // eslint-disable-line
+      if (user.id === this.state.selectedROWID) {
+        return user.id;
       }
     });
     return undefined;
@@ -256,9 +256,9 @@ class UserManagementView extends Component {
 
   // finds logged in users id
   findOwnID() { // eslint-disable-line
-    this.state.userList.forEach((i) => { // eslint-disable-line
-      if (localStorage.taseraUserName === this.state.userList[i].name) {
-        return this.state.userList[i].id;
+    this.state.userList.forEach((user) => { // eslint-disable-line
+      if (localStorage.taseraUserName === user.name) {
+        return user.id;
       }
     });
   }
@@ -484,12 +484,12 @@ class UserManagementView extends Component {
 
   update() {
     const tempRows = [];
-    this.state.userList.forEach((i) => {
-      if (localStorage.taseraUserName !== this.state.userList[i].name) {
-        const row = this.createData(this.state.userList[i].name,
-          this.state.userList[i].role,
-          this.returnPassButton(this.state.userList[i].id, manage, fin),
-          this.returnRemoveButton(this.state.userList[i].id, manage, fin));
+    this.state.userList.forEach((user) => {
+      if (localStorage.taseraUserName !== user.name) {
+        const row = this.createData(user.name,
+          user.role,
+          this.returnPassButton(user.id, manage, fin),
+          this.returnRemoveButton(user.id, manage, fin));
         tempRows.push(row);
       }
     });

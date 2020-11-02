@@ -16,7 +16,7 @@ import { dayToString, getSchedulingDate } from '../utils/Utils';
 import info from '../logo/Info.png';
 
 // Translations
-import * as data from '../texts/texts.json';
+import data from '../texts/texts.json';
 
 /*
   Dayview-component for handling day-specific view
@@ -100,7 +100,7 @@ class Dayview extends Component {
   }
 
   render() {
-    const fin = localStorage.getItem('language'); // eslint-disable-line
+    const fin = localStorage.getItem('language');
     const { dayview } = data;
 
     function OfficerBanner(props) {
@@ -133,9 +133,7 @@ class Dayview extends Component {
     // builds tracklist with grid
     function TrackList(props) {
       const items = [];
-      props.tracks.forEach((key) => {
-        // console.log(key);
-        // console.log(props.tracks[key].name);
+      for (var key in props.tracks) { // eslint-disable-line
         items.push(
           <TrackBox
             key={key}
@@ -147,7 +145,7 @@ class Dayview extends Component {
             to={`/trackview/${props.date.toISOString()}/${props.tracks[key].name}`}
           />,
         );
-      });
+      }
 
       return (
         <Grid className="sevenGrid">

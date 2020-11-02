@@ -13,7 +13,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { dayToString, getSchedulingDate } from '../utils/Utils';
 
 // Translations
-import * as data from '../texts/texts.json';
+import data from '../texts/texts.json';
 
 /*
  ** Main function

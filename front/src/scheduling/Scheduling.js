@@ -35,7 +35,7 @@ import socketIOClient from 'socket.io-client';
 import { getSchedulingDate, rangeSupervision, validateLogin } from '../utils/Utils';
 
 // Translation
-import * as data from '../texts/texts.json';
+import data from '../texts/texts.json';
 
 let lang = 'fi'; // fallback
 if (localStorage.getItem('language') === '0') {
@@ -127,9 +127,9 @@ class Scheduling extends Component {
   openAllTracks = () => {
     // console.log("Open tracks");
     if (this.state.tracks) {
-      this.state.tracks.forEach((key) => {
+      this.state.tracks.forEach((track) => {
         this.setState({
-          [this.state.tracks[key].id]: 'present',
+          [track.id]: 'present',
         });
       });
     }
@@ -138,9 +138,9 @@ class Scheduling extends Component {
   emptyAllTracks = () => {
     if (this.state.tracks) {
       // console.log("Empty tracks");
-      this.state.tracks.forEach((key) => {
+      this.state.tracks.forEach((track) => {
         this.setState({
-          [this.state.tracks[key].id]: 'absent',
+          [track.id]: 'absent',
         });
       });
     }
@@ -149,9 +149,9 @@ class Scheduling extends Component {
   closeAllTracks = () => {
     // console.log("Close tracks");
     if (this.state.tracks) {
-      this.state.tracks.forEach((key) => {
+      this.state.tracks.forEach((track) => {
         this.setState({
-          [this.state.tracks[key].id]: 'closed',
+          [track.id]: 'closed',
         });
       });
     }
@@ -402,59 +402,61 @@ class Scheduling extends Component {
     const fin = localStorage.getItem('language');
     const items = [];
     const { tracks } = this.state;
-    if (tracks) {
-      tracks.forEach((key) => {
-        items.push(
-          <React.Fragment
-            key={key}
-          >
-            <FormControl component="fieldset">
-              <FormLabel component="legend">{tracks[key].name}</FormLabel>
-              <RadioGroup
-                defaultValue="absent"
-                name={tracks[key].id}
-                onChange={this.handleRadioChange}
-                value={this.state[tracks[key].id] || 'absent'}
-              >
-                <FormControlLabel
-                  value="present"
-                  control={
-                    <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
-  }
-                  label={sched.OfficerPresent[fin]}
-                />
-                <FormControlLabel
-                  value="absent"
-                  control={
-                    <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
-  }
-                  label={sched.OfficerAbsent[fin]}
-                />
-                <FormControlLabel
-                  value="closed"
-                  control={
-                    <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
-  }
-                  label={sched.Closed[fin]}
-                />
-              </RadioGroup>
-              <TextareaAutosize
-                className="notice"
-                  // track_id
-                id={tracks[key].id}
-                aria-label="Ilmoitus"
-                rowsMin={1}
-                rowsMax={3}
-                onChange={this.handleNotice}
-                value={tracks[key].notice !== null ? tracks[key].notice : ''}
-                style={{ backgroundColor: '#f2f0eb' }}
+    for (var key in tracks) { // eslint-disable-line
+      items.push(
+        <React.Fragment
+          key={key}
+        >
+          <FormControl component="fieldset">
+            <FormLabel component="legend">{tracks[key].name}</FormLabel>
+            <RadioGroup
+              defaultValue="absent"
+              name={tracks[key].id.toString()}
+              onChange={this.handleRadioChange}
+              value={this.state[tracks[key].id] || 'absent'}
+            >
+              <FormControlLabel
+                value="present"
+                control={(
+                  <Radio
+                    style={{ fontColor: 'black', color: '#5f77a1' }}
+                  />
+                  )}
+                label={sched.OfficerPresent[fin]}
               />
-            </FormControl>
-          </React.Fragment>,
-        );
-      });
+              <FormControlLabel
+                value="absent"
+                control={(
+                  <Radio
+                    style={{ fontColor: 'black', color: '#5f77a1' }}
+                  />
+                  )}
+                label={sched.OfficerAbsent[fin]}
+              />
+              <FormControlLabel
+                value="closed"
+                control={(
+                  <Radio
+                    style={{ fontColor: 'black', color: '#5f77a1' }}
+                  />
+                )}
+                label={sched.Closed[fin]}
+              />
+            </RadioGroup>
+            <TextareaAutosize
+              className="notice"
+              id={tracks[key].id}
+              aria-label="Ilmoitus"
+              rowsMin={1}
+              rowsMax={3}
+              onChange={this.handleNotice}
+              value={tracks[key].notice !== null ? tracks[key].notice : ''}
+              style={{ backgroundColor: '#f2f0eb' }}
+            />
+          </FormControl>
+        </React.Fragment>,
+      );
     }
-
     return (
       <>
         {items}
@@ -473,9 +475,9 @@ class Scheduling extends Component {
         items.push(
           <MenuItem
             key={key}
-            value={this.state.rangeSupervisors[key].id}
+            value={key.id}
           >
-            {this.state.rangeSupervisors[key].name}
+            {key.name}
           </MenuItem>,
         );
       });
@@ -767,7 +769,7 @@ class Scheduling extends Component {
           state: 'ready',
         });
         // set current track state for scheduled
-        response.tracks.forEach((key) => {
+        for (var key in response.tracks) { // eslint-disable-line
           if (response.tracks[key].scheduled) {
             this.setState({
               [this.state.tracks[key].id]: this.state.tracks[key].trackSupervision,
@@ -777,7 +779,7 @@ class Scheduling extends Component {
               [this.state.tracks[key].id]: undefined,
             });
           }
-        });
+        }
       } else console.error('getting info failed');
     };
     request();

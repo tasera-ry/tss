@@ -22,7 +22,7 @@ import moment from 'moment';
 import 'moment/locale/en-ca';
 
 // Translations
-import * as data from '../texts/texts.json';
+import data from '../texts/texts.json';
 
 // Styles
 const dialogStyle = {

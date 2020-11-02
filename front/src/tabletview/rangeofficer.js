@@ -27,7 +27,7 @@ import axios from 'axios';
 import socketIOClient from 'socket.io-client';
 import { validateLogin, rangeSupervision } from '../utils/Utils';
 
-import * as data from '../texts/texts.json';
+import data from '../texts/texts.json';
 
 /*
   Styles not in the rangeofficer.js file
@@ -92,7 +92,12 @@ const dialogStyle = {
 
 // shooting track rows
 const TrackRows = ({
-  tracks, setTracks, scheduleId, tablet, fin, socket,
+  tracks,
+  setTracks,
+  scheduleId,
+  tablet,
+  fin,
+  socket,
 }) => (
   tracks.map((track) => (
     <div key={track.id}>
@@ -245,13 +250,13 @@ const TrackButtons = ({
 };
 
 async function getColors(tracks, setTracks) {
+  console.log(tracks)
   const copy = [...tracks];
 
   for (let i = 0; i < copy.length; i += 1) {
     const obj = copy[i];
     if (copy[i].trackSupervision === 'present') { obj.color = colors.green; } else if (copy[i].trackSupervision === 'closed') { obj.color = colors.red; } else if (copy[i].trackSupervision === 'absent') { obj.color = colors.white; } else if (copy[i].trackSupervision === 'en route') { obj.color = colors.orange; }
   }
-
   setTracks(copy);
 }
 
@@ -259,6 +264,7 @@ async function getData(
   tablet,
   fin,
   setHours,
+  tracks,
   setTracks,
   setStatusText,
   setStatusColor,
@@ -266,7 +272,7 @@ async function getData(
   setReservationId,
   setRangeSupervisionScheduled,
 ) {
-  const date = moment(Date.now()).format('YYYY-MM-DD');
+  const date = moment(Date.now()).format("YYYY-MM-DD");
 
   await fetch(`/api/datesupreme/${date}`)
     .then((res) => res.json())
@@ -522,7 +528,6 @@ const Tabletview = () => {
     });
     updateSupervisor('closed', colors.red, tablet.Red[fin]);
   };
-
   return (
     <div>
       <Typography

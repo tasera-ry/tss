@@ -21,11 +21,11 @@ import SupervisorNotification from './SupervisorNotification'; // eslint-disable
 import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
 
 // Translations
-import * as data from '../texts/texts.json';
+import texts from '../texts/texts.json';
 
 // 0: finnish, 1: english
 const fin = localStorage.getItem('language'); // eslint-disable-line
-const { nav } = data;
+const { nav } = texts;
 
 // Styles
 const useStyles = makeStyles({
@@ -224,7 +224,7 @@ const Nav = () => {
   const [loggingOut, setLoggingOut] = useState(false);
   const [checkSupervisions, setCheckSupervisions] = useState(false);
   const fin = localStorage.getItem('language'); // eslint-disable-line
-  const { nav } = data; // eslint-disable-line
+  const { nav } = texts; // eslint-disable-line
 
   if (name === '') {
     userInfo(name, setName, setSuperuser);
