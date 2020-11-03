@@ -1,11 +1,6 @@
 .container {
    padding: 0 1vh 2vh 1vh;
 }
-
-.centered {
-   justify-content: center;
-   align-items: center;
-}
 .infoContainer {
 
 }
@@ -38,7 +33,7 @@
 
 .exclamation-2 {
    position: relative;
-   top: 10px;
+   top: 30px;
    margin: 0;
    width: 80%;
    max-height: 80%;
@@ -95,7 +90,7 @@
    max-width: 100px;
    margin: 0px;
    text-align: center;
-   line-height: 7vh;
+   height: 125px;
 
    text-decoration: none;
    color: black;
@@ -231,14 +226,11 @@
 /* smartphones, Android phones, landscape iPhone */
 @media only screen and (min-width:480px) {
 .exclamation-2 {
+   top: 15px;
    width: 70%;
    max-height: 70%;
    max-width: 70%;
    padding-top: 10%;
-}
-.centered {
-   justify-content: center;
-   align-items: center;
 }
 }
 /* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
@@ -248,11 +240,6 @@
    max-height: 60%;
    max-width: 60%;
    padding-top: 10%;
-}
-#weekDay {
-   writing-mode: horizontal-tb;
-   text-orientation: upright;
-   margin-bottom: 0;
 }
 }
 /* tablet, landscape iPad, lo-res laptops ands desktops */
@@ -265,9 +252,5 @@
 }
 /* hi-res laptops and desktops */
 @media only screen and (min-width:1281px) {
-
-}
-
-@media only screen and (orientation: landscape) {
 
 }
