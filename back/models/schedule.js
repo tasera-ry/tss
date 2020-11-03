@@ -1,6 +1,6 @@
-const path = require('path')
-const root = path.join(__dirname, '..')
-const knex = require(path.join(root, 'knex', 'knex'))
+const path = require('path');
+const root = path.join(__dirname, '..');
+const knex = require(path.join(root, 'knex', 'knex'));
 
 /**
  * Create a new schedule item.
@@ -15,7 +15,7 @@ const knex = require(path.join(root, 'knex', 'knex'))
 async function createSchedule(details) {
   return knex('scheduled_range_supervision')
     .returning('*')
-    .insert(details)
+    .insert(details);
 }
 
 /**
@@ -31,7 +31,7 @@ async function createSchedule(details) {
 async function readSchedule(key, fields) {
   return knex('scheduled_range_supervision')
     .where(key)
-    .select(fields)
+    .select(fields);
 }
 
 /**
@@ -46,17 +46,17 @@ async function readSchedule(key, fields) {
  * updateSchedule({ time: '17:00:00' }, { open: '18:00:00' })
  */
 async function updateSchedule(current, updates) {
-  const ids = (await readSchedule(current, ['id'])).map(obj => obj.id)
+  const ids = (await readSchedule(current, ['id'])).map(obj => obj.id);
   if(ids.length === 0) {
-    const err = Error('Didn\'t identify a schedule item to update')
-    err.name = 'Unknown schedule'
-    throw err
+    const err = Error('Didn\'t identify a schedule item to update');
+    err.name = 'Unknown schedule';
+    throw err;
   }
 
   return knex('scheduled_range_supervision')
     .whereIn('id', ids)
     .update(updates)
-    .returning('*')
+    .returning('*');
 }
 
 /**
@@ -71,7 +71,7 @@ async function updateSchedule(current, updates) {
 async function deleteSchedule(key) {
   return knex('scheduled_range_supervision')
     .where(key)
-    .del()
+    .del();
 }
 
 module.exports = {
@@ -79,4 +79,4 @@ module.exports = {
   read: readSchedule,
   update: updateSchedule,
   delete: deleteSchedule
-}
+};

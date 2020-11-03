@@ -5,140 +5,140 @@ const {
   param,
   validationResult,
   matchedData
-} = require('express-validator')
+} = require('express-validator');
 
 function idValidator(requestObject, opts) {
 
   let validator = requestObject('id')
-      .isInt()
-      .withMessage('must be an integer')
-      .toInt()
+    .isInt()
+    .withMessage('must be an integer')
+    .toInt();
 
   if(opts.exists) {
     validator = validator
       .exists({ checkNull: true, checkFalsy: true })
-      .withMessage('must be included')
+      .withMessage('must be included');
   }
 
   if(opts.optional) {
     validator = validator
-      .optional()
+      .optional();
   }
 
-  return validator
+  return validator;
 }
 
 function rangeValidator(requestObject, opts) {
   let validator = requestObject('range_id')
-      .isInt()
-      .withMessage('must be an integer')
-      .toInt()
+    .isInt()
+    .withMessage('must be an integer')
+    .toInt();
 
   if(opts.exists) {
     validator = validator
-      .exists({ checkNull: true })
+      .exists({ checkNull: true });
   }
 
   if(opts.optional) {
     validator = validator
-      .optional()
+      .optional();
   }
 
-  return validator
+  return validator;
 }
 
 function dateValidator(requestObject, opts) {
   let validator = requestObject('date')
-      .isISO8601({ strict: true })
-      .withMessage('must be an ISO8601 date')
+    .isISO8601({ strict: true })
+    .withMessage('must be an ISO8601 date');
 
   if(opts.exists) {
     validator = validator
       .exists({ checkNull: true, checkFalsy: true })
-      .withMessage('must be included')
+      .withMessage('must be included');
   }
 
   if(opts.optional) {
     validator = validator
-      .optional()
+      .optional();
   }
 
-  return validator
+  return validator;
 }
 
 function fromValidator(requestObject, opts) {
   let validator = requestObject('from')
-      .isISO8601({ strict: true })
-      .withMessage('must be an ISO8601 date')
+    .isISO8601({ strict: true })
+    .withMessage('must be an ISO8601 date');
 
   if(opts.exists) {
     validator = validator
       .exists({ checkNull: true, checkFalsy: true })
-      .withMessage('must be included')
+      .withMessage('must be included');
   }
 
   if(opts.optional) {
     validator = validator
-      .optional()
+      .optional();
   }
 
-  return validator
+  return validator;
 }
 
 function toValidator(requestObject, opts) {
   let validator = requestObject('to')
-      .isISO8601({ strict: true })
-      .withMessage('must be an ISO8601 date')
+    .isISO8601({ strict: true })
+    .withMessage('must be an ISO8601 date');
 
   if(opts.exists) {
     validator = validator
       .exists({ checkNull: true, checkFalsy: true })
-      .withMessage('must be included')
+      .withMessage('must be included');
   }
 
   if(opts.optional) {
     validator = validator
-      .optional()
+      .optional();
   }
 
-  return validator
+  return validator;
 }
 
 function availabilityValidator(requestObject, opts) {
   let validator = requestObject('available')
-      .isBoolean()
-      .withMessage('must be a boolean')
-        .toBoolean(true /* strict mode */)
+    .isBoolean()
+    .withMessage('must be a boolean')
+    .toBoolean(true /* strict mode */);
 
   if(opts.exists) {
     validator = validator
       .exists({ checkNull: true })
-      .withMessage('must be included')
+      .withMessage('must be included');
   }
 
   if(opts.optional) {
     validator = validator
-      .optional()
+      .optional();
   }
 
-  return validator
+  return validator;
 }
 
 /*
  * code duplication between validators :(, someone please fix
  */
 function handleValidationErrors(request, response, next) {
-  const validationErrors = validationResult(request)
+  const validationErrors = validationResult(request);
   if(validationErrors.isEmpty() === false) {
-    return response.status(400).send(validationErrors)
+    return response.status(400).send(validationErrors);
   }
 
-  return next()
+  return next();
 }
 
 function storeRequest(request, response, next) {
-  response.locals.matched = matchedData(request)
-  return next()
+  response.locals.matched = matchedData(request);
+  return next();
 }
 
 module.exports = {
@@ -177,4 +177,4 @@ module.exports = {
     handleValidationErrors,
     storeRequest
   ]
-}
+};

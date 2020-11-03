@@ -1,15 +1,15 @@
 const { validationResult, matchedData } = require('express-validator');
-const _ = require('lodash')
+const _ = require('lodash');
 
-const path = require('path')
-const root = path.join(__dirname, '..')
-const services = require(path.join(root, 'services'))
+const path = require('path');
+const root = path.join(__dirname, '..');
+const services = require(path.join(root, 'services'));
 
 const controller = {
   readFilter: async function readFilterSupervisions(request, response) {
     return response
       .status(200)
-      .send(response.locals.queryResult)
+      .send(response.locals.queryResult);
   },
 
   read: async function read(request, response) {
@@ -18,25 +18,25 @@ const controller = {
         .status(404)
         .send({
           error: 'Query didn\'t match track supervision event'
-        })
+        });
     }
 
     return response
       .status(200)
-      .send(response.locals.queryResult)
+      .send(response.locals.queryResult);
   },
 
   create: async function createSupervision(request, response) {
     return response
       .status(201)
-      .send(response.locals.queryResult)
+      .send(response.locals.queryResult);
   },
 
   // no returning response here?
   update: async function updateSupervision(request, response) {
     return response
       .status(204)
-      .send()
+      .send();
   },
 
   delete: async function deleteSupervision(request, response) {
@@ -45,13 +45,13 @@ const controller = {
         .status(404)
         .send({
           error: `No track supervision event exists matching id ${response.locals.query.scheduled_range_supervision_id} and ${response.locals.query.track_id}`
-        })
+        });
     }
 
     return response
       .status(204)
-      .send()
+      .send();
   }
-}
+};
 
-module.exports = controller
+module.exports = controller;

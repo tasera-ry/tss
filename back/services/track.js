@@ -1,11 +1,11 @@
-const path = require('path')
+const path = require('path');
 
-const root = path.join(__dirname, '..')
-const models = require(path.join(root, 'models'))
-const config = require(path.join(root, 'config', 'config'))
+const root = path.join(__dirname, '..');
+const models = require(path.join(root, 'models'));
+const config = require(path.join(root, 'config', 'config'));
 
-const validate = require('validate.js')
-const _ = require('lodash')
+const validate = require('validate.js');
+const _ = require('lodash');
 
 const service = {
   /**
@@ -18,7 +18,7 @@ const service = {
    * service.create({ range_id: 1, name: 'Shooting track 1', description: '100m Kohdistusrata' })
    */
   create: async function createTrack(info) {
-    return (await models.track.create(info)).pop()
+    return (await models.track.create(info)).pop();
   },
 
   /**
@@ -48,7 +48,7 @@ const service = {
       combinedKey = _.omit(combinedKey, ['name']);
     }
 
-    return (await models.track.read(_.pick(combinedKey,'track.id', 'track.name', 'description')))
+    return (await models.track.read(_.pick(combinedKey,'track.id', 'track.name', 'description')));
   },
 
   /**
@@ -71,10 +71,10 @@ const service = {
       combinedKey = _.omit(combinedKey, ['track_id']);
     }
 
-    return models.track.update(combinedKey, updates)
+    return models.track.update(combinedKey, updates);
   },
 
-    /**
+  /**
      * Delete a track.
      *
      * @param {object} key - Tracks' identifying info. { range_id, id?, name?}
@@ -93,8 +93,8 @@ const service = {
       combinedKey = _.omit(combinedKey, ['track_id']);
     }
 
-    return models.track.delete(combinedKey)
+    return models.track.delete(combinedKey);
   }
-}
+};
 
-module.exports = service
+module.exports = service;

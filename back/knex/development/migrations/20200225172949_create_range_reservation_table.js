@@ -1,20 +1,20 @@
 exports.up = function(knex) {
   return knex.schema
     .createTable('range_reservation', reservation => {
-      reservation.increments()
+      reservation.increments();
       reservation.integer('range_id')
         .references('id')
         .inTable('range')
-        .notNullable()
+        .notNullable();
       reservation.date('date')
-        .notNullable()
+        .notNullable();
       reservation.boolean('available')
-        .notNullable()
-      reservation.unique(['range_id', 'date'])
-    })
-}
+        .notNullable();
+      reservation.unique(['range_id', 'date']);
+    });
+};
 
 exports.down = function(knex) {
   return knex.schema
-    .dropTable('range_reservation')
-}
+    .dropTable('range_reservation');
+};

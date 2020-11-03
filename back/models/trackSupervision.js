@@ -1,12 +1,12 @@
 /* TODO
  * Replace validations with validator.js
  */
-const _ = require('lodash')
-const validate = require('validate.js')
+const _ = require('lodash');
+const validate = require('validate.js');
 
-const path = require('path')
-const root = path.join(__dirname, '..')
-const knex = require(path.join(root, 'knex', 'knex'))
+const path = require('path');
+const root = path.join(__dirname, '..');
+const knex = require(path.join(root, 'knex', 'knex'));
 
 const model = {
   /**
@@ -24,28 +24,28 @@ const model = {
       track_id: {},
       track_supervisor: {},
       notice: {}
-    }
+    };
 
     //check if already exists
     const id = await model
       .read(supVis, ['scheduled_range_supervision_id', 'track_id'])
-      .then(rows => rows[0])
+      .then(rows => rows[0]);
 
     if(id) {
-      const err = Error('Supervision even already exists')
-      err.name = 'Supervision exists'
-      throw err
+      const err = Error('Supervision even already exists');
+      err.name = 'Supervision exists';
+      throw err;
     }
 
-    const general = validate.cleanAttributes(supVis, supervisionConstraints)
+    const general = validate.cleanAttributes(supVis, supervisionConstraints);
 
     return await knex.transaction(trx => {
       return trx
         .returning(['scheduled_range_supervision_id','track_id'])
         .insert(general)
         .into('track_supervision')
-        .catch(trx.rollback)
-    })
+        .catch(trx.rollback);
+    });
   },
 
   /**
@@ -62,7 +62,7 @@ const model = {
   read: async function readSupervision(key, fields) {
     return knex('track_supervision')
       .where(key)
-      .select(fields)
+      .select(fields);
   },
 
   /**
@@ -77,24 +77,24 @@ const model = {
    * model.update({ scheduled_range_supervision_id:1, track_id:1 }, { track_supervisor: 'absent' })
    */
   update: async function updateSupervision(current, update) {
-    const supVis = _.pick(update, 'track_supervisor', 'notice')
+    const supVis = _.pick(update, 'track_supervisor', 'notice');
 
     const id = await model
-          .read(current, ['scheduled_range_supervision_id', 'track_id'])
-          .then(rows => rows[0])
+      .read(current, ['scheduled_range_supervision_id', 'track_id'])
+      .then(rows => rows[0]);
 
     if(!id) {
-      const err = Error('Didn\'t identify supervision(s) to update')
-      err.name = 'Unknown supervision'
-      throw err
+      const err = Error('Didn\'t identify supervision(s) to update');
+      err.name = 'Unknown supervision';
+      throw err;
     }
 
     return await knex.transaction(trx => {
       return trx('track_supervision')
         .where(id)
         .update(supVis)
-        .catch(trx.rollback)
-    })
+        .catch(trx.rollback);
+    });
   },
 
   /**
@@ -112,9 +112,9 @@ const model = {
         .where(supVis)
         .del()
         .then(trx.commit)
-        .catch(trx.rollback)
-    })
+        .catch(trx.rollback);
+    });
   }
-}
+};
 
-module.exports = model
+module.exports = model;

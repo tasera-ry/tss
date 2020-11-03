@@ -1,12 +1,12 @@
 /* TODO
  * Replace validations with validator.js
  */
-const _ = require('lodash')
-const validate = require('validate.js')
+const _ = require('lodash');
+const validate = require('validate.js');
 
-const path = require('path')
-const root = path.join(__dirname, '..')
-const knex = require(path.join(root, 'knex', 'knex'))
+const path = require('path');
+const root = path.join(__dirname, '..');
+const knex = require(path.join(root, 'knex', 'knex'));
 
 const model = {
   /**
@@ -23,9 +23,9 @@ const model = {
       name: {},
       description: {},
       short_description: {}
-    }
+    };
 
-    const track = validate.cleanAttributes(trackInfo, trackConstraints)
+    const track = validate.cleanAttributes(trackInfo, trackConstraints);
 
     return await knex.transaction(trx => {
       return trx
@@ -33,10 +33,10 @@ const model = {
         .insert(track)
         .into('track')
         .then(ids => {
-          return ids
+          return ids;
         }).then(trx.commit)
-        .catch(trx.rollback)
-    })
+        .catch(trx.rollback);
+    });
   },
 
   /**
@@ -53,7 +53,7 @@ const model = {
     return knex('track')
       .where(key)
       .select(fields)
-      .orderBy('name')
+      .orderBy('name');
   },
 
   /**
@@ -73,26 +73,26 @@ const model = {
       name: {},
       description: {},
       short_description: {}
-    }
+    };
 
-    const track = validate.cleanAttributes(update, trackConstraints)
+    const track = validate.cleanAttributes(update, trackConstraints);
 
     //exists
     const id = await model
-          .read(current, ['track.id'])
-          .then(rows => rows[0])
+      .read(current, ['track.id'])
+      .then(rows => rows[0]);
 
     if(!id) {
-      const err = Error('Didn\'t identify track(s) to update')
-      err.name = 'Unknown track'
-      throw err
+      const err = Error('Didn\'t identify track(s) to update');
+      err.name = 'Unknown track';
+      throw err;
     }
 
     return await knex.transaction(trx => {
       return trx('track')
         .where(id)
-        .update(track)
-    })
+        .update(track);
+    });
   },
 
   /**
@@ -105,18 +105,18 @@ const model = {
    * exports.del({ 'track.id': 8 })
    */
   delete: async function deleteTrack(key) {
-    const ids = await model.read(key, ['track.id'])
+    const ids = await model.read(key, ['track.id']);
 
     return await knex.transaction(trx => {
       return Promise.all(
         ids.map(id => {
           return trx('track')
             .where(id)
-            .del()
+            .del();
         })).then(trx.commit)
-        .catch(trx.rollback)
-    })
+        .catch(trx.rollback);
+    });
   }
-}
+};
 
-module.exports = model
+module.exports = model;

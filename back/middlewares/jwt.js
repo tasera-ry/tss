@@ -54,4 +54,4 @@ exports.validate = [
 
     return next();
   }
-]
+];

@@ -1,19 +1,19 @@
-const path = require('path')
-const root = path.join(__dirname, '..')
-const services = require(path.join(root, 'services'))
-const middlewares = require(path.join(root, 'middlewares'))
-const validators = require(path.join(root, 'validators'))
+const path = require('path');
+const root = path.join(__dirname, '..');
+const services = require(path.join(root, 'services'));
+const middlewares = require(path.join(root, 'middlewares'));
+const validators = require(path.join(root, 'validators'));
 
 async function createSchedule(request, response) {
   return response
     .status(201)
-    .send(response.locals.queryResult)
+    .send(response.locals.queryResult);
 }
 
 async function readSchedule(request, response) {
   return response
     .status(200)
-    .send(response.locals.queryResult)
+    .send(response.locals.queryResult);
 }
 
 async function readScheduleStrict(request, response) {
@@ -22,18 +22,18 @@ async function readScheduleStrict(request, response) {
       .status(404)
       .send({
         error: 'Query didn\'t match a schedule item'
-      })
+      });
   }
 
   return response
     .status(200)
-    .send(response.locals.queryResult)
+    .send(response.locals.queryResult);
 }
 
 async function updateSchedule(request, response) {
   return response
     .status(204)
-    .send()
+    .send();
 }
 
 async function deleteSchedule(request, response) {
@@ -42,12 +42,12 @@ async function deleteSchedule(request, response) {
       .status(404)
       .send({
         error: `No schedule item exists matching id ${response.locals.matched.id}`
-      })
+      });
   }
 
   return response
     .status(204)
-    .send()
+    .send();
 }
 
 module.exports = {
@@ -76,4 +76,4 @@ module.exports = {
     , middlewares.schedule.delete
     , deleteSchedule
   ]
-}
+};

@@ -1,9 +1,9 @@
-const _ = require('lodash')
+const _ = require('lodash');
 
-const path = require('path')
-const root = path.join(__dirname, '..')
-const services = require(path.join(root, 'services'))
-const secret = require(path.join(root, 'config', 'config')).jwt.secret
+const path = require('path');
+const root = path.join(__dirname, '..');
+const services = require(path.join(root, 'services'));
+const secret = require(path.join(root, 'config', 'config')).jwt.secret;
 
 const controller = {
   read: async function readTrack(request, response) {
@@ -13,25 +13,25 @@ const controller = {
         .status(404)
         .send({
           error: 'Unknown track'
-        })
+        });
     }
 
     return response
       .status(200)
-      .send(response.locals.queryResult)
+      .send(response.locals.queryResult);
   },
 
   create: async function createTrack(request, response) {
     return response
       .status(201)
-      .send(response.locals.queryResult)
+      .send(response.locals.queryResult);
   },
 
   update: async function updateTrack(request, response) {
     //return 204 no content
     return response
       .status(204)
-      .send()
+      .send();
   },
 
   delete: async function deleteTrack(request, response) {
@@ -40,13 +40,13 @@ const controller = {
         .status(404)
         .send({
           error: `No track exists matching id ${response.locals.query.id}`
-        })
+        });
     }
 
     return response
       .status(204)
-      .send()
+      .send();
   }
-}
+};
 
-module.exports = controller
+module.exports = controller;

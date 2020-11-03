@@ -1,12 +1,12 @@
 exports.up = function(knex) {
   return knex.schema.createTable('range_supervision_history', history => {
-    history.increments()
+    history.increments();
     history.integer('scheduled_range_supervision_id')
       .references('id')
       .inTable('scheduled_range_supervision')
-      .notNullable()
+      .notNullable();
     history.timestamp('updated_at', { useTz: true, precision: 6 })
-      .notNullable()
+      .notNullable();
     history.enu(
       'range_supervisor',
       ['absent', 'confirmed', 'en route', 'present'],
@@ -15,12 +15,12 @@ exports.up = function(knex) {
         existingType: true,
         enumName: 'range_supervisor'
       }
-    ).notNullable()
-    history.string('notice')
-  })
-}
+    ).notNullable();
+    history.string('notice');
+  });
+};
 
 exports.down = function(knex) {
   return knex.schema
-      .dropTable('range_supervision_history')
-}
+    .dropTable('range_supervision_history');
+};
