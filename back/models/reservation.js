@@ -1,7 +1,7 @@
-const path = require('path')
-const root = path.join(__dirname, '..')
-const knex = require(path.join(root, 'knex', 'knex'))
-const _ = require('lodash')
+const path = require('path');
+const root = path.join(__dirname, '..');
+const knex = require(path.join(root, 'knex', 'knex'));
+const _ = require('lodash');
 
 /**
  * Create a new reservation.
@@ -16,7 +16,7 @@ const _ = require('lodash')
 async function createReservation(reservationDetails) {
   return knex('range_reservation')
     .returning('*')
-    .insert(reservationDetails)
+    .insert(reservationDetails);
 }
 
 /**
@@ -32,28 +32,28 @@ async function createReservation(reservationDetails) {
  * readReservation({ available: true }, [], '2020-01-01', '2020-01-31')
  */
 async function readReservation(key, fields, from, to) {
-  let query = knex('range_reservation')
+  let query = knex('range_reservation');
 
   // a bit messy
   if(from && to) {
     const dateInterval = knex
-          .raw('\
+      .raw('\
 natural right join\
  (select (generate_series(?, ?, \'1 day\'::interval))::date as date) as iv'
-               , [from, to])
-    query = query.joinRaw(dateInterval)
+      , [from, to]);
+    query = query.joinRaw(dateInterval);
   } else {
-    from = '0001-01-01'
-    to = '9999-12-31'
+    from = '0001-01-01';
+    to = '9999-12-31';
   }
 
   query = query.where(
     (builder) =>
       builder
-      .where(key)
-      .whereBetween('date', [from, to]))
-    .select(fields)
-  return query
+        .where(key)
+        .whereBetween('date', [from, to]))
+    .select(fields);
+  return query;
 }
 
 /**
@@ -68,18 +68,18 @@ natural right join\
  * updateReservation({ date: '2020-01-01' }, { available: false })
  */
 async function updateReservation(current, updates) {
-  const ids = (await readReservation(current, ['id'])).map(obj => obj.id)
+  const ids = (await readReservation(current, ['id'])).map(obj => obj.id);
 
   if(ids.length === 0) {
-    const err = Error('Didn\'t identify reservations to update')
-    err.name = 'Unknown reservation'
-    throw err
+    const err = Error('Didn\'t identify reservations to update');
+    err.name = 'Unknown reservation';
+    throw err;
   }
 
   return knex('range_reservation')
     .whereIn('id', ids)
     .update(updates)
-    .returning('*')
+    .returning('*');
 }
 
 /**
@@ -94,7 +94,7 @@ async function updateReservation(current, updates) {
 async function deleteReservation(key) {
   return knex('range_reservation')
     .where(key)
-    .del()
+    .del();
 }
 
 module.exports = {
@@ -102,4 +102,4 @@ module.exports = {
   read: readReservation,
   update: updateReservation,
   delete: deleteReservation
-}
+};

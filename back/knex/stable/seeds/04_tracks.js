@@ -34,7 +34,7 @@ const tracks = [
     description: 'Toiminta-ampumarata - 25 ampumapaikkaa',
     short_description: 'Toiminta-ampuma'
   }
-]
+];
 
 exports.seed = function(knex) {
   return knex('range')
@@ -43,9 +43,9 @@ exports.seed = function(knex) {
     })
     .select('id')
     .then(ranges => {
-      const range = ranges.pop()
-      tracks.forEach(track => track.range_id = range.id)
+      const range = ranges.pop();
+      tracks.forEach(track => track.range_id = range.id);
       return knex('track')
-        .insert(tracks)
-    })
-}
+        .insert(tracks);
+    });
+};

@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server",
     "dev:withFront": "concurrently \"nodemon server\" \"cd ../front && npm start\"",
-    "start": "node server.js"
+    "start": "node server.js",
+    "lint": "eslint ."
   },
   "author": "TUNI Project Team",
   "license": "MIT",
@@ -36,5 +37,9 @@
     "react-router-dom": "^5.2.0",
     "socket.io": "^2.3.0",
     "validate.js": "^0.13.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.12.1",
+    "jest-environment-jsdom-sixteen": "^1.0.3"
   }
 }
