@@ -470,19 +470,13 @@ class Scheduling extends Component {
     let disabled = false;
     const { sched } = data;
     const fin = localStorage.getItem('language');
-    if (this.state.rangeSupervisors) {
-      this.state.rangeSupervisors.forEach((key) => {
-        items.push(
-          <MenuItem
-            key={key}
-            value={key.id}
-          >
-            {key.name}
-          </MenuItem>,
-        );
-      });
+    for (var key in this.state.rangeSupervisors) { // eslint-disable-line
+      items.push(
+        <MenuItem key={key} value={this.state.rangeSupervisors[key].id}>
+          {this.state.rangeSupervisors[key].name}
+        </MenuItem>,
+      );
     }
-
     if (this.state.rangeSupervisorSwitch === false) {
       disabled = true;
     }
@@ -722,14 +716,12 @@ class Scheduling extends Component {
           return reject(new Error('general track supervision failure'));
         }
       };
-      if (this.state.tracks) {
-        this.state.tracks.forEach(async (key) => { // eslint-disable-line
-          try {
-            await trackSupervision(srsId, key);
-          } catch (error) {
-            return reject(error);
-          }
-        });
+      for (let key in this.state.tracks) { // eslint-disable-line
+        try {
+          const trackSupervisionRes = await trackSupervision(srsId, key);  // eslint-disable-line
+        } catch (error) {
+          return reject(error);
+        }
       }
 
       return resolve('update success');
