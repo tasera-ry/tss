@@ -250,7 +250,6 @@ const TrackButtons = ({
 };
 
 async function getColors(tracks, setTracks) {
-  console.log(tracks)
   const copy = [...tracks];
 
   for (let i = 0; i < copy.length; i += 1) {
@@ -272,7 +271,7 @@ async function getData(
   setReservationId,
   setRangeSupervisionScheduled,
 ) {
-  const date = moment(Date.now()).format("YYYY-MM-DD");
+  const date = moment(Date.now()).format('YYYY-MM-DD');
 
   await fetch(`/api/datesupreme/${date}`)
     .then((res) => res.json())

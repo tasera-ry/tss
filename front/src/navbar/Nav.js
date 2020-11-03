@@ -13,7 +13,6 @@ import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from '@material-ui/core/styles';
-import Burger from '../logo/Burger.png';
 import logo from '../logo/Logo.png';
 
 import SupervisorNotification from './SupervisorNotification'; // eslint-disable-line
