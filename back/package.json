@@ -8,8 +8,7 @@
     "dev": "nodemon server",
     "dev:withFront": "concurrently \"nodemon server\" \"cd ../front && npm start\"",
     "start": "node server.js",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint": "eslint ."
   },
   "author": "TUNI Project Team",
   "license": "MIT",
