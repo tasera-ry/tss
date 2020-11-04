@@ -4,46 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <style>
-    li {
-      display: none;
-    }
-  </style>
   <title>un-support browser</title>
+  <style>
+  li {padding-top: 2vh;}
+  </style>
 </head>
 <body>
-  <div style="text-align:center;padding-top:30vh;font-size:large">
+  <div style="text-align:center;padding-top:25vh;font-size:large">
     <h3>Valitettavasti sivu ei toimi selaimellasi, ole hyvä ja päivitä selaimesi!</h3>
-    <ul style="list-style-type:none">
-      <li class="chrome"><a href="https://support.google.com/chrome/answer/95414?co=GENIE.Platform%3DDesktop&hl=fi" target="_blank" rel="noopener">Päivitä Chrome</a></li>
-      <li class="firefox"><a href="https://support.mozilla.org/fi/kb/paivita-firefox-sen-uusimpaan-versioon" target="_blank" rel="noopener">Päivitä Firefox</a></li>
-      <li class="safari"><a href="https://support.apple.com/fi-fi/HT204416" target="_blank" rel="noopener">Päivitä Safari</a></li>
-      <li class="opera"><a href="https://help.opera.com/en/latest/crashes-and-issues/#updateBrowser" target="_blank" rel="noopener">Päivitä Opera</a></li>
+    <ul style="list-style-type:none;">
+      <li class="opera"><a href="https://www.opera.com/download" target="_blank" rel="noopener">Lataa Opera</a></li>
       <li class="ie"><a href="https://www.microsoft.com/fi-fi/edge/" target="_blank" rel="noopener">Lataa Microsoft Edge</a></li>
       <li class="firefox safari ie edge opera"><a href="https://www.google.com/intl/fi/chrome/" target="_blank" rel="noopener">Lataa Chrome</a></li>
       <li class="chrome safari ie edge opera"><a href="https://www.mozilla.org/fi-fi/firefox/new/" target="_blank" rel="noopener">Lataa Firefox</a></li>
     </ul>
     <h3>We are unable to support your browser, please upgrade or download other browser!</h3>
     <ul style="list-style-type:none">
-      <li class="chrome"><a href="https://support.google.com/chrome/answer/95414?co=GENIE.Platform%3DDesktop&hl=en" target="_blank" rel="noopener">Upgrade Chrome</a></li>
-      <li class="firefox"><a href="https://support.mozilla.org/en-US/kb/update-firefox-latest-version" target="_blank" rel="noopener">Upgrade Firefox</a></li>
-      <li class="safari"><a href="https://support.apple.com/en-us/HT204416" target="_blank" rel="noopener">Upgrade Safari</a></li>
-      <li class="opera"><a href="https://help.opera.com/en/latest/crashes-and-issues/#updateBrowser" target="_blank" rel="noopener">Upgrade Opera</a></li>
+      <li class="opera"><a href="https://www.opera.com/download" target="_blank" rel="noopener">Download Opera</a></li>
       <li class="ie"><a href="https://www.microsoft.com/en-us/edge" target="_blank" rel="noopener">Download Microsoft Edge</a></li>
       <li class="firefox safari ie edge opera"><a href="https://www.google.com/intl/en/chrome/" target="_blank" rel="noopener">Download Chrome</a></li>
       <li class="chrome safari ie edge opera"><a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank" rel="noopener">Download Firefox</a></li>
     </ul>
   </div>
-  <script>
-    var hash = window.location.hash.replace('#', '');
-
-    if (hash) {
-      var className = '.' + hash;
-      var elements = document.querySelectorAll(className);
-      for (var i = 0; i < elements.length; ++i) {
-        elements[i].style.display = 'list-item';
-      }
-    }
-  </script>
 </body>
 </html>
