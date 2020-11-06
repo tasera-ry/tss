@@ -23,7 +23,7 @@
     "express-validator": "^6.6.1",
     "helmet": "^3.23.3",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.21.8",
+    "knex": "^0.21.12",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.31",

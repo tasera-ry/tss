@@ -14,10 +14,6 @@ module.exports = {
       'error',
       2
     ],
-    'linebreak-style': [
-      'error',
-      'unix'
-    ],
     'quotes': [
       'error',
       'single'
@@ -25,6 +21,7 @@ module.exports = {
     'semi': [
       'error',
       'always'
-    ]
+    ],
+    'linebreak-style': [0],
   }
 };
