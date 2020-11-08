@@ -16,11 +16,11 @@ const service = {
   /**
    * Authenticate a user based on the credentials given.
    *
-   * @param {object} credentials - User's name and password.
+   * @param {object} credentials - User's name and password hash.
    * @return {Promise<number|undefined>} Authenticated user's id, undefined when unmatched
    *
    * @example
-   * service.authenticate({ name: 'Mark', password: 'mark_password' })
+   * service.authenticate({ name: 'Mark', pwhash: $2y$08$G1g... })
    */
   authenticate: async function authenticateUser(credentials) {
     const users = await models.user.read({
@@ -28,8 +28,8 @@ const service = {
     }, ['id', 'digest']);
 
     if(users.length === 0) {
-      const err = Error('Username didn\'t match any users');
-      err.name = 'Unknown user';
+      const err = Error('Invalid credentials');
+      err.name = 'Invalid credentials';
       throw err;
     }
 
@@ -39,8 +39,8 @@ const service = {
       .compare(credentials.password, user.digest.toString());
 
     if(passwordMatches === false) {
-      const err = Error('Password was incorrect');
-      err.name = 'Incorrect password';
+      const err = Error('Invalid credentials');
+      err.name = 'Invalid credentials';
       throw err;
     }
 
