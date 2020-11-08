@@ -16,11 +16,11 @@ const service = {
   /**
    * Authenticate a user based on the credentials given.
    *
-   * @param {object} credentials - User's name and password hash.
+   * @param {object} credentials - User's name and password.
    * @return {Promise<number|undefined>} Authenticated user's id, undefined when unmatched
    *
    * @example
-   * service.authenticate({ name: 'Mark', pwhash: $2y$08$G1g... })
+   * service.authenticate({ name: 'Mark', password: 'mark_password' })
    */
   authenticate: async function authenticateUser(credentials) {
     const users = await models.user.read({
