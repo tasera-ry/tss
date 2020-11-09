@@ -168,5 +168,21 @@
     "previousTooltip": ["Edellinen sivu", "Previous page"],
     "firstTooltip": ["Ensimmäinen sivu", "First page"],
     "lastTooltip": ["Viimeinen sivu", "Last page"]
+  },
+  "month": {
+    "0": ["Err", "Err"],
+    "1": ["Tammikuu", "January"],
+    "2": ["Helmikuu", "February"],
+    "3": ["Maaliskuu", "March"],
+    "4": ["Huhtikuu", "April"],
+    "5": ["Toukokuu", "May"],
+    "6": ["Kesäkuu", "June"],
+    "7": ["Heinäkuu", "July"],
+    "8": ["Elokuu", "August"],
+    "9": ["Syyskuu", "Septemper"],
+    "10": ["Lokakuu", "October"],
+    "11": ["Marraskuu", "November"],
+    "12": ["Joulukuu", "Decemper"],
+    "weekNumber": ["Vko", "Wk"]
   }
 }

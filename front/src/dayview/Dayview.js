@@ -72,7 +72,8 @@ class Dayview extends Component {
   previousDayClick(e) {
     e.preventDefault();
     const date = new Date(this.state.date.setDate(this.state.date.getDate() - 1)); // eslint-disable-line
-    this.props.history.replace(`/dayview/${date.toISOString()}`); // eslint-disable-line
+    let dateFormatted = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
+    this.props.history.replace(`/dayview/${dateFormatted}`); // eslint-disable-line
     this.setState(
       {
         state: 'loading',
@@ -87,7 +88,8 @@ class Dayview extends Component {
   nextDayClick(e) {
     e.preventDefault();
     const date = new Date(this.state.date.setDate(this.state.date.getDate() + 1)); // eslint-disable-line
-    this.props.history.replace(`/dayview/${date.toISOString()}`); // eslint-disable-line
+    let dateFormatted = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
+    this.props.history.replace(`/dayview/${dateFormatted}`); // eslint-disable-line
     this.setState(
       {
         state: 'loading',
@@ -167,6 +169,8 @@ class Dayview extends Component {
         // closed
         color = 'redB';
       }
+
+
 
       return (
         <Grid item className={`track hoverHand ${color}`} xs={12} sm={2}>
@@ -257,7 +261,6 @@ class Dayview extends Component {
             {/* Other info */}
 
           </div>
-
           <Link className="back" style={{ color: 'black' }} to={`/weekview/${this.state.date.toISOString()}`}>
             <ArrowBackIcon />
             {dayview.WeekviewLink[fin]}

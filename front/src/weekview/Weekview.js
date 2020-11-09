@@ -151,6 +151,7 @@ class Weekview extends Component {
 
     try {
       const oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() + 7));
+      let dateFormatted = oikeePaiva.getFullYear() + "-" + (oikeePaiva.getMonth()+1) + "-" + oikeePaiva.getDate();
       this.props.history.replace(`/weekview/${moment(uusPaiva, 'YYYYMMDD').add(1, 'day').toISOString()}`);
 
       // Week logic cuz there's no 53 weeks
@@ -267,9 +268,12 @@ class Weekview extends Component {
       oikeePaiva = this.state.paivat[j].date;
       fixed = oikeePaiva.split('-');
       newDate = `${fixed[2]}.${fixed[1]}`;
+      console.log(fixed[2]);
+      console.log(fixed[1]);
+      console.log(newDate)
+      console.log(oikeePaiva)
 
       linkki = `/dayview/${oikeePaiva}`;
-
       table.push(
         <Link class="link" to={linkki}>
           <p style={{ fontSize: 'medium' }}>
