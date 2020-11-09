@@ -137,13 +137,19 @@ class Monthview extends Component {
     let startDay = moment(this.state.yearNro + "-" + this.state.monthNro + "-" + "1", "YYYY-MM-DD")
     let firstMon = moment(this.state.yearNro + "-" + this.state.monthNro + "-" + "1", "YYYY-MM-DD")
 
-    let loop = 0;
+    // safety loop incase of errors in name detection due to wrong locale, e.g. Sweden
+    let safetyLoop = 0;
 
     while (firstMon.format('ddd') !== "Mon" && firstMon.format('ddd') !== "ma"){
       firstMon = firstMon.subtract(1, "days");
+      if (safetyLoop > 7){
+        break;
+      }
+      safetyLoop += 1;
     }
 
-    loop = 0;
+    safetyLoop = 0;
+
     // Tarkistetaan ensimmäinen maanantai ja lisätään siitä päivät
     while (firstMon.format('ddd') !== startDay.format('ddd')){
       table.push(
@@ -156,7 +162,7 @@ class Monthview extends Component {
       firstMon.add(1, 'days');
     }
 
-    // lisätään kuukauteen kuuluvat päivät
+    // lisätään kuukauteen kuuluvat päivät.
     while (startDay.format('D') < days){
       table.push(
         <Link class="link" to={"/dayview/" + startDay.format("YYYY-MM-DD")}>
@@ -177,26 +183,22 @@ class Monthview extends Component {
     )
     startDay.add(1, 'days');
 
-    if (startDay.format('ddd') !== "Mon" && startDay.format('ddd') !== "ma"){
-      while (startDay.format('ddd') !== "Sun" && startDay.format('ddd') !== "su"){
-        table.push(
-          <Link class="link notCurMonth" to={"/dayview/" + startDay.format("YYYY-MM-DD")}>
-            <div>
-              {startDay.date()}
-            </div>
-          </Link>
-          )
-        startDay.add(1, 'days');
-      }
+    // Lisätään viimeiseen viikkoon kuuluvat päivät.
+    while (startDay.format('ddd') !== "Mon" && startDay.format('ddd') !== "ma"){
       table.push(
-      <Link class="link notCurMonth" to={"/dayview/" + startDay.format("YYYY-MM-DD")}>
-        <div>
-          {startDay.date()}
-        </div>
-      </Link>
-      )
+        <Link class="link notCurMonth" to={"/dayview/" + startDay.format("YYYY-MM-DD")}>
+          <div>
+            {startDay.date()}
+          </div>
+        </Link>
+        )
+      startDay.add(1, 'days');
+      if (safetyLoop > 7){
+        break;
+      }
+    safetyLoop += 1;
     }
-    
+
     return table;
   }
 
