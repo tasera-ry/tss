@@ -67,7 +67,7 @@ const controller = {
       finalQR[i] = {
         available: day['available'],
         close: day['close'],
-        date: day['date'],
+        date: moment(day['date']).format('YYYY-MM-DD'),
         open: day['open'],
         rangeId: config.development.range_id,
         rangeSupervision: !day['available'] ? 'closed' : day['range_supervisor'],
