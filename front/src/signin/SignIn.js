@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 // Material UI components
 import Button from '@material-ui/core/Button';
@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
+import LoginContext from '../LoginContext';
 
 // Call handling to backend
 import axios from 'axios';
@@ -50,6 +51,7 @@ const SignIn = () => {
   const history = useHistory();
   const { signin } = data;
   const fin = localStorage.getItem('language');
+  const { loginState, setLoginState } = useContext(LoginContext);
 
   document.body.style = 'background: #eae7dc;';
   function RedirectToWeekview() {
@@ -58,6 +60,19 @@ const SignIn = () => {
   async function setInfo(data) { // eslint-disable-line
     localStorage.setItem('taseraUserName', name);
     localStorage.setItem('token', data);
+
+    /*
+    loginState.setLoginState(
+      (loginState) => ({
+        ...loginState,
+        taseraUserName: name,
+        token: data
+      })
+    );
+    */
+    console.log("HERE IT IS: " + loginState);
+    console.log(setLoginState({ something:"funny" }));
+    console.log(loginState);
 
     const config = {
       headers: { Authorization: `Bearer ${data}` },
@@ -68,7 +83,7 @@ const SignIn = () => {
     const role = await response.data[0].role;
     localStorage.setItem('role', role);
 
-    RedirectToWeekview();
+    // RedirectToWeekview();
   }
 
   const HandleError = (error) => {
