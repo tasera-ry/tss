@@ -268,10 +268,6 @@ class Weekview extends Component {
       oikeePaiva = this.state.paivat[j].date;
       fixed = oikeePaiva.split('-');
       newDate = `${fixed[2]}.${fixed[1]}`;
-      console.log(fixed[2]);
-      console.log(fixed[1]);
-      console.log(newDate)
-      console.log(oikeePaiva)
 
       linkki = `/dayview/${oikeePaiva}`;
       table.push(

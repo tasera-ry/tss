@@ -22,7 +22,7 @@
 	min-height: 48px;
 	border-right: 2px solid;
 	border-top: 2px solid;
-	border-bottom: 2px solid;
+	border-bottom: 4px solid;
 }
 
 .month-container {
@@ -56,6 +56,7 @@
 	width: calc(100% / 7 - 2px);
 	height: 10vh;
 	min-height: 48px;
+	font-weight: normal;
 	border-bottom: 2px solid;
 	border-right: 2px solid;
 }
@@ -72,6 +73,9 @@
 .weekdays .weekNumber{
 	justify-content: center;
 	display: none;
+	border-bottom: 4px solid;
+	border-right: 4px solid;
+	width: calc(100% / 8 - 4px);
 }
 
 .weekNumber > a {
@@ -85,7 +89,7 @@
 	height: 10vh;
 	min-height: 48px;
 	border-bottom: 2px solid;
-	border-right: 2px solid;
+	border-right: 4px solid;
 }
 
 /* media files */
@@ -100,13 +104,16 @@
 		display: flex;
 	}
 	.month-days {
-		width: calc(100% / 8 * 7)
+		width: calc(100% / 8 * 7);
 	}
 	.weekdays .weekNumber{
-	display: flex;
+		display: flex;
 	}
 	.weekdays > a {
-	width: calc(100% / 8 - 2px);
+		width: calc(100% / 8 - 2px);
+	}
+	.weekdays > div {
+		width: calc(100% / 8 - 2px);
 	}
 }
 /* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */

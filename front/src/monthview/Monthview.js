@@ -129,18 +129,21 @@ class Monthview extends Component {
   createMonthTable = () => {
     const table = [];
 
-    if (this.state.yearNro == "0") {
+    if (this.state.yearNro === 0) {
       return;
     }
-
+    
     let days = moment(this.state.yearNro + "-" + this.state.monthNro, "YYYY-MM").daysInMonth()
     let startDay = moment(this.state.yearNro + "-" + this.state.monthNro + "-" + "1", "YYYY-MM-DD")
     let firstMon = moment(this.state.yearNro + "-" + this.state.monthNro + "-" + "1", "YYYY-MM-DD")
 
-    while (firstMon.format('ddd') !== "Mon"){
+    let loop = 0;
+
+    while (firstMon.format('ddd') !== "Mon" && firstMon.format('ddd') !== "ma"){
       firstMon = firstMon.subtract(1, "days");
     }
 
+    loop = 0;
     // Tarkistetaan ensimmäinen maanantai ja lisätään siitä päivät
     while (firstMon.format('ddd') !== startDay.format('ddd')){
       table.push(
@@ -174,27 +177,26 @@ class Monthview extends Component {
     )
     startDay.add(1, 'days');
 
-    // Lisätään viimeiseen viikkoon kuuluvat päivät
-    while (startDay.format('ddd') !== "Sun"){
+    if (startDay.format('ddd') !== "Mon" && startDay.format('ddd') !== "ma"){
+      while (startDay.format('ddd') !== "Sun" && startDay.format('ddd') !== "su"){
+        table.push(
+          <Link class="link notCurMonth" to={"/dayview/" + startDay.format("YYYY-MM-DD")}>
+            <div>
+              {startDay.date()}
+            </div>
+          </Link>
+          )
+        startDay.add(1, 'days');
+      }
       table.push(
-        <Link class="link notCurMonth" to={"/dayview/" + startDay.format("YYYY-MM-DD")}>
-          <div>
-            {startDay.date()}
-          </div>
-        </Link>
-        )
-      startDay.add(1, 'days');
-    }
-
-    // lisätään viimeinen päivä, joka jää while loopin takia 
-    table.push(
       <Link class="link notCurMonth" to={"/dayview/" + startDay.format("YYYY-MM-DD")}>
         <div>
           {startDay.date()}
         </div>
       </Link>
-    )
-
+      )
+    }
+    
     return table;
   }
 
@@ -206,7 +208,7 @@ class Monthview extends Component {
     let endWeek = moment(this.state.yearNro + "-" + this.state.monthNro + "-" + days, "YYYY-MM-DD").isoWeek()
     let link = moment(this.state.yearNro + "-" + this.state.monthNro + "-" + "1", "YYYY-MM-DD")
 
-    if (this.state.yearNro == "0") {
+    if (this.state.yearNro === 0) {
       return;
     }
 
