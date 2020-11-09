@@ -7,6 +7,7 @@ const schedule = require(path.join(controllers, 'schedule'));
 const track = require(path.join(controllers, 'track'));
 const trackSupervision = require(path.join(controllers, 'trackSupervision'));
 const rangeSupervision = require(path.join(controllers, 'rangeSupervision'));
+const weekview = require(path.join(controllers, 'weekview'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -14,3 +15,4 @@ exports.rangeSupervision = rangeSupervision;
 exports.reservation = reservation;
 exports.schedule = schedule;
 exports.track = track;
+exports.weekview = weekview;

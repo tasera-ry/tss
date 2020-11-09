@@ -168,7 +168,11 @@ router.route('/track/:track_id')
     middlewares.track.delete,
     controllers.track.delete);
 
-// newer get with padded functionality
+router.route('/weekview/:begin')
+  .get(
+    middlewares.weekview.read,
+    controllers.weekview.read);
+
 router.route('/datesupreme/:date')
   .get(oldSchedule.getScheduleDate);
 
