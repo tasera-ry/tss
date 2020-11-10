@@ -8,20 +8,18 @@ const knex = require(path.join(root, 'knex', 'knex'));
 
 const model = {
   /**
-   * Get all the relevant info for the weekview.
+   * Get all the relevant info for a daterange.
    *
-   * @param {object} key - The starting day of the week, { begin }
+   * @param {object} key - The begin and end dates, { begin, end }
    * @param {object} fields - Attributes about the week to select
-   * @return {Promise<object[]>} Days of the week and everything else needed for the weekview
+   * @return {Promise<object[]>} Days of the the daterange and their relevant data
    *
    * @example
    * model.read({ begin: 06-12-2020 })
    */
-  read: async function readScheduleWeek(key, fields) {
+  read: async function readDaterange(key, fields) {
     let from = moment(key['begin']).format('YYYY-MM-DD');
-    let to = moment(key['begin']).add(6, 'days').format('YYYY-MM-DD');
-    console.log(from);
-    console.log(to);
+    let to = moment(key['end']).format('YYYY-MM-DD');
     /*
       Fields
       available (range_supervision)

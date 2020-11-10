@@ -29,6 +29,14 @@ const fields = {
 
     return validatorAdditions(validator, opts);
   },
+  // TODO: add a check for end date to be later than begin
+  end: function endDayValidation(requestObject, ...opts) {
+    const validator = requestObject('end')
+      .isDate()
+      .withMessage('must be a date')
+
+    return validatorAdditions(validator, opts);
+  },
 };
 
 function handleValidationErrors(request, response, next) {
@@ -42,10 +50,19 @@ function handleValidationErrors(request, response, next) {
 }
 
 module.exports = {
-  read: [
+  readWeek: [
     fields.begin(param, 'exists'),
     handleValidationErrors,
     function storeDate(request, response, next) {
+      response.locals.query = matchedData(request, { locations: ['params'] });
+      return next();
+    }
+  ],
+  readFreeform: [
+    fields.begin(param, 'exists'),
+    fields.end(param, 'exists'),
+    handleValidationErrors,
+    function storeDates(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['params'] });
       return next();
     }

@@ -27,7 +27,7 @@ export async function getSchedulingWeek(date) {
     const current = moment(begin);
     const next = moment.prototype.add.bind(current, 1, 'day');
 
-    const resp = await axios.get(`/api/weekview/${moment(begin).format('YYYY-MM-DD')}`);
+    const resp = await axios.get(`/api/daterange/week/${moment(begin).format('YYYY-MM-DD')}`);
 
     /*
     const week = await Promise.all(lodash.times(7, (i) => {

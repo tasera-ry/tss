@@ -168,10 +168,15 @@ router.route('/track/:track_id')
     middlewares.track.delete,
     controllers.track.delete);
 
-router.route('/weekview/:begin')
+router.route('/daterange/week/:begin')
   .get(
-    middlewares.weekview.read,
-    controllers.weekview.read);
+    middlewares.daterange.readWeek,
+    controllers.daterange.read);
+
+router.route('/daterange/freeform/:begin/:end')
+  .get(
+    middlewares.daterange.readFreeform,
+    controllers.daterange.read);
 
 router.route('/datesupreme/:date')
   .get(oldSchedule.getScheduleDate);
