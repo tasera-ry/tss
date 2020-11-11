@@ -12,10 +12,10 @@ import * as utils from '../utils/Utils';
 import Weekview from './Weekview';
 import testUtils from '../_TestUtils/TestUtils';
 
+const { date, week, schedule } = testUtils;
+
 describe('testing weekview', () => {
   it('should render weekView', async () => {
-    const { date, week, schedule } = testUtils;
-
     utils.getSchedulingWeek = jest.fn(() => week);
     utils.getSchedulingDate = jest.fn(() => schedule);
     const state = {
