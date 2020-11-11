@@ -256,7 +256,6 @@ const TrackCRUD = () => {
       if (logInSuccess) {
         try {
           const response = await axios.get('/api/track');
-
           setTrackData(response.data);
         } catch (e) {
           // /api/track returns 404 when no tracks are set, should be fixed in
