@@ -55,9 +55,8 @@ const serviceCalls = {
 
       // handle known errors unknown user and incorrect password with a
       // response
-      if(e.name === 'Unknown user' || e.name === 'Incorrect password') {
+      if(e.name === 'Invalid credentials') {
         return response
-          //.set('WWW-Authenticate', 'Basic')
           .status(401)
           .send({
             error: e.message

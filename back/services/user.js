@@ -28,8 +28,8 @@ const service = {
     }, ['id', 'digest']);
 
     if(users.length === 0) {
-      const err = Error('Username didn\'t match any users');
-      err.name = 'Unknown user';
+      const err = Error('Invalid credentials');
+      err.name = 'Invalid credentials';
       throw err;
     }
 
@@ -39,8 +39,8 @@ const service = {
       .compare(credentials.password, user.digest.toString());
 
     if(passwordMatches === false) {
-      const err = Error('Password was incorrect');
-      err.name = 'Incorrect password';
+      const err = Error('Invalid credentials');
+      err.name = 'Invalid credentials';
       throw err;
     }
 
