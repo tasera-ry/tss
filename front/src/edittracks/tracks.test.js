@@ -69,30 +69,27 @@ describe('testing TrackCRUD component', () => {
     await waitFor(() => expect(axios.put).toHaveBeenCalled());
   });
   // it('should add new track in list and call axios post', async () => {
-  //   axios.get = jest.fn(() => Promise.resolve(data));
-  //   axios.post = jest.fn(() => Promise.resolve());
-
-  //   await act(async () => {
-  //     localStorage.setItem('language', '1');
-  //     render(
-  //       <Router>
-  //         <TrackCRUD
-  //           axios={axios}
-  //         />
-  //       </Router>,
-  //     );
-  //   });
-  //   fireEvent.click(screen.getByTitle('Edit'));
-  //   fireEvent.change(screen.getByPlaceholderText('Short description'), {
-  //     target: {
-  //       value: 'new short description',
-  //     },
-  //   });
-  //   fireEvent.click(screen.getByTitle('Save'));
-  //   await waitFor(() => expect(screen.getByText('new short description')).toBeInTheDocument());
-  //   await waitFor(() => expect(axios.put).toHaveBeenCalled());
-  // });
-  // it('should remove deleted track in list and call axios delete', async () => {
 
   // });
+  it('should remove deleted track in list and call axios delete', async () => {
+    axios.get = jest.fn(() => Promise.resolve(data));
+    axios.delete = jest.fn();
+    localStorage.setItem('language', '1');
+
+    await act(async () => {
+      render(
+        <Router>
+          <TrackCRUD
+            axios={axios}
+          />
+        </Router>,
+      );
+    });
+    fireEvent.click(screen.getByTitle('Delete'));
+    fireEvent.click(screen.getByTitle('Save'));
+
+    await waitFor(() => expect(screen.queryByText('Shooting Track 0')).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByText('Rata poistettu')).toBeInTheDocument());
+    await waitFor(() => expect(axios.delete).toHaveBeenCalled());
+  });
 });
