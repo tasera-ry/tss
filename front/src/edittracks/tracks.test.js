@@ -12,8 +12,6 @@ import { act } from 'react-dom/test-utils';
 import TrackCRUD from './tracks';
 import * as utils from '../utils/Utils';
 
-jest.mock('axios');
-
 const mockTracks = [
   {
     id: 1,
@@ -26,12 +24,21 @@ const mockTracks = [
 const data = { data: mockTracks };
 utils.validateLogin = jest.fn(() => true);
 
+axios.get = jest.fn(() => Promise.resolve(data));
+axios.put = jest.fn(() => Promise.resolve());
+axios.delete = jest.fn(() => Promise.resolve());
+axios.post = jest.fn((url, postable) => {
+  if (postable.name === undefined) {
+    return (Promise.reject());
+  }
+  return Promise.resolve({ data: { ...postable, id: 2 } });
+});
+
+localStorage.setItem('language', '1');
+
 describe('testing TrackCRUD component', () => {
   it('should render TrackCRUD', async () => {
-    axios.get = jest.fn(() => Promise.resolve(data));
-
     await act(async () => {
-      localStorage.setItem('language', '1');
       render(
         <Router>
           <TrackCRUD
@@ -39,17 +46,12 @@ describe('testing TrackCRUD component', () => {
           />
         </Router>,
       );
+      await waitFor(() => expect(screen.getByText('Shooting Track 0')).toBeInTheDocument());
     });
-    await waitFor(() => expect(screen.getByText('Shooting Track 0'))
-      .toBeInTheDocument());
   });
 
   it('should show modified track in list and call axios post', async () => {
-    axios.get = jest.fn(() => Promise.resolve(data));
-    axios.put = jest.fn(() => Promise.resolve());
-
     await act(async () => {
-      localStorage.setItem('language', '1');
       render(
         <Router>
           <TrackCRUD
@@ -57,25 +59,21 @@ describe('testing TrackCRUD component', () => {
           />
         </Router>,
       );
+      await waitFor(() => expect(screen.getByTitle('Edit')).toBeInTheDocument());
+      fireEvent.click(screen.getByTitle('Edit'));
+      await waitFor(() => expect(screen.getByPlaceholderText('Short description')).toBeInTheDocument());
+      fireEvent.change(screen.getByPlaceholderText('Short description'), {
+        target: {
+          value: 'new short description',
+        },
+      });
+      await waitFor(() => expect(screen.getByTitle('Save')).toBeInTheDocument());
+      fireEvent.click(screen.getByTitle('Save'));
+      await waitFor(() => expect(screen.getByText('new short description')).toBeInTheDocument());
     });
-    fireEvent.click(screen.getByTitle('Edit'));
-    fireEvent.change(screen.getByPlaceholderText('Short description'), {
-      target: {
-        value: 'new short description',
-      },
-    });
-    fireEvent.click(screen.getByTitle('Save'));
-    await waitFor(() => expect(screen.getByText('new short description')).toBeInTheDocument());
-    await waitFor(() => expect(axios.put).toHaveBeenCalled());
   });
-  // it('should add new track in list and call axios post', async () => {
 
-  // });
-  it('should remove deleted track in list and call axios delete', async () => {
-    axios.get = jest.fn(() => Promise.resolve(data));
-    axios.delete = jest.fn();
-    localStorage.setItem('language', '1');
-
+  it('should add new track in list and call axios post', async () => {
     await act(async () => {
       render(
         <Router>
@@ -84,12 +82,70 @@ describe('testing TrackCRUD component', () => {
           />
         </Router>,
       );
+      await waitFor(() => expect(screen.getByText('Shooting Track 0')).toBeInTheDocument());
+      await waitFor(() => expect(screen.getByTitle('Add')).toBeInTheDocument());
+      fireEvent.click(screen.getByTitle('Add'));
+      await waitFor(() => expect(screen.getByPlaceholderText('Name')).toBeInTheDocument());
+      fireEvent.change(screen.getByPlaceholderText('Name'), {
+        target: {
+          value: 'new name',
+        },
+      });
+      fireEvent.change(screen.getByPlaceholderText('Description'), {
+        target: {
+          value: 'new description',
+        },
+      });
+      fireEvent.change(screen.getByPlaceholderText('Short description'), {
+        target: {
+          value: 'new short description',
+        },
+      });
+      await waitFor(() => expect(screen.getByPlaceholderText('Name').value).toBe('new name'));
+      await waitFor(() => expect(screen.getByTitle('Save')).toBeInTheDocument());
+      fireEvent.click(screen.getByTitle('Save'));
+      await waitFor(() => expect(axios.post).toHaveBeenCalled());
+      await waitFor(() => expect(screen.getByText('new name')).toBeInTheDocument());
     });
-    fireEvent.click(screen.getByTitle('Delete'));
-    fireEvent.click(screen.getByTitle('Save'));
+  });
 
-    await waitFor(() => expect(screen.queryByText('Shooting Track 0')).not.toBeInTheDocument());
-    await waitFor(() => expect(screen.queryByText('Rata poistettu')).toBeInTheDocument());
-    await waitFor(() => expect(axios.delete).toHaveBeenCalled());
+  it('should remove deleted track in list and call axios delete', async () => {
+    await act(async () => {
+      render(
+        <Router>
+          <TrackCRUD
+            axios={axios}
+          />
+        </Router>,
+      );
+      await waitFor(() => expect(screen.getByText('Shooting Track 0')).toBeInTheDocument());
+      fireEvent.click(screen.getByTitle('Delete'));
+      await waitFor(() => expect(screen.getByTitle('Save')).toBeInTheDocument());
+      fireEvent.click(screen.getByTitle('Save'));
+
+      await waitFor(() => expect(screen.queryByText('Shooting Track 0')).not.toBeInTheDocument());
+      await waitFor(() => expect(screen.queryByText('Rata poistettu')).toBeInTheDocument());
+      await waitFor(() => expect(axios.delete).toHaveBeenCalled());
+    });
+  });
+
+  it('should fail if no info given when adding track', async () => {
+    await act(async () => {
+      render(
+        <Router>
+          <TrackCRUD
+            axios={axios}
+          />
+        </Router>,
+      );
+      await waitFor(() => expect(screen.getByText('Shooting Track 0')).toBeInTheDocument());
+      await waitFor(() => expect(screen.getByTitle('Add')).toBeInTheDocument());
+      fireEvent.click(screen.getByTitle('Add'));
+      await waitFor(() => expect(screen.getByPlaceholderText('Name')).toBeInTheDocument());
+      await waitFor(() => expect(screen.getByTitle('Save')).toBeInTheDocument());
+      fireEvent.click(screen.getByTitle('Save'));
+      await waitFor(() => expect(axios.post).toHaveBeenCalled());
+      await waitFor(() => expect(screen.getByText('Radan lisäys epäonnistui')).toBeInTheDocument());
+    });
   });
 });
