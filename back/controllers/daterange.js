@@ -55,7 +55,7 @@ const controller = {
           notice: instance['notice'],
           scheduled_range_supervision_id: instance['scheduled_range_supervision_id'],
           track_id: instance['track_id'],
-          track_supervisor: instance['track_supervisor'],
+          track_supervisor: !instance['track_supervisor'] ? "absent" : instance['track_supervisor'],
           updated_at: instance['updated_at']
         }
       })
@@ -70,7 +70,7 @@ const controller = {
         date: moment(day['date']).format('YYYY-MM-DD'),
         open: day['open'],
         rangeId: config.development.range_id,
-        rangeSupervision: !day['available'] ? 'closed' : day['range_supervisor'],
+        rangeSupervision: !day['available'] ? 'closed' : (!day['range_supervisor'] ? "absent" : day['range_supervisor']),
         rangeSupervisionScheduled: !!day['range_supervisor'],
         rangeSupervisorId: day['supervisor_id'],
         reservationId: day['range_reservation_id'],
