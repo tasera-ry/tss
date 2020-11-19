@@ -27,4 +27,7 @@ describe('testing scheduling', () => {
     await waitFor(() => expect(screen.getByText('Save changes'))
       .toBeInTheDocument());
   });
+  // it('should open range', async () => {
+
+  // });
 });

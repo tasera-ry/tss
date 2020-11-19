@@ -47,6 +47,7 @@ const elementStyle = {
 };
 
 const SideMenu = ({ setName, superuser, setLoggingOut }) => {
+  const fin = localStorage.getItem('language'); // eslint-disable-line
   const styles = useStyles();
   const [menu, setMenu] = useState({ right: false });
   const [openDial, setOpenDial] = useState(false);
