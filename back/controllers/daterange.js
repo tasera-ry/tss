@@ -79,6 +79,13 @@ const controller = {
       }
     });
 
+    finalQR.sort((a, b) => {
+      if (a.date < b.date) {
+        return -1;
+      }
+      return 1;
+    });
+
     return response
       .status(200)
       .send(finalQR);
