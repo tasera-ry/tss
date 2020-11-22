@@ -18,7 +18,7 @@ exports.seed = async function(knex) {
       .map(async ({id}) => casual.range(id))
   );
 
-  const generateSpinner = ora.promise(
+  ora.promise(
     generateTracks,
     `Generating ${ranges} ranges * ${tracks} tracks = ${total} tracks`
   );
@@ -30,8 +30,8 @@ exports.seed = async function(knex) {
       .map(async (trackChunk) => knex('track').insert(trackChunk))
   );
 
-  const insertSpinner = ora.promise(insertTracks, 'Inserting tracks');
-  const response = await insertTracks;
+  ora.promise(insertTracks, 'Inserting tracks');
+  await insertTracks;
 };
 
 // these strings only for test purposes?

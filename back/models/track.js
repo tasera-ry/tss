@@ -1,7 +1,6 @@
 /* TODO
  * Replace validations with validator.js
  */
-const _ = require('lodash');
 const validate = require('validate.js');
 
 const path = require('path');

@@ -34,9 +34,9 @@ const serviceCalls = {
 exports.readWeek = [
   validators.daterange.readWeek,
   serviceCalls.readWeek
-]
+];
 
 exports.readFreeform = [
   validators.daterange.readFreeform,
   serviceCalls.readFreeform
-]
+];

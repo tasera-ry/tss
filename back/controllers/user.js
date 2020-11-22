@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const _ = require('lodash');
 
 const path = require('path');
 const root = path.join(__dirname, '..');
@@ -37,12 +36,6 @@ const controller = {
   , create: async function createUser(request, response) {
     return response
       .status(201)
-      .send(response.locals.queryResult);
-  }
-
-  , read: async function readUser(request, response) {
-    return response
-      .status(200)
       .send(response.locals.queryResult);
   }
 

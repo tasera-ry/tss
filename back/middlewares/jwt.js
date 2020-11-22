@@ -35,7 +35,7 @@ exports.validate = [
       // Removing bearer_ from the auth headers to get only token
       let token = request.headers.authorization.slice(7);
 
-      jwt.verify(token, config.jwt.secret, (err, decoded) => {
+      jwt.verify(token, config.jwt.secret, (err, decoded) => { // eslint-disable-line
         if (err) {
           response.status(403);
           return next(err);

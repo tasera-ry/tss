@@ -203,67 +203,6 @@ class UserManagementView extends Component {
   }
 
   /**
-    **  FUNCTIONS
-    */
-
-  // Opens warning for removing user
-  async onRemoveClick(e) {
-    await this.setState({
-      selectedROWID: e.currentTarget.id,
-    });
-    const name = this.findUserName();
-    this.setState({
-      selectedUserName: name,
-      openRemoveWarning: true,
-    });
-  }
-
-  // Opens dialog for changing password for some1 else
-  async onChangePassClick(e) {
-    await this.setState({
-      selectedROWID: e.currentTarget.id,
-    });
-    const name = this.findUserName();
-    this.setState({
-      selectedUserName: name,
-      changePassDialogOpen: true,
-    });
-  }
-
-  /**
-    **ALGORITHMS
-    */
-
-  // Finds username for selectedROWID in state
-  findUserName() {
-    this.state.userList.forEach((user) => { // eslint-disable-line
-      if (user.id === this.state.selectedROWID) {
-        return user.name;
-      }
-    });
-    return 'Username not found';
-  }
-
-  // Finds users id by selectedROWID in state
-  findUserId() {
-    this.state.userList.forEach((user) => { // eslint-disable-line
-      if (user.id === this.state.selectedROWID) {
-        return user.id;
-      }
-    });
-    return undefined;
-  }
-
-  // finds logged in users id
-  findOwnID() { // eslint-disable-line
-    this.state.userList.forEach((user) => { // eslint-disable-line
-      if (localStorage.taseraUserName === user.name) {
-        return user.id;
-      }
-    });
-  }
-
-  /**
     **  HANDLE DIALOGS
     **  opening and closings
     */
@@ -479,6 +418,67 @@ class UserManagementView extends Component {
   handleNewuserPassChange(e) {
     this.setState({
       newUserPass: e.target.value,
+    });
+  }
+
+  /**
+    **  FUNCTIONS
+    */
+
+  // Opens warning for removing user
+  async onRemoveClick(e) {
+    await this.setState({
+      selectedROWID: e.currentTarget.id,
+    });
+    const name = this.findUserName();
+    this.setState({
+      selectedUserName: name,
+      openRemoveWarning: true,
+    });
+  }
+
+  // Opens dialog for changing password for some1 else
+  async onChangePassClick(e) {
+    await this.setState({
+      selectedROWID: e.currentTarget.id,
+    });
+    const name = this.findUserName();
+    this.setState({
+      selectedUserName: name,
+      changePassDialogOpen: true,
+    });
+  }
+
+  /**
+    **ALGORITHMS
+    */
+
+  // Finds username for selectedROWID in state
+  findUserName() {
+    this.state.userList.forEach((user) => { // eslint-disable-line
+      if (user.id === this.state.selectedROWID) {
+        return user.name;
+      }
+    });
+    return 'Username not found';
+  }
+
+  // Finds users id by selectedROWID in state
+  findUserId() {
+    this.state.userList.forEach((user) => { // eslint-disable-line
+      if (user.id === this.state.selectedROWID) {
+        return user.id;
+      }
+    });
+    return undefined;
+  }
+
+  // finds logged in users id
+  findOwnID() { // eslint-disable-line
+    this.state.userList.forEach((user) => { // eslint-disable-line
+      if (localStorage.taseraUserName === user.name) {
+        return user.id;
+      }
     });
   }
 
