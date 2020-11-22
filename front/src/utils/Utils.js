@@ -1,5 +1,4 @@
 import moment from 'moment';
-import lodash from 'lodash';
 import axios from 'axios';
 
 export async function getSchedulingDate(date) {
@@ -25,7 +24,7 @@ export async function getSchedulingWeek(date) {
     const end = moment(date, 'YYYY-MM-DD').endOf('isoWeek');
 
     const current = moment(begin);
-    const next = moment.prototype.add.bind(current, 1, 'day');
+    moment.prototype.add.bind(current, 1, 'day');
 
     const resp = await axios.get(`/api/daterange/week/${moment(begin).format('YYYY-MM-DD')}`);
 

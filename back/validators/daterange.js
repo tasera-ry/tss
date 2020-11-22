@@ -1,6 +1,4 @@
 const {
-  body,
-  query,
   param,
   validationResult,
   matchedData
@@ -25,7 +23,7 @@ const fields = {
   begin: function beginDayValidation(requestObject, ...opts) {
     const validator = requestObject('begin')
       .isDate()
-      .withMessage('must be a date')
+      .withMessage('must be a date');
 
     return validatorAdditions(validator, opts);
   },
@@ -33,7 +31,7 @@ const fields = {
   end: function endDayValidation(requestObject, ...opts) {
     const validator = requestObject('end')
       .isDate()
-      .withMessage('must be a date')
+      .withMessage('must be a date');
 
     return validatorAdditions(validator, opts);
   },

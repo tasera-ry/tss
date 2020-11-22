@@ -4,7 +4,6 @@ const root = path.join(__dirname, '..');
 const models = require(path.join(root, 'models'));
 const config = require(path.join(root, 'config', 'config'));
 
-const validate = require('validate.js');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
 
@@ -67,14 +66,13 @@ const service = {
    * Read (a) users' info.
    *
    * @param {object} key - The query information, {} returns all users.
-   * @param {string[]} fields - Users' fields to return
    *
    * @return {Promise<object[]>} List of users matching the query
    *
    * @example
    * exports.read({ role: 'supervisor' }) - Find all supervisors
    */
-  read: async function readUser(key, fields) {
+  read: async function readUser(key) {
     return (await models.user.read(_.pick(key, 'id', 'name', 'role', 'phone')))
       .map(_.partialRight(_.omit, 'digest', 'user_id'));
   },

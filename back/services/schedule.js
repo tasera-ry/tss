@@ -2,7 +2,6 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 const models = require(path.join(root, 'models'));
 const _ = require('lodash');
-const moment = require('moment');
 
 /**
  * Create a new schedule item.
