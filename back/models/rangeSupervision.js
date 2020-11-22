@@ -1,8 +1,8 @@
-const path = require('path')
-const root = path.join(__dirname, '..')
-const knex = require(path.join(root, 'knex', 'knex'))
-const _ = require('lodash')
-const validate = require('validate.js')
+const path = require('path');
+const root = path.join(__dirname, '..');
+const knex = require(path.join(root, 'knex', 'knex'));
+const _ = require('lodash');
+const validate = require('validate.js');
 
 const model = {
   /**
@@ -19,28 +19,28 @@ const model = {
       scheduled_range_supervision_id: {},
       range_supervisor: {},
       notice: {}
-    }
+    };
 
     //check if already exists
     const id = await model
       .read(supVis, ['scheduled_range_supervision_id'])
-      .then(rows => rows[0])
+      .then(rows => rows[0]);
 
     if(id) {
-      const err = Error('Supervision event already exists')
-      err.name = 'Supervision exists'
-      throw err
+      const err = Error('Supervision event already exists');
+      err.name = 'Supervision exists';
+      throw err;
     }
 
-    const general = validate.cleanAttributes(supVis, supervisionConstraints)
+    const general = validate.cleanAttributes(supVis, supervisionConstraints);
 
     return await knex.transaction(trx => {
       return trx
         .returning('scheduled_range_supervision_id')
         .insert(general)
         .into('range_supervision')
-        .catch(trx.rollback)
-    })
+        .catch(trx.rollback);
+    });
   },
 
   /**
@@ -56,7 +56,7 @@ const model = {
   read: async function readSupervision(key, fields) {
     return knex('range_supervision')
       .where(key)
-      .select(fields)
+      .select(fields);
   },
 
   // might need optimization? select should be at the top
@@ -81,7 +81,7 @@ const model = {
       .leftJoin('range_reservation', 'scheduled_range_supervision.range_reservation_id', 'range_reservation.id')
       .where({ 'user.id': key['id'] })
       .where('range_reservation.date', '>=', currentDate)
-      .select(fields)
+      .select(fields);
   },
 
   /**
@@ -96,24 +96,24 @@ const model = {
    * model.update({ scheduled_range_supervision_id:1 }, { range_supervisor: 'absent' })
    */
   update: async function updateSupervision(current, update) {
-    const supVis = _.pick(update, 'range_supervisor', 'notice')
+    const supVis = _.pick(update, 'range_supervisor', 'notice');
 
     const id = await model
-          .read(current, ['scheduled_range_supervision_id'])
-          .then(rows => rows[0])
+      .read(current, ['scheduled_range_supervision_id'])
+      .then(rows => rows[0]);
 
     if(!id) {
-      const err = Error('Didn\'t identify supervision(s) to update')
-      err.name = 'Unknown supervision'
-      throw err
+      const err = Error('Didn\'t identify supervision(s) to update');
+      err.name = 'Unknown supervision';
+      throw err;
     }
 
     return await knex.transaction(trx => {
       return trx('range_supervision')
         .where(id)
         .update(supVis)
-        .catch(trx.rollback)
-    })
+        .catch(trx.rollback);
+    });
   },
 
   /**
@@ -131,9 +131,9 @@ const model = {
         .where(supVis)
         .del()
         .then(trx.commit)
-        .catch(trx.rollback)
-    })
+        .catch(trx.rollback);
+    });
   }
-}
+};
 
-module.exports = model
+module.exports = model;

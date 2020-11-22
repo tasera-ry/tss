@@ -1,8 +1,8 @@
-const path = require('path')
-const root = path.join(__dirname, '..', '..', '..')
-const config = require(path.join(root, 'config'))
+const path = require('path');
+const root = path.join(__dirname, '..', '..', '..');
+const config = require(path.join(root, 'config'));
 
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
 
 const users = [
   {
@@ -11,11 +11,11 @@ const users = [
     role: 'supervisor'
   },
   {
-      name:'superuser',
-      digest: bcrypt.hashSync('hallinto-hilda', config.bcrypt.hashRounds),
-      role: 'superuser'
-    }
-]
+    name:'superuser',
+    digest: bcrypt.hashSync('hallinto-hilda', config.bcrypt.hashRounds),
+    role: 'superuser'
+  }
+];
 
 exports.seed = function(knex) {
   return knex('user')
@@ -28,10 +28,10 @@ exports.seed = function(knex) {
           return {
             user_id: id,
             phone: undefined
-          }
-      })
+          };
+        });
     }).then(supervisors => {
       return knex('supervisor')
-        .insert(supervisors)
-    })
-}
+        .insert(supervisors);
+    });
+};

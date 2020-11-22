@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 
-import './tracks.css'
+import './tracks.css';
 
 // Material UI components
 import ScopedCssBaseline from '@material-ui/core/ScopedCssBaseline';
@@ -11,7 +11,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MaterialTable from 'material-table';
 
 // Translations
-import * as l10nLines from '../texts/texts.json';
 
 import lodash from 'lodash';
 
@@ -19,7 +18,6 @@ import lodash from 'lodash';
 import axios from 'axios';
 
 // Icon setup
-import { forwardRef } from 'react';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -35,9 +33,10 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import * as l10nLines from '../texts/texts.json';
 
 // Token validation
-import { validateLogin } from "../utils/Utils";
+import { validateLogin } from '../utils/Utils';
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -56,25 +55,20 @@ const tableIcons = {
   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
   SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
   ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
 
-// Translations
-const l10n = l10nLines.tracks;
-const lang = localStorage.getItem("language");
-
 const tableStyle = {
-  backgroundColor: "#f2f0eb"
-}
+  backgroundColor: '#f2f0eb',
+};
 const headerStyle = {
-  backgroundColor: "#ebe7df"
-}
+  backgroundColor: '#ebe7df',
+};
 
 /* Get first element of an array */
 
-const RequestStatusAlert = ({statusSetter, requestStatus, text}) => {
-  if(requestStatus === null)
-  {
+const RequestStatusAlert = ({ statusSetter, requestStatus, text }) => {
+  if (requestStatus === null) {
     return <></>;
   }
   return (
@@ -84,209 +78,201 @@ const RequestStatusAlert = ({statusSetter, requestStatus, text}) => {
       </Alert>
     </Snackbar>
   );
-}
+};
 
-const MaybeProgress = ({finished}) => finished 
-      ? <></>
-      : <LinearProgress variant="query" />;
-
+const MaybeProgress = ({ finished }) => (finished
+  ? <></>
+  : <LinearProgress variant="query" />);
 
 /*
   Main table for showing track information
   Parts commented out = adding or removing tracks.
 */
-const TrackTable = ({setTrackData, trackData, setRequestStatus, setRequestText, opts}) => {
-  return (
-    <MaterialTable
-      style={tableStyle}
-      localization={{
-        pagination: {
-          nextTooltip: l10n.nextTooltip[lang],
-          previousTooltip: l10n.previousTooltip[lang],
-          firstTooltip: l10n.firstTooltip[lang],
-          lastTooltip: l10n.lastTooltip[lang],
-          labelDisplayedRows: l10n.pagination[lang],
-          labelRowsSelect: l10n.labelRowsSelect[lang]
-        }
-        , header: {
-          actions: l10n.tableHeaderActions[lang],
-          cellStyle: {backgroundColor: "#f2f0eb"}
-        }
-        , toolbar: {
-          searchPlaceholder: l10n.searchPlaceholder[lang]
-        }
-        , body: {
-          emptyDataSourceMessage: l10n.emptyDataSourceMessage[lang],
-          editTooltip: l10n.editTooltip[lang],
-          editRow: {
-            saveTooltip: l10n.saveTooltip[lang],
-            cancelTooltip: l10n.cancelTooltip[lang]
-          }
-        }
-      }}
-      // Other views only support viewing 7 tracks, so no adding or deleting
-      // tracks.
-      editable={{
-        // onRowAdd: ({name, description}) => {
-        //   return new Promise(async (resolve, reject) => {
-        //     try
-        //     {
-        //       const response = await axios.post(
-        //         '/api/track'
-        //         , {name: name
-        //            , description: description
-        //            , range_id: trackData[0].range_id
-        //           }, opts)
-        //       setTrackData(trackData.concat(response.data))
-        //       setRequestStatus('success')
-        //       setRequestText('Rata lisätty')
-        //       resolve()
-        //     }
-        //     catch(e)
-        //     {
-        //       setRequestStatus('error')
-        //       setRequestText('Radan lisäys epäonnistui')
-        //       reject()
-        //     }
-        //   })
-        // }
-        onRowUpdate: (newData, oldData) => {
-          return new Promise(async (resolve, reject) => {
-            resolve()
-            const trackInfo = trackData
-                  .filter(track => track.name === oldData.name
-                          && track.description === oldData.description)[0]
-
-            if(trackInfo === undefined)
+const TrackTable = ({
+  setTrackData,
+  trackData,
+  setRequestStatus,
+  setRequestText,
+  opts,
+  l10n,
+  lang,
+}) => (
+  <MaterialTable
+    style={tableStyle}
+    localization={{
+      pagination: {
+        nextTooltip: l10n.nextTooltip[lang],
+        previousTooltip: l10n.previousTooltip[lang],
+        firstTooltip: l10n.firstTooltip[lang],
+        lastTooltip: l10n.lastTooltip[lang],
+        // labelDisplayedRows: l10n.pagination[lang],
+        labelRowsSelect: l10n.labelRowsSelect[lang],
+      },
+      header: {
+        actions: l10n.tableHeaderActions[lang],
+        cellStyle: { backgroundColor: '#f2f0eb' },
+      },
+      toolbar: {
+        searchPlaceholder: l10n.searchPlaceholder[lang],
+      },
+      body: {
+        emptyDataSourceMessage: l10n.emptyDataSourceMessage[lang],
+        editTooltip: l10n.editTooltip[lang],
+        editRow: {
+          saveTooltip: l10n.saveTooltip[lang],
+          cancelTooltip: l10n.cancelTooltip[lang],
+        },
+      },
+    }}
+    // Editing tracks
+    editable={{
+      onRowAdd: ({ name, description, short_description }) => new Promise(async (resolve, reject) => { // eslint-disable-line
+        try {
+          const response = await axios.post(
+            '/api/track',
             {
-              setRequestStatus('error')
-              setRequestText(l10n.rowUpdateFail[lang])
-              reject()
-            }
-
-            try
-            {
-              const response = await axios.put(
-                `/api/track/${trackInfo.id}`
-                , newData
-                , opts)
-              const modified = trackData.filter(track => track.id !== trackInfo.id)
-                    .concat(Object.assign({}, trackInfo, newData))
-              setTrackData(modified)
-              setRequestStatus('success')
-              setRequestText(l10n.rowUpdateSuccess[lang])
-            }
-            catch(e)
-            {
-              setRequestStatus('error')
-              setRequestText(l10n.rowUpdateFail[lang])
-              reject()
-            }
-            resolve()
-          })
+              name,
+              description,
+              short_description,
+              range_id: trackData[0].range_id,
+            }, opts,
+          );
+          setTrackData(trackData.concat(response.data));
+          setRequestStatus('success');
+          setRequestText('Rata lisätty');
+          resolve();
+        } catch (e) {
+          setRequestStatus('error');
+          setRequestText('Radan lisäys epäonnistui');
+          reject();
         }
-        // , onRowDelete: ({name, description}) => {
-        //   return new Promise(async (resolve, reject) => {
+      })
+      , onRowUpdate: (newData, oldData) => new Promise(async (resolve, reject) => { // eslint-disable-line
+        resolve();
+        const trackInfo = trackData
+          .filter((track) => track.name === oldData.name
+                          && track.short_description === oldData.short_description
+                          && track.description === oldData.description)[0];
 
-        //     const trackInfo = trackData
-        //           .filter(track => track.name === name
-        //                   && track.description === description)
-        //           .head()
+        if (trackInfo === undefined) {
+          setRequestStatus('error');
+          setRequestText(l10n.rowUpdateFail[lang]);
+          reject();
+        }
 
-        //     // Should never happen
-        //     if(trackInfo === undefined)
-        //     {
-        //       setRequestStatus('error')
-        //       setRequestText('Radan poisto epäonnistui')
-        //       reject()
-        //     }
+        try {
+          await axios.put(
+            `/api/track/${trackInfo.id}`,
+            newData,
+            opts,
+          );
+          const modified = trackData.filter((track) => track.id !== trackInfo.id)
+            .concat({ ...trackInfo, ...newData });
+          setTrackData(modified);
+          setRequestStatus('success');
+          setRequestText(l10n.rowUpdateSuccess[lang]);
+        } catch (e) {
+          setRequestStatus('error');
+          setRequestText(l10n.rowUpdateFail[lang]);
+          reject();
+        }
+        resolve();
+      }),
+      onRowDelete: ({ name, description }) => new Promise(async (resolve, reject) => { // eslint-disable-line
+        const trackInfo = trackData
+          .filter((track) => track.name === name
+                  && track.description === description)[0];
 
-        //     try
-        //     {
-        //       const response = await axios.delete(`/api/track/${trackInfo.id}`, opts)
-        //       setTrackData(trackData.filter(track => track.id !== trackInfo.id))
-        //       setRequestStatus('success')
-        //       setRequestText('Rata poistettu')
-        //       resolve()
-        //     }
-        //     catch(e)
-        //     {
-        //       setRequestStatus('error')
-        //       setRequestText('Radan poisto epäonnistui')
-        //       reject()
-        //     }
+        // Should never happen
+        if (trackInfo === undefined) {
+          setRequestStatus('error');
+          setRequestText('Radan poisto epäonnistui');
+          reject();
+        }
 
-        //   })
-        // }
-      }}
-      options={{
-        pageSize: 10,
-        headerStyle: headerStyle
-      }}
-      icons={tableIcons}
-      columns={[
-        { title: l10n.tableHeaderName[lang],
-          field: 'name' ,
-          headerStyle: headerStyle},
-        { title: l10n.tableHeaderDescription[lang],
-          field: 'description',
-          headerStyle: headerStyle },
-        { title: l10n.tableHeaderShort[lang],
-          field: 'short_description',
-          headerStyle: headerStyle },
-      ]}
-      data={trackData}
-      title={ l10n.tableTitle[lang] }
-    />
-  );
-};
+        try {
+          const response = await axios.delete(`/api/track/${trackInfo.id}`, opts); // eslint-disable-line
+          setTrackData(trackData.filter((track) => track.id !== trackInfo.id));
+          setRequestStatus('success');
+          setRequestText('Rata poistettu');
+          resolve();
+        } catch (e) {
+          setRequestStatus('error');
+          setRequestText('Radan poisto epäonnistui');
+          reject();
+        }
+      }),
+    }}
+    options={{
+      pageSize: 10,
+      headerStyle,
+    }}
+    icons={tableIcons}
+    columns={[
+      {
+        title: l10n.tableHeaderName[lang],
+        field: 'name',
+        headerStyle,
+      },
+      {
+        title: l10n.tableHeaderDescription[lang],
+        field: 'description',
+        headerStyle,
+      },
+      {
+        title: l10n.tableHeaderShort[lang],
+        field: 'short_description',
+        headerStyle,
+      },
+    ]}
+    data={trackData}
+    title={l10n.tableTitle[lang]}
+  />
+);
 
 const TrackCRUD = () => {
   const [trackData, setTrackData] = useState([]);
   const [initFinished, setInitFinished] = useState(false);
   const [requestStatus, setRequestStatus] = useState(null);
   const [requestText, setRequestText] = useState(null);
-  const [rangeData, setRangeData] = useState([]);
 
-  const partialFetch = lodash.partial(fetch, '/api/track');
+  const partialFetch = lodash.partial(fetch, '/api/track'); // eslint-disable-line
 
-  const isSuperuser = localStorage.getItem('role') === 'superuser';
   const token = localStorage.getItem('token');
 
   const opts = {
     headers: {
-      Authorization: `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   };
+
+  function RedirectToWeekview() {
+    window.location.href = '/';
+  }
 
   useEffect(() => {
     (async () => {
-      let logInSuccess = await validateLogin();
+      const logInSuccess = await validateLogin();
       if (logInSuccess) {
-        try
-        {
-          let response = await axios.get('/api/track');
+        try {
+          const response = await axios.get('/api/track');
 
           setTrackData(response.data);
-        }
-        catch(e)
-        {
+        } catch (e) {
           // /api/track returns 404 when no tracks are set, should be fixed in
           // server code
           setTrackData([]);
         }
         setInitFinished(true);
-      }
-      else {
+      } else {
         RedirectToWeekview();
       }
-    })()
+    })();
   }, [initFinished]);
 
-  function RedirectToWeekview(){
-    window.location.href="/";
-  };
-
+  // Translations
+  const l10n = l10nLines.tracks;
+  const lang = localStorage.getItem('language');
 
   return (
     <ScopedCssBaseline>
@@ -297,14 +283,19 @@ const TrackCRUD = () => {
           trackData={trackData}
           setRequestStatus={setRequestStatus}
           setRequestText={setRequestText}
-          opts={opts} />
+          opts={opts}
+          l10n={l10n}
+          lang={lang}
+        />
         <RequestStatusAlert
           statusSetter={setRequestStatus}
           requestStatus={requestStatus}
           text={requestText}
-          textSetter={setRequestText} />
+          textSetter={setRequestText}
+        />
       </Container>
-    </ScopedCssBaseline>);
+    </ScopedCssBaseline>
+  );
 };
 
 export default TrackCRUD;

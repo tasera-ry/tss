@@ -243,17 +243,17 @@ const reservations = [
     date: '2020-04-30',
     available: true
   }
-]
+];
 
 exports.seed = function(knex) {
   return knex('range')
-  .where({
-    name: 'SATLSTO:n ampumarata'
-  }).select('id')
-  .then(ranges => {
-    const range_id = ranges.pop().id
-    reservations.forEach(reservation => reservation.range_id = range_id)
-    return knex('range_reservation')
-      .insert(reservations)
-  })
-}
+    .where({
+      name: 'SATLSTO:n ampumarata'
+    }).select('id')
+    .then(ranges => {
+      const range_id = ranges.pop().id;
+      reservations.forEach(reservation => reservation.range_id = range_id);
+      return knex('range_reservation')
+        .insert(reservations);
+    });
+};

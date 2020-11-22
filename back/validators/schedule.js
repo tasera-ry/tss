@@ -1,59 +1,59 @@
-const validate = require('express-validator')
-const moment = require('moment')
+const validate = require('express-validator');
+const moment = require('moment');
 
 function supplement(validator, opts) {
   if(opts.exists) {
     return validator
-      .exists()
+      .exists();
   }
 
   if(opts.optional) {
     return validator
-      .optional()
+      .optional();
   }
 
-  return validator
+  return validator;
 }
 
 function idValidator(requestObject, opts, name) {
   const validator = requestObject(name)
-      .isInt('must be an integer')
-      .withMessage('must be an integer')
-      .toInt()
+    .isInt('must be an integer')
+    .withMessage('must be an integer')
+    .toInt();
 
-  return supplement(validator, opts)
+  return supplement(validator, opts);
 }
 
 function supervisorValidator(requestObject, opts) {
-  const validator = requestObject('supervisor_id')
-  return supplement(validator, opts)
+  const validator = requestObject('supervisor_id');
+  return supplement(validator, opts);
 }
 
 function timeValidator(requestObject, opts, name) {
   const validator = requestObject(name)
     .custom(value => {
       if(moment(value, 'HH:mm', true /* strict parsing */).isValid()) {
-        return true
+        return true;
       }
-      throw Error('Time is not in a valid format (HH:mm)')
-    })
+      throw Error('Time is not in a valid format (HH:mm)');
+    });
 
-  return supplement(validator, opts)
+  return supplement(validator, opts);
 }
 
 function handleValidationErrors(request, response, next) {
-  const validationErrors = validate.validationResult(request)
+  const validationErrors = validate.validationResult(request);
 
   if(validationErrors.isEmpty() === false) {
-    return response.status(400).send(validationErrors)
+    return response.status(400).send(validationErrors);
   }
 
-  return next()
+  return next();
 }
 
 function storeRequest(request, response, next) {
-  response.locals.matched = validate.matchedData(request)
-  return next()
+  response.locals.matched = validate.matchedData(request);
+  return next();
 }
 
 module.exports = {
@@ -93,4 +93,4 @@ module.exports = {
     handleValidationErrors,
     storeRequest
   ]
-}
+};

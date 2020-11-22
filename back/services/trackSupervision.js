@@ -1,11 +1,11 @@
-const path = require('path')
+const path = require('path');
 
-const root = path.join(__dirname, '..')
-const models = require(path.join(root, 'models'))
-const config = require(path.join(root, 'config', 'config'))
+const root = path.join(__dirname, '..');
+const models = require(path.join(root, 'models'));
+const config = require(path.join(root, 'config', 'config'));
 
-const validate = require('validate.js')
-const _ = require('lodash')
+const validate = require('validate.js');
+const _ = require('lodash');
 
 const service = {
   /**
@@ -16,7 +16,7 @@ const service = {
    *
    */
   create: async function createSupervision(info) {
-    return (await models.trackSupervision.create(info)).pop()
+    return (await models.trackSupervision.create(info)).pop();
   },
 
   /**
@@ -28,7 +28,7 @@ const service = {
    *
    */
   read: async function readSupervision(key, fields) {
-    return (await models.trackSupervision.read(_.pick(key, 'scheduled_range_supervision_id', 'track_id', 'track_supervisor', 'notice')))
+    return (await models.trackSupervision.read(_.pick(key, 'scheduled_range_supervision_id', 'track_id', 'track_supervisor', 'notice')));
   },
 
   /**
@@ -41,7 +41,7 @@ const service = {
    *
    */
   update: async function updateSupervision(key, updates) {
-    return models.trackSupervision.update(key, updates)
+    return models.trackSupervision.update(key, updates);
   },
 
   /**
@@ -55,8 +55,8 @@ const service = {
    * service.delete({name: 'mark'})
    */
   delete: async function deleteSupervision(key) {
-    return models.trackSupervision.delete(key)
+    return models.trackSupervision.delete(key);
   }
-}
+};
 
-module.exports = service
+module.exports = service;

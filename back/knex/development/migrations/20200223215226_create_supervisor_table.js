@@ -3,11 +3,11 @@ exports.up = function(knex) {
     supervisor.integer('user_id')
       .references('id')
       .inTable('user')
-      .primary()
-    supervisor.string('phone')
-  })
-}
+      .primary();
+    supervisor.string('phone');
+  });
+};
 
 exports.down = function(knex) {
-  return knex.schema.dropTable('supervisor')
-}
+  return knex.schema.dropTable('supervisor');
+};

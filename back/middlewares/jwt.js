@@ -1,7 +1,7 @@
 const path = require('path');
 const root = path.join(__dirname, '..');
 const config = require(path.join(root, 'config', 'config'));
-const expressJWT = require('express-jwt')({ secret: config.jwt.secret });
+const expressJWT = require('express-jwt')({ secret: config.jwt.secret, algorithms: ['HS256'] });
 const services = require(path.join(root, 'services'));
 
 const jwt = require('jsonwebtoken');
@@ -54,4 +54,4 @@ exports.validate = [
 
     return next();
   }
-]
+];

@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 
 const path = require('path');
@@ -12,13 +12,13 @@ const controller = {
       .status(200)
       .send(jwt.sign({
         id: response.locals.id
-      }, config.jwt.secret))
+      }, config.jwt.secret));
   }
 
   , readFilter: async function readFilterUsers(request, response) {
     return response
       .status(200)
-      .send(response.locals.queryResult)
+      .send(response.locals.queryResult);
   }
 
   , read: async function read(request, response) {
@@ -27,29 +27,29 @@ const controller = {
         .status(404)
         .send({
           error: 'Query didn\'t match a user'
-        })
+        });
     }
     return response
       .status(200)
-      .send(response.locals.queryResult)
+      .send(response.locals.queryResult);
   }
 
   , create: async function createUser(request, response) {
     return response
       .status(201)
-      .send(response.locals.queryResult)
+      .send(response.locals.queryResult);
   }
 
   , read: async function readUser(request, response) {
     return response
       .status(200)
-      .send(response.locals.queryResult)
+      .send(response.locals.queryResult);
   }
 
   , update: async function updateUser(request, response) {
     return response
       .status(204)
-      .send()
+      .send();
   }
 
   , delete: async function deleteUser(request, response) {
@@ -58,12 +58,12 @@ const controller = {
         .status(404)
         .send({
           error: `No user exists matching id ${response.locals.query.id}`
-        })
+        });
     }
     return response
       .status(204)
-      .send()
+      .send();
   }
-}
+};
 
-module.exports = controller
+module.exports = controller;

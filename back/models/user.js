@@ -1,12 +1,12 @@
 /* TODO
  * Replace validations with validator.js
  */
-const _ = require('lodash')
-const validate = require('validate.js')
+const _ = require('lodash');
+const validate = require('validate.js');
 
-const path = require('path')
-const root = path.join(__dirname, '..')
-const knex = require(path.join(root, 'knex', 'knex'))
+const path = require('path');
+const root = path.join(__dirname, '..');
+const knex = require(path.join(root, 'knex', 'knex'));
 
 const model = {
   /**
@@ -24,14 +24,14 @@ const model = {
       name: {},
       digest: {},
       role: {}
-    }
+    };
 
     const supervisorConstraints = {
       phone: {}
-    }
+    };
 
-    const general = validate.cleanAttributes(user, userConstraints)
-    const supervisor = validate.cleanAttributes(user, supervisorConstraints)
+    const general = validate.cleanAttributes(user, userConstraints);
+    const supervisor = validate.cleanAttributes(user, supervisorConstraints);
 
     return await knex.transaction(trx => {
       return trx
@@ -39,19 +39,19 @@ const model = {
         .insert(general)
         .into('user')
         .then(ids => {
-          const id = ids[0]
+          const id = ids[0];
           if(user.role === 'supervisor') {
             return trx
               .returning('user_id')
               .insert({
                 user_id: id
                 , phone: supervisor.phone
-              }).into('supervisor')
+              }).into('supervisor');
           }
-          return ids
+          return ids;
         }).then(trx.commit)
-        .catch(trx.rollback)
-    })
+        .catch(trx.rollback);
+    });
   },
 
   /**
@@ -68,7 +68,7 @@ const model = {
     return knex('user')
       .leftJoin('supervisor', 'supervisor.user_id', 'user.id')
       .where(key)
-      .select(fields)
+      .select(fields);
   },
 
   /**
@@ -83,17 +83,17 @@ const model = {
    * exports.update({ name: 'Mark }, { digest: 'new_password_digest' })
    */
   update: async function updateUser(current, update) {
-    const user = _.pick(update, 'name', 'digest')
-    const supervisor = _.pick(update, 'phone')
+    const user = _.pick(update, 'name', 'digest');
+    const supervisor = _.pick(update, 'phone');
 
     const id = await model
-          .read(current, ['id'])
-          .then(rows => rows[0])
+      .read(current, ['id'])
+      .then(rows => rows[0]);
 
     if(!id) {
-      const err = Error('Didn\'t identify user(s) to update')
-      err.name = 'Unknown user'
-      throw err
+      const err = Error('Didn\'t identify user(s) to update');
+      err.name = 'Unknown user';
+      throw err;
     }
 
     return await knex.transaction(trx => {
@@ -104,12 +104,12 @@ const model = {
           if(_.isEmpty(supervisor) === false) {
             return trx('supervisor')
               .where(id)
-              .update(supervisor)
+              .update(supervisor);
           }
-          return updates
+          return updates;
         }).then(trx.commit)
-        .catch(trx.rollback)
-    })
+        .catch(trx.rollback);
+    });
   },
 
   /**
@@ -127,9 +127,9 @@ const model = {
         .where(user)
         .del()
         .then(trx.commit)
-        .catch(trx.rollback)
-    })
+        .catch(trx.rollback);
+    });
   }
-}
+};
 
-module.exports = model
+module.exports = model;
