@@ -1,10 +1,11 @@
 const { validationResult, matchedData } = require('express-validator');
 const _ = require('lodash');
 
+
 const path = require('path');
 const root = path.join(__dirname, '..');
 const services = require(path.join(root, 'services'));
-
+const email = require('../mailer.js');
 const controller = {
   readFilter: async function readFilterSupervisions(request, response) {
     return response
@@ -41,6 +42,9 @@ const controller = {
   },
 
   create: async function createSupervision(request, response) {
+
+    //kutsutaan operaatiota mailerista
+    email('lahettaja','assigned');
     return response
       .status(201)
       .send(response.locals.queryResult);
@@ -48,6 +52,10 @@ const controller = {
 
   // no return here? may be a cause for a bug
   update: async function updateSupervision(request, response) {
+
+    //kutsutaan operaatiota mailerista
+    email('lahettaja','assigned');
+
     response
       .status(204)
       .send();

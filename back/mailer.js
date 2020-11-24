@@ -1,37 +1,40 @@
+//require('dotenv').config();
 // include nodemailer
-const nodemailer = require('nodemailer');
 
 
 
-const sendEmail = (sposti, viesti) => {
-    
 
+    //step1    
+    const nodemailer = require('nodemailer');
+    const sendEmail = function(sposti,viesti) {
     // declare vars,
-    // let reciever = sposti;
     let reciever = 'elias.penkkimaki@gmail.com';
-    let fromMail = 'infotestitasera';
+    let fromMail = 'infotestitasera@gmail.com';
     let toMail = reciever;
     let subject = 'Tasera info';
-    let text = '';
+    let text = 'viestitesti';
 
-    switch (viesti) {
+     switch (viesti) {
         case "assigned":
-            text = 'Hei teille on annettu vuoro'
+            text = 'Hei teille on annettu vuoro';
         break;
         case "reminder":
-            text = 'Hei ette ole vahvistaneet vuoroanne'
+            text = 'Hei ette ole vahvistaneet vuoroanne';
         break;    
     }
-
     
-
+    //step2:
     const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
+        //user: process.env.EMAIL,
+        //pass: process.env.PASSWORD,
         user: fromMail ,
         pass: 'tasera2020'
     }
     }); 
+    
+    //step3:
     // email options
     let mailOptions = {
     from: fromMail,
@@ -39,6 +42,8 @@ const sendEmail = (sposti, viesti) => {
     subject: subject,
     text: text
     };
+
+    //step4:
     transporter.sendMail(mailOptions, (error, response) => {
     if (error) {
         console.log(error);
@@ -46,3 +51,4 @@ const sendEmail = (sposti, viesti) => {
     console.log(response)
     });
 }
+module.exports = sendEmail;
