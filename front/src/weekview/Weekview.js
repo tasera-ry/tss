@@ -93,7 +93,7 @@ class Weekview extends Component {
 
     try {
       const oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() - 7));
-      this.props.history.replace(`/weekview/${moment(uusPaiva, 'YYYYMMDD').add(1, 'day').toISOString()}`);
+      this.props.history.replace(`/weekview/${moment(uusPaiva, 'YYYYMMDD').add(1, 'day').toISOString().substring(0, 10)}`);
 
       const viikkoNumero = moment(this.state.dayNro, 'YYYYMMDD').week();
 
@@ -151,7 +151,7 @@ class Weekview extends Component {
 
     try {
       const oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() + 7));
-      this.props.history.replace(`/weekview/${moment(uusPaiva, 'YYYYMMDD').add(1, 'day').toISOString()}`);
+      this.props.history.replace(`/weekview/${moment(uusPaiva, 'YYYYMMDD').add(1, 'day').toISOString().substring(0, 10)}`);
 
       // Week logic cuz there's no 53 weeks
       const uusVuosi = uusViikko === 1
@@ -182,7 +182,7 @@ class Weekview extends Component {
     const week1 = new Date(date1.getFullYear(), 0, 4);
     const current = 1 + Math.round(((date1.getTime() - week1.getTime()) / 86400000
       - 3 + (week1.getDay() + 6) % 7) / 7); // eslint-disable-line
-
+  
     // Tää asettaa sen mikä viikkonumero on alotusnäytöllä
     // Nyt tarvis ottaa tähän url parametreistä se viikkonumero
     // Jos ei parametrejä nii sit toi current. Muuten parametrien
@@ -420,7 +420,7 @@ class Weekview extends Component {
         this.setState({ weekNro: current });
         // Tähän viel että parametriks tulee tän hetkinen viikko
         const now = moment().format();
-        this.props.history.replace(`/weekview/${now}`);
+        this.props.history.replace(`/weekview/${now.substring(0, 10)}`);
       } else {
         // Jos on oikee nii laitetaan url params
         // dayNro pitäs saada parametrien mukaan oikeeks

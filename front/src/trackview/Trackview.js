@@ -10,6 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 // Utils
+import moment from 'moment';
 import { dayToString, getSchedulingDate } from '../utils/Utils';
 
 // Translations

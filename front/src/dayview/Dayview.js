@@ -72,7 +72,7 @@ class Dayview extends Component {
   previousDayClick(e) {
     e.preventDefault();
     const date = new Date(this.state.date.setDate(this.state.date.getDate() - 1)); // eslint-disable-line
-    this.props.history.replace(`/dayview/${date.toISOString()}`); // eslint-disable-line
+    this.props.history.replace(`/dayview/${date.toISOString().substring(0, 10)}`); // eslint-disable-line
     this.setState(
       {
         state: 'loading',
@@ -87,7 +87,7 @@ class Dayview extends Component {
   nextDayClick(e) {
     e.preventDefault();
     const date = new Date(this.state.date.setDate(this.state.date.getDate() + 1)); // eslint-disable-line
-    this.props.history.replace(`/dayview/${date.toISOString()}`); // eslint-disable-line
+    this.props.history.replace(`/dayview/${date.toISOString().substring(0, 10)}`); // eslint-disable-line
     this.setState(
       {
         state: 'loading',
@@ -142,7 +142,7 @@ class Dayview extends Component {
             state={props.tracks[key].trackSupervision}
             notice={props.tracks[key].notice}
             // TODO final react routing
-            to={`/trackview/${props.date.toISOString()}/${props.tracks[key].name}`}
+            to={`/trackview/${props.date.toISOString().substring(0, 10)}/${props.tracks[key].name}`}
           />,
         );
       }
@@ -258,7 +258,7 @@ class Dayview extends Component {
 
           </div>
 
-          <Link className="back" style={{ color: 'black' }} to={`/weekview/${this.state.date.toISOString()}`}>
+          <Link className="back" style={{ color: 'black' }} to={`/weekview/${this.state.date.toISOString().substring(0, 10)}`}>
             <ArrowBackIcon />
             {dayview.WeekviewLink[fin]}
           </Link>
