@@ -182,7 +182,7 @@ class Weekview extends Component {
     const week1 = new Date(date1.getFullYear(), 0, 4);
     const current = 1 + Math.round(((date1.getTime() - week1.getTime()) / 86400000
       - 3 + (week1.getDay() + 6) % 7) / 7); // eslint-disable-line
-  
+
     // Tää asettaa sen mikä viikkonumero on alotusnäytöllä
     // Nyt tarvis ottaa tähän url parametreistä se viikkonumero
     // Jos ei parametrejä nii sit toi current. Muuten parametrien
