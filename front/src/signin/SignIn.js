@@ -43,7 +43,7 @@ const textStyle = {
   borderRadius: 4,
 };
 
-const SignIn = () => {
+const SignIn = (props) => {
   const classes = useStyles();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -51,7 +51,6 @@ const SignIn = () => {
   const history = useHistory();
   const { signin } = data;
   const fin = localStorage.getItem('language');
-  const { loginState, setLoginState } = useContext(LoginContext);
 
   document.body.style = 'background: #eae7dc;';
   function RedirectToWeekview() {
@@ -61,18 +60,7 @@ const SignIn = () => {
     localStorage.setItem('taseraUserName', name);
     localStorage.setItem('token', data);
 
-    /*
-    loginState.setLoginState(
-      (loginState) => ({
-        ...loginState,
-        taseraUserName: name,
-        token: data
-      })
-    );
-    */
-    console.log("HERE IT IS: " + loginState);
-    console.log(setLoginState({ something:"funny" }));
-    console.log(loginState);
+    props.loginInfo.updateLoginInfo(name, data);
 
     const config = {
       headers: { Authorization: `Bearer ${data}` },
@@ -83,7 +71,9 @@ const SignIn = () => {
     const role = await response.data[0].role;
     localStorage.setItem('role', role);
 
-    // RedirectToWeekview();
+    props.loginInfo.updateRole(role);
+
+    RedirectToWeekview();
   }
 
   const HandleError = (error) => {

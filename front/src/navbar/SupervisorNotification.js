@@ -19,6 +19,7 @@ class SupervisorNotification extends Component {
     this.state = {
       userHasSupervisions: false,
       supervisionsOpen: false,
+      loginInfo: props.loginInfo
     };
   }
 
@@ -45,7 +46,7 @@ class SupervisorNotification extends Component {
   }
 
   checkSupervisions = async () => {
-    const reservations = await checkSupervisorReservations();
+    const reservations = await checkSupervisorReservations(this.state.loginInfo);
     if (reservations) {
       this.setState({
         userHasSupervisions: true,
@@ -65,7 +66,6 @@ class SupervisorNotification extends Component {
 
   render() {
     const fin = localStorage.getItem('language'); // eslint-disable-line
-    console.log(this.state);
     return (
       <div>
         {this.state.userHasSupervisions
@@ -86,9 +86,8 @@ class SupervisorNotification extends Component {
         {this.state.supervisionsOpen
           ? (
             <DialogWindow
-              onCancel={
-              () => this.refreshSupervisionsOpen()
-            }
+              onCancel={() => this.refreshSupervisionsOpen()}
+              loginInfo={this.state.loginInfo}
             />
           ) : ''}
       </div>

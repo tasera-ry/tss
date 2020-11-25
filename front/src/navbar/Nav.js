@@ -19,6 +19,8 @@ import SupervisorNotification from './SupervisorNotification'; // eslint-disable
 
 import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
 
+import LoginContext from '../LoginContext';
+
 // Translations
 import texts from '../texts/texts.json';
 
@@ -46,7 +48,7 @@ const elementStyle = {
   marginTop: 10,
 };
 
-const SideMenu = ({ setName, superuser, setLoggingOut }) => {
+const SideMenu = ({ setName, superuser, setLoggingOut, loginInfo }) => {
   const styles = useStyles();
   const [menu, setMenu] = useState({ right: false });
   const [openDial, setOpenDial] = useState(false);
@@ -66,6 +68,8 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
     storage.removeItem('token');
     storage.removeItem('taseraUserName');
     storage.removeItem('role');
+    loginInfo.updateLoginInfo(null, null);
+    loginInfo.updateRole(null);
     setName('');
     setMenu({ right: false });
   };
@@ -174,7 +178,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
 
   return (
     <div className="pc">
-      {storage.getItem('taseraUserName') !== null
+      {loginInfo.username !== null
         ? (
           <Button
             className="clickable"
@@ -198,26 +202,27 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
         </Drawer>
 
       </div>
-      {openDial ? <DialogWindow /> : '' }
+      {openDial ?
+        <LoginContext.Consumer>
+          {(loginInfo) => {
+            return (
+              <DialogWindow
+                loginInfo={loginInfo}
+              />
+            );
+          }}
+        </LoginContext.Consumer>
+      : '' }
     </div>
   );
 };
-
-function userInfo(name, setName, setSuperuser) {
-  const username = localStorage.getItem('taseraUserName');
-  if (username !== null) {
-    setName(username);
-    const role = localStorage.getItem('role');
-    setSuperuser(role === 'superuser');
-  }
-}
 
 function setLanguage(num) {
   localStorage.setItem('language', num);
   window.location.reload();
 }
 
-const Nav = () => {
+const Nav = (props) => {
   const [name, setName] = useState('');
   const [superuser, setSuperuser] = useState();
   const [loggingOut, setLoggingOut] = useState(false);
@@ -225,8 +230,13 @@ const Nav = () => {
   const fin = localStorage.getItem('language'); // eslint-disable-line
   const { nav } = texts; // eslint-disable-line
 
+  // TODO: someone update this to be less of a mess
   if (name === '') {
-    userInfo(name, setName, setSuperuser);
+    const username = props.loginInfo.username
+    if (username !== null) {
+      setName(username);
+      setSuperuser(props.loginInfo.role === 'superuser');
+    }
   }
 
   const icon = (
@@ -260,6 +270,7 @@ const Nav = () => {
           setName={setName}
           superuser={superuser}
           setLoggingOut={setLoggingOut}
+          loginInfo={props.loginInfo}
         />
 
       </nav>
@@ -268,6 +279,7 @@ const Nav = () => {
         setLoggingOut={setLoggingOut}
         checkSupervisions={checkSupervisions}
         setCheckSupervisions={setCheckSupervisions}
+        loginInfo={props.loginInfo}
       />
     </div>
   );

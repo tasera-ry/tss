@@ -85,18 +85,17 @@ class Scheduling extends Component {
       weekly: false,
       monthly: false,
       repeatCount: 1,
-      token: 'SECRET-TOKEN',
+      token: props.loginInfo.token,
       datePickerKey: 1,
     };
   }
 
   componentDidMount() {
-    // console.log("MOUNTED",localStorage.getItem('token'));
     this.setState({
-      token: localStorage.getItem('token'),
+      // token: props.loginInfo.token,
       datePickerKey: Math.random(), // force datepicker to re-render when language changed
     }, function () {
-      validateLogin()
+      validateLogin(this.state.token)
         .then((logInSuccess) => {
           if (!logInSuccess) {
             this.props.history.push('/');

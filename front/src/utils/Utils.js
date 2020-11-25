@@ -75,8 +75,7 @@ export function monthToString(i) {
 
   return: boolean, is token valid (true = yes)
 */
-export async function validateLogin() {
-  const token = localStorage.getItem('token');
+export async function validateLogin(token) {
   let response;
   if (token !== null) {
     try {

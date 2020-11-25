@@ -15,6 +15,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import LoginContext from '../LoginContext';
+
 // Translations
 
 // Date handling
@@ -111,22 +113,29 @@ const TrackRows = ({
           {track.short_description}
         </Typography>
 
-        <TrackButtons
-          track={track}
-          tracks={tracks}
-          setTracks={setTracks}
-          scheduleId={scheduleId}
-          tablet={tablet}
-          fin={fin}
-          socket={socket}
-        />
+        <LoginContext.Consumer>
+          {(loginInfo) => {
+            return (
+              <TrackButtons
+                track={track}
+                tracks={tracks}
+                setTracks={setTracks}
+                scheduleId={scheduleId}
+                tablet={tablet}
+                fin={fin}
+                socket={socket}
+                loginInfo={loginInfo}
+              />
+            );
+          }}
+        </LoginContext.Consumer>
       </div>
     </div>
   ))
 );
 
 const TrackButtons = ({
-  track, scheduleId, tablet, fin, socket,
+  track, scheduleId, tablet, fin, socket, loginInfo
 }) => {
   // get this somewhere else
   const buttonStyle = {
@@ -165,7 +174,7 @@ const TrackButtons = ({
   });
   const HandleClick = () => {
     let newSupervision = 'absent';
-    const token = localStorage.getItem('token');
+    const token = loginInfo.token;
     const config = {
       headers: { Authorization: `Bearer ${token}` },
     };
@@ -312,7 +321,7 @@ async function getData(
 }
 
 const TimePick = ({
-  tablet, fin, scheduleId, hours, setHours, dialogOpen, setDialogOpen,
+  tablet, fin, scheduleId, hours, setHours, dialogOpen, setDialogOpen, loginInfo
 }) => {
   const [errorMessage, setErrorMessage] = useState();
   const [startDate, setStartDate] = useState(new Date(0, 0, 0, hours.start.split(':')[0], hours.start.split(':')[1], 0));
@@ -329,7 +338,7 @@ const TimePick = ({
     console.log(start, end);
 
     const query = `/api/schedule/${scheduleId}`;
-    const token = localStorage.getItem('token');
+    const token = loginInfo.token;
     const config = {
       headers: { Authorization: `Bearer ${token}` },
     };
@@ -423,7 +432,7 @@ const TimePick = ({
   );
 };
 
-const Tabletview = () => {
+const Tabletview = (props) => {
   const [statusColor, setStatusColor] = useState();
   const [statusText, setStatusText] = useState();
   const [hours, setHours] = useState({});
@@ -453,7 +462,7 @@ const Tabletview = () => {
   }
 
   useEffect(() => {
-    validateLogin()
+    validateLogin(props.token)
       .then((logInSuccess) => {
         if (logInSuccess) {
           getData(tablet,
@@ -484,7 +493,7 @@ const Tabletview = () => {
   }, []);
 
   async function updateSupervisor(status, color, text) {
-    const token = localStorage.getItem('token');
+    const token = props.loginInfo.token;
 
     const res = await rangeSupervision(reservationId,
       scheduleId,
@@ -562,15 +571,22 @@ const Tabletview = () => {
 
       {dialogOpen
         ? (
-          <TimePick
-            tablet={tablet}
-            fin={fin}
-            scheduleId={scheduleId}
-            hours={hours}
-            setHours={setHours}
-            dialogOpen={dialogOpen}
-            setDialogOpen={setDialogOpen}
-          />
+          <LoginContext.Consumer>
+            {(loginInfo) => {
+              return (
+                <TimePick
+                  tablet={tablet}
+                  fin={fin}
+                  scheduleId={scheduleId}
+                  hours={hours}
+                  setHours={setHours}
+                  dialogOpen={dialogOpen}
+                  setDialogOpen={setDialogOpen}
+                  loginInfo={loginInfo}
+                />
+              );
+            }}
+          </LoginContext.Consumer>
         )
         : ''}
 

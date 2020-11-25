@@ -149,6 +149,7 @@ class UserManagementView extends Component {
       newPassword: '',
       selectedUserName: '',
       myStorage: window.localStorage, // eslint-disable-line
+      loginInfo: props.loginInfo
     };
 
     // need to bind these functions so they get access to the state
@@ -174,16 +175,18 @@ class UserManagementView extends Component {
 
   componentDidMount() {
     this.setState(
+      /*
       {
-        token: localStorage.getItem('token'),
+        token: props.loginInfo.token,
       },
+      */
       function () {
-        validateLogin()
+        validateLogin(this.state.loginInfo.token)
           .then((logInSuccess) => {
             if (!logInSuccess) {
               this.props.history.push('/');
             } else {
-              getUsers(this.state.token)
+              getUsers(this.state.loginInfo.token)
                 .then((response) => {
                   if (response !== false) {
                     this.setState({
@@ -257,7 +260,7 @@ class UserManagementView extends Component {
   // finds logged in users id
   findOwnID() { // eslint-disable-line
     this.state.userList.forEach((user) => { // eslint-disable-line
-      if (localStorage.taseraUserName === user.name) {
+      if (this.state.logincInfo.username === user.name) {
         return user.id;
       }
     });
@@ -276,7 +279,7 @@ class UserManagementView extends Component {
     let success = true;
     let response = await axios
       .post('api/sign', {
-        name: localStorage.taseraUserName,
+        name: this.state.loginInfo.username,
         password: this.state.oldPassword,
       })
       .catch(() => {
@@ -485,7 +488,7 @@ class UserManagementView extends Component {
   update() {
     const tempRows = [];
     this.state.userList.forEach((user) => {
-      if (localStorage.taseraUserName !== user.name) {
+      if (this.state.loginInfo.username !== user.name) {
         const row = this.createData(user.name,
           user.role,
           this.returnPassButton(user.id, manage, fin),

@@ -235,10 +235,10 @@ const Rows = ({
 };
 
 // TODO: change config after relocating jwt
-async function getId() {
-  const name = localStorage.getItem('taseraUserName');
+async function getId(loginInfo) {
+  const name = loginInfo.username;
 
-  const token = localStorage.getItem('token');
+  const token = loginInfo.token;
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
@@ -273,8 +273,8 @@ async function getReservations(res, setNoSchedule) { // eslint-disable-line
   return res;
 }
 
-async function checkSupervisorReservations() {
-  const userID = await getId();
+async function checkSupervisorReservations(loginInfo) {
+  const userID = await getId(loginInfo);
 
   if (!userID) {
     return false;
@@ -295,8 +295,8 @@ async function checkSupervisorReservations() {
 }
 
 // obtain users schedule and range supervision states
-async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
-  const userID = await getId();
+async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone, loginInfo) {
+  const userID = await getId(loginInfo);
   let res = [];
   let temp = [];
 
@@ -347,7 +347,7 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
   setChecked(res[0].range_supervisor === 'en route');
 }
 
-const DialogWindow = ({ onCancel }) => {
+const DialogWindow = ({ onCancel, loginInfo }) => {
   const [noSchedule, setNoSchedule] = useState(false);
   const [schedules, setSchedules] = useState([]);
   const [done, setDone] = useState(false);
@@ -360,7 +360,7 @@ const DialogWindow = ({ onCancel }) => {
 
   // starting point
   useEffect(() => {
-    getSchedule(setSchedules, setNoSchedule, setChecked, setDone);
+    getSchedule(setSchedules, setNoSchedule, setChecked, setDone, loginInfo);
   }, []);
 
   return (
@@ -375,17 +375,18 @@ const DialogWindow = ({ onCancel }) => {
         setDone={setDone}
         sv={sv}
         onCancel={onCancel}
+        loginInfo={loginInfo}
       />
     </div>
   );
 };
 
 // sends updated info to database
-async function putSchedules(changes) {
+async function putSchedules(changes, loginInfo) {
   // console.log("updating: ")
   // console.log(changes);
 
-  const token = localStorage.getItem('token');
+  const token = loginInfo.token;
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
@@ -411,6 +412,7 @@ const Logic = ({
   setDone,
   sv,
   onCancel,
+  loginInfo,
 }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(true);
@@ -435,7 +437,7 @@ const Logic = ({
 
     if (changes.length > 0) {
       setWait(true);
-      await putSchedules(changes);
+      await putSchedules(changes, loginInfo);
     }
 
     setOpen(false);

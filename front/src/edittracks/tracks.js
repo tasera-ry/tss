@@ -241,7 +241,7 @@ const TrackTable = ({
   />
 );
 
-const TrackCRUD = () => {
+const TrackCRUD = (props) => {
   const [trackData, setTrackData] = useState([]);
   const [initFinished, setInitFinished] = useState(false);
   const [requestStatus, setRequestStatus] = useState(null);
@@ -249,7 +249,7 @@ const TrackCRUD = () => {
 
   const partialFetch = lodash.partial(fetch, '/api/track'); // eslint-disable-line
 
-  const token = localStorage.getItem('token');
+  const token = props.loginInfo.token;
 
   const opts = {
     headers: {
@@ -263,7 +263,7 @@ const TrackCRUD = () => {
 
   useEffect(() => {
     (async () => {
-      const logInSuccess = await validateLogin();
+      const logInSuccess = await validateLogin(token);
       if (logInSuccess) {
         try {
           const response = await axios.get('/api/track');

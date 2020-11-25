@@ -1,6 +1,11 @@
 import React from 'react';
 
-// creates context of [state, setState]
-const LoginContext = React.createContext([{}, () => {}]);
+const LoginContext = React.createContext({
+  token: null,
+  username: null,
+  role: null,
+  updateLoginInfo: () => {},
+  updateRole: () => {}
+});
 
 export default LoginContext;
