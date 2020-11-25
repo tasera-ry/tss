@@ -2,9 +2,7 @@ const path = require('path');
 
 const root = path.join(__dirname, '..');
 const models = require(path.join(root, 'models'));
-const config = require(path.join(root, 'config', 'config'));
 
-const validate = require('validate.js');
 const _ = require('lodash');
 
 const service = {
@@ -25,7 +23,6 @@ const service = {
    * Read (a) tracks' info.
    *
    * @param {object} key - The query information, {} returns all tracks. { range_id, name, description }
-   * @param {string[]} fields - Tracks' fields to return
    *
    * @return {Promise<object[]>} List of tracks matching the query
    *
@@ -33,7 +30,7 @@ const service = {
    * exports.read({range_id, description: '100m Kohdistusrata' }) - Find all 100m Kohdistusrata
    * exports.read({range_id:1}['name']) - All track names
    */
-  read: async function readTrack(key, fields) {
+  read: async function readTrack(key) {
     let combinedKey = key;
 
     //id was ambiguous
