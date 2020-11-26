@@ -18,7 +18,7 @@ exports.seed = async function(knex) {
     schedule.map(id => casual.range_supervision(id))
   );
 
-  const generateSpinner = ora.promise(
+  ora.promise(
     generateSupervisions,
     `Generating ${schedule.length} range supervisions...`
   );
@@ -33,12 +33,12 @@ exports.seed = async function(knex) {
       ))
   );
 
-  const insertSpinner = ora.promise(
+  ora.promise(
     insertSupervisions,
     'Inserting range supervisions'
   );
 
-  const response = await insertSupervisions;
+  await insertSupervisions;
 };
 
 casual.define('range_supervision', async (supervisionId) => {

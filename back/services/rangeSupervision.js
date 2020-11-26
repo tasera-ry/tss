@@ -2,9 +2,7 @@ const path = require('path');
 
 const root = path.join(__dirname, '..');
 const models = require(path.join(root, 'models'));
-const config = require(path.join(root, 'config', 'config'));
 
-const validate = require('validate.js');
 const _ = require('lodash');
 
 const service = {
@@ -23,11 +21,10 @@ const service = {
    * Get the supervisions matching a key.
    *
    * @param {object} key - Identifying key, { scheduled_range_supervision_id?, range_supervisor?, notice? }
-   * @param {object} fields - Attributes about the supervision to select { scheduled_range_supervision_id?, range_supervisor?, notice? }
    * @return {Promise<object[]>} Supervisions that matched the key
    *
    */
-  read: async function readSupervision(key, fields) {
+  read: async function readSupervision(key) {
     return (await models.rangeSupervision.read(_.pick(key, 'scheduled_range_supervision_id', 'range_supervisor', 'notice')));
   },
 

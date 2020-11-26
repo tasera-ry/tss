@@ -1,10 +1,3 @@
-const { validationResult, matchedData } = require('express-validator');
-const _ = require('lodash');
-
-const path = require('path');
-const root = path.join(__dirname, '..');
-const services = require(path.join(root, 'services'));
-
 const controller = {
   readFilter: async function readFilterSupervisions(request, response) {
     return response

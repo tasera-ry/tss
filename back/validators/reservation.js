@@ -1,6 +1,5 @@
 const {
   body,
-  check,
   query,
   param,
   validationResult,
