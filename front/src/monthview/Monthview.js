@@ -19,8 +19,8 @@ class Monthview extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      yearNro: 2000,
-      monthNro: '01',
+      yearNro: 0,
+      monthNro: 0,
     };
 
     this.previousMonthClick = this.previousMonthClick.bind(this);
@@ -316,14 +316,14 @@ class Monthview extends Component {
     const { month } = texts;  // eslint-disable-line
     return (
       <div>
-        <div className="date-header">
+        <div className="date-headerM">
           <div
             className="hoverHand arrow-left"
             onClick={this.previousMonthClick}
           />
-          <h1>
+          <h1 className="dateHeader-text">
             {month.[this.state.monthNro][fin]}
-            ,
+            ,{' '}
             {this.state.yearNro}
           </h1>
           <div

@@ -456,7 +456,7 @@ class Weekview extends Component {
               className="hoverHand arrow-left"
               onClick={this.previousWeekClick}
             />
-            <h1>
+            <h1 className="dateHeader-text">
               {' '}
               {`${week.Week[fin]} ${this.state.weekNro} , ${this.state.yearNro}`}
               {' '}
