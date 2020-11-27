@@ -1,5 +1,10 @@
+import React from 'react';
+
 import moment from 'moment';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
+import texts from '../texts/texts.json';
 
 export async function getSchedulingDate(date) {
   try {
@@ -46,6 +51,91 @@ export async function getSchedulingWeek(date) {
     console.error(err);
     return false;
   }
+}
+
+export async function getSchedulingFreeform(date) {
+  try {
+    const begin = moment(date, 'YYYY-MM-DD');
+    const end = moment(date, 'YYYY-MM-DD');
+    end.add(45, 'days');
+    const longrange = await axios.get(`/api/daterange/freeform/${moment(begin).format('YYYY-MM-DD')}/${moment(end).format('YYYY-MM-DD')}`);
+    return {
+      month: longrange.data
+    };
+  }
+  catch (err) {
+    console.error(err)
+    return false;
+  }
+}
+
+export function checkColor(paivat, paiva){
+  const rataStatus = paivat[paiva].rangeSupervision;
+  let colorFromBackEnd = 'blue';
+
+      if (rataStatus === 'present') {
+        colorFromBackEnd = '#658f60';
+      } else if (rataStatus === 'confirmed') {
+        colorFromBackEnd = '#b2d9ad';
+      } else if (rataStatus === 'not confirmed') {
+        colorFromBackEnd = '#95d5db';
+      } else if (rataStatus === 'en route') {
+        colorFromBackEnd = '#f2c66d';
+      } else if (rataStatus === 'closed') {
+        colorFromBackEnd = '#c97b7b';
+      } else if (rataStatus === 'absent') {
+        colorFromBackEnd = '#f2f0eb';
+      }
+      return colorFromBackEnd;
+}
+
+export function viewChanger(){
+  const { viewChanger } = texts;  // eslint-disable-line
+  const fin = localStorage.getItem('language');
+
+  try{
+    const table = [];
+    const fullUrl = window.location.href.split('/');
+    const urlParamDate = fullUrl[5];
+
+    const urlParamDateSplit = urlParamDate.split('-');
+
+    const weeknumber = moment(urlParamDate, 'YYYYMMDD').week();
+
+    const paramDay = urlParamDateSplit[2].split('T')[0];
+    const paramMonth = urlParamDateSplit[1];
+    const paramYear = urlParamDateSplit[0];
+
+    let time = moment(paramYear + "-" + paramMonth + "-" + paramDay, "YYYY-MM-DD")
+
+    table.push(
+      <Link class="link" to={"/monthView/" + time.format("YYYY-MM-DD")}>
+        <div>
+          {viewChanger["Month"][fin]}
+        </div>
+      </Link>
+    )
+    table.push(
+      <Link class="link" to={"/weekView/" + time.format("YYYY-MM-DD")}>
+        <div>
+          {viewChanger["Week"][fin]}
+        </div>
+      </Link>
+    )
+    table.push(
+      <Link class="link" to={"/dayView/" + time.format("YYYY-MM-DD")}>
+        <div>
+          {viewChanger["Day"][fin]}
+        </div>
+      </Link>
+    )
+    return table;
+  }
+  catch{
+    console.log("viewChanger kaput!");
+    return false
+  }
+  
 }
 
 export function dayToString(i) {

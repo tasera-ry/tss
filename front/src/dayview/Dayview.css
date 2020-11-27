@@ -196,6 +196,12 @@ h2.headerText{
 
 }
 
+.dayview-big-container {
+   width: 100vw;
+   max-width: 1050px;
+   margin: auto;
+}
+
 /* media files */
 
 /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */

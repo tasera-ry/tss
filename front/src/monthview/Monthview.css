@@ -3,7 +3,7 @@
 }
 
 .notCurMonth {
-	background-color: grey;
+	opacity: 0.6;
 }
 
 .weekdays {
@@ -35,7 +35,6 @@
 	flex-wrap: wrap;
 	font-size: large;
 	font-weight: bold;
-	border-left: 2px solid;
 }
 
 .month-days {
@@ -75,7 +74,8 @@
 	display: none;
 	border-bottom: 4px solid;
 	border-right: 4px solid;
-	width: calc(100% / 8 - 4px);
+	border-left: 2px solid;
+	width: calc(100% / 8 - 6px);
 }
 
 .weekNumber > a {
@@ -90,6 +90,34 @@
 	min-height: 48px;
 	border-bottom: 2px solid;
 	border-right: 4px solid;
+	border-left: 2px solid;
+}
+
+.viewChanger {
+	display: flex;
+	justify-content:flex-end;
+	width: 100%;
+}
+
+.viewChanger-container {
+	display: flex;
+	justify-content:flex-end;
+	border-right: 1px solid;
+}
+
+.viewChanger-container > a {
+	padding: 16px;
+	border: 1px;
+	border-right: 0px;
+	border-bottom: 0;
+	border-style: solid;
+	border-color: black;
+	background-color: grey;
+	color: grey;
+}
+
+.viewChanger-container > a > div {
+	color: black;
 }
 
 /* media files */

@@ -10,7 +10,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Utils
 import moment from 'moment';
-import { dayToString, getSchedulingDate } from '../utils/Utils';
+import { dayToString, getSchedulingDate, viewChanger } from '../utils/Utils';
 
 // Moment for date handling
 import info from '../logo/Info.png';
@@ -247,19 +247,26 @@ class Dayview extends Component {
             {this.state.closes}
           </h2>
           {/* Whole view */}
-          <div className="dayviewTrackContainer">
+          <div className="dayview-big-container">
+            <div className="viewChanger">
+              <div className="viewChanger-container">
+                {viewChanger()}
+              </div>
+            </div>
+            <div className="dayviewTrackContainer">
 
-            {/* MUI grid - used for displaying the track info */}
-            {this.state.state !== 'ready'
-              ? (
-                <div>
-                  <CircularProgress disableShrink />
-                </div>
-              )
-              : <TrackList tracks={this.state.tracks} date={this.state.date} />}
+              {/* MUI grid - used for displaying the track info */}
+              {this.state.state !== 'ready'
+                ? (
+                  <div>
+                    <CircularProgress disableShrink />
+                  </div>
+                )
+                : <TrackList tracks={this.state.tracks} date={this.state.date} />}
 
-            {/* Other info */}
+              {/* Other info */}
 
+            </div>
           </div>
           <Link className="back" style={{ color: 'black' }} to={`/weekview/${this.state.date.toISOString()}`}>
             <ArrowBackIcon />

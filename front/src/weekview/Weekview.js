@@ -10,7 +10,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Moment for date management
 import moment from 'moment';
-import { getSchedulingWeek, getSchedulingDate } from '../utils/Utils';
+import { getSchedulingWeek, getSchedulingDate, viewChanger } from '../utils/Utils';
 import exclamation from '../logo/Info.png';
 
 // Translation
@@ -35,7 +35,6 @@ class Weekview extends Component {
       dayNro: 0,
       yearNro: 0,
     };
-
     this.previousWeekClick = this.previousWeekClick.bind(this);
     this.nextWeekClick = this.nextWeekClick.bind(this);
     this.update = this.update.bind(this);
@@ -192,16 +191,15 @@ class Weekview extends Component {
     try {
       const fullUrl = window.location.href.split('/');
       const urlParamDate = fullUrl[5];
-
+      
       const urlParamDateSplit = urlParamDate.split('-');
-
       const weeknumber = moment(urlParamDate, 'YYYYMMDD').week();
 
-      const paramDay = urlParamDateSplit[2];
+      const paramDay = urlParamDateSplit[2].split('T')[0];
       const paramMonth = urlParamDateSplit[1];
       const paramYear = urlParamDateSplit[0];
 
-      const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYYMMDD');
+      const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYY-MM-DD');
 
       // Jos viikkonumero ei oo oikee laitetaan current
       if (isNaN(weeknumber)) { // eslint-disable-line
@@ -350,7 +348,7 @@ class Weekview extends Component {
   // TODO: update testi variables to more sensible names
   update() {
     // /dayview/2020-02-20
-    const { date } = this.props.match.params;
+    const { date } = this.state;
     const requestSchedulingDate = async () => {
       const response = await getSchedulingDate(date);
 
@@ -399,6 +397,10 @@ class Weekview extends Component {
     // Jos ei parametrejä nii sit toi current. Muuten parametrien
 
     // Urlista lasketaan oikee viikkonumero
+    const request = async () => {
+
+    }
+
     try {
       const fullUrl = window.location.href.split('/');
       const urlParamDate = fullUrl[5];
@@ -411,8 +413,7 @@ class Weekview extends Component {
       const paramMonth = urlParamDateSplit[1];
       const paramYear = urlParamDateSplit[0];
 
-      const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYYMMDD');
-
+      const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYYMMDD').toDate();
       // Jos viikkonumero ei oo oikee laitetaan current
       if (isNaN(weeknumber)) { // eslint-disable-line
         this.setState({ weekNro: current });
@@ -422,7 +423,10 @@ class Weekview extends Component {
       } else {
         // Jos on oikee nii laitetaan url params
         // dayNro pitäs saada parametrien mukaan oikeeks
-        this.setState({ weekNro: weeknumber, date: paramDateCorrect, yearNro: paramYear });
+        this.setState({ weekNro: weeknumber, date: paramDateCorrect, yearNro: paramYear }, () => {
+        });
+        
+        
         date1 = paramDateCorrect;
       }
     } catch {
@@ -448,7 +452,6 @@ class Weekview extends Component {
   render() {
     const fin = localStorage.getItem('language');
     const { week } = texts;
-
     return (
       <div>
         <div className="container">
@@ -469,32 +472,37 @@ class Weekview extends Component {
               onClick={this.nextWeekClick}
             />
           </Grid>
+          <div className="big-container">
+            <div className="viewChanger">
+              <div className="viewChanger-container">
+                {viewChanger()}
+              </div>
+            </div>
 
-          {/* Date boxes */}
-          <Grid class="flex-container2">
-            {this.createWeekDay()}
-          </Grid>
+            {/* Date boxes */}
+            <Grid class="flex-container2">
+              {this.createWeekDay()}
+            </Grid>
 
-          {/* Date boxes */}
-          <Grid class="flex-container2">
-            {this.state.state !== 'ready'
-              ? ''
-              : this.createDate()}
-          </Grid>
+            {/* Date boxes */}
+            <Grid class="flex-container2">
+              {this.state.state !== 'ready'
+                ? ''
+                : this.createDate()}
+            </Grid>
 
-          <div>
-            {/* Colored boxes for dates */}
-            {this.state.state !== 'ready'
-              ? (
-                <div className="progress">
-                  <CircularProgress disableShrink />
-                </div>
-              )
-              : (
-                <Grid class="flex-container">
-                  {this.createColorInfo()}
-                </Grid>
-              )}
+              {/* Colored boxes for dates */}
+              {this.state.state !== 'ready'
+                ? (
+                  <div className="progress">
+                    <CircularProgress disableShrink />
+                  </div>
+                )
+                : (
+                  <Grid class="flex-container">
+                    {this.createColorInfo()}
+                  </Grid>
+                )}
           </div>
         </div>
 
