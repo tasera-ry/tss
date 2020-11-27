@@ -261,6 +261,7 @@ class Monthview extends Component {
         yearNro: paramDateCorrect.format('YYYY'),
       });
     } catch (err) {
+      this.update();
       console.error(err);
     }
   }
@@ -285,6 +286,7 @@ class Monthview extends Component {
         yearNro: paramDateCorrect.format('YYYY'),
       });
     } catch (err) {
+      this.update();
       console.error(err);
     }
   }
@@ -298,15 +300,15 @@ class Monthview extends Component {
       const paramYear = urlParamDateSplit[0];
       const paramMonth = urlParamDateSplit[1].padStart(2, '0');
       const paramDay = urlParamDateSplit[2];
-
-      const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYYMMDD');
-      paramDateCorrect.add(1, 'days');
-      this.props.history.replace(`/Monthview/${paramDateCorrect.toISOString().substring(0, 10)}`); // eslint-disable-line
-      this.setState({
-        monthNro: paramDateCorrect.format('MM'),
-        yearNro: paramDateCorrect.format('YYYY'),
-      });
+      
     } catch (err) {
+      const date = new Date();
+      const paramMonth = String(date.getMonth() + 1).padStart(2, '0');
+      this.props.history.replace(`/Monthview/${date.toISOString().substring(0, 10)}`); // eslint-disable-line
+      this.setState({
+        monthNro: paramMonth,
+        yearNro: date.getYear(),
+      });
       console.error(err);
     }
   }
