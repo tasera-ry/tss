@@ -144,7 +144,7 @@ class Dayview extends Component {
             state={props.tracks[key].trackSupervision}
             notice={props.tracks[key].notice}
             // TODO final react routing
-            to={`/trackview/${props.date.toISOString()}/${props.tracks[key].name}`}
+            to={`/trackview/${props.date.toISOString().substring(0, 10)}/${props.tracks[key].name}`}
           />,
         );
       }
@@ -268,7 +268,7 @@ class Dayview extends Component {
 
             </div>
           </div>
-          <Link className="back" style={{ color: 'black' }} to={`/weekview/${this.state.date.toISOString()}`}>
+          <Link className="back" style={{ color: 'black' }} to={`/weekview/${this.state.date.toISOString().substring(0, 10)}`}>
             <ArrowBackIcon />
             {dayview.WeekviewLink[fin]}
           </Link>

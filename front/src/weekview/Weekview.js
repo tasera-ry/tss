@@ -92,7 +92,7 @@ class Weekview extends Component {
 
     try {
       const oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() - 7));
-      this.props.history.replace(`/weekview/${moment(uusPaiva, 'YYYYMMDD').add(1, 'day').toISOString()}`);
+      this.props.history.replace(`/weekview/${moment(uusPaiva, 'YYYYMMDD').add(1, 'day').toISOString().substring(0, 10)}`);
 
       const viikkoNumero = moment(this.state.dayNro, 'YYYYMMDD').week();
 
@@ -151,7 +151,7 @@ class Weekview extends Component {
     try {
       const oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() + 7));
       let dateFormatted = oikeePaiva.getFullYear() + "-" + (oikeePaiva.getMonth()+1) + "-" + oikeePaiva.getDate();
-      this.props.history.replace(`/weekview/${moment(uusPaiva, 'YYYYMMDD').add(1, 'day').toISOString()}`);
+      this.props.history.replace(`/weekview/${moment(uusPaiva, 'YYYYMMDD').add(1, 'day').toISOString().substring(0, 10)}`);
 
       // Week logic cuz there's no 53 weeks
       const uusVuosi = uusViikko === 1
@@ -419,7 +419,7 @@ class Weekview extends Component {
         this.setState({ weekNro: current });
         // Tähän viel että parametriks tulee tän hetkinen viikko
         const now = moment().format();
-        this.props.history.replace(`/weekview/${now}`);
+        this.props.history.replace(`/weekview/${now.substring(0, 10)}`);
       } else {
         // Jos on oikee nii laitetaan url params
         // dayNro pitäs saada parametrien mukaan oikeeks

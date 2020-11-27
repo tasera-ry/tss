@@ -54,7 +54,7 @@ class Monthview extends Component {
 
       const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYYMMDD');
       paramDateCorrect.add(1, 'days');
-      this.props.history.replace(`/Monthview/${paramDateCorrect.toISOString()}`); // eslint-disable-line
+      this.props.history.replace(`/Monthview/${paramDateCorrect.toISOString().substring(0, 10)}`); // eslint-disable-line
       this.setState({
         date: new Date(paramDateCorrect).toISOString(),
         monthNro: paramDateCorrect.format('MM'),
@@ -80,7 +80,7 @@ class Monthview extends Component {
       const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYYMMDD');
       paramDateCorrect.add(1, 'days');
       paramDateCorrect.subtract(1, 'month');
-      this.props.history.replace(`/Monthview/${paramDateCorrect.toISOString()}`); // eslint-disable-line
+      this.props.history.replace(`/Monthview/${paramDateCorrect.toISOString().substring(0, 10)}`); // eslint-disable-line
       this.setState({
         date: new Date(paramDateCorrect).toISOString(),
         monthNro: paramDateCorrect.format('MM'),
@@ -106,7 +106,7 @@ class Monthview extends Component {
       const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYYMMDD');
       paramDateCorrect.add(1, 'days');
       paramDateCorrect.add(1, 'month');
-      this.props.history.replace(`/Monthview/${paramDateCorrect.toISOString()}`); // eslint-disable-line
+      this.props.history.replace(`/Monthview/${paramDateCorrect.toISOString().substring(0, 10)}`); // eslint-disable-line
       this.setState({
         date: new Date(paramDateCorrect).toISOString(),
         monthNro: paramDateCorrect.format('MM'),
