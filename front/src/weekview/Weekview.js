@@ -459,7 +459,6 @@ class Weekview extends Component {
             <h1 className="dateHeader-text">
               {' '}
               {`${week.Week[fin]} ${this.state.weekNro} , ${this.state.yearNro}`}
-              {' '}
             </h1>
             {/* kuukausi jos tarvii: {monthToString(date.getMonth())} */}
             <div
