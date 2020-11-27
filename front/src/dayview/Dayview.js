@@ -72,7 +72,7 @@ class Dayview extends Component {
   previousDayClick(e) {
     e.preventDefault();
     const date = new Date(this.state.date.setDate(this.state.date.getDate() - 1)); // eslint-disable-line
-    let dateFormatted = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
+    const dateFormatted = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     this.props.history.replace(`/dayview/${dateFormatted}`); // eslint-disable-line
     this.setState(
       {
@@ -88,7 +88,7 @@ class Dayview extends Component {
   nextDayClick(e) {
     e.preventDefault();
     const date = new Date(this.state.date.setDate(this.state.date.getDate() + 1)); // eslint-disable-line
-    let dateFormatted = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
+    const dateFormatted = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     this.props.history.replace(`/dayview/${dateFormatted}`); // eslint-disable-line
     this.setState(
       {
@@ -169,8 +169,6 @@ class Dayview extends Component {
         // closed
         color = 'redB';
       }
-
-
 
       return (
         <Grid item className={`track hoverHand ${color}`} xs={12} sm={2}>

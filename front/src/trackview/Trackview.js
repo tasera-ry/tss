@@ -137,8 +137,8 @@ class Trackview extends Component {
   }
 
   backlink() {
-    const date = new Date(this.state.date.setDate(this.state.date.getDate()))
-    let dateFormatted = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
+    const date = new Date(this.state.date.setDate(this.state.date.getDate()));
+    const dateFormatted = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     return `/dayview/${dateFormatted}`;
   }
 

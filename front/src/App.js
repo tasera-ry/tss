@@ -13,7 +13,7 @@ import Scheduling from './scheduling/Scheduling';
 import RangeOfficerView from './tabletview/rangeofficer';
 import UserManagementView from './usermanagement/UserManagementView';
 import trackCRUD from './edittracks/tracks';
-import Monthview from './monthview/Monthview'
+import Monthview from './monthview/Monthview';
 
 // React router. Hashrouter, because normal router won't work in apache
 

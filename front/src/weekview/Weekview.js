@@ -150,7 +150,6 @@ class Weekview extends Component {
 
     try {
       const oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() + 7));
-      let dateFormatted = oikeePaiva.getFullYear() + "-" + (oikeePaiva.getMonth()+1) + "-" + oikeePaiva.getDate();
       this.props.history.replace(`/weekview/${moment(uusPaiva, 'YYYYMMDD').add(1, 'day').toISOString().substring(0, 10)}`);
 
       // Week logic cuz there's no 53 weeks
@@ -191,7 +190,7 @@ class Weekview extends Component {
     try {
       const fullUrl = window.location.href.split('/');
       const urlParamDate = fullUrl[5];
-      
+
       const urlParamDateSplit = urlParamDate.split('-');
       const weeknumber = moment(urlParamDate, 'YYYYMMDD').week();
 
@@ -397,9 +396,6 @@ class Weekview extends Component {
     // Jos ei parametrejä nii sit toi current. Muuten parametrien
 
     // Urlista lasketaan oikee viikkonumero
-    const request = async () => {
-
-    }
 
     try {
       const fullUrl = window.location.href.split('/');
@@ -425,8 +421,7 @@ class Weekview extends Component {
         // dayNro pitäs saada parametrien mukaan oikeeks
         this.setState({ weekNro: weeknumber, date: paramDateCorrect, yearNro: paramYear }, () => {
         });
-        
-        
+
         date1 = paramDateCorrect;
       }
     } catch {
@@ -491,18 +486,18 @@ class Weekview extends Component {
                 : this.createDate()}
             </Grid>
 
-              {/* Colored boxes for dates */}
-              {this.state.state !== 'ready'
-                ? (
-                  <div className="progress">
-                    <CircularProgress disableShrink />
-                  </div>
-                )
-                : (
-                  <Grid class="flex-container">
-                    {this.createColorInfo()}
-                  </Grid>
-                )}
+            {/* Colored boxes for dates */}
+            {this.state.state !== 'ready'
+              ? (
+                <div className="progress">
+                  <CircularProgress disableShrink />
+                </div>
+              )
+              : (
+                <Grid class="flex-container">
+                  {this.createColorInfo()}
+                </Grid>
+              )}
           </div>
         </div>
 
