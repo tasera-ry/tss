@@ -46,7 +46,7 @@ class Dayview extends Component {
     this.update();
   }
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps() { // eslint-disable-line
     this.setState({
       state: 'loading',
     }, () => {
