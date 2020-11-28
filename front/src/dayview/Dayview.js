@@ -46,6 +46,14 @@ class Dayview extends Component {
     this.update();
   }
 
+  componentWillReceiveProps() {
+    this.setState({
+      state: 'loading',
+    }, () => {
+      this.update();
+    });
+  }
+
   update() {
     // /dayview/2020-02-20
     const { date } = this.props.match.params; // eslint-disable-line

@@ -34,6 +34,10 @@ class Monthview extends Component {
     this.getMonth();
   }
 
+  componentWillReceiveProps() {
+    this.update();
+  }
+
   getYear = () => {
     try {
       const fullUrl = window.location.href.split('/');
@@ -300,16 +304,29 @@ class Monthview extends Component {
       const paramYear = urlParamDateSplit[0];
       const paramMonth = urlParamDateSplit[1].padStart(2, '0');
       const paramDay = urlParamDateSplit[2];
+      console.log(paramDay);
+      if (paramDay === undefined){
+        paramDay = 1;
+      }
+
+      
+      if((paramMonth !== this.state.monthNro && this.state.monthNro !== 0) ||
+          paramYear !== 0 && paramYear !== this.state.yearNro){
+        this.setState({
+        monthNro: paramMonth,
+        yearNro: paramYear,
+        });
+      }
       
     } catch (err) {
       const date = new Date();
       const paramMonth = String(date.getMonth() + 1).padStart(2, '0');
-      this.props.history.replace(`/Monthview/${date.toISOString().substring(0, 10)}`); // eslint-disable-line
       this.setState({
         monthNro: paramMonth,
         yearNro: date.getYear(),
       });
       console.error(err);
+      this.props.history.replace(`/Monthview/${date.toISOString().substring(0, 10)}`); // eslint-disable-line
     }
   }
 
