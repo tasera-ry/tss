@@ -321,7 +321,6 @@ class Weekview extends Component {
       if (this.state.paivat[j].tracks) {
         this.state.paivat[j].tracks.forEach((track) => {
           if (track.notice !== null && track.notice !== '') {
-            Attention = track.notice;
             info = true;
           }
         });
