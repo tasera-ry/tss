@@ -179,10 +179,10 @@
     "06": ["Kesäkuu", "June"],
     "07": ["Heinäkuu", "July"],
     "08": ["Elokuu", "August"],
-    "09": ["Syyskuu", "Septemper"],
+    "09": ["Syyskuu", "September"],
     "10": ["Lokakuu", "October"],
     "11": ["Marraskuu", "November"],
-    "12": ["Joulukuu", "Decemper"],
+    "12": ["Joulukuu", "December"],
     "weekNumber": ["Vko", "Wk"]
   },
   "viewChanger": {
