@@ -19,7 +19,7 @@ import SupervisorNotification from './SupervisorNotification'; // eslint-disable
 
 import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
 
-import LoginContext from '../LoginContext';
+import { useCookies } from 'react-cookie';
 
 // Translations
 import texts from '../texts/texts.json';
@@ -48,10 +48,11 @@ const elementStyle = {
   marginTop: 10,
 };
 
-const SideMenu = ({ setName, superuser, setLoggingOut, loginInfo }) => {
+const SideMenu = ({ setName, superuser, setLoggingOut }) => {
   const styles = useStyles();
   const [menu, setMenu] = useState({ right: false });
   const [openDial, setOpenDial] = useState(false);
+  const [cookies, setCookie, removeCookie] = useCookies(['token', 'username', 'role'])
   const storage = window.localStorage;
 
   const HandleClick = () => {
@@ -63,13 +64,12 @@ const SideMenu = ({ setName, superuser, setLoggingOut, loginInfo }) => {
     setOpenDial(true);
   };
 
+  // TODO: centralize this one
   const HandleSignOut = () => {
     setLoggingOut(true);
-    storage.removeItem('token');
-    storage.removeItem('taseraUserName');
-    storage.removeItem('role');
-    loginInfo.updateLoginInfo(null, null);
-    loginInfo.updateRole(null);
+    removeCookie('token');
+    removeCookie('username');
+    removeCookie('role');
     setName('');
     setMenu({ right: false });
   };
@@ -178,7 +178,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut, loginInfo }) => {
 
   return (
     <div className="pc">
-      {loginInfo.username !== null
+      {cookies.username !== null
         ? (
           <Button
             className="clickable"
@@ -202,17 +202,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut, loginInfo }) => {
         </Drawer>
 
       </div>
-      {openDial ?
-        <LoginContext.Consumer>
-          {(loginInfo) => {
-            return (
-              <DialogWindow
-                loginInfo={loginInfo}
-              />
-            );
-          }}
-        </LoginContext.Consumer>
-      : '' }
+      {openDial ? <DialogWindow/> : ''}
     </div>
   );
 };
@@ -222,20 +212,21 @@ function setLanguage(num) {
   window.location.reload();
 }
 
-const Nav = (props) => {
+const Nav = () => {
   const [name, setName] = useState('');
   const [superuser, setSuperuser] = useState();
   const [loggingOut, setLoggingOut] = useState(false);
   const [checkSupervisions, setCheckSupervisions] = useState(false);
   const fin = localStorage.getItem('language'); // eslint-disable-line
   const { nav } = texts; // eslint-disable-line
+  const [cookies, setCookie] = useCookies(['username', 'role']);
 
   // TODO: someone update this to be less of a mess
   if (name === '') {
-    const username = props.loginInfo.username
+    const username = cookies.username
     if (username !== null) {
       setName(username);
-      setSuperuser(props.loginInfo.role === 'superuser');
+      setSuperuser(cookies.role === 'superuser');
     }
   }
 
@@ -270,7 +261,6 @@ const Nav = (props) => {
           setName={setName}
           superuser={superuser}
           setLoggingOut={setLoggingOut}
-          loginInfo={props.loginInfo}
         />
 
       </nav>
@@ -279,7 +269,6 @@ const Nav = (props) => {
         setLoggingOut={setLoggingOut}
         checkSupervisions={checkSupervisions}
         setCheckSupervisions={setCheckSupervisions}
-        loginInfo={props.loginInfo}
       />
     </div>
   );

@@ -93,7 +93,6 @@ const TrackTable = ({
   trackData,
   setRequestStatus,
   setRequestText,
-  opts,
   l10n,
   lang,
 }) => (
@@ -136,7 +135,7 @@ const TrackTable = ({
       //         , {name: name
       //            , description: description
       //            , range_id: trackData[0].range_id
-      //           }, opts)
+      //           })
       //       setTrackData(trackData.concat(response.data))
       //       setRequestStatus('success')
       //       setRequestText('Rata lisätty')
@@ -166,7 +165,6 @@ const TrackTable = ({
           await axios.put(
             `/api/track/${trackInfo.id}`,
             newData,
-            opts,
           );
           const modified = trackData.filter((track) => track.id !== trackInfo.id)
             .concat({ ...trackInfo, ...newData });
@@ -241,7 +239,7 @@ const TrackTable = ({
   />
 );
 
-const TrackCRUD = (props) => {
+const TrackCRUD = () => {
   const [trackData, setTrackData] = useState([]);
   const [initFinished, setInitFinished] = useState(false);
   const [requestStatus, setRequestStatus] = useState(null);
@@ -249,21 +247,14 @@ const TrackCRUD = (props) => {
 
   const partialFetch = lodash.partial(fetch, '/api/track'); // eslint-disable-line
 
-  const token = props.loginInfo.token;
-
-  const opts = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
+  // TODO: this needs to be centralized for best effect
   function RedirectToWeekview() {
     window.location.href = '/';
   }
 
   useEffect(() => {
     (async () => {
-      const logInSuccess = await validateLogin(token);
+      const logInSuccess = await validateLogin();
       if (logInSuccess) {
         try {
           const response = await axios.get('/api/track');
@@ -294,7 +285,6 @@ const TrackCRUD = (props) => {
           trackData={trackData}
           setRequestStatus={setRequestStatus}
           setRequestText={setRequestText}
-          opts={opts}
           l10n={l10n}
           lang={lang}
         />

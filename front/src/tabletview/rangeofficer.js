@@ -15,8 +15,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import LoginContext from '../LoginContext';
-
 // Translations
 
 // Date handling
@@ -113,29 +111,22 @@ const TrackRows = ({
           {track.short_description}
         </Typography>
 
-        <LoginContext.Consumer>
-          {(loginInfo) => {
-            return (
-              <TrackButtons
-                track={track}
-                tracks={tracks}
-                setTracks={setTracks}
-                scheduleId={scheduleId}
-                tablet={tablet}
-                fin={fin}
-                socket={socket}
-                loginInfo={loginInfo}
-              />
-            );
-          }}
-        </LoginContext.Consumer>
+        <TrackButtons
+          track={track}
+          tracks={tracks}
+          setTracks={setTracks}
+          scheduleId={scheduleId}
+          tablet={tablet}
+          fin={fin}
+          socket={socket}
+        />
       </div>
     </div>
   ))
 );
 
 const TrackButtons = ({
-  track, scheduleId, tablet, fin, socket, loginInfo
+  track, scheduleId, tablet, fin, socket
 }) => {
   // get this somewhere else
   const buttonStyle = {
@@ -174,10 +165,6 @@ const TrackButtons = ({
   });
   const HandleClick = () => {
     let newSupervision = 'absent';
-    const token = loginInfo.token;
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
     track.color = colors.white; // eslint-disable-line
     setTextState(tablet.White[fin]);
 
@@ -207,7 +194,6 @@ const TrackButtons = ({
       axios.put(
         `/api/track-supervision/${scheduleId}/${track.id}`,
         params,
-        config,
       ).catch((error) => {
         console.log(error);
       }).then((res) => {
@@ -230,7 +216,6 @@ const TrackButtons = ({
       axios.post(
         '/api/track-supervision',
         params,
-        config,
       ).catch((error) => {
         console.log(error);
       }).then((res) => {
@@ -321,7 +306,7 @@ async function getData(
 }
 
 const TimePick = ({
-  tablet, fin, scheduleId, hours, setHours, dialogOpen, setDialogOpen, loginInfo
+  tablet, fin, scheduleId, hours, setHours, dialogOpen, setDialogOpen
 }) => {
   const [errorMessage, setErrorMessage] = useState();
   const [startDate, setStartDate] = useState(new Date(0, 0, 0, hours.start.split(':')[0], hours.start.split(':')[1], 0));
@@ -338,16 +323,12 @@ const TimePick = ({
     console.log(start, end);
 
     const query = `/api/schedule/${scheduleId}`;
-    const token = loginInfo.token;
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
 
     await axios.put(query,
       {
         open: start,
         close: end,
-      }, config)
+      })
       .then((res) => {
         if (res) {
           setHours({ start, end });
@@ -493,13 +474,10 @@ const Tabletview = (props) => {
   }, []);
 
   async function updateSupervisor(status, color, text) {
-    const token = props.loginInfo.token;
-
     const res = await rangeSupervision(reservationId,
       scheduleId,
       status,
-      rangeSupervisionScheduled,
-      token);
+      rangeSupervisionScheduled);
     if (res === true) {
       setStatusColor(color);
       setStatusText(text);
@@ -569,26 +547,17 @@ const Tabletview = (props) => {
       </Typography>
       &nbsp;
 
-      {dialogOpen
-        ? (
-          <LoginContext.Consumer>
-            {(loginInfo) => {
-              return (
-                <TimePick
-                  tablet={tablet}
-                  fin={fin}
-                  scheduleId={scheduleId}
-                  hours={hours}
-                  setHours={setHours}
-                  dialogOpen={dialogOpen}
-                  setDialogOpen={setDialogOpen}
-                  loginInfo={loginInfo}
-                />
-              );
-            }}
-          </LoginContext.Consumer>
-        )
-        : ''}
+      {dialogOpen ?
+        <TimePick
+          tablet={tablet}
+          fin={fin}
+          scheduleId={scheduleId}
+          hours={hours}
+          setHours={setHours}
+          dialogOpen={dialogOpen}
+          setDialogOpen={setDialogOpen}
+        />
+      : ''}
 
       <div style={rowStyle}>
         <Button

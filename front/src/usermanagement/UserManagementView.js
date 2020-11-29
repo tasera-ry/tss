@@ -43,14 +43,13 @@ const dialogStyle = {
 };
 
 // Finds all users from database
-async function getUsers(token) {
+async function getUsers() {
   try {
     const response = await fetch('/api/user', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
       },
     });
     return await response.json();
@@ -149,7 +148,6 @@ class UserManagementView extends Component {
       newPassword: '',
       selectedUserName: '',
       myStorage: window.localStorage, // eslint-disable-line
-      loginInfo: props.loginInfo
     };
 
     // need to bind these functions so they get access to the state
@@ -175,18 +173,13 @@ class UserManagementView extends Component {
 
   componentDidMount() {
     this.setState(
-      /*
-      {
-        token: props.loginInfo.token,
-      },
-      */
       function () {
-        validateLogin(this.state.loginInfo.token)
+        validateLogin()
           .then((logInSuccess) => {
             if (!logInSuccess) {
               this.props.history.push('/');
             } else {
-              getUsers(this.state.loginInfo.token)
+              getUsers()
                 .then((response) => {
                   if (response !== false) {
                     this.setState({
@@ -279,7 +272,7 @@ class UserManagementView extends Component {
     let success = true;
     let response = await axios
       .post('api/sign', {
-        name: this.state.loginInfo.username,
+        name: this.props.cookies.username,
         password: this.state.oldPassword,
       })
       .catch(() => {
@@ -383,7 +376,7 @@ class UserManagementView extends Component {
 
   async makeDataFreshAgain() {
     try {
-      const response = await getUsers(this.state.token);
+      const response = await getUsers();
       if (response !== false) {
         this.setState({
           userList: response,
@@ -488,7 +481,7 @@ class UserManagementView extends Component {
   update() {
     const tempRows = [];
     this.state.userList.forEach((user) => {
-      if (this.state.loginInfo.username !== user.name) {
+      if (this.props.cookies.username !== user.name) {
         const row = this.createData(user.name,
           user.role,
           this.returnPassButton(user.id, manage, fin),

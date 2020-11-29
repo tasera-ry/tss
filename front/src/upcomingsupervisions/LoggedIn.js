@@ -14,6 +14,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { useCookies } from 'react-cookie';
+
 // Axios for call-handling to backend
 import axios from 'axios';
 
@@ -235,18 +237,12 @@ const Rows = ({
 };
 
 // TODO: change config after relocating jwt
-async function getId(loginInfo) {
-  const name = loginInfo.username;
+// TODO: try to somehow check this alongside request
+async function getId(username) {
+  if (!username) return;
 
-  const token = loginInfo.token;
-  const config = {
-    headers: { Authorization: `Bearer ${token}` },
-  };
-
-  if (!name) return;
-
-  const query = `api/user?name=${name}`;
-  const response = await axios.get(query, config);
+  const query = `api/user?name=${username}`;
+  const response = await axios.get(query);
 
   const userID = response.data[0].id;
 
@@ -273,8 +269,8 @@ async function getReservations(res, setNoSchedule) { // eslint-disable-line
   return res;
 }
 
-async function checkSupervisorReservations(loginInfo) {
-  const userID = await getId(loginInfo);
+async function checkSupervisorReservations(username) {
+  const userID = await getId(username);
 
   if (!userID) {
     return false;
@@ -295,8 +291,8 @@ async function checkSupervisorReservations(loginInfo) {
 }
 
 // obtain users schedule and range supervision states
-async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone, loginInfo) {
-  const userID = await getId(loginInfo);
+async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone, username) {
+  const userID = await getId(username);
   let res = [];
   let temp = [];
 
@@ -347,11 +343,12 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone, log
   setChecked(res[0].range_supervisor === 'en route');
 }
 
-const DialogWindow = ({ onCancel, loginInfo }) => {
+const DialogWindow = ({ onCancel }) => {
   const [noSchedule, setNoSchedule] = useState(false);
   const [schedules, setSchedules] = useState([]);
   const [done, setDone] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [cookies, setCookie] = useCookies(['username'])
   const { sv } = data;
 
   if (onCancel === undefined) {
@@ -360,7 +357,7 @@ const DialogWindow = ({ onCancel, loginInfo }) => {
 
   // starting point
   useEffect(() => {
-    getSchedule(setSchedules, setNoSchedule, setChecked, setDone, loginInfo);
+    getSchedule(setSchedules, setNoSchedule, setChecked, setDone, cookies.username);
   }, []);
 
   return (
@@ -375,22 +372,13 @@ const DialogWindow = ({ onCancel, loginInfo }) => {
         setDone={setDone}
         sv={sv}
         onCancel={onCancel}
-        loginInfo={loginInfo}
       />
     </div>
   );
 };
 
 // sends updated info to database
-async function putSchedules(changes, loginInfo) {
-  // console.log("updating: ")
-  // console.log(changes);
-
-  const token = loginInfo.token;
-  const config = {
-    headers: { Authorization: `Bearer ${token}` },
-  };
-
+async function putSchedules(changes) {
   for (let i = 0; i < changes.length; i += 1) {
     const { id } = changes[i];
     const query = `api/range-supervision/${id}`;
@@ -398,7 +386,7 @@ async function putSchedules(changes, loginInfo) {
     await axios.put(query,
       {
         range_supervisor: s,
-      }, config);
+      });
   }
 }
 
@@ -412,7 +400,6 @@ const Logic = ({
   setDone,
   sv,
   onCancel,
-  loginInfo,
 }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(true);
@@ -437,7 +424,7 @@ const Logic = ({
 
     if (changes.length > 0) {
       setWait(true);
-      await putSchedules(changes, loginInfo);
+      await putSchedules(changes);
     }
 
     setOpen(false);

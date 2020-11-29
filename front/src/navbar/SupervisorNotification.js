@@ -7,6 +7,8 @@ import Button from '@material-ui/core/Button';
 // DialogWindow for supervisors to confirm their supervisions
 import { checkSupervisorReservations, DialogWindow } from '../upcomingsupervisions/LoggedIn';
 
+import { withCookies } from 'react-cookie';
+
 // Translations
 import data from '../texts/texts.json';
 
@@ -18,8 +20,7 @@ class SupervisorNotification extends Component {
     super(props);
     this.state = {
       userHasSupervisions: false,
-      supervisionsOpen: false,
-      loginInfo: props.loginInfo
+      supervisionsOpen: false
     };
   }
 
@@ -46,7 +47,7 @@ class SupervisorNotification extends Component {
   }
 
   checkSupervisions = async () => {
-    const reservations = await checkSupervisorReservations(this.state.loginInfo);
+    const reservations = await checkSupervisorReservations(this.props.cookies.username);
     if (reservations) {
       this.setState({
         userHasSupervisions: true,
@@ -87,7 +88,6 @@ class SupervisorNotification extends Component {
           ? (
             <DialogWindow
               onCancel={() => this.refreshSupervisionsOpen()}
-              loginInfo={this.state.loginInfo}
             />
           ) : ''}
       </div>
@@ -95,4 +95,4 @@ class SupervisorNotification extends Component {
   }
 }
 
-export default SupervisorNotification;
+export default withCookies(SupervisorNotification);

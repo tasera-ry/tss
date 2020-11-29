@@ -8,11 +8,16 @@ const config = require(path.join(root, 'config'));
 
 const controller = {
   sign: async function signUser(request, response) {
+    const jwtSign = jwt.sign({ id: response.locals.id }, config.jwt.secret);
     return response
       .status(200)
-      .send(jwt.sign({
-        id: response.locals.id
-      }, config.jwt.secret));
+      .cookie('token', jwtSign,
+      {
+        httpOnly: true,
+        secure: true,
+        sameSite: true
+      })
+      .send();
   }
 
   , readFilter: async function readFilterUsers(request, response) {

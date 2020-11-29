@@ -31,8 +31,10 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+
 import socketIOClient from 'socket.io-client';
 import { getSchedulingDate, rangeSupervision, validateLogin } from '../utils/Utils';
+import { withCookies } from 'react-cookie';
 
 // Translation
 import data from '../texts/texts.json';
@@ -45,14 +47,13 @@ if (localStorage.getItem('language') === '0') {
 }
 moment.locale(lang);
 
-async function getRangeSupervisors(token) {
+async function getRangeSupervisors() {
   try {
     const response = await fetch('/api/user?role=supervisor', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
       },
     });
     return await response.json();
@@ -85,22 +86,20 @@ class Scheduling extends Component {
       weekly: false,
       monthly: false,
       repeatCount: 1,
-      token: props.loginInfo.token,
       datePickerKey: 1,
     };
   }
 
   componentDidMount() {
     this.setState({
-      // token: props.loginInfo.token,
       datePickerKey: Math.random(), // force datepicker to re-render when language changed
     }, function () {
-      validateLogin(this.state.token)
+      validateLogin()
         .then((logInSuccess) => {
           if (!logInSuccess) {
             this.props.history.push('/');
           } else {
-            getRangeSupervisors(this.state.token)
+            getRangeSupervisors()
               .then((response) => {
                 if (response !== false) {
                   this.setState({
@@ -379,7 +378,6 @@ class Scheduling extends Component {
   *
   * from state:
   * this.state.rangeId
-  * this.state.token
   * this.state.rangeSupervisorSwitch
   * this.state.open
   * this.state.close
@@ -537,8 +535,7 @@ class Scheduling extends Component {
             body: JSON.stringify(params),
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${this.state.token}`,
+              'Content-Type': 'application/json'
             },
           })
             .then((res) => { // eslint-disable-line
@@ -594,7 +591,6 @@ class Scheduling extends Component {
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${this.state.token}`,
             },
           })
             .then((res) => { // eslint-disable-line
@@ -651,8 +647,7 @@ class Scheduling extends Component {
           rsId,
           srsId,
           rangeStatus,
-          rangeSupervisionScheduled,
-          this.state.token,
+          rangeSupervisionScheduled
         );
         if (rangeSupervisionRes !== true) {
           return reject(new Error(rangeSupervisionRes));
@@ -964,4 +959,4 @@ class Scheduling extends Component {
   }
 }
 
-export default Scheduling;
+export default withCookies(Scheduling);
