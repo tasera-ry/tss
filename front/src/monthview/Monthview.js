@@ -352,10 +352,10 @@ class Monthview extends Component {
     const { month } = texts;  // eslint-disable-line
     return (
     <div>
-      {this.state.state !== 'ready'
+      {this.state.state === 'ready'
         ? (
           <div className="progress">
-            <CircularProgress size= "310px" disableShrink />
+            <CircularProgress size= "25vw" disableShrink />
           </div>
         )
         : (

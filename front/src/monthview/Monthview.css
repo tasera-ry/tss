@@ -8,9 +8,7 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  width: 50vw;
-  height: 50vh;
-  min-width: 320px;
+  height: 80vh;
 }
 
 .notCurMonth {
