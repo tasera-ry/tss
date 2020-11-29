@@ -355,7 +355,7 @@ class Monthview extends Component {
       {this.state.state !== 'ready'
         ? (
           <div className="progress">
-            <CircularProgress disableShrink />
+            <CircularProgress size= "310px" disableShrink />
           </div>
         )
         : (
