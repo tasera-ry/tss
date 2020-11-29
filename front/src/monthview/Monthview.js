@@ -5,6 +5,7 @@ import './Monthview.css';
 
 // Material UI components
 import { Link } from 'react-router-dom';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Moment for date management
 import moment from 'moment';
@@ -37,7 +38,11 @@ class Monthview extends Component {
   }
 
   componentWillReceiveProps() { // eslint-disable-line
-    this.update();
+    this.setState({
+      state: 'loading',
+    }, () => {
+      this.update();
+    });
   }
 
   getYear = () => {
@@ -264,11 +269,15 @@ class Monthview extends Component {
       paramDateCorrect.add(1, 'days');
       paramDateCorrect.subtract(1, 'month');
       this.props.history.replace(`/Monthview/${paramDateCorrect.toISOString().substring(0, 10)}`); // eslint-disable-line
-      this.setState({
-        state: 'ready',
-        monthNro: paramDateCorrect.format('MM'),
-        yearNro: paramDateCorrect.format('YYYY'),
-      });
+      this.setState(
+        {
+          monthNro: paramMonth,
+          yearNro: paramYear,
+        },
+        function () {
+          this.update();
+        },
+      );
     } catch (err) {
       console.error(err);
       this.update();
@@ -294,11 +303,15 @@ class Monthview extends Component {
       paramDateCorrect.add(1, 'days');
       paramDateCorrect.add(1, 'month');
       this.props.history.replace(`/Monthview/${paramDateCorrect.toISOString().substring(0, 10)}`); // eslint-disable-line
-      this.setState({
-        state: 'ready',
-        monthNro: paramDateCorrect.format('MM'),
-        yearNro: paramDateCorrect.format('YYYY'),
-      });
+      this.setState(
+        {
+          monthNro: paramMonth,
+          yearNro: paramYear,
+        },
+        function () {
+          this.update();
+        },
+      );
     } catch (err) {
       console.error(err);
       this.update();
@@ -338,40 +351,50 @@ class Monthview extends Component {
     const fin = localStorage.getItem('language'); // eslint-disable-line
     const { month } = texts;  // eslint-disable-line
     return (
-      <div>
-        <div className="date-headerM">
-          <div
-            className="hoverHand arrow-left"
-            onClick={this.previousMonthClick}
-          />
-          <h1 className="dateHeader-text">
-            {`${month.[this.state.monthNro][fin]},`}
-            {' '}
-            {this.state.yearNro}
-          </h1>
-          <div
-            className="hoverHand arrow-right"
-            onClick={this.nextMonthClick}
-          />
-        </div>
+    <div>
+      {this.state.state !== 'ready'
+        ? (
+          <div className="progress">
+            <CircularProgress disableShrink />
+          </div>
+        )
+        : (
+          <div>
+          <div className="date-headerM">
+            <div
+              className="hoverHand arrow-left"
+              onClick={this.previousMonthClick}
+            />
+            <h1 className="dateHeader-text">
+              {`${month.[this.state.monthNro][fin]},`}
+              {' '}
+              {this.state.yearNro}
+            </h1>
+            <div
+              className="hoverHand arrow-right"
+              onClick={this.nextMonthClick}
+            />
+          </div>
 
-        <div className="month-container">
-          <div className="viewChanger">
-            <div className="viewChanger-container">
-              {viewChanger()}
+          <div className="month-container">
+            <div className="viewChanger">
+              <div className="viewChanger-container">
+                {viewChanger()}
+              </div>
+            </div>
+            <div className="weekdays">
+              {this.createWeekDay()}
+            </div>
+            <div className="weekNumber">
+              {this.createWeekNumber()}
+            </div>
+            <div className="month-days">
+              {this.createMonthTable()}
             </div>
           </div>
-          <div className="weekdays">
-            {this.createWeekDay()}
-          </div>
-          <div className="weekNumber">
-            {this.createWeekNumber()}
-          </div>
-          <div className="month-days">
-            {this.createMonthTable()}
-          </div>
+          <Infoboxes />
         </div>
-        <Infoboxes />
+      )}
       </div>
     );
   }

@@ -2,6 +2,12 @@
   cursor: pointer;
 }
 
+.progress {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .notCurMonth {
   opacity: 0.6;
 }
