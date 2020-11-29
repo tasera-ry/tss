@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 // Moment for date management
 import moment from 'moment';
 import { viewChanger, getSchedulingFreeform, checkColor } from '../utils/Utils';
+import { Infoboxes } from '../infoboxes/Infoboxes.js';
 
 // Translation
 import texts from '../texts/texts.json';
@@ -358,6 +359,7 @@ class Monthview extends Component {
             {this.createMonthTable()}
           </div>
         </div>
+        <Infoboxes />
       </div>
     );
   }

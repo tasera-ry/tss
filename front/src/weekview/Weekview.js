@@ -12,6 +12,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import moment from 'moment';
 import { getSchedulingWeek, getSchedulingDate, viewChanger } from '../utils/Utils';
 import exclamation from '../logo/Info.png';
+import { Infoboxes } from '../infoboxes/Infoboxes.js';
 
 // Translation
 import texts from '../texts/texts.json';
@@ -475,63 +476,7 @@ class Weekview extends Component {
         </div>
 
         {/* Infoboxes */}
-
-        {/* Top row */}
-        <hr />
-
-        <div className="info-flex">
-          <div className="info-item">
-            <p id="open-info" className="box no-flex" />
-            {/* Avoinna */}
-            {' '}
-            <p className="info-text no-flex">{week.Green[fin]}</p>
-          </div>
-
-          <div className="info-item">
-            <p id="closed-info2" className="box no-flex" />
-            {/* Suljettu */}
-            {' '}
-            <p className="info-text no-flex">{week.Blue[fin]}</p>
-          </div>
-
-          <div className="info-item">
-            <p id="valvoja-info" className="box no-flex" />
-            {/* Päävalvoja tulossa */}
-            {' '}
-            <p className="info-text no-flex">{week.Lightgreen[fin]}</p>
-          </div>
-
-          <div className="info-item">
-            <p id="onway-info" className="box no-flex" />
-            {/* Päävalvoja matkalla */}
-            {' '}
-            <p className="info-text no-flex">{week.Orange[fin]}</p>
-          </div>
-
-          <div className="info-item">
-            <p id="closed-info" className="box no-flex" />
-            {/* Suljettu */}
-            {' '}
-            <p className="info-text no-flex">{week.Red[fin]}</p>
-          </div>
-
-          <div className="info-item">
-            <p id="no-info" className="box no-flex" />
-            {/* Päävalvojaa ei asetettu */}
-            {' '}
-            <p className="info-text no-flex">{week.White[fin]}</p>
-          </div>
-
-          <div className="info-item-img">
-            <p className="empty-box no-flex">
-              <img className="exclamation no-flex" src={exclamation} />
-            </p>
-            {/* Radalla lisätietoa */}
-            {' '}
-            <p className="info-text relative-text no-flex">{week.Notice[fin]}</p>
-          </div>
-
-        </div>
+        <Infoboxes />
       </div>
     );
   }
