@@ -302,7 +302,8 @@ class Monthview extends Component {
       const paramYear = urlParamDateSplit[0];
       const paramMonth = urlParamDateSplit[1].padStart(2, '0');
 
-      if((paramMonth !== this.state.monthNro && this.state.monthNro !== 0) || paramYear !== 0 && paramYear !== this.state.yearNro){ // eslint-disable-line
+      if ((paramMonth !== this.state.monthNro && this.state.monthNro !== 0)
+        || (paramYear !== 0 && paramYear !== this.state.yearNro)) {
         this.setState({
           monthNro: paramMonth,
           yearNro: paramYear,
