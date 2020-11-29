@@ -53,9 +53,9 @@ class App extends Component {
             <Switch>
               <Route path="/" exact component={Weekview} />
               <Route path="/signin" component={SignIn} />
-              <Route path="/monthview" component={Monthview} />
               <Route path="/dayview/:date?" component={Dayview} />
               <Route path="/weekview" component={Weekview} />
+              <Route path="/monthview" component={Monthview} />
               <Route path="/trackview/:date?/:track?" component={Trackview} />
               <Route path="/scheduling/:date?" component={Scheduling} />
               <Route path="/tablet" component={RangeOfficerView} />

@@ -84,9 +84,8 @@ class Monthview extends Component {
     const table = [];
     let dayNumber;
 
-    const fin = localStorage.getItem('language'); // eslint-disable-line
-    const { weekdayShorthand } = texts;  // eslint-disable-line
-    const { month } = texts;  // eslint-disable-line
+    const fin = localStorage.getItem('language');
+    const { month } = texts;
 
     for (let j = 0; j < 8; j += 1) {
       dayNumber = j.toString();
@@ -106,7 +105,7 @@ class Monthview extends Component {
       }
     }
 
-    return table; // eslint-disable-line
+    return table;
   }
 
   createMonthTable = () => {
@@ -115,7 +114,6 @@ class Monthview extends Component {
 
       if (response) {
         this.setState({
-          // Tässä tehään päivät ja tän mukaan tulee se mikä on eka päivä
           paivat: response.month,
         });
       } else console.error('getting info failed');
@@ -123,10 +121,10 @@ class Monthview extends Component {
 
     const table = [];
     if (this.state.yearNro === 0) {
-      return;
+      return false;
     }
 
-    let apu = 0;
+    let help = 0;
     const days = moment(`${this.state.yearNro}-${this.state.monthNro}`, 'YYYY-MM').daysInMonth();
     const startDay = moment(`${this.state.yearNro}-${this.state.monthNro}-1`, 'YYYY-MM-DD');
     let firstMon = moment(`${this.state.yearNro}-${this.state.monthNro}-1`, 'YYYY-MM-DD');
@@ -147,12 +145,12 @@ class Monthview extends Component {
       requestSchedulingFreeform(firstMon.format('YYYY-MM-DD'));
     }
     if (this.state.paivat === undefined) {
-      return;
+      return false;
     }
     // Tarkistetaan ensimmäinen maanantai ja lisätään siitä päivät
     while (firstMon.format('ddd') !== startDay.format('ddd')) {
-      const colorFromBackEnd = checkColor(this.state.paivat, apu);
-      apu += 1;
+      const colorFromBackEnd = checkColor(this.state.paivat, help);
+      help += 1;
       table.push(
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link notCurMonth" to={`/dayview/${firstMon.format('YYYY-MM-DD')}`}>
           <div>
@@ -165,8 +163,8 @@ class Monthview extends Component {
 
     // lisätään kuukauteen kuuluvat päivät.
     while (startDay.format('D') < days) {
-      const colorFromBackEnd = checkColor(this.state.paivat, apu);
-      apu += 1;
+      const colorFromBackEnd = checkColor(this.state.paivat, help);
+      help += 1;
       table.push(
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
           <div>
@@ -177,8 +175,8 @@ class Monthview extends Component {
       startDay.add(1, 'days');
     }
 
-    let colorFromBackEnd = checkColor(this.state.paivat, apu);
-    apu += 1;
+    let colorFromBackEnd = checkColor(this.state.paivat, help);
+    help += 1;
     table.push(
       <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
         <div>
@@ -190,8 +188,8 @@ class Monthview extends Component {
 
     // Lisätään viimeiseen viikkoon kuuluvat päivät.
     while (startDay.format('ddd') !== 'Mon' && startDay.format('ddd') !== 'ma') {
-      colorFromBackEnd = checkColor(this.state.paivat, apu);
-      apu += 1;
+      colorFromBackEnd = checkColor(this.state.paivat, help);
+      help += 1;
       table.push(
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link notCurMonth" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
           <div>
@@ -213,15 +211,15 @@ class Monthview extends Component {
     const table = [];
     const days = moment(`${this.state.yearNro}-${this.state.monthNro}`, 'YYYY-MM').daysInMonth();
     let startWeek = moment(`${this.state.yearNro}-${this.state.monthNro}-1`, 'YYYY-MM-DD').isoWeek();
-    const apuAlku = moment(`${this.state.yearNro}-${this.state.monthNro}-1`, 'YYYY-MM-DD');
+    const startHelp = moment(`${this.state.yearNro}-${this.state.monthNro}-1`, 'YYYY-MM-DD');
     const endWeek = moment(`${this.state.yearNro}-${this.state.monthNro}-${days}`, 'YYYY-MM-DD').isoWeek();
     const link = moment(`${this.state.yearNro}-${this.state.monthNro}-1`, 'YYYY-MM-DD');
 
     if (this.state.yearNro === 0) {
-      return;
+      return false;
     }
 
-    while (apuAlku.isoWeek() !== endWeek) {
+    while (startHelp.isoWeek() !== endWeek) {
       table.push(
         <Link class="link" to={`/weekview/${link.format('YYYY-MM-DD')}`}>
           <div>
@@ -230,8 +228,8 @@ class Monthview extends Component {
         </Link>,
       );
       link.add(1, 'weeks');
-      apuAlku.add(1, 'weeks');
-      startWeek = apuAlku.isoWeek();
+      startHelp.add(1, 'weeks');
+      startWeek = startHelp.isoWeek();
     }
 
     table.push(
@@ -318,7 +316,7 @@ class Monthview extends Component {
         yearNro: date.getYear(),
       });
       console.error(err);
-      this.props.history.replace(`/Monthview/${date.toISOString().substring(0, 10)}`); // eslint-disable-line
+      this.props.history.replace(`/Monthview/${date.toISOString().substring(0, 10)}`);
     }
   }
 

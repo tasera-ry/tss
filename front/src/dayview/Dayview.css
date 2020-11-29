@@ -45,24 +45,24 @@ h2.headerText{
 }
 
 .infoImg {
-   position: absolute;
-   left: 7px;
-   bottom: 1px;
-   height: 22px;
-   width: 22px;
-   margin-right: 8px;
-   margin-bottom: 0px;
-   clear: both;
-   min-height: 22px;
-   min-width: 22px;
+  position: absolute;
+  left: 7px;
+  bottom: 1px;
+  height: 22px;
+  width: 22px;
+  margin-right: 8px;
+  margin-bottom: 0px;
+  clear: both;
+  min-height: 22px;
+  min-width: 22px;
 }
 
 .infoImg-2 {
-   position: relative;
-   margin: 0;
-   width: 32px;
-   max-height: 32px;
-   max-width: 32px;
+  position: relative;
+  margin: 0;
+  width: 32px;
+  max-height: 32px;
+  max-width: 32px;
 }
 
 .dayviewContainer h1 {
@@ -90,8 +90,6 @@ h2.headerText{
   text-align: start;
   justify-content: space-around;
   flex-wrap:wrap;
-  width: 100vw;
-  max-width: 360px;
 }
 
 @media only screen and (min-width: 600px) {
@@ -221,7 +219,6 @@ h2.headerText{
   .dayviewContainer .arrow-left {
     margin-right: 2vw;
   }
-
 }
 /* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
 @media only screen and (min-width:600px) {
@@ -233,29 +230,31 @@ h2.headerText{
   }
   /* To have 7 boxes force size 100 / 7 = 14.28571428571429 */
   .dayviewContainer .sevenGrid > div {
-      width:14.28571428571429%;
-      max-width: 150px;
-      height: 150px;
+    width:14.28571428571429%;
+    max-width: 150px;
+    height: 150px;
   }
+
   .hidden {
     display: none;
   }
+
   .linebreak {
     display: inline;
   }
+
   .dayviewContainer .trackBoxLink{
     width: 90%;
     padding-left: 5%;
     padding-right: 5%;
   }
+
   .overflowHidden {
     overflow: hidden;
     max-height: 60%;
     display: inline-block;
   }
-
-
-  }
+}
 /* tablet, landscape iPad, lo-res laptops ands desktops */
 @media only screen and (min-width:801px) {
 
@@ -271,8 +270,9 @@ h2.headerText{
 /* hi-res laptops and desktops */
 @media only screen and (min-width:1281px) {
   .dayviewContainer .sevenGrid > div {
-      max-width: 150px;
-      height: 150px;
+
+    max-width: 150px;
+    height: 150px;
   }
 }
 
