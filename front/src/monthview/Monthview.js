@@ -20,6 +20,7 @@ class Monthview extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      state: 'loading',
       yearNro: 0,
       monthNro: 0,
     };
@@ -245,6 +246,10 @@ class Monthview extends Component {
   }
 
   previousMonthClick(e) {
+    this.setState({
+      state: 'loading',
+    });
+
     e.preventDefault();
     try {
       const fullUrl = window.location.href.split('/');
@@ -260,16 +265,21 @@ class Monthview extends Component {
       paramDateCorrect.subtract(1, 'month');
       this.props.history.replace(`/Monthview/${paramDateCorrect.toISOString().substring(0, 10)}`); // eslint-disable-line
       this.setState({
+        state: 'ready',
         monthNro: paramDateCorrect.format('MM'),
         yearNro: paramDateCorrect.format('YYYY'),
       });
     } catch (err) {
-      this.update();
       console.error(err);
+      this.update();
     }
   }
 
   nextMonthClick(e) {
+    this.setState({
+      state: 'loading',
+    });
+
     e.preventDefault();
     try {
       const fullUrl = window.location.href.split('/');
@@ -285,12 +295,13 @@ class Monthview extends Component {
       paramDateCorrect.add(1, 'month');
       this.props.history.replace(`/Monthview/${paramDateCorrect.toISOString().substring(0, 10)}`); // eslint-disable-line
       this.setState({
+        state: 'ready',
         monthNro: paramDateCorrect.format('MM'),
         yearNro: paramDateCorrect.format('YYYY'),
       });
     } catch (err) {
-      this.update();
       console.error(err);
+      this.update();
     }
   }
 
@@ -306,6 +317,7 @@ class Monthview extends Component {
       if ((paramMonth !== this.state.monthNro && this.state.monthNro !== 0)
         || (paramYear !== 0 && paramYear !== this.state.yearNro)) {
         this.setState({
+          state: 'ready',
           monthNro: paramMonth,
           yearNro: paramYear,
         });
