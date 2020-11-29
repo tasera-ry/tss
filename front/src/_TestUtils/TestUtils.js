@@ -132,4 +132,36 @@ const schedule = {
   ],
 };
 
-export default { date, week, schedule };
+const reservation = [
+  {
+    id: 300,
+    range_id: 1,
+    date: '2020-04-08T00:00:00.000Z',
+    available: true,
+  },
+];
+
+const supervisor = [{
+  id: 50,
+  name: 'test_user',
+  digest: 'password_digest',
+  role: 'supervisor',
+}];
+
+const oneSchedule = [
+  {
+    id: 39,
+    range_reservation_id: 300,
+    supervisor_id: 50,
+    open: '16:00:00',
+    close: '21:00:00',
+  }];
+
+export default {
+  date,
+  week,
+  schedule,
+  reservation,
+  supervisor,
+  oneSchedule,
+};
