@@ -41,7 +41,7 @@ h1.headerText{
 
 h2.headerText{
   font-size: 16px;
-  text-align: center
+  text-align: center;
 }
 
 .infoImg {
@@ -70,12 +70,14 @@ h2.headerText{
 }
 
 .dayviewContainer h2 {
-  margin:2vmin;
+  margin: 10px;
 }
 
 .dayviewContainer .dateHeader {
   flex-wrap:nowrap;
   justify-content: center;
+  margin-top: 12px;
+  margin-bottom: 12px;
 }
 
 .dayviewTrackContainer{
@@ -202,12 +204,20 @@ h2.headerText{
 }
 /* smartphones, Android phones, landscape iPhone */
 @media only screen and (min-width:480px) {
+  .dayviewContainer .dateHeader {
+  flex-wrap:nowrap;
+  justify-content: center;
+  margin-top: 4px;
+  margin-bottom: 0;
+  }
+
   h1.headerText{
     font-size: 32px;
   }
 
   h2.headerText{
     font-size: 24px;
+    margin: 4px;
   }
 
   .dayviewContainer .arrow-right {
@@ -220,6 +230,9 @@ h2.headerText{
 }
 /* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
 @media only screen and (min-width:600px) {
+  .dayviewContainer .dateHeader {
+  margin-top: 0;
+  }
   .sevenGrid {
     display: flex;
     flex-direction: row;
