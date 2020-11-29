@@ -135,6 +135,7 @@ class Monthview extends Component {
     const days = moment(`${this.state.yearNro}-${this.state.monthNro}`, 'YYYY-MM').daysInMonth();
     const startDay = moment(`${this.state.yearNro}-${this.state.monthNro}-1`, 'YYYY-MM-DD');
     let firstMon = moment(`${this.state.yearNro}-${this.state.monthNro}-1`, 'YYYY-MM-DD');
+    let info = false;
 
     // safety loop incase of errors in name detection due to wrong locale, e.g. Sweden
     let safetyLoop = 0;
@@ -157,29 +158,56 @@ class Monthview extends Component {
     // Tarkistetaan ensimmäinen maanantai ja lisätään siitä päivät
     while (firstMon.format('ddd') !== startDay.format('ddd')) {
       const colorFromBackEnd = checkColor(this.state.paivat, help);
+      if (this.state.paivat[help].tracks) {
+        this.state.paivat[help].tracks.forEach((track) => {
+          if (track.notice !== null) {
+            info = true;
+          }
+        });
+      }
       help += 1;
       table.push(
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link notCurMonth" to={`/dayview/${firstMon.format('YYYY-MM-DD')}`}>
-          <div>
+        {info
+          ? <div>
+            {firstMon.date()}(i)
+          </div>
+          : <div>
             {firstMon.date()}
           </div>
+        }
+          
         </Link>,
       );
       firstMon.add(1, 'days');
+      info = false;
     }
 
     // lisätään kuukauteen kuuluvat päivät.
     while (startDay.format('D') < days) {
       const colorFromBackEnd = checkColor(this.state.paivat, help);
+      if (this.state.paivat[help].tracks) {
+        this.state.paivat[help].tracks.forEach((track) => {
+          if (track.notice !== null) {
+            info = true;
+          }
+        });
+      }
       help += 1;
       table.push(
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
-          <div>
+          {info
+          ? <div>
+            {startDay.date()}(i)
+          </div>
+          : <div>
             {startDay.date()}
           </div>
+          }
         </Link>,
       );
       startDay.add(1, 'days');
+      info = false;
     }
 
     let colorFromBackEnd = checkColor(this.state.paivat, help);
@@ -196,12 +224,24 @@ class Monthview extends Component {
     // Lisätään viimeiseen viikkoon kuuluvat päivät.
     while (startDay.format('ddd') !== 'Mon' && startDay.format('ddd') !== 'ma') {
       colorFromBackEnd = checkColor(this.state.paivat, help);
+      if (this.state.paivat[help].tracks) {
+        this.state.paivat[help].tracks.forEach((track) => {
+          if (track.notice !== null) {
+            info = true;
+          }
+        });
+      }
       help += 1;
       table.push(
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link notCurMonth" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
-          <div>
+          {info
+          ? <div>
+            {startDay.date()}(i)
+          </div>
+          : <div>
             {startDay.date()}
           </div>
+          }
         </Link>,
       );
       startDay.add(1, 'days');
@@ -209,6 +249,7 @@ class Monthview extends Component {
         break;
       }
       safetyLoop += 1;
+      info = false;
     }
 
     return table;
