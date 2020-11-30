@@ -1,6 +1,5 @@
 .exclamation {
   position: absolute;
-  left: 8px;
   bottom: 1px;
   height: 20px;
   width: 20px;
@@ -15,6 +14,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  margin-bottom: 32px;
 }
 
 .info-item {
@@ -29,8 +29,8 @@
   float: left;
   height: 20px;
   width: 20px;
-  margin-right: 16px;
-  margin-left: 8px;
+  margin-right: 8px;
+  margin-left: 0px;
   margin-bottom: 0px;
   border: 1px solid black;
   clear: both;
@@ -81,5 +81,14 @@
 .relative-text {
   position: absolute;
   bottom: 0;
-  left: 45px;
+  left: 30px;
+}
+
+.info-item-img {
+  position: relative;
+  display: flex;
+  min-width: 320px;
+  width: 30vw;
+  height: 38px;
+  justify-content: left;
 }

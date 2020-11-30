@@ -12,7 +12,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import moment from 'moment';
 import { getSchedulingWeek, getSchedulingDate, viewChanger } from '../utils/Utils';
 import exclamation from '../logo/Info.png';
-import { Infoboxes } from '../infoboxes/Infoboxes.js';
+import Infoboxes from '../infoboxes/Infoboxes';
 
 // Translation
 import texts from '../texts/texts.json';

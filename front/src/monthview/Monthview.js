@@ -10,7 +10,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 // Moment for date management
 import moment from 'moment';
 import { viewChanger, getSchedulingFreeform, checkColor } from '../utils/Utils';
-import { Infoboxes } from '../infoboxes/Infoboxes.js';
+import Infoboxes from '../infoboxes/Infoboxes';
 
 // Translation
 import texts from '../texts/texts.json';
@@ -168,15 +168,19 @@ class Monthview extends Component {
       help += 1;
       table.push(
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link notCurMonth" to={`/dayview/${firstMon.format('YYYY-MM-DD')}`}>
-        {info
-          ? <div>
-            {firstMon.date()}(i)
-          </div>
-          : <div>
-            {firstMon.date()}
-          </div>
-        }
-          
+          {info
+            ? (
+              <div>
+                {firstMon.date()}
+                (i)
+              </div>
+            )
+            : (
+              <div>
+                {firstMon.date()}
+              </div>
+            )}
+
         </Link>,
       );
       firstMon.add(1, 'days');
@@ -197,13 +201,17 @@ class Monthview extends Component {
       table.push(
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
           {info
-          ? <div>
-            {startDay.date()}(i)
-          </div>
-          : <div>
-            {startDay.date()}
-          </div>
-          }
+            ? (
+              <div>
+                {startDay.date()}
+                (i)
+              </div>
+            )
+            : (
+              <div>
+                {startDay.date()}
+              </div>
+            )}
         </Link>,
       );
       startDay.add(1, 'days');
@@ -235,13 +243,17 @@ class Monthview extends Component {
       table.push(
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link notCurMonth" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
           {info
-          ? <div>
-            {startDay.date()}(i)
-          </div>
-          : <div>
-            {startDay.date()}
-          </div>
-          }
+            ? (
+              <div>
+                {startDay.date()}
+                (i)
+              </div>
+            )
+            : (
+              <div>
+                {startDay.date()}
+              </div>
+            )}
         </Link>,
       );
       startDay.add(1, 'days');
@@ -369,7 +381,8 @@ class Monthview extends Component {
       const paramMonth = urlParamDateSplit[1].padStart(2, '0');
 
       if ((paramMonth !== this.state.monthNro && this.state.monthNro !== 0)
-        || (paramYear !== 0 && paramYear !== this.state.yearNro)) {
+        || (paramYear !== 0 && paramYear !== this.state.yearNro)
+        || (this.state.state === 'loading')) {
         this.setState({
           state: 'ready',
           monthNro: paramMonth,
@@ -392,50 +405,50 @@ class Monthview extends Component {
     const fin = localStorage.getItem('language'); // eslint-disable-line
     const { month } = texts;  // eslint-disable-line
     return (
-    <div>
-      {this.state.state !== 'ready'
-        ? (
-          <div className="progress">
-            <CircularProgress size= "25vw" disableShrink />
-          </div>
-        )
-        : (
-          <div>
-          <div className="date-headerM">
-            <div
-              className="hoverHand arrow-left"
-              onClick={this.previousMonthClick}
-            />
-            <h1 className="dateHeader-text">
-              {`${month.[this.state.monthNro][fin]},`}
-              {' '}
-              {this.state.yearNro}
-            </h1>
-            <div
-              className="hoverHand arrow-right"
-              onClick={this.nextMonthClick}
-            />
-          </div>
-
-          <div className="month-container">
-            <div className="viewChanger">
-              <div className="viewChanger-container">
-                {viewChanger()}
+      <div>
+        {this.state.state !== 'ready'
+          ? (
+            <div className="progress">
+              <CircularProgress size="25vw" disableShrink />
+            </div>
+          )
+          : (
+            <div>
+              <div className="date-headerM">
+                <div
+                  className="hoverHand arrow-left"
+                  onClick={this.previousMonthClick}
+                />
+                <h1 className="dateHeader-text">
+                  {`${month.[this.state.monthNro][fin]},`}
+                  {' '}
+                  {this.state.yearNro}
+                </h1>
+                <div
+                  className="hoverHand arrow-right"
+                  onClick={this.nextMonthClick}
+                />
               </div>
+
+              <div className="month-container">
+                <div className="viewChanger">
+                  <div className="viewChanger-container">
+                    {viewChanger()}
+                  </div>
+                </div>
+                <div className="weekdays">
+                  {this.createWeekDay()}
+                </div>
+                <div className="weekNumber">
+                  {this.createWeekNumber()}
+                </div>
+                <div className="month-days">
+                  {this.createMonthTable()}
+                </div>
+              </div>
+              <Infoboxes />
             </div>
-            <div className="weekdays">
-              {this.createWeekDay()}
-            </div>
-            <div className="weekNumber">
-              {this.createWeekNumber()}
-            </div>
-            <div className="month-days">
-              {this.createMonthTable()}
-            </div>
-          </div>
-          <Infoboxes />
-        </div>
-      )}
+          )}
       </div>
     );
   }

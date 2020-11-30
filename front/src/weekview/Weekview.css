@@ -7,16 +7,6 @@
   max-width: 80%;
 }
 
-.red {
-  background-color: red;
-  margin-left: 20vh;
-}
-
-.white {
-  background-color: white;
-  margin-left: 45vh;
-}
-
 .big-container {
   width: 100vw;
   max-width: 1025px;
@@ -117,15 +107,6 @@
 
 .klockan {
   margin-left: 16vw;
-}
-
-.info-item-img {
-  position: relative;
-  display: flex;
-  min-width: 320px;
-  width: 30vw;
-  height: 38px;
-  justify-content: left;
 }
 
 /* media files */

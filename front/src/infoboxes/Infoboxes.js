@@ -6,7 +6,7 @@ import InfoImg from '../logo/Info.png';
 
 import texts from '../texts/texts.json';
 
-export function Infoboxes() {
+const Infoboxes = () => {
   const fin = localStorage.getItem('language');
   const { week } = texts;
   return (
@@ -15,7 +15,7 @@ export function Infoboxes() {
       <hr />
       <div className="info-flex">
         <div className="info-item">
-        <p id="open-info" className="box no-flex" />
+          <p id="open-info" className="box no-flex" />
           {/* Avoinna */}
           {' '}
           <p className="info-text no-flex">{week.Green[fin]}</p>
@@ -68,4 +68,6 @@ export function Infoboxes() {
       </div>
     </div>
   );
-}
+};
+
+export default Infoboxes;
