@@ -15,6 +15,8 @@ import Infoboxes from '../infoboxes/Infoboxes';
 // Translation
 import texts from '../texts/texts.json';
 
+const smallInfoIcon = require('../logo/Small-info.png');
+
 const { weekdayShorthand } = texts;  // eslint-disable-line
 
 class Monthview extends Component {
@@ -121,6 +123,7 @@ class Monthview extends Component {
 
       if (response) {
         this.setState({
+          state: 'ready',
           paivat: response.month,
         });
       } else console.error('getting info failed');
@@ -170,10 +173,10 @@ class Monthview extends Component {
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link notCurMonth" to={`/dayview/${firstMon.format('YYYY-MM-DD')}`}>
           {info
             ? (
-                <div className="monthview-day-img">
-                  {firstMon.date()}
-                  <img className="Monthview-info" src={require('../logo/Small-info.png')} />
-                </div>
+              <div className="monthview-day-img">
+                {firstMon.date()}
+                <img className="Monthview-info" src={smallInfoIcon} />
+              </div>
             )
             : (
               <div>
@@ -201,16 +204,16 @@ class Monthview extends Component {
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
           {info
             ? (
-                <div className="monthview-day-img">
-                  {startDay.date()}
-                  <img className="Monthview-info" src={require('../logo/Small-info.png')} />
-                </div>
+              <div className="monthview-day-img">
+                {startDay.date()}
+                <img className="Monthview-info" src={smallInfoIcon} />
+              </div>
             )
             : (
               <div>
                 {startDay.date()}
               </div>
-          )}
+            )}
         </Link>,
       );
       startDay.add(1, 'days');
@@ -229,16 +232,16 @@ class Monthview extends Component {
     table.push(
       <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
         {info
-            ? (
-                <div className="monthview-day-img">
-                  {startDay.date()}
-                  <img className="Monthview-info" src={require('../logo/Small-info.png')} />
-                </div>
-            )
-            : (
-              <div>
-                {startDay.date()}
-              </div>
+          ? (
+            <div className="monthview-day-img">
+              {startDay.date()}
+              <img className="Monthview-info" src={smallInfoIcon} />
+            </div>
+          )
+          : (
+            <div>
+              {startDay.date()}
+            </div>
           )}
       </Link>,
     );
@@ -259,16 +262,16 @@ class Monthview extends Component {
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link notCurMonth" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
           {info
             ? (
-                <div className="monthview-day-img">
-                  {startDay.date()}
-                  <img className="Monthview-info" src={require('../logo/Small-info.png')} />
-                </div>
+              <div className="monthview-day-img">
+                {startDay.date()}
+                <img className="Monthview-info" src={smallInfoIcon} />
+              </div>
             )
             : (
               <div>
                 {startDay.date()}
               </div>
-          )}
+            )}
         </Link>,
       );
       startDay.add(1, 'days');
@@ -395,11 +398,14 @@ class Monthview extends Component {
       const paramYear = urlParamDateSplit[0];
       const paramMonth = urlParamDateSplit[1].padStart(2, '0');
 
-      if ((paramMonth !== this.state.monthNro && this.state.monthNro !== 0)
-        || (paramYear !== 0 && paramYear !== this.state.yearNro)
-        || (this.state.state === 'loading')) {
+      if ((paramMonth === this.state.monthNro && paramYear === this.state.yearNro)) {
         this.setState({
           state: 'ready',
+        });
+      }
+      if ((paramMonth !== this.state.monthNro && this.state.monthNro !== 0)
+        || (paramYear !== 0 && paramYear !== this.state.yearNro)) {
+        this.setState({
           monthNro: paramMonth,
           yearNro: paramYear,
         });
@@ -419,6 +425,7 @@ class Monthview extends Component {
   render() {
     const fin = localStorage.getItem('language'); // eslint-disable-line
     const { month } = texts;  // eslint-disable-line
+    const monthTable = this.createMonthTable();
     return (
       <div>
         {this.state.state !== 'ready'
@@ -458,7 +465,7 @@ class Monthview extends Component {
                   {this.createWeekNumber()}
                 </div>
                 <div className="month-days">
-                  {this.createMonthTable()}
+                  { monthTable }
                 </div>
               </div>
               <Infoboxes />
