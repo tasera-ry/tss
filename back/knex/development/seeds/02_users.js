@@ -51,6 +51,7 @@ casual.define('user', async function() {
     password: password,
     digest: bcrypt.hashSync(password, 0),
     phone: casual.phone,
+    
     role: casual.integer(0, 4) ? 'supervisor' : 'superuser'
   };
 });

@@ -81,6 +81,27 @@ async function changePassword(token, id, passwordn) {
   }
 }
 
+// Changes email to database
+async function AddEmail(token, id, emailn) {
+  try {
+    const response = await fetch(`/api/user/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        email: emailn,
+      }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.ok;
+  } catch (err) {
+    console.error('GETTING USER FAILED', err);
+    return false;
+  }
+}
+
 // Deletes user from database
 async function deleteUser(token, id) {
   try {
@@ -100,7 +121,7 @@ async function deleteUser(token, id) {
 }
 
 // Add user to database
-async function addUser(token, namen, rolen, passwordn) {
+async function addUser(token, namen, rolen, passwordn, emailn) {
   try {
     const response = await fetch('/api/user/', {
       method: 'POST',
@@ -108,6 +129,7 @@ async function addUser(token, namen, rolen, passwordn) {
         name: namen,
         password: passwordn,
         role: rolen,
+        email: emailn,
       }),
       headers: {
         Accept: 'application/json',
@@ -137,6 +159,7 @@ class UserManagementView extends Component {
       openAddNewUserDialog: false,
       changePassDialogOpen: false,
       changeOwnPassFailed: false,
+      openAddEmailDialog: false,
       mokat: false,
       mokatPoistossa: false,
       selectedROWID: 1,
@@ -148,6 +171,7 @@ class UserManagementView extends Component {
       oldPassword: '',
       newPassword: '',
       selectedUserName: '',
+      email:'',
       myStorage: window.localStorage, // eslint-disable-line
     };
 
@@ -156,6 +180,7 @@ class UserManagementView extends Component {
     this.handlePassWarningClose = this.handlePassWarningClose.bind(this);
     this.handleRemoveWarningClose = this.handleRemoveWarningClose.bind(this);
     this.onChangePassClick = this.onChangePassClick.bind(this);
+    this.onAddEmailClick = this.onAddEmailClick.bind(this);
     this.handleRemoveWarningCloseAgree = this.handleRemoveWarningCloseAgree.bind(this);
     this.handleAddUserOpenDialog = this.handleAddUserOpenDialog.bind(this);
     this.handleOpenOwnPassChangeDialog = this.handleOpenOwnPassChangeDialog.bind(this);
@@ -166,10 +191,13 @@ class UserManagementView extends Component {
     this.handleAddNewUserDialogClose = this.handleAddNewUserDialogClose.bind(this);
     this.handleAddNewUserDialogCloseConfirmed = this.handleAddNewUserDialogCloseConfirmed.bind(this);  // eslint-disable-line
     this.handleChangePassCloseConfirm = this.handleChangePassCloseConfirm.bind(this);
+    this.handleAddEmailCloseConfirm = this.handleAddEmailCloseConfirm.bind(this);
     this.handleChangePassClose = this.handleChangePassClose.bind(this);
+    this.handleAddEmailClose = this.handleAddEmailClose.bind(this);
     this.handleChangeNewUserRole = this.handleChangeNewUserRole.bind(this);
     this.handleOldpassStringChange = this.handleOldpassStringChange.bind(this);
     this.handleNewpassStringChange = this.handleNewpassStringChange.bind(this);
+    this.handleAddEmailDialog  = this.handleAddEmailDialog.bind(this)
   }
 
   componentDidMount() {
@@ -227,6 +255,18 @@ class UserManagementView extends Component {
     this.setState({
       selectedUserName: name,
       changePassDialogOpen: true,
+    });
+  }
+  
+  // Opens dialog for adding or changing email for someone else
+  async onAddEmailClick(e) {
+    await this.setState({
+      selectedROWID: e.currentTarget.id,
+    });
+    const name = this.findUserName();
+    this.setState({
+      selectedUserName: name,
+      AddEmailDialogOpen: true,
     });
   }
 
@@ -308,6 +348,7 @@ class UserManagementView extends Component {
       this.state.newUserName,
       this.state.newUserRole,
       this.state.newUserPass,
+      this.state.newEmail,
     );
     if (req.errors !== undefined) {
       this.setState({
@@ -354,6 +395,29 @@ class UserManagementView extends Component {
       this.handleChangePassClose();
     }
   }
+//___________________________________________________________________
+   //Closes dialog for adding email for some1 else
+  handleAddEmailClose(e) { // eslint-disable-line
+    this.setState({
+      email: '',
+      AddEmailDialogOpen: false,
+    });
+  }
+
+  // Adds email for some1 else by their ID
+  async handleAddEmailCloseConfirm() {
+    const response = await AddEmail(this.state.token, this.findUserId(), this.state.email);
+    if (!response) {
+      this.setState({
+        mokatVaihdossa: true,
+      });
+    } else {
+      this.handleAddEmailClose();
+    }
+  }
+//_________________________________________________________________
+
+
 
   returnRemoveButton(id, manage, fin) { // eslint-disable-line
     return (
@@ -370,11 +434,18 @@ class UserManagementView extends Component {
       </Button>
     );
   }
+  returnAddEmailButton(id, manage, fin) { // eslint-disable-line
+    return (
+      <Button id={id} size="small" style={{ backgroundColor: '#55555' }} variant="contained" onClick={this.onAddEmailClick}>
+        "lisää Sposti"
+      </Button>
+    );
+  }
 
-  createData(name, role, ButtonToChangePassword, ButtonToRemoveUser) {
+  createData(name, role, ButtonToChangePassword, ButtonToRemoveUser, ButtonToAddEmail) {
     const roleToPrint = role === 'superuser' ? manage.Superuser[fin] : manage.Supervisor[fin];
     return {
-      name, roleToPrint, ButtonToChangePassword, ButtonToRemoveUser,
+      name, roleToPrint, ButtonToChangePassword, ButtonToRemoveUser, ButtonToAddEmail
     };
   }
 
@@ -435,6 +506,19 @@ class UserManagementView extends Component {
     });
   }
 
+  //opens dialog for adding email
+  handleAddEmailDialog() {
+    this.setState({
+      AddEmailDialogOpen: true,
+    });
+  }
+  //Closes dialog for adding email
+  handleAddEmailDialogClose() {
+    this.setState({
+      AddEmailDialogOpen: false,
+    });
+  }
+
   // closes dialog for changing own password
   handleChangeOwnPassDialogClose() {
     this.setState({
@@ -458,6 +542,12 @@ class UserManagementView extends Component {
   handleNewpassStringChange(e) {
     this.setState({
       newPassword: e.target.value,
+    });
+  }
+  //handle state email change
+  handleNewpassStringChange(e) {
+    this.setState({
+      newEmail: e.target.value,
     });
   }
 
@@ -489,7 +579,8 @@ class UserManagementView extends Component {
         const row = this.createData(user.name,
           user.role,
           this.returnPassButton(user.id, manage, fin),
-          this.returnRemoveButton(user.id, manage, fin));
+          this.returnRemoveButton(user.id, manage, fin),
+          this.returnAddEmailButton(user.id, manage, fin));
         tempRows.push(row);
       }
     });
@@ -732,6 +823,55 @@ class UserManagementView extends Component {
           </DialogActions>
         </Dialog>
 
+
+       {/* Dialog to Add Email for users */}
+        <Dialog
+          open={this.state.AddEmailDialogOpen}
+          onClose={this.handleAddEmailClose}
+        >
+          <DialogTitle
+            id="dialog-add-email-title"
+            style={dialogStyle}
+          >
+            Aseta sähköposti käyttäjälle:
+            {' '}
+            {this.state.selectedUserName}
+          </DialogTitle>
+          <DialogContent
+            style={dialogStyle}
+          >
+            <TextField
+              type="text"
+              value={this.state.email}
+              margin="dense"
+              id="name"
+              label="lisää sähköinenposti osoite"
+              onChange={(e) => {
+                this.setState({ email: e.target.value });
+              }}
+              fullWidth
+            />
+            {this.state.mokatVaihdossa ? (
+              <p style={{ fontSize: 20, color: 'red', textAlign: 'center' }}>
+                {manage.Error[fin]}
+                {' '}
+              </p>
+            ) : (
+              <p />
+            )}
+          </DialogContent>
+          <DialogActions
+            style={dialogStyle}
+          >
+            <Button onClick={this.handleAddEmailClose} style={{ color: '#c97b7b' }}>
+              {manage.Cancel[fin]}
+            </Button>
+            <Button onClick={this.handleAddEmailCloseConfirm} style={{ color: '#5f77a1' }}>
+              {manage.Confirm[fin]}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         {/* THE ACTUAL PAGE */}
 
         <h1 style={{ textAlign: 'center' }}>{manage.UserManage[fin]}</h1>
@@ -769,6 +909,7 @@ class UserManagementView extends Component {
                   <TableCell align="justify">{manage.Username[fin]}</TableCell>
                   <TableCell align="justify">{manage.ChangePass[fin]}</TableCell>
                   <TableCell align="justify">{manage.RemoveUser[fin]}</TableCell>
+                  <TableCell align="justify">"Lisää Sähköposti"</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -783,6 +924,7 @@ class UserManagementView extends Component {
                     </TableCell>
                     <TableCell align="justify">{row.ButtonToChangePassword}</TableCell>
                     <TableCell align="justify">{row.ButtonToRemoveUser}</TableCell>
+                    <TableCell align="justify">{row.ButtonToAddEmail}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

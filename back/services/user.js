@@ -75,7 +75,7 @@ const service = {
    * exports.read({ role: 'supervisor' }) - Find all supervisors
    */
   read: async function readUser(key, fields) {
-    return (await models.user.read(_.pick(key, 'id', 'name', 'role', 'phone')))
+    return (await models.user.read(_.pick(key, 'id', 'name', 'role', 'phone', 'email')))
       .map(_.partialRight(_.omit, 'digest', 'user_id'));
   },
 
@@ -99,6 +99,7 @@ const service = {
 
     return models.user.update(key, updates);
   },
+
 
   /**
    * Delete a user.

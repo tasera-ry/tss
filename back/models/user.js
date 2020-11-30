@@ -12,7 +12,7 @@ const model = {
   /**
    * Create a new persistent user.
    *
-   * @param {object} user - User's properties, { id?, name, digest, role, phone? }
+   * @param {object} user - User's properties, { id?, name, digest, role, email, phone? }
    * @return {Promise<number[]>} The added users id
    *
    * @example
@@ -23,7 +23,8 @@ const model = {
       id: {},
       name: {},
       digest: {},
-      role: {}
+      role: {},
+      email: {}
     };
 
     const supervisorConstraints = {
