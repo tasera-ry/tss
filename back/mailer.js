@@ -8,12 +8,12 @@
     const nodemailer = require('nodemailer');
     const sendEmail = function(sposti,viesti) {
     // declare vars,
-    let reciever = sposti;
+    let reciever = 'elias.penkkimaki@gmail.com';
     let fromMail = 'infotestitasera@gmail.com';
     let toMail = reciever;
     let subject = 'Tasera info';
-    let text = 'viestitesti';
-
+    let text = viesti;
+/*
      switch (viesti) {
         case "assigned":
             text = 'Hei teille on annettu vuoro';
@@ -21,7 +21,7 @@
         case "update":
             text = 'Jokin on muuttunut';
         break;    
-    }
+    }*/
     
     //step2:
     const transporter = nodemailer.createTransport({
