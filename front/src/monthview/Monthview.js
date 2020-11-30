@@ -435,7 +435,7 @@ class Monthview extends Component {
                   onClick={this.previousMonthClick}
                 />
                 <h1 className="dateHeader-text">
-                  {`${month.[this.state.monthNro][fin]},`}
+                  {`${month[this.state.monthNro][fin]},`}
                   {' '}
                   {this.state.yearNro}
                 </h1>
