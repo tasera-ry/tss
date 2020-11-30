@@ -50,7 +50,8 @@ const controller = {
 
   // no return here? may be a cause for a bug
   update: async function updateSupervision(request, response) {
-    email('vastaanottaja','assigned');    
+    //email('vastaanottaja','assigned');
+    email(request.user.id.email,'assigned');    
     response
       .status(204)
       .send();

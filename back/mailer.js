@@ -8,7 +8,7 @@
     const nodemailer = require('nodemailer');
     const sendEmail = function(sposti,viesti) {
     // declare vars,
-    let reciever = 'elias.penkkimaki@gmail.com';
+    let reciever = sposti;
     let fromMail = 'infotestitasera@gmail.com';
     let toMail = reciever;
     let subject = 'Tasera info';

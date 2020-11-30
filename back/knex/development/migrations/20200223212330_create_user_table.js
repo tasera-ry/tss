@@ -7,7 +7,7 @@ exports.up = function(knex) {
       user.binary('digest', 184)
         .notNullable();
       user.enu(
-        'role',
+        'role', 
         ['superuser', 'supervisor'],
         {
           useNative: true,

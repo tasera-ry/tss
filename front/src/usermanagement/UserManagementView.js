@@ -188,6 +188,7 @@ class UserManagementView extends Component {
     this.handleChangeOwnPassDialogCloseAgree = this.handleChangeOwnPassDialogCloseAgree.bind(this);
     this.handleNewuserNameChange = this.handleNewuserNameChange.bind(this);
     this.handleNewuserPassChange = this.handleNewuserPassChange.bind(this);
+    this.handleNewEmailChange = this.handleNewEmailChange.bind(this);
     this.handleAddNewUserDialogClose = this.handleAddNewUserDialogClose.bind(this);
     this.handleAddNewUserDialogCloseConfirmed = this.handleAddNewUserDialogCloseConfirmed.bind(this);  // eslint-disable-line
     this.handleChangePassCloseConfirm = this.handleChangePassCloseConfirm.bind(this);
@@ -348,7 +349,7 @@ class UserManagementView extends Component {
       this.state.newUserName,
       this.state.newUserRole,
       this.state.newUserPass,
-      this.state.newEmail,
+      this.state.email
     );
     if (req.errors !== undefined) {
       this.setState({
@@ -545,9 +546,9 @@ class UserManagementView extends Component {
     });
   }
   //handle state email change
-  handleNewpassStringChange(e) {
+  handleNewEmailChange(e) {
     this.setState({
-      newEmail: e.target.value,
+      email: e.target.value,
     });
   }
 
@@ -626,6 +627,14 @@ class UserManagementView extends Component {
               id="password"
               label={manage.Password[fin]}
               onChange={this.handleNewuserPassChange}
+              fullWidth
+            />
+            <TextField
+              value={this.state.email}
+              margin="dense"
+              id="sposti"
+              label="sähkposti"
+              onChange={this.handleNewEmailChange}
               fullWidth
             />
 
