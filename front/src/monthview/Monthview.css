@@ -142,8 +142,18 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-
 }
+
+.Monthview-info {
+  position: absolute;
+  margin-top: 3px;
+  width: 20px;
+  height: 20px;
+}
+
+.monthview-day-img {
+    margin-right: 22px;
+  }
 
 /* media files */
 
@@ -154,7 +164,14 @@
 
 /* smartphones, Android phones, landscape iPhone */
 @media only screen and (min-width:480px) {
-    .weekNumber {
+  .Monthview-info {
+  margin-left: 3px;
+  }
+  .monthview-day-img {
+    margin-right: 16px;
+  }
+
+  .weekNumber {
       display: flex;
     }
 

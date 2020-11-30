@@ -170,17 +170,16 @@ class Monthview extends Component {
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link notCurMonth" to={`/dayview/${firstMon.format('YYYY-MM-DD')}`}>
           {info
             ? (
-              <div>
-                {firstMon.date()}
-                (i)
-              </div>
+                <div className="monthview-day-img">
+                  {firstMon.date()}
+                  <img className="Monthview-info" src={require('../logo/Small-info.png')} />
+                </div>
             )
             : (
               <div>
                 {firstMon.date()}
               </div>
             )}
-
         </Link>,
       );
       firstMon.add(1, 'days');
@@ -202,16 +201,16 @@ class Monthview extends Component {
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
           {info
             ? (
-              <div>
-                {startDay.date()}
-                (i)
-              </div>
+                <div className="monthview-day-img">
+                  {startDay.date()}
+                  <img className="Monthview-info" src={require('../logo/Small-info.png')} />
+                </div>
             )
             : (
               <div>
                 {startDay.date()}
               </div>
-            )}
+          )}
         </Link>,
       );
       startDay.add(1, 'days');
@@ -220,11 +219,27 @@ class Monthview extends Component {
 
     let colorFromBackEnd = checkColor(this.state.paivat, help);
     help += 1;
+    if (this.state.paivat[help].tracks) {
+      this.state.paivat[help].tracks.forEach((track) => {
+        if (track.notice !== null) {
+          info = true;
+        }
+      });
+    }
     table.push(
       <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
-        <div>
-          {startDay.date()}
-        </div>
+        {info
+            ? (
+                <div className="monthview-day-img">
+                  {startDay.date()}
+                  <img className="Monthview-info" src={require('../logo/Small-info.png')} />
+                </div>
+            )
+            : (
+              <div>
+                {startDay.date()}
+              </div>
+          )}
       </Link>,
     );
     startDay.add(1, 'days');
@@ -244,16 +259,16 @@ class Monthview extends Component {
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link notCurMonth" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
           {info
             ? (
-              <div>
-                {startDay.date()}
-                (i)
-              </div>
+                <div className="monthview-day-img">
+                  {startDay.date()}
+                  <img className="Monthview-info" src={require('../logo/Small-info.png')} />
+                </div>
             )
             : (
               <div>
                 {startDay.date()}
               </div>
-            )}
+          )}
         </Link>,
       );
       startDay.add(1, 'days');
