@@ -307,7 +307,7 @@ class Weekview extends Component {
       info = false;
       if (this.state.paivat[j].tracks) {
         this.state.paivat[j].tracks.forEach((track) => {
-          if (track.notice !== null) {
+          if (track.notice !== null && track.notice !== '') {
             info = true;
           }
         });
