@@ -21,7 +21,7 @@ const schedule = {
   close: '06:08:00',
   available: true,
   rangeSupervisorId: 50,
-  rangeSupervision: 'absent',
+  rangeSupervision: 'closed',
   rangeSupervisionScheduled: true,
   tracks: [
     {

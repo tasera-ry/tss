@@ -147,6 +147,7 @@ describe('testing scheduling', () => {
       await waitFor(() => expect(screen.getByText('Update successful!')).toBeInTheDocument());
     });
   });
+
   it('should open, empty, and close all tracks', async () => {
     const history = createMemoryHistory();
     localStorage.setItem('language', '1');

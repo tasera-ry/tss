@@ -1,6 +1,6 @@
 import React from 'react';
-import { HashRouter as Router } from 'react-router-dom';
 import '@testing-library/jest-dom/extend-expect';
+import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 import {
   render,
@@ -13,9 +13,8 @@ import SignIn from './SignIn';
 
 axios.get = jest.fn(() => Promise.resolve({ data: [{ role: 'supervisor' }] }));
 axios.post = jest.fn((url, credentials) => {
-  console.log(credentials)
   if (credentials.name === 'wrong_username') {
-    return (Promise.reject());
+    return (Promise.reject({ response: { status: 401 } })); // eslint-disable-line
   }
   return Promise.resolve({ data: 'dummy token' });
 });
@@ -30,25 +29,25 @@ describe('testing SignIn component', () => {
   it('should give error on wrong credentials', async () => {
     await act(async () => {
       localStorage.setItem('language', '1');
-      render(<SignIn />);
+      await render(<SignIn />);
 
       await waitFor(() => expect(screen.getByTestId('nameField')).toBeInTheDocument());
-      screen.debug();
-      fireEvent.change(screen.getByTestId('nameField'), {
-        target: {
-          value: 'wrong_username',
-        },
-      });
-      // fireEvent.change(screen.getByTestId('passwordField *'), {
-      //   target: {
-      //     value: 'wrong_password',
-      //   },
-      // });
-      await waitFor(() => expect(screen.getByText('wrong_username')).toBeInTheDocument());
-      // screen.debug();
-      // fireEvent.click(screen.getByText('Log in'));
-      // await waitFor(() => expect(screen.getByText('Wrong username or password')).toBeInTheDocument());
+      userEvent.type(screen.getByTestId('nameField'), 'wrong_username');
+      userEvent.type(screen.getByTestId('passwordField'), 'wrong_pw');
+      fireEvent.click(screen.getByText('Log in'));
+      await waitFor(() => expect(screen.getByText('Wrong username or password')).toBeInTheDocument());
     });
+  });
+  it('should access with correct credentials', async () => {
+    await act(async () => {
+      localStorage.setItem('language', '1');
+      await render(<SignIn />);
 
+      await waitFor(() => expect(screen.getByTestId('nameField')).toBeInTheDocument());
+      userEvent.type(screen.getByTestId('nameField'), 'correct_name');
+      userEvent.type(screen.getByTestId('passwordField'), 'correct_pw');
+      fireEvent.click(screen.getByText('Log in'));
+      await waitFor(() => expect(localStorage.getItem('token')).toBe('dummy token'));
+    });
   });
 });
