@@ -28,6 +28,7 @@ import socketIOClient from 'socket.io-client';
 import { validateLogin, rangeSupervision } from '../utils/Utils';
 
 import data from '../texts/texts.json';
+import { TrackStatistics } from '../TrackStatistics/TrackStatistics';
 
 /*
   Styles not in the rangeofficer.js file
@@ -121,6 +122,7 @@ const TrackRows = ({
           socket={socket}
         />
       </div>
+      <TrackStatistics />
     </div>
   ))
 );

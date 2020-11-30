@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
     "http-proxy-middleware": "^1.0.6",
+    "knex": "^0.21.12",
     "material-table": "^1.69.1",
     "moment": "^2.29.1",
     "react": "^16.14.0",
