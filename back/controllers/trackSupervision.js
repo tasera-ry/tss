@@ -25,7 +25,6 @@ const controller = {
       .send(response.locals.queryResult);
   },
 
-  // no returning response here?
   update: async function updateSupervision(request, response) {
     return response
       .status(204)

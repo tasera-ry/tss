@@ -34,6 +34,7 @@ const controller = {
           short_description: instance['short_description'],
           trackSupervision: instance['track_supervisor'],
           scheduled: {
+            visitors: instance['visitors'],
             notice: instance['notice'],
             scheduled_range_supervision_id: instance['scheduled_range_supervision_id'],
             track_id: instance['track_id'],
@@ -52,6 +53,7 @@ const controller = {
         short_description: instance['short_description'],
         trackSupervision: instance['track_supervisor'],
         scheduled: {
+          visitors: instance['visitors'],
           notice: instance['notice'],
           scheduled_range_supervision_id: instance['scheduled_range_supervision_id'],
           track_id: instance['track_id'],

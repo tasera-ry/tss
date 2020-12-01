@@ -12,7 +12,7 @@ const model = {
   /**
    * Create a new supervision event for track
    *
-   * @param {object} supVis - supervision properties, { scheduled_range_supervision_id, track_id, track_supervisor, notice? }
+   * @param {object} supVis - supervision properties, { scheduled_range_supervision_id, track_id, track_supervisor, visitors?, notice? }
    * @return {Promise<[{scheduled_range_supervision_id:number, track_id:number}]>} The combined key for track supervision range_supervision_id, track_id
    *
    * @example
@@ -23,6 +23,7 @@ const model = {
       scheduled_range_supervision_id: {},
       track_id: {},
       track_supervisor: {},
+      visitors: {},
       notice: {}
     };
 
@@ -51,8 +52,8 @@ const model = {
   /**
    * Get the supervisions matching a key.
    *
-   * @param {object} key - Identifying key, { scheduled_range_supervision_id?, track_id?, track_supervisor?, notice? }
-   * @param {object} fields - Attributes about the supervision to select { scheduled_range_supervision_id?, track_id?, track_supervisor?, notice? }
+   * @param {object} key - Identifying key, { scheduled_range_supervision_id?, track_id?, track_supervisor?, visitors?, notice? }
+   * @param {object} fields - Attributes about the supervision to select { scheduled_range_supervision_id?, track_id?, track_supervisor?, visitors?, notice? }
    * @return {Promise<object[]>} Supervisions that matched the key
    *
    * @example
@@ -69,7 +70,7 @@ const model = {
    * Update a supervision events' info.
    *
    * @param {object} current - The current identifying info of the supervision. { scheduled_range_supervision_id, track_id }
-   * @param {object} update - New information for the supervision { track_supervisor?, notice? }
+   * @param {object} update - New information for the supervision { track_supervisor?, visitors?, notice? }
    *
    * @return {Promise<number[]>} Count of rows updated
    *
@@ -77,7 +78,7 @@ const model = {
    * model.update({ scheduled_range_supervision_id:1, track_id:1 }, { track_supervisor: 'absent' })
    */
   update: async function updateSupervision(current, update) {
-    const supVis = _.pick(update, 'track_supervisor', 'notice');
+    const supVis = _.pick(update, 'track_supervisor', 'visitors', 'notice');
 
     const id = await model
       .read(current, ['scheduled_range_supervision_id', 'track_id'])
