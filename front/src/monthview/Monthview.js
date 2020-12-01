@@ -126,7 +126,7 @@ class Monthview extends Component {
       if (response) {
         this.setState({
           state: 'ready',
-          paivat: response.month,
+          daysTable: response.month,
         });
       } else console.error('getting info failed');
     };
@@ -142,6 +142,36 @@ class Monthview extends Component {
     let firstMon = moment(`${this.state.yearNro}-${this.state.monthNro}-1`, 'YYYY-MM-DD');
     let info = false;
 
+    const addDate = (target, isCurrent) => {
+      const colorFromBackEnd = checkColor(this.state.daysTable, help);
+      if (this.state.daysTable[help].tracks) {
+        this.state.daysTable[help].tracks.forEach((track) => {
+          if (track.notice !== null && track.notice !== '') {
+            info = true;
+          }
+        });
+      }
+      help += 1;
+      table.push(
+        <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class={`${isCurrent}`} to={`/dayview/${firstMon.format('YYYY-MM-DD')}`}>
+          {info
+            ? (
+              <div className="monthview-day-img">
+                {target.date()}
+                <img className="Monthview-info" src={smallInfoIcon} />
+              </div>
+            )
+            : (
+              <div>
+                {target.date()}
+              </div>
+            )}
+        </Link>,
+      );
+      target.add(1, 'days');
+      info = false;
+    };
+
     // safety loop incase of errors in name detection due to wrong locale, e.g. Sweden
     let safetyLoop = 0;
 
@@ -154,134 +184,27 @@ class Monthview extends Component {
     }
     safetyLoop = 0;
 
-    if (this.state.paivat === undefined || this.state.paivat[0].date !== firstMon.format('YYYY-MM-DD')) {
+    if (this.state.daysTable === undefined || this.state.daysTable[0].date !== firstMon.format('YYYY-MM-DD')) {
       requestSchedulingFreeform(firstMon.format('YYYY-MM-DD'));
     }
-    if (this.state.paivat === undefined) {
+    if (this.state.daysTable === undefined) {
       return false;
     }
-    // Tarkistetaan ensimmäinen maanantai ja lisätään siitä päivät
+    // Check what is first monday and add days from that to start of month
     while (firstMon.format('ddd') !== startDay.format('ddd')) {
-      const colorFromBackEnd = checkColor(this.state.paivat, help);
-      if (this.state.paivat[help].tracks) {
-        this.state.paivat[help].tracks.forEach((track) => {
-          if (track.notice !== null) {
-            info = true;
-          }
-        });
-      }
-      help += 1;
-      table.push(
-        <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link notCurMonth" to={`/dayview/${firstMon.format('YYYY-MM-DD')}`}>
-          {info
-            ? (
-              <div className="monthview-day-img">
-                {firstMon.date()}
-                <img className="Monthview-info" src={smallInfoIcon} />
-              </div>
-            )
-            : (
-              <div>
-                {firstMon.date()}
-              </div>
-            )}
-        </Link>,
-      );
-      firstMon.add(1, 'days');
-      info = false;
+      addDate(firstMon, 'link notCurMonth');
     }
 
-    // lisätään kuukauteen kuuluvat päivät.
-    while (startDay.format('D') < days) {
-      const colorFromBackEnd = checkColor(this.state.paivat, help);
-      if (this.state.paivat[help].tracks) {
-        this.state.paivat[help].tracks.forEach((track) => {
-          if (track.notice !== null) {
-            info = true;
-          }
-        });
-      }
-      help += 1;
-      table.push(
-        <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
-          {info
-            ? (
-              <div className="monthview-day-img">
-                {startDay.date()}
-                <img className="Monthview-info" src={smallInfoIcon} />
-              </div>
-            )
-            : (
-              <div>
-                {startDay.date()}
-              </div>
-            )}
-        </Link>,
-      );
-      startDay.add(1, 'days');
-      info = false;
+    // add days belonging to the month
+    while (firstMon.format('D') < days) {
+      addDate(firstMon, 'link');
     }
 
-    let colorFromBackEnd = checkColor(this.state.paivat, help);
-    help += 1;
-    if (this.state.paivat[help].tracks) {
-      this.state.paivat[help].tracks.forEach((track) => {
-        if (track.notice !== null) {
-          info = true;
-        }
-      });
-    }
-    table.push(
-      <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
-        {info
-          ? (
-            <div className="monthview-day-img">
-              {startDay.date()}
-              <img className="Monthview-info" src={smallInfoIcon} />
-            </div>
-          )
-          : (
-            <div>
-              {startDay.date()}
-            </div>
-          )}
-      </Link>,
-    );
-    startDay.add(1, 'days');
+    addDate(firstMon, 'link');
 
-    // Lisätään viimeiseen viikkoon kuuluvat päivät.
-    while (startDay.format('ddd') !== 'Mon' && startDay.format('ddd') !== 'ma') {
-      colorFromBackEnd = checkColor(this.state.paivat, help);
-      if (this.state.paivat[help].tracks) {
-        this.state.paivat[help].tracks.forEach((track) => {
-          if (track.notice !== null) {
-            info = true;
-          }
-        });
-      }
-      help += 1;
-      table.push(
-        <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link notCurMonth" to={`/dayview/${startDay.format('YYYY-MM-DD')}`}>
-          {info
-            ? (
-              <div className="monthview-day-img">
-                {startDay.date()}
-                <img className="Monthview-info" src={smallInfoIcon} />
-              </div>
-            )
-            : (
-              <div>
-                {startDay.date()}
-              </div>
-            )}
-        </Link>,
-      );
-      startDay.add(1, 'days');
-      if (safetyLoop > 7) {
-        break;
-      }
-      safetyLoop += 1;
-      info = false;
+    // add days until we get to end of week
+    while (firstMon.format('ddd') !== 'Mon' && firstMon.format('ddd') !== 'ma') {
+      addDate(firstMon, 'link notCurMonth');
     }
 
     return table;

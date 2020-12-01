@@ -29,7 +29,7 @@ const Infoboxes = () => {
         </div>
 
         <div className="info-item">
-          <p id="valvoja-info" className="box no-flex" />
+          <p id="range-officer-info" className="box no-flex" />
           {/* Päävalvoja tulossa */}
           {' '}
           <p className="info-text no-flex">{week.Lightgreen[fin]}</p>
