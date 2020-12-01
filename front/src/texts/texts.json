@@ -188,6 +188,7 @@
   "viewChanger": {
     "Month": ["Kuukausi", "Month"],
     "Week": ["Viikko", "Week"],
-    "Day": ["Päivä", "Day"]
+    "Day": ["Päivä", "Day"],
+    "JumpToCurrent": ["Tänään", "Today"]
   }
 }

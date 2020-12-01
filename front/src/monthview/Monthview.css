@@ -98,9 +98,32 @@
   border-left: 2px solid;
 }
 
+.viewChanger-current {
+  display: flex;
+  justify-content: flex-start;
+  border-right: 1px solid;
+}
+
+.viewChanger-current > a {
+  padding: 16px;
+  align-items: center;
+  border: 1px;
+  border-bottom: 0;
+  border-style: solid;
+  border-color: black;
+  font-size: large;
+  font-weight: bold;
+  background-color: grey;
+  color: grey;
+}
+
+.viewChanger-current > a > div {
+  color: black;
+}
+
 .viewChanger {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   width: 100%;
   height: 57px;
   font-weight: bold;

@@ -10,7 +10,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Moment for date management
 import moment from 'moment';
-import { getSchedulingWeek, getSchedulingDate, viewChanger } from '../utils/Utils';
+import {
+  getSchedulingWeek, getSchedulingDate, viewChanger, jumpToCurrent,
+} from '../utils/Utils';
 import exclamation from '../logo/Info.png';
 import Infoboxes from '../infoboxes/Infoboxes';
 
@@ -443,6 +445,9 @@ class Weekview extends Component {
           </Grid>
           <div className="big-container">
             <div className="viewChanger">
+              <div className="viewChanger-current">
+                {jumpToCurrent()}
+              </div>
               <div className="viewChanger-container">
                 {viewChanger()}
               </div>

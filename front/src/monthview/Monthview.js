@@ -9,7 +9,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Moment for date management
 import moment from 'moment';
-import { viewChanger, getSchedulingFreeform, checkColor } from '../utils/Utils';
+import {
+  viewChanger, jumpToCurrent, getSchedulingFreeform, checkColor,
+} from '../utils/Utils';
 import Infoboxes from '../infoboxes/Infoboxes';
 
 // Translation
@@ -454,6 +456,9 @@ class Monthview extends Component {
 
               <div className="month-container">
                 <div className="viewChanger">
+                  <div className="viewChanger-current">
+                    {jumpToCurrent()}
+                  </div>
                   <div className="viewChanger-container">
                     {viewChanger()}
                   </div>

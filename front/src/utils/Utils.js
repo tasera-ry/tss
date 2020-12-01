@@ -127,8 +127,33 @@ export function viewChanger() {
       </Link>,
     );
     return table;
-  } catch {
-    console.log('viewChanger kaput!');
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+}
+
+export function jumpToCurrent() {
+  const { viewChanger } = texts;  // eslint-disable-line
+  const fin = localStorage.getItem('language');
+
+  try {
+    const table = [];
+    const fullUrl = window.location.href.split('/');
+    const urlParamDate = fullUrl[4];
+
+    const date = new Date();
+
+    table.push(
+      <Link class="link" to={`/${urlParamDate}/${moment(date, 'YYYY-MM-DD').toISOString().substring(0, 10)}`}>
+        <div>
+          {viewChanger.JumpToCurrent[fin]}
+        </div>
+      </Link>,
+    );
+    return table;
+  } catch (err) {
+    console.error(err);
     return false;
   }
 }

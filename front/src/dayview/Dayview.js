@@ -10,7 +10,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Utils
 import moment from 'moment';
-import { dayToString, getSchedulingDate, viewChanger } from '../utils/Utils';
+import {
+  dayToString, jumpToCurrent, getSchedulingDate, viewChanger,
+} from '../utils/Utils';
 
 // Moment for date handling
 import info from '../logo/Info.png';
@@ -255,6 +257,9 @@ class Dayview extends Component {
           {/* Whole view */}
           <div className="dayview-big-container">
             <div className="viewChanger">
+              <div className="viewChanger-current">
+                {jumpToCurrent()}
+              </div>
               <div className="viewChanger-container">
                 {viewChanger()}
               </div>
