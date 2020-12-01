@@ -20,7 +20,7 @@ const service = {
   /**
    * Get the supervisions matching a key.
    *
-   * @param {object} key - Identifying key, { scheduled_range_supervision_id?, track_id?, track_supervisor?, notice? }
+   * @param {object} key - Identifying key, { scheduled_range_supervision_id?, track_id?, track_supervisor?, visitors?, notice? }
    * @return {Promise<object[]>} Supervisions that matched the key
    *
    */
