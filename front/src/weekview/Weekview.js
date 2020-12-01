@@ -296,7 +296,6 @@ class Weekview extends Component {
     let rataStatus;
     let oikeePaiva;
     let linkki;
-    let Attention;
     let info;
 
     for (let j = 0; j < 7; j += 1) {
@@ -321,8 +320,7 @@ class Weekview extends Component {
       info = false;
       if (this.state.paivat[j].tracks) {
         this.state.paivat[j].tracks.forEach((track) => {
-          Attention = track.notice;
-          if (Attention.length !== 0) {
+          if (track.notice !== null && track.notice !== '') {
             info = true;
           }
         });

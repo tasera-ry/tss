@@ -14,7 +14,7 @@ exports.seed = async function(knex) {
 
   // do we really need terminal spinners?
   const generateUsers = Promise.all(_.times(config.seeds.users, casual._user));
-  const generateSpinner = ora.promise(
+  ora.promise(
     generateUsers,
     `Generating ${config.seeds.users} users`);
   const users = await generateUsers;
@@ -40,8 +40,8 @@ exports.seed = async function(knex) {
         await knex('supervisor')
           .insert(supervisors);
       }));
-  const insertSpinner = ora.promise(insertUsers, 'Inserting users');
-  const response = await insertUsers;
+  ora.promise(insertUsers, 'Inserting users');
+  await insertUsers;
 };
 
 casual.define('user', async function() {

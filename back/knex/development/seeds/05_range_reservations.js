@@ -25,7 +25,7 @@ exports.seed = async function(knex) {
       .map(({id}) => casual.range_reservation(id, day.format('YYYY-MM-DD')));
   })));
 
-  const generateSpinner = ora.promise(
+  ora.promise(
     generateReservations,
     `From ${start.format('L')} to ${end.format('L')} (${days} days)\nGenerating ${ranges.length} ranges * ${days} days = ${ranges.length * days} reservations`);
 
@@ -39,12 +39,12 @@ exports.seed = async function(knex) {
       ))
   );
 
-  const insertSpinner = ora.promise(
+  ora.promise(
     insertReservations,
     'Inserting reservations'
   );
 
-  const response = await insertReservations;
+  await insertReservations;
 };
 
 casual.define('range_reservation', async (rangeId, date) => {

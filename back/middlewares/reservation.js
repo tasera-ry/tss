@@ -1,7 +1,6 @@
 const path = require('path');
 const root = path.join(__dirname, '..');
 const services = require(path.join(root, 'services'));
-const validators = require(path.join(root, 'validators'));
 
 const _ = require('lodash');
 
