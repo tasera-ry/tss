@@ -1,0 +1,66 @@
+.container {
+    padding: 0 1vh 2vh 1vh;
+  }
+  
+  .container .row .mixed-chart {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      align-items: center;
+    }
+  
+    .container .titleContainer {
+      display:flex;
+      align-items:center;
+      text-align: start;
+      justify-content: space-around;
+      flex-wrap:wrap;
+    }
+  
+  .container .arrow-right {
+      width: 0;
+      height: 0;
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+   
+      border-left: 20px solid black;
+   
+      margin-left: 5vw;
+      display: flex;
+      float: right;
+      align-items: center;
+   }
+    
+  .container .arrow-left {
+    width: 0;
+    height: 0;
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+  
+    border-right: 20px solid black;
+    text-align: right;
+  
+    margin-right: 5vw;
+    display: flex;
+    align-items: center;
+  }
+  
+  .container .firstSection {
+    display:flex;
+    align-items:center;
+    text-align: start;
+    justify-content: space-around;
+    flex-wrap:wrap;
+  }
+.mixed-chart .line {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+}
+.mixed-chart .bar {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+}

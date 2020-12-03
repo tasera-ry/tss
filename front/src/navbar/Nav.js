@@ -121,6 +121,16 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
           </ListItem>
         </Link>
 
+        <Link style={navStyle} to="/statistics">
+          <ListItem
+            button
+            onClick={HandleClick}
+            style={elementStyle}
+          >
+            {nav.Statistics[fin]}
+          </ListItem>
+        </Link>
+
         <Divider style={elementStyle} />
 
         <Link style={navStyle} to="/">
