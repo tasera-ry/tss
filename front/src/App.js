@@ -32,6 +32,7 @@ class App extends Component {
     }
   }
 
+  // TODO: this works, but flashes if invalid
   componentDidMount() {
     if (this.state.cookies.username) {
       validateLogin()
@@ -39,8 +40,8 @@ class App extends Component {
           // If the token is expired, logout user
           if (!tokenValid) {
             const response = await axios.post('/api/signout');
-            this.state.removeCookie('username');
-            this.state.removeCookie('role');
+            this.props.cookies.remove('username');
+            this.props.cookies.remove('role');
 
             window.location.reload();
           }
