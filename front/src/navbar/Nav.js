@@ -21,6 +21,8 @@ import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
 
 import { useCookies } from 'react-cookie';
 
+import axios from 'axios';
+
 // Translations
 import texts from '../texts/texts.json';
 
@@ -52,7 +54,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
   const styles = useStyles();
   const [menu, setMenu] = useState({ right: false });
   const [openDial, setOpenDial] = useState(false);
-  const [cookies, setCookie, removeCookie] = useCookies(['token', 'username', 'role'])
+  const [cookies, setCookie, removeCookie] = useCookies(['username', 'role'])
   const storage = window.localStorage;
 
   const HandleClick = () => {
@@ -65,12 +67,12 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
   };
 
   // TODO: centralize this one
-  const HandleSignOut = () => {
+  const HandleSignOut = async () => {
     setLoggingOut(true);
-    removeCookie('token');
+    const response = await axios.post('/api/signout');
     removeCookie('username');
     removeCookie('role');
-    setName('');
+    setName(undefined);
     setMenu({ right: false });
   };
 
@@ -178,7 +180,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
 
   return (
     <div className="pc">
-      {cookies.username !== null
+      {cookies.hasOwnProperty('username')
         ? (
           <Button
             className="clickable"
@@ -213,22 +215,13 @@ function setLanguage(num) {
 }
 
 const Nav = () => {
-  const [name, setName] = useState('');
-  const [superuser, setSuperuser] = useState();
+  const [cookies, setCookie] = useCookies(['username', 'role']);
+  const [name, setName] = useState(cookies.username);
+  const [superuser, setSuperuser] = useState(cookies.role === 'superuser');
   const [loggingOut, setLoggingOut] = useState(false);
   const [checkSupervisions, setCheckSupervisions] = useState(false);
   const fin = localStorage.getItem('language'); // eslint-disable-line
   const { nav } = texts; // eslint-disable-line
-  const [cookies, setCookie] = useCookies(['username', 'role']);
-
-  // TODO: someone update this to be less of a mess
-  if (name === '') {
-    const username = cookies.username
-    if (username !== null) {
-      setName(username);
-      setSuperuser(cookies.role === 'superuser');
-    }
-  }
 
   const icon = (
     <span className="logo">
@@ -243,7 +236,7 @@ const Nav = () => {
           {icon}
         </Link>
 
-        {name === '' ? (
+        {!name ? (
           <Link className="pc clickable" style={{ textDecoration: 'none' }} to="/signin">
             <Button>
               {nav.SignIn[fin]}

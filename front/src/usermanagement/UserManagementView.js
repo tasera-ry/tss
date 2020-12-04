@@ -30,6 +30,7 @@ import axios from 'axios';
 
 // Token validation
 import { validateLogin } from '../utils/Utils';
+import { withCookies } from 'react-cookie';
 
 // Translations
 import data from '../texts/texts.json';
@@ -60,7 +61,7 @@ async function getUsers() {
 }
 
 // Changes password to database
-async function changePassword(token, id, passwordn) {
+async function changePassword(id, passwordn) {
   try {
     const response = await fetch(`/api/user/${id}`, {
       method: 'PUT',
@@ -70,7 +71,6 @@ async function changePassword(token, id, passwordn) {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
       },
     });
     return response.ok;
@@ -81,14 +81,13 @@ async function changePassword(token, id, passwordn) {
 }
 
 // Deletes user from database
-async function deleteUser(token, id) {
+async function deleteUser(id) {
   try {
     const response = await fetch(`/api/user/${id}`, {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
       },
     });
     return response.ok;
@@ -99,7 +98,7 @@ async function deleteUser(token, id) {
 }
 
 // Add user to database
-async function addUser(token, namen, rolen, passwordn) {
+async function addUser(namen, rolen, passwordn) {
   try {
     const response = await fetch('/api/user/', {
       method: 'POST',
@@ -111,7 +110,6 @@ async function addUser(token, namen, rolen, passwordn) {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
       },
     });
     return await response.json();
@@ -146,6 +144,7 @@ class UserManagementView extends Component {
       password: '',
       oldPassword: '',
       newPassword: '',
+      username: props.cookies.cookies.username,
       selectedUserName: '',
       myStorage: window.localStorage, // eslint-disable-line
     };
@@ -253,7 +252,7 @@ class UserManagementView extends Component {
   // finds logged in users id
   findOwnID() { // eslint-disable-line
     this.state.userList.forEach((user) => { // eslint-disable-line
-      if (this.state.logincInfo.username === user.name) {
+      if (this.state.username === user.name) {
         return user.id;
       }
     });
@@ -272,14 +271,14 @@ class UserManagementView extends Component {
     let success = true;
     let response = await axios
       .post('api/sign', {
-        name: this.props.cookies.username,
+        name: this.state.username,
         password: this.state.oldPassword,
       })
       .catch(() => {
         success = false;
       });
     if (success) {
-      response = await changePassword(this.state.token, this.findOwnID(), this.state.newPassword);
+      response = await changePassword(this.findOwnID(), this.state.newPassword);
       if (response) {
         this.handleChangeOwnPassDialogClose();
       } else {
@@ -300,7 +299,6 @@ class UserManagementView extends Component {
       mokat: false,
     });
     const req = await addUser(
-      this.state.token,
       this.state.newUserName,
       this.state.newUserRole,
       this.state.newUserPass,
@@ -317,7 +315,7 @@ class UserManagementView extends Component {
 
   // Removes the user
   async handleRemoveWarningCloseAgree() {
-    const response = await deleteUser(this.state.token, this.findUserId());
+    const response = await deleteUser(this.findUserId());
     if (response.errors !== undefined) {
       this.setState({
         mokatPoistossa: true,
@@ -341,7 +339,7 @@ class UserManagementView extends Component {
 
   // Changes password for some1 else by their ID
   async handleChangePassCloseConfirm() {
-    const response = await changePassword(this.state.token, this.findUserId(), this.state.password);
+    const response = await changePassword(this.findUserId(), this.state.password);
     if (!response) {
       this.setState({
         mokatVaihdossa: true,
@@ -481,7 +479,7 @@ class UserManagementView extends Component {
   update() {
     const tempRows = [];
     this.state.userList.forEach((user) => {
-      if (this.props.cookies.username !== user.name) {
+      if (this.state.username !== user.name) {
         const row = this.createData(user.name,
           user.role,
           this.returnPassButton(user.id, manage, fin),
@@ -790,4 +788,4 @@ class UserManagementView extends Component {
   }
 }
 
-export default UserManagementView;
+export default withCookies(UserManagementView);

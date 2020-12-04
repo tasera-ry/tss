@@ -413,7 +413,7 @@ const TimePick = ({
   );
 };
 
-const Tabletview = (props) => {
+const Tabletview = () => {
   const [statusColor, setStatusColor] = useState();
   const [statusText, setStatusText] = useState();
   const [hours, setHours] = useState({});
@@ -443,7 +443,7 @@ const Tabletview = (props) => {
   }
 
   useEffect(() => {
-    validateLogin(props.token)
+    validateLogin()
       .then((logInSuccess) => {
         if (logInSuccess) {
           getData(tablet,

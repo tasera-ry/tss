@@ -20,7 +20,8 @@ class SupervisorNotification extends Component {
     super(props);
     this.state = {
       userHasSupervisions: false,
-      supervisionsOpen: false
+      supervisionsOpen: false,
+      username: props.cookies.cookies.username
     };
   }
 
@@ -47,7 +48,7 @@ class SupervisorNotification extends Component {
   }
 
   checkSupervisions = async () => {
-    const reservations = await checkSupervisorReservations(this.props.cookies.username);
+    const reservations = await checkSupervisorReservations(this.state.username);
     if (reservations) {
       this.setState({
         userHasSupervisions: true,

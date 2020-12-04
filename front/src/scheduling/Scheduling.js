@@ -34,7 +34,6 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 
 import socketIOClient from 'socket.io-client';
 import { getSchedulingDate, rangeSupervision, validateLogin } from '../utils/Utils';
-import { withCookies } from 'react-cookie';
 
 // Translation
 import data from '../texts/texts.json';
@@ -693,7 +692,6 @@ class Scheduling extends Component {
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${this.state.token}`,
               },
             })
               .then((res) => { // eslint-disable-line
@@ -959,4 +957,4 @@ class Scheduling extends Component {
   }
 }
 
-export default withCookies(Scheduling);
+export default Scheduling;

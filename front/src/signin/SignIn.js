@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 
 // Material UI components
 import Button from '@material-ui/core/Button';
