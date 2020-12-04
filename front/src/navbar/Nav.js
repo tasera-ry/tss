@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import '../App.css';
 import './Nav.css';
 
+import axios from 'axios';
+import { useCookies } from 'react-cookie';
+
 // TASERA logo & Burger icon
 
 // Material UI elements
@@ -18,10 +21,6 @@ import logo from '../logo/Logo.png';
 import SupervisorNotification from './SupervisorNotification'; // eslint-disable-line
 
 import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
-
-import { useCookies } from 'react-cookie';
-
-import axios from 'axios';
 
 // Translations
 import texts from '../texts/texts.json';
@@ -54,8 +53,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
   const styles = useStyles();
   const [menu, setMenu] = useState({ right: false });
   const [openDial, setOpenDial] = useState(false);
-  const [cookies, setCookie, removeCookie] = useCookies(['username', 'role'])
-  const storage = window.localStorage;
+  const [cookies, setCookie, removeCookie] = useCookies(['username', 'role']); // eslint-disable-line
 
   const HandleClick = () => {
     setMenu({ right: false });
@@ -69,7 +67,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
   // TODO: centralize this one
   const HandleSignOut = async () => {
     setLoggingOut(true);
-    const response = await axios.post('/api/signout');
+    const response = await axios.post('/api/signout'); // eslint-disable-line
     removeCookie('username');
     removeCookie('role');
     setName(undefined);
@@ -180,7 +178,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
 
   return (
     <div className="pc">
-      {cookies.hasOwnProperty('username')
+      {cookies.hasOwnProperty('username') // eslint-disable-line
         ? (
           <Button
             className="clickable"
@@ -204,7 +202,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
         </Drawer>
 
       </div>
-      {openDial ? <DialogWindow/> : ''}
+      {openDial ? <DialogWindow /> : ''}
     </div>
   );
 };
@@ -215,9 +213,9 @@ function setLanguage(num) {
 }
 
 const Nav = () => {
-  const [cookies, setCookie] = useCookies(['username', 'role']);
+  const [cookies] = useCookies(['username', 'role']);
   const [name, setName] = useState(cookies.username);
-  const [superuser, setSuperuser] = useState(cookies.role === 'superuser');
+  const [superuser] = useState(cookies.role === 'superuser');
   const [loggingOut, setLoggingOut] = useState(false);
   const [checkSupervisions, setCheckSupervisions] = useState(false);
   const fin = localStorage.getItem('language'); // eslint-disable-line

@@ -52,7 +52,7 @@ async function getRangeSupervisors() {
       method: 'GET',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
     });
     return await response.json();
@@ -534,7 +534,7 @@ class Scheduling extends Component {
             body: JSON.stringify(params),
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
           })
             .then((res) => { // eslint-disable-line
@@ -646,7 +646,7 @@ class Scheduling extends Component {
           rsId,
           srsId,
           rangeStatus,
-          rangeSupervisionScheduled
+          rangeSupervisionScheduled,
         );
         if (rangeSupervisionRes !== true) {
           return reject(new Error(rangeSupervisionRes));

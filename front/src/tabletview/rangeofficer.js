@@ -126,7 +126,7 @@ const TrackRows = ({
 );
 
 const TrackButtons = ({
-  track, scheduleId, tablet, fin, socket
+  track, scheduleId, tablet, fin, socket,
 }) => {
   // get this somewhere else
   const buttonStyle = {
@@ -306,7 +306,7 @@ async function getData(
 }
 
 const TimePick = ({
-  tablet, fin, scheduleId, hours, setHours, dialogOpen, setDialogOpen
+  tablet, fin, scheduleId, hours, setHours, dialogOpen, setDialogOpen,
 }) => {
   const [errorMessage, setErrorMessage] = useState();
   const [startDate, setStartDate] = useState(new Date(0, 0, 0, hours.start.split(':')[0], hours.start.split(':')[1], 0));
@@ -547,17 +547,19 @@ const Tabletview = () => {
       </Typography>
       &nbsp;
 
-      {dialogOpen ?
-        <TimePick
-          tablet={tablet}
-          fin={fin}
-          scheduleId={scheduleId}
-          hours={hours}
-          setHours={setHours}
-          dialogOpen={dialogOpen}
-          setDialogOpen={setDialogOpen}
-        />
-      : ''}
+      {dialogOpen
+        ? (
+          <TimePick
+            tablet={tablet}
+            fin={fin}
+            scheduleId={scheduleId}
+            hours={hours}
+            setHours={setHours}
+            dialogOpen={dialogOpen}
+            setDialogOpen={setDialogOpen}
+          />
+        )
+        : ''}
 
       <div style={rowStyle}>
         <Button

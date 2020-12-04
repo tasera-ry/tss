@@ -79,7 +79,7 @@ export async function validateLogin() {
   let response;
   try {
     response = await fetch('/api/validate', {
-      method: 'GET'
+      method: 'GET',
     });
   } catch (error) {
     return false;
@@ -108,7 +108,7 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled) {
             body: JSON.stringify({ available: true }),
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
           })
             .then((status) => {
@@ -121,7 +121,7 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled) {
             body: JSON.stringify({ range_supervisor: rangeStatus }),
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
           })
             .then((status) => {
@@ -134,7 +134,7 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled) {
             body: JSON.stringify({ available: true }),
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
           })
             .then((status) => {
@@ -150,7 +150,7 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled) {
             }),
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
           })
             .then((status) => {
@@ -164,7 +164,7 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled) {
           body: JSON.stringify({ available: 'false' }),
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
         })
           .then((status) => {

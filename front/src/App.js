@@ -1,6 +1,8 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 
 import './App.css';
+
+import axios from 'axios';
 
 // Custom components
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
@@ -18,7 +20,6 @@ import TrackCRUD from './edittracks/tracks';
 // React router. Hashrouter, because normal router won't work in apache
 
 import { validateLogin } from './utils/Utils';
-import axios from 'axios';
 
 /*
    The main component of the whole project.
@@ -28,8 +29,7 @@ class App extends Component {
     super(props);
     this.state = {
       cookies: this.props.allCookies,
-      removeCookie: this.props.cookies.remove
-    }
+    };
   }
 
   // TODO: this works, but flashes if invalid
@@ -39,7 +39,7 @@ class App extends Component {
         .then(async (tokenValid) => {
           // If the token is expired, logout user
           if (!tokenValid) {
-            const response = await axios.post('/api/signout');
+            const response = await axios.post('/api/signout'); // eslint-disable-line
             this.props.cookies.remove('username');
             this.props.cookies.remove('role');
 
@@ -58,7 +58,7 @@ class App extends Component {
         <Router>
           <div className="App">
             <header className="App-header">
-              <Nav/>
+              <Nav />
               <Switch>
                 <Route path="/" exact component={Weekview} />
                 <Route path="/signin" component={SignIn} />

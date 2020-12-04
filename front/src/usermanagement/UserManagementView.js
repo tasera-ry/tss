@@ -29,8 +29,8 @@ import {
 import axios from 'axios';
 
 // Token validation
-import { validateLogin } from '../utils/Utils';
 import { withCookies } from 'react-cookie';
+import { validateLogin } from '../utils/Utils';
 
 // Translations
 import data from '../texts/texts.json';
@@ -50,7 +50,7 @@ async function getUsers() {
       method: 'GET',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
     });
     return await response.json();

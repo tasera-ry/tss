@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 
+import { withCookies } from 'react-cookie';
+
 // function for checking whether we should show banner
 // DialogWindow for supervisors to confirm their supervisions
 import { checkSupervisorReservations, DialogWindow } from '../upcomingsupervisions/LoggedIn';
-
-import { withCookies } from 'react-cookie';
 
 // Translations
 import data from '../texts/texts.json';
@@ -21,7 +21,7 @@ class SupervisorNotification extends Component {
     this.state = {
       userHasSupervisions: false,
       supervisionsOpen: false,
-      username: props.cookies.cookies.username
+      username: props.cookies.cookies.username,
     };
   }
 

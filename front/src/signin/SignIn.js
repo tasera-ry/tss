@@ -43,7 +43,7 @@ const textStyle = {
   borderRadius: 4,
 };
 
-const SignIn = (props) => {
+const SignIn = () => {
   const classes = useStyles();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -51,7 +51,7 @@ const SignIn = (props) => {
   const history = useHistory();
   const { signin } = data;
   const fin = localStorage.getItem('language');
-  const [cookies, setCookie] = useCookies(['username', 'role'])
+  const [cookies, setCookie] = useCookies(['username', 'role']); // eslint-disable-line
 
   document.body.style = 'background: #eae7dc;';
   function RedirectToWeekview() {
@@ -89,7 +89,7 @@ const SignIn = (props) => {
     axios.post('api/sign', {
       name,
       password,
-    }).then((response) => {
+    }).then(() => {
       setInfo();
     }).catch((error) => {
       HandleError(error);

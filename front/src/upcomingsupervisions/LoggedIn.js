@@ -348,7 +348,7 @@ const DialogWindow = ({ onCancel }) => {
   const [schedules, setSchedules] = useState([]);
   const [done, setDone] = useState(false);
   const [checked, setChecked] = useState(false);
-  const [cookies, setCookie] = useCookies(['username'])
+  const [cookies] = useCookies(['username']);
   const { sv } = data;
 
   if (onCancel === undefined) {

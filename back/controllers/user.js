@@ -1,6 +1,4 @@
 const jwt = require('jsonwebtoken');
-const _ = require('lodash');
-
 const path = require('path');
 const root = path.join(__dirname, '..');
 const config = require(path.join(root, 'config'));
@@ -12,11 +10,11 @@ const controller = {
     return response
       .status(200)
       .cookie('token', jwtSign,
-      {
-        httpOnly: true,
-        secure: true,
-        sameSite: true
-      })
+        {
+          httpOnly: true,
+          secure: true,
+          sameSite: true
+        })
       .send();
   },
 
