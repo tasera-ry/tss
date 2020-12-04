@@ -28,7 +28,7 @@ exports.seed = async function(knex) {
     ))
   );
 
-  const generateSpinner = ora.promise(
+  ora.promise(
     generateSupervisions,
     `Generating ${schedule.length} track supervisions`
   );
@@ -43,12 +43,12 @@ exports.seed = async function(knex) {
       ))
   );
 
-  const insertSpinner = ora.promise(
+  ora.promise(
     insertSupervisions,
     'Inserting track supervisions'
   );
 
-  const response = await insertSupervisions;
+  await insertSupervisions;
 };
 
 casual.define('track_supervision', async (trackId, supervisionId) => {
@@ -57,6 +57,7 @@ casual.define('track_supervision', async (trackId, supervisionId) => {
     scheduled_range_supervision_id: supervisionId,
     track_id: trackId,
     track_supervisor: state[casual.integer(0, state.length - 1)],
+    visitors: casual.integer(0, 1000),
     notice: casual.description.substring(0, 255)
   };
 });

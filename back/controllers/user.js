@@ -50,12 +50,6 @@ const controller = {
       .send(response.locals.queryResult);
   },
 
-  read: async function readUser(request, response) {
-    return response
-      .status(200)
-      .send(response.locals.queryResult);
-  },
-
   update: async function updateUser(request, response) {
     return response
       .status(204)

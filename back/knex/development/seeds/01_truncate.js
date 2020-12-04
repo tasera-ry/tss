@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const ora = require('ora');
 
 exports.seed = async function(knex) {

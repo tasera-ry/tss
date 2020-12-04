@@ -123,36 +123,34 @@ const TrackTable = ({
         },
       },
     }}
-      // Other views only support viewing 7 tracks, so no adding or deleting
-      // tracks.
+    // Editing tracks
     editable={{
-      // onRowAdd: ({name, description}) => {
-      //   return new Promise(async (resolve, reject) => {
-      //     try
-      //     {
-      //       const response = await axios.post(
-      //         '/api/track'
-      //         , {name: name
-      //            , description: description
-      //            , range_id: trackData[0].range_id
-      //           })
-      //       setTrackData(trackData.concat(response.data))
-      //       setRequestStatus('success')
-      //       setRequestText('Rata lisätty')
-      //       resolve()
-      //     }
-      //     catch(e)
-      //     {
-      //       setRequestStatus('error')
-      //       setRequestText('Radan lisäys epäonnistui')
-      //       reject()
-      //     }
-      //   })
-      // }
-      onRowUpdate: (newData, oldData) => new Promise(async (resolve, reject) => { // eslint-disable-line
+      onRowAdd: ({ name, description, short_description }) => new Promise(async (resolve, reject) => { // eslint-disable-line
+        try {
+          const response = await axios.post(
+            '/api/track',
+            {
+              name,
+              description,
+              short_description,
+              range_id: trackData[0].range_id,
+            }, opts,
+          );
+          setTrackData(trackData.concat(response.data));
+          setRequestStatus('success');
+          setRequestText('Rata lisätty');
+          resolve();
+        } catch (e) {
+          setRequestStatus('error');
+          setRequestText('Radan lisäys epäonnistui');
+          reject();
+        }
+      })
+      , onRowUpdate: (newData, oldData) => new Promise(async (resolve, reject) => { // eslint-disable-line
         resolve();
         const trackInfo = trackData
           .filter((track) => track.name === oldData.name
+                          && track.short_description === oldData.short_description
                           && track.description === oldData.description)[0];
 
         if (trackInfo === undefined) {
@@ -178,39 +176,30 @@ const TrackTable = ({
         }
         resolve();
       }),
-      // , onRowDelete: ({name, description}) => {
-      //   return new Promise(async (resolve, reject) => {
+      onRowDelete: ({ name, description }) => new Promise(async (resolve, reject) => { // eslint-disable-line
+        const trackInfo = trackData
+          .filter((track) => track.name === name
+                  && track.description === description)[0];
 
-      //     const trackInfo = trackData
-      //           .filter(track => track.name === name
-      //                   && track.description === description)
-      //           .head()
+        // Should never happen
+        if (trackInfo === undefined) {
+          setRequestStatus('error');
+          setRequestText('Radan poisto epäonnistui');
+          reject();
+        }
 
-      //     // Should never happen
-      //     if(trackInfo === undefined)
-      //     {
-      //       setRequestStatus('error')
-      //       setRequestText('Radan poisto epäonnistui')
-      //       reject()
-      //     }
-
-      //     try
-      //     {
-      //       const response = await axios.delete(`/api/track/${trackInfo.id}`, opts)
-      //       setTrackData(trackData.filter(track => track.id !== trackInfo.id))
-      //       setRequestStatus('success')
-      //       setRequestText('Rata poistettu')
-      //       resolve()
-      //     }
-      //     catch(e)
-      //     {
-      //       setRequestStatus('error')
-      //       setRequestText('Radan poisto epäonnistui')
-      //       reject()
-      //     }
-
-      //   })
-      // }
+        try {
+          const response = await axios.delete(`/api/track/${trackInfo.id}`, opts); // eslint-disable-line
+          setTrackData(trackData.filter((track) => track.id !== trackInfo.id));
+          setRequestStatus('success');
+          setRequestText('Rata poistettu');
+          resolve();
+        } catch (e) {
+          setRequestStatus('error');
+          setRequestText('Radan poisto epäonnistui');
+          reject();
+        }
+      }),
     }}
     options={{
       pageSize: 10,

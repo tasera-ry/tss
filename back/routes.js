@@ -174,7 +174,16 @@ router.route('/track/:track_id')
     middlewares.track.delete,
     controllers.track.delete);
 
-// newer get with padded functionality
+router.route('/daterange/week/:begin')
+  .get(
+    middlewares.daterange.readWeek,
+    controllers.daterange.read);
+
+router.route('/daterange/freeform/:begin/:end')
+  .get(
+    middlewares.daterange.readFreeform,
+    controllers.daterange.read);
+
 router.route('/datesupreme/:date')
   .get(oldSchedule.getScheduleDate);
 

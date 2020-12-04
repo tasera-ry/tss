@@ -32,7 +32,7 @@ exports.validate = [
     try {
       const token = request.cookies.token;
 
-      jwt.verify(token, config.jwt.secret, (err, decoded) => {
+      jwt.verify(token, config.jwt.secret, (err, decoded) => { // eslint-disable-line
         if (err) {
           response.status(403);
           return next(err);

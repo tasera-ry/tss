@@ -13,7 +13,8 @@ exports.seed = async function(knex) {
       supervisions.push({
         scheduled_range_supervision_id: id,
         track_id: track.id,
-        track_supervisor: 'present'
+        track_supervisor: 'present',
+        visitors: 0
       });
     });
   });

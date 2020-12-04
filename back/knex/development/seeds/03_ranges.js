@@ -16,7 +16,7 @@ exports.seed = async function(knex) {
     )
   );
 
-  const generateSpinner = ora.promise(
+  ora.promise(
     generateRanges,
     `Generating ${config.seeds.ranges} ranges`
   );
@@ -29,9 +29,9 @@ exports.seed = async function(knex) {
   );
   console.log('done');
 
-  const insertSpinner = ora.promise(insertRanges, 'Inserting ranges');
+  ora.promise(insertRanges, 'Inserting ranges');
 
-  const response = await insertRanges;
+  await insertRanges;
 };
 
 casual.define('shooting_range', async function() {
