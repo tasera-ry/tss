@@ -57,11 +57,9 @@ const Statistics = () => {
 
     const dayNumberSplit = singleDay.split('-');
     let dayNum = dayNumberSplit[2];
-    dayNum = dayNum.includes("0") ? dayNum.substring(1) : dayNum;
+    dayNum = dayNum.startsWith("0") ? dayNum.substring(1) : dayNum;
     setDayNumber(dayNum);
 
-
-    //console.log(firstDate, lastDate, date);
     const fetchData = async () => {
       const result = await getVisitors(firstDate, lastDate);
       const result2 = await getDailyVisitors(singleDay);
@@ -99,6 +97,48 @@ const Statistics = () => {
   
   }, [dailyUsers])
 
+  const previousDayClick = () => {
+    console.log("date aluksi:", date);
+    const newDate = new Date(date);
+
+    date.setDate(newDate.getDate() - 1);
+    console.log("date jälkeen:", date);
+  };
+
+  const nextDayClick = () => {
+    console.log("date aluksi:", date);
+    const newDate = new Date(date);
+
+    date.setDate(newDate.getDate() + 1);
+    console.log("date jälkeen:", date);
+  };
+
+  const handleDateChange = (date) => {
+    const newDate = new Date(date);
+    setDate(newDate);
+  };
+
+  const continueWithDate = (event) => {
+    if (event !== undefined && event.type !== undefined && event.type === 'submit') {
+      event.preventDefault();
+    }
+  }
+
+  const countMonthlyVisitors = () => {
+    let total = 0;
+    monthlyUsers.forEach((day) => {
+      total = total + day;
+    });
+    return total;
+  }
+
+
+  const handleDatePickChange = (date) => {
+    const newDate = new Date(date);
+    setDate(newDate);
+    continueWithDate();
+  };
+
   if (monthlyUsers?.length > 0) {
     //console.log(monthSeries);
     //console.log(monthOptions);
@@ -106,25 +146,25 @@ const Statistics = () => {
     const { sched } = data;
     const fin = localStorage.getItem('language');
 
+    const total = countMonthlyVisitors();
     return (
       <div className="container">
       {/* Section for selecting date */}
       <div className="firstSection">
-        <form>
+        <form onSubmit={continueWithDate}>
           { /* Datepicker */}
           <MuiPickersUtilsProvider
             utils={MomentUtils}
             locale={lang}
-            //key={this.state.datePickerKey}
           >
             <KeyboardDatePicker
               autoOk
               margin="normal"
               name="date"
               label={sched.Day[fin]}
-              //value={this.state.date}
-              //onChange={(date) => this.handleDateChange(date)}
-              //onAccept={this.handleDatePickChange}
+              value={date}
+              onChange={(date) => handleDateChange(date)}
+              onAccept={handleDatePickChange}
               format="DD.MM.YYYY"
               showTodayButton
             />
@@ -140,21 +180,21 @@ const Statistics = () => {
       <Grid class="date-header">
         <div
           className="hoverHand arrow-left"
-          //onClick={previousDayClick}
+          onClick={previousDayClick}
         />
         <h1 className="headerText">
           {date.toLocaleDateString('fi-FI')}
         </h1>
         <div
           className="hoverHand arrow-right"
-          //onClick={nextDayClick}
+          onClick={nextDayClick}
         />
       </Grid>
       {/* Charts */}
       <div className="row">
         <div className="mixed-chart">
           <h2>Tämä päivä</h2>
-          <h4>Yhteensä {date.toLocaleDateString('fi-FI')}: {monthlyUsers[dayNumber - 1]}</h4>
+          <h3>Yhteensä kävijöitä {date.toLocaleDateString('fi-FI')}: {monthlyUsers[dayNumber - 1]}</h3>
           <div classname="bar">
             <Chart
                 options={dayOptions}
@@ -163,7 +203,8 @@ const Statistics = () => {
                 width="600"
             />
             </div>
-            <h2>Tämä kuukausi</h2>
+              <h2>Tämä kuukausi</h2>
+              <h3>Yhteensä kävijöitä{(date.getMonth()+1)}/{date.getFullYear()}: {total}</h3>
             <div className="line">
             <Chart
                 options={monthOptions}
