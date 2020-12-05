@@ -10,6 +10,9 @@ exports.up = function(knex) {
         .references('id')
         .inTable('track')
         .notNullable();
+      supervision.integer('visitors')
+        .notNullable()
+        .defaultTo(0);
       supervision.timestamp('updated_at', { useTz: true, precision: 6 })
         .defaultTo(knex.fn.now())
         .notNullable();

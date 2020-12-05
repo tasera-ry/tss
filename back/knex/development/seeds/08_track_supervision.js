@@ -57,6 +57,7 @@ casual.define('track_supervision', async (trackId, supervisionId) => {
     scheduled_range_supervision_id: supervisionId,
     track_id: trackId,
     track_supervisor: state[casual.integer(0, state.length - 1)],
+    visitors: casual.integer(0, 1000),
     notice: casual.description.substring(0, 255)
   };
 });
