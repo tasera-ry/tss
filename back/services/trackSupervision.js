@@ -9,7 +9,7 @@ const service = {
   /**
    * Create a new supervision.
    *
-   * @param {object} info - The properties of the new supervision { scheduled_range_supervision_id, track_id, track_supervisor, notice?}
+   * @param {object} info - The properties of the new supervision { scheduled_range_supervision_id, track_id, track_supervisor, visitors?, notice?}
    * @return {Promise<[{scheduled_range_supervision_id:number, track_id:number}]>} The combined key for track supervision range_supervision_id, track_id
    *
    */
@@ -20,19 +20,19 @@ const service = {
   /**
    * Get the supervisions matching a key.
    *
-   * @param {object} key - Identifying key, { scheduled_range_supervision_id?, track_id?, track_supervisor?, notice? }
+   * @param {object} key - Identifying key, { scheduled_range_supervision_id?, track_id?, track_supervisor?, visitors?, notice? }
    * @return {Promise<object[]>} Supervisions that matched the key
    *
    */
   read: async function readSupervision(key) {
-    return (await models.trackSupervision.read(_.pick(key, 'scheduled_range_supervision_id', 'track_id', 'track_supervisor', 'notice')));
+    return (await models.trackSupervision.read(_.pick(key, 'scheduled_range_supervision_id', 'track_id', 'track_supervisor', 'visitors', 'notice')));
   },
 
   /**
    * Update a supervision events' info.
    *
    * @param {object} current - The current identifying info of the supervision. { scheduled_range_supervision_id, track_id }
-   * @param {object} update - New information for the supervision { track_supervisor?, notice? }
+   * @param {object} update - New information for the supervision { track_supervisor?, visitors?, notice? }
    *
    * @return {Promise<number[]>} Count of rows updated
    *

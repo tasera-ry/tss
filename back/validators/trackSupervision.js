@@ -56,6 +56,13 @@ const fields = {
       .isLength({ min: 0, max: 255 })
       .withMessage('must be between 0 and 255 characters');
     return validatorAdditions(validator, opts);
+  },
+
+  visitors: function visitorValidation(requestObject, ...opts) {
+    const validator = requestObject('visitors')
+      .isInt()
+      .withMessage('must be an integer');
+    return validatorAdditions(validator, opts);
   }
 };
 
@@ -93,6 +100,7 @@ module.exports = {
     fields.scheduled_range_supervision_id(body, 'exists'),
     fields.track_id(body, 'exists'),
     fields.track_supervisor(body, 'exists'),
+    fields.visitors(body, 'optional'),
     fields.notice(body, 'optional'),
     handleValidationErrors,
     function storeCreationRequest(request, response, next) {
@@ -104,6 +112,7 @@ module.exports = {
     fields.scheduled_range_supervision_id(param, 'exists'),
     fields.track_id(param, 'exists'),
     fields.track_supervisor(body, 'optional'),
+    fields.visitors(body, 'optional'),
     fields.notice(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
