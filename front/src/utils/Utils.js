@@ -131,7 +131,7 @@ export function viewChanger() {
     console.error(err);
     const date = new Date(Date.now());
     console.log(date);
-    const time = moment(date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate(), 'YYYY-MM-DD');
+    const time = moment(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`, 'YYYY-MM-DD');
     console.log(time);
     table.push(
       <Link class="link" to={`/monthview/${time.format('YYYY-MM-DD')}`}>
