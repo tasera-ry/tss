@@ -41,36 +41,33 @@ const controller = {
   },
 
   create: async function createSupervision(request, response) {
-    email('vastaanottaja','update');    
+    email('vastaanottaja','update');
     return response
       .status(201)
       .send(response.locals.queryResult);
-     
   },
 
   // no return here? may be a cause for a bug
   update: async function updateSupervision(request, response) {
 
-   
 //muutettu getUserEmail ---> _geet_UserEmail  jotta voidaan pyörittää tässä.
-    const vastaanottaja = await geetUserEmail(request.user.id);
+    const vastaanottaja = await geetUserEmail(response.locals.updates.supervisor);
 //knex osa, joka pitäisi suorittaa modelseissa:
        async function geetUserEmail(key) {
         return await knex
           .from('user')
           .where({ 'user.id': key })
           .select('user.email');
-        } 
-//knex osa päättyy   
+        }
+//knex osa päättyy
     var emailtostring = JSON.stringify(vastaanottaja);
     //tässä kohtaa emailtostring lähettää haetun haetun user.emailin mailer.js tiedostoon jossa se lähtee viestinä Eliaksen spostiin.
     //mailer.js kannattaa mennä muuttamaan omaksi spostiksi jos tahtoo tarkastella sen lähtemistä.
-    email('sposti',emailtostring);    
+    email('sposti',emailtostring);
 
     response
       .status(204)
       .send();
-     
   },
 
 //muiden käyttöön ?

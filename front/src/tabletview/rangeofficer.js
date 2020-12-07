@@ -495,7 +495,8 @@ const Tabletview = () => {
       scheduleId,
       status,
       rangeSupervisionScheduled,
-      token);
+      token,
+      null); // MODIFY THIS
     if (res === true) {
       setStatusColor(color);
       setStatusText(text);

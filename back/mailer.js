@@ -3,8 +3,7 @@
 
 
 
-
-    //step1    
+    //step1
     const nodemailer = require('nodemailer');
     const sendEmail = function(sposti,viesti) {
     // declare vars,
@@ -20,9 +19,9 @@
         break;
         case "update":
             text = 'Jokin on muuttunut';
-        break;    
+        break;
     }*/
-    
+
     //step2:
     const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -32,8 +31,8 @@
         user: fromMail ,
         pass: 'tasera2020'
     }
-    }); 
-    
+    });
+
     //step3:
     // email options
     let mailOptions = {

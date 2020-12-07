@@ -654,6 +654,7 @@ class Scheduling extends Component {
           rangeStatus,
           rangeSupervisionScheduled,
           this.state.token,
+          this.state.rangeSupervisorId
         );
         if (rangeSupervisionRes !== true) {
           return reject(new Error(rangeSupervisionRes));

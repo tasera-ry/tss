@@ -39,6 +39,14 @@ const fields = {
     return validatorAdditions(validator, opts);
   },
 
+  supervisor: function supervisorValidation(requestObject, ...opts) {
+    const validator = requestObject('supervisor')
+      .isInt()
+      .withMessage('must be an integer')
+      .toInt();
+    return validatorAdditions(validator, opts);
+  },
+
   notice: function noticeValidation(requestObject, ...opts) {
     const validator = requestObject('notice')
       .isString()
@@ -108,6 +116,7 @@ module.exports = {
   update: [
     fields.scheduled_range_supervision_id(param, 'exists'),
     fields.range_supervisor(body, 'optional'),
+    fields.supervisor(body, 'optional'),
     fields.notice(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
