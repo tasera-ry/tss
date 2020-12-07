@@ -106,21 +106,21 @@ export function viewChanger() {
     const time = moment(`${paramYear}-${paramMonth}-${paramDay}`, 'YYYY-MM-DD');
 
     table.push(
-      <Link class="link" to={`/monthView/${time.format('YYYY-MM-DD')}`}>
+      <Link class="link" to={`/monthview/${time.format('YYYY-MM-DD')}`}>
         <div>
           {viewChanger.Month[fin]}
         </div>
       </Link>,
     );
     table.push(
-      <Link class="link" to={`/weekView/${time.format('YYYY-MM-DD')}`}>
+      <Link class="link" to={`/weekview/${time.format('YYYY-MM-DD')}`}>
         <div>
           {viewChanger.Week[fin]}
         </div>
       </Link>,
     );
     table.push(
-      <Link class="link" to={`/dayView/${time.format('YYYY-MM-DD')}`}>
+      <Link class="link" to={`/dayview/${time.format('YYYY-MM-DD')}`}>
         <div>
           {viewChanger.Day[fin]}
         </div>
