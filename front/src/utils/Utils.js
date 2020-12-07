@@ -91,9 +91,9 @@ export function checkColor(paivat, paiva) {
 export function viewChanger() {
   const { viewChanger } = texts;  // eslint-disable-line
   const fin = localStorage.getItem('language');
+  const table = [];
 
   try {
-    const table = [];
     const fullUrl = window.location.href.split('/');
     const urlParamDate = fullUrl[5];
 
@@ -129,7 +129,32 @@ export function viewChanger() {
     return table;
   } catch (err) {
     console.error(err);
-    return false;
+    const date = new Date(Date.now());
+    console.log(date);
+    const time = moment(date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate(), 'YYYY-MM-DD');
+    console.log(time);
+    table.push(
+      <Link class="link" to={`/monthview/${time.format('YYYY-MM-DD')}`}>
+        <div>
+          {viewChanger.Month[fin]}
+        </div>
+      </Link>,
+    );
+    table.push(
+      <Link class="link" to={`/weekview/${time.format('YYYY-MM-DD')}`}>
+        <div>
+          {viewChanger.Week[fin]}
+        </div>
+      </Link>,
+    );
+    table.push(
+      <Link class="link" to={`/dayview/${time.format('YYYY-MM-DD')}`}>
+        <div>
+          {viewChanger.Day[fin]}
+        </div>
+      </Link>,
+    );
+    return table;
   }
 }
 
