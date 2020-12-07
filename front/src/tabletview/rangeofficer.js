@@ -28,6 +28,8 @@ import socketIOClient from 'socket.io-client';
 import { validateLogin, rangeSupervision } from '../utils/Utils';
 
 import data from '../texts/texts.json';
+
+// Submitting track usage statistics
 import { TrackStatistics } from '../TrackStatistics/TrackStatistics';
 
 /*
