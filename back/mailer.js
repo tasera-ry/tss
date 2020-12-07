@@ -12,6 +12,11 @@
     let toMail = reciever;
     let subject = 'Tasera info';
     let text = viesti;
+
+    //editing the reciever to suit sending the email (change str = viesti to str = sposti) for production
+    let str = viesti;
+    let cutStr = str.slice(11, -3)
+    text = cutStr;   
 /*
      switch (viesti) {
         case "assigned":
