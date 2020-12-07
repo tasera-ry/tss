@@ -17,6 +17,12 @@ const service = {
     return (await models.rangeSupervision.create(info)).pop();
   },
 
+
+    //email stuudfff
+  update: async function getUserEmail(key) {
+    return (await models.rangeSupervision.getUserEmail(key));
+  },
+    
   /**
    * Get the supervisions matching a key.
    *
@@ -37,7 +43,7 @@ const service = {
    *
    */
   userSupervisions: async function getUserSupervisions(key, fields) {
-    return (await models.rangeSupervision.userSupervisions(_.pick(key, 'id', 'name', 'role', 'phone'), fields));
+    return (await models.rangeSupervision.userSupervisions(_.pick(key, 'id', 'name', 'role', 'phone', 'email'), fields));
   },
 
   /**

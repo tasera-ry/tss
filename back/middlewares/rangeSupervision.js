@@ -75,6 +75,28 @@ const serviceCalls = {
     return next();
   },
 
+  update: async function getUserEmail(request, response, next) {
+    const id = response.locals.id;
+    
+
+    try {
+      response.locals.queryResult = await services.getUserEmail.update(id);
+    } catch(e) {
+      if(e.name === 'Unknown email') {
+        return response
+          .status(404)
+          .send({
+            error: e.name
+          });
+      }
+
+      return next(e);
+    }
+
+    return next();
+  },
+
+
   update: async function updateSupervision(request, response, next) {
     const id = response.locals.id;
     const updates = response.locals.updates;

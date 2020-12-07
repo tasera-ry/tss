@@ -28,7 +28,7 @@ exports.seed = async function(knex) {
     _.chunk(users, config.seeds.chunkSize)
       .map(async (userChunk) => {
         const users = userChunk
-          .map(user => _.pick(user, ['name', 'role', 'digest']));
+          .map(user => _.pick(user, ['name', 'role', 'digest','email']));
         const supervisors =
               (await knex('user')
                 .insert(users)

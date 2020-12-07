@@ -83,6 +83,21 @@ const model = {
       .where('range_reservation.date', '>=', currentDate)
       .select(fields);
   },
+  // might need optimization? select should be at the top
+  /**
+   * Get the email matching a user key.
+   *
+   * @param {object} key - Identifying user key, { id?, name?, digest?, role?, phone? }
+   * @return {Promise<object[]>} user email that matched the user key
+   */
+
+  update: async function getUserEmail(key) {
+    
+    return await knex
+      .from('user')
+      .where({ 'user.id': key })
+      .select('user.email');
+  },
 
   /**
    * Update a supervision events' info.

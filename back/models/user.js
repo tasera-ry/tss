@@ -84,7 +84,7 @@ const model = {
    * exports.update({ name: 'Mark }, { digest: 'new_password_digest' })
    */
   update: async function updateUser(current, update) {
-    const user = _.pick(update, 'name', 'digest');
+    const user = _.pick(update, 'name', 'digest', 'email');
     const supervisor = _.pick(update, 'phone');
 
     const id = await model

@@ -411,7 +411,9 @@ class UserManagementView extends Component {
     if (!response) {
       this.setState({
         mokatVaihdossa: true,
-      });
+        
+      })
+        console.log('OH NO');
     } else {
       this.handleAddEmailClose();
     }
@@ -600,39 +602,61 @@ class UserManagementView extends Component {
       changePassDialogOpen: true,
     });
   }
+  // Opens dialog for adding or changing email for someone else
+  async onAddEmailClick(e) {
+    await this.setState({
+      selectedROWID: e.currentTarget.id,
+    });
+    const name = this.findUserName();
+    this.setState({
+      selectedUserName: name,
+      AddEmailDialogOpen: true,
+    });
+  }
 
   /**
     **ALGORITHMS
     */
 
-  // Finds username for selectedROWID in state
-  findUserName() {
-    this.state.userList.forEach((user) => { // eslint-disable-line
-      if (user.id === this.state.selectedROWID) {
-        return user.name;
+findUserName() {
+      for (var i in this.state.userList) {
+         if (this.state.userList[i].id == this.state.selectedROWID) {
+            return this.state.userList[i].name;
+         }
       }
-    });
-    return 'Username not found';
-  }
+      return "Username not found";
+   }   //Finds users id by selectedROWID in state
+   findUserId() {
+      for (var i in this.state.userList) {
+         if (this.state.userList[i].id == this.state.selectedROWID) {
+            return this.state.userList[i].id;
+         }
+      }
+      return undefined;
+   }   //finds logged in users id
+   findOwnID() {
+      for (var i in this.state.userList) {
+         if (localStorage.taseraUserName == this.state.userList[i].name) {
+            return this.state.userList[i].id;
+         }
+      }
+   }
 
-  // Finds users id by selectedROWID in state
-  findUserId() {
-    this.state.userList.forEach((user) => { // eslint-disable-line
-      if (user.id === this.state.selectedROWID) {
-        return user.id;
+update() {
+      var tempRows = [];
+      for (var i in this.state.userList) {
+         if (localStorage.taseraUserName !== this.state.userList[i].name) {
+           var row = this.createData(this.state.userList[i].name,
+                                     this.state.userList[i].role,
+                                     this.returnPassButton(this.state.userList[i].id, manage, fin),
+                                     this.returnRemoveButton(this.state.userList[i].id, manage, fin));
+            tempRows.push(row);
+         }
       }
-    });
-    return undefined;
-  }
-
-  // finds logged in users id
-  findOwnID() { // eslint-disable-line
-    this.state.userList.forEach((user) => { // eslint-disable-line
-      if (localStorage.taseraUserName === user.name) {
-        return user.id;
-      }
-    });
-  }
+      this.setState({
+         rows: tempRows,
+      });
+   }
 
   update() {
     const tempRows = [];

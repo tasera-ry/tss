@@ -1,3 +1,8 @@
+const path = require('path');
+const root = path.join(__dirname, '..');
+const knex = require(path.join(root, 'knex', 'knex'));
+const _ = require('lodash');
+const validate = require('validate.js');
 const email = require('../mailer.js');
 
 const controller = {
@@ -45,17 +50,33 @@ const controller = {
 
   // no return here? may be a cause for a bug
   update: async function updateSupervision(request, response) {
-    //email('vastaanottaja','assigned');
-    const vastaanottaja = request.user.id;
-    console.log(request.user)
-    console.log(request.user.email)
-    var emailtosrting = JSON.stringify(vastaanottaja);
-    email('sposti',emailtosrting);    
+
+   
+//muutettu getUserEmail ---> _geet_UserEmail  jotta voidaan pyörittää tässä.
+    const vastaanottaja = await geetUserEmail(request.user.id);
+//knex osa, joka pitäisi suorittaa modelseissa:
+       async function geetUserEmail(key) {
+        return await knex
+          .from('user')
+          .where({ 'user.id': key })
+          .select('user.email');
+        } 
+//knex osa päättyy   
+    var emailtostring = JSON.stringify(vastaanottaja);
+    //tässä kohtaa emailtostring lähettää haetun haetun user.emailin mailer.js tiedostoon jossa se lähtee viestinä Eliaksen spostiin.
+    //mailer.js kannattaa mennä muuttamaan omaksi spostiksi jos tahtoo tarkastella sen lähtemistä.
+    email('sposti',emailtostring);    
+
     response
       .status(204)
       .send();
      
   },
+
+//muiden käyttöön ?
+// update: async function getUserEmail(key,response) {
+//        return response
+//  },
 
   delete: async function deleteSupervision(request, response) {
     if(response.locals.queryResult === 0) {
