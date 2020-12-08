@@ -11,12 +11,8 @@ import 'moment/locale/fi';
 // Material UI components
 import Grid from '@material-ui/core/Grid';
 
-// Utils
-import { dayToString, getSchedulingDate } from '../utils/Utils';
-
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
@@ -35,7 +31,10 @@ if (localStorage.getItem('language') === '0') {
 } else if (localStorage.getItem('language') === '1') {
   lang = 'en';
 }
+
 moment.locale(lang);
+const { statistics } = data;
+const fin = localStorage.getItem('language');
 
 const Statistics = () => {
   const [ date, setDate] = useState(new Date());
@@ -55,67 +54,115 @@ const Statistics = () => {
     const lastDate = moment(date).endOf("month").format("YYYY-MM-DD");
     const singleDay = moment(date).format("YYYY-MM-DD");
 
+    // dayNum is used as an index in monthlyUsers[] to define the total visitors of a day
     const dayNumberSplit = singleDay.split('-');
     let dayNum = dayNumberSplit[2];
     dayNum = dayNum.startsWith("0") ? dayNum.substring(1) : dayNum;
     setDayNumber(dayNum);
 
     const fetchData = async () => {
-      const result = await getVisitors(firstDate, lastDate);
-      const result2 = await getDailyVisitors(singleDay);
-      console.log(result2);
-      setDailyUsers(result2);
-      setMonthlyUsers(result);
+      const monthResult = await getMonthlyVisitors(firstDate, lastDate);
+      const dayResult = await getDailyVisitors(singleDay);
+      setDailyUsers(dayResult);
+      setMonthlyUsers(monthResult);
     }
     fetchData();
 
   },[date])
 
   useEffect( () => {
+    // Count monthly visitors
     let day = 1;
     let dayArray = [];
     monthlyUsers.forEach((user) => {
       dayArray = dayArray.concat(day);
       day += 1;
     });
-    console.log(dayArray);
-    setMonthOptions({chart:{id:"monthChart"}, xaxis: {categories:dayArray}});
+    // Sorry such a mess but options for the month chart
+    setMonthOptions({chart: {
+                      id:"monthChart"},
+                      xaxis: {
+                        categories:dayArray,
+                        title: {
+                          text: statistics.DayLabel[fin],
+                          style: {
+                            fontSize: '14px'
+                          }
+                        }
+                      },
+                      yaxis: {
+                        title: {
+                          text: statistics.VisitorLabel[fin],
+                          style: {
+                            fontSize: '14px'
+                          }
+                        }
+                      },
+                      stroke: {
+                        curve: 'smooth',
+                        colors: ['#658f60'],
+                      }
+                    });
     setMonthSeries([{name:"visitors", data:monthlyUsers}]);
-  
   }, [monthlyUsers])
 
   useEffect( () => {
+    // Count daily visitors
     let track = 1;
     let visitorArray = [];
     dailyUsers.forEach((user) => {
       visitorArray = visitorArray.concat(track);
       track += 1;
     });
-    console.log("visitorArray: ", visitorArray);
-    setDayOptions({chart:{id:"dayChart"}, xaxis: {categories:visitorArray}});
-    setDaySeries([{name:"visitors", data:dailyUsers}]);
-  
+    // Options for the day chart
+    setDayOptions({chart: {
+                    id:"dayChart"},
+                    xaxis: {
+                      categories:visitorArray,
+                      title: {
+                        text: statistics.TrackLabel[fin],
+                        style: {
+                          fontSize: '14px'
+                        }
+                    }},
+                    yaxis: { 
+                      title: {
+                        text: statistics.VisitorLabel[fin],
+                        style: {
+                          fontSize: '14px'
+                        }
+                      }
+                    },
+                    fill: {
+                      colors: ['#658f60']
+                    },
+                    dataLabels: {
+                      enabled: true,
+                      style: {
+                        fontSize: "16px"
+                      },
+                      background: {
+                        enabled: true,
+                        foreColor: '#000000',
+                      },
+                    }
+                  });
+    setDaySeries([{name:"visitors",
+                  data:dailyUsers}]);
   }, [dailyUsers])
 
   const previousDayClick = () => {
-    console.log("date aluksi:", date);
-    const newDate = new Date(date);
-
-    date.setDate(newDate.getDate() - 1);
-    console.log("date jälkeen:", date);
+    const newDate = new Date (date.setDate(date.getDate() - 1));
+    setDate(newDate);
   };
 
   const nextDayClick = () => {
-    console.log("date aluksi:", date);
-    const newDate = new Date(date);
-
-    date.setDate(newDate.getDate() + 1);
-    console.log("date jälkeen:", date);
+    const newDate = new Date (date.setDate(date.getDate() + 1));
+    setDate(newDate);
   };
 
   const handleDateChange = (date) => {
-    const newDate = new Date(date);
-    setDate(newDate);
+    setDate(date);
   };
 
   const continueWithDate = (event) => {
@@ -132,7 +179,6 @@ const Statistics = () => {
     return total;
   }
 
-
   const handleDatePickChange = (date) => {
     const newDate = new Date(date);
     setDate(newDate);
@@ -140,13 +186,9 @@ const Statistics = () => {
   };
 
   if (monthlyUsers?.length > 0) {
-    //console.log(monthSeries);
-    //console.log(monthOptions);
-
-    const { sched } = data;
-    const fin = localStorage.getItem('language');
 
     const total = countMonthlyVisitors();
+
     return (
       <div className="container">
       {/* Section for selecting date */}
@@ -161,7 +203,7 @@ const Statistics = () => {
               autoOk
               margin="normal"
               name="date"
-              label={sched.Day[fin]}
+              label={statistics.DayChoose[fin]}
               value={date}
               onChange={(date) => handleDateChange(date)}
               onAccept={handleDatePickChange}
@@ -170,7 +212,7 @@ const Statistics = () => {
             />
           </MuiPickersUtilsProvider>
           <div className="continue">
-            <Button type="submit" variant="contained" style={{ backgroundColor: '#d1ccc2' }}>{sched.Day[fin]}</Button>
+            <Button type="submit" variant="contained" style={{ backgroundColor: '#d1ccc2' }}>{statistics.DayChoose[fin]}</Button>
           </div>
         </form>
       </div>
@@ -193,24 +235,28 @@ const Statistics = () => {
       {/* Charts */}
       <div className="row">
         <div className="mixed-chart">
-          <h2>Tämä päivä</h2>
-          <h3>Yhteensä kävijöitä {date.toLocaleDateString('fi-FI')}: {monthlyUsers[dayNumber - 1]}</h3>
-          <div classname="bar">
-            <Chart
-                options={dayOptions}
-                series={daySeries}
-                type="bar"
-                width="600"
-            />
-            </div>
-              <h2>Tämä kuukausi</h2>
-              <h3>Yhteensä kävijöitä{(date.getMonth()+1)}/{date.getFullYear()}: {total}</h3>
+          {/* Labels */}
+          <h2>{statistics.Day[fin]}</h2>
+          <h3>{statistics.Total[fin]} {date.toLocaleDateString('fi-FI')}: {monthlyUsers[dayNumber - 1]}</h3>
+            <div classname="bar">
+              <Chart
+                  options={dayOptions}
+                  series={daySeries}
+                  type="bar"
+                  width="700"
+                  height="400"
+              />
+              </div>
+              {/* Labels */}
+              <h2>{statistics.Month[fin]}</h2>
+              <h3>{statistics.Total[fin]} {(date.getMonth()+1)}/{date.getFullYear()}: {total}</h3>
             <div className="line">
             <Chart
                 options={monthOptions}
                 series={monthSeries}
                 type="line"
-                width="600"
+                width="700"
+                height="400"
             />
             </div>
         </div>
@@ -221,11 +267,12 @@ const Statistics = () => {
   return (<div></div>);
 }
 
-async function getVisitors(firstDate, lastDate) {
+async function getMonthlyVisitors(firstDate, lastDate) {
   
   const query = `api/daterange/freeform/${firstDate}/${lastDate}`;
   const response = await axios.get(query);
   if (response) {
+    // Form an array including the visitors of a certain month and return it
     let visitors = [];
     response.data.forEach(supervision => {
       if (!supervision?.scheduleId) {
@@ -238,7 +285,6 @@ async function getVisitors(firstDate, lastDate) {
         visitors = visitors.concat(trackVisitors);
       }
     })
-    console.log(visitors);
     return visitors;
   }
 }
@@ -248,6 +294,7 @@ async function getDailyVisitors(date) {
   const query = `api/daterange/freeform/${date}/${date}`;
   const response = await axios.get(query);
   if (response) {
+    // Form an array including the visitors of a certain day and return it
     let visitors = [];
     response.data.forEach(supervision => {
       if (!supervision?.scheduleId) {
@@ -258,7 +305,6 @@ async function getDailyVisitors(date) {
         })
       }
     })
-    console.log(visitors);
     return visitors;
   }
 }

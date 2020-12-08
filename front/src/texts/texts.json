@@ -97,9 +97,7 @@
     "Ask": ["Haluatko varmasti jatkaa?", "Are you sure?"],
     "AskDelete": ["Tämä poistaa pysyvästi käyttäjän", "This action will permanently remove user"],
     "Error": ["Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki", "Something went wrong"],
-    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"],
-    "Superuser": ["Superuser", "Superuser"],
-    "Supervisor": ["Valvoja", "Range officer"]
+    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"]
   },
   "tablet": {
     "Open": ["Aukiolo", "Open"],
@@ -191,5 +189,14 @@
     "Week": ["Viikko", "Week"],
     "Day": ["Päivä", "Day"],
     "JumpToCurrent": ["Tänään", "Today"]
+  },
+  "statistics": {
+    "Day": ["Päivä", "Day"],
+    "Month": ["Kuukausi", "Month"],
+    "Total": ["Kävijöitä yhteensä", "Visitors in total"],
+    "DayChoose": ["Valitse päivä", "Choose date"],
+    "TrackLabel": ["Rata", "Track"],
+    "VisitorLabel": ["Kävijämäärä", "Number of visitors"],
+    "DayLabel": ["Päivä", "Day"]
   }
 }
