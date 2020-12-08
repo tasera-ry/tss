@@ -50,10 +50,10 @@ const fields = {
     return validatorAdditions(validator, opts);
   },
 
-  secure: function secureValidation(requestObject, ...opts) {
+  secure: function secureValidation(requestObject) {
     const validator = requestObject('secure')
       .isBoolean()
-      .withMessage('must be a boolean')
+      .withMessage('must be a boolean');
     // TODO: revamp validatorAdditions so that it accepts False values too
     // It doesn't like boolean values right now
     return validator;

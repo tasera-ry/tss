@@ -213,7 +213,7 @@ class UserManagementView extends Component {
       .post('api/sign', {
         name: this.state.username,
         password: this.state.oldPassword,
-        secure
+        secure,
       })
       .catch(() => {
         success = false;

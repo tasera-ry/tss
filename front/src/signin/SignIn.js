@@ -87,7 +87,7 @@ const SignIn = () => {
     axios.post('api/sign', {
       name,
       password,
-      secure
+      secure,
     }).then((resp) => {
       setInfo(resp.data);
     }).catch((error) => {
