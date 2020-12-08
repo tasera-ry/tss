@@ -9,15 +9,6 @@
       name="description"
       content="Web site created using create-react-app"
     />
-    <div style="z-index:-999; position:absolute; height:20px; margin-top:0px; margin-bottom:-20px; padding:0px;">
-      <p>
-        Hei, valitettavasti sovelluksemme ei tue selainta tai käyttöjärjestelmääsi. Ole hyvä ja kokeile toista selainta tai laitetta.
-      </p>
-      <p>
-        Our application does not support the browser or operating system you are currently using. Please try accessing the site from another browser or device.
-      </p>
-    </div>
-
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -25,6 +16,7 @@
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <link rel="shortcut icon" id="favicon" href="taseraa.png">
+    <script src="%PUBLIC_URL%/modernizr-custom.Js"></script>
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -34,10 +26,74 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      padding-top: 30vh;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0,0,0);
+      background-color: rgba(0,0,0,0.8);
+    }
+
+    /* Modal Content */
+    .modal-content {
+      background-color: #fefefe;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      text-align: center;
+    }
+    </style>
     <title>TASERA</title>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <p>Valitettavasti emme tue käyttämääsi selainta. Sivusto ei välttämättä näy tai toimi oikein selaimellasi. Päivitä selaimesi parhaan kokemuksen saamiseksi.</p>
+      <p>You're using a web browser we don't support. The site may not show or work properly with your browser. Update your browser for best experience.</p>
+      <button class="center" onclick="hideModal()">Jatka sivustolle / Continue to this website</button>
+    </div>
+
+    </div>
+    <noscript><h1 style="text-align:center;font-size:48px">You need to enable JavaScript to run this app.</h1></noscript>
+    <script type="text/javascript">
+    function OldBrowser() {
+      var modal = document.getElementById("myModal");
+      modal.style.display = "block";
+    }
+    function hideModal() {
+      var modal = document.getElementById("myModal");
+      modal.style.display = "none";
+    }
+    var canLet = false;
+    try {
+      eval('let foobar = "baz";');
+      canLet = true;
+    }
+    catch (e) {}
+    console.log("this browser does" + (canLet ? '' : ' not') + " support the let keyword");
+
+    if (!canLet) {
+      OldBrowser();
+    }
+    else if (!Modernizr.arrow) {
+      OldBrowser();
+    }
+    else if (!Modernizr.cssgrid) {
+      OldBrowser();
+    }
+    else {
+    }
+    </script>
     <div id="root"></div>
     <!--
       This HTML file is a template.

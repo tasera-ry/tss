@@ -1,10 +1,3 @@
-const _ = require('lodash');
-
-const path = require('path');
-const root = path.join(__dirname, '..');
-const services = require(path.join(root, 'services'));
-const secret = require(path.join(root, 'config', 'config')).jwt.secret;
-
 const controller = {
   read: async function readTrack(request, response) {
     //if no results end in 404 but for filters return empty list instead

@@ -473,6 +473,7 @@ const Tabletview = () => {
           RedirectToWeekview();
         }
       });
+
     setSocket(socketIOClient()
       .on('rangeUpdate', (msg) => {
         setStatusColor(msg.color);
@@ -484,6 +485,10 @@ const Tabletview = () => {
       .on('refresh', () => {
         window.location.reload();
       }));
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 3 * 60 * 60 * 1000); // 3 hours
   }, []);
 
   async function updateSupervisor(status, color, text) {

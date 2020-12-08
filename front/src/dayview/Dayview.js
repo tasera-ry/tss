@@ -10,7 +10,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Utils
 import moment from 'moment';
-import { dayToString, getSchedulingDate } from '../utils/Utils';
+import {
+  dayToString, jumpToCurrent, getSchedulingDate, viewChanger,
+} from '../utils/Utils';
 
 // Moment for date handling
 import info from '../logo/Info.png';
@@ -46,6 +48,14 @@ class Dayview extends Component {
     this.update();
   }
 
+  componentWillReceiveProps() { // eslint-disable-line
+    this.setState({
+      state: 'loading',
+    }, () => {
+      this.update();
+    });
+  }
+
   update() {
     // /dayview/2020-02-20
     const { date } = this.props.match.params; // eslint-disable-line
@@ -72,7 +82,8 @@ class Dayview extends Component {
   previousDayClick(e) {
     e.preventDefault();
     const date = new Date(this.state.date.setDate(this.state.date.getDate() - 1)); // eslint-disable-line
-    this.props.history.replace(`/dayview/${date.toISOString()}`); // eslint-disable-line
+    const dateFormatted = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    this.props.history.replace(`/dayview/${dateFormatted}`); // eslint-disable-line
     this.setState(
       {
         state: 'loading',
@@ -87,7 +98,8 @@ class Dayview extends Component {
   nextDayClick(e) {
     e.preventDefault();
     const date = new Date(this.state.date.setDate(this.state.date.getDate() + 1)); // eslint-disable-line
-    this.props.history.replace(`/dayview/${date.toISOString()}`); // eslint-disable-line
+    const dateFormatted = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    this.props.history.replace(`/dayview/${dateFormatted}`); // eslint-disable-line
     this.setState(
       {
         state: 'loading',
@@ -142,7 +154,7 @@ class Dayview extends Component {
             state={props.tracks[key].trackSupervision}
             notice={props.tracks[key].notice}
             // TODO final react routing
-            to={`/trackview/${props.date.toISOString()}/${props.tracks[key].name}`}
+            to={`/trackview/${props.date.toISOString().substring(0, 10)}/${props.tracks[key].name}`}
           />,
         );
       }
@@ -243,22 +255,31 @@ class Dayview extends Component {
             {this.state.closes}
           </h2>
           {/* Whole view */}
-          <div className="dayviewTrackContainer">
+          <div className="dayview-big-container">
+            <div className="viewChanger">
+              <div className="viewChanger-current">
+                {jumpToCurrent()}
+              </div>
+              <div className="viewChanger-container">
+                {viewChanger()}
+              </div>
+            </div>
+            <div className="dayviewTrackContainer">
 
-            {/* MUI grid - used for displaying the track info */}
-            {this.state.state !== 'ready'
-              ? (
-                <div>
-                  <CircularProgress disableShrink />
-                </div>
-              )
-              : <TrackList tracks={this.state.tracks} date={this.state.date} />}
+              {/* MUI grid - used for displaying the track info */}
+              {this.state.state !== 'ready'
+                ? (
+                  <div>
+                    <CircularProgress disableShrink />
+                  </div>
+                )
+                : <TrackList tracks={this.state.tracks} date={this.state.date} />}
 
-            {/* Other info */}
+              {/* Other info */}
 
+            </div>
           </div>
-
-          <Link className="back" style={{ color: 'black' }} to={`/weekview/${this.state.date.toISOString()}`}>
+          <Link className="back" style={{ color: 'black' }} to={`/weekview/${this.state.date.toISOString().substring(0, 10)}`}>
             <ArrowBackIcon />
             {dayview.WeekviewLink[fin]}
           </Link>

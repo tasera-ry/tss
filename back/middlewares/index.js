@@ -7,6 +7,7 @@ const jwt = require(path.join(root, 'middlewares', 'jwt'));
 const track =  require(path.join(root, 'middlewares', 'track'));
 const reservation = require(path.join(root, 'middlewares', 'reservation'));
 const schedule = require(path.join(root, 'middlewares', 'schedule'));
+const daterange = require(path.join(root, 'middlewares', 'daterange'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -15,4 +16,4 @@ exports.jwt = jwt;
 exports.reservation = reservation;
 exports.schedule = schedule;
 exports.track = track;
-
+exports.daterange = daterange;

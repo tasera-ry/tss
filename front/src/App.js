@@ -13,6 +13,7 @@ import Scheduling from './scheduling/Scheduling';
 import RangeOfficerView from './tabletview/rangeofficer';
 import UserManagementView from './usermanagement/UserManagementView';
 import trackCRUD from './edittracks/tracks';
+import Monthview from './monthview/Monthview';
 
 // React router. Hashrouter, because normal router won't work in apache
 
@@ -54,6 +55,7 @@ class App extends Component {
               <Route path="/signin" component={SignIn} />
               <Route path="/dayview/:date?" component={Dayview} />
               <Route path="/weekview" component={Weekview} />
+              <Route path="/monthview" component={Monthview} />
               <Route path="/trackview/:date?/:track?" component={Trackview} />
               <Route path="/scheduling/:date?" component={Scheduling} />
               <Route path="/tablet" component={RangeOfficerView} />

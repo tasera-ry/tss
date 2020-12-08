@@ -1,7 +1,7 @@
 const path = require('path');
 const root = path.join(__dirname, '..');
 const config = require(path.join(root, 'config', 'config'));
-const expressJWT = require('express-jwt')({ secret: config.jwt.secret });
+const expressJWT = require('express-jwt')({ secret: config.jwt.secret, algorithms: ['HS256'] });
 const services = require(path.join(root, 'services'));
 
 const jwt = require('jsonwebtoken');
@@ -35,7 +35,7 @@ exports.validate = [
       // Removing bearer_ from the auth headers to get only token
       let token = request.headers.authorization.slice(7);
 
-      jwt.verify(token, config.jwt.secret, (err, decoded) => {
+      jwt.verify(token, config.jwt.secret, (err, decoded) => { // eslint-disable-line
         if (err) {
           response.status(403);
           return next(err);

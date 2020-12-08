@@ -1,5 +1,4 @@
 const casual = require('casual');
-const moment = require('moment');
 const _ = require('lodash');
 const ora = require('ora');
 
@@ -26,7 +25,7 @@ exports.seed = async function(knex) {
     )
   )));
 
-  const generateSpinner = ora.promise(
+  ora.promise(
     generateSchedules,
     `Generating ${availableReservations.length} schedules`
   );
@@ -41,12 +40,12 @@ exports.seed = async function(knex) {
       ))
   );
 
-  const insertSpinner = ora.promise(
+  ora.promise(
     insertSchedules,
     'Inserting schedules'
   );
 
-  const response = await insertSchedules;
+  await insertSchedules;
 };
 
 casual.define('supervision', function(reservationId, supervisor) {

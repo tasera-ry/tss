@@ -1,5 +1,3 @@
-const path = require('path');
-
 /**** Express imports ****/
 const express = require('express');
 const app = express();
