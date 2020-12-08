@@ -204,6 +204,7 @@ class UserManagementView extends Component {
 
   // handles changing own password
   async handleChangeOwnPassDialogCloseAgree() {
+    const secure = window.location.protocol === 'https:';
     this.setState({
       changeOwnPassFailed: false,
     });
@@ -212,6 +213,7 @@ class UserManagementView extends Component {
       .post('api/sign', {
         name: this.state.username,
         password: this.state.oldPassword,
+        secure
       })
       .catch(() => {
         success = false;

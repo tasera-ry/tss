@@ -52,18 +52,16 @@ const SignIn = () => {
   const { signin } = data;
   const fin = localStorage.getItem('language');
   const [cookies, setCookie] = useCookies(['username', 'role']); // eslint-disable-line
+  const secure = window.location.protocol === 'https:';
 
   document.body.style = 'background: #eae7dc;';
   function RedirectToWeekview() {
     window.location.href = '/';
   }
-  async function setInfo() { // eslint-disable-line
-    const query = `/api/user?name=${name}`;
-    const response = await axios.get(query);
-    const role = await response.data[0].role;
-    setCookie('username', name, { secure: true, sameSite: true });
-    setCookie('role', role, { secure: true, sameSite: true });
-
+  async function setInfo(user) { // eslint-disable-line
+    setCookie('username', user.name, { sameSite: true, secure });
+    setCookie('role', user.role, { sameSite: true, secure });
+    // TODO: try to be SPA and remove this refresh
     RedirectToWeekview();
   }
 
@@ -89,8 +87,9 @@ const SignIn = () => {
     axios.post('api/sign', {
       name,
       password,
-    }).then(() => {
-      setInfo();
+      secure
+    }).then((resp) => {
+      setInfo(resp.data);
     }).catch((error) => {
       HandleError(error);
     });

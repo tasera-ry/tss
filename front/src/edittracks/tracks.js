@@ -134,7 +134,7 @@ const TrackTable = ({
               description,
               short_description,
               range_id: trackData[0].range_id,
-            }, opts,
+            },
           );
           setTrackData(trackData.concat(response.data));
           setRequestStatus('success');
@@ -189,7 +189,7 @@ const TrackTable = ({
         }
 
         try {
-          const response = await axios.delete(`/api/track/${trackInfo.id}`, opts); // eslint-disable-line
+          const response = await axios.delete(`/api/track/${trackInfo.id}`); // eslint-disable-line
           setTrackData(trackData.filter((track) => track.id !== trackInfo.id));
           setRequestStatus('success');
           setRequestText('Rata poistettu');

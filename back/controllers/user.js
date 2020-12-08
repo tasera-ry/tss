@@ -2,20 +2,20 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 const root = path.join(__dirname, '..');
 const config = require(path.join(root, 'config'));
-
+const _ = require('lodash');
 
 const controller = {
   sign: async function signUser(request, response) {
-    const jwtSign = jwt.sign({ id: response.locals.id }, config.jwt.secret);
+    const jwtSign = jwt.sign({ id: response.locals.user.id }, config.jwt.secret);
     return response
       .status(200)
       .cookie('token', jwtSign,
         {
           httpOnly: true,
-          secure: true,
+          secure: response.locals.credentials.secure,
           sameSite: true
         })
-      .send();
+      .send(_.pick(response.locals.user, 'name', 'role'));
   },
 
   signout: async function signoutUser(request, response) {
