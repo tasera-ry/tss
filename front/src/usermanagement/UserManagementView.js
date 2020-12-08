@@ -261,7 +261,7 @@ class UserManagementView extends Component {
   // Removes the user
   async handleRemoveWarningCloseAgree() {
     const response = await deleteUser(this.state.token, this.findUserId());
-    if (response.errors !== undefined) {
+    if (response?.errors !== undefined) {
       this.setState({
         mokatPoistossa: true,
       });
@@ -296,7 +296,7 @@ class UserManagementView extends Component {
 
   returnRemoveButton(id, manage, fin) { // eslint-disable-line
     return (
-      <Button id={id} size="small" style={{ backgroundColor: '#c97b7b' }} variant="contained" onClick={this.onRemoveClick}>
+      <Button data-testid={`del-${id}`} id={id} size="small" style={{ backgroundColor: '#c97b7b' }} variant="contained" onClick={this.onRemoveClick}>
         {manage.RemoveUser[fin]}
       </Button>
     );
@@ -304,7 +304,7 @@ class UserManagementView extends Component {
 
   returnPassButton(id, manage, fin) { // eslint-disable-line
     return (
-      <Button id={id} size="small" style={{ backgroundColor: '#5f77a1' }} variant="contained" onClick={this.onChangePassClick}>
+      <Button data-testid={`pw-${id}`} id={id} size="small" style={{ backgroundColor: '#5f77a1' }} variant="contained" onClick={this.onChangePassClick}>
         {manage.ChangePass[fin]}
       </Button>
     );
@@ -455,44 +455,45 @@ class UserManagementView extends Component {
 
   // Finds username for selectedROWID in state
   findUserName() {
-    this.state.userList.forEach((user) => { // eslint-disable-line
-      if (user.id === this.state.selectedROWID) {
-        return user.name;
+    for (const i in this.state.userList) {
+      if (this.state.userList[i].id === this.state.selectedROWID) {
+        return this.state.userList[i].name;
       }
-    });
+    }
     return 'Username not found';
   }
 
   // Finds users id by selectedROWID in state
   findUserId() {
-    this.state.userList.forEach((user) => { // eslint-disable-line
-      if (user.id === this.state.selectedROWID) {
-        return user.id;
+    for (const i in this.state.userList) {
+      if (this.state.userList[i].id.toString() === this.state.selectedROWID) {
+        return this.state.userList[i].id;
       }
-    });
+    }
     return undefined;
   }
 
   // finds logged in users id
-  findOwnID() { // eslint-disable-line
-    this.state.userList.forEach((user) => { // eslint-disable-line
-      if (localStorage.taseraUserName === user.name) {
-        return user.id;
+  findOwnID() {
+    for (const i in this.state.userList) {
+      if (localStorage.taseraUserName === this.state.userList[i].name) {
+        return this.state.userList[i].id;
       }
-    });
+    }
+    return null;
   }
 
   update() {
     const tempRows = [];
-    this.state.userList.forEach((user) => {
-      if (localStorage.taseraUserName !== user.name) {
-        const row = this.createData(user.name,
-          user.role,
-          this.returnPassButton(user.id, manage, fin),
-          this.returnRemoveButton(user.id, manage, fin));
+    for (const i in this.state.userList) {
+      if (localStorage.taseraUserName !== this.state.userList[i].name) {
+        const row = this.createData(this.state.userList[i].name,
+          this.state.userList[i].role,
+          this.returnPassButton(this.state.userList[i].id, manage, fin),
+          this.returnRemoveButton(this.state.userList[i].id, manage, fin));
         tempRows.push(row);
       }
-    });
+    }
     this.setState({
       rows: tempRows,
     });

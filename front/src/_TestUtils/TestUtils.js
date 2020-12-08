@@ -157,6 +157,21 @@ const oneSchedule = [
     close: '21:00:00',
   }];
 
+const users = [
+  {
+    id: 1,
+    name: 'Ruthie_Leuschke',
+    role: 'supervisor',
+    phone: '446-488-2743',
+  },
+  {
+    id: 2,
+    name: 'Kenyon.Howell',
+    role: 'supervisor',
+    phone: '617-780-8378',
+  },
+];
+
 export default {
   date,
   week,
@@ -164,4 +179,5 @@ export default {
   reservation,
   supervisor,
   oneSchedule,
+  users,
 };
