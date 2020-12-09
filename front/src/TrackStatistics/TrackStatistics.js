@@ -37,14 +37,13 @@ export function TrackStatistics(props) {
     const { target } = event;
     setTracks(tracks.map((track) => {
       if (track.id === parseInt(target.id)) {
-        console.log({ ...track, scheduled: {
-          ...track.scheduled,
-          visitors: target.value,
-        } });
-        return { ...track, scheduled: {
-          ...track.scheduled,
-          visitors: parseInt(target.value),
-        } };
+        return {
+          ...track,
+          scheduled: {
+            ...track.scheduled,
+            visitors: parseInt(target.value),
+          },
+        };
       }
       return track;
     }));
@@ -55,9 +54,16 @@ export function TrackStatistics(props) {
       if (track.scheduled) {
         console.log(track.scheduled.scheduled_range_supervision_id);
         console.log(track);
+        const trackOpts = {
+          scheduled_range_supervision_id: track.scheduled.scheduled_range_supervision_id,
+          track_id: track.id,
+          notice: track.scheduled.notice,
+          track_supervisor: track.scheduled.track_supervisor,
+          visitors: track.scheduled.visitors,
+        }
         await axios.put(
           `/api/track-supervision/${track.scheduled.scheduled_range_supervision_id}/${track.id}`,
-          track,
+          trackOpts,
           opts,
         );
       }
