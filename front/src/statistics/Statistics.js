@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Chart from "react-apexcharts";
+import Chart from 'react-apexcharts'; // eslint-disable-line
 import '../App.css';
 import './Statistics.css';
 
@@ -20,8 +20,6 @@ import Button from '@material-ui/core/Button';
 
 import axios from 'axios';
 
-import '../App.css';
-
 // Translation
 import data from '../texts/texts.json';
 
@@ -37,131 +35,133 @@ const { statistics } = data;
 const fin = localStorage.getItem('language');
 
 const Statistics = () => {
-  const [ date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date());
 
-  const [ monthlyUsers, setMonthlyUsers] = useState([]);
-  const [ monthOptions, setMonthOptions] = useState({});
-  const [ monthSeries, setMonthSeries] = useState([]);
+  const [monthlyUsers, setMonthlyUsers] = useState([]);
+  const [monthOptions, setMonthOptions] = useState({});
+  const [monthSeries, setMonthSeries] = useState([]);
 
-  const [ dayOptions, setDayOptions] = useState({});
-  const [ daySeries, setDaySeries] = useState([]);
-  const [ dailyUsers, setDailyUsers] = useState([]);
+  const [dayOptions, setDayOptions] = useState({});
+  const [daySeries, setDaySeries] = useState([]);
+  const [dailyUsers, setDailyUsers] = useState([]);
 
-  const [ dayNumber, setDayNumber] = useState([]);
+  const [dayNumber, setDayNumber] = useState([]);
 
-  useEffect( () => {
-    const firstDate = moment(date).startOf("month").format("YYYY-MM-DD");
-    const lastDate = moment(date).endOf("month").format("YYYY-MM-DD");
-    const singleDay = moment(date).format("YYYY-MM-DD");
+  useEffect(() => {
+    const firstDate = moment(date).startOf('month').format('YYYY-MM-DD');
+    const lastDate = moment(date).endOf('month').format('YYYY-MM-DD');
+    const singleDay = moment(date).format('YYYY-MM-DD');
 
     // dayNum is used as an index in monthlyUsers[] to define the total visitors of a day
     const dayNumberSplit = singleDay.split('-');
     let dayNum = dayNumberSplit[2];
-    dayNum = dayNum.startsWith("0") ? dayNum.substring(1) : dayNum;
+    dayNum = dayNum.startsWith('0') ? dayNum.substring(1) : dayNum;
     setDayNumber(dayNum);
 
     const fetchData = async () => {
-      const monthResult = await getMonthlyVisitors(firstDate, lastDate);
-      const dayResult = await getDailyVisitors(singleDay);
+      const monthResult = await getMonthlyVisitors(firstDate, lastDate); // eslint-disable-line
+      const dayResult = await getDailyVisitors(singleDay); // eslint-disable-line
       setDailyUsers(dayResult);
       setMonthlyUsers(monthResult);
-    }
+    };
     fetchData();
+  }, [date]);
 
-  },[date])
-
-  useEffect( () => {
+  useEffect(() => {
     // Count monthly visitors
     let day = 1;
     let dayArray = [];
-    monthlyUsers.forEach((user) => {
+    monthlyUsers.forEach((user) => { // eslint-disable-line
       dayArray = dayArray.concat(day);
       day += 1;
     });
     // Sorry such a mess but options for the month chart
-    setMonthOptions({chart: {
-                      id:"monthChart"},
-                      xaxis: {
-                        categories:dayArray,
-                        title: {
-                          text: statistics.DayLabel[fin],
-                          style: {
-                            fontSize: '14px'
-                          }
-                        }
-                      },
-                      yaxis: {
-                        title: {
-                          text: statistics.VisitorLabel[fin],
-                          style: {
-                            fontSize: '14px'
-                          }
-                        }
-                      },
-                      stroke: {
-                        curve: 'smooth',
-                        colors: ['#658f60'],
-                      }
-                    });
-    setMonthSeries([{name:"visitors", data:monthlyUsers}]);
-  }, [monthlyUsers])
+    setMonthOptions({
+      chart: { id: 'monthChart' },
+      xaxis: {
+        categories: dayArray,
+        title: {
+          text: statistics.DayLabel[fin],
+          style: {
+            fontSize: '14px',
+          },
+        },
+      },
+      yaxis: {
+        title: {
+          text: statistics.VisitorLabel[fin],
+          style: {
+            fontSize: '14px',
+          },
+        },
+      },
+      stroke: {
+        curve: 'smooth',
+        colors: ['#658f60'],
+      },
+    });
+    setMonthSeries([{ name: 'visitors', data: monthlyUsers }]);
+  }, [monthlyUsers]);
 
-  useEffect( () => {
+  useEffect(() => {
     // Count daily visitors
     let track = 1;
     let visitorArray = [];
-    dailyUsers.forEach((user) => {
+    dailyUsers.forEach((user) => { // eslint-disable-line
       visitorArray = visitorArray.concat(track);
       track += 1;
     });
     // Options for the day chart
-    setDayOptions({chart: {
-                    id:"dayChart"},
-                    xaxis: {
-                      categories:visitorArray,
-                      title: {
-                        text: statistics.TrackLabel[fin],
-                        style: {
-                          fontSize: '14px'
-                        }
-                    }},
-                    yaxis: { 
-                      title: {
-                        text: statistics.VisitorLabel[fin],
-                        style: {
-                          fontSize: '14px'
-                        }
-                      }
-                    },
-                    fill: {
-                      colors: ['#658f60']
-                    },
-                    dataLabels: {
-                      enabled: true,
-                      style: {
-                        fontSize: "16px"
-                      },
-                      background: {
-                        enabled: true,
-                        foreColor: '#000000',
-                      },
-                    }
-                  });
-    setDaySeries([{name:"visitors",
-                  data:dailyUsers}]);
-  }, [dailyUsers])
+    setDayOptions({
+      chart: { id: 'dayChart' },
+      xaxis: {
+        categories: visitorArray,
+        title: {
+          text: statistics.TrackLabel[fin],
+          style: {
+            fontSize: '14px',
+          },
+        },
+      },
+      yaxis: {
+        title: {
+          text: statistics.VisitorLabel[fin],
+          style: {
+            fontSize: '14px',
+          },
+        },
+      },
+      fill: {
+        colors: ['#658f60'],
+      },
+      dataLabels: {
+        enabled: true,
+        style: {
+          fontSize: '16px',
+        },
+        background: {
+          enabled: true,
+          foreColor: '#000000',
+        },
+      },
+    });
+    setDaySeries([{
+      name: 'visitors',
+      data: dailyUsers,
+    }]);
+  }, [dailyUsers]);
 
   const previousDayClick = () => {
-    const newDate = new Date (date.setDate(date.getDate() - 1));
+    const newDate = new Date(date.setDate(date.getDate() - 1));
     setDate(newDate);
   };
 
   const nextDayClick = () => {
-    const newDate = new Date (date.setDate(date.getDate() + 1));
+    const newDate = new Date(date.setDate(date.getDate() + 1));
     setDate(newDate);
   };
 
-  const handleDateChange = (date) => {
+  const handleDateChange = (date) => {  // eslint-disable-line
     setDate(date);
   };
 
@@ -169,16 +169,17 @@ const Statistics = () => {
     if (event !== undefined && event.type !== undefined && event.type === 'submit') {
       event.preventDefault();
     }
-  }
+  };
 
   const countMonthlyVisitors = () => {
     let total = 0;
     monthlyUsers.forEach((day) => {
-      total = total + day;
+      total += day;
     });
     return total;
-  }
+  };
 
+  // eslint-disable-next-line no-shadow
   const handleDatePickChange = (date) => {
     const newDate = new Date(date);
     setDate(newDate);
@@ -186,125 +187,131 @@ const Statistics = () => {
   };
 
   if (monthlyUsers?.length > 0) {
-
     const total = countMonthlyVisitors();
 
     return (
       <div className="container">
-      {/* Section for selecting date */}
-      <div className="firstSection">
-        <form onSubmit={continueWithDate}>
-          { /* Datepicker */}
-          <MuiPickersUtilsProvider
-            utils={MomentUtils}
-            locale={lang}
-          >
-            <KeyboardDatePicker
-              autoOk
-              margin="normal"
-              name="date"
-              label={statistics.DayChoose[fin]}
-              value={date}
-              onChange={(date) => handleDateChange(date)}
-              onAccept={handleDatePickChange}
-              format="DD.MM.YYYY"
-              showTodayButton
-            />
-          </MuiPickersUtilsProvider>
-          <div className="continue">
-            <Button type="submit" variant="contained" style={{ backgroundColor: '#d1ccc2' }}>{statistics.DayChoose[fin]}</Button>
-          </div>
-        </form>
-      </div>
-      <hr />
-
-      {/* Header with arrows */}
-      <Grid class="date-header">
-        <div
-          className="hoverHand arrow-left"
-          onClick={previousDayClick}
-        />
-        <h1 className="headerText">
-          {date.toLocaleDateString('fi-FI')}
-        </h1>
-        <div
-          className="hoverHand arrow-right"
-          onClick={nextDayClick}
-        />
-      </Grid>
-      {/* Charts */}
-      <div className="row">
-        <div className="mixed-chart">
-          {/* Labels */}
-          <h2>{statistics.Day[fin]}</h2>
-          <h3>{statistics.Total[fin]} {date.toLocaleDateString('fi-FI')}: {monthlyUsers[dayNumber - 1]}</h3>
-            <div classname="bar">
-              <Chart
-                  options={dayOptions}
-                  series={daySeries}
-                  type="bar"
-                  width="700"
-                  height="400"
+        {/* Section for selecting date */}
+        <div className="firstSection">
+          <form onSubmit={continueWithDate}>
+            { /* Datepicker */}
+            <MuiPickersUtilsProvider
+              utils={MomentUtils}
+              locale={lang}
+            >
+              <KeyboardDatePicker
+                autoOk
+                margin="normal"
+                name="date"
+                label={statistics.DayChoose[fin]}
+                value={date}
+                // eslint-disable-next-line no-shadow
+                onChange={(date) => handleDateChange(date)}
+                onAccept={handleDatePickChange}
+                format="DD.MM.YYYY"
+                showTodayButton
               />
-              </div>
-              {/* Labels */}
-              <h2>{statistics.Month[fin]}</h2>
-              <h3>{statistics.Total[fin]} {(date.getMonth()+1)}/{date.getFullYear()}: {total}</h3>
+            </MuiPickersUtilsProvider>
+            <div className="continue">
+              <Button type="submit" variant="contained" style={{ backgroundColor: '#d1ccc2' }}>{statistics.DayChoose[fin]}</Button>
+            </div>
+          </form>
+        </div>
+        <hr />
+
+        {/* Header with arrows */}
+        <Grid class="date-header">
+          <div
+            className="hoverHand arrow-left"
+            onClick={previousDayClick}
+          />
+          <h1 className="headerText">
+            {date.toLocaleDateString('fi-FI')}
+          </h1>
+          <div
+            className="hoverHand arrow-right"
+            onClick={nextDayClick}
+          />
+        </Grid>
+        {/* Charts */}
+        <div className="row">
+          <div className="mixed-chart">
+            {/* Labels */}
+            <h2>{statistics.Day[fin]}</h2>
+            <h3>
+              {/* eslint-disable-next-line */}
+              {statistics.Total[fin]} {date.toLocaleDateString('fi-FI')}: {monthlyUsers[dayNumber - 1]}
+            </h3>
+            <div className="bar">
+              <Chart
+                options={dayOptions}
+                series={daySeries}
+                type="bar"
+                width="700"
+                height="400"
+              />
+            </div>
+            {/* Labels */}
+            <h2>{statistics.Month[fin]}</h2>
+            <h3>
+              {/* eslint-disable-next-line */}
+              {statistics.Total[fin]} {(date.getMonth()+1)}/{date.getFullYear()}: {total}
+            </h3>
             <div className="line">
-            <Chart
+              <Chart
                 options={monthOptions}
                 series={monthSeries}
                 type="line"
                 width="700"
                 height="400"
-            />
+              />
             </div>
+          </div>
         </div>
       </div>
-    </div>
-    )
+    );
   }
-  return (<div></div>);
-}
+  return (<div />);
+};
 
+// eslint-disable-next-line consistent-return
 async function getMonthlyVisitors(firstDate, lastDate) {
-  
   const query = `api/daterange/freeform/${firstDate}/${lastDate}`;
   const response = await axios.get(query);
   if (response) {
     // Form an array including the visitors of a certain month and return it
     let visitors = [];
-    response.data.forEach(supervision => {
+    response.data.forEach(supervision => { // eslint-disable-line
       if (!supervision?.scheduleId) {
         visitors = visitors.concat(0);
       } else {
         let trackVisitors = 0;
-        supervision.tracks.forEach (track => {
+        supervision.tracks.forEach (track => { // eslint-disable-line
           trackVisitors += track.scheduled.visitors;
-        })
+        });
         visitors = visitors.concat(trackVisitors);
       }
-    })
+    });
     return visitors;
   }
 }
 
+// eslint-disable-next-line consistent-return
 async function getDailyVisitors(date) {
-  
   const query = `api/daterange/freeform/${date}/${date}`;
   const response = await axios.get(query);
   if (response) {
     // Form an array including the visitors of a certain day and return it
     let visitors = [];
-    response.data.forEach(supervision => {
+    response.data.forEach(supervision => { // eslint-disable-line
       if (!supervision?.scheduleId) {
         visitors = visitors.concat(0);
       } else {
-        supervision.tracks.forEach (track => {
+        supervision.tracks.forEach (track => { // eslint-disable-line
           visitors = visitors.concat(track.scheduled.visitors);
-        })
+        });
       }
-    })
+    });
     return visitors;
   }
 }

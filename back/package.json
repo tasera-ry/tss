@@ -39,7 +39,7 @@
     "validate.js": "^0.13.1"
   },
   "devDependencies": {
-    "eslint": "^7.13.0",
+    "eslint": "^7.15.0",
     "jest-environment-jsdom-sixteen": "^1.0.3"
   }
 }
