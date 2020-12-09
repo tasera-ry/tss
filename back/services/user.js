@@ -24,7 +24,7 @@ const service = {
   authenticate: async function authenticateUser(credentials) {
     const users = await models.user.read({
       name: credentials.name
-    }, ['id', 'digest']);
+    }, ['id', 'name', 'role', 'digest']);
 
     if(users.length === 0) {
       const err = Error('Invalid credentials');
@@ -43,7 +43,7 @@ const service = {
       throw err;
     }
 
-    return user.id;
+    return _.pick(user, 'id', 'name', 'role');
   },
 
   /**
