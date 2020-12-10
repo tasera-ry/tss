@@ -440,7 +440,7 @@ class UserManagementView extends Component {
   returnAddEmailButton(id, manage, fin) { // eslint-disable-line
     return (
       <Button id={id} size="small" style={{ backgroundColor: '#55555' }} variant="contained" onClick={this.onAddEmailClick}>
-        "lisää Sposti"
+        {manage.NewEmail[fin]}
       </Button>
     );
   }
@@ -619,7 +619,7 @@ class UserManagementView extends Component {
     */
 
 findUserName() {
-      for (var i in this.state.userList) {
+      for (var i in this.state.userList) { // eslint-disable-line
          if (this.state.userList[i].id == this.state.selectedROWID) {
             return this.state.userList[i].name;
          }
@@ -627,7 +627,7 @@ findUserName() {
       return "Username not found";
    }   //Finds users id by selectedROWID in state
    findUserId() {
-      for (var i in this.state.userList) {
+      for (var i in this.state.userList) { // eslint-disable-line
          if (this.state.userList[i].id == this.state.selectedROWID) {
             return this.state.userList[i].id;
          }
@@ -635,7 +635,7 @@ findUserName() {
       return undefined;
    }   //finds logged in users id
    findOwnID() {
-      for (var i in this.state.userList) {
+      for (var i in this.state.userList) { // eslint-disable-line
          if (localStorage.taseraUserName == this.state.userList[i].name) {
             return this.state.userList[i].id;
          }
@@ -643,7 +643,7 @@ findUserName() {
    }
 
 update() {
-      var tempRows = [];
+      var tempRows = []; // eslint-disable-line
       for (var i in this.state.userList) {
          if (localStorage.taseraUserName !== this.state.userList[i].name) {
            var row = this.createData(this.state.userList[i].name,
@@ -718,7 +718,7 @@ update() {
               value={this.state.email}
               margin="dense"
               id="sposti"
-              label="sähkposti"
+              label={manage.Email[fin]}
               onChange={this.handleNewEmailChange}
               fullWidth
             />
@@ -927,7 +927,7 @@ update() {
             id="dialog-add-email-title"
             style={dialogStyle}
           >
-            Aseta sähköposti käyttäjälle:
+            {manage.EmailForUser[fin]}
             {' '}
             {this.state.selectedUserName}
           </DialogTitle>
@@ -939,7 +939,7 @@ update() {
               value={this.state.email}
               margin="dense"
               id="name"
-              label="lisää sähköinenposti osoite"
+              label={manage.NewEmail[fin]}
               onChange={(e) => {
                 this.setState({ email: e.target.value });
               }}
@@ -996,14 +996,14 @@ update() {
         <h3 style={{ textAlign: 'center' }}>{`${manage.Users[fin]}:`}</h3>
         <Box style={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}>
 
-          <TableContainer component={Paper} style={{ maxWidth: 500, tableLayout: 'auto' }}>
+          <TableContainer component={Paper} style={{ maxWidth: 575, tableLayout: 'auto' }}>
             <Table aria-label="table of users" style={{ backgroundColor: '#F2F0EB' }}>
               <TableHead>
                 <TableRow>
                   <TableCell align="justify">{manage.Username[fin]}</TableCell>
                   <TableCell align="justify">{manage.ChangePass[fin]}</TableCell>
                   <TableCell align="justify">{manage.RemoveUser[fin]}</TableCell>
-                  <TableCell align="justify">"Lisää Sähköposti"</TableCell>
+                  <TableCell align="justify">{manage.NewEmail[fin]}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
