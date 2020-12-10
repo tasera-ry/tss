@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 // Call handling to backend
 import axios from 'axios';
@@ -50,24 +51,17 @@ const SignIn = () => {
   const history = useHistory();
   const { signin } = data;
   const fin = localStorage.getItem('language');
+  const [cookies, setCookie] = useCookies(['username', 'role']); // eslint-disable-line
+  const secure = window.location.protocol === 'https:';
 
   document.body.style = 'background: #eae7dc;';
   function RedirectToWeekview() {
     window.location.href = '/';
   }
-  async function setInfo(data) { // eslint-disable-line
-    localStorage.setItem('taseraUserName', name);
-    localStorage.setItem('token', data);
-
-    const config = {
-      headers: { Authorization: `Bearer ${data}` },
-    };
-
-    const query = `/api/user?name=${name}`;
-    const response = await axios.get(query, config);
-    const role = await response.data[0].role;
-    localStorage.setItem('role', role);
-
+  async function setInfo(user) { // eslint-disable-line
+    setCookie('username', user.name, { sameSite: true, secure });
+    setCookie('role', user.role, { sameSite: true, secure });
+    // TODO: try to be SPA and remove this refresh
     RedirectToWeekview();
   }
 
@@ -93,8 +87,9 @@ const SignIn = () => {
     axios.post('api/sign', {
       name,
       password,
-    }).then((response) => {
-      setInfo(response.data);
+      secure,
+    }).then((resp) => {
+      setInfo(resp.data);
     }).catch((error) => {
       HandleError(error);
     });

@@ -31,6 +31,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+
 import socketIOClient from 'socket.io-client';
 import { getSchedulingDate, rangeSupervision, validateLogin } from '../utils/Utils';
 
@@ -45,14 +46,13 @@ if (localStorage.getItem('language') === '0') {
 }
 moment.locale(lang);
 
-async function getRangeSupervisors(token) {
+async function getRangeSupervisors() {
   try {
     const response = await fetch('/api/user?role=supervisor', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
       },
     });
     return await response.json();
@@ -85,15 +85,12 @@ class Scheduling extends Component {
       weekly: false,
       monthly: false,
       repeatCount: 1,
-      token: 'SECRET-TOKEN',
       datePickerKey: 1,
     };
   }
 
   componentDidMount() {
-    // console.log("MOUNTED",localStorage.getItem('token'));
     this.setState({
-      token: localStorage.getItem('token'),
       datePickerKey: Math.random(), // force datepicker to re-render when language changed
     }, function () {
       validateLogin()
@@ -101,7 +98,7 @@ class Scheduling extends Component {
           if (!logInSuccess) {
             this.props.history.push('/');
           } else {
-            getRangeSupervisors(this.state.token)
+            getRangeSupervisors()
               .then((response) => {
                 if (response !== false) {
                   this.setState({
@@ -380,7 +377,6 @@ class Scheduling extends Component {
   *
   * from state:
   * this.state.rangeId
-  * this.state.token
   * this.state.rangeSupervisorSwitch
   * this.state.open
   * this.state.close
@@ -539,7 +535,6 @@ class Scheduling extends Component {
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${this.state.token}`,
             },
           })
             .then((res) => { // eslint-disable-line
@@ -595,7 +590,6 @@ class Scheduling extends Component {
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${this.state.token}`,
             },
           })
             .then((res) => { // eslint-disable-line
@@ -653,7 +647,6 @@ class Scheduling extends Component {
           srsId,
           rangeStatus,
           rangeSupervisionScheduled,
-          this.state.token,
         );
         if (rangeSupervisionRes !== true) {
           return reject(new Error(rangeSupervisionRes));
@@ -699,7 +692,6 @@ class Scheduling extends Component {
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${this.state.token}`,
               },
             })
               .then((res) => { // eslint-disable-line
