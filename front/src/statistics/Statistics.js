@@ -248,8 +248,7 @@ const Statistics = () => {
             {/* Labels */}
             <h2>{statistics.Month[fin]}</h2>
             <h3>
-              {statistics.Total[fin]} {(date.getMonth()+1)}/{date.getFullYear()}:
-              {total}
+              {`${statistics.Total[fin]} ${(date.getMonth() + 1)}/${date.getFullYear()}: ${total}`}
             </h3>
             <div className="line">
               <Chart
