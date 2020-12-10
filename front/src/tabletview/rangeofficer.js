@@ -168,10 +168,6 @@ const TrackButtons = ({
   });
   const HandleClick = () => {
     let newSupervision = 'absent';
-    const token = localStorage.getItem('token');
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
     track.color = colors.white; // eslint-disable-line
     setTextState(tablet.White[fin]);
 
@@ -201,7 +197,6 @@ const TrackButtons = ({
       axios.put(
         `/api/track-supervision/${scheduleId}/${track.id}`,
         params,
-        config,
       ).catch((error) => {
         console.log(error);
       }).then((res) => {
@@ -224,7 +219,6 @@ const TrackButtons = ({
       axios.post(
         '/api/track-supervision',
         params,
-        config,
       ).catch((error) => {
         console.log(error);
       }).then((res) => {
@@ -332,16 +326,12 @@ const TimePick = ({
     console.log(start, end);
 
     const query = `/api/schedule/${scheduleId}`;
-    const token = localStorage.getItem('token');
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
 
     await axios.put(query,
       {
         open: start,
         close: end,
-      }, config)
+      })
       .then((res) => {
         if (res) {
           setHours({ start, end });
@@ -492,13 +482,10 @@ const Tabletview = () => {
   }, []);
 
   async function updateSupervisor(status, color, text) {
-    const token = localStorage.getItem('token');
-
     const res = await rangeSupervision(reservationId,
       scheduleId,
       status,
-      rangeSupervisionScheduled,
-      token);
+      rangeSupervisionScheduled);
     if (res === true) {
       setStatusColor(color);
       setStatusText(text);

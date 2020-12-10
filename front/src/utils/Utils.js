@@ -185,27 +185,18 @@ export function monthToString(i) {
 }
 
 /*
-  Validates the login token
+  Validates the login token (in cookies)
 
   return: boolean, is token valid (true = yes)
 */
 export async function validateLogin() {
-  const token = localStorage.getItem('token');
   let response;
-  if (token !== null) {
-    try {
-      response = await fetch('/api/validate', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    } catch (error) {
-      // console.log won't have time to be read before user is rerouted
-      // so commented out for future use
-      // console.log(`Authorization validation failed `, error);
-      return false;
-    }
+  try {
+    response = await fetch('/api/validate', {
+      method: 'GET',
+    });
+  } catch (error) {
+    return false;
   }
 
   if (response && response.status && response.status === 200) {
@@ -218,7 +209,7 @@ export async function validateLogin() {
 // on success true
 // else returns string trying to explain what broke
 // requires reservation and schedule to exist
-export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, token) {
+export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled) {
   try {
     if (rsId !== null && srsId !== null) {
       // only closed is different from the 6 states
@@ -232,7 +223,6 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, to
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
             },
           })
             .then((status) => {
@@ -246,7 +236,6 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, to
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
             },
           })
             .then((status) => {
@@ -260,7 +249,6 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, to
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
             },
           })
             .then((status) => {
@@ -277,7 +265,6 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, to
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
             },
           })
             .then((status) => {
@@ -292,7 +279,6 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, to
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
           },
         })
           .then((status) => {
