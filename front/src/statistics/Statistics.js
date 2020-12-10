@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Chart from 'react-apexcharts'; // eslint-disable-line
+import Chart from 'react-apexcharts';
 import '../App.css';
 import './Statistics.css';
 
@@ -23,7 +23,7 @@ import axios from 'axios';
 // Translation
 import data from '../texts/texts.json';
 
-let lang = 'fi'; // fallback
+let lang = 'fi';
 if (localStorage.getItem('language') === '0') {
   lang = 'fi';
 } else if (localStorage.getItem('language') === '1') {
@@ -75,7 +75,7 @@ const Statistics = () => {
       dayArray = dayArray.concat(day);
       day += 1;
     });
-    // Sorry such a mess but options for the month chart
+    // Options for the month chart
     setMonthOptions({
       chart: { id: 'monthChart' },
       xaxis: {
@@ -161,8 +161,8 @@ const Statistics = () => {
     setDate(newDate);
   };
 
-  const handleDateChange = (date) => {  // eslint-disable-line
-    setDate(date);
+  const handleDateChange = (newDate) => {
+    setDate(newDate);
   };
 
   const continueWithDate = (event) => {
@@ -179,10 +179,9 @@ const Statistics = () => {
     return total;
   };
 
-  // eslint-disable-next-line no-shadow
-  const handleDatePickChange = (date) => {
-    const newDate = new Date(date);
-    setDate(newDate);
+  const handleDatePickChange = (newDate) => {
+    const newDateObject = new Date(newDate);
+    setDate(newDateObject);
     continueWithDate();
   };
 
@@ -205,16 +204,12 @@ const Statistics = () => {
                 name="date"
                 label={statistics.DayChoose[fin]}
                 value={date}
-                // eslint-disable-next-line no-shadow
-                onChange={(date) => handleDateChange(date)}
+                onChange={(newDate) => handleDateChange(newDate)}
                 onAccept={handleDatePickChange}
                 format="DD.MM.YYYY"
                 showTodayButton
               />
             </MuiPickersUtilsProvider>
-            <div className="continue">
-              <Button type="submit" variant="contained" style={{ backgroundColor: '#d1ccc2' }}>{statistics.DayChoose[fin]}</Button>
-            </div>
           </form>
         </div>
         <hr />
@@ -239,8 +234,8 @@ const Statistics = () => {
             {/* Labels */}
             <h2>{statistics.Day[fin]}</h2>
             <h3>
-              {/* eslint-disable-next-line */}
-              {statistics.Total[fin]} {date.toLocaleDateString('fi-FI')}: {monthlyUsers[dayNumber - 1]}
+              {statistics.Total[fin]} {date.toLocaleDateString('fi-FI')}:
+              {monthlyUsers[dayNumber - 1]}
             </h3>
             <div className="bar">
               <Chart
@@ -254,8 +249,8 @@ const Statistics = () => {
             {/* Labels */}
             <h2>{statistics.Month[fin]}</h2>
             <h3>
-              {/* eslint-disable-next-line */}
-              {statistics.Total[fin]} {(date.getMonth()+1)}/{date.getFullYear()}: {total}
+              {statistics.Total[fin]} {(date.getMonth()+1)}/{date.getFullYear()}:
+              {total}
             </h3>
             <div className="line">
               <Chart
@@ -274,19 +269,18 @@ const Statistics = () => {
   return (<div />);
 };
 
-// eslint-disable-next-line consistent-return
 async function getMonthlyVisitors(firstDate, lastDate) {
   const query = `api/daterange/freeform/${firstDate}/${lastDate}`;
   const response = await axios.get(query);
   if (response) {
     // Form an array including the visitors of a certain month and return it
     let visitors = [];
-    response.data.forEach(supervision => { // eslint-disable-line
+    response.data.forEach((supervision) => {
       if (!supervision?.scheduleId) {
         visitors = visitors.concat(0);
       } else {
         let trackVisitors = 0;
-        supervision.tracks.forEach (track => { // eslint-disable-line
+        supervision.tracks.forEach((track) => {
           trackVisitors += track.scheduled.visitors;
         });
         visitors = visitors.concat(trackVisitors);
@@ -294,26 +288,27 @@ async function getMonthlyVisitors(firstDate, lastDate) {
     });
     return visitors;
   }
+  return [];
 }
 
-// eslint-disable-next-line consistent-return
 async function getDailyVisitors(date) {
   const query = `api/daterange/freeform/${date}/${date}`;
   const response = await axios.get(query);
   if (response) {
     // Form an array including the visitors of a certain day and return it
     let visitors = [];
-    response.data.forEach(supervision => { // eslint-disable-line
+    response.data.forEach((supervision) => {
       if (!supervision?.scheduleId) {
         visitors = visitors.concat(0);
       } else {
-        supervision.tracks.forEach (track => { // eslint-disable-line
+        supervision.tracks.forEach((track) => {
           visitors = visitors.concat(track.scheduled.visitors);
         });
       }
     });
     return visitors;
   }
+  return [];
 }
 
 export default Statistics;
