@@ -9,6 +9,7 @@ const users = [
     name:'supervisor',
     digest: bcrypt.hashSync('valvoja-hilda', config.bcrypt.hashRounds),
     role: 'supervisor'
+    
   },
   {
     name:'superuser',

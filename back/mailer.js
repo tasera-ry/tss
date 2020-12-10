@@ -5,19 +5,18 @@
 
     //step1
     const nodemailer = require('nodemailer');
-    const sendEmail = function(sposti,viesti) {
+    const sendEmail = function(viesti,sposti) {
     // declare vars,
-    let reciever = 'elias.penkkimaki@gmail.com';
+  //editing the reciever to suit sending the email (change str = viesti to str = sposti) for production
+    let cutEmail = sposti.slice(11, -3)
     let fromMail = 'infotestitasera@gmail.com';
-    let toMail = reciever;
+    let toMail = cutEmail;
     let subject = 'Tasera info';
     let text = viesti;
 
-    //editing the reciever to suit sending the email (change str = viesti to str = sposti) for production
-    let str = viesti;
-    let cutStr = str.slice(11, -3)
-    text = cutStr;   
-/*
+  
+
+
      switch (viesti) {
         case "assigned":
             text = 'Hei teille on annettu vuoro';
@@ -25,7 +24,7 @@
         case "update":
             text = 'Jokin on muuttunut';
         break;
-    }*/
+    }
 
     //step2:
     const transporter = nodemailer.createTransport({

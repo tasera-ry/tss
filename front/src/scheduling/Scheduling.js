@@ -521,6 +521,7 @@ class Scheduling extends Component {
       let params = {
         range_id: this.state.rangeId,
         available: this.state.available,
+        supervisor: this.state.rangeSupervisorId,
       };
 
       if (reservationMethod === 'POST') {
@@ -576,6 +577,7 @@ class Scheduling extends Component {
         open: moment(this.state.open).format('HH:mm'),
         close: moment(this.state.close).format('HH:mm'),
         supervisor_id: null,
+        supervisor: this.state.rangeSupervisorId,
       };
 
       if (this.state.rangeSupervisorSwitch) {
@@ -678,6 +680,7 @@ class Scheduling extends Component {
             let params = { // eslint-disable-line
               track_supervisor: supervisorStatus,
               notice,
+              supervisor: this.state.rangeSupervisorId,
             };
 
             let srsp = '';
@@ -693,6 +696,7 @@ class Scheduling extends Component {
                 scheduled_range_supervision_id: srsId,
                 track_id: this.state.tracks[key].id,
               };
+             
             }
             return await fetch(`/api/track-supervision${srsp}`, {
               method: trackSupervisionMethod,
