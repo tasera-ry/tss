@@ -190,5 +190,8 @@
     "Week": ["Viikko", "Week"],
     "Day": ["Päivä", "Day"],
     "JumpToCurrent": ["Tänään", "Today"]
+  },
+  "trackStatistics": {
+    "addUsersButton": ["Lisää käyttäjätietoja", "Add user statistics"]
   }
 }

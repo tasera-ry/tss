@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+import './TrackStatistics.css';
+
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-// import {  } from '@material-ui/icons';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
-// import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
-// import Typography from '@material-ui/core/Typography';
-import axios from 'axios';
+
+import { trackStatistics as texts } from '../texts/texts.json';
 
 export function TrackStatistics(props) {
   const [tracks, setTracks] = useState([]);
@@ -16,6 +18,7 @@ export function TrackStatistics(props) {
   const handleStats = () => setDialogOpen(true);
   const handleClose = () => setDialogOpen(false);
   const token = localStorage.getItem('token');
+  const lang = localStorage.getItem('language');
 
   useEffect(() => {
     setTracks(props.tracks);
@@ -27,12 +30,28 @@ export function TrackStatistics(props) {
     },
   };
 
-  // function substract() {
-  //   setUserCount(userCount - 1);
-  //   if (userCount < 0) {
-  //     setUserCount(0);
-  //   }
-  // }
+  // Operator is "inc" or "dec"
+  const increment = (trackId, operator) => {
+    setTracks(tracks.map((track) => {
+      if (track.id === parseInt(trackId)) {
+        let newVisitors = track.scheduled.visitors + 1;
+        if (operator === 'dec') {
+          newVisitors = track.scheduled.visitors - 1;
+        }
+        if (operator !== 'dec' || track.scheduled.visitors !== 0) {
+          return {
+            ...track,
+            scheduled: {
+              ...track.scheduled,
+              visitors: newVisitors,
+            },
+          };
+        }
+      }
+      return track;
+    }));
+  };
+
   const handleChange = (event) => {
     const { target } = event;
     setTracks(tracks.map((track) => {
@@ -52,15 +71,13 @@ export function TrackStatistics(props) {
   const sendStats = () => {
     tracks.forEach(async (track) => {
       if (track.scheduled) {
-        console.log(track.scheduled.scheduled_range_supervision_id);
-        console.log(track);
         const trackOpts = {
           scheduled_range_supervision_id: track.scheduled.scheduled_range_supervision_id,
           track_id: track.id,
           notice: track.scheduled.notice,
           track_supervisor: track.scheduled.track_supervisor,
           visitors: track.scheduled.visitors,
-        }
+        };
         await axios.put(
           `/api/track-supervision/${track.scheduled.scheduled_range_supervision_id}/${track.id}`,
           trackOpts,
@@ -71,58 +88,62 @@ export function TrackStatistics(props) {
     handleClose();
   };
 
-  const Tracklines = () => {
-    console.log(tracks);
-    const trackRows = tracks.map((track) => (
-    // setUserCount(track.scheduled.visitors);
-      <div key={track.id}>
-        {/* <Button id="miinus" variant="primary" onClick={() => substract()}>-</Button> */}
-        <TextField
-          id={track.id.toString()}
-          className="visitorAmount"
-          label={track.name}
-          defaultValue={track?.scheduled?.visitors}
-          onChange={handleChange}
-        />
-        {/* <Button id="plussa" variant="primary" onClick={() => setUserCount(userCount + 1)}>+</Button> */}
-      </div>
-    ));
-    return trackRows;
-  };
-
   return (
     <div>
-      <Button id="visitorBoxButton" color="primary" variant="contained" onClick={handleStats}>Lisää radan käyttäjien tiedot</Button>
-      <Dialog id="visitorBox" open={dialogOpen} onClose={handleClose}>
-        <DialogTitle id="dialogiOtsikko">Lisää kävijöiden määrä</DialogTitle>
+      <Button id="visitorBoxButton" color="primary" variant="contained" onClick={handleStats}>{texts.addUsersButton[lang]}</Button>
+      <Dialog id="visitorBox" maxWidth="xl" open={dialogOpen} onClose={handleClose}>
+        <DialogTitle>
+          <div className="dialogTitle">
+            Lisää kävijöiden määrä
+          </div>
+        </DialogTitle>
         <DialogContent>
-          { tracks
-            ? <Tracklines />
-            : <div>empty</div> }
+          <div className="trackContainer">
+            {tracks.map((track) => (
+              <div className="trackRow" key={track.id}>
+                <div className="trackName">
+                  {track.name}
+                </div>
+                <Button variant="contained" onClick={() => increment(track.id, 'dec')}>
+                  <div className="buttonText">
+                    -
+                  </div>
+                </Button>
+                <TextField
+                  InputProps={{
+                    min: 0,
+                    style: { fontSize: 30 },
+                  }}
+                  id={track.id.toString()}
+                  className="visitorAmount"
+                  type="number"
+                  value={track?.scheduled?.visitors}
+                  onChange={handleChange}
+                />
+                <Button variant="contained" onClick={() => increment(track.id, 'inc')}>
+                  <div className="buttonText">
+                    +
+                  </div>
+                </Button>
+              </div>
+            ))}
+          </div>
         </DialogContent>
         <DialogActions>
-          <Button id="closeButton" onClick={handleClose} variant="contained" color="secondary">Takaisin</Button>
-          <Button id="sendButton" onClick={sendStats} variant="contained" color="primary">Lähetä tiedot</Button>
+          <Button onClick={handleClose} variant="contained" color="secondary">
+            <div className="buttonText">
+              Takaisin
+            </div>
+          </Button>
+          <Button onClick={sendStats} variant="contained" color="primary">
+            <div className="buttonText">
+              Lähetä tiedot
+            </div>
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
   );
 }
-
-// <Typography>{track.name}</Typography>
-
-// setUserCount(userCount - 1)
-
-// const [userCount, setUserCount] = useState(0);
-// <Button id="miinus" variant="primary" onClick={() => substract()}>-</Button>
-// <TextField variant="outlined" value={userCount} />
-// <Button id="plussa" variant="primary" onClick={() => setUserCount(userCount + 1)}>+</Button>
-//
-// function substract() {
-//    setUserCount(userCount - 1);
-//    if (userCount < 0) {
-//      setUserCount(0);
-//    }
-//  }
 
 export default TrackStatistics;
