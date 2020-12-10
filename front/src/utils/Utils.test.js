@@ -61,14 +61,14 @@ describe('testing weekview', () => {
     expect(fetch).toHaveBeenCalledWith(
       '/api/reservation/0', {
         body: '{"available":true}',
-        headers: { Accept: 'application/json', Authorization: 'Bearer dummytoken', 'Content-Type': 'application/json' },
+        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
         method: 'PUT',
       },
     );
     expect(fetch).toHaveBeenCalledWith(
       '/api/range-supervision/0', {
         body: '{"range_supervisor":"open"}',
-        headers: { Accept: 'application/json', Authorization: 'Bearer dummytoken', 'Content-Type': 'application/json' },
+        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
         method: 'PUT',
       },
     );

@@ -75,22 +75,21 @@ describe('testing UserManagementView', () => {
       {
         headers: {
           Accept: 'application/json',
-          Authorization: 'Bearer null',
           'Content-Type': 'application/json',
         },
         method: 'DELETE',
       }));
   });
-
+  // TODO
   // it('should change own password', async () => {
-    
+
   // });
 
   // it('should change user password', async () => {
-    
+
   // });
 
   // it('should create new users', async () => {
-    
+
   // });
 });

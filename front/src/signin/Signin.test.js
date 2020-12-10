@@ -47,7 +47,7 @@ describe('testing SignIn component', () => {
       userEvent.type(screen.getByTestId('nameField'), 'correct_name');
       userEvent.type(screen.getByTestId('passwordField'), 'correct_pw');
       fireEvent.click(screen.getByText('Log in'));
-      await waitFor(() => expect(localStorage.getItem('token')).toBe('dummy token'));
+      await waitFor(() => expect(axios.post).toHaveBeenCalled());
     });
   });
 });

@@ -489,7 +489,7 @@ class UserManagementView extends Component {
           this.returnRemoveButton(user.id, manage, fin));
         tempRows.push(row);
       }
-    })
+    });
     this.setState({
       rows: tempRows,
     });

@@ -44,10 +44,5 @@ describe('testing App', () => {
     });
     await waitFor(() => expect(screen.getByText('Päävalvoja paikalla'))
       .toBeInTheDocument());
-    await waitFor(() => expect(utils.validateLogin).toHaveBeenCalled());
-    expect(localStorage.getItem('token')).toBe(null);
-    expect(localStorage.getItem('taseraUserName')).toBe(null);
-    expect(localStorage.getItem('role')).toBe(null);
-    expect(localStorage.getItem('language')).toBe('0');
   });
 });
