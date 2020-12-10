@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 
+import { withCookies } from 'react-cookie';
+
 // function for checking whether we should show banner
 // DialogWindow for supervisors to confirm their supervisions
 import { checkSupervisorReservations, DialogWindow } from '../upcomingsupervisions/LoggedIn';
@@ -19,6 +21,7 @@ class SupervisorNotification extends Component {
     this.state = {
       userHasSupervisions: false,
       supervisionsOpen: false,
+      username: props.cookies.cookies.username,
     };
   }
 
@@ -45,7 +48,7 @@ class SupervisorNotification extends Component {
   }
 
   checkSupervisions = async () => {
-    const reservations = await checkSupervisorReservations();
+    const reservations = await checkSupervisorReservations(this.state.username);
     if (reservations) {
       this.setState({
         userHasSupervisions: true,
@@ -65,7 +68,6 @@ class SupervisorNotification extends Component {
 
   render() {
     const fin = localStorage.getItem('language'); // eslint-disable-line
-    console.log(this.state);
     return (
       <div>
         {this.state.userHasSupervisions
@@ -86,9 +88,7 @@ class SupervisorNotification extends Component {
         {this.state.supervisionsOpen
           ? (
             <DialogWindow
-              onCancel={
-              () => this.refreshSupervisionsOpen()
-            }
+              onCancel={() => this.refreshSupervisionsOpen()}
             />
           ) : ''}
       </div>
@@ -96,4 +96,4 @@ class SupervisorNotification extends Component {
   }
 }
 
-export default SupervisorNotification;
+export default withCookies(SupervisorNotification);

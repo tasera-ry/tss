@@ -45,7 +45,7 @@ const serviceCalls = {
     const credentials = response.locals.credentials;
 
     try {
-      response.locals.id = await services.user.authenticate(credentials);
+      response.locals.user = await services.user.authenticate(credentials);
     }
     catch(e) {
       /*
