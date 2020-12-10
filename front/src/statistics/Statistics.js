@@ -16,8 +16,6 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-import Button from '@material-ui/core/Button';
-
 import axios from 'axios';
 
 // Translation
