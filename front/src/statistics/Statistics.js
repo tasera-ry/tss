@@ -234,8 +234,7 @@ const Statistics = () => {
             {/* Labels */}
             <h2>{statistics.Day[fin]}</h2>
             <h3>
-              {statistics.Total[fin]} {date.toLocaleDateString('fi-FI')}:
-              {monthlyUsers[dayNumber - 1]}
+              {`${statistics.Total[fin]} ${date.toLocaleDateString('fi-FI')}: ${monthlyUsers[dayNumber - 1]}`}
             </h3>
             <div className="bar">
               <Chart
