@@ -22,7 +22,7 @@ const config = {
     tracks: 7,
     // use date or datetime here
     startDate: '2020-01-01',
-    endDate: '2020-12-31',
+    endDate: '2021-12-31',
     // chunkSize = how many rows are inserted in a single insertion, larger
     // chunk size equals faster insertions, but a value that is too high causes
     // errors. In case of errors, try dropping the factor down.
