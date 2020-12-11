@@ -17,11 +17,6 @@ const service = {
     return (await models.rangeSupervision.create(info)).pop();
   },
 
-
-    //email stuudfff
-  update: async function getUserEmail(key) {
-    return (await models.rangeSupervision.getUserEmail(key));
-  },
     
   /**
    * Get the supervisions matching a key.

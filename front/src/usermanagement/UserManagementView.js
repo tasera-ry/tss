@@ -340,78 +340,6 @@ class UserManagementView extends Component {
     }
   }
   // _________________________________________________________________
-  /**
-    **  FUNCTIONS
-    */
-
-  // Opens warning for removing user
-  async onRemoveClick(e) {
-    await this.setState({
-      selectedROWID: e.currentTarget.id,
-    });
-    const name = this.findUserName();
-    this.setState({
-      selectedUserName: name,
-      openRemoveWarning: true,
-    });
-  }
-
-  // Opens dialog for changing password for some1 else
-  async onChangePassClick(e) {
-    await this.setState({
-      selectedROWID: e.currentTarget.id,
-    });
-    const name = this.findUserName();
-    this.setState({
-      selectedUserName: name,
-      changePassDialogOpen: true,
-    });
-  }
-
-  // Opens dialog for adding or changing email for someone else
-  async onAddEmailClick(e) {
-    await this.setState({
-      selectedROWID: e.currentTarget.id,
-    });
-    const name = this.findUserName();
-    this.setState({
-      selectedUserName: name,
-      AddEmailDialogOpen: true,
-    });
-  }
-
-  /**
-    **ALGORITHMS
-    */
-
-  // Finds username for selectedROWID in state
-  findUserName() {
-    this.state.userList.forEach((user) => { // eslint-disable-line
-      if (user.id === this.state.selectedROWID) {
-        return user.name;
-      }
-    });
-    return 'Username not found';
-  }
-
-  // Finds users id by selectedROWID in state
-  findUserId() {
-    this.state.userList.forEach((user) => { // eslint-disable-line
-      if (user.id === this.state.selectedROWID) {
-        return user.id;
-      }
-    });
-    return undefined;
-  }
-
-  // finds logged in users id
-  findOwnID() { // eslint-disable-line
-    this.state.userList.forEach((user) => { // eslint-disable-line
-      if (localStorage.taseraUserName === user.name) {
-        return user.id;
-      }
-    });
-  }
 
   returnRemoveButton(id, manage, fin) { // eslint-disable-line
     return (
@@ -572,38 +500,84 @@ class UserManagementView extends Component {
     **  FUNCTIONS
     */
 
+  // Opens warning for removing user
+  async onRemoveClick(e) {
+    await this.setState({
+      selectedROWID: e.currentTarget.id,
+    });
+    const name = this.findUserName();
+    this.setState({
+      selectedUserName: name,
+      openRemoveWarning: true,
+    });
+  }
+
+  // Opens dialog for changing password for some1 else
+  async onChangePassClick(e) {
+    await this.setState({
+      selectedROWID: e.currentTarget.id,
+    });
+    const name = this.findUserName();
+    this.setState({
+      selectedUserName: name,
+      changePassDialogOpen: true,
+    });
+  }
+
+  // Opens dialog for adding or changing email for someone else
+  async onAddEmailClick(e) {
+    await this.setState({
+      selectedROWID: e.currentTarget.id,
+    });
+    const name = this.findUserName();
+    this.setState({
+      selectedUserName: name,
+      AddEmailDialogOpen: true,
+    });
+  }
+
   /**
     **ALGORITHMS
     */
 
+  findUserName() {
+    for (const i in this.state.userList) {
+      if (this.state.userList[i].id == this.state.selectedROWID) { // eslint-disable-line
+        return this.state.userList[i].name;
+      }
+    }
+    return 'Username not found';
+  } // Finds users id by selectedROWID in state
+
+  findUserId() {
+    for (const i in this.state.userList) {
+      if (this.state.userList[i].id == this.state.selectedROWID) { // eslint-disable-line
+        return this.state.userList[i].id;
+      }
+    }
+    return undefined;
+  } // finds logged in users id
+
+  findOwnID() {
+    for (const i in this.state.userList) {
+      if (localStorage.taseraUserName == this.state.userList[i].name) { // eslint-disable-line
+        return this.state.userList[i].id; 
+      }
+    }
+  }
+
   update() {
-      var tempRows = []; // eslint-disable-line
+    const tempRows = [];
     for (const i in this.state.userList) {
       if (localStorage.taseraUserName !== this.state.userList[i].name) {
         const row = this.createData(this.state.userList[i].name,
           this.state.userList[i].role,
           this.returnPassButton(this.state.userList[i].id, manage, fin),
-          this.returnRemoveButton(this.state.userList[i].id, manage, fin));
+          this.returnRemoveButton(this.state.userList[i].id, manage, fin),
+          this.returnAddEmailButton(this.state.userList[i].id, manage, fin));
         tempRows.push(row);
       }
     }
-    this.setState({
-      rows: tempRows,
-    });
-  }
-
-  update() {
-    const tempRows = [];
-    this.state.userList.forEach((user) => {
-      if (this.state.username !== user.name) {
-        const row = this.createData(user.name,
-          user.role,
-          this.returnPassButton(user.id, manage, fin),
-          this.returnRemoveButton(user.id, manage, fin),
-          this.returnAddEmailButton(user.id, manage, fin));
-        tempRows.push(row);
-      }
-    });
     this.setState({
       rows: tempRows,
     });

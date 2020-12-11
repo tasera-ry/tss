@@ -67,7 +67,7 @@ const fields = {
       .withMessage('must be a superuser or supervisor');
     return validatorAdditions(validator, opts);
   },
-    email: function emailValidation(requestObject, ...opts) {
+  email: function emailValidation(requestObject, ...opts) {
     const validator = requestObject('email')
       .isString()
       .withMessage('must be a string')

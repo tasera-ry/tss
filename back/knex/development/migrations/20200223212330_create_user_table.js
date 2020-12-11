@@ -2,7 +2,7 @@ exports.up = function(knex) {
   return knex.schema.raw('create type role as enum(\'superuser\', \'supervisor\')')
     .createTable('user', user => {
       user.increments();
-      user.string('email')
+      user.string('email');
       user.string('name')
         .notNullable();
       user.binary('digest', 184)

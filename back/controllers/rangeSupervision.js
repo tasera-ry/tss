@@ -1,8 +1,6 @@
 const path = require('path');
 const root = path.join(__dirname, '..');
 const knex = require(path.join(root, 'knex', 'knex'));
-const _ = require('lodash');
-const validate = require('validate.js');
 const email = require('../mailer.js');
 
 const controller = {
@@ -42,22 +40,21 @@ const controller = {
 
   create: async function createSupervision(request, response) {
     
-    //console.log(response.req.body.supervisor);
-   try{
-     const vastaanottaja = await geetUserEmail(response.req.body.supervisor);
-    //knex osa, joka pitäisi suorittaa modelseissa?:
-       async function geetUserEmail(key) {
-          return await knex
-            .from('user')
-            .where({ 'user.id': key })
-            .select('user.email')
-       }
-     var emailtostring = JSON.stringify(vastaanottaja);
-        //tässä kohtaa emailtostring lähettää haetun haetun user.emailin mailer.js tiedostoon jossa se lähtee spostiin.
-        //mailer.js kannattaa mennä muuttamaan omaksi spostiksi jos tahtoo tarkastella sen lähtemistä.
-     email('assigned', emailtostring);
+    try{
+      const vastaanottaja = await geetUserEmail(response.req.body.supervisor);
+      //knex osa, joka pitäisi suorittaa modelseissa?:
+      async function geetUserEmail(key) {
+        return await knex
+          .from('user')
+          .where({ 'user.id': key })
+          .select('user.email');
+      }
+      var emailtostring = JSON.stringify(vastaanottaja);
+      //tässä kohtaa emailtostring lähettää haetun haetun user.emailin mailer.js tiedostoon jossa se lähtee spostiin.
+      //mailer.js kannattaa mennä muuttamaan omaksi spostiksi jos tahtoo tarkastella sen lähtemistä.
+      email('assigned', emailtostring);
     } catch (error) {
-        consoler.error(error);
+      console.error(error);
     }
     return response
       .status(201)
@@ -67,44 +64,36 @@ const controller = {
   // no return here? may be a cause for a bug
   update: async function updateSupervision(request, response) {
 
-
-    
     //updates.range_supervisor palauttaa "absent" jos supervisoria ei ole määrätty ja "not confirmed" jos supervisor on asetettu
     //if lause tarkastaa että sposti lähetetään vain jos supervisor on määrätty, sillä tämä functio aktivoituu myös kun supervisor poistetaan päivältä.
-   // try{
-        console.log(response.locals.updates.range_supervisor);
-        AbsentChecker = JSON.stringify(response.locals.updates.range_supervisor);
-        const unquoted = String(AbsentChecker.replace(/"([^"]+)":/g, ''));  
-        const NotAbsent= '"not confirmed"';
-        if (unquoted == NotAbsent){
-
-            const vastaanottaja = await geetUserEmail(response.locals.updates.supervisor);
+    try{ 
+      console.log(response.locals.updates.range_supervisor);
+      const AbsentChecker = JSON.stringify(response.locals.updates.range_supervisor);
+      const unquoted = String(AbsentChecker.replace(/"([^"]+)":/g, ''));  
+      const NotAbsent= '"not confirmed"';
+      if (unquoted == NotAbsent){
+        const vastaanottaja = await geetUserEmail(response.locals.updates.supervisor);
         //knex osa, joka pitäisi suorittaa modelseissa?:
-               async function geetUserEmail(key) {
-                return await knex
-                  .from('user')
-                  .where({ 'user.id': key })
-                  .select('user.email');
-                }
-        //knex osa päättyy
-            var emailtostring = JSON.stringify(vastaanottaja);
-            //tässä kohtaa emailtostring lähettää haetun haetun user.emailin mailer.js tiedostoon jossa se lähtee spostiin.
-            //mailer.js kannattaa mennä muuttamaan omaksi spostiksi jos tahtoo tarkastella sen lähtemistä.
-            email('update', emailtostring);
+        async function geetUserEmail(key) {
+          return await knex
+            .from('user')
+            .where({ 'user.id': key })
+            .select('user.email');
         }
-   /* } catch (error) {
-        console.error(error);
-    }*/   
+        //knex osa päättyy
+        var emailtostring = JSON.stringify(vastaanottaja);
+        //tässä kohtaa emailtostring lähettää haetun haetun user.emailin mailer.js tiedostoon jossa se lähtee spostiin.
+        //mailer.js kannattaa mennä muuttamaan omaksi spostiksi jos tahtoo tarkastella sen lähtemistä.
+        email('update', emailtostring);
+      }
+    } catch (error) {
+      console.error(error);
+    }   
 
     response
       .status(204)
       .send();
   },
-
-//muiden käyttöön ?
-// update: async function getUserEmail(key,response) {
-//        return response
-//  },
 
   delete: async function deleteSupervision(request, response) {
     if(response.locals.queryResult === 0) {
