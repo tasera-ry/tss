@@ -122,6 +122,9 @@ const SignIn = () => {
             error={mistake}
             onInput={(e) => setName(e.target.value)}
             style={textStyle}
+            inputProps={{
+              'data-testid': 'nameField',
+            }}
           />
           <TextField
             variant="outlined"
@@ -137,6 +140,9 @@ const SignIn = () => {
             error={mistake}
             onInput={(e) => setPassword(e.target.value)}
             style={textStyle}
+            inputProps={{
+              'data-testid': 'passwordField',
+            }}
           />
 
           {mistake

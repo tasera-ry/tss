@@ -217,18 +217,20 @@ class Dayview extends Component {
             <div
               className="hoverHand arrow-left"
               onClick={this.previousDayClick}
+              data-testid="previousDay"
             />
             <div className="titleContainer">
               <h1 className="headerText">
-                {dayToString(this.state.date.getDay())}
-                  &nbsp;&nbsp;
-                {this.state.date.toLocaleDateString('fi-FI')}
+                <span>{dayToString(this.state.date.getDay())}</span>
+                <span>&nbsp;&nbsp;</span>
+                <span>{this.state.date.toLocaleDateString('fi-FI')}</span>
               </h1>
 
             </div>
             <div
               className="hoverHand arrow-right"
               onClick={this.nextDayClick}
+              data-testid="nextDay"
             />
           </Grid>
           {/* Range officer info */}
