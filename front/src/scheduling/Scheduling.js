@@ -572,7 +572,6 @@ class Scheduling extends Component {
         open: moment(this.state.open).format('HH:mm'),
         close: moment(this.state.close).format('HH:mm'),
         supervisor_id: null,
-        supervisor: this.state.rangeSupervisorId,
       };
 
       if (this.state.rangeSupervisorSwitch) {
@@ -684,7 +683,6 @@ class Scheduling extends Component {
             if (tracks[key].scheduled) {
               trackSupervisionMethod = 'PUT';
               srsp = `/${srsId}/${this.state.tracks[key].id}`;
-            } else {
               trackSupervisionMethod = 'POST';
               params = {
                 ...params,
