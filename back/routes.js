@@ -16,6 +16,12 @@ router.route('/sign')
     middlewares.user.sign,
     controllers.user.sign);
 
+// NOTE: no checking token: if invalid, we can never
+// logout (remove the invalid cookie) in that case
+router.route('/signout')
+  .post(
+    controllers.user.signout);
+
 router.route('/user')
   .all(
     middlewares.jwt.read)

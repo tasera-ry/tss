@@ -50,6 +50,15 @@ const fields = {
     return validatorAdditions(validator, opts);
   },
 
+  secure: function secureValidation(requestObject) {
+    const validator = requestObject('secure')
+      .isBoolean()
+      .withMessage('must be a boolean');
+    // TODO: revamp validatorAdditions so that it accepts False values too
+    // It doesn't like boolean values right now
+    return validator;
+  },
+
   role: function roleValidation(requestObject, ...opts) {
     const validator = requestObject('role')
       .isString()
@@ -89,6 +98,7 @@ module.exports = {
   sign: [
     fields.name(body, 'exists'),
     fields.password(body, 'exists'),
+    fields.secure(body, 'exists'),
     handleValidationErrors,
     function storeCredentials(request, response, next) {
       response.locals.credentials = (
