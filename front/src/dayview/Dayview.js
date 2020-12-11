@@ -63,8 +63,6 @@ class Dayview extends Component {
       const response = await getSchedulingDate(date);
 
       if (response !== false) {
-        // console.log("Results from api",response);
-
         this.setState({
           state: 'ready',
           date: new Date(response.date),
@@ -74,7 +72,6 @@ class Dayview extends Component {
           closes: moment(response.close, 'HH:mm').format('H.mm'),
         });
       } else console.error('getting info failed');
-      // console.log(this.state)
     };
     request();
   }
@@ -153,7 +150,6 @@ class Dayview extends Component {
             short_description={props.tracks[key].short_description}
             state={props.tracks[key].trackSupervision}
             notice={props.tracks[key].notice}
-            // TODO final react routing
             to={`/trackview/${props.date.toISOString().substring(0, 10)}/${props.tracks[key].name}`}
           />,
         );
@@ -193,14 +189,13 @@ class Dayview extends Component {
               <br />
             </span>
             <span className="overflowHidden">
-              {/* Vaihda short descriptioniin tässä ja rivillä 152 */}
               {props.short_description}
             </span>
             {props.notice.length === 0
               ? <br />
               : (
                 <div className="DayviewInfo">
-                  <img className="infoImg-2" src={info} />
+                  <img className="infoImg-2" src={info} alt={dayview.Notice[fin]} />
                 </div>
               )}
           </Link>
@@ -298,27 +293,27 @@ class Dayview extends Component {
             {/* color info boxes */}
             <div className="info-item">
               <p className="box no-flex greenB" />
-              {/* Avoinna */}
+              {/* Open */}
               {' '}
               <p>{dayview.Open[fin]}</p>
             </div>
             <div className="info-item">
               <p className="box no-flex redB" />
-              {/* Suljettu */}
+              {/* Closed */}
               {' '}
               <p>{dayview.Closed[fin]}</p>
             </div>
             <div className="info-item">
               <p className="box no-flex whiteB" />
-              {/* Ei valvojaa */}
+              {/* No supervisor */}
               {' '}
               <p>{dayview.NotAvailable[fin]}</p>
             </div>
             <div className="info-item-img">
               <p className="empty-box no-flex">
-                <img className="infoImg no-flex" src={info} />
+                <img className="infoImg no-flex" src={info} alt={dayview.Notice[fin]} />
               </p>
-              {/* Radalla lisätietoa */}
+              {/* Extra info on track */}
               {' '}
               <p className="info-text relative-text no-flex">{dayview.Notice[fin]}</p>
             </div>

@@ -19,7 +19,8 @@ import texts from '../texts/texts.json';
 
 const smallInfoIcon = require('../logo/Small-info.png');
 
-const { weekdayShorthand } = texts;  // eslint-disable-line
+const { weekdayShorthand, month } = texts;  // eslint-disable-line
+const fin = localStorage.getItem('language');
 
 class Monthview extends Component {
   constructor(props) {
@@ -95,8 +96,8 @@ class Monthview extends Component {
     const table = [];
     let dayNumber;
 
-    const fin = localStorage.getItem('language');
-    const { month } = texts;
+    const fin = localStorage.getItem('language');// eslint-disable-line
+    const { month } = texts; // eslint-disable-line
 
     for (let j = 0; j < 8; j += 1) {
       dayNumber = j.toString();
@@ -158,7 +159,7 @@ class Monthview extends Component {
             ? (
               <div className="monthview-day-img">
                 {target.date()}
-                <img className="Monthview-info" src={smallInfoIcon} />
+                <img className="Monthview-info" src={smallInfoIcon} alt={month.Notice[fin]} />
               </div>
             )
             : (
