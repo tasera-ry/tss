@@ -542,7 +542,7 @@ class UserManagementView extends Component {
 
   findUserName() {
     for (const i in this.state.userList) {
-      if (this.state.userList[i].id == this.state.selectedROWID) { // eslint-disable-line
+      if (this.state.userList[i].id === parseInt(this.state.selectedROWID) { 
         return this.state.userList[i].name;
       }
     }
