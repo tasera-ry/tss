@@ -561,10 +561,11 @@ class UserManagementView extends Component {
   findOwnID() {
     for (const i in this.state.userList) {
       if (localStorage.taseraUserName == this.state.userList[i].name) { // eslint-disable-line
-        return this.state.userList[i].id; 
+        return this.state.userList[i].id;
       }
     }
-  }
+    return 'Username not found';
+  } // Finds Own id by selectedROWID in state
 
   update() {
     const tempRows = [];
