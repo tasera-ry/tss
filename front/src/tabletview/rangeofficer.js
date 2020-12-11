@@ -484,7 +484,6 @@ const Tabletview = () => {
       status,
 
       rangeSupervisionScheduled,
-      token,
       null); // MODIFY THIS
 
     if (res === true) {

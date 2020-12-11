@@ -81,7 +81,7 @@ async function changePassword(id, passwordn) {
 }
 
 // Changes email to database
-async function AddEmail(token, id, emailn) {
+async function AddEmail(id, emailn) {
   try {
     const response = await fetch(`/api/user/${id}`, {
       method: 'PUT',
@@ -91,7 +91,6 @@ async function AddEmail(token, id, emailn) {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
       },
     });
     return response.ok;
@@ -119,7 +118,7 @@ async function deleteUser(id) {
 }
 
 // Add user to database
-async function addUser(token, namen, rolen, passwordn, emailn) {
+async function addUser (namen, rolen, passwordn, emailn) {
 
   try {
     const response = await fetch('/api/user/', {
@@ -404,7 +403,7 @@ class UserManagementView extends Component {
 
   // Adds email for some1 else by their ID
   async handleAddEmailCloseConfirm() {
-    const response = await AddEmail(this.state.token, this.findUserId(), this.state.email);
+    const response = await AddEmail( this.findUserId(), this.state.email);
     if (!response) {
       this.setState({
         mokatVaihdossa: true,
@@ -944,7 +943,7 @@ update() {
             />
             {this.state.mokatVaihdossa ? (
               <p style={{ fontSize: 20, color: 'red', textAlign: 'center' }}>
-                {manage.Error[fin]}
+                {manage.ErrorEmail[fin]}
                 {' '}
               </p>
             ) : (
