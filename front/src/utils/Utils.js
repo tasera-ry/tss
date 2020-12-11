@@ -261,7 +261,7 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, to
             body: JSON.stringify({
               scheduled_range_supervision_id: srsId,
               range_supervisor: rangeStatus,
-              supervisor
+              supervisor,
             }),
             headers: {
               Accept: 'application/json',

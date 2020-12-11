@@ -649,7 +649,7 @@ class Scheduling extends Component {
           rangeStatus,
           rangeSupervisionScheduled,
           this.state.token,
-          this.state.rangeSupervisorId
+          this.state.rangeSupervisorId,
 
         );
         if (rangeSupervisionRes !== true) {
@@ -683,13 +683,13 @@ class Scheduling extends Component {
             if (tracks[key].scheduled) {
               trackSupervisionMethod = 'PUT';
               srsp = `/${srsId}/${this.state.tracks[key].id}`;
+            } else {
               trackSupervisionMethod = 'POST';
               params = {
                 ...params,
                 scheduled_range_supervision_id: srsId,
                 track_id: this.state.tracks[key].id,
               };
-             
             }
             return await fetch(`/api/track-supervision${srsp}`, {
               method: trackSupervisionMethod,

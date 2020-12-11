@@ -71,7 +71,8 @@ const controller = {
     
     //updates.range_supervisor palauttaa "absent" jos supervisoria ei ole määrätty ja "not confirmed" jos supervisor on asetettu
     //if lause tarkastaa että sposti lähetetään vain jos supervisor on määrätty, sillä tämä functio aktivoituu myös kun supervisor poistetaan päivältä.
-    try{    
+   // try{
+        console.log(response.locals.updates.range_supervisor);
         AbsentChecker = JSON.stringify(response.locals.updates.range_supervisor);
         const unquoted = String(AbsentChecker.replace(/"([^"]+)":/g, ''));  
         const NotAbsent= '"not confirmed"';
@@ -89,11 +90,11 @@ const controller = {
             var emailtostring = JSON.stringify(vastaanottaja);
             //tässä kohtaa emailtostring lähettää haetun haetun user.emailin mailer.js tiedostoon jossa se lähtee spostiin.
             //mailer.js kannattaa mennä muuttamaan omaksi spostiksi jos tahtoo tarkastella sen lähtemistä.
-            email('assigned', emailtostring);
+            email('update', emailtostring);
         }
-    } catch (error) {
+   /* } catch (error) {
         console.error(error);
-    }   
+    }*/   
 
     response
       .status(204)
