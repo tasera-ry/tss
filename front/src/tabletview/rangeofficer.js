@@ -476,7 +476,7 @@ const Tabletview = () => {
     setTimeout(() => {
       window.location.reload();
     }, 3 * 60 * 60 * 1000); // 3 hours
-  }, []);
+  }, []); // eslint-disable-line
 
   async function updateSupervisor(status, color, text) {
     const res = await rangeSupervision(reservationId,

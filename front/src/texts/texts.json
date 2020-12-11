@@ -183,7 +183,8 @@
     "10": ["Lokakuu", "October"],
     "11": ["Marraskuu", "November"],
     "12": ["Joulukuu", "December"],
-    "weekNumber": ["Vko", "Wk"]
+    "weekNumber": ["Vko", "Wk"],
+    "Notice": ["Radalla Lisätietoja", "Track has additional information"]
   },
   "viewChanger": {
     "Month": ["Kuukausi", "Month"],
