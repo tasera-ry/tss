@@ -26,7 +26,8 @@ if (localStorage.getItem('language') === '0') {
   lang = 'en';
 }
 
-const { weekdayShorthand } = texts;
+const { weekdayShorthand, week } = texts;
+const fin = localStorage.getItem('language');
 
 class Weekview extends Component {
   constructor(props) {
@@ -308,6 +309,7 @@ class Weekview extends Component {
       oikeePaiva = this.state.paivat[j].date;
       info = false;
       if (this.state.paivat[j].tracks) {
+        // eslint-disable-next-line
         this.state.paivat[j].tracks.forEach((track) => {
           if (track.notice !== null && track.notice !== '') {
             info = true;
@@ -319,7 +321,7 @@ class Weekview extends Component {
         <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={linkki}>
           <p>
             {info
-              ? <img className="exclamation-2" src={exclamation} />
+              ? <img className="exclamation-2" src={exclamation} alt={week.Notice[fin]} />
               : <br />}
 
           </p>
@@ -423,8 +425,8 @@ class Weekview extends Component {
   }
 
   render() {
-    const fin = localStorage.getItem('language');
-    const { week } = texts;
+    const fin = localStorage.getItem('language'); // eslint-disable-line
+    const { week } = texts; // eslint-disable-line
     return (
       <div>
         <div className="container">
@@ -437,7 +439,7 @@ class Weekview extends Component {
               {' '}
               {`${week.Week[fin]} ${this.state.weekNro} , ${this.state.yearNro}`}
             </h1>
-            {/* kuukausi jos tarvii: {monthToString(date.getMonth())} */}
+            {/* Month if needed: {monthToString(date.getMonth())} */}
             <div
               className="hoverHand arrow-right"
               onClick={this.nextWeekClick}

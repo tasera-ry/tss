@@ -358,7 +358,7 @@ const DialogWindow = ({ onCancel }) => {
   // starting point
   useEffect(() => {
     getSchedule(setSchedules, setNoSchedule, setChecked, setDone, cookies.username);
-  }, []);
+  }, []); // eslint-disable-line
 
   return (
     <div>
