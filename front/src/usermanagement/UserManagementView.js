@@ -285,7 +285,7 @@ class UserManagementView extends Component {
   // Removes the user
   async handleRemoveWarningCloseAgree() {
     const response = await deleteUser(this.findUserId());
-    if (response.errors !== undefined) {
+    if (response?.errors !== undefined) {
       this.setState({
         mokatPoistossa: true,
       });
@@ -343,7 +343,7 @@ class UserManagementView extends Component {
 
   returnRemoveButton(id, manage, fin) { // eslint-disable-line
     return (
-      <Button id={id} size="small" style={{ backgroundColor: '#c97b7b' }} variant="contained" onClick={this.onRemoveClick}>
+      <Button data-testid={`del-${id}`} id={id} size="small" style={{ backgroundColor: '#c97b7b' }} variant="contained" onClick={this.onRemoveClick}>
         {manage.RemoveUser[fin]}
       </Button>
     );
@@ -351,7 +351,7 @@ class UserManagementView extends Component {
 
   returnPassButton(id, manage, fin) { // eslint-disable-line
     return (
-      <Button id={id} size="small" style={{ backgroundColor: '#5f77a1' }} variant="contained" onClick={this.onChangePassClick}>
+      <Button data-testid={`pw-${id}`} id={id} size="small" style={{ backgroundColor: '#5f77a1' }} variant="contained" onClick={this.onChangePassClick}>
         {manage.ChangePass[fin]}
       </Button>
     );
@@ -542,7 +542,9 @@ class UserManagementView extends Component {
 
   findUserName() {
     for (const i in this.state.userList) {
+
       if (this.state.userList[i].id === parseInt(this.state.selectedROWID) { 
+
         return this.state.userList[i].name;
       }
     }
@@ -551,21 +553,25 @@ class UserManagementView extends Component {
 
   findUserId() {
     for (const i in this.state.userList) {
+
       if (this.state.userList[i].id === parseInt(this.state.selectedROWID) { // eslint-disable-line
+
         return this.state.userList[i].id;
       }
     }
     return undefined;
   } // finds logged in users id
 
+
+  // finds logged in users id
   findOwnID() {
     for (const i in this.state.userList) {
-      if (localStorage.taseraUserName == this.state.userList[i].name) { // eslint-disable-line
+      if (localStorage.taseraUserName === this.state.userList[i].name) {
         return this.state.userList[i].id;
       }
     }
-    return 'Username not found';
-  } // Finds Own id by selectedROWID in state
+    return null;
+  }
 
   update() {
     const tempRows = [];

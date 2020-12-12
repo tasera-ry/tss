@@ -8,16 +8,18 @@ import {
 import { HashRouter as Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { act } from 'react-dom/test-utils';
-import * as utils from '../utils/Utils';
-import Weekview from './Weekview';
-import testUtils from '../_TestUtils/TestUtils';
+import * as utils from './utils/Utils';
+import App from './App';
+import testUtils from './_TestUtils/TestUtils';
 
 const { date, week, schedule } = testUtils;
 
-describe('testing weekview', () => {
-  it('should render weekView', async () => {
+describe('testing App', () => {
+  it('should render App', async () => {
     utils.getSchedulingWeek = jest.fn(() => week);
     utils.getSchedulingDate = jest.fn(() => schedule);
+    utils.validateLogin = jest.fn(() => Promise.resolve(false));
+    localStorage.setItem('token', 'dummy_token');
     const state = {
       state: 'loading',
       date,
@@ -29,11 +31,10 @@ describe('testing weekview', () => {
     const history = createMemoryHistory();
     Date.now = jest.fn(() => '2020-10-21T11:30:57.000Z');
 
-    localStorage.setItem('language', '1');
     await act(async () => {
       render(
         <Router>
-          <Weekview
+          <App
             match={{ params: { date } }}
             history={history}
             state={state}
@@ -41,10 +42,7 @@ describe('testing weekview', () => {
         </Router>,
       );
     });
-    await waitFor(() => expect(screen.getByText('Range officer present'))
+    await waitFor(() => expect(screen.getByText('Päävalvoja paikalla'))
       .toBeInTheDocument());
   });
-
-  // it('should render correct week', async () => {
-  // })
 });
