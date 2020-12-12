@@ -192,6 +192,9 @@
     "JumpToCurrent": ["Tänään", "Today"]
   },
   "trackStatistics": {
-    "addUsersButton": ["Lisää käyttäjätietoja", "Add user statistics"]
+    "addVisitorsButton": ["Lisää kävijätietoja", "Add visitor statistics"],
+    "addVisitorsTitle": ["Lisää kävijöiden määrä", "Add number of visitors"],
+    "backButton": ["Takaisin", "Back"],
+    "sendButton": ["Lähetä tiedot", "Send statistics"]
   }
 }

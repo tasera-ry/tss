@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import './TrackStatistics.css';
 
+// Material-UI components
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -10,6 +11,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 
+// Import localization
 import { trackStatistics as texts } from '../texts/texts.json';
 
 export function TrackStatistics(props) {
@@ -17,19 +19,14 @@ export function TrackStatistics(props) {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const handleStats = () => setDialogOpen(true);
   const handleClose = () => setDialogOpen(false);
-  const token = localStorage.getItem('token');
   const lang = localStorage.getItem('language');
 
   useEffect(() => {
     setTracks(props.tracks);
   }, [props.tracks]);
 
-  const opts = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
+  // Function for raising or lowering number of visitors in a given track via buttons.
+  // Also checks that the number of visitors will never be less than 0.
   // Operator is "inc" or "dec"
   const increment = (trackId, operator) => {
     setTracks(tracks.map((track) => {
@@ -68,6 +65,7 @@ export function TrackStatistics(props) {
     }));
   };
 
+  // Sends the changed visitors statistics to backend
   const sendStats = () => {
     tracks.forEach(async (track) => {
       if (track.scheduled) {
@@ -81,7 +79,6 @@ export function TrackStatistics(props) {
         await axios.put(
           `/api/track-supervision/${track.scheduled.scheduled_range_supervision_id}/${track.id}`,
           trackOpts,
-          opts,
         );
       }
     });
@@ -90,11 +87,11 @@ export function TrackStatistics(props) {
 
   return (
     <div>
-      <Button id="visitorBoxButton" color="primary" variant="contained" onClick={handleStats}>{texts.addUsersButton[lang]}</Button>
+      <Button id="visitorBoxButton" color="primary" variant="contained" onClick={handleStats}>{texts.addVisitorsButton[lang]}</Button>
       <Dialog id="visitorBox" maxWidth="xl" open={dialogOpen} onClose={handleClose}>
         <DialogTitle>
           <div className="dialogTitle">
-            Lisää kävijöiden määrä
+            {texts.addVisitorsTitle[lang]}
           </div>
         </DialogTitle>
         <DialogContent>
@@ -132,12 +129,12 @@ export function TrackStatistics(props) {
         <DialogActions>
           <Button onClick={handleClose} variant="contained" color="secondary">
             <div className="buttonText">
-              Takaisin
+              {texts.backButton[lang]}
             </div>
           </Button>
           <Button onClick={sendStats} variant="contained" color="primary">
             <div className="buttonText">
-              Lähetä tiedot
+              {texts.sendButton[lang]}
             </div>
           </Button>
         </DialogActions>
