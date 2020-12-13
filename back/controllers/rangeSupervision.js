@@ -68,11 +68,10 @@ const controller = {
     //updates.range_supervisor returns "absent" if supervisor has not been assigned. it returns "not confirmed" is supervisor is assigned.
     //if - checks if supervisor is assigned and only sends email if it is set. otherwise it would send email aswell when supervisor is taken off.
     try{ 
-      console.log(response.locals.updates.range_supervisor);
-      const AbsentChecker = JSON.stringify(response.locals.updates.range_supervisor);
-      const unquoted = String(AbsentChecker.replace(/"([^"]+)":/g, ''));  
-      const NotAbsent= '"not confirmed"';
-      if (unquoted == NotAbsent){
+      const absentChecker = JSON.stringify(response.locals.updates.range_supervisor);
+      const unquoted = String(absentChecker.replace(/"([^"]+)":/g, ''));  
+      const notAbsent= '"not confirmed"';
+      if (unquoted == notAbsent){
         const vastaanottaja = await geetUserEmail(response.locals.updates.supervisor);
         //knex part that should be done in models?:
         async function geetUserEmail(key) {
