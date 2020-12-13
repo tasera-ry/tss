@@ -106,21 +106,21 @@ export function viewChanger() {
     const time = moment(`${paramYear}-${paramMonth}-${paramDay}`, 'YYYY-MM-DD');
 
     table.push(
-      <Link class="link" to={`/monthView/${time.format('YYYY-MM-DD')}`}>
+      <Link key="month" className="link" to={`/monthView/${time.format('YYYY-MM-DD')}`}>
         <div>
           {viewChanger.Month[fin]}
         </div>
       </Link>,
     );
     table.push(
-      <Link class="link" to={`/weekView/${time.format('YYYY-MM-DD')}`}>
+      <Link key="week" className="link" to={`/weekView/${time.format('YYYY-MM-DD')}`}>
         <div>
           {viewChanger.Week[fin]}
         </div>
       </Link>,
     );
     table.push(
-      <Link class="link" to={`/dayView/${time.format('YYYY-MM-DD')}`}>
+      <Link key="day" className="link" to={`/dayView/${time.format('YYYY-MM-DD')}`}>
         <div>
           {viewChanger.Day[fin]}
         </div>
@@ -138,20 +138,17 @@ export function jumpToCurrent() {
   const fin = localStorage.getItem('language');
 
   try {
-    const table = [];
     const fullUrl = window.location.href.split('/');
     const urlParamDate = fullUrl[4];
-
     const date = new Date();
 
-    table.push(
-      <Link class="link" to={`/${urlParamDate}/${moment(date, 'YYYY-MM-DD').toISOString().substring(0, 10)}`}>
+    return (
+      <Link className="link" to={`/${urlParamDate}/${moment(date, 'YYYY-MM-DD').toISOString().substring(0, 10)}`}>
         <div>
           {viewChanger.JumpToCurrent[fin]}
         </div>
-      </Link>,
+      </Link>
     );
-    return table;
   } catch (err) {
     console.error(err);
     return false;
