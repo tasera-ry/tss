@@ -13,7 +13,7 @@ const sendEmail = function(viesti,sposti) {
 
     switch (viesti) {
     case 'assigned':
-      text = 'Hei teille on annettu valvoja vuoro. Voitte nyt käydä vahvistamassa vuoronne.';
+      text = 'Hei, teille on annettu valvojavuoro. Voitte nyt käydä vahvistamassa vuoronne. Terveisin TASERA ry';
       break;
     case 'update':
       text = 'Vuoroanne on muutettu, käykää tarkastamassa vuoronne';
