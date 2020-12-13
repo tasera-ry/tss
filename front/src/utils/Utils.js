@@ -97,11 +97,15 @@ export function viewChanger() {
     const fullUrl = window.location.href.split('/');
     const urlParamDate = fullUrl[5];
 
-    const urlParamDateSplit = urlParamDate.split('-');
-
-    const paramDay = urlParamDateSplit[2].split('T')[0];
-    const paramMonth = urlParamDateSplit[1];
-    const paramYear = urlParamDateSplit[0];
+    // When first access to '/' (no params in URL)
+    let paramDay = '';
+    let paramMonth = '';
+    let paramYear = '';
+    if (urlParamDate) {
+      const urlParamDateSplit = urlParamDate.split('-');
+      [paramDay, paramMonth, paramYear] = urlParamDateSplit;
+      [paramDay] = paramDay.split('T');
+    }
 
     const time = moment(`${paramYear}-${paramMonth}-${paramDay}`, 'YYYY-MM-DD');
 

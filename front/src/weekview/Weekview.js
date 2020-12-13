@@ -229,7 +229,7 @@ class Weekview extends Component {
       dayNumber = j.toString();
 
       table.push(
-        <Link className="link" to={linkki}>
+        <Link key={dayNumber} className="link" to={linkki}>
           <p id="weekDay">
             {lang === 'en'
               ? weekdayShorthand[dayNumber][1]
@@ -262,7 +262,7 @@ class Weekview extends Component {
 
       linkki = `/dayview/${oikeePaiva}`;
       table.push(
-        <Link class="link" to={linkki}>
+        <Link key={j} className="link" to={linkki}>
           <p style={{ fontSize: 'medium' }}>
             {newDate}
           </p>
@@ -318,7 +318,7 @@ class Weekview extends Component {
       }
       linkki = `/dayview/${oikeePaiva}`;
       table.push(
-        <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class="link" to={linkki}>
+        <Link key={j} style={{ backgroundColor: `${colorFromBackEnd}` }} className="link" to={linkki}>
           <p>
             {info
               ? <img className="exclamation-2" src={exclamation} alt={week.Notice[fin]} />
@@ -430,7 +430,7 @@ class Weekview extends Component {
     return (
       <div>
         <div className="container">
-          <Grid class="date-header">
+          <Grid className="date-header">
             <div
               className="hoverHand arrow-left"
               onClick={this.previousWeekClick}
@@ -456,12 +456,12 @@ class Weekview extends Component {
             </div>
 
             {/* Date boxes */}
-            <Grid class="flex-container2">
+            <Grid className="flex-container2">
               {this.createWeekDay()}
             </Grid>
 
             {/* Date boxes */}
-            <Grid class="flex-container2">
+            <Grid className="flex-container2">
               {this.state.state !== 'ready'
                 ? ''
                 : this.createDate()}
@@ -475,7 +475,7 @@ class Weekview extends Component {
                 </div>
               )
               : (
-                <Grid class="flex-container">
+                <Grid className="flex-container">
                   {this.createColorInfo()}
                 </Grid>
               )}

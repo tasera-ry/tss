@@ -87,31 +87,31 @@ class Trackview extends Component {
 
   rangeAvailability(trackview, fin) { // eslint-disable-line
     if (this.state.rangeSupervision === 'present') {
-      const returnable = <Box class="isAvailable">{trackview.SuperGreen[fin]}</Box>;
+      const returnable = <Box className="isAvailable">{trackview.SuperGreen[fin]}</Box>;
       return returnable;
     } if (this.state.rangeSupervision === 'absent') {
       const returnable = (
-        <Box class="isUnavailable">{trackview.SuperWhite[fin]}</Box>
+        <Box className="isUnavailable">{trackview.SuperWhite[fin]}</Box>
       );
       return returnable;
     } if (this.state.rangeSupervision === 'confirmed') {
       const returnable = (
-        <Box class="isConfirmed">{trackview.SuperLightGreen[fin]}</Box>
+        <Box className="isConfirmed">{trackview.SuperLightGreen[fin]}</Box>
       );
       return returnable;
     } if (this.state.rangeSupervision === 'not confirmed') {
       const returnable = (
-        <Box class="isNotConfirmed">{trackview.SuperBlue[fin]}</Box>
+        <Box className="isNotConfirmed">{trackview.SuperBlue[fin]}</Box>
       );
       return returnable;
     } if (this.state.rangeSupervision === 'en route') {
       const returnable = (
-        <Box class="isEnRoute">{trackview.SuperOrange[fin]}</Box>
+        <Box className="isEnRoute">{trackview.SuperOrange[fin]}</Box>
       );
       return returnable;
     } if (this.state.rangeSupervision === 'closed') {
       const returnable = (
-        <Box class="isClosed">{trackview.Red[fin]}</Box>
+        <Box className="isClosed">{trackview.Red[fin]}</Box>
       );
       return returnable;
     }
@@ -119,18 +119,18 @@ class Trackview extends Component {
 
   trackAvailability(trackview, fin) { // eslint-disable-line
     if (this.state.trackSupervision === 'present') {
-      const returnable = <Box class="isAvailable">{trackview.RangeGreen[fin]}</Box>;
+      const returnable = <Box className="isAvailable">{trackview.RangeGreen[fin]}</Box>;
       return returnable;
     }
     if (this.state.trackSupervision === 'absent') {
       const returnable = (
-        <Box class="isUnavailable">{trackview.RangeWhite[fin]}</Box>
+        <Box className="isUnavailable">{trackview.RangeWhite[fin]}</Box>
       );
       return returnable;
     }
     if (this.state.trackSupervision === 'closed') {
       const returnable = (
-        <Box class="isClosed">{trackview.RangeRed[fin]}</Box>
+        <Box className="isClosed">{trackview.RangeRed[fin]}</Box>
       );
       return returnable;
     }

@@ -284,7 +284,9 @@ async function checkSupervisorReservations(username) {
       // check and return boolean about whether there's any unconfirmed reservations
       response.data.some((sprvsn) => sprvsn.range_supervisor === 'not confirmed')))
     .catch((error) => {
-      console.log(error);
+      if (error.response.status !== 404) {
+        console.log(error);
+      }
     });
 
   return response;
