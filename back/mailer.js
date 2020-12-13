@@ -4,10 +4,9 @@ const nodemailer = require('nodemailer');
 const sendEmail = function(viesti,sposti) {
   try{    
     // declare vars,
-    //editing the reciever to suit sending the email
-    let cutEmail = sposti.slice(11, -3);
     let fromMail = process.env.EMAIL;
-    let toMail = cutEmail;
+    //editing the reciever to suit sending the email
+    let toMail = sposti.slice(11, -3);
     let subject = 'Tasera info';
     let text = viesti;
 
