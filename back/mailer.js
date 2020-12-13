@@ -1,6 +1,7 @@
 require('dotenv').config();
 //step1
 const nodemailer = require('nodemailer');
+
 const sendEmail = function(message, emailaddress) {
   try{    
     // declare vars,
