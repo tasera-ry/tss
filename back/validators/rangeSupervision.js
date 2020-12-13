@@ -107,7 +107,6 @@ module.exports = {
     fields.scheduled_range_supervision_id(body, 'exists'),
     fields.range_supervisor(body, 'exists'),
     fields.notice(body, 'optional'),
-    //fields.supervisor(, 'optional'),
     handleValidationErrors,
     function storeCreationRequest(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['body'] });
