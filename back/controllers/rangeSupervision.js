@@ -42,18 +42,18 @@ const controller = {
     
     try{
       //fetches the supervisor id who is assgined to the range.
-      const vastaanottaja = await geetUserEmail(response.req.body.supervisor);
+      const reciever = await getUserEmail(response.req.body.supervisor);
       //knex part that should be done in models? returns the email based on the id fetched above:
-      async function geetUserEmail(key) {
+      async function getUserEmail(key) {
         return await knex
           .from('user')
           .where({ 'user.id': key })
           .select('user.email');
       }
       //knex part ends.
-      var emailtostring = JSON.stringify(vastaanottaja);
+      var emailString = JSON.stringify(reciever);
       //sending fetched email address to mailer.js where it is used to send message that user has been assigned a supervision
-      email('assigned', emailtostring);
+      email('assigned', emailString);
     } catch (error) {
       console.error(error);
     }
@@ -72,18 +72,18 @@ const controller = {
       const unquoted = String(absentChecker.replace(/"([^"]+)":/g, ''));  
       const notAbsent= '"not confirmed"';
       if (unquoted == notAbsent){
-        const vastaanottaja = await geetUserEmail(response.locals.updates.supervisor);
+        const reciever = await getUserEmail(response.locals.updates.supervisor);
         //knex part that should be done in models?:
-        async function geetUserEmail(key) {
+        async function getUserEmail(key) {
           return await knex
             .from('user')
             .where({ 'user.id': key })
             .select('user.email');
         }
         //knex part ends
-        var emailtostring = JSON.stringify(vastaanottaja);
+        var emailString = JSON.stringify(reciever);
         //sending fetched email address to mailer.js where it is used to send message that user's supervision has been changed. 
-        email('update', emailtostring);
+        email('update', emailString);
       }
     } catch (error) {
       console.error(error);
