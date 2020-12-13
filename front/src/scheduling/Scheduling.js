@@ -474,9 +474,6 @@ class Scheduling extends Component {
     if (this.state.rangeSupervisorSwitch === false) {
       disabled = true;
     }
-    const selectedSupervisor = this.state.rangeSupervisorId
-      ? this.state.rangeSupervisorId
-      : '';
     return (
       <FormControl>
         <InputLabel id="chooserangeSupervisorLabel">{sched.Select[fin]}</InputLabel>
@@ -484,7 +481,7 @@ class Scheduling extends Component {
           {...disabled && { disabled: true }}
           labelId="chooserangeSupervisorLabel"
           name="rangeSupervisorId"
-          value={selectedSupervisor}
+          value={this.state.rangeSupervisorId || ''}
           onChange={this.handleValueChange}
           data-testid="rangeSupervisorSelect"
         >
