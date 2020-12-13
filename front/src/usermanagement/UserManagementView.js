@@ -334,7 +334,6 @@ class UserManagementView extends Component {
         mokatVaihdossa: true,
 
       });
-      console.log('OH NO');
     } else {
       this.handleaddEmailClose();
     }
@@ -554,7 +553,7 @@ class UserManagementView extends Component {
   findUserId() {
     for (const i in this.state.userList) {
 
-      if (this.state.userList[i].id === parseInt(this.state.selectedROWID)) { // eslint-disable-line
+      if (this.state.userList[i].id === parseInt(this.state.selectedROWID)) {
 
         return this.state.userList[i].id;
       }
@@ -563,7 +562,7 @@ class UserManagementView extends Component {
   } // finds logged in users id
 
 
-  // finds logged in users id
+
   findOwnID() {
     for (const i in this.state.userList) {
       if (localStorage.taseraUserName === this.state.userList[i].name) {
