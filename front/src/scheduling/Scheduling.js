@@ -570,6 +570,7 @@ class Scheduling extends Component {
         open: moment(this.state.open).format('HH:mm'),
         close: moment(this.state.close).format('HH:mm'),
         supervisor_id: null,
+        
       };
 
       if (this.state.rangeSupervisorSwitch) {

@@ -16,7 +16,7 @@ const sendEmail = function(viesti,sposti) {
       text = 'Hei, teille on annettu valvojavuoro. Voitte nyt käydä vahvistamassa vuoronne. Terveisin TASERA ry';
       break;
     case 'update':
-      text = 'Vuoroanne on muutettu, käykää tarkastamassa vuoronne';
+      text = 'Hei, teille annettua valvojavuoroa on muutettu. Voitte nyt käydä tarkistamassa vuoronne. Terveisin TASERA ry';
       break;
     }
 

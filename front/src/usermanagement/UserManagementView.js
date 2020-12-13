@@ -81,7 +81,7 @@ async function changePassword(id, passwordn) {
 }
 
 // Changes email to database
-async function AddEmail(id, emailn) {
+async function addEmail(id, emailn) {
   try {
     const response = await fetch(`/api/user/${id}`, {
       method: 'PUT',
@@ -176,7 +176,7 @@ class UserManagementView extends Component {
     this.handlePassWarningClose = this.handlePassWarningClose.bind(this);
     this.handleRemoveWarningClose = this.handleRemoveWarningClose.bind(this);
     this.onChangePassClick = this.onChangePassClick.bind(this);
-    this.onAddEmailClick = this.onAddEmailClick.bind(this);
+    this.onaddEmailClick = this.onaddEmailClick.bind(this);
     this.handleRemoveWarningCloseAgree = this.handleRemoveWarningCloseAgree.bind(this);
     this.handleAddUserOpenDialog = this.handleAddUserOpenDialog.bind(this);
     this.handleOpenOwnPassChangeDialog = this.handleOpenOwnPassChangeDialog.bind(this);
@@ -188,13 +188,13 @@ class UserManagementView extends Component {
     this.handleAddNewUserDialogClose = this.handleAddNewUserDialogClose.bind(this);
     this.handleAddNewUserDialogCloseConfirmed = this.handleAddNewUserDialogCloseConfirmed.bind(this);  // eslint-disable-line
     this.handleChangePassCloseConfirm = this.handleChangePassCloseConfirm.bind(this);
-    this.handleAddEmailCloseConfirm = this.handleAddEmailCloseConfirm.bind(this);
+    this.handleaddEmailCloseConfirm = this.handleaddEmailCloseConfirm.bind(this);
     this.handleChangePassClose = this.handleChangePassClose.bind(this);
-    this.handleAddEmailClose = this.handleAddEmailClose.bind(this);
+    this.handleaddEmailClose = this.handleaddEmailClose.bind(this);
     this.handleChangeNewUserRole = this.handleChangeNewUserRole.bind(this);
     this.handleOldpassStringChange = this.handleOldpassStringChange.bind(this);
     this.handleNewpassStringChange = this.handleNewpassStringChange.bind(this);
-    this.handleAddEmailDialog = this.handleAddEmailDialog.bind(this);
+    this.handleaddEmailDialog = this.handleaddEmailDialog.bind(this);
   }
 
   componentDidMount() {
@@ -319,16 +319,16 @@ class UserManagementView extends Component {
   }
   // ___________________________________________________________________
   // Closes dialog for adding email for some1 else
-  handleAddEmailClose(e) { // eslint-disable-line
+  handleaddEmailClose(e) { // eslint-disable-line
     this.setState({
       email: '',
-      AddEmailDialogOpen: false,
+      addEmailDialogOpen: false,
     });
   }
 
   // Adds email for some1 else by their ID
-  async handleAddEmailCloseConfirm() {
-    const response = await AddEmail(this.findUserId(), this.state.email);
+  async handleaddEmailCloseConfirm() {
+    const response = await addEmail(this.findUserId(), this.state.email);
     if (!response) {
       this.setState({
         mokatVaihdossa: true,
@@ -336,7 +336,7 @@ class UserManagementView extends Component {
       });
       console.log('OH NO');
     } else {
-      this.handleAddEmailClose();
+      this.handleaddEmailClose();
     }
   }
   // _________________________________________________________________
@@ -356,18 +356,18 @@ class UserManagementView extends Component {
       </Button>
     );
   }
-  returnAddEmailButton(id, manage, fin) { // eslint-disable-line
+  returnaddEmailButton(id, manage, fin) { // eslint-disable-line
     return (
-      <Button id={id} size="small" style={{ backgroundColor: '#55555' }} variant="contained" onClick={this.onAddEmailClick}>
+      <Button id={id} size="small" style={{ backgroundColor: '#55555' }} variant="contained" onClick={this.onaddEmailClick}>
         {manage.NewEmail[fin]}
       </Button>
     );
   }
 
-  createData(name, role, ButtonToChangePassword, ButtonToRemoveUser, ButtonToAddEmail) {
+  createData(name, role, ButtonToChangePassword, ButtonToRemoveUser, ButtonToaddEmail) {
     const roleToPrint = role === 'superuser' ? manage.Superuser[fin] : manage.Supervisor[fin];
     return {
-      name, roleToPrint, ButtonToChangePassword, ButtonToRemoveUser, ButtonToAddEmail,
+      name, roleToPrint, ButtonToChangePassword, ButtonToRemoveUser, ButtonToaddEmail,
     };
   }
 
@@ -429,16 +429,16 @@ class UserManagementView extends Component {
   }
 
   // opens dialog for adding email
-  handleAddEmailDialog() {
+  handleaddEmailDialog() {
     this.setState({
-      AddEmailDialogOpen: true,
+      addEmailDialogOpen: true,
     });
   }
 
   // Closes dialog for adding email
-  handleAddEmailDialogClose() {
+  handleaddEmailDialogClose() {
     this.setState({
-      AddEmailDialogOpen: false,
+      addEmailDialogOpen: false,
     });
   }
 
@@ -525,14 +525,14 @@ class UserManagementView extends Component {
   }
 
   // Opens dialog for adding or changing email for someone else
-  async onAddEmailClick(e) {
+  async onaddEmailClick(e) {
     await this.setState({
       selectedROWID: e.currentTarget.id,
     });
     const name = this.findUserName();
     this.setState({
       selectedUserName: name,
-      AddEmailDialogOpen: true,
+      addEmailDialogOpen: true,
     });
   }
 
@@ -543,7 +543,7 @@ class UserManagementView extends Component {
   findUserName() {
     for (const i in this.state.userList) {
 
-      if (this.state.userList[i].id === parseInt(this.state.selectedROWID) { 
+      if (this.state.userList[i].id === parseInt(this.state.selectedROWID)) { 
 
         return this.state.userList[i].name;
       }
@@ -554,7 +554,7 @@ class UserManagementView extends Component {
   findUserId() {
     for (const i in this.state.userList) {
 
-      if (this.state.userList[i].id === parseInt(this.state.selectedROWID) { // eslint-disable-line
+      if (this.state.userList[i].id === parseInt(this.state.selectedROWID)) { // eslint-disable-line
 
         return this.state.userList[i].id;
       }
@@ -581,7 +581,7 @@ class UserManagementView extends Component {
           this.state.userList[i].role,
           this.returnPassButton(this.state.userList[i].id, manage, fin),
           this.returnRemoveButton(this.state.userList[i].id, manage, fin),
-          this.returnAddEmailButton(this.state.userList[i].id, manage, fin));
+          this.returnaddEmailButton(this.state.userList[i].id, manage, fin));
         tempRows.push(row);
       }
     }
@@ -834,8 +834,8 @@ class UserManagementView extends Component {
 
         {/* Dialog to Add Email for users */}
         <Dialog
-          open={this.state.AddEmailDialogOpen}
-          onClose={this.handleAddEmailClose}
+          open={this.state.addEmailDialogOpen}
+          onClose={this.handleaddEmailClose}
         >
           <DialogTitle
             id="dialog-add-email-title"
@@ -871,10 +871,10 @@ class UserManagementView extends Component {
           <DialogActions
             style={dialogStyle}
           >
-            <Button onClick={this.handleAddEmailClose} style={{ color: '#c97b7b' }}>
+            <Button onClick={this.handleaddEmailClose} style={{ color: '#c97b7b' }}>
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleAddEmailCloseConfirm} style={{ color: '#5f77a1' }}>
+            <Button onClick={this.handleaddEmailCloseConfirm} style={{ color: '#5f77a1' }}>
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -932,7 +932,7 @@ class UserManagementView extends Component {
                     </TableCell>
                     <TableCell align="justify">{row.ButtonToChangePassword}</TableCell>
                     <TableCell align="justify">{row.ButtonToRemoveUser}</TableCell>
-                    <TableCell align="justify">{row.ButtonToAddEmail}</TableCell>
+                    <TableCell align="justify">{row.ButtonToaddEmail}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
