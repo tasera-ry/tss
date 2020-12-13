@@ -1,16 +1,17 @@
 require('dotenv').config();
 //step1
 const nodemailer = require('nodemailer');
-const sendEmail = function(viesti,sposti) {
+const sendEmail = function(message, emailaddress) {
   try{    
     // declare vars,
     let fromMail = process.env.EMAIL;
-    //editing the reciever to suit sending the email
-    let toMail = sposti.slice(11, -3);
+    //editing the recieved email string to correct usable form.
+    let toMail = emailaddress.slice(11, -3);
     let subject = 'Tasera info';
-    let text = viesti;
+    //defaults message to command if for some reason fails in switch
+    let text = message;
 
-    switch (viesti) {
+    switch (message) {
     case 'assigned':
       text = 'Hei, teille on annettu valvojavuoro. Voitte nyt käydä vahvistamassa vuoronne. Terveisin TASERA ry';
       break;
