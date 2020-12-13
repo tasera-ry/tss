@@ -481,7 +481,7 @@ class Scheduling extends Component {
           {...disabled && { disabled: true }}
           labelId="chooserangeSupervisorLabel"
           name="rangeSupervisorId"
-          value={this.state.rangeSupervisorId}
+          value={this.state.rangeSupervisorId || ''}
           onChange={this.handleValueChange}
           data-testid="rangeSupervisorSelect"
         >

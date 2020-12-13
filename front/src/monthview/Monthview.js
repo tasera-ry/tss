@@ -104,13 +104,13 @@ class Monthview extends Component {
 
       if (dayNumber === '0') {
         table.push(
-          <div className="weekNumber">
+          <div key="weekLabel" className="weekNumber">
             {month.weekNumber[fin]}
           </div>,
         );
       } else {
         table.push(
-          <div>
+          <div key={`weekDayLabel-${dayNumber}`}>
             {weekdayShorthand[dayNumber - 1][fin]}
           </div>,
         );
@@ -154,7 +154,12 @@ class Monthview extends Component {
       }
       help += 1;
       table.push(
-        <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class={`${isCurrent}`} to={`/dayview/${firstMon.format('YYYY-MM-DD')}`}>
+        <Link
+          key={`${isCurrent}-${firstMon.format('YYYY-MM-DD')}`}
+          style={{ backgroundColor: `${colorFromBackEnd}` }}
+          className={`${isCurrent}`}
+          to={`/dayview/${firstMon.format('YYYY-MM-DD')}`}
+        >
           {info
             ? (
               <div className="monthview-day-img">
@@ -225,7 +230,7 @@ class Monthview extends Component {
 
     while (startHelp.isoWeek() !== endWeek) {
       table.push(
-        <Link class="link" to={`/weekview/${link.format('YYYY-MM-DD')}`}>
+        <Link key={startWeek} className="link" to={`/weekview/${link.format('YYYY-MM-DD')}`}>
           <div>
             {startWeek}
           </div>
@@ -237,7 +242,7 @@ class Monthview extends Component {
     }
 
     table.push(
-      <Link class="link" to={`/weekview/${link.format('YYYY-MM-DD')}`}>
+      <Link key={startWeek} className="link" to={`/weekview/${link.format('YYYY-MM-DD')}`}>
         <div>
           {startWeek}
         </div>
