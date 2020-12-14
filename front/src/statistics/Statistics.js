@@ -67,12 +67,8 @@ const Statistics = () => {
 
   useEffect(() => {
     // Count monthly visitors
-    let day = 1;
-    let dayArray = [];
-    monthlyUsers.forEach((user) => { // eslint-disable-line
-      dayArray = dayArray.concat(day);
-      day += 1;
-    });
+    let dayArray = Array.from({length: monthlyUsers.length}, (_, i) => i + 1);
+    
     // Options for the month chart
     setMonthOptions({
       chart: { id: 'monthChart' },
@@ -103,12 +99,8 @@ const Statistics = () => {
 
   useEffect(() => {
     // Count daily visitors
-    let track = 1;
-    let visitorArray = [];
-    dailyUsers.forEach((user) => { // eslint-disable-line
-      visitorArray = visitorArray.concat(track);
-      track += 1;
-    });
+    let visitorArray = Array.from({length: dailyUsers.length}, (_, i) => i + 1);
+    
     // Options for the day chart
     setDayOptions({
       chart: { id: 'dayChart' },
@@ -164,17 +156,14 @@ const Statistics = () => {
   };
 
   const continueWithDate = (event) => {
-    if (event !== undefined && event.type !== undefined && event.type === 'submit') {
+    //if (event !== undefined && event.type !== undefined && event.type === 'submit') {
+    if (event?.event.type?.event.type === 'submit') {
       event.preventDefault();
     }
   };
 
   const countMonthlyVisitors = () => {
-    let total = 0;
-    monthlyUsers.forEach((day) => {
-      total += day;
-    });
-    return total;
+    return monthlyUsers.reduce((a, b) => a + b, 0)
   };
 
   const handleDatePickChange = (newDate) => {
@@ -268,43 +257,43 @@ const Statistics = () => {
 async function getMonthlyVisitors(firstDate, lastDate) {
   const query = `api/daterange/freeform/${firstDate}/${lastDate}`;
   const response = await axios.get(query);
-  if (response) {
-    // Form an array including the visitors of a certain month and return it
-    let visitors = [];
-    response.data.forEach((supervision) => {
-      if (!supervision?.scheduleId) {
-        visitors = visitors.concat(0);
-      } else {
-        let trackVisitors = 0;
-        supervision.tracks.forEach((track) => {
-          trackVisitors += track.scheduled.visitors;
-        });
-        visitors = visitors.concat(trackVisitors);
-      }
-    });
-    return visitors;
+  if (!response) {
+    return [];
   }
-  return [];
+  // Form an array including the visitors of a certain month and return it
+  let visitors = [];
+  for (const supervision of response.data) {
+    if (!supervision?.scheduleId) {
+      visitors.push(0);
+    } else {
+      let trackVisitors = 0;
+      for (const track of supervision.tracks) {
+        trackVisitors += track.scheduled.visitors;
+      }
+      visitors.push(trackVisitors);
+    }
+  };
+  return visitors;
 }
 
 async function getDailyVisitors(date) {
   const query = `api/daterange/freeform/${date}/${date}`;
   const response = await axios.get(query);
-  if (response) {
-    // Form an array including the visitors of a certain day and return it
-    let visitors = [];
-    response.data.forEach((supervision) => {
-      if (!supervision?.scheduleId) {
-        visitors = visitors.concat(0);
-      } else {
-        supervision.tracks.forEach((track) => {
-          visitors = visitors.concat(track.scheduled.visitors);
-        });
-      }
-    });
-    return visitors;
+  if (!response) {
+    return [];
   }
-  return [];
+  // Form an array including the visitors of a certain day and return it
+  let visitors = [];
+  for (const supervision of response.data) {
+    if (!supervision?.scheduleId) {
+      visitors.push(0);
+    } else {
+      for (const track of supervision.tracks) {
+        visitors.push(track.scheduled.visitors);
+      };
+    }
+  };
+  return visitors;
 }
 
 export default Statistics;
