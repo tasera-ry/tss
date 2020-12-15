@@ -37,6 +37,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
    env DB_USER=postgres \
        DB_PASSWORD=some_password \
        DB=postgres \
+       SENDER_EMAIL=noreply@tasera.fi \
        bash -c 'cd back && npm run dev:withFront'
    ```
 6. The program should start up
@@ -66,6 +67,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
        DB_PASSWORD=some_password \
        DB=postgres \
        NODE_ENV=stable \
+       SENDER_EMAIL=noreply@tasera.fi \
        bash -c 'cd back && npm start'
    ```
 
@@ -82,6 +84,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 | `DB_HOST`     | Database address                                                       | `127.0.0.1`             |
 | `DB_USER`     | Database owner                                                         | `tssuser`               |
 | `DB_PASSWORD` | Database owner's password                                              | undefined               |
+| `SENDER_EMAIL`| Emaill Address that will be used to send emails                        | undefined               |
 | `DB_DEBUG`    | Enable database debug calls by setting to true                         | `false`                 |
 | `NODE_ENV`    | Control the mode the backend runs in, either `development` or `stable` | `development`           |
 | `SERVER_HOST` | Manually set hostname                                                  | `http://localhost:3000` |
