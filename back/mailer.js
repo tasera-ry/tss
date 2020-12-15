@@ -1,11 +1,8 @@
-require('dotenv').config();
-//step1
-
 const sendmail = require('sendmail')(); //now goes with default values
 //if dkim is needed edit require require('sendmail')(dkim:'',)
 
-const sendEmail = function(message, emailAddress) {
-  try{    
+const sendEmail = function(message, emailAddress, opts) {
+  try {
     //editing the recieved email string to correct usable form. shuld be done in the place where function is called?
     const toMail = emailAddress.slice(11, -3);
     const subject = 'Tasera info';
@@ -20,6 +17,8 @@ const sendEmail = function(message, emailAddress) {
     case 'update':
       text = 'Hei, teille annettua valvojavuoroa on muutettu. Voitte nyt käydä tarkistamassa vuoronne. Terveisin TASERA ry';
       break;
+    case 'decline':
+      text = 'Hei, ' + opts.user + ' perui päävalvojavuoronsa päivältä ' + opts.date + '. Päävalvoja pitää vaihtaa mitä pikimmiten. Terveisin TASERA ry';
     }
 
     sendmail({

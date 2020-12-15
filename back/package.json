@@ -29,16 +29,15 @@
     "moment-timezone": "^0.5.31",
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.1",
-    "nodemailer": "^6.4.16",
     "nodemon": "^2.0.6",
     "ora": "^4.1.1",
     "pg": "^8.5.0",
     "react": "^16.14.0",
     "react-moment": "^0.9.7",
     "react-router-dom": "^5.2.0",
+    "sendmail": "^1.6.1",
     "socket.io": "^2.3.0",
-    "validate.js": "^0.13.1",
-    "dotenv": "^8.1.0"
+    "validate.js": "^0.13.1"
   },
   "devDependencies": {
     "eslint": "^7.13.0",
