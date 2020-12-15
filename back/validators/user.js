@@ -71,8 +71,6 @@ const fields = {
     const validator = requestObject('email')
       .isString()
       .withMessage('must be a string')
-      .isByteLength({ min: 6, max: 144 })
-      .withMessage('must be between 6 and 144 characters');
     return validatorAdditions(validator, opts);
   },
 

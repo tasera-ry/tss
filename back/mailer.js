@@ -1,16 +1,17 @@
 require('dotenv').config();
 //step1
-const nodemailer = require('nodemailer');
 
-const sendEmail = function(message, emailaddress) {
+const sendmail = require('sendmail')(); //now goes with default values
+//if dkim is needed edit require require('sendmail')(dkim:'',)
+
+const sendEmail = function(message, emailAddress) {
   try{    
-    // declare vars,
-    let fromMail = process.env.EMAIL;
-    //editing the recieved email string to correct usable form.
-    let toMail = emailaddress.slice(11, -3);
-    let subject = 'Tasera info';
+    //editing the recieved email string to correct usable form. shuld be done in the place where function is called?
+    const toMail = emailAddress.slice(11, -3);
+    const subject = 'Tasera info';
     //defaults message to command if for some reason fails in switch
     let text = message;
+
 
     switch (message) {
     case 'assigned':
@@ -21,30 +22,13 @@ const sendEmail = function(message, emailaddress) {
       break;
     }
 
-    //step2:
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD,
-      }
-    });
-
-    //step3:
-    // email options
-    let mailOptions = {
-      from: fromMail,
-      to: toMail,
-      subject: subject,
-      text: text
-    };
-
-    //step4:
-    transporter.sendMail(mailOptions, (error, response) => {
-      if (error) {
-        console.log(error);
-      }
-      console.log(response);
+    sendmail({
+        from: process.env.SENDER_EMAIL,
+        to: toMail,
+        subject: subject,
+        html: text,
+    }, function(err, info) {
+        console.log(err && err.stack);
     });
   }catch (error){
     console.error(error);
