@@ -29,6 +29,9 @@ import { validateLogin, rangeSupervision } from '../utils/Utils';
 
 import data from '../texts/texts.json';
 
+// Submitting track usage statistics
+import { TrackStatistics } from '../TrackStatistics/TrackStatistics';
+
 /*
   Styles not in the rangeofficer.js file
 */
@@ -636,6 +639,10 @@ const Tabletview = () => {
           socket={socket}
         />
       </div>
+      <div className="addVisitors">
+        <TrackStatistics tracks={tracks} />
+      </div>
+
     </div>
 
   );
