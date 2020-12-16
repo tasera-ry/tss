@@ -65,6 +65,18 @@ const controller = {
       .send(response.locals.queryResult);
   },
 
+  feedback: async function sendFeedback(request, response) {
+    const feedback = response.locals.query.feedback;
+    const useremails = await getSuperuserEmails();
+    for (const user of useremails) {
+      email('feedback', user.email, { user: response.locals.query.user, feedback });
+    }
+
+    return response
+      .status(200)
+      .send();
+  },
+
   create: async function createSupervision(request, response) {
     try {
       //fetches the supervisor id who is assgined to the range.

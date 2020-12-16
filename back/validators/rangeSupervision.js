@@ -62,6 +62,22 @@ const fields = {
       .withMessage('must be an integer')
       .toInt();
     return validatorAdditions(validator, opts);
+  },
+
+  feedback: function feedbackValidation(requestObject, ...opts) {
+    const validator = requestObject('feedback')
+      .isString()
+      .withMessage('must be a string')
+      .isLength({ min: 1 })
+      .withMessage('must be at least one character long');
+    return validatorAdditions(validator, opts);
+  },
+
+  user: function userValidation(requestObject, ...opts) {
+    const validator = requestObject('user')
+      .isString()
+      .withMessage('must be a string');
+    return validatorAdditions(validator, opts);
   }
 };
 
@@ -100,6 +116,15 @@ module.exports = {
     handleValidationErrors,
     function storeUserID(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['params'] });
+      return next();
+    }
+  ],
+  feedback: [
+    fields.feedback(body, 'exists'),
+    fields.user(body, 'exists'),
+    handleValidationErrors,
+    function storeFeedback(request, response, next) {
+      response.locals.query = matchedData(request, { locations: ['body'] });
       return next();
     }
   ],

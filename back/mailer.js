@@ -19,6 +19,10 @@ const sendEmail = function(message, emailAddress, opts) {
       break;
     case 'decline':
       text = 'Hei, ' + opts.user + ' perui päävalvojavuoronsa päivältä ' + opts.date + '. Päävalvoja pitää vaihtaa mitä pikimmiten. Terveisin TASERA ry';
+      break;
+    case 'feedback':
+      text = 'Hei, ' + opts.user + ' lähetti juuri palautteen:\n\n' + opts.feedback + '\n\nTerveisin TASERA ry';
+      break;
     }
 
     sendmail({

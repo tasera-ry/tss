@@ -19,6 +19,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import logo from '../logo/Logo.png';
 
 import SupervisorNotification from './SupervisorNotification'; // eslint-disable-line
+import FeedbackWindow from './FeedbackWindow'; // eslint-disable-line
 
 import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
 
@@ -54,6 +55,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
   const styles = useStyles();
   const [menu, setMenu] = useState({ right: false });
   const [openDial, setOpenDial] = useState(false);
+  const [openFeedback, setOpenFeedback] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies(['username', 'role']); // eslint-disable-line
 
   const HandleClick = () => {
@@ -63,6 +65,11 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
   const HandleOpenDialog = () => {
     setMenu({ right: false });
     setOpenDial(true);
+  };
+
+  const HandleFeedback = () => {
+    setMenu({ right: false });
+    setOpenFeedback(true);
   };
 
   // TODO: centralize this one
@@ -162,6 +169,14 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
           </ListItem>
         </Link>
 
+        <ListItem
+          button
+          onClick={HandleFeedback}
+          style={elementStyle}
+        >
+          {nav.Feedback[fin]}
+        </ListItem>
+
         <Divider style={elementStyle} />
 
         <Link style={navStyle} to="/">
@@ -204,6 +219,14 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
 
       </div>
       {openDial ? <DialogWindow /> : ''}
+      {openFeedback
+        ? (
+          <FeedbackWindow
+            user={cookies.username}
+            dialogOpen={openFeedback}
+            setDialogOpen={setOpenFeedback}
+          />
+        ) : ''}
     </div>
   );
 };
