@@ -98,7 +98,6 @@ const service = {
     return models.user.update(key, updates);
   },
 
-
   /**
    * Delete a user.
    *

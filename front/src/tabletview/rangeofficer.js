@@ -482,7 +482,6 @@ const Tabletview = () => {
     const res = await rangeSupervision(reservationId,
       scheduleId,
       status,
-
       rangeSupervisionScheduled,
       null);
 

@@ -155,8 +155,8 @@ class UserManagementView extends Component {
       openAddNewUserDialog: false,
       changePassDialogOpen: false,
       changeOwnPassFailed: false,
-      mokat: false,
-      mokatPoistossa: false,
+      requestErrors: false,
+      deleteErrors: false,
       selectedROWID: 1,
       newUserName: '',
       newUserPass: '',
@@ -264,7 +264,7 @@ class UserManagementView extends Component {
   // Handles adding new users
   async handleAddNewUserDialogCloseConfirmed() {
     this.setState({
-      mokat: false,
+      requestErrors: false,
     });
     const req = await addUser(
       this.state.newUserName,
@@ -274,7 +274,7 @@ class UserManagementView extends Component {
     );
     if (req.errors !== undefined) {
       this.setState({
-        mokat: true,
+        requestErrors: true,
       });
     } else {
       this.handleAddNewUserDialogClose();
@@ -287,7 +287,7 @@ class UserManagementView extends Component {
     const response = await deleteUser(this.findUserId());
     if (response?.errors !== undefined) {
       this.setState({
-        mokatPoistossa: true,
+        deleteErrors: true,
       });
     } else {
       this.setState({
@@ -311,13 +311,13 @@ class UserManagementView extends Component {
     const response = await changePassword(this.findUserId(), this.state.password);
     if (!response) {
       this.setState({
-        mokatVaihdossa: true,
+        changeErrors: true,
       });
     } else {
       this.handleChangePassClose();
     }
   }
-  // ___________________________________________________________________
+
   // Closes dialog for adding email for some1 else
   handleaddEmailClose(e) { // eslint-disable-line
     this.setState({
@@ -331,14 +331,13 @@ class UserManagementView extends Component {
     const response = await addEmail(this.findUserId(), this.state.email);
     if (!response) {
       this.setState({
-        mokatVaihdossa: true,
+        changeErrors: true,
 
       });
     } else {
       this.handleaddEmailClose();
     }
   }
-  // _________________________________________________________________
 
   returnRemoveButton(id, manage, fin) { // eslint-disable-line
     return (
@@ -398,7 +397,7 @@ class UserManagementView extends Component {
   handleRemoveWarningClose() {
     this.setState({
       openRemoveWarning: false,
-      mokatPoistossa: false,
+      deleteErrors: false,
     });
   }
 
@@ -412,7 +411,7 @@ class UserManagementView extends Component {
   // closes dialog for adding users
   handleAddNewUserDialogClose() {
     this.setState({
-      mokat: false,
+      requestErrors: false,
       newUserName: '',
       newUserPass: '',
       newUserRole: 'supervisor',
@@ -546,7 +545,7 @@ class UserManagementView extends Component {
       }
     }
     return 'Username not found';
-  } // Finds users id by selectedROWID in state
+  }
 
   findUserId() {
     for (const i in this.state.userList) {
@@ -555,7 +554,7 @@ class UserManagementView extends Component {
       }
     }
     return undefined;
-  } // finds logged in users id
+  }
 
   findOwnID() {
     for (const i in this.state.userList) {
@@ -649,7 +648,7 @@ class UserManagementView extends Component {
               </Select>
             </FormControl>
 
-            {this.state.mokat ? (
+            {this.state.requestErrors ? (
               <p style={{ fontSize: 20, color: 'red', textAlign: 'center' }}>
                 {manage.Error[fin]}
                 {' '}
@@ -695,7 +694,7 @@ class UserManagementView extends Component {
               {this.state.selectedUserName}
             </DialogContentText>
 
-            {this.state.mokatPoistossa
+            {this.state.deleteErrors
               ? (
                 <p style={{ fontSize: 20, color: 'red', textAlign: 'center' }}>
                   {manage.ErrorSmall[fin]}
@@ -804,7 +803,7 @@ class UserManagementView extends Component {
               }}
               fullWidth
             />
-            {this.state.mokatVaihdossa ? (
+            {this.state.changeErrors ? (
               <p style={{ fontSize: 20, color: 'red', textAlign: 'center' }}>
                 {manage.Error[fin]}
                 {' '}
@@ -852,7 +851,7 @@ class UserManagementView extends Component {
               }}
               fullWidth
             />
-            {this.state.mokatVaihdossa ? (
+            {this.state.changeErrors ? (
               <p style={{ fontSize: 20, color: 'red', textAlign: 'center' }}>
                 {manage.ErrorEmail[fin]}
                 {' '}
