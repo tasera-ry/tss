@@ -18,8 +18,8 @@ import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from '@material-ui/core/styles';
 import logo from '../logo/Logo.png';
 
-import SupervisorNotification from './SupervisorNotification'; // eslint-disable-line
-import FeedbackWindow from './FeedbackWindow'; // eslint-disable-line
+import SupervisorNotification from './SupervisorNotification';
+import FeedbackWindow from './FeedbackWindow';
 
 import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
 
