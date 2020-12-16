@@ -647,7 +647,6 @@ class Scheduling extends Component {
           srsId,
           rangeStatus,
           rangeSupervisionScheduled,
-          this.state.token,
           this.state.rangeSupervisorId,
 
         );

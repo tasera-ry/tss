@@ -209,7 +209,7 @@ export async function validateLogin() {
 // on success true
 // else returns string trying to explain what broke
 // requires reservation and schedule to exist
-export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, token, supervisor) {
+export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, supervisor) {
   try {
     if (rsId !== null && srsId !== null) {
       // only closed is different from the 6 states
