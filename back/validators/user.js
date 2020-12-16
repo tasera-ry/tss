@@ -70,7 +70,7 @@ const fields = {
   email: function emailValidation(requestObject, ...opts) {
     const validator = requestObject('email')
       .isString()
-      .withMessage('must be a string')
+      .withMessage('must be a string');
     return validatorAdditions(validator, opts);
   },
 

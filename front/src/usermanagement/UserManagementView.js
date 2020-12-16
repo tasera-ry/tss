@@ -541,9 +541,7 @@ class UserManagementView extends Component {
 
   findUserName() {
     for (const i in this.state.userList) {
-
-      if (this.state.userList[i].id === parseInt(this.state.selectedROWID)) { 
-
+      if (this.state.userList[i].id === parseInt(this.state.selectedROWID)) {
         return this.state.userList[i].name;
       }
     }
@@ -552,16 +550,12 @@ class UserManagementView extends Component {
 
   findUserId() {
     for (const i in this.state.userList) {
-
       if (this.state.userList[i].id === parseInt(this.state.selectedROWID)) {
-
         return this.state.userList[i].id;
       }
     }
     return undefined;
   } // finds logged in users id
-
-
 
   findOwnID() {
     for (const i in this.state.userList) {

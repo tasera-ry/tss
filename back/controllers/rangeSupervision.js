@@ -93,7 +93,7 @@ const controller = {
 
       if (response.locals.updates.range_supervisor === 'absent') {
         const useremails = await getSuperuserEmails();
-        const supervision = await getCorrespondingSupervision(response.locals.id.scheduled_range_supervision_id)
+        const supervision = await getCorrespondingSupervision(response.locals.id.scheduled_range_supervision_id);
         const date = moment(supervision.date).format('YYYY-MM-DD');
         for (const user of useremails) {
           email('decline', user.email, { user: response.locals.user.name, date });

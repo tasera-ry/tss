@@ -22,12 +22,12 @@ const sendEmail = function(message, emailAddress, opts) {
     }
 
     sendmail({
-        from: process.env.SENDER_EMAIL,
-        to: toMail,
-        subject: subject,
-        html: text,
-    }, function(err, info) {
-        console.log(err && err.stack);
+      from: process.env.SENDER_EMAIL,
+      to: toMail,
+      subject: subject,
+      html: text,
+    }, function(err) {
+      console.log(err && err.stack);
     });
   }catch (error){
     console.error(error);

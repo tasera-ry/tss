@@ -484,7 +484,7 @@ const Tabletview = () => {
       status,
 
       rangeSupervisionScheduled,
-      null); 
+      null);
 
     if (res === true) {
       setStatusColor(color);
