@@ -515,6 +515,7 @@ class Scheduling extends Component {
       let params = {
         range_id: this.state.rangeId,
         available: this.state.available,
+        supervisor: this.state.rangeSupervisorId,
       };
 
       if (reservationMethod === 'POST') {
@@ -645,6 +646,8 @@ class Scheduling extends Component {
           srsId,
           rangeStatus,
           rangeSupervisionScheduled,
+          this.state.rangeSupervisorId,
+
         );
         if (rangeSupervisionRes !== true) {
           return reject(new Error(rangeSupervisionRes));
@@ -668,6 +671,7 @@ class Scheduling extends Component {
             let params = { // eslint-disable-line
               track_supervisor: supervisorStatus,
               notice,
+              supervisor: this.state.rangeSupervisorId,
             };
 
             let srsp = '';

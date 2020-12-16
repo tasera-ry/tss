@@ -67,6 +67,12 @@ const fields = {
       .withMessage('must be a superuser or supervisor');
     return validatorAdditions(validator, opts);
   },
+  email: function emailValidation(requestObject, ...opts) {
+    const validator = requestObject('email')
+      .isString()
+      .withMessage('must be a string');
+    return validatorAdditions(validator, opts);
+  },
 
   phone: function phoneValidation(requestObject, ...opts) {
     const validator = requestObject('phone')
@@ -102,6 +108,7 @@ module.exports = {
     fields.id(query, 'optional'),
     fields.name(query, 'optional'),
     fields.role(query, 'optional'),
+    fields.email(body, 'optional'),
     fields.phone(query, 'optional'),
     handleValidationErrors,
     function storeQuery(request, response, next) {
@@ -121,6 +128,7 @@ module.exports = {
     fields.name(body, 'exists'),
     fields.password(body, 'exists'),
     fields.role(body, 'exists'),
+    fields.email(body, 'optional'),
     fields.phone(body, 'optional')
       .custom((value, {request}) => request.body.role === 'supervisor')
       .withMessage('may only be assigned to a supervisor'),
@@ -134,6 +142,7 @@ module.exports = {
     fields.id(param, 'exists'),
     fields.name(body, 'optional'),
     fields.password(body, 'optional'),
+    fields.email(body, 'optional'),
     fields.phone(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {

@@ -20,7 +20,7 @@ exports.seed = async function(knex) {
   const users = await generateUsers;
 
   const head = _.take(users, listedUsersAmount)
-    .map(_.partialRight(_.pick, ['name', 'role', 'password']));
+    .map(_.partialRight(_.pick, ['name', 'role', 'password', 'email']));
   // simplify JSON.stringify
   console.log(`First ${listedUsersAmount} users:\n${JSON.stringify(head, null, 2)}`);
 
@@ -28,7 +28,7 @@ exports.seed = async function(knex) {
     _.chunk(users, config.seeds.chunkSize)
       .map(async (userChunk) => {
         const users = userChunk
-          .map(user => _.pick(user, ['name', 'role', 'digest']));
+          .map(user => _.pick(user, ['name', 'role', 'digest','email']));
         const supervisors =
               (await knex('user')
                 .insert(users)
@@ -51,6 +51,8 @@ casual.define('user', async function() {
     password: password,
     digest: bcrypt.hashSync(password, 0),
     phone: casual.phone,
+    email: casual.email,
+    
     role: casual.integer(0, 4) ? 'supervisor' : 'superuser'
   };
 });
