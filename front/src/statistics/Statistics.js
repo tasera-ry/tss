@@ -39,6 +39,10 @@ const Statistics = () => {
   const [monthOptions, setMonthOptions] = useState({});
   const [monthSeries, setMonthSeries] = useState([]);
 
+  const [monthlyTrackUsers, setMonthlyTrackUsers] = useState([]);
+  const [monthlyTrackOptions, setMonthlyTrackOptions] = useState({});
+  const [monthlyTrackSeries, setMonthlyTrackSeries] = useState([]);
+
   const [dayOptions, setDayOptions] = useState({});
   const [daySeries, setDaySeries] = useState([]);
   const [dailyUsers, setDailyUsers] = useState([]);
@@ -59,8 +63,12 @@ const Statistics = () => {
     const fetchData = async () => {
       const monthResult = await getMonthlyVisitors(firstDate, lastDate); // eslint-disable-line
       const dayResult = await getDailyVisitors(singleDay); // eslint-disable-line
+      const monthlyTrackResult = await getMonthlyTrackVisitors(firstDate, lastDate); // eslint-disable-line
       setDailyUsers(dayResult);
+      console.log(dayResult)
       setMonthlyUsers(monthResult);
+      setMonthlyTrackUsers(monthlyTrackResult);
+      console.log("asd:", monthlyTrackResult);
     };
     fetchData();
   }, [date]);
@@ -141,6 +149,50 @@ const Statistics = () => {
     }]);
   }, [dailyUsers]);
 
+  useEffect(() => {
+    // Count monthly visitors per track
+    let visitorArray = Array.from({length: monthlyTrackUsers.length}, (_, i) => i + 1);
+    
+    // Options for the day chart
+    setMonthlyTrackOptions({
+      chart: { id: 'monthlyTrackChart' },
+      xaxis: {
+        categories: visitorArray,
+        title: {
+          text: statistics.TrackLabel[fin],
+          style: {
+            fontSize: '14px',
+          },
+        },
+      },
+      yaxis: {
+        title: {
+          text: statistics.VisitorLabel[fin],
+          style: {
+            fontSize: '14px',
+          },
+        },
+      },
+      fill: {
+        colors: ['#658f60'],
+      },
+      dataLabels: {
+        enabled: true,
+        style: {
+          fontSize: '16px',
+        },
+        background: {
+          enabled: true,
+          foreColor: '#000000',
+        },
+      },
+    });
+    setMonthlyTrackSeries([{
+      name: 'visitors',
+      data: monthlyTrackUsers,
+    }]);
+  }, [monthlyTrackUsers]);
+
   const previousDayClick = () => {
     const newDate = new Date(date.setDate(date.getDate() - 1));
     setDate(newDate);
@@ -156,7 +208,6 @@ const Statistics = () => {
   };
 
   const continueWithDate = (event) => {
-    //if (event !== undefined && event.type !== undefined && event.type === 'submit') {
     if (event?.event.type?.event.type === 'submit') {
       event.preventDefault();
     }
@@ -246,6 +297,15 @@ const Statistics = () => {
                 height="400"
               />
             </div>
+            <div className="bar">
+              <Chart
+                options={monthlyTrackOptions}
+                series={monthlyTrackSeries}
+                type="bar"
+                width="700"
+                height="400"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -290,6 +350,36 @@ async function getDailyVisitors(date) {
     } else {
       for (const track of supervision.tracks) {
         visitors.push(track.scheduled.visitors);
+      };
+    }
+  };
+  return visitors;
+}
+
+async function getMonthlyTrackVisitors(firstDate, lastDate) {
+  const query = `api/daterange/freeform/${firstDate}/${lastDate}`;
+  const response = await axios.get(query);
+  if (!response) {
+    return [];
+  }
+  // Form an array including the visitors of a certain track per month and return it
+  let visitors = [];
+  for (const supervision of response.data) {
+    if (!supervision?.scheduleId) {
+      // I think there should be something
+    } else {
+      let trackVisitors = 0;
+      let trackPerMonthVisitors = 0;
+      for (const track of supervision.tracks) {
+        if (visitors.length == 7) {
+          trackPerMonthVisitors = visitors[(track.id-1)];
+          trackVisitors = track.scheduled.visitors + trackPerMonthVisitors;
+          visitors.splice((track.id-1), 1, trackVisitors);
+        }
+        else {
+          trackVisitors = track.scheduled.visitors;
+          visitors.splice((track.id-1), 1, trackVisitors);
+        }
       };
     }
   };
