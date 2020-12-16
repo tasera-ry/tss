@@ -3,7 +3,7 @@ const sendmail = require('sendmail')(); //now goes with default values
 
 const sendEmail = function(message, emailAddress, opts) {
   try {
-    const toMail = emailAddress
+    const toMail = emailAddress;
     const subject = 'Tasera info';
     //defaults message to command if for some reason fails in switch
     let text = message;
