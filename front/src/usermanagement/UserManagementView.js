@@ -557,7 +557,6 @@ class UserManagementView extends Component {
     return undefined;
   } // finds logged in users id
 
-
   findOwnID() {
     for (const i in this.state.userList) {
       if (this.state.username === this.state.userList[i].name) {
