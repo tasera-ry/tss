@@ -198,5 +198,11 @@
     "TrackLabel": ["Rata", "Track"],
     "VisitorLabel": ["Kävijämäärä", "Number of visitors"],
     "DayLabel": ["Päivä", "Day"]
+  },
+  "trackStatistics": {
+    "addVisitorsButton": ["Lisää kävijätietoja", "Add visitor statistics"],
+    "addVisitorsTitle": ["Lisää kävijöiden määrä", "Add number of visitors"],
+    "backButton": ["Takaisin", "Back"],
+    "sendButton": ["Lähetä tiedot", "Send statistics"]
   }
 }
