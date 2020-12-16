@@ -65,18 +65,17 @@ const Statistics = () => {
       const dayResult = await getDailyVisitors(singleDay); // eslint-disable-line
       const monthlyTrackResult = await getMonthlyTrackVisitors(firstDate, lastDate); // eslint-disable-line
       setDailyUsers(dayResult);
-      console.log(dayResult)
+      console.log(dayResult);
       setMonthlyUsers(monthResult);
       setMonthlyTrackUsers(monthlyTrackResult);
-      console.log("asd:", monthlyTrackResult);
     };
     fetchData();
   }, [date]);
 
   useEffect(() => {
     // Count monthly visitors
-    let dayArray = Array.from({length: monthlyUsers.length}, (_, i) => i + 1);
-    
+    const dayArray = Array.from({length: monthlyUsers.length}, (_, i) => i + 1);
+
     // Options for the month chart
     setMonthOptions({
       chart: { id: 'monthChart' },
@@ -107,8 +106,8 @@ const Statistics = () => {
 
   useEffect(() => {
     // Count daily visitors
-    let visitorArray = Array.from({length: dailyUsers.length}, (_, i) => i + 1);
-    
+    const visitorArray = Array.from({ length: dailyUsers.length }, (_, i) => i + 1);
+
     // Options for the day chart
     setDayOptions({
       chart: { id: 'dayChart' },
@@ -151,8 +150,8 @@ const Statistics = () => {
 
   useEffect(() => {
     // Count monthly visitors per track
-    let visitorArray = Array.from({length: monthlyTrackUsers.length}, (_, i) => i + 1);
-    
+    const visitorArray = Array.from({ length: monthlyTrackUsers.length }, (_, i) => i + 1);
+
     // Options for the day chart
     setMonthlyTrackOptions({
       chart: { id: 'monthlyTrackChart' },
@@ -213,9 +212,7 @@ const Statistics = () => {
     }
   };
 
-  const countMonthlyVisitors = () => {
-    return monthlyUsers.reduce((a, b) => a + b, 0)
-  };
+  const countMonthlyVisitors = () => monthlyUsers.reduce((a, b) => a + b, 0);
 
   const handleDatePickChange = (newDate) => {
     const newDateObject = new Date(newDate);
@@ -321,7 +318,7 @@ async function getMonthlyVisitors(firstDate, lastDate) {
     return [];
   }
   // Form an array including the visitors of a certain month and return it
-  let visitors = [];
+  const visitors = [];
   for (const supervision of response.data) {
     if (!supervision?.scheduleId) {
       visitors.push(0);
@@ -332,7 +329,7 @@ async function getMonthlyVisitors(firstDate, lastDate) {
       }
       visitors.push(trackVisitors);
     }
-  };
+  }
   return visitors;
 }
 
@@ -343,16 +340,16 @@ async function getDailyVisitors(date) {
     return [];
   }
   // Form an array including the visitors of a certain day and return it
-  let visitors = [];
+  const visitors = [];
   for (const supervision of response.data) {
     if (!supervision?.scheduleId) {
       visitors.push(0);
     } else {
       for (const track of supervision.tracks) {
         visitors.push(track.scheduled.visitors);
-      };
+      }
     }
-  };
+  }
   return visitors;
 }
 
@@ -363,7 +360,7 @@ async function getMonthlyTrackVisitors(firstDate, lastDate) {
     return [];
   }
   // Form an array including the visitors of a certain track per month and return it
-  let visitors = [];
+  const visitors = [];
   for (const supervision of response.data) {
     if (!supervision?.scheduleId) {
       // I think there should be something
@@ -371,18 +368,17 @@ async function getMonthlyTrackVisitors(firstDate, lastDate) {
       let trackVisitors = 0;
       let trackPerMonthVisitors = 0;
       for (const track of supervision.tracks) {
-        if (visitors.length == 7) {
-          trackPerMonthVisitors = visitors[(track.id-1)];
+        if (visitors.length === 7) {
+          trackPerMonthVisitors = visitors[(track.id - 1)];
           trackVisitors = track.scheduled.visitors + trackPerMonthVisitors;
-          visitors.splice((track.id-1), 1, trackVisitors);
-        }
-        else {
+          visitors.splice((track.id - 1), 1, trackVisitors);
+        } else {
           trackVisitors = track.scheduled.visitors;
-          visitors.splice((track.id-1), 1, trackVisitors);
+          visitors.splice((track.id - 1), 1, trackVisitors);
         }
-      };
+      }
     }
-  };
+  }
   return visitors;
 }
 
