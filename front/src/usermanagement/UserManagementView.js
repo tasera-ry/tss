@@ -557,9 +557,10 @@ class UserManagementView extends Component {
     return undefined;
   } // finds logged in users id
 
+
   findOwnID() {
     for (const i in this.state.userList) {
-      if (localStorage.taseraUserName === this.state.userList[i].name) {
+      if (this.state.username === this.state.userList[i].name) {
         return this.state.userList[i].id;
       }
     }
@@ -569,7 +570,7 @@ class UserManagementView extends Component {
   update() {
     const tempRows = [];
     for (const i in this.state.userList) {
-      if (localStorage.taseraUserName !== this.state.userList[i].name) {
+      if (this.state.username !== this.state.userList[i].name) {
         const row = this.createData(this.state.userList[i].name,
           this.state.userList[i].role,
           this.returnPassButton(this.state.userList[i].id, manage, fin),
