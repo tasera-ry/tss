@@ -84,10 +84,7 @@ const controller = {
     //updates.range_supervisor returns "absent" if supervisor has not been assigned. it returns "not confirmed" is supervisor is assigned.
     //if - checks if supervisor is assigned and only sends email if it is set. otherwise it would send email aswell when supervisor is taken off.
     try {
-      const absentChecker = JSON.stringify(response.locals.updates.range_supervisor);
-      const unquoted = String(absentChecker.replace(/"([^"]+)":/g, ''));
-      const notAbsent= '"not confirmed"';
-      if (unquoted == notAbsent){
+      if (response.locals.updates.range_supervisor === 'not confirmed'){
         const receiver = await getUserEmail(response.locals.updates.supervisor);
         var emailString = JSON.stringify(receiver);
         //sending fetched email address to mailer.js where it is used to send message that user's supervision has been changed.
