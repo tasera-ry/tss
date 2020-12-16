@@ -3,8 +3,7 @@ const sendmail = require('sendmail')(); //now goes with default values
 
 const sendEmail = function(message, emailAddress, opts) {
   try {
-    //editing the recieved email string to correct usable form. shuld be done in the place where function is called?
-    const toMail = emailAddress.slice(11, -3);
+    const toMail = emailAddress
     const subject = 'Tasera info';
     //defaults message to command if for some reason fails in switch
     let text = message;
