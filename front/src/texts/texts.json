@@ -7,8 +7,7 @@
     "Supervision": ["Valvonnat", "Supervisions"],
     "Tablet": ["Tablettinäkymä", "Tablet view"],
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
-    "SignOut": ["Kirjaudu ulos", "Sign Out"],
-    "Statistics": ["Tilastot", "Statistics"]
+    "SignOut": ["Kirjaudu ulos", "Sign Out"]
   },
   "banner": {
     "Notification": ["Sinulla on varmistamattomia päävalvojavuoroja!", "You have unconfirmed range officer reservations!"],
@@ -97,7 +96,9 @@
     "Ask": ["Haluatko varmasti jatkaa?", "Are you sure?"],
     "AskDelete": ["Tämä poistaa pysyvästi käyttäjän", "This action will permanently remove user"],
     "Error": ["Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki", "Something went wrong"],
-    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"]
+    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"],
+    "Superuser": ["Superuser", "Superuser"],
+    "Supervisor": ["Valvoja", "Range officer"]
   },
   "tablet": {
     "Open": ["Aukiolo", "Open"],
@@ -182,13 +183,20 @@
     "10": ["Lokakuu", "October"],
     "11": ["Marraskuu", "November"],
     "12": ["Joulukuu", "December"],
-    "weekNumber": ["Vko", "Wk"]
+    "weekNumber": ["Vko", "Wk"],
+    "Notice": ["Radalla Lisätietoja", "Track has additional information"]
   },
   "viewChanger": {
     "Month": ["Kuukausi", "Month"],
     "Week": ["Viikko", "Week"],
     "Day": ["Päivä", "Day"],
     "JumpToCurrent": ["Tänään", "Today"]
+  },
+  "trackStatistics": {
+    "addVisitorsButton": ["Lisää kävijätietoja", "Add visitor statistics"],
+    "addVisitorsTitle": ["Lisää kävijöiden määrä", "Add number of visitors"],
+    "backButton": ["Takaisin", "Back"],
+    "sendButton": ["Lähetä tiedot", "Send statistics"]
   },
   "statistics": {
     "Day": ["Päivä", "Day"],
@@ -198,11 +206,5 @@
     "TrackLabel": ["Rata", "Track"],
     "VisitorLabel": ["Kävijämäärä", "Number of visitors"],
     "DayLabel": ["Päivä", "Day"]
-  },
-  "trackStatistics": {
-    "addVisitorsButton": ["Lisää kävijätietoja", "Add visitor statistics"],
-    "addVisitorsTitle": ["Lisää kävijöiden määrä", "Add number of visitors"],
-    "backButton": ["Takaisin", "Back"],
-    "sendButton": ["Lähetä tiedot", "Send statistics"]
   }
 }

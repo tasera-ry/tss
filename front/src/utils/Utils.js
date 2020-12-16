@@ -97,30 +97,34 @@ export function viewChanger() {
     const fullUrl = window.location.href.split('/');
     const urlParamDate = fullUrl[5];
 
-    const urlParamDateSplit = urlParamDate.split('-');
-
-    const paramDay = urlParamDateSplit[2].split('T')[0];
-    const paramMonth = urlParamDateSplit[1];
-    const paramYear = urlParamDateSplit[0];
+    // When first access to '/' (no params in URL)
+    let paramDay = '';
+    let paramMonth = '';
+    let paramYear = '';
+    if (urlParamDate) {
+      const urlParamDateSplit = urlParamDate.split('-');
+      [paramDay, paramMonth, paramYear] = urlParamDateSplit;
+      [paramDay] = paramDay.split('T');
+    }
 
     const time = moment(`${paramYear}-${paramMonth}-${paramDay}`, 'YYYY-MM-DD');
 
     table.push(
-      <Link class="link" to={`/monthView/${time.format('YYYY-MM-DD')}`}>
+      <Link key="month" className="link" to={`/monthView/${time.format('YYYY-MM-DD')}`}>
         <div>
           {viewChanger.Month[fin]}
         </div>
       </Link>,
     );
     table.push(
-      <Link class="link" to={`/weekView/${time.format('YYYY-MM-DD')}`}>
+      <Link key="week" className="link" to={`/weekView/${time.format('YYYY-MM-DD')}`}>
         <div>
           {viewChanger.Week[fin]}
         </div>
       </Link>,
     );
     table.push(
-      <Link class="link" to={`/dayView/${time.format('YYYY-MM-DD')}`}>
+      <Link key="day" className="link" to={`/dayView/${time.format('YYYY-MM-DD')}`}>
         <div>
           {viewChanger.Day[fin]}
         </div>
@@ -138,20 +142,17 @@ export function jumpToCurrent() {
   const fin = localStorage.getItem('language');
 
   try {
-    const table = [];
     const fullUrl = window.location.href.split('/');
     const urlParamDate = fullUrl[4];
-
     const date = new Date();
 
-    table.push(
-      <Link class="link" to={`/${urlParamDate}/${moment(date, 'YYYY-MM-DD').toISOString().substring(0, 10)}`}>
+    return (
+      <Link className="link" to={`/${urlParamDate}/${moment(date, 'YYYY-MM-DD').toISOString().substring(0, 10)}`}>
         <div>
           {viewChanger.JumpToCurrent[fin]}
         </div>
-      </Link>,
+      </Link>
     );
-    return table;
   } catch (err) {
     console.error(err);
     return false;
