@@ -8,7 +8,7 @@ const moment = require('moment');
 async function getUserEmail(key) {
   return await knex
     .from('user')
-    .select('user.email')
+    .select('email')
     .where({ 'user.id': key });
 }
 
@@ -81,9 +81,8 @@ const controller = {
     try {
       //fetches the supervisor id who is assgined to the range.
       const receiver = await getUserEmail(response.req.body.supervisor);
-      var emailString = JSON.stringify(receiver);
-      //sending fetched email address to mailer.js where it is used to send message that user has been assigned a supervision
-      email('assigned', emailString);
+      //sending fetched email address to mailer.js where it is used to send message that user's supervision has been changed.
+      email('update', receiver[0].email, null);
     } catch (error) {
       console.error(error);
     }
@@ -98,9 +97,8 @@ const controller = {
     try {
       if (response.locals.updates.range_supervisor === 'not confirmed'){
         const receiver = await getUserEmail(response.locals.updates.supervisor);
-        var emailString = JSON.stringify(receiver);
         //sending fetched email address to mailer.js where it is used to send message that user's supervision has been changed.
-        email('update', emailString, null);
+        email('update', receiver[0].email, null);
       }
 
       if (response.locals.updates.range_supervisor === 'absent') {
