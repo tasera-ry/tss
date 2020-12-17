@@ -485,7 +485,9 @@ const Tabletview = () => {
     const res = await rangeSupervision(reservationId,
       scheduleId,
       status,
-      rangeSupervisionScheduled);
+      rangeSupervisionScheduled,
+      null);
+
     if (res === true) {
       setStatusColor(color);
       setStatusText(text);

@@ -75,6 +75,7 @@ const serviceCalls = {
     return next();
   },
 
+
   update: async function updateSupervision(request, response, next) {
     const id = response.locals.id;
     const updates = response.locals.updates;

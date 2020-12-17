@@ -6,6 +6,7 @@
     "UserManagement": ["Käyttäjienhallinta", "User management"],
     "Supervision": ["Valvonnat", "Supervisions"],
     "Tablet": ["Tablettinäkymä", "Tablet view"],
+    "Feedback": ["Palaute", "Feedback"],
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
     "SignOut": ["Kirjaudu ulos", "Sign Out"],
     "Statistics": ["Tilastot", "Statistics"]
@@ -41,6 +42,15 @@
     "EnRoute": ["Matkalla", "En route"],
     "Cancel": ["Sulje", "Cancel"],
     "Save": ["Tallenna", "Save"]
+  },
+  "feedback": {
+    "Title": ["Anna palautetta", "Give feedback"],
+    "Note": [
+      "Kirjoita allaolevaan kenttään radoilta saamastasi palautteesta. Muista kirjoittaa viestiin radan nimi, jos palaute koskee tiettyä rataa. Palaute lähetetään suoraan pääkäyttäjille.",
+      "Write in the textbox below the feedback you received from the range. Remember to identify the track if the feedback is for a certain track. The feedback will be sent to the superusers."
+    ],
+    "Send": ["Lähetä", "Send"],
+    "Cancel": ["Peru", "Cancel"]
   },
   "week": {
     "Week": ["Viikko", "Week"],

@@ -12,7 +12,7 @@ const model = {
   /**
    * Create a new persistent user.
    *
-   * @param {object} user - User's properties, { id?, name, digest, role, phone? }
+   * @param {object} user - User's properties, { id?, name, digest, role, email, phone? }
    * @return {Promise<number[]>} The added users id
    *
    * @example
@@ -23,7 +23,8 @@ const model = {
       id: {},
       name: {},
       digest: {},
-      role: {}
+      role: {},
+      email: {}
     };
 
     const supervisorConstraints = {
@@ -83,7 +84,7 @@ const model = {
    * exports.update({ name: 'Mark }, { digest: 'new_password_digest' })
    */
   update: async function updateUser(current, update) {
-    const user = _.pick(update, 'name', 'digest');
+    const user = _.pick(update, 'name', 'digest', 'email');
     const supervisor = _.pick(update, 'phone');
 
     const id = await model

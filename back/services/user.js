@@ -73,7 +73,7 @@ const service = {
    * exports.read({ role: 'supervisor' }) - Find all supervisors
    */
   read: async function readUser(key) {
-    return (await models.user.read(_.pick(key, 'id', 'name', 'role', 'phone')))
+    return (await models.user.read(_.pick(key, 'id', 'name', 'role', 'phone', 'email')))
       .map(_.partialRight(_.omit, 'digest', 'user_id'));
   },
 

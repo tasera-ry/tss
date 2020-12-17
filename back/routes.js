@@ -85,6 +85,13 @@ router.route('/range-supervision')
     middlewares.rangeSupervision.create,
     controllers.rangeSupervision.create);
 
+router.route('/range-supervision/feedback')
+  .put(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes),
+    validators.rangeSupervision.feedback,
+    controllers.rangeSupervision.feedback);
+
 router.route('/range-supervision/usersupervisions/:id')
   .get(
     middlewares.rangeSupervision.userSupervisions,

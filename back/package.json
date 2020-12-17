@@ -35,6 +35,7 @@
     "react": "^16.14.0",
     "react-moment": "^0.9.7",
     "react-router-dom": "^5.2.0",
+    "sendmail": "^1.6.1",
     "socket.io": "^2.3.0",
     "validate.js": "^0.13.1"
   },

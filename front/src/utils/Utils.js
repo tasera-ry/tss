@@ -210,7 +210,7 @@ export async function validateLogin() {
 // on success true
 // else returns string trying to explain what broke
 // requires reservation and schedule to exist
-export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled) {
+export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, supervisor) {
   try {
     if (rsId !== null && srsId !== null) {
       // only closed is different from the 6 states
@@ -233,7 +233,7 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled) {
           // update supervision
           await fetch(`/api/range-supervision/${srsId}`, {
             method: 'PUT',
-            body: JSON.stringify({ range_supervisor: rangeStatus }),
+            body: JSON.stringify({ range_supervisor: rangeStatus, supervisor }),
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
@@ -262,6 +262,7 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled) {
             body: JSON.stringify({
               scheduled_range_supervision_id: srsId,
               range_supervisor: rangeStatus,
+              supervisor,
             }),
             headers: {
               Accept: 'application/json',
