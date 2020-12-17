@@ -85,6 +85,9 @@
     "Helper": ["Vaihtaaksesi salasanasi sinun tulee antaa nykyinen salasanasi sekä uusi joksi haluat sen vaihtaa", "Give your current and new password"],
     "OldPass": ["Nykyinen salasana", "Current password"],
     "NewPass": ["Uusi salasana", "New password"],
+    "NewEmail":[ "Lisää sähköposti","Add Email"],
+    "Email":[ "Sähköposti","Email"],
+    "EmailForUser":[ "Lisää sähköposti käyttäjälle:","Add Email for user:"],
     "Cancel": ["Peruuta", "Cancel"],
     "Confirm": ["Vahvista", "Save changes"],
     "ConfirmDelete": ["Vahvista", "Confirm"],
@@ -97,6 +100,7 @@
     "Ask": ["Haluatko varmasti jatkaa?", "Are you sure?"],
     "AskDelete": ["Tämä poistaa pysyvästi käyttäjän", "This action will permanently remove user"],
     "Error": ["Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki", "Something went wrong"],
+    "ErrorEmail": ["Jokin meni pieleen, Sähköpostia ei tallennettu", "Something went wrong, email not saved"],
     "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"]
   },
   "tablet": {
