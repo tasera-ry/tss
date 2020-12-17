@@ -6,6 +6,7 @@
     "UserManagement": ["Käyttäjienhallinta", "User management"],
     "Supervision": ["Valvonnat", "Supervisions"],
     "Tablet": ["Tablettinäkymä", "Tablet view"],
+    "Feedback": ["Palaute", "Feedback"],
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
     "SignOut": ["Kirjaudu ulos", "Sign Out"]
   },
@@ -40,6 +41,15 @@
     "EnRoute": ["Matkalla", "En route"],
     "Cancel": ["Sulje", "Cancel"],
     "Save": ["Tallenna", "Save"]
+  },
+  "feedback": {
+    "Title": ["Anna palautetta", "Give feedback"],
+    "Note": [
+      "Kirjoita allaolevaan kenttään radoilta saamastasi palautteesta. Muista kirjoittaa viestiin radan nimi, jos palaute koskee tiettyä rataa. Palaute lähetetään suoraan pääkäyttäjille.",
+      "Write in the textbox below the feedback you received from the range. Remember to identify the track if the feedback is for a certain track. The feedback will be sent to the superusers."
+    ],
+    "Send": ["Lähetä", "Send"],
+    "Cancel": ["Peru", "Cancel"]
   },
   "week": {
     "Week": ["Viikko", "Week"],
@@ -84,6 +94,9 @@
     "Helper": ["Vaihtaaksesi salasanasi sinun tulee antaa nykyinen salasanasi sekä uusi joksi haluat sen vaihtaa", "Give your current and new password"],
     "OldPass": ["Nykyinen salasana", "Current password"],
     "NewPass": ["Uusi salasana", "New password"],
+    "NewEmail":[ "Lisää sähköposti","Add Email"],
+    "Email":[ "Sähköposti","Email"],
+    "EmailForUser":[ "Lisää sähköposti käyttäjälle:","Add Email for user:"],
     "Cancel": ["Peruuta", "Cancel"],
     "Confirm": ["Vahvista", "Save changes"],
     "ConfirmDelete": ["Vahvista", "Confirm"],
@@ -96,6 +109,7 @@
     "Ask": ["Haluatko varmasti jatkaa?", "Are you sure?"],
     "AskDelete": ["Tämä poistaa pysyvästi käyttäjän", "This action will permanently remove user"],
     "Error": ["Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki", "Something went wrong"],
+    "ErrorEmail": ["Jokin meni pieleen, Sähköpostia ei tallennettu", "Something went wrong, email not saved"],
     "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"],
     "Superuser": ["Superuser", "Superuser"],
     "Supervisor": ["Valvoja", "Range officer"]
@@ -183,12 +197,19 @@
     "10": ["Lokakuu", "October"],
     "11": ["Marraskuu", "November"],
     "12": ["Joulukuu", "December"],
-    "weekNumber": ["Vko", "Wk"]
+    "weekNumber": ["Vko", "Wk"],
+    "Notice": ["Radalla Lisätietoja", "Track has additional information"]
   },
   "viewChanger": {
     "Month": ["Kuukausi", "Month"],
     "Week": ["Viikko", "Week"],
     "Day": ["Päivä", "Day"],
     "JumpToCurrent": ["Tänään", "Today"]
+  },
+  "trackStatistics": {
+    "addVisitorsButton": ["Lisää kävijätietoja", "Add visitor statistics"],
+    "addVisitorsTitle": ["Lisää kävijöiden määrä", "Add number of visitors"],
+    "backButton": ["Takaisin", "Back"],
+    "sendButton": ["Lähetä tiedot", "Send statistics"]
   }
 }

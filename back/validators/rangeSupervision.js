@@ -39,6 +39,14 @@ const fields = {
     return validatorAdditions(validator, opts);
   },
 
+  supervisor: function supervisorValidation(requestObject, ...opts) {
+    const validator = requestObject('supervisor')
+      .isInt()
+      .withMessage('must be an integer')
+      .toInt();
+    return validatorAdditions(validator, opts);
+  },
+
   notice: function noticeValidation(requestObject, ...opts) {
     const validator = requestObject('notice')
       .isString()
@@ -53,6 +61,22 @@ const fields = {
       .isInt()
       .withMessage('must be an integer')
       .toInt();
+    return validatorAdditions(validator, opts);
+  },
+
+  feedback: function feedbackValidation(requestObject, ...opts) {
+    const validator = requestObject('feedback')
+      .isString()
+      .withMessage('must be a string')
+      .isLength({ min: 1 })
+      .withMessage('must be at least one character long');
+    return validatorAdditions(validator, opts);
+  },
+
+  user: function userValidation(requestObject, ...opts) {
+    const validator = requestObject('user')
+      .isString()
+      .withMessage('must be a string');
     return validatorAdditions(validator, opts);
   }
 };
@@ -95,6 +119,15 @@ module.exports = {
       return next();
     }
   ],
+  feedback: [
+    fields.feedback(body, 'exists'),
+    fields.user(body, 'exists'),
+    handleValidationErrors,
+    function storeFeedback(request, response, next) {
+      response.locals.query = matchedData(request, { locations: ['body'] });
+      return next();
+    }
+  ],
   create: [
     fields.scheduled_range_supervision_id(body, 'exists'),
     fields.range_supervisor(body, 'exists'),
@@ -108,6 +141,7 @@ module.exports = {
   update: [
     fields.scheduled_range_supervision_id(param, 'exists'),
     fields.range_supervisor(body, 'optional'),
+    fields.supervisor(body, 'optional'),
     fields.notice(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {

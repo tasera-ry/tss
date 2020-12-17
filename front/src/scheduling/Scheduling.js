@@ -31,6 +31,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+
 import socketIOClient from 'socket.io-client';
 import { getSchedulingDate, rangeSupervision, validateLogin } from '../utils/Utils';
 
@@ -45,14 +46,13 @@ if (localStorage.getItem('language') === '0') {
 }
 moment.locale(lang);
 
-async function getRangeSupervisors(token) {
+async function getRangeSupervisors() {
   try {
     const response = await fetch('/api/user?role=supervisor', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
       },
     });
     return await response.json();
@@ -85,15 +85,12 @@ class Scheduling extends Component {
       weekly: false,
       monthly: false,
       repeatCount: 1,
-      token: 'SECRET-TOKEN',
       datePickerKey: 1,
     };
   }
 
   componentDidMount() {
-    // console.log("MOUNTED",localStorage.getItem('token'));
     this.setState({
-      token: localStorage.getItem('token'),
       datePickerKey: Math.random(), // force datepicker to re-render when language changed
     }, function () {
       validateLogin()
@@ -101,7 +98,7 @@ class Scheduling extends Component {
           if (!logInSuccess) {
             this.props.history.push('/');
           } else {
-            getRangeSupervisors(this.state.token)
+            getRangeSupervisors()
               .then((response) => {
                 if (response !== false) {
                   this.setState({
@@ -125,7 +122,6 @@ class Scheduling extends Component {
   // if these all tracks can work with track changes only changed updates could be sent
   // there's a bug somewhere that makes state handling here a pain
   openAllTracks = () => {
-    // console.log("Open tracks");
     if (this.state.tracks) {
       this.state.tracks.forEach((track) => {
         this.setState({
@@ -137,7 +133,6 @@ class Scheduling extends Component {
 
   emptyAllTracks = () => {
     if (this.state.tracks) {
-      // console.log("Empty tracks");
       this.state.tracks.forEach((track) => {
         this.setState({
           [track.id]: 'absent',
@@ -147,7 +142,6 @@ class Scheduling extends Component {
   };
 
   closeAllTracks = () => {
-    // console.log("Close tracks");
     if (this.state.tracks) {
       this.state.tracks.forEach((track) => {
         this.setState({
@@ -380,7 +374,6 @@ class Scheduling extends Component {
   *
   * from state:
   * this.state.rangeId
-  * this.state.token
   * this.state.rangeSupervisorSwitch
   * this.state.open
   * this.state.close
@@ -414,6 +407,7 @@ class Scheduling extends Component {
               name={tracks[key].id.toString()}
               onChange={this.handleRadioChange}
               value={this.state[tracks[key].id] || 'absent'}
+              data-testid={`track-${tracks[key].id.toString()}`}
             >
               <FormControlLabel
                 value="present"
@@ -480,7 +474,6 @@ class Scheduling extends Component {
     if (this.state.rangeSupervisorSwitch === false) {
       disabled = true;
     }
-
     return (
       <FormControl>
         <InputLabel id="chooserangeSupervisorLabel">{sched.Select[fin]}</InputLabel>
@@ -488,8 +481,9 @@ class Scheduling extends Component {
           {...disabled && { disabled: true }}
           labelId="chooserangeSupervisorLabel"
           name="rangeSupervisorId"
-          value={this.state.rangeSupervisorId}
+          value={this.state.rangeSupervisorId || ''}
           onChange={this.handleValueChange}
+          data-testid="rangeSupervisorSelect"
         >
           {items}
         </Select>
@@ -521,6 +515,7 @@ class Scheduling extends Component {
       let params = {
         range_id: this.state.rangeId,
         available: this.state.available,
+        supervisor: this.state.rangeSupervisorId,
       };
 
       if (reservationMethod === 'POST') {
@@ -539,7 +534,6 @@ class Scheduling extends Component {
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${this.state.token}`,
             },
           })
             .then((res) => { // eslint-disable-line
@@ -595,7 +589,6 @@ class Scheduling extends Component {
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${this.state.token}`,
             },
           })
             .then((res) => { // eslint-disable-line
@@ -653,7 +646,8 @@ class Scheduling extends Component {
           srsId,
           rangeStatus,
           rangeSupervisionScheduled,
-          this.state.token,
+          this.state.rangeSupervisorId,
+
         );
         if (rangeSupervisionRes !== true) {
           return reject(new Error(rangeSupervisionRes));
@@ -677,6 +671,7 @@ class Scheduling extends Component {
             let params = { // eslint-disable-line
               track_supervisor: supervisorStatus,
               notice,
+              supervisor: this.state.rangeSupervisorId,
             };
 
             let srsp = '';
@@ -699,7 +694,6 @@ class Scheduling extends Component {
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${this.state.token}`,
               },
             })
               .then((res) => { // eslint-disable-line
@@ -731,46 +725,47 @@ class Scheduling extends Component {
   update() {
     const request = async () => {
       const response = await getSchedulingDate(this.state.date);
-
       if (response !== false) {
-        // console.log("Results from api",response);
-
-        this.setState({
-          date: moment(response.date),
-          rangeId: response.rangeId,
-          reservationId: response.reservationId,
-          scheduleId: response.scheduleId,
-          open: response.open !== null
-            ? moment(response.open, 'h:mm:ss').format()
-            : moment(response.date)
-              .hour(17)
-              .minute(0)
-              .second(0),
-          close: response.close !== null
-            ? moment(response.close, 'h:mm:ss').format()
-            : moment(response.date)
-              .hour(20)
-              .minute(0)
-              .second(0),
-          available: response.available !== null ? response.available : false,
-          rangeSupervisorSwitch: response.rangeSupervisorId !== null,
-          rangeSupervisorId: response.rangeSupervisorId,
-          rangeSupervisorOriginal: response.rangeSupervisorId,
-          rangeSupervisionScheduled: response.rangeSupervisionScheduled,
-          tracks: response.tracks,
-          state: 'ready',
-        });
-        // set current track state for scheduled
-        for (var key in response.tracks) { // eslint-disable-line
-          if (response.tracks[key].scheduled) {
-            this.setState({
-              [this.state.tracks[key].id]: this.state.tracks[key].trackSupervision,
-            });
-          } else { // clears track states between date changes
-            this.setState({
-              [this.state.tracks[key].id]: undefined,
-            });
+        try {
+          this.setState({
+            date: moment(response.date),
+            rangeId: response.rangeId,
+            reservationId: response.reservationId,
+            scheduleId: response.scheduleId,
+            open: response.open !== null
+              ? moment(response.open, 'h:mm:ss').format()
+              : moment(response.date)
+                .hour(17)
+                .minute(0)
+                .second(0),
+            close: response.close !== null
+              ? moment(response.close, 'h:mm:ss').format()
+              : moment(response.date)
+                .hour(20)
+                .minute(0)
+                .second(0),
+            available: response.available !== null ? response.available : false,
+            rangeSupervisorSwitch: response.rangeSupervisorId !== null,
+            rangeSupervisorId: response.rangeSupervisorId,
+            rangeSupervisorOriginal: response.rangeSupervisorId,
+            rangeSupervisionScheduled: response.rangeSupervisionScheduled,
+            tracks: response.tracks,
+            state: 'ready',
+          });
+          // set current track state for scheduled
+          for (var key in response.tracks) { // eslint-disable-line
+            if (response.tracks[key].scheduled) {
+              this.setState({
+                [this.state.tracks[key].id]: this.state.tracks[key].trackSupervision,
+              });
+            } else { // clears track states between date changes
+              this.setState({
+                [this.state.tracks[key].id]: undefined,
+              });
+            }
           }
+        } catch (e) {
+          console.log(e);
         }
       } else console.error('getting info failed');
     };
@@ -813,10 +808,13 @@ class Scheduling extends Component {
                 onAccept={this.handleDatePickChange}
                 format="DD.MM.YYYY"
                 showTodayButton
+                data-testid="datePicker"
               />
             </MuiPickersUtilsProvider>
             <div className="continue">
-              <Button type="submit" variant="contained" style={{ backgroundColor: '#d1ccc2' }}>{sched.Day[fin]}</Button>
+              <Button type="submit" variant="contained" style={{ backgroundColor: '#d1ccc2' }} data-testid="dateButton">
+                {sched.Day[fin]}
+              </Button>
             </div>
           </form>
         </div>
@@ -834,6 +832,7 @@ class Scheduling extends Component {
               name="available"
               color="primary"
               style={{ color: '#5f77a1' }}
+              data-testid="available"
             />
           </div>
           <div className="middleRow">
@@ -846,6 +845,7 @@ class Scheduling extends Component {
                 name="rangeSupervisorSwitch"
                 color="primary"
                 style={{ color: '#5f77a1' }}
+                data-testid="rangeSupervisorSwitch"
               />
             </div>
             {this.createSupervisorSelect()}
@@ -890,9 +890,32 @@ class Scheduling extends Component {
             {this.createTrackList()}
           </div>
           <div className="rightSide">
-            <Button variant="contained" color="primary" onClick={this.openAllTracks} style={{ color: 'black', backgroundColor: '#5f77a1' }}>{sched.OpenAll[fin]}</Button>
-            <Button variant="contained" onClick={this.emptyAllTracks} style={{ backgroundColor: '#d1ccc2' }}>{sched.ClearAll[fin]}</Button>
-            <Button variant="contained" color="secondary" onClick={this.closeAllTracks} style={{ color: 'black', backgroundColor: '#c97b7b' }}>{sched.CloseAll[fin]}</Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.openAllTracks}
+              style={{ color: 'black', backgroundColor: '#5f77a1' }}
+              data-testid="openAll"
+            >
+              {sched.OpenAll[fin]}
+            </Button>
+            <Button
+              variant="contained"
+              onClick={this.emptyAllTracks}
+              style={{ backgroundColor: '#d1ccc2' }}
+              data-testid="emptyAll"
+            >
+              {sched.ClearAll[fin]}
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={this.closeAllTracks}
+              style={{ color: 'black', backgroundColor: '#c97b7b' }}
+              data-testid="closeAll"
+            >
+              {sched.CloseAll[fin]}
+            </Button>
           </div>
         </div>
         <hr />
@@ -906,6 +929,7 @@ class Scheduling extends Component {
                 id="daily"
                 color="primary"
                 style={{ color: '#5f77a1' }}
+                data-testid="dailyRepeat"
               />
             </div>
             <div className="weekly">
@@ -916,6 +940,7 @@ class Scheduling extends Component {
                 id="weekly"
                 color="primary"
                 style={{ color: '#5f77a1' }}
+                data-testid="weeklyRepeat"
               />
             </div>
             <div className="monthly">
@@ -926,6 +951,7 @@ class Scheduling extends Component {
                 id="monthly"
                 color="primary"
                 style={{ color: '#5f77a1' }}
+                data-testid="monthlyRepeat"
               />
             </div>
             <div className="repeatCount">

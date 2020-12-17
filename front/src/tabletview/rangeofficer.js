@@ -29,6 +29,9 @@ import { validateLogin, rangeSupervision } from '../utils/Utils';
 
 import data from '../texts/texts.json';
 
+// Submitting track usage statistics
+import { TrackStatistics } from '../TrackStatistics/TrackStatistics';
+
 /*
   Styles not in the rangeofficer.js file
 */
@@ -165,10 +168,6 @@ const TrackButtons = ({
   });
   const HandleClick = () => {
     let newSupervision = 'absent';
-    const token = localStorage.getItem('token');
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
     track.color = colors.white; // eslint-disable-line
     setTextState(tablet.White[fin]);
 
@@ -198,7 +197,6 @@ const TrackButtons = ({
       axios.put(
         `/api/track-supervision/${scheduleId}/${track.id}`,
         params,
-        config,
       ).catch((error) => {
         console.log(error);
       }).then((res) => {
@@ -221,7 +219,6 @@ const TrackButtons = ({
       axios.post(
         '/api/track-supervision',
         params,
-        config,
       ).catch((error) => {
         console.log(error);
       }).then((res) => {
@@ -243,6 +240,7 @@ const TrackButtons = ({
       size="large"
       variant="contained"
       onClick={HandleClick}
+      data-testid={track.id}
     >
       {textState}
     </Button>
@@ -284,7 +282,6 @@ async function getData(
         start: moment(response.open, 'h:mm').format('HH:mm'),
         end: moment(response.close, 'h:mm').format('HH:mm'),
       });
-
       if (response.rangeSupervision === 'present') {
         setStatusText(tablet.SuperGreen[fin]);
         setStatusColor(colors.green);
@@ -329,16 +326,12 @@ const TimePick = ({
     console.log(start, end);
 
     const query = `/api/schedule/${scheduleId}`;
-    const token = localStorage.getItem('token');
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
 
     await axios.put(query,
       {
         open: start,
         close: end,
-      }, config)
+      })
       .then((res) => {
         if (res) {
           setHours({ start, end });
@@ -470,6 +463,7 @@ const Tabletview = () => {
           RedirectToWeekview();
         }
       });
+
     setSocket(socketIOClient()
       .on('rangeUpdate', (msg) => {
         setStatusColor(msg.color);
@@ -481,16 +475,19 @@ const Tabletview = () => {
       .on('refresh', () => {
         window.location.reload();
       }));
-  }, []);
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 3 * 60 * 60 * 1000); // 3 hours
+  }, []); // eslint-disable-line
 
   async function updateSupervisor(status, color, text) {
-    const token = localStorage.getItem('token');
-
     const res = await rangeSupervision(reservationId,
       scheduleId,
       status,
       rangeSupervisionScheduled,
-      token);
+      null);
+
     if (res === true) {
       setStatusColor(color);
       setStatusText(text);
@@ -580,6 +577,7 @@ const Tabletview = () => {
           size="large"
           variant="outlined"
           disabled
+          data-testid="rangeOfficerStatus"
         >
           {statusText}
         </Button>
@@ -599,6 +597,7 @@ const Tabletview = () => {
           size="large"
           variant="contained"
           onClick={HandlePresentClick}
+          data-testid="tracksupervisorPresent"
         >
           {tablet.Green[fin]}
         </Button>
@@ -608,6 +607,7 @@ const Tabletview = () => {
           size="large"
           variant="contained"
           onClick={HandleEnRouteClick}
+          data-testid="tracksupervisorOnWay"
         >
           {tablet.Orange[fin]}
         </Button>
@@ -617,6 +617,7 @@ const Tabletview = () => {
           size="large"
           variant="contained"
           onClick={HandleClosedClick}
+          data-testid="tracksupervisorClosed"
         >
           {tablet.Red[fin]}
         </Button>
@@ -640,6 +641,10 @@ const Tabletview = () => {
           socket={socket}
         />
       </div>
+      <div className="addVisitors">
+        <TrackStatistics tracks={tracks} />
+      </div>
+
     </div>
 
   );

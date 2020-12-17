@@ -16,6 +16,12 @@ router.route('/sign')
     middlewares.user.sign,
     controllers.user.sign);
 
+// NOTE: no checking token: if invalid, we can never
+// logout (remove the invalid cookie) in that case
+router.route('/signout')
+  .post(
+    controllers.user.signout);
+
 router.route('/user')
   .all(
     middlewares.jwt.read)
@@ -78,6 +84,13 @@ router.route('/range-supervision')
     middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes),
     middlewares.rangeSupervision.create,
     controllers.rangeSupervision.create);
+
+router.route('/range-supervision/feedback')
+  .put(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes),
+    validators.rangeSupervision.feedback,
+    controllers.rangeSupervision.feedback);
 
 router.route('/range-supervision/usersupervisions/:id')
   .get(

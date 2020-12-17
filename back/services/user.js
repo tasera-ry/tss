@@ -24,7 +24,7 @@ const service = {
   authenticate: async function authenticateUser(credentials) {
     const users = await models.user.read({
       name: credentials.name
-    }, ['id', 'digest']);
+    }, ['id', 'name', 'role', 'digest']);
 
     if(users.length === 0) {
       const err = Error('Invalid credentials');
@@ -43,7 +43,7 @@ const service = {
       throw err;
     }
 
-    return user.id;
+    return _.pick(user, 'id', 'name', 'role');
   },
 
   /**
@@ -73,7 +73,7 @@ const service = {
    * exports.read({ role: 'supervisor' }) - Find all supervisors
    */
   read: async function readUser(key) {
-    return (await models.user.read(_.pick(key, 'id', 'name', 'role', 'phone')))
+    return (await models.user.read(_.pick(key, 'id', 'name', 'role', 'phone', 'email')))
       .map(_.partialRight(_.omit, 'digest', 'user_id'));
   },
 

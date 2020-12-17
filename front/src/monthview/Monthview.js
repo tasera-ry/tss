@@ -19,7 +19,8 @@ import texts from '../texts/texts.json';
 
 const smallInfoIcon = require('../logo/Small-info.png');
 
-const { weekdayShorthand } = texts;  // eslint-disable-line
+const { weekdayShorthand, month } = texts;  // eslint-disable-line
+const fin = localStorage.getItem('language');
 
 class Monthview extends Component {
   constructor(props) {
@@ -95,21 +96,21 @@ class Monthview extends Component {
     const table = [];
     let dayNumber;
 
-    const fin = localStorage.getItem('language');
-    const { month } = texts;
+    const fin = localStorage.getItem('language');// eslint-disable-line
+    const { month } = texts; // eslint-disable-line
 
     for (let j = 0; j < 8; j += 1) {
       dayNumber = j.toString();
 
       if (dayNumber === '0') {
         table.push(
-          <div className="weekNumber">
+          <div key="weekLabel" className="weekNumber">
             {month.weekNumber[fin]}
           </div>,
         );
       } else {
         table.push(
-          <div>
+          <div key={`weekDayLabel-${dayNumber}`}>
             {weekdayShorthand[dayNumber - 1][fin]}
           </div>,
         );
@@ -153,12 +154,17 @@ class Monthview extends Component {
       }
       help += 1;
       table.push(
-        <Link style={{ backgroundColor: `${colorFromBackEnd}` }} class={`${isCurrent}`} to={`/dayview/${firstMon.format('YYYY-MM-DD')}`}>
+        <Link
+          key={`${isCurrent}-${firstMon.format('YYYY-MM-DD')}`}
+          style={{ backgroundColor: `${colorFromBackEnd}` }}
+          className={`${isCurrent}`}
+          to={`/dayview/${firstMon.format('YYYY-MM-DD')}`}
+        >
           {info
             ? (
               <div className="monthview-day-img">
                 {target.date()}
-                <img className="Monthview-info" src={smallInfoIcon} />
+                <img className="Monthview-info" src={smallInfoIcon} alt={month.Notice[fin]} />
               </div>
             )
             : (
@@ -224,7 +230,7 @@ class Monthview extends Component {
 
     while (startHelp.isoWeek() !== endWeek) {
       table.push(
-        <Link class="link" to={`/weekview/${link.format('YYYY-MM-DD')}`}>
+        <Link key={startWeek} className="link" to={`/weekview/${link.format('YYYY-MM-DD')}`}>
           <div>
             {startWeek}
           </div>
@@ -236,7 +242,7 @@ class Monthview extends Component {
     }
 
     table.push(
-      <Link class="link" to={`/weekview/${link.format('YYYY-MM-DD')}`}>
+      <Link key={startWeek} className="link" to={`/weekview/${link.format('YYYY-MM-DD')}`}>
         <div>
           {startWeek}
         </div>

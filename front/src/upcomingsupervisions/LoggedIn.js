@@ -14,6 +14,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { useCookies } from 'react-cookie';
+
 // Axios for call-handling to backend
 import axios from 'axios';
 
@@ -235,18 +237,12 @@ const Rows = ({
 };
 
 // TODO: change config after relocating jwt
-async function getId() {
-  const name = localStorage.getItem('taseraUserName');
+// TODO: try to somehow check this alongside request
+async function getId(username) {
+  if (!username) return;
 
-  const token = localStorage.getItem('token');
-  const config = {
-    headers: { Authorization: `Bearer ${token}` },
-  };
-
-  if (!name) return;
-
-  const query = `api/user?name=${name}`;
-  const response = await axios.get(query, config);
+  const query = `api/user?name=${username}`;
+  const response = await axios.get(query);
 
   const userID = response.data[0].id;
 
@@ -273,8 +269,8 @@ async function getReservations(res, setNoSchedule) { // eslint-disable-line
   return res;
 }
 
-async function checkSupervisorReservations() {
-  const userID = await getId();
+async function checkSupervisorReservations(username) {
+  const userID = await getId(username);
 
   if (!userID) {
     return false;
@@ -288,15 +284,17 @@ async function checkSupervisorReservations() {
       // check and return boolean about whether there's any unconfirmed reservations
       response.data.some((sprvsn) => sprvsn.range_supervisor === 'not confirmed')))
     .catch((error) => {
-      console.log(error);
+      if (error.response.status !== 404) {
+        console.log(error);
+      }
     });
 
   return response;
 }
 
 // obtain users schedule and range supervision states
-async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone) {
-  const userID = await getId();
+async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone, username) {
+  const userID = await getId(username);
   let res = [];
   let temp = [];
 
@@ -352,6 +350,7 @@ const DialogWindow = ({ onCancel }) => {
   const [schedules, setSchedules] = useState([]);
   const [done, setDone] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [cookies] = useCookies(['username']);
   const { sv } = data;
 
   if (onCancel === undefined) {
@@ -360,8 +359,8 @@ const DialogWindow = ({ onCancel }) => {
 
   // starting point
   useEffect(() => {
-    getSchedule(setSchedules, setNoSchedule, setChecked, setDone);
-  }, []);
+    getSchedule(setSchedules, setNoSchedule, setChecked, setDone, cookies.username);
+  }, []); // eslint-disable-line
 
   return (
     <div>
@@ -382,14 +381,6 @@ const DialogWindow = ({ onCancel }) => {
 
 // sends updated info to database
 async function putSchedules(changes) {
-  // console.log("updating: ")
-  // console.log(changes);
-
-  const token = localStorage.getItem('token');
-  const config = {
-    headers: { Authorization: `Bearer ${token}` },
-  };
-
   for (let i = 0; i < changes.length; i += 1) {
     const { id } = changes[i];
     const query = `api/range-supervision/${id}`;
@@ -397,7 +388,7 @@ async function putSchedules(changes) {
     await axios.put(query,
       {
         range_supervisor: s,
-      }, config);
+      });
   }
 }
 

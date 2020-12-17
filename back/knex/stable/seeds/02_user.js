@@ -9,6 +9,7 @@ const users = [
     name:'supervisor',
     digest: bcrypt.hashSync('valvoja-hilda', config.bcrypt.hashRounds),
     role: 'supervisor'
+    
   },
   {
     name:'superuser',
@@ -20,14 +21,15 @@ const users = [
 exports.seed = function(knex) {
   return knex('user')
     .insert(users)
-    .returning(['id', 'role'])
+    .returning(['id', 'role', 'email'])
     .then(ids => {
       return ids
         .filter(ids => ids.role === 'supervisor')
         .map(({id}) => {
           return {
             user_id: id,
-            phone: undefined
+            phone: undefined,
+            email: undefined
           };
         });
     }).then(supervisors => {

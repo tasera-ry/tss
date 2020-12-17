@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import '../App.css';
 import './Nav.css';
 
+import axios from 'axios';
+import { useCookies } from 'react-cookie';
+
 // TASERA logo & Burger icon
 
 // Material UI elements
@@ -15,7 +18,8 @@ import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from '@material-ui/core/styles';
 import logo from '../logo/Logo.png';
 
-import SupervisorNotification from './SupervisorNotification'; // eslint-disable-line
+import SupervisorNotification from './SupervisorNotification';
+import FeedbackWindow from './FeedbackWindow';
 
 import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
 
@@ -47,10 +51,12 @@ const elementStyle = {
 };
 
 const SideMenu = ({ setName, superuser, setLoggingOut }) => {
+  const fin = localStorage.getItem('language'); // eslint-disable-line
   const styles = useStyles();
   const [menu, setMenu] = useState({ right: false });
   const [openDial, setOpenDial] = useState(false);
-  const storage = window.localStorage;
+  const [openFeedback, setOpenFeedback] = useState(false);
+  const [cookies, setCookie, removeCookie] = useCookies(['username', 'role']); // eslint-disable-line
 
   const HandleClick = () => {
     setMenu({ right: false });
@@ -61,12 +67,18 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
     setOpenDial(true);
   };
 
-  const HandleSignOut = () => {
+  const HandleFeedback = () => {
+    setMenu({ right: false });
+    setOpenFeedback(true);
+  };
+
+  // TODO: centralize this one
+  const HandleSignOut = async () => {
     setLoggingOut(true);
-    storage.removeItem('token');
-    storage.removeItem('taseraUserName');
-    storage.removeItem('role');
-    setName('');
+    const response = await axios.post('/api/signout'); // eslint-disable-line
+    removeCookie('username');
+    removeCookie('role');
+    setName(undefined);
     setMenu({ right: false });
   };
 
@@ -157,6 +169,14 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
           </ListItem>
         </Link>
 
+        <ListItem
+          button
+          onClick={HandleFeedback}
+          style={elementStyle}
+        >
+          {nav.Feedback[fin]}
+        </ListItem>
+
         <Divider style={elementStyle} />
 
         <Link style={navStyle} to="/">
@@ -174,7 +194,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
 
   return (
     <div className="pc">
-      {storage.getItem('taseraUserName') !== null
+      {cookies.hasOwnProperty('username') // eslint-disable-line
         ? (
           <Button
             className="clickable"
@@ -198,19 +218,18 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
         </Drawer>
 
       </div>
-      {openDial ? <DialogWindow /> : '' }
+      {openDial ? <DialogWindow /> : ''}
+      {openFeedback
+        ? (
+          <FeedbackWindow
+            user={cookies.username}
+            dialogOpen={openFeedback}
+            setDialogOpen={setOpenFeedback}
+          />
+        ) : ''}
     </div>
   );
 };
-
-function userInfo(name, setName, setSuperuser) {
-  const username = localStorage.getItem('taseraUserName');
-  if (username !== null) {
-    setName(username);
-    const role = localStorage.getItem('role');
-    setSuperuser(role === 'superuser');
-  }
-}
 
 function setLanguage(num) {
   localStorage.setItem('language', num);
@@ -218,16 +237,13 @@ function setLanguage(num) {
 }
 
 const Nav = () => {
-  const [name, setName] = useState('');
-  const [superuser, setSuperuser] = useState();
+  const [cookies] = useCookies(['username', 'role']);
+  const [name, setName] = useState(cookies.username);
+  const [superuser] = useState(cookies.role === 'superuser');
   const [loggingOut, setLoggingOut] = useState(false);
   const [checkSupervisions, setCheckSupervisions] = useState(false);
   const fin = localStorage.getItem('language'); // eslint-disable-line
   const { nav } = texts; // eslint-disable-line
-
-  if (name === '') {
-    userInfo(name, setName, setSuperuser);
-  }
 
   const icon = (
     <span className="logo">
@@ -242,7 +258,7 @@ const Nav = () => {
           {icon}
         </Link>
 
-        {name === '' ? (
+        {!name ? (
           <Link className="pc clickable" style={{ textDecoration: 'none' }} to="/signin">
             <Button>
               {nav.SignIn[fin]}

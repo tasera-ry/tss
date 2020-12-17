@@ -97,30 +97,34 @@ export function viewChanger() {
     const fullUrl = window.location.href.split('/');
     const urlParamDate = fullUrl[5];
 
-    const urlParamDateSplit = urlParamDate.split('-');
-
-    const paramDay = urlParamDateSplit[2].split('T')[0];
-    const paramMonth = urlParamDateSplit[1];
-    const paramYear = urlParamDateSplit[0];
+    // When first access to '/' (no params in URL)
+    let paramDay = '';
+    let paramMonth = '';
+    let paramYear = '';
+    if (urlParamDate) {
+      const urlParamDateSplit = urlParamDate.split('-');
+      [paramDay, paramMonth, paramYear] = urlParamDateSplit;
+      [paramDay] = paramDay.split('T');
+    }
 
     const time = moment(`${paramYear}-${paramMonth}-${paramDay}`, 'YYYY-MM-DD');
 
     table.push(
-      <Link class="link" to={`/monthview/${time.format('YYYY-MM-DD')}`}>
+      <Link key="month" className="link" to={`/monthView/${time.format('YYYY-MM-DD')}`}>
         <div>
           {viewChanger.Month[fin]}
         </div>
       </Link>,
     );
     table.push(
-      <Link class="link" to={`/weekview/${time.format('YYYY-MM-DD')}`}>
+      <Link key="week" className="link" to={`/weekView/${time.format('YYYY-MM-DD')}`}>
         <div>
           {viewChanger.Week[fin]}
         </div>
       </Link>,
     );
     table.push(
-      <Link class="link" to={`/dayview/${time.format('YYYY-MM-DD')}`}>
+      <Link key="day" className="link" to={`/dayView/${time.format('YYYY-MM-DD')}`}>
         <div>
           {viewChanger.Day[fin]}
         </div>
@@ -163,20 +167,17 @@ export function jumpToCurrent() {
   const fin = localStorage.getItem('language');
 
   try {
-    const table = [];
     const fullUrl = window.location.href.split('/');
     const urlParamDate = fullUrl[4];
-
     const date = new Date();
 
-    table.push(
-      <Link class="link" to={`/${urlParamDate}/${moment(date, 'YYYY-MM-DD').toISOString().substring(0, 10)}`}>
+    return (
+      <Link className="link" to={`/${urlParamDate}/${moment(date, 'YYYY-MM-DD').toISOString().substring(0, 10)}`}>
         <div>
           {viewChanger.JumpToCurrent[fin]}
         </div>
-      </Link>,
+      </Link>
     );
-    return table;
   } catch (err) {
     console.error(err);
     return false;
@@ -210,27 +211,18 @@ export function monthToString(i) {
 }
 
 /*
-  Validates the login token
+  Validates the login token (in cookies)
 
   return: boolean, is token valid (true = yes)
 */
 export async function validateLogin() {
-  const token = localStorage.getItem('token');
   let response;
-  if (token !== null) {
-    try {
-      response = await fetch('/api/validate', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    } catch (error) {
-      // console.log won't have time to be read before user is rerouted
-      // so commented out for future use
-      // console.log(`Authorization validation failed `, error);
-      return false;
-    }
+  try {
+    response = await fetch('/api/validate', {
+      method: 'GET',
+    });
+  } catch (error) {
+    return false;
   }
 
   if (response && response.status && response.status === 200) {
@@ -243,7 +235,7 @@ export async function validateLogin() {
 // on success true
 // else returns string trying to explain what broke
 // requires reservation and schedule to exist
-export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, token) {
+export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, supervisor) {
   try {
     if (rsId !== null && srsId !== null) {
       // only closed is different from the 6 states
@@ -257,7 +249,6 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, to
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
             },
           })
             .then((status) => {
@@ -267,11 +258,10 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, to
           // update supervision
           await fetch(`/api/range-supervision/${srsId}`, {
             method: 'PUT',
-            body: JSON.stringify({ range_supervisor: rangeStatus }),
+            body: JSON.stringify({ range_supervisor: rangeStatus, supervisor }),
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
             },
           })
             .then((status) => {
@@ -285,7 +275,6 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, to
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
             },
           })
             .then((status) => {
@@ -298,11 +287,11 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, to
             body: JSON.stringify({
               scheduled_range_supervision_id: srsId,
               range_supervisor: rangeStatus,
+              supervisor,
             }),
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
             },
           })
             .then((status) => {
@@ -317,7 +306,6 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, to
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
           },
         })
           .then((status) => {

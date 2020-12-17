@@ -72,7 +72,7 @@ const RequestStatusAlert = ({ statusSetter, requestStatus, text }) => {
     return <></>;
   }
   return (
-    <Snackbar open={requestStatus} onClose={() => statusSetter(null)}>
+    <Snackbar open={requestStatus !== null} onClose={() => statusSetter(null)}>
       <Alert severity={requestStatus}>
         {text}
       </Alert>
@@ -93,7 +93,6 @@ const TrackTable = ({
   trackData,
   setRequestStatus,
   setRequestText,
-  opts,
   l10n,
   lang,
 }) => (
@@ -135,7 +134,7 @@ const TrackTable = ({
               description,
               short_description,
               range_id: trackData[0].range_id,
-            }, opts,
+            },
           );
           setTrackData(trackData.concat(response.data));
           setRequestStatus('success');
@@ -164,7 +163,6 @@ const TrackTable = ({
           await axios.put(
             `/api/track/${trackInfo.id}`,
             newData,
-            opts,
           );
           const modified = trackData.filter((track) => track.id !== trackInfo.id)
             .concat({ ...trackInfo, ...newData });
@@ -191,7 +189,7 @@ const TrackTable = ({
         }
 
         try {
-          const response = await axios.delete(`/api/track/${trackInfo.id}`, opts); // eslint-disable-line
+          const response = await axios.delete(`/api/track/${trackInfo.id}`); // eslint-disable-line
           setTrackData(trackData.filter((track) => track.id !== trackInfo.id));
           setRequestStatus('success');
           setRequestText('Rata poistettu');
@@ -238,14 +236,7 @@ const TrackCRUD = () => {
 
   const partialFetch = lodash.partial(fetch, '/api/track'); // eslint-disable-line
 
-  const token = localStorage.getItem('token');
-
-  const opts = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
+  // TODO: this needs to be centralized for best effect
   function RedirectToWeekview() {
     window.location.href = '/';
   }
@@ -256,7 +247,6 @@ const TrackCRUD = () => {
       if (logInSuccess) {
         try {
           const response = await axios.get('/api/track');
-
           setTrackData(response.data);
         } catch (e) {
           // /api/track returns 404 when no tracks are set, should be fixed in
@@ -283,7 +273,6 @@ const TrackCRUD = () => {
           trackData={trackData}
           setRequestStatus={setRequestStatus}
           setRequestText={setRequestText}
-          opts={opts}
           l10n={l10n}
           lang={lang}
         />
