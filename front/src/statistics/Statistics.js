@@ -65,7 +65,6 @@ const Statistics = () => {
       const dayResult = await getDailyVisitors(singleDay); // eslint-disable-line
       const monthlyTrackResult = await getMonthlyTrackVisitors(firstDate, lastDate); // eslint-disable-line
       setDailyUsers(dayResult);
-      console.log(dayResult);
       setMonthlyUsers(monthResult);
       setMonthlyTrackUsers(monthlyTrackResult);
     };
@@ -74,7 +73,7 @@ const Statistics = () => {
 
   useEffect(() => {
     // Count monthly visitors
-    const dayArray = Array.from({length: monthlyUsers.length}, (_, i) => i + 1);
+    const dayArray = Array.from({ length: monthlyUsers.length }, (_, i) => i + 1);
 
     // Options for the month chart
     setMonthOptions({
@@ -105,42 +104,45 @@ const Statistics = () => {
   }, [monthlyUsers]);
 
   useEffect(() => {
-    // Count daily visitors
-    const visitorArray = Array.from({ length: dailyUsers.length }, (_, i) => i + 1);
-
-    // Options for the day chart
-    setDayOptions({
-      chart: { id: 'dayChart' },
-      xaxis: {
-        categories: visitorArray,
-        title: {
-          text: statistics.TrackLabel[fin],
-          style: {
-            fontSize: '14px',
+    // Get the short_descriptions of each track in order to use them as a label
+    const firstDate = moment(date).startOf('month').format('YYYY-MM-DD');
+    const lastDate = moment(date).endOf('month').format('YYYY-MM-DD');
+    const labelArray = getShortDescriptions(firstDate, lastDate); // eslint-disable-line
+    labelArray.then((result) => {
+      // Options for the day chart
+      setDayOptions({
+        chart: { id: 'dayChart' },
+        xaxis: {
+          categories: result,
+          title: {
+            text: statistics.TrackLabel[fin],
+            style: {
+              fontSize: '14px',
+            },
           },
         },
-      },
-      yaxis: {
-        title: {
-          text: statistics.VisitorLabel[fin],
-          style: {
-            fontSize: '14px',
+        yaxis: {
+          title: {
+            text: statistics.VisitorLabel[fin],
+            style: {
+              fontSize: '14px',
+            },
           },
         },
-      },
-      fill: {
-        colors: ['#658f60'],
-      },
-      dataLabels: {
-        enabled: true,
-        style: {
-          fontSize: '16px',
+        fill: {
+          colors: ['#658f60'],
         },
-        background: {
+        dataLabels: {
           enabled: true,
-          foreColor: '#000000',
+          style: {
+            fontSize: '16px',
+          },
+          background: {
+            enabled: true,
+            foreColor: '#000000',
+          },
         },
-      },
+      });
     });
     setDaySeries([{
       name: 'visitors',
@@ -149,42 +151,46 @@ const Statistics = () => {
   }, [dailyUsers]);
 
   useEffect(() => {
-    // Count monthly visitors per track
-    const visitorArray = Array.from({ length: monthlyTrackUsers.length }, (_, i) => i + 1);
+    // Get the short_descriptions of each track in order to use them as a label
+    const firstDate = moment(date).startOf('month').format('YYYY-MM-DD');
+    const lastDate = moment(date).endOf('month').format('YYYY-MM-DD');
+    const labelArray = getShortDescriptions(firstDate, lastDate); // eslint-disable-line
 
-    // Options for the day chart
-    setMonthlyTrackOptions({
-      chart: { id: 'monthlyTrackChart' },
-      xaxis: {
-        categories: visitorArray,
-        title: {
-          text: statistics.TrackLabel[fin],
-          style: {
-            fontSize: '14px',
+    labelArray.then((result) => {
+      // Options for the day chart
+      setMonthlyTrackOptions({
+        chart: { id: 'monthlyTrackChart' },
+        xaxis: {
+          categories: result,
+          title: {
+            text: statistics.TrackLabel[fin],
+            style: {
+              fontSize: '14px',
+            },
           },
         },
-      },
-      yaxis: {
-        title: {
-          text: statistics.VisitorLabel[fin],
-          style: {
-            fontSize: '14px',
+        yaxis: {
+          title: {
+            text: statistics.VisitorLabel[fin],
+            style: {
+              fontSize: '14px',
+            },
           },
         },
-      },
-      fill: {
-        colors: ['#658f60'],
-      },
-      dataLabels: {
-        enabled: true,
-        style: {
-          fontSize: '16px',
+        fill: {
+          colors: ['#658f60'],
         },
-        background: {
+        dataLabels: {
           enabled: true,
-          foreColor: '#000000',
+          style: {
+            fontSize: '16px',
+          },
+          background: {
+            enabled: true,
+            foreColor: '#000000',
+          },
         },
-      },
+      });
     });
     setMonthlyTrackSeries([{
       name: 'visitors',
@@ -271,6 +277,9 @@ const Statistics = () => {
             <h3>
               {`${statistics.Total[fin]} ${date.toLocaleDateString('fi-FI')}: ${monthlyUsers[dayNumber - 1]}`}
             </h3>
+            <h3>
+              {statistics.DayChartHeader[fin]}
+            </h3>
             <div className="bar">
               <Chart
                 options={dayOptions}
@@ -285,6 +294,9 @@ const Statistics = () => {
             <h3>
               {`${statistics.Total[fin]} ${(date.getMonth() + 1)}/${date.getFullYear()}: ${total}`}
             </h3>
+            <h3>
+              {statistics.MonthChart1Header[fin]}
+            </h3>
             <div className="line">
               <Chart
                 options={monthOptions}
@@ -294,6 +306,9 @@ const Statistics = () => {
                 height="400"
               />
             </div>
+            <h3>
+              {statistics.MonthChart2Header[fin]}
+            </h3>
             <div className="bar">
               <Chart
                 options={monthlyTrackOptions}
@@ -380,6 +395,29 @@ async function getMonthlyTrackVisitors(firstDate, lastDate) {
     }
   }
   return visitors;
+}
+
+async function getShortDescriptions(firstDate, lastDate) {
+  const query = `api/daterange/freeform/${firstDate}/${lastDate}`;
+  const response = await axios.get(query);
+  if (!response) {
+    return [];
+  }
+  // Form an array including the short_descriptions of each track
+  const descriptions = [];
+  let description = '';
+  for (const supervision of response.data) {
+    if (supervision?.scheduleId) {
+      for (const track of supervision.tracks) {
+        description = track.short_description;
+        console.log(description);
+        descriptions.push(description);
+      }
+      console.log(descriptions);
+      return descriptions;
+    }
+  }
+  return [];
 }
 
 export default Statistics;

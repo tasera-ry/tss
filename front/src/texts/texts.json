@@ -7,7 +7,8 @@
     "Supervision": ["Valvonnat", "Supervisions"],
     "Tablet": ["Tablettinäkymä", "Tablet view"],
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
-    "SignOut": ["Kirjaudu ulos", "Sign Out"]
+    "SignOut": ["Kirjaudu ulos", "Sign Out"],
+    "Statistics": ["Tilastot", "Statistics"]
   },
   "banner": {
     "Notification": ["Sinulla on varmistamattomia päävalvojavuoroja!", "You have unconfirmed range officer reservations!"],
@@ -96,9 +97,7 @@
     "Ask": ["Haluatko varmasti jatkaa?", "Are you sure?"],
     "AskDelete": ["Tämä poistaa pysyvästi käyttäjän", "This action will permanently remove user"],
     "Error": ["Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki", "Something went wrong"],
-    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"],
-    "Superuser": ["Superuser", "Superuser"],
-    "Supervisor": ["Valvoja", "Range officer"]
+    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"]
   },
   "tablet": {
     "Open": ["Aukiolo", "Open"],
@@ -205,6 +204,9 @@
     "DayChoose": ["Valitse päivä", "Choose date"],
     "TrackLabel": ["Rata", "Track"],
     "VisitorLabel": ["Kävijämäärä", "Number of visitors"],
-    "DayLabel": ["Päivä", "Day"]
+    "DayLabel": ["Päivä", "Day"],
+    "DayChartHeader": ["Kävijämäärät radoittain", "Visitors per track"],
+    "MonthChart1Header": ["Kävijämäärät päivittäin", "Visitors per day"],
+    "MonthChart2Header": ["Ratojen kävijämäärät kuukausittain", "Monthly visitors per track"]
   }
 }
