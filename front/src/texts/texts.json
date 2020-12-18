@@ -8,7 +8,8 @@
     "Tablet": ["Tablettinäkymä", "Tablet view"],
     "Feedback": ["Palaute", "Feedback"],
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
-    "SignOut": ["Kirjaudu ulos", "Sign Out"]
+    "SignOut": ["Kirjaudu ulos", "Sign Out"],
+    "Statistics": ["Tilastot", "Statistics"]
   },
   "banner": {
     "Notification": ["Sinulla on varmistamattomia päävalvojavuoroja!", "You have unconfirmed range officer reservations!"],
@@ -87,14 +88,17 @@
   "manage": {
     "UserManage": ["Käyttäjienhallinta", "User management"],
     "ChangePass": ["Vaihda salasana", "Change password"],
+    "ChangeEmail": ["Vaihda sähköpostiosoite", "Change email address"],
     "CreateUser": ["Lisää käyttäjä", "Create new user"],
     "Users": ["Käyttäjät", "User profiles"],
     "Username": ["Käyttäjänimi", "Username"],
     "RemoveUser": ["Poista käyttäjä", "Delete profile"],
     "Helper": ["Vaihtaaksesi salasanasi sinun tulee antaa nykyinen salasanasi sekä uusi joksi haluat sen vaihtaa", "Give your current and new password"],
     "OldPass": ["Nykyinen salasana", "Current password"],
+    "OldEmail": ["Nykyinen sähköpostiosoite", "Current email address"],
     "NewPass": ["Uusi salasana", "New password"],
     "NewEmail":[ "Lisää sähköposti","Add Email"],
+    "EmailHelper":["Anna uusi sähköpostiosoite", "Please give your new email address"],
     "Email":[ "Sähköposti","Email"],
     "EmailForUser":[ "Lisää sähköposti käyttäjälle:","Add Email for user:"],
     "Cancel": ["Peruuta", "Cancel"],
@@ -110,9 +114,7 @@
     "AskDelete": ["Tämä poistaa pysyvästi käyttäjän", "This action will permanently remove user"],
     "Error": ["Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki", "Something went wrong"],
     "ErrorEmail": ["Jokin meni pieleen, Sähköpostia ei tallennettu", "Something went wrong, email not saved"],
-    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"],
-    "Superuser": ["Superuser", "Superuser"],
-    "Supervisor": ["Valvoja", "Range officer"]
+    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"]
   },
   "tablet": {
     "Open": ["Aukiolo", "Open"],
@@ -211,5 +213,17 @@
     "addVisitorsTitle": ["Lisää kävijöiden määrä", "Add number of visitors"],
     "backButton": ["Takaisin", "Back"],
     "sendButton": ["Lähetä tiedot", "Send statistics"]
+  },
+  "statistics": {
+    "Day": ["Päivä", "Day"],
+    "Month": ["Kuukausi", "Month"],
+    "Total": ["Kävijöitä yhteensä", "Visitors in total"],
+    "DayChoose": ["Valitse päivä", "Choose date"],
+    "TrackLabel": ["Rata", "Track"],
+    "VisitorLabel": ["Kävijämäärä", "Number of visitors"],
+    "DayLabel": ["Päivä", "Day"],
+    "DayChartHeader": ["Kävijämäärät radoittain", "Visitors per track"],
+    "MonthChart1Header": ["Kävijämäärät päivittäin", "Visitors per day"],
+    "MonthChart2Header": ["Ratojen kävijämäärät kuukausittain", "Monthly visitors per track"]
   }
 }
