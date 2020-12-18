@@ -91,9 +91,9 @@ export function checkColor(paivat, paiva) {
 export function viewChanger() {
   const { viewChanger } = texts;  // eslint-disable-line
   const fin = localStorage.getItem('language');
+  const table = [];
 
   try {
-    const table = [];
     const fullUrl = window.location.href.split('/');
     const urlParamDate = fullUrl[5];
 
@@ -103,28 +103,30 @@ export function viewChanger() {
     let paramYear = '';
     if (urlParamDate) {
       const urlParamDateSplit = urlParamDate.split('-');
-      [paramDay, paramMonth, paramYear] = urlParamDateSplit;
+      [paramYear, paramMonth, paramDay] = urlParamDateSplit;
       [paramDay] = paramDay.split('T');
+    } else {
+      throw 'No valid URL'; // eslint-disable-line
     }
 
-    const time = moment(`${paramYear}-${paramMonth}-${paramDay}`, 'YYYY-MM-DD');
+    const time = `${paramYear}-${paramMonth}-${paramDay}`;
 
     table.push(
-      <Link key="month" className="link" to={`/monthView/${time.format('YYYY-MM-DD')}`}>
+      <Link key="month" className="link" to={`/monthview/${time}`}>
         <div>
           {viewChanger.Month[fin]}
         </div>
       </Link>,
     );
     table.push(
-      <Link key="week" className="link" to={`/weekView/${time.format('YYYY-MM-DD')}`}>
+      <Link key="week" className="link" to={`/weekview/${time}`}>
         <div>
           {viewChanger.Week[fin]}
         </div>
       </Link>,
     );
     table.push(
-      <Link key="day" className="link" to={`/dayView/${time.format('YYYY-MM-DD')}`}>
+      <Link key="day" className="link" to={`/dayview/${time}`}>
         <div>
           {viewChanger.Day[fin]}
         </div>
@@ -133,7 +135,30 @@ export function viewChanger() {
     return table;
   } catch (err) {
     console.error(err);
-    return false;
+    const date = new Date(Date.now());
+    const time = moment(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`, 'YYYY-MM-DD');
+    table.push(
+      <Link class="link" to={`/monthview/${time.format('YYYY-MM-DD')}`}>
+        <div>
+          {viewChanger.Month[fin]}
+        </div>
+      </Link>,
+    );
+    table.push(
+      <Link class="link" to={`/weekview/${time.format('YYYY-MM-DD')}`}>
+        <div>
+          {viewChanger.Week[fin]}
+        </div>
+      </Link>,
+    );
+    table.push(
+      <Link class="link" to={`/dayview/${time.format('YYYY-MM-DD')}`}>
+        <div>
+          {viewChanger.Day[fin]}
+        </div>
+      </Link>,
+    );
+    return table;
   }
 }
 
@@ -144,10 +169,9 @@ export function jumpToCurrent() {
   try {
     const fullUrl = window.location.href.split('/');
     const urlParamDate = fullUrl[4];
-    const date = new Date();
-
+    const date = new Date(Date.now());
     return (
-      <Link className="link" to={`/${urlParamDate}/${moment(date, 'YYYY-MM-DD').toISOString().substring(0, 10)}`}>
+      <Link className="link" data-testid="jumpToCur" to={`/${urlParamDate}/${moment(date, 'YYYY-MM-DD').toISOString().substring(0, 10)}`}>
         <div>
           {viewChanger.JumpToCurrent[fin]}
         </div>

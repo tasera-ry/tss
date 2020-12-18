@@ -105,7 +105,8 @@
 }
 
 .viewChanger-current > a {
-  padding: 16px;
+  padding: 8px;
+  padding-top: 16px;
   align-items: center;
   border: 1px;
   border-bottom: 0;
@@ -136,7 +137,8 @@
 }
 
 .viewChanger-container > a {
-  padding: 16px;
+  padding: 8px;
+  padding-top: 16px;
   align-items: center;
   border: 1px;
   border-right: 0px;
@@ -169,7 +171,7 @@
 
 .Monthview-info {
   position: absolute;
-  margin-top: 3px;
+  margin-top: 2pt;
   width: 20px;
   height: 20px;
 }
@@ -187,6 +189,12 @@
 
 /* smartphones, Android phones, landscape iPhone */
 @media only screen and (min-width:480px) {
+  .viewChanger-container > a {
+  padding: 16px;
+  }
+  .viewChanger-current > a {
+  padding: 16px;
+  }
   .Monthview-info {
   margin-left: 3px;
   }
