@@ -81,6 +81,26 @@ async function changePassword(id, passwordn) {
 }
 
 // Changes email to database
+async function changeEmail(id, newEmail) {
+  try {
+    const response = await fetch(`/api/user/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        email: newEmail,
+      }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.ok;
+  } catch (err) {
+    console.error('GETTING USER FAILED', err);
+    return false;
+  }
+}
+
+// Changes email to database
 async function addEmail(id, emailn) {
   try {
     const response = await fetch(`/api/user/${id}`, {
@@ -152,9 +172,11 @@ class UserManagementView extends Component {
       openPassWarning: false, // eslint-disable-line
       openRemoveWarning: false,
       changeOwnPassDialogOpen: false,
+      changeOwnEmailDialogOpen: false,
       openAddNewUserDialog: false,
       changePassDialogOpen: false,
       changeOwnPassFailed: false,
+      changeOwnEmailFailed: false,
       requestErrors: false,
       deleteErrors: false,
       selectedROWID: 1,
@@ -180,8 +202,11 @@ class UserManagementView extends Component {
     this.handleRemoveWarningCloseAgree = this.handleRemoveWarningCloseAgree.bind(this);
     this.handleAddUserOpenDialog = this.handleAddUserOpenDialog.bind(this);
     this.handleOpenOwnPassChangeDialog = this.handleOpenOwnPassChangeDialog.bind(this);
+    this.handleOpenOwnEmailChangeDialog = this.handleOpenOwnEmailChangeDialog.bind(this);
     this.handleChangeOwnPassDialogClose = this.handleChangeOwnPassDialogClose.bind(this);
+    this.handleChangeOwnEmailDialogClose = this.handleChangeOwnEmailDialogClose.bind(this);
     this.handleChangeOwnPassDialogCloseAgree = this.handleChangeOwnPassDialogCloseAgree.bind(this);
+    this.handleChangeOwnEmailDialogCloseAgree = this.handleChangeOwnEmailDialogCloseAgree.bind(this); //eslint-disable-line
     this.handleNewuserNameChange = this.handleNewuserNameChange.bind(this);
     this.handleNewuserPassChange = this.handleNewuserPassChange.bind(this);
     this.handleNewEmailChange = this.handleNewEmailChange.bind(this);
@@ -259,6 +284,22 @@ class UserManagementView extends Component {
         changeOwnPassFailed: true,
       });
     }
+  }
+
+  // handles changing own email address
+  async handleChangeOwnEmailDialogCloseAgree() {
+    this.setState({
+      changeOwnEmailFailed: false,
+    });
+    const response = await changeEmail(this.findOwnID(), this.state.email);
+    if (response) {
+      this.handleChangeOwnEmailDialogClose();
+    } else {
+      this.setState({
+        changeOwnEmailFailed: true,
+      });
+    }
+    this.makeDataFreshAgain();
   }
 
   // Handles adding new users
@@ -426,6 +467,13 @@ class UserManagementView extends Component {
     });
   }
 
+  // opens dialog for changing logged in users email
+  handleOpenOwnEmailChangeDialog() {
+    this.setState({
+      changeOwnEmailDialogOpen: true,
+    });
+  }
+
   // opens dialog for adding email
   handleaddEmailDialog() {
     this.setState({
@@ -445,6 +493,14 @@ class UserManagementView extends Component {
     this.setState({
       changeOwnPassFailed: false,
       changeOwnPassDialogOpen: false,
+    });
+  }
+
+  // closes dialog for changing own email
+  handleChangeOwnEmailDialogClose() {
+    this.setState({
+      changeOwnEmailFailed: false,
+      changeOwnEmailDialogOpen: false,
     });
   }
 
@@ -560,6 +616,15 @@ class UserManagementView extends Component {
     for (const i in this.state.userList) {
       if (this.state.username === this.state.userList[i].name) {
         return this.state.userList[i].id;
+      }
+    }
+    return null;
+  }
+
+  findOwnEmail() {
+    for (const i in this.state.userList) {
+      if (this.state.username === this.state.userList[i].name) {
+        return this.state.userList[i].email;
       }
     }
     return null;
@@ -776,6 +841,57 @@ class UserManagementView extends Component {
           </DialogActions>
         </Dialog>
 
+        {/* Dialog to change email of own user */}
+        <Dialog
+          open={this.state.changeOwnEmailDialogOpen}
+          onClose={this.handleChangeOwnEmailDialogClose}
+        >
+          <DialogTitle
+            id="dialog-change-own-email-title"
+            style={dialogStyle}
+          >
+            {manage.ChangeEmail[fin]}
+          </DialogTitle>
+          <DialogContent
+            style={dialogStyle}
+          >
+            <DialogContentText>
+              {manage.EmailHelper[fin]}
+            </DialogContentText>
+
+            <div>{`${manage.OldEmail[fin]}: ${this.findOwnEmail()}`}</div>
+            <TextField
+              type="text"
+              value={this.state.newemail}
+              margin="dense"
+              id="newemail"
+              label={manage.NewEmail[fin]}
+              onChange={this.handleNewEmailChange}
+              fullWidth
+            />
+
+            {this.state.changeOwnEmailFailed ? (
+              <p style={{ fontSize: 20, color: 'red', textAlign: 'center' }}>
+                {manage.Error[fin]}
+                {' '}
+              </p>
+            ) : (
+              <p />
+            )}
+
+          </DialogContent>
+          <DialogActions
+            style={dialogStyle}
+          >
+            <Button onClick={this.handleChangeOwnEmailDialogClose} style={{ color: '#c97b7b' }}>
+              {manage.Cancel[fin]}
+            </Button>
+            <Button onClick={this.handleChangeOwnEmailDialogCloseAgree} style={{ color: '#5f77a1' }}>
+              {manage.Confirm[fin]}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         {/* Dialog to change password of other users */}
         <Dialog
           open={this.state.changePassDialogOpen}
@@ -883,6 +999,16 @@ class UserManagementView extends Component {
           </h3>
           <Button onClick={this.handleOpenOwnPassChangeDialog} variant="contained" style={{ backgroundColor: '#5f77a1', margin: 15, textAlign: 'center' }}>
             {manage.ChangePass[fin]}
+          </Button>
+        </Box>
+        <Divider />
+        <Box style={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}>
+          <h3 style={{ textAlign: 'center' }}>
+            {manage.ChangeEmail[fin]}
+            :
+          </h3>
+          <Button onClick={this.handleOpenOwnEmailChangeDialog} variant="contained" style={{ backgroundColor: '#5f77a1', margin: 15, textAlign: 'center' }}>
+            {manage.ChangeEmail[fin]}
           </Button>
         </Box>
         <Divider />
