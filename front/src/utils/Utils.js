@@ -103,28 +103,30 @@ export function viewChanger() {
     let paramYear = '';
     if (urlParamDate) {
       const urlParamDateSplit = urlParamDate.split('-');
-      [paramDay, paramMonth, paramYear] = urlParamDateSplit;
+      [paramYear, paramMonth, paramDay] = urlParamDateSplit;
       [paramDay] = paramDay.split('T');
+    } else {
+      throw 'No valid URL'; // eslint-disable-line
     }
 
-    const time = moment(`${paramYear}-${paramMonth}-${paramDay}`, 'YYYY-MM-DD');
+    const time = `${paramYear}-${paramMonth}-${paramDay}`;
 
     table.push(
-      <Link key="month" className="link" to={`/monthView/${time.format('YYYY-MM-DD')}`}>
+      <Link key="month" className="link" to={`/monthview/${time}`}>
         <div>
           {viewChanger.Month[fin]}
         </div>
       </Link>,
     );
     table.push(
-      <Link key="week" className="link" to={`/weekView/${time.format('YYYY-MM-DD')}`}>
+      <Link key="week" className="link" to={`/weekview/${time}`}>
         <div>
           {viewChanger.Week[fin]}
         </div>
       </Link>,
     );
     table.push(
-      <Link key="day" className="link" to={`/dayView/${time.format('YYYY-MM-DD')}`}>
+      <Link key="day" className="link" to={`/dayview/${time}`}>
         <div>
           {viewChanger.Day[fin]}
         </div>
@@ -134,9 +136,7 @@ export function viewChanger() {
   } catch (err) {
     console.error(err);
     const date = new Date(Date.now());
-    console.log(date);
     const time = moment(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`, 'YYYY-MM-DD');
-    console.log(time);
     table.push(
       <Link class="link" to={`/monthview/${time.format('YYYY-MM-DD')}`}>
         <div>
@@ -169,10 +169,9 @@ export function jumpToCurrent() {
   try {
     const fullUrl = window.location.href.split('/');
     const urlParamDate = fullUrl[4];
-    const date = new Date();
-
+    const date = new Date(Date.now());
     return (
-      <Link className="link" to={`/${urlParamDate}/${moment(date, 'YYYY-MM-DD').toISOString().substring(0, 10)}`}>
+      <Link className="link" data-testid="jumpToCur" to={`/${urlParamDate}/${moment(date, 'YYYY-MM-DD').toISOString().substring(0, 10)}`}>
         <div>
           {viewChanger.JumpToCurrent[fin]}
         </div>

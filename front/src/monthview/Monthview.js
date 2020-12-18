@@ -65,7 +65,7 @@ class Monthview extends Component {
     } catch {
       console.log('Error getting year from url');
     }
-    const today = new Date();
+    const today = new Date(Date.now());
     const yyyy = today.getFullYear();
     this.setState({ yearNro: yyyy });
     return yyyy;
@@ -86,7 +86,7 @@ class Monthview extends Component {
     } catch {
       console.log('Error getting month from url');
     }
-    const today = new Date();
+    const today = new Date(Date.now());
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     this.setState({ monthNro: mm });
     return mm;
@@ -342,7 +342,7 @@ class Monthview extends Component {
         });
       }
     } catch (err) {
-      const date = new Date();
+      const date = new Date(Date.now());
       const paramMonth = String(date.getMonth() + 1).padStart(2, '0');
       this.setState({
         monthNro: paramMonth,
@@ -371,6 +371,7 @@ class Monthview extends Component {
                 <div
                   className="hoverHand arrow-left"
                   onClick={this.previousMonthClick}
+                  data-testid="previousMonth"
                 />
                 <h1 className="dateHeader-text">
                   {`${month[this.state.monthNro][fin]},`}
@@ -380,6 +381,7 @@ class Monthview extends Component {
                 <div
                   className="hoverHand arrow-right"
                   onClick={this.nextMonthClick}
+                  data-testid="nextMonth"
                 />
               </div>
 
