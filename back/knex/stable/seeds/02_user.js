@@ -28,8 +28,7 @@ exports.seed = function(knex) {
         .map(({id}) => {
           return {
             user_id: id,
-            phone: undefined,
-            email: undefined
+            phone: undefined
           };
         });
     }).then(supervisors => {

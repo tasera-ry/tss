@@ -17,6 +17,7 @@ import RangeOfficerView from './tabletview/rangeofficer';
 import UserManagementView from './usermanagement/UserManagementView';
 import TrackCRUD from './edittracks/tracks';
 import Monthview from './monthview/Monthview';
+import Statistics from './statistics/Statistics';
 
 // React router. Hashrouter, because normal router won't work in apache
 
@@ -71,6 +72,7 @@ class App extends Component {
                 <Route path="/tablet" component={RangeOfficerView} />
                 <Route path="/usermanagement" component={UserManagementView} />
                 <Route path="/tracks" component={TrackCRUD} />
+                <Route path="/statistics" component={Statistics} />
               </Switch>
             </header>
           </div>
