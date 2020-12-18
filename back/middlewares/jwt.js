@@ -1,18 +1,17 @@
 const path = require('path');
 const root = path.join(__dirname, '..');
 const config = require(path.join(root, 'config', 'config'));
-const expressJWT = require('express-jwt')({ secret: config.jwt.secret });
 const services = require(path.join(root, 'services'));
-
 const jwt = require('jsonwebtoken');
 
 exports.read = [
-  expressJWT,
-  async function expandJWTContent(request, response, next) {
+  async function checkJwt(request, response, next) {
     let users;
 
+    const decoded = jwt.verify(request.cookies.token, config.jwt.secret);
+
     try {
-      users = await services.user.read(request.user);
+      users = await services.user.read(decoded);
     } catch(e) {
       return next(e);
     }
@@ -29,13 +28,11 @@ exports.read = [
 ];
 
 exports.validate = [
-  expressJWT,
   async function validateJWTtoken(request, response, next) {
     try {
-      // Removing bearer_ from the auth headers to get only token
-      let token = request.headers.authorization.slice(7);
+      const token = request.cookies.token;
 
-      jwt.verify(token, config.jwt.secret, (err, decoded) => {
+      jwt.verify(token, config.jwt.secret, (err, decoded) => { // eslint-disable-line
         if (err) {
           response.status(403);
           return next(err);
@@ -54,4 +51,4 @@ exports.validate = [
 
     return next();
   }
-]
+];

@@ -1,17 +1,22 @@
+import React from 'react';
+
 import moment from 'moment';
-import lodash from 'lodash';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+
+import texts from '../texts/texts.json';
 
 export async function getSchedulingDate(date) {
-  try{
-    let response = await fetch("/api/datesupreme/"+moment(date).format('YYYY-MM-DD'), {
+  try {
+    const response = await fetch(`/api/datesupreme/${moment(date).format('YYYY-MM-DD')}`, {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
     });
     return await response.json();
-  }catch(err){
+  } catch (err) {
     console.error(err);
     return false;
   }
@@ -19,180 +24,272 @@ export async function getSchedulingDate(date) {
 
 export async function getSchedulingWeek(date) {
   try {
-    const weekNum = moment(date, "YYYY-MM-DD").isoWeek();
-    const begin = moment(date, "YYYY-MM-DD").startOf('isoWeek');
-    const end = moment(date, "YYYY-MM-DD").endOf('isoWeek');
+    const weekNum = moment(date, 'YYYY-MM-DD').isoWeek();
+    const begin = moment(date, 'YYYY-MM-DD').startOf('isoWeek');
+    const end = moment(date, 'YYYY-MM-DD').endOf('isoWeek');
 
     const current = moment(begin);
-    const next = moment.prototype.add.bind(current, 1, 'day');
+    moment.prototype.add.bind(current, 1, 'day');
 
+    const resp = await axios.get(`/api/daterange/week/${moment(begin).format('YYYY-MM-DD')}`);
+
+    /*
     const week = await Promise.all(lodash.times(7, (i) => {
       const request = getSchedulingDate(current);
       next();
       return request;
     }));
+    */
 
     return {
-      weekNum: weekNum
-      , weekBegin: begin.format('YYYY-MM-DD')
-      , weekEnd: end.format('YYYY-MM-DD')
-      , week: week
+      weekNum,
+      weekBegin: begin.format('YYYY-MM-DD'),
+      weekEnd: end.format('YYYY-MM-DD'),
+      week: resp.data,
     };
-  } catch(err) {
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+}
+
+export async function getSchedulingFreeform(date) {
+  try {
+    const begin = moment(date, 'YYYY-MM-DD');
+    const end = moment(date, 'YYYY-MM-DD');
+    end.add(45, 'days');
+    const longrange = await axios.get(`/api/daterange/freeform/${moment(begin).format('YYYY-MM-DD')}/${moment(end).format('YYYY-MM-DD')}`);
+    return {
+      month: longrange.data,
+    };
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+}
+
+export function checkColor(paivat, paiva) {
+  const rataStatus = paivat[paiva].rangeSupervision;
+  let colorFromBackEnd = 'blue';
+
+  if (rataStatus === 'present') {
+    colorFromBackEnd = '#658f60';
+  } else if (rataStatus === 'confirmed') {
+    colorFromBackEnd = '#b2d9ad';
+  } else if (rataStatus === 'not confirmed') {
+    colorFromBackEnd = '#95d5db';
+  } else if (rataStatus === 'en route') {
+    colorFromBackEnd = '#f2c66d';
+  } else if (rataStatus === 'closed') {
+    colorFromBackEnd = '#c97b7b';
+  } else if (rataStatus === 'absent') {
+    colorFromBackEnd = '#f2f0eb';
+  }
+  return colorFromBackEnd;
+}
+
+export function viewChanger() {
+  const { viewChanger } = texts;  // eslint-disable-line
+  const fin = localStorage.getItem('language');
+
+  try {
+    const table = [];
+    const fullUrl = window.location.href.split('/');
+    const urlParamDate = fullUrl[5];
+
+    // When first access to '/' (no params in URL)
+    let paramDay = '';
+    let paramMonth = '';
+    let paramYear = '';
+    if (urlParamDate) {
+      const urlParamDateSplit = urlParamDate.split('-');
+      [paramDay, paramMonth, paramYear] = urlParamDateSplit;
+      [paramDay] = paramDay.split('T');
+    }
+
+    const time = moment(`${paramYear}-${paramMonth}-${paramDay}`, 'YYYY-MM-DD');
+
+    table.push(
+      <Link key="month" className="link" to={`/monthView/${time.format('YYYY-MM-DD')}`}>
+        <div>
+          {viewChanger.Month[fin]}
+        </div>
+      </Link>,
+    );
+    table.push(
+      <Link key="week" className="link" to={`/weekView/${time.format('YYYY-MM-DD')}`}>
+        <div>
+          {viewChanger.Week[fin]}
+        </div>
+      </Link>,
+    );
+    table.push(
+      <Link key="day" className="link" to={`/dayView/${time.format('YYYY-MM-DD')}`}>
+        <div>
+          {viewChanger.Day[fin]}
+        </div>
+      </Link>,
+    );
+    return table;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+}
+
+export function jumpToCurrent() {
+  const { viewChanger } = texts;  // eslint-disable-line
+  const fin = localStorage.getItem('language');
+
+  try {
+    const fullUrl = window.location.href.split('/');
+    const urlParamDate = fullUrl[4];
+    const date = new Date();
+
+    return (
+      <Link className="link" to={`/${urlParamDate}/${moment(date, 'YYYY-MM-DD').toISOString().substring(0, 10)}`}>
+        <div>
+          {viewChanger.JumpToCurrent[fin]}
+        </div>
+      </Link>
+    );
+  } catch (err) {
     console.error(err);
     return false;
   }
 }
 
 export function dayToString(i) {
-  let lang = "fi"; //fallback
-  if(localStorage.getItem("language") === '0') {
+  let lang = 'fi'; // fallback
+  if (localStorage.getItem('language') === '0') {
     lang = 'fi';
-  }
-  else if(localStorage.getItem("language") === '1'){
+  } else if (localStorage.getItem('language') === '1') {
     lang = 'en';
   }
   moment.locale(lang);
-  //en/fi have different numbers for start date
-  if(lang === 'fi') i--;
+  // en/fi have different numbers for start date
+  if (lang === 'fi') i -= 1; // eslint-disable-line
   const dayString = moment().weekday(i).format('dddd');
-  //first letter only to uppercase
+  // first letter only to uppercase
   return dayString.charAt(0).toUpperCase() + dayString.slice(1);
 }
 
 export function monthToString(i) {
-  let lang = "fi"; //fallback
-  if(localStorage.getItem("language") === '0') {
+  let lang = 'fi'; // fallback
+  if (localStorage.getItem('language') === '0') {
     lang = 'fi';
-  }
-  else if(localStorage.getItem("language") === '1'){
+  } else if (localStorage.getItem('language') === '1') {
     lang = 'en';
   }
   moment.locale(lang);
   return moment().month(i).format('MMMM');
 }
 
-/* 
-  Validates the login token
+/*
+  Validates the login token (in cookies)
 
   return: boolean, is token valid (true = yes)
 */
 export async function validateLogin() {
-  const token = localStorage.getItem('token');
   let response;
-  if ( token !== null ) {
-    try {
-      response = await fetch("/api/validate", {
-        method: "GET",
-        headers: { 
-          Authorization: `Bearer ${token}` 
-        }
-      });
-    }
-    catch (error) {
-      // console.log won't have time to be read before user is rerouted, so commented out for future use
-      // console.log(`Authorization validation failed `, error);
-      return false;
-    }
+  try {
+    response = await fetch('/api/validate', {
+      method: 'GET',
+    });
+  } catch (error) {
+    return false;
   }
 
   if (response && response.status && response.status === 200) {
     return true;
   }
-  else {
-    return false;
-  }
+
+  return false;
 }
 
-//on success true
-//else returns string trying to explain what broke
-//requires reservation and schedule to exist
-export async function rangeSupervision(rsId,srsId,rangeStatus,rsScheduled,token){
-  try{
-    if(rsId !== null && srsId !== null){
-      //only closed is different from the 6 states
-      if(rangeStatus !== 'closed'){
-        //range supervision exists
-        if(rsScheduled){
-          //changing supervision force reservation open
+// on success true
+// else returns string trying to explain what broke
+// requires reservation and schedule to exist
+export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, supervisor) {
+  try {
+    if (rsId !== null && srsId !== null) {
+      // only closed is different from the 6 states
+      if (rangeStatus !== 'closed') {
+        // range supervision exists
+        if (rsScheduled) {
+          // changing supervision force reservation open
           await fetch(`/api/reservation/${rsId}`, {
-            method: "PUT",
-            body: JSON.stringify({available: true}),
+            method: 'PUT',
+            body: JSON.stringify({ available: true }),
             headers: {
-              'Accept': 'application/json',
+              Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
-            }
+            },
           })
-          .then(status => {
-            if(!status.ok) throw new Error('scheduled reserv fail');
-          });
-          
-          //update supervision
+            .then((status) => {
+              if (!status.ok) throw new Error('scheduled reserv fail');
+            });
+
+          // update supervision
           await fetch(`/api/range-supervision/${srsId}`, {
-            method: "PUT",
-            body: JSON.stringify({range_supervisor: rangeStatus}),
+            method: 'PUT',
+            body: JSON.stringify({ range_supervisor: rangeStatus, supervisor }),
             headers: {
-              'Accept': 'application/json',
+              Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
-            }
+            },
           })
-          .then(status => {
-            if(!status.ok) throw new Error('scheduled superv fail');
-          });
-        }
-        //no supervision exists
-        else{
-          //changing supervision force reservation open
+            .then((status) => {
+              if (!status.ok) throw new Error('scheduled superv fail');
+            });
+        } else { // no supervision exists
+          // changing supervision force reservation open
           await fetch(`/api/reservation/${rsId}`, {
-            method: "PUT",
-            body: JSON.stringify({available: true}),
+            method: 'PUT',
+            body: JSON.stringify({ available: true }),
             headers: {
-              'Accept': 'application/json',
+              Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
-            }
+            },
           })
-          .then(status => {
-            if(!status.ok) throw new Error('not scheduled reserv fail');
-          });
-          
-          //add new supervision
-          await fetch(`/api/range-supervision`, {
-            method: "POST",
+            .then((status) => {
+              if (!status.ok) throw new Error('not scheduled reserv fail');
+            });
+
+          // add new supervision
+          await fetch('/api/range-supervision', {
+            method: 'POST',
             body: JSON.stringify({
-              scheduled_range_supervision_id:srsId,
-              range_supervisor: rangeStatus
+              scheduled_range_supervision_id: srsId,
+              range_supervisor: rangeStatus,
+              supervisor,
             }),
             headers: {
-              'Accept': 'application/json',
+              Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
-            }
+            },
           })
-          .then(status => {
-            if(!status.ok) throw new Error('not scheduled superv fail');
-          });
+            .then((status) => {
+              if (!status.ok) throw new Error('not scheduled superv fail');
+            });
         }
       } else {
-        //range closed update reservation
+        // range closed update reservation
         await fetch(`/api/reservation/${rsId}`, {
-          method: "PUT",
-          body: JSON.stringify({available: 'false'}),
+          method: 'PUT',
+          body: JSON.stringify({ available: 'false' }),
           headers: {
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          }
+          },
         })
-        .then(status => {
-          if(!status.ok) throw new Error('reservation update failed');
-        });
+          .then((status) => {
+            if (!status.ok) throw new Error('reservation update failed');
+          });
       }
-    }else throw new Error('reservation or schedule missing');
-  }catch(e){
-    return 'general range supervision failure: '+ e;
+    } else throw new Error('reservation or schedule missing');
+  } catch (e) {
+    return `general range supervision failure: ${e}`;
   }
   return true;
 }

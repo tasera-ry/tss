@@ -12,12 +12,12 @@ function validatorAdditions(validator, opts) {
   if(opts.includes('exists')) {
     validator = validator
       .exists({ checkNull: true, checkFalsy: true })
-      .withMessage('must be included')
+      .withMessage('must be included');
   }
 
   if(opts.includes('optional')) {
     validator = validator
-      .optional()
+      .optional();
   }
 
   return validator;
@@ -26,18 +26,18 @@ function validatorAdditions(validator, opts) {
 const fields = {
   track_id: function idValidation(requestObject, ...opts) {
     const validator = requestObject('track_id')
-          .isInt()
-          .withMessage('must be an integer')
-          .toInt()
+      .isInt()
+      .withMessage('must be an integer')
+      .toInt();
 
     return validatorAdditions(validator, opts);
   },
 
   range_id: function idValidation(requestObject, ...opts) {
     const validator = requestObject('range_id')
-          .isInt()
-          .withMessage('must be an integer')
-          .toInt()
+      .isInt()
+      .withMessage('must be an integer')
+      .toInt();
 
     return validatorAdditions(validator, opts);
   },
@@ -45,34 +45,34 @@ const fields = {
   //TODO sanitize?
   name: function nameValidation(requestObject, ...opts) {
     const validator = requestObject('name')
-          .isString()
-          .withMessage('must be a string')
-          .isLength({ min: 1, max: 255 })
-          .withMessage('must be between 1 and 255 characters')
+      .isString()
+      .withMessage('must be a string')
+      .isLength({ min: 1, max: 255 })
+      .withMessage('must be between 1 and 255 characters');
 
     return validatorAdditions(validator, opts);
   },
 
   description: function descriptionValidation(requestObject, ...opts) {
     const validator = requestObject('description')
-          .isString()
-          .withMessage('must be a string')
-          .isLength({ min: 1, max: 255 })
-          .withMessage('must be between 1 and 255 characters')
+      .isString()
+      .withMessage('must be a string')
+      .isLength({ min: 1, max: 255 })
+      .withMessage('must be between 1 and 255 characters');
 
     return validatorAdditions(validator, opts);
   }
 
   , short_description: function shortDescriptionValidation(requestObject, ...opts) {
     const validator = requestObject('short_description')
-          .isString()
-          .withMessage('must be a string')
-          .isLength({ min: 1, max: 25 })
-          .withMessage('must be between 1 and 25 characters')
+      .isString()
+      .withMessage('must be a string')
+      .isLength({ min: 1, max: 25 })
+      .withMessage('must be between 1 and 25 characters');
 
     return validatorAdditions(validator, opts);
   }
-}
+};
 
 function handleValidationErrors(request, response, next) {
   const validationErrors = validationResult(request);
@@ -82,7 +82,7 @@ function handleValidationErrors(request, response, next) {
   }
 
   return next();
-};
+}
 
 module.exports = {
   read: [
@@ -135,4 +135,4 @@ module.exports = {
       return next();
     }
   ]
-}
+};

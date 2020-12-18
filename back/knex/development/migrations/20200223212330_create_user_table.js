@@ -1,11 +1,12 @@
 exports.up = function(knex) {
-  return knex.schema.raw("create type role as enum('superuser', 'supervisor')")
+  return knex.schema.raw('create type role as enum(\'superuser\', \'supervisor\')')
     .createTable('user', user => {
-      user.increments()
+      user.increments();
+      user.string('email');
       user.string('name')
-        .notNullable()
+        .notNullable();
       user.binary('digest', 184)
-        .notNullable()
+        .notNullable();
       user.enu(
         'role',
         ['superuser', 'supervisor'],
@@ -14,12 +15,12 @@ exports.up = function(knex) {
           existingType: true,
           enumName: 'role'
         }
-      ).notNullable()
-    })
-}
+      ).notNullable();
+    });
+};
 
 exports.down = function(knex) {
   return knex.schema
     .dropTable('user')
-    .raw("drop type role")
-}
+    .raw('drop type role');
+};

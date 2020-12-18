@@ -1,11 +1,9 @@
-const path = require('path')
+const path = require('path');
 
-const root = path.join(__dirname, '..')
-const models = require(path.join(root, 'models'))
-const config = require(path.join(root, 'config', 'config'))
+const root = path.join(__dirname, '..');
+const models = require(path.join(root, 'models'));
 
-const validate = require('validate.js')
-const _ = require('lodash')
+const _ = require('lodash');
 
 const service = {
   /**
@@ -16,19 +14,19 @@ const service = {
    *
    */
   create: async function createSupervision(info) {
-    return (await models.rangeSupervision.create(info)).pop()
+    return (await models.rangeSupervision.create(info)).pop();
   },
 
+    
   /**
    * Get the supervisions matching a key.
    *
    * @param {object} key - Identifying key, { scheduled_range_supervision_id?, range_supervisor?, notice? }
-   * @param {object} fields - Attributes about the supervision to select { scheduled_range_supervision_id?, range_supervisor?, notice? }
    * @return {Promise<object[]>} Supervisions that matched the key
    *
    */
-  read: async function readSupervision(key, fields) {
-    return (await models.rangeSupervision.read(_.pick(key, 'scheduled_range_supervision_id', 'range_supervisor', 'notice')))
+  read: async function readSupervision(key) {
+    return (await models.rangeSupervision.read(_.pick(key, 'scheduled_range_supervision_id', 'range_supervisor', 'notice')));
   },
 
   /**
@@ -40,7 +38,7 @@ const service = {
    *
    */
   userSupervisions: async function getUserSupervisions(key, fields) {
-    return (await models.rangeSupervision.userSupervisions(_.pick(key, 'id', 'name', 'role', 'phone'), fields))
+    return (await models.rangeSupervision.userSupervisions(_.pick(key, 'id', 'name', 'role', 'phone', 'email'), fields));
   },
 
   /**
@@ -53,7 +51,7 @@ const service = {
    *
    */
   update: async function updateSupervision(key, updates) {
-    return models.rangeSupervision.update(key, updates)
+    return models.rangeSupervision.update(key, updates);
   },
 
   /**
@@ -67,8 +65,8 @@ const service = {
    * service.delete({name: 'mark'})
    */
   delete: async function deleteSupervision(key) {
-    return models.rangeSupervision.delete(key)
+    return models.rangeSupervision.delete(key);
   }
-}
+};
 
-module.exports = service
+module.exports = service;

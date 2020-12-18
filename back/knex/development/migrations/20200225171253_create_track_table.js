@@ -1,20 +1,20 @@
 exports.up = function(knex) {
   return knex.schema
     .createTable('track', track => {
-      track.increments('id')
+      track.increments('id');
       track.integer('range_id')
         .references('id')
         .inTable('range')
-        .notNullable()
+        .notNullable();
       track.string('name')
-        .notNullable()
+        .notNullable();
       track.string('description')
-        .notNullable()
+        .notNullable();
       track.string('short_description')
-        .notNullable()
-    })
-}
+        .notNullable();
+    });
+};
 
 exports.down = function(knex) {
-  return knex.schema.dropTable('track')
-}
+  return knex.schema.dropTable('track');
+};

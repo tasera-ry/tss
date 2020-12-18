@@ -1,8 +1,7 @@
-const path = require('path')
-const root = path.join(__dirname, '..')
-const models = require(path.join(root, 'models'))
-const _ = require('lodash')
-const moment = require('moment')
+const path = require('path');
+const root = path.join(__dirname, '..');
+const models = require(path.join(root, 'models'));
+const _ = require('lodash');
 
 /**
  * Create a new schedule item.
@@ -15,8 +14,8 @@ const moment = require('moment')
  * createSchedule({ range_reservation_id: 10, supervisor_id: 3, open:'18:00', close:'21:00' })
  */
 async function createSchedule(details) {
-  details = _.pick(details, 'range_reservation_id', 'supervisor_id', 'open', 'close')
-  return (await models.schedule.create(details)).pop()
+  details = _.pick(details, 'range_reservation_id', 'supervisor_id', 'open', 'close');
+  return (await models.schedule.create(details)).pop();
 }
 
 /**
@@ -30,7 +29,7 @@ async function createSchedule(details) {
  * readSchedule({ open:'18:00:00' }, [])
  */
 async function readSchedule(key, fields) {
-  return models.schedule.read(key, fields)
+  return models.schedule.read(key, fields);
 }
 
 /**
@@ -45,8 +44,8 @@ async function readSchedule(key, fields) {
  * updateSchedule({ time: '17:00:00' }, { open: '18:00:00' })
  */
 async function updateSchedule(current, updates) {
-  updates = _.pick(updates, 'range_reservation_id', 'supervisor_id', 'open', 'close')
-  return models.schedule.update(current, updates)
+  updates = _.pick(updates, 'range_reservation_id', 'supervisor_id', 'open', 'close');
+  return models.schedule.update(current, updates);
 }
 
 /**
@@ -59,7 +58,7 @@ async function updateSchedule(current, updates) {
  * deleteSchedule({ id: 1 })
  */
 async function deleteSchedule(key) {
-  return models.schedule.delete(key)
+  return models.schedule.delete(key);
 }
 
 module.exports = {
@@ -67,4 +66,4 @@ module.exports = {
   read: readSchedule,
   update: updateSchedule,
   delete: deleteSchedule
-}
+};

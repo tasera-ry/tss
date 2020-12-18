@@ -1,10 +1,9 @@
 // shouldn't this be deleted?
 
-const config = require("../config/config");
-const moment = require("moment-timezone");
-const fetch = require("node-fetch");
+const config = require('../config/config');
+const moment = require('moment-timezone');
+const fetch = require('node-fetch');
 const _ = require('lodash');
-const { short_description } = require("casual");
 
 /*
 *  Get complete scheduling for a date
@@ -49,7 +48,7 @@ exports.getScheduleDate = async (req, res) => {
     try{
       // enum paths
       // use then?
-      let response = await fetch(config.server.host+"/api/track", {
+      let response = await fetch(config.server.host+'/api/track', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -65,7 +64,7 @@ exports.getScheduleDate = async (req, res) => {
 
   async function getReservation(date) {
     try{
-      let response = await fetch(config.server.host+"/api/reservation?date="+moment(date).format('YYYY-MM-DD'), {
+      let response = await fetch(config.server.host+'/api/reservation?date='+moment(date).format('YYYY-MM-DD'), {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -81,7 +80,7 @@ exports.getScheduleDate = async (req, res) => {
 
   async function getSchedule(reservationId) {
     try{
-      let response = await fetch(config.server.host+"/api/schedule?range_reservation_id="+reservationId, {
+      let response = await fetch(config.server.host+'/api/schedule?range_reservation_id='+reservationId, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -97,7 +96,7 @@ exports.getScheduleDate = async (req, res) => {
 
   async function getTracksupervision(scheduleId) {
     try{
-      let response = await fetch(config.server.host+"/api/track-supervision?scheduled_range_supervision_id="+scheduleId, {
+      let response = await fetch(config.server.host+'/api/track-supervision?scheduled_range_supervision_id='+scheduleId, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -113,7 +112,7 @@ exports.getScheduleDate = async (req, res) => {
 
   async function getRangesupervision(scheduleId) {
     try{
-      let response = await fetch(config.server.host+"/api/range-supervision?scheduled_range_supervision_id="+scheduleId, {
+      let response = await fetch(config.server.host+'/api/range-supervision?scheduled_range_supervision_id='+scheduleId, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -167,7 +166,7 @@ exports.getScheduleDate = async (req, res) => {
         notice: '',
         trackSupervision: 'absent',
         scheduled: false
-      }
+      };
       return _.pick(item, ['id', 'name', 'description', 'short_description', 'notice', 'trackSupervision', 'scheduled']);
     });
 
@@ -180,7 +179,7 @@ exports.getScheduleDate = async (req, res) => {
           ...supervision,
           trackSupervision: supervision ? supervision.track_supervisor : 'absent',
           scheduled: supervision
-        }
+        };
         return _.pick(item, ['id', 'name', 'description', 'short_description', 'notice', 'trackSupervision', 'scheduled']);
       });
     }
@@ -203,7 +202,7 @@ exports.getScheduleDate = async (req, res) => {
       rangeSupervision: (!available ? 'closed' : rangeSupervisionState),
       rangeSupervisionScheduled: rangeSupervisionScheduled,
       tracks: tracks
-    }
+    };
 
     // shouldn't we return earlier? saves processing time & power
     if(tracks && reservation && schedule){
@@ -216,4 +215,4 @@ exports.getScheduleDate = async (req, res) => {
   else{
     res.status(400).json();
   }
-}
+};

@@ -6,8 +6,10 @@
     "UserManagement": ["Käyttäjienhallinta", "User management"],
     "Supervision": ["Valvonnat", "Supervisions"],
     "Tablet": ["Tablettinäkymä", "Tablet view"],
+    "Feedback": ["Palaute", "Feedback"],
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
-    "SignOut": ["Kirjaudu ulos", "Sign Out"]
+    "SignOut": ["Kirjaudu ulos", "Sign Out"],
+    "Statistics": ["Tilastot", "Statistics"]
   },
   "banner": {
     "Notification": ["Sinulla on varmistamattomia päävalvojavuoroja!", "You have unconfirmed range officer reservations!"],
@@ -41,11 +43,20 @@
     "Cancel": ["Sulje", "Cancel"],
     "Save": ["Tallenna", "Save"]
   },
+  "feedback": {
+    "Title": ["Anna palautetta", "Give feedback"],
+    "Note": [
+      "Kirjoita allaolevaan kenttään radoilta saamastasi palautteesta. Muista kirjoittaa viestiin radan nimi, jos palaute koskee tiettyä rataa. Palaute lähetetään suoraan pääkäyttäjille.",
+      "Write in the textbox below the feedback you received from the range. Remember to identify the track if the feedback is for a certain track. The feedback will be sent to the superusers."
+    ],
+    "Send": ["Lähetä", "Send"],
+    "Cancel": ["Peru", "Cancel"]
+  },
   "week": {
     "Week": ["Viikko", "Week"],
     "Green": ["Päävalvoja paikalla", "Range officer present"],
     "Lightgreen": ["Päävalvoja varmistettu", "Range officer confirmed"],
-    "Blue": ["Päävalvoja määritetty mutta ei varmistettu", "Range officer predefined, not confirmed"],
+    "Blue": ["Päävalvoja määritetty, mutta ei varmistettu", "Range officer predefined, not confirmed"],
     "Red": ["Keskus suljettu", "Range closed"],
     "Orange": ["Päävalvoja matkalla", "Range officer on the way"],
     "White": ["Päävalvojaa ei asetettu", "Range officer undefined"],
@@ -84,6 +95,9 @@
     "Helper": ["Vaihtaaksesi salasanasi sinun tulee antaa nykyinen salasanasi sekä uusi joksi haluat sen vaihtaa", "Give your current and new password"],
     "OldPass": ["Nykyinen salasana", "Current password"],
     "NewPass": ["Uusi salasana", "New password"],
+    "NewEmail":[ "Lisää sähköposti","Add Email"],
+    "Email":[ "Sähköposti","Email"],
+    "EmailForUser":[ "Lisää sähköposti käyttäjälle:","Add Email for user:"],
     "Cancel": ["Peruuta", "Cancel"],
     "Confirm": ["Vahvista", "Save changes"],
     "ConfirmDelete": ["Vahvista", "Confirm"],
@@ -96,9 +110,8 @@
     "Ask": ["Haluatko varmasti jatkaa?", "Are you sure?"],
     "AskDelete": ["Tämä poistaa pysyvästi käyttäjän", "This action will permanently remove user"],
     "Error": ["Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki", "Something went wrong"],
-    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"],
-    "Superuser": ["Superuser", "Superuser"],
-    "Supervisor": ["Valvoja", "Range officer"]
+    "ErrorEmail": ["Jokin meni pieleen, Sähköpostia ei tallennettu", "Something went wrong, email not saved"],
+    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"]
   },
   "tablet": {
     "Open": ["Aukiolo", "Open"],
@@ -168,5 +181,46 @@
     "previousTooltip": ["Edellinen sivu", "Previous page"],
     "firstTooltip": ["Ensimmäinen sivu", "First page"],
     "lastTooltip": ["Viimeinen sivu", "Last page"]
+  },
+  "month": {
+    "0": ["Err", "Err"],
+    "01": ["Tammikuu", "January"],
+    "02": ["Helmikuu", "February"],
+    "03": ["Maaliskuu", "March"],
+    "04": ["Huhtikuu", "April"],
+    "05": ["Toukokuu", "May"],
+    "06": ["Kesäkuu", "June"],
+    "07": ["Heinäkuu", "July"],
+    "08": ["Elokuu", "August"],
+    "09": ["Syyskuu", "September"],
+    "10": ["Lokakuu", "October"],
+    "11": ["Marraskuu", "November"],
+    "12": ["Joulukuu", "December"],
+    "weekNumber": ["Vko", "Wk"],
+    "Notice": ["Radalla Lisätietoja", "Track has additional information"]
+  },
+  "viewChanger": {
+    "Month": ["Kuukausi", "Month"],
+    "Week": ["Viikko", "Week"],
+    "Day": ["Päivä", "Day"],
+    "JumpToCurrent": ["Tänään", "Today"]
+  },
+  "trackStatistics": {
+    "addVisitorsButton": ["Lisää kävijätietoja", "Add visitor statistics"],
+    "addVisitorsTitle": ["Lisää kävijöiden määrä", "Add number of visitors"],
+    "backButton": ["Takaisin", "Back"],
+    "sendButton": ["Lähetä tiedot", "Send statistics"]
+  },
+  "statistics": {
+    "Day": ["Päivä", "Day"],
+    "Month": ["Kuukausi", "Month"],
+    "Total": ["Kävijöitä yhteensä", "Visitors in total"],
+    "DayChoose": ["Valitse päivä", "Choose date"],
+    "TrackLabel": ["Rata", "Track"],
+    "VisitorLabel": ["Kävijämäärä", "Number of visitors"],
+    "DayLabel": ["Päivä", "Day"],
+    "DayChartHeader": ["Kävijämäärät radoittain", "Visitors per track"],
+    "MonthChart1Header": ["Kävijämäärät päivittäin", "Visitors per day"],
+    "MonthChart2Header": ["Ratojen kävijämäärät kuukausittain", "Monthly visitors per track"]
   }
 }

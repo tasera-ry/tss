@@ -27,8 +27,8 @@ exports.hasProperty = function userHasProperty(propertyName, value, equalityFn) 
   function propertyEquals(obj) {
     return equalityFn === undefined
       ? obj[propertyName] === value
-      : equalityFn(value, obj[propertyName])
-  };
+      : equalityFn(value, obj[propertyName]);
+  }
 
   return function(request, response, next) {
     if(propertyEquals(response.locals.user)) {
@@ -45,7 +45,7 @@ const serviceCalls = {
     const credentials = response.locals.credentials;
 
     try {
-      response.locals.id = await services.user.authenticate(credentials);
+      response.locals.user = await services.user.authenticate(credentials);
     }
     catch(e) {
       /*
@@ -55,9 +55,8 @@ const serviceCalls = {
 
       // handle known errors unknown user and incorrect password with a
       // response
-      if(e.name === 'Unknown user' || e.name === 'Incorrect password') {
+      if(e.name === 'Invalid credentials') {
         return response
-          //.set('WWW-Authenticate', 'Basic')
           .status(401)
           .send({
             error: e.message
@@ -73,7 +72,7 @@ const serviceCalls = {
   },
 
   readFilter: async function readFilterUser(request, response, next) {
-    const query = response.locals.query
+    const query = response.locals.query;
 
     try {
       response.locals.queryResult = await services.user.read(query, []);
@@ -87,7 +86,7 @@ const serviceCalls = {
   },
 
   read: async function readUser(request, response, next) {
-    const query = response.locals.query
+    const query = response.locals.query;
 
     try {
       response.locals.queryResult = await services.user.read(query, []);
@@ -143,7 +142,7 @@ const serviceCalls = {
   },
 
   delete: async function deleteUser(request, response, next) {
-    const query = response.locals.query
+    const query = response.locals.query;
 
     try {
       response.locals.queryResult = await services.user.delete(query);
@@ -153,7 +152,7 @@ const serviceCalls = {
 
     return next();
   }
-}
+};
 
 exports.sign = [
   validators.user.sign,

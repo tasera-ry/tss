@@ -1,8 +1,8 @@
-const path = require('path')
-const root = path.join(__dirname, '..')
-const models = require(path.join(root, 'models'))
+const path = require('path');
+const root = path.join(__dirname, '..');
+const models = require(path.join(root, 'models'));
 
-const _ = require('lodash')
+const _ = require('lodash');
 
 /**
  * Create a new reservation.
@@ -15,8 +15,8 @@ const _ = require('lodash')
  * createReservation({ date:'2020-01-01', available:true })
  */
 async function createReservation(details) {
-  details = _.pick(details, 'range_id', 'date', 'available')
-  return (await models.reservation.create(details)).pop()
+  details = _.pick(details, 'range_id', 'date', 'available');
+  return (await models.reservation.create(details)).pop();
 }
 
 
@@ -33,8 +33,8 @@ async function createReservation(details) {
  * readReservation({ available: true }, [], '2020-01-01', '2020-01-31')
  */
 async function readReservation(key, fields, from, to) {
-  key = _.pick(key, 'id', 'range_id', 'date', 'available')
-  return models.reservation.read(key, fields, from, to)
+  key = _.pick(key, 'id', 'range_id', 'date', 'available');
+  return models.reservation.read(key, fields, from, to);
 }
 
 /**
@@ -49,9 +49,9 @@ async function readReservation(key, fields, from, to) {
  * updateReservation({ date: '2020-01-01' }, { available: false })
  */
 async function updateReservation(current, updates) {
-  current = _.pick(current, 'id', 'range_id', 'date', 'available')
-  updates = _.pick(updates, 'date', 'available')
-  return models.reservation.update(current, updates)
+  current = _.pick(current, 'id', 'range_id', 'date', 'available');
+  updates = _.pick(updates, 'date', 'available');
+  return models.reservation.update(current, updates);
 }
 
 /**
@@ -64,8 +64,8 @@ async function updateReservation(current, updates) {
  * deleteReservation({ date: '2020-01-01' })
  */
 async function deleteReservation(key) {
-  key = _.pick(key, 'id', 'range_id', 'date', 'available')
-  return models.reservation.delete(key)
+  key = _.pick(key, 'id', 'range_id', 'date', 'available');
+  return models.reservation.delete(key);
 }
 
 module.exports = {
@@ -73,4 +73,4 @@ module.exports = {
   read: readReservation,
   update: updateReservation,
   delete: deleteReservation
-}
+};

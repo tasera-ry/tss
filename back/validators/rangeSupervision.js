@@ -4,67 +4,91 @@ const {
   param,
   validationResult,
   matchedData
-} = require('express-validator')
+} = require('express-validator');
 
 function validatorAdditions(validator, opts) {
   if(opts.includes('exists')) {
     validator = validator
       .exists({ checkNull: true, checkFalsy: true })
-      .withMessage('must be included')
+      .withMessage('must be included');
   }
 
   if(opts.includes('optional')) {
     validator = validator
-      .optional()
+      .optional();
   }
 
-  return validator
+  return validator;
 }
 
 const fields = {
   scheduled_range_supervision_id: function idValidation(requestObject, ...opts) {
     const validator = requestObject('scheduled_range_supervision_id')
-          .isInt()
-          .withMessage('must be an integer')
-          .toInt()
-    return validatorAdditions(validator, opts)
+      .isInt()
+      .withMessage('must be an integer')
+      .toInt();
+    return validatorAdditions(validator, opts);
   },
 
   range_supervisor: function supervisorValidation(requestObject, ...opts) {
     const validator = requestObject('range_supervisor')
-          .isString()
-          .withMessage('must be a string')
-          .isLength({ min: 1, max: 255 })
-          .withMessage('must be between 1 and 255 characters')
-    return validatorAdditions(validator, opts)
+      .isString()
+      .withMessage('must be a string')
+      .isLength({ min: 1, max: 255 })
+      .withMessage('must be between 1 and 255 characters');
+    return validatorAdditions(validator, opts);
+  },
+
+  supervisor: function supervisorValidation(requestObject, ...opts) {
+    const validator = requestObject('supervisor')
+      .isInt()
+      .withMessage('must be an integer')
+      .toInt();
+    return validatorAdditions(validator, opts);
   },
 
   notice: function noticeValidation(requestObject, ...opts) {
     const validator = requestObject('notice')
-          .isString()
-          .withMessage('must be a string')
-          .isLength({ min: 1, max: 255 })
-          .withMessage('must be between 1 and 255 characters')
-    return validatorAdditions(validator, opts)
+      .isString()
+      .withMessage('must be a string')
+      .isLength({ min: 1, max: 255 })
+      .withMessage('must be between 1 and 255 characters');
+    return validatorAdditions(validator, opts);
   },
 
   user_id: function idValidation(requestObject, ...opts) {
     const validator = requestObject('id')
-          .isInt()
-          .withMessage('must be an integer')
-          .toInt()
-    return validatorAdditions(validator, opts)
+      .isInt()
+      .withMessage('must be an integer')
+      .toInt();
+    return validatorAdditions(validator, opts);
+  },
+
+  feedback: function feedbackValidation(requestObject, ...opts) {
+    const validator = requestObject('feedback')
+      .isString()
+      .withMessage('must be a string')
+      .isLength({ min: 1 })
+      .withMessage('must be at least one character long');
+    return validatorAdditions(validator, opts);
+  },
+
+  user: function userValidation(requestObject, ...opts) {
+    const validator = requestObject('user')
+      .isString()
+      .withMessage('must be a string');
+    return validatorAdditions(validator, opts);
   }
-}
+};
 
 function handleValidationErrors(request, response, next) {
-  const validationErrors = validationResult(request)
+  const validationErrors = validationResult(request);
 
   if(validationErrors.isEmpty() === false) {
-    return response.status(400).send(validationErrors)
+    return response.status(400).send(validationErrors);
   }
 
-  return next()
+  return next();
 }
 
 // probably needs const strings
@@ -75,24 +99,33 @@ module.exports = {
     fields.scheduled_range_supervision_id(query, 'optional'),
     handleValidationErrors,
     function storeQuery(request, response, next) {
-      response.locals.query = matchedData(request, { locations: ['query'] })
-      return next()
+      response.locals.query = matchedData(request, { locations: ['query'] });
+      return next();
     }
   ],
   read: [
     fields.scheduled_range_supervision_id(param, 'exists'),
     handleValidationErrors,
     function storeID(request, response, next) {
-      response.locals.query = matchedData(request, { locations: ['params'] })
-      return next()
+      response.locals.query = matchedData(request, { locations: ['params'] });
+      return next();
     }
   ],
   userSupervisions: [
     fields.user_id(param, 'exists'),
     handleValidationErrors,
     function storeUserID(request, response, next) {
-      response.locals.query = matchedData(request, { locations: ['params'] })
-      return next()
+      response.locals.query = matchedData(request, { locations: ['params'] });
+      return next();
+    }
+  ],
+  feedback: [
+    fields.feedback(body, 'exists'),
+    fields.user(body, 'exists'),
+    handleValidationErrors,
+    function storeFeedback(request, response, next) {
+      response.locals.query = matchedData(request, { locations: ['body'] });
+      return next();
     }
   ],
   create: [
@@ -101,27 +134,28 @@ module.exports = {
     fields.notice(body, 'optional'),
     handleValidationErrors,
     function storeCreationRequest(request, response, next) {
-      response.locals.query = matchedData(request, { locations: ['body'] })
-      return next()
+      response.locals.query = matchedData(request, { locations: ['body'] });
+      return next();
     }
   ],
   update: [
     fields.scheduled_range_supervision_id(param, 'exists'),
     fields.range_supervisor(body, 'optional'),
+    fields.supervisor(body, 'optional'),
     fields.notice(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
-      response.locals.id = matchedData(request, { locations: ['params'] })
-      response.locals.updates = matchedData(request, { locations: ['body'] })
-      return next()
+      response.locals.id = matchedData(request, { locations: ['params'] });
+      response.locals.updates = matchedData(request, { locations: ['body'] });
+      return next();
     }
   ],
   delete: [
     fields.scheduled_range_supervision_id(param, 'exists'),
     handleValidationErrors,
     function storeDeleteRequest(request, response, next) {
-      response.locals.query = matchedData(request, { locations: ['params'] })
-      return next()
+      response.locals.query = matchedData(request, { locations: ['params'] });
+      return next();
     }
   ]
-}
+};

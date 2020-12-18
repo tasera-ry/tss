@@ -1,13 +1,13 @@
 exports.up = function(knex) {
   return knex.schema
     .createTable('range', range => {
-      range.increments()
+      range.increments();
       range.string('name')
-        .notNullable()
-    })
-}
+        .notNullable();
+    });
+};
 
 exports.down = function(knex) {
   return knex.schema
-    .dropTable('range')
-}
+    .dropTable('range');
+};

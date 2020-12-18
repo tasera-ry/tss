@@ -1,4 +1,4 @@
-const moment = require('moment')
+const moment = require('moment');
 
 const schedule = [
   {
@@ -297,10 +297,10 @@ const schedule = [
       close: '21:00'
     }
   }
-]
+];
 
 exports.seed = async function(knex) {
-  const supervisor_id = (await knex('supervisor')).pop().user_id
+  const supervisor_id = (await knex('supervisor')).pop().user_id;
 
   return knex('range_reservation')
     .where({
@@ -311,16 +311,16 @@ exports.seed = async function(knex) {
       return Promise.all(
         reservations.map(reservation => {
           const day = schedule
-                .filter(day => moment(reservation.date).format('YYYY-MM-DD') === day.date)
-                .pop()
+            .filter(day => moment(reservation.date).format('YYYY-MM-DD') === day.date)
+            .pop();
           if(day.data.supervisor) {
-            day.data.supervisor_id = supervisor_id
+            day.data.supervisor_id = supervisor_id;
           }
-          day.data.range_reservation_id = reservation.id
-          delete day.data.supervisor
+          day.data.range_reservation_id = reservation.id;
+          delete day.data.supervisor;
 
           return knex('scheduled_range_supervision')
-            .insert(day.data)
-        }))
-    })
-}
+            .insert(day.data);
+        }));
+    });
+};

@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
 
@@ -14,7 +14,13 @@ const oldSchedule = require(path.join(root, 'controllers', 'oldSchedule'));
 router.route('/sign')
   .post(
     middlewares.user.sign,
-    controllers.user.sign)
+    controllers.user.sign);
+
+// NOTE: no checking token: if invalid, we can never
+// logout (remove the invalid cookie) in that case
+router.route('/signout')
+  .post(
+    controllers.user.signout);
 
 router.route('/user')
   .all(
@@ -25,7 +31,7 @@ router.route('/user')
   .post(
     middlewares.user.hasProperty('role', 'superuser'),
     middlewares.user.create,
-    controllers.user.create)
+    controllers.user.create);
 
 router.route('/user/:id')
   .all(
@@ -39,7 +45,7 @@ router.route('/user/:id')
     controllers.user.update)
   .delete(
     middlewares.user.delete,
-    controllers.user.delete)
+    controllers.user.delete);
 
 
 // Track supervision
@@ -51,7 +57,7 @@ router.route('/track-supervision')
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes),
     middlewares.trackSupervision.create,
-    controllers.trackSupervision.create)
+    controllers.trackSupervision.create);
 
 router.route('/track-supervision/:scheduled_range_supervision_id/:track_id')
   .get(
@@ -66,7 +72,7 @@ router.route('/track-supervision/:scheduled_range_supervision_id/:track_id')
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', 'superuser'),
     middlewares.trackSupervision.delete,
-    controllers.trackSupervision.delete)
+    controllers.trackSupervision.delete);
 
 // Range supervision
 router.route('/range-supervision')
@@ -77,12 +83,19 @@ router.route('/range-supervision')
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes),
     middlewares.rangeSupervision.create,
-    controllers.rangeSupervision.create)
+    controllers.rangeSupervision.create);
+
+router.route('/range-supervision/feedback')
+  .put(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes),
+    validators.rangeSupervision.feedback,
+    controllers.rangeSupervision.feedback);
 
 router.route('/range-supervision/usersupervisions/:id')
   .get(
     middlewares.rangeSupervision.userSupervisions,
-    controllers.rangeSupervision.userSupervisions)
+    controllers.rangeSupervision.userSupervisions);
 
 router.route('/range-supervision/:scheduled_range_supervision_id')
   .get(
@@ -97,7 +110,7 @@ router.route('/range-supervision/:scheduled_range_supervision_id')
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', 'superuser'),
     middlewares.rangeSupervision.delete,
-    controllers.rangeSupervision.delete)
+    controllers.rangeSupervision.delete);
 
 
 router.route('/reservation')
@@ -105,7 +118,7 @@ router.route('/reservation')
   .post(
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', 'superuser'),
-    controllers.reservation.create)
+    controllers.reservation.create);
 
 router.route('/reservation/:id')
   .get(controllers.reservation.readStrict)
@@ -116,14 +129,14 @@ router.route('/reservation/:id')
   .delete(
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', 'superuser'),
-    controllers.reservation.delete)
+    controllers.reservation.delete);
 
 router.route('/schedule')
   .get(controllers.schedule.read)
   .post(
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', 'superuser'),
-    controllers.schedule.create)
+    controllers.schedule.create);
 
 router.route('/schedule/:id')
   .get(controllers.schedule.readStrict)
@@ -134,7 +147,7 @@ router.route('/schedule/:id')
   .delete(
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', 'superuser'),
-    controllers.schedule.delete)
+    controllers.schedule.delete);
 
 /*
 *  Track
@@ -149,7 +162,7 @@ router.route('/track')
     middlewares.user.hasProperty('role', 'superuser'),
     validators.track.create,
     middlewares.track.create,
-    controllers.track.create)
+    controllers.track.create);
 
 router.route('/track/:track_id')
   .all(
@@ -166,13 +179,22 @@ router.route('/track/:track_id')
   .delete(
     validators.track.delete,
     middlewares.track.delete,
-    controllers.track.delete)
+    controllers.track.delete);
 
-// newer get with padded functionality
-router.route("/datesupreme/:date")
-  .get(oldSchedule.getScheduleDate)
+router.route('/daterange/week/:begin')
+  .get(
+    middlewares.daterange.readWeek,
+    controllers.daterange.read);
 
-router.route("/validate")
-  .get(middlewares.jwt.validate)
+router.route('/daterange/freeform/:begin/:end')
+  .get(
+    middlewares.daterange.readFreeform,
+    controllers.daterange.read);
+
+router.route('/datesupreme/:date')
+  .get(oldSchedule.getScheduleDate);
+
+router.route('/validate')
+  .get(middlewares.jwt.validate);
 
 module.exports = router;

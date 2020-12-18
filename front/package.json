@@ -9,31 +9,48 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
     "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
+    "@testing-library/react": "^10.4.8",
     "@testing-library/user-event": "^7.2.1",
+    "apexcharts": "^3.22.3",
     "axios": "^0.19.2",
-    "http-proxy-middleware": "^1.0.5",
+    "http-proxy-middleware": "^1.0.6",
     "material-table": "^1.69.1",
     "moment": "^2.29.1",
     "react": "^16.14.0",
+    "react-apexcharts": "^1.3.7",
+    "react-cookie": "^4.0.3",
     "react-dom": "^16.14.0",
     "react-moment": "^0.9.7",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.3.0",
+    "react-scripts": "^3.4.4",
     "socket.io-client": "^2.3.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
+    "test:coverage": "npm test -- --coverage --watchAll=false",
+    "eject": "react-scripts eject",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app"
+    ]
   },
   "resolutions": {
     "webpack-dev-server": "3.10.1"
+  },
+  "devDependencies": {
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.1.0",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "jest-environment-jsdom-sixteen": "^1.0.3"
   },
   "browserslist": {
     "production": [
