@@ -7,13 +7,13 @@ const sendEmail = async function(message, emailAddress, opts) {
     //defaults message to command if for some reason fails in switch
     let text = message;
     if (typeof process.env.EMAIL_USER !== 'undefined'){
-      auth = null;
-    }
-    else{
       auth = {
       user: process.env.EMAIL_USER, // generated ethereal user
       pass: process.env.EMAIL_PASSWORD, // generated ethereal password
-    };
+      };
+    }
+    else{
+      auth = null;
     }
 
 
