@@ -1,4 +1,7 @@
-const sendmail = require('sendmail')(); //now goes with default values
+const sendmail = require('sendmail')({
+    smtpHost:'smtp.ethereal.email',
+    smtpPort: 587
+});
 //if dkim is needed edit require require('sendmail')(dkim:'',)
 
 const sendEmail = function(message, emailAddress, opts) {
