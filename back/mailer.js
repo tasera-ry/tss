@@ -6,6 +6,15 @@ const sendEmail = async function(message, emailAddress, opts) {
     const subject = 'Tasera info';
     //defaults message to command if for some reason fails in switch
     let text = message;
+    if (typeof process.env.EMAIL_USER !== 'undefined'){
+      auth = null;
+    }
+    else{
+      auth = {
+      user: process.env.EMAIL_USER, // generated ethereal user
+      pass: process.env.EMAIL_PASSWORD, // generated ethereal password
+    };
+    }
 
 
     switch (message) {
@@ -27,7 +36,7 @@ const sendEmail = async function(message, emailAddress, opts) {
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
       secure: process.env.EMAIL_SECURE,
-      auth: null,
+      auth: auth,
     });
 
     // send mail with defined transport object
@@ -39,15 +48,7 @@ const sendEmail = async function(message, emailAddress, opts) {
     });
     
     console.log("Message sent: %s", info.messageId);
-    
-/*    sendmail({
-      from: process.env.SENDER_EMAIL,
-      to: toMail,
-      subject: subject,
-      html: text,
-    }, function(err) {
-      console.log(err && err.stack);
-    }); */
+
   }catch (error){
     console.error(error);
   }
