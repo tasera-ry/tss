@@ -26,7 +26,7 @@ const sendEmail = async function(message, emailAddress, opts) {
     let transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
-      secure: false, // true for 465, false for other ports
+      secure: process.env.EMAIL_SECURE,
       auth: null,
     });
 
