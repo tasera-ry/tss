@@ -102,7 +102,7 @@ const controller = {
         email('update', receiver[0].email, null);
       }
 
-      if (response.locals.updates.range_supervisor === 'absent') {
+      if (response.locals.updates.range_supervisor === 'absent' && response.locals.id.scheduled_range_supervision_id && response.locals.user.name) {
         const useremails = await getSuperuserEmails();
         const supervision = await getCorrespondingSupervision(response.locals.id.scheduled_range_supervision_id);
         const date = moment(supervision.date).format('YYYY-MM-DD');
