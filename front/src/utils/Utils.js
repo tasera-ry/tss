@@ -254,10 +254,14 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, su
               if (!status.ok) throw new Error('scheduled reserv fail');
             });
 
+          const updateBody = supervisor
+            ? JSON.stringify({ range_supervisor: rangeStatus, supervisor })
+            : JSON.stringify({ range_supervisor: rangeStatus })
+
           // update supervision
           await fetch(`/api/range-supervision/${srsId}`, {
             method: 'PUT',
-            body: JSON.stringify({ range_supervisor: rangeStatus, supervisor }),
+            body: updateBody,
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',

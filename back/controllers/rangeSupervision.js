@@ -79,6 +79,7 @@ const controller = {
 
   create: async function createSupervision(request, response) {
     try {
+      if (!response.req.body.supervisor) return;
       //fetches the supervisor id who is assgined to the range.
       const receiver = await getUserEmail(response.req.body.supervisor);
       //sending fetched email address to mailer.js where it is used to send message that user's supervision has been changed.
@@ -95,7 +96,7 @@ const controller = {
     //updates.range_supervisor returns "absent" if supervisor has not been assigned. it returns "not confirmed" is supervisor is assigned.
     //if - checks if supervisor is assigned and only sends email if it is set. otherwise it would send email aswell when supervisor is taken off.
     try {
-      if (response.locals.updates.range_supervisor === 'not confirmed'){
+      if (response.locals.updates.range_supervisor === 'not confirmed' && response.locals.updates.supervisor){
         const receiver = await getUserEmail(response.locals.updates.supervisor);
         //sending fetched email address to mailer.js where it is used to send message that user's supervision has been changed.
         email('update', receiver[0].email, null);
