@@ -621,9 +621,9 @@ class UserManagementView extends Component {
     return null;
   }
 
-  findOwnEmail() {
+  findEmail(user) {
     for (const i in this.state.userList) {
-      if (this.state.username === this.state.userList[i].name) {
+      if (user === this.state.userList[i].name) {
         return this.state.userList[i].email;
       }
     }
@@ -859,7 +859,7 @@ class UserManagementView extends Component {
               {manage.EmailHelper[fin]}
             </DialogContentText>
 
-            <div>{`${manage.OldEmail[fin]}: ${this.findOwnEmail()}`}</div>
+            <div>{`${manage.OldEmail[fin]}: ${this.findEmail(this.state.username)}`}</div>
             <TextField
               type="text"
               value={this.state.newemail}
@@ -953,6 +953,7 @@ class UserManagementView extends Component {
             {' '}
             {this.state.selectedUserName}
           </DialogTitle>
+          <div>{`${manage.OldEmail[fin]}: ${this.findEmail(this.state.selectedUserName)}`}</div>
           <DialogContent
             style={dialogStyle}
           >
