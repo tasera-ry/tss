@@ -256,7 +256,7 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, su
 
           const updateBody = supervisor
             ? JSON.stringify({ range_supervisor: rangeStatus, supervisor })
-            : JSON.stringify({ range_supervisor: rangeStatus })
+            : JSON.stringify({ range_supervisor: rangeStatus });
 
           // update supervision
           await fetch(`/api/range-supervision/${srsId}`, {
