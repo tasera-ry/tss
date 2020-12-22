@@ -1,12 +1,21 @@
-const sendmail = require('sendmail')(); //now goes with default values
-//if dkim is needed edit require require('sendmail')(dkim:'',)
+const nodemailer = require('nodemailer');
 
-const sendEmail = function(message, emailAddress, opts) {
+const sendEmail = async function(message, emailAddress, opts) {
   try {
     const toMail = emailAddress;
     const subject = 'Tasera info';
     //defaults message to command if for some reason fails in switch
     let text = message;
+    let auth;
+    if (typeof process.env.EMAIL_USER !== 'undefined'){
+      auth = {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      };
+    }
+    else{
+      auth = null;
+    }
 
 
     switch (message) {
@@ -24,17 +33,27 @@ const sendEmail = function(message, emailAddress, opts) {
       break;
     }
 
-    sendmail({
+    let transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      secure: process.env.EMAIL_SECURE === 'true',
+      auth: auth,
+    });
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
       from: process.env.SENDER_EMAIL,
       to: toMail,
       subject: subject,
-      html: text,
-    }, function(err) {
-      console.log(err && err.stack);
+      text: text,
     });
-  }catch (error){
+    
+    console.log('Message sent: %s', info.messageId);
+
+  } catch (error){
     console.error(error);
   }
+
 
 };
 module.exports = sendEmail;
