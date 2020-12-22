@@ -10,6 +10,10 @@ import 'moment/locale/fi';
 
 // Material UI components
 import Grid from '@material-ui/core/Grid';
+import Modal from '@material-ui/core/Modal';
+import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import {
   MuiPickersUtilsProvider,
@@ -20,6 +24,7 @@ import axios from 'axios';
 
 // Translation
 import data from '../texts/texts.json';
+import VisitorLogging from '../VisitorLogging/VisitorLogging';
 
 let lang = 'fi';
 if (localStorage.getItem('language') === '0') {
@@ -34,6 +39,7 @@ const fin = localStorage.getItem('language');
 
 const Statistics = () => {
   const [date, setDate] = useState(new Date());
+  const [modalOpen, setModalOpen] = useState(false);
 
   const [monthlyUsers, setMonthlyUsers] = useState([]);
   const [monthOptions, setMonthOptions] = useState({});
@@ -48,6 +54,10 @@ const Statistics = () => {
   const [dailyUsers, setDailyUsers] = useState([]);
 
   const [dayNumber, setDayNumber] = useState([]);
+
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastSeverity, setToastSeverity] = useState('success');
+  const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
     const firstDate = moment(date).startOf('month').format('YYYY-MM-DD');
@@ -148,7 +158,7 @@ const Statistics = () => {
       name: 'visitors',
       data: dailyUsers,
     }]);
-  }, [dailyUsers]);
+  }, [dailyUsers, date]);
 
   useEffect(() => {
     // Get the short_descriptions of each track in order to use them as a label
@@ -196,7 +206,16 @@ const Statistics = () => {
       name: 'visitors',
       data: monthlyTrackUsers,
     }]);
-  }, [monthlyTrackUsers]);
+  }, [monthlyTrackUsers, date]);
+
+  const Alert = (props) => (<MuiAlert elevation={6} variant="filled" {...props} />);
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setToastOpen(false);
+  };
 
   const previousDayClick = () => {
     const newDate = new Date(date.setDate(date.getDate() - 1));
@@ -231,6 +250,16 @@ const Statistics = () => {
 
     return (
       <div className="container">
+        <Snackbar
+          open={toastOpen}
+          autoHideDuration={5000}
+          onClose={handleSnackbarClose}
+        >
+          <Alert onClose={handleSnackbarClose} severity={toastSeverity}>
+            {toastMessage}
+            !
+          </Alert>
+        </Snackbar>
         {/* Section for selecting date */}
         <div className="firstSection">
           <form onSubmit={continueWithDate}>
@@ -254,7 +283,27 @@ const Statistics = () => {
           </form>
         </div>
         <hr />
-
+        <div className="buttonContainer">
+          <Button
+            className="openModal"
+            onClick={() => setModalOpen(true)}
+            variant="contained"
+          >
+            {statistics.OpenLogging[fin]}
+          </Button>
+        </div>
+        <Modal
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+        >
+          <VisitorLogging
+            handleClose={() => setModalOpen(false)}
+            setToastSeverity={setToastSeverity}
+            setToastMessage={setToastMessage}
+            setToastOpen={setToastOpen}
+          />
+        </Modal>
         {/* Header with arrows */}
         <Grid class="date-header">
           <div
@@ -410,10 +459,8 @@ async function getShortDescriptions(firstDate, lastDate) {
     if (supervision?.scheduleId) {
       for (const track of supervision.tracks) {
         description = track.short_description;
-        console.log(description);
         descriptions.push(description);
       }
-      console.log(descriptions);
       return descriptions;
     }
   }
