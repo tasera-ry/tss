@@ -78,14 +78,19 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 
 ## Runtime configuration
 
-| Variable      | Explanation                                                            | Default value           |
-|---------------|------------------------------------------------------------------------|-------------------------|
-| `DB`          | Database name                                                          | undefined               |
-| `DB_HOST`     | Database address                                                       | `127.0.0.1`             |
-| `DB_USER`     | Database owner                                                         | `tssuser`               |
-| `DB_PASSWORD` | Database owner's password                                              | undefined               |
-| `SENDER_EMAIL`| Email address that will be used to send emails                        | undefined               |
-| `DB_DEBUG`    | Enable database debug calls by setting to true                         | `false`                 |
-| `NODE_ENV`    | Control the mode the backend runs in, either `development` or `stable` | `development`           |
-| `SERVER_HOST` | Manually set hostname                                                  | `http://localhost:3000` |
-| `JWT_SECRET`  | Secret key used to sign JSON Web Tokens                                | Random on startup       |
+| Variable        | Explanation                                                            | Default value           |
+|-----------------|------------------------------------------------------------------------|-------------------------|
+| `DB`            | Database name                                                          | undefined               |
+| `DB_HOST`       | Database address                                                       | `127.0.0.1`             |
+| `DB_USER`       | Database owner                                                         | `tssuser`               |
+| `DB_PASSWORD`   | Database owner's password                                              | undefined               |
+| `SENDER_EMAIL`  | Email address that will be used to send emails                         | undefined               |
+| `EMAIL_HOST`    | Host that will be used to send emails                                  | undefined               |
+| `EMAIL_PORT`    | Port that will be used to send emails                                  | undefined               |
+| `EMAIL_SECURE`  | Email secure option                                                    | undefined               |
+| `EMAIL_USER`    | Email username that will be used to send email. Optional               | undefined               |
+| `EMAIL_PASSWORD`| Password for Email user. Optional                                      | undefined               |
+| `DB_DEBUG`      | Enable database debug calls by setting to true                         | `false`                 |
+| `NODE_ENV`      | Control the mode the backend runs in, either `development` or `stable` | `development`           |
+| `SERVER_HOST`   | Manually set hostname                                                  | `http://localhost:3000` |
+| `JWT_SECRET`    | Secret key used to sign JSON Web Tokens                                | Random on startup       |
