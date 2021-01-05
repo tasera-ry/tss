@@ -49,6 +49,9 @@ const drawerStyle = {
 const elementStyle = {
   marginTop: 10,
 };
+const textStyle = {
+  fontSize: '1.2rem',
+};
 
 const SideMenu = ({ setName, superuser, setLoggingOut }) => {
   const fin = localStorage.getItem('language'); // eslint-disable-line
@@ -247,6 +250,8 @@ function setLanguage(num) {
 }
 
 const Nav = () => {
+  const [navBar, setNavbar] = React.useState(false);
+  const [up, setArrow] = React.useState(false);
   const [cookies] = useCookies(['username', 'role']);
   const [name, setName] = useState(cookies.username);
   const [superuser] = useState(cookies.role === 'superuser');
@@ -262,8 +267,8 @@ const Nav = () => {
   );
 
   return (
-    <div>
-      <nav>
+    <div className="Nav">
+      <nav style={{display: navBar ? "none" : "flex"}}>
         <Link className="logoStyle" to="/" onClick={() => setCheckSupervisions(true)}>
           {icon}
         </Link>
@@ -275,7 +280,7 @@ const Nav = () => {
             </Button>
           </Link>
         )
-          : <p className="pc">{name}</p>}
+          : <p className="pc" style={textStyle}>{name}</p>}
 
         <span className="pc">
           <Button className="clickable" onClick={() => setLanguage(1)}>EN</Button>
@@ -289,6 +294,13 @@ const Nav = () => {
         />
 
       </nav>
+      <div style={{display: "flex", justifyContent: "center", background: "cyan"}}>
+        <div
+          className={up ? "hoverHand arrow-down-nav" : "hoverHand arrow-up-nav"}
+          onClick={() => {setNavbar(!navBar); setArrow(!up)}}
+        />
+        {up ? <span style={textStyle}>{nav.ShowNav[fin]}</span> : <span style={textStyle}>{nav.HideNav[fin]}</span>}
+      </div>
       <SupervisorNotification
         loggingOut={loggingOut}
         setLoggingOut={setLoggingOut}
