@@ -294,12 +294,11 @@ const Nav = () => {
         />
 
       </nav>
-      <div style={{display: "flex", justifyContent: "center", background: "cyan"}}>
+      <div style={{display: "flex", justifyContent: "center", background: "cyan"}} onClick={() => {setNavbar(!navBar); setArrow(!up)}}>
+        {up ? <span className="hoverHand" style={textStyle}>{nav.ShowNav[fin]}</span> : <span className="hoverHand" style={textStyle}>{nav.HideNav[fin]}</span>}
         <div
           className={up ? "hoverHand arrow-down-nav" : "hoverHand arrow-up-nav"}
-          onClick={() => {setNavbar(!navBar); setArrow(!up)}}
         />
-        {up ? <span style={textStyle}>{nav.ShowNav[fin]}</span> : <span style={textStyle}>{nav.HideNav[fin]}</span>}
       </div>
       <SupervisorNotification
         loggingOut={loggingOut}

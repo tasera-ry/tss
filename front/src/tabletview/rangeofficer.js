@@ -132,6 +132,7 @@ const TrackRows = ({
           fin={fin}
           socket={socket}
         />
+        <TrackStatistics tracks={tracks} />
       </div>
     </div>
   ))
@@ -635,10 +636,6 @@ const Tabletview = () => {
           socket={socket}
         />
       </div>
-      <div className="addVisitors">
-        <TrackStatistics tracks={tracks} />
-      </div>
-
     </div>
 
   );

@@ -24,8 +24,8 @@ nav {
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
   text-align: right;
-  margin-left: 8vw;
-  margin-right: 1vW;
+  margin-left: 1vw;
+  margin-right: 4vW;
   display: flex;
   align-items: center;
 }
@@ -37,8 +37,8 @@ nav {
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
   text-align: right;
-  margin-left: 8vw;
-  margin-right: 1vW;
+  margin-left: 1vw;
+  margin-right: 4vW;
   display: flex;
   align-items: center;
 }
