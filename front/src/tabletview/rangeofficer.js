@@ -639,7 +639,6 @@ const Tabletview = () => {
         />
       </div>
     </div>
-
   );
 };
 
