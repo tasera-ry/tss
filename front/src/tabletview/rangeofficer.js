@@ -85,8 +85,9 @@ const cancelButtonStyle = {
   backgroundColor: '#ede9e1',
 };
 const simpleButton = {
+  padding: '2px 10px',
   borderRadius: 15,
-  fontSize: 15,
+  fontSize: '1.2rem',
 };
 const rangeStyle = {
   textAlign: 'center',
@@ -445,7 +446,8 @@ const Tabletview = () => {
     backgroundColor: statusColor,
     borderRadius: 3,
     width: 400,
-    margin: 8,
+    margin: 4,
+    marginBottom: 0,
   };
 
   /*
@@ -576,7 +578,7 @@ const Tabletview = () => {
         )
         : ''}
 
-      <div classname="Status" style={rowStyle}>
+      <div className="Status" style={rowStyle}>
         <Button
           style={statusStyle}
           size="large"

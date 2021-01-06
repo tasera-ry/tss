@@ -268,7 +268,7 @@ const Nav = () => {
 
   return (
     <div className="Nav">
-      <nav style={{display: navBar ? "none" : "flex"}}>
+      <nav style={{ display: navBar ? 'none' : 'flex' }}>
         <Link className="logoStyle" to="/" onClick={() => setCheckSupervisions(true)}>
           {icon}
         </Link>
@@ -294,10 +294,10 @@ const Nav = () => {
         />
 
       </nav>
-      <div style={{display: "flex", justifyContent: "center", background: "#d8c3a5"}} onClick={() => {setNavbar(!navBar); setArrow(!up)}}>
+      <div style={{ display: 'flex', justifyContent: 'center', background: '#d8c3a5' }} onClick={() => { setNavbar(!navBar); setArrow(!up); }}>
         {up ? <span className="hoverHand" style={textStyle}>{nav.ShowNav[fin]}</span> : <span className="hoverHand" style={textStyle}>{nav.HideNav[fin]}</span>}
         <div
-          className={up ? "hoverHand arrow-down-nav" : "hoverHand arrow-up-nav"}
+          className={up ? 'hoverHand arrow-down-nav' : 'hoverHand arrow-up-nav'}
         />
       </div>
       <SupervisorNotification

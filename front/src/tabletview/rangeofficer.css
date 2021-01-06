@@ -73,6 +73,7 @@
 .Text {
     display: flex;
     justify-content: center;
-    margin: 8px;
+    text-align: center;
+    margin: 4px;
     font-size: 2rem;
 }

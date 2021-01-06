@@ -11,7 +11,7 @@ const ButtonStyle = {
   width: 50,
   height: 50,
   borderRadius: 50,
-}
+};
 
 export function TrackStatistics({ track }) {
   const [visitors, setVisitors] = useState(track.scheduled.visitors);
