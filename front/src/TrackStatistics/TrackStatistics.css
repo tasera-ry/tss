@@ -1,27 +1,16 @@
 .visitorAmount {
     max-width: 14ch;
-    margin: 0 20px;
-}
-
-.trackContainer {
-    display: flex;
-    flex-direction: column;
-    width: auto;
-}
-
-.trackRow {
-    display: flex;
-    margin-bottom: 20px;
-}
-
-.trackName {
-    align-self: flex-start;
-    min-width: 20ch;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 10px;
     font-size: 1.6rem;
 }
 
-.dialogTitle {
-    font-size: 2.5rem;
+.trackContainer {
+	margin-left: 23px;
+	width: 230px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .buttonText {

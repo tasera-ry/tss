@@ -90,7 +90,7 @@ const simpleButton = {
 };
 const rangeStyle = {
   textAlign: 'center',
-  margin: 20,
+  margin: 10,
   marginTop: 0,
 };
 const dialogStyle = {
@@ -132,7 +132,7 @@ const TrackRows = ({
           fin={fin}
           socket={socket}
         />
-        <TrackStatistics tracks={tracks} />
+        <TrackStatistics track={track} />
       </div>
     </div>
   ))

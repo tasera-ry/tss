@@ -6,6 +6,13 @@ import './TrackStatistics.css';
 // Material-UI components
 import Button from '@material-ui/core/Button';
 
+const ButtonStyle = {
+  marginTop: 4,
+  width: 50,
+  height: 50,
+  borderRadius: 50,
+}
+
 export function TrackStatistics({ track }) {
   const [visitors, setVisitors] = useState(track.scheduled.visitors);
 
@@ -42,13 +49,21 @@ export function TrackStatistics({ track }) {
 
   return (
     <div className="trackContainer">
-      <Button variant="contained" onClick={() => increment('dec', sendStats)}>
+      <Button
+        variant="contained"
+        style={ButtonStyle}
+        onClick={() => increment('dec', sendStats)}
+      >
         <div className="buttonText">-</div>
       </Button>
       <div className="visitorAmount">
         {visitors}
       </div>
-      <Button variant="contained" onClick={() => increment('inc', sendStats)}>
+      <Button
+        variant="contained"
+        style={ButtonStyle}
+        onClick={() => increment('inc', sendStats)}
+      >
         <div className="buttonText">+</div>
       </Button>
     </div>
