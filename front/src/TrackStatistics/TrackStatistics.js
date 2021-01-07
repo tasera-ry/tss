@@ -54,7 +54,7 @@ export function TrackStatistics({ track }) {
         style={ButtonStyle}
         onClick={() => increment('dec', sendStats)}
       >
-      <div className="buttonText">-</div>
+        <div className="buttonText">-</div>
       </Button>
       <div className="visitorAmount">
         {visitors}
@@ -64,7 +64,7 @@ export function TrackStatistics({ track }) {
         style={ButtonStyle}
         onClick={() => increment('inc', sendStats)}
       >
-      <div className="buttonText">+</div>
+        <div className="buttonText">+</div>
       </Button>
     </div>
   );

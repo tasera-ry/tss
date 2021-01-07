@@ -17,32 +17,6 @@ nav {
 	display: block;
 }
 
-.arrow-up-nav {
-  width: 0;
-  height: 0;
-  border-bottom: 26px solid black;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  text-align: right;
-  margin-left: 1vw;
-  margin-right: 4vW;
-  display: flex;
-  align-items: center;
-}
-
-.arrow-down-nav {
-  width: 0;
-  height: 0;
-  border-top: 26px solid black;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  text-align: right;
-  margin-left: 1vw;
-  margin-right: 4vW;
-  display: flex;
-  align-items: center;
-}
-
 /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
 @media only screen and (min-width:320px) {
 .phone {
