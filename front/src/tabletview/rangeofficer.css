@@ -58,3 +58,22 @@
     display: flex;
     justify-content: center;
 }
+
+.MuiButton-label {
+    font-size: 1.2em;
+}
+
+.Status {
+    display: flex;
+    max-width: 80%;
+    width: 400px;
+    margin: auto;
+}
+
+.Text {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin: 4px;
+    font-size: 2rem;
+}

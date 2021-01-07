@@ -49,6 +49,9 @@ const drawerStyle = {
 const elementStyle = {
   marginTop: 10,
 };
+const textStyle = {
+  fontSize: '1.2rem',
+};
 
 const SideMenu = ({ setName, superuser, setLoggingOut }) => {
   const fin = localStorage.getItem('language'); // eslint-disable-line
@@ -262,7 +265,7 @@ const Nav = () => {
   );
 
   return (
-    <div>
+    <div className="Nav">
       <nav>
         <Link className="logoStyle" to="/" onClick={() => setCheckSupervisions(true)}>
           {icon}
@@ -275,7 +278,7 @@ const Nav = () => {
             </Button>
           </Link>
         )
-          : <p className="pc">{name}</p>}
+          : <p className="pc" style={textStyle}>{name}</p>}
 
         <span className="pc">
           <Button className="clickable" onClick={() => setLanguage(1)}>EN</Button>
