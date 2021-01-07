@@ -10,7 +10,7 @@ const schedule = require('node-schedule');
 //Stars of the scheduler explained below:
 //'seconds', 'minutes', 'hour', 'day of month', 'month', 'day of week'
 //For test purposes value '(' */1 * * * * *', function()' runs the code every second.
-var checker = schedule.scheduleJob('00 00 01 * * 0-6', function(){
+schedule.scheduleJob('00 00 01 * * 0-6', function(){
   //make date object 7 days from this day.
   const currentDate = new Date();
   currentDate.setDate(currentDate.getDate() + 7);
@@ -27,11 +27,11 @@ var checker = schedule.scheduleJob('00 00 01 * * 0-6', function(){
   }
 
   (async () => {
-    receiver = await getFutureSupervision();
+    const receiver = await getFutureSupervision();
     //first we check if the supervisor has confirmed or not.
     //if status = not cnofirmed, fetches email with supervisor id and sends it to mailer.js 
     if(receiver[0] != undefined){
-      if (await receiver[0].range_supervisor === "not confirmed"){
+      if (await receiver[0].range_supervisor === 'not confirmed'){
         const recipient = await getUserEmail(receiver[0].supervisor_id);
         email('reminder', recipient[0].email, null);
       }
