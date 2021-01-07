@@ -25,6 +25,9 @@ const sendEmail = async function(message, emailAddress, opts) {
     case 'update':
       text = 'Hei, teille annettua valvojavuoroa on muutettu. Voitte nyt käydä tarkistamassa vuoronne. Terveisin TASERA ry';
       break;
+    case 'reminder':
+      text = 'Hei, ette ole varmistaneet viikon päästä alkavaa valvonta vuoroanne. Käykää pian varmistamassa vuoronne. Terveisin TASERA ry';
+      break;
     case 'decline':
       text = 'Hei, ' + opts.user + ' perui päävalvojavuoronsa päivältä ' + opts.date + '. Päävalvoja pitää vaihtaa mitä pikimmiten. Terveisin TASERA ry';
       break;
