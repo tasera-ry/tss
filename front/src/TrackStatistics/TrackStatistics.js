@@ -13,8 +13,12 @@ const ButtonStyle = {
   borderRadius: 50,
 };
 
-export function TrackStatistics({ track }) {
-  const [visitors, setVisitors] = useState(track.scheduled.visitors);
+export function TrackStatistics({ track, supervision }) {
+  const [visitors, setVisitors] = useState(
+    track.scheduled && track.scheduled.visitors
+      ? track.scheduled.visitors
+      : 0,
+  );
 
   // Function for raising or lowering number of visitors in a given track via buttons.
   // Also checks that the number of visitors will never be less than 0.
@@ -24,7 +28,7 @@ export function TrackStatistics({ track }) {
     if (operator === 'dec') {
       newVisitors = visitors - 1;
     }
-    if (operator !== 'dec' || visitors !== 0) {
+    if ((operator !== 'dec' || visitors !== 0) && (track.scheduled)) {
       setVisitors(newVisitors);
       sendVisitors(newVisitors);
     }
@@ -37,7 +41,7 @@ export function TrackStatistics({ track }) {
         scheduled_range_supervision_id: track.scheduled.scheduled_range_supervision_id,
         track_id: track.id,
         notice: track.scheduled.notice,
-        track_supervisor: track.scheduled.track_supervisor,
+        track_supervisor: supervision,
         visitors: newVisitors,
       };
       await axios.put(
