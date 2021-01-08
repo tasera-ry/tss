@@ -128,7 +128,7 @@
     "Red": ["Suljettu", "Closed"],
     "White": ["Ei valvojaa", "No track officer"],
     "HelperFirst": ["Valitse päävalvojan status napauttamalla väriä alta", "Define range officer status by choosing color"],
-    "HelperSecond": ["Vaihda ratavalvojien statuksia napauttamalla värejä alta", "Change track officer status by choosing color"],
+    "HelperSecond": ["Vaihda ratavalvojien statuksia napauttamalla värejä alta. Muuta radan käviöiden määrää painikkeilla", "Change track officer status by choosing color. Change number of track users with buttons"],
     "PickTime": ["Valitse aukioloaika", "Set opening hours"],
     "Start": ["Alku", "Start"],
     "End": ["Loppu", "End"],
@@ -224,6 +224,14 @@
     "DayLabel": ["Päivä", "Day"],
     "DayChartHeader": ["Kävijämäärät radoittain", "Visitors per track"],
     "MonthChart1Header": ["Kävijämäärät päivittäin", "Visitors per day"],
-    "MonthChart2Header": ["Ratojen kävijämäärät kuukausittain", "Monthly visitors per track"]
+    "MonthChart2Header": ["Ratojen kävijämäärät kuukausittain", "Monthly visitors per track"],
+    "OpenLogging": ["Kirjaa käyttäjätietoja", "Open user logging"]
+  },
+  "visitorLogging": {
+    "SuccessfullyUpdated": ["Käyttäjätiedot kirjattu", "Track visitors successfully upded"],
+    "DayChoose": ["Valitse päivä", "Choose date"],
+    "Close": ["Sulje", "Close"],
+    "Save": ["Tallenna", "Save changes"],
+    "NoSchedule": ["Ei varauksia tälle päivälle. Aseta ratavalvonta Aikataulut-sivulla", "No reservations found. Set reservation in Schedules page"]
   }
 }

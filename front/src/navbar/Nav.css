@@ -2,10 +2,11 @@ nav {
    display: flex;
    justify-content: space-around;
    align-items: center;
-   min-height: 10vh;
+   flex-wrap: wrap;
+   min-height: 20vh;
    background-color: #d8c3a5;
-   /* background-color: cyan; */
-   color: black;
+   background-color: cyan;
+   /* color: black; */
 }
 
 .logoStyle {
@@ -22,23 +23,13 @@ nav {
 	margin-right: 1vw;
 	min-width: 48px;
 }
-nav {
-	flex-wrap: wrap;
-	min-height: 20vh;
-}
 }
 /* smartphones, Android phones, landscape iPhone */
 @media only screen and (min-width:480px) {
-.logoStyle {
 
-}
 }
 /* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
 @media only screen and (min-width:600px) {
-nav {
-	flex-wrap: wrap;
-	min-height: 20vh;
-}
 .phone {
 	display: none;
 }
@@ -60,6 +51,9 @@ nav {
 }
 /* tablet, landscape iPad, lo-res laptops ands desktops */
 @media only screen and (min-width:801px) {
+}
+/* big landscape tablets, laptops, and desktops */
+@media only screen and (min-width:1025px) {
 nav{
 	flex-wrap: nowrap;
 }
@@ -68,10 +62,6 @@ nav{
 	min-width: 0%;
 	width: 70%;
 }
-}
-/* big landscape tablets, laptops, and desktops */
-@media only screen and (min-width:1025px) {
-
 }
 /* hi-res laptops and desktops */
 @media only screen and (min-width:1281px) {

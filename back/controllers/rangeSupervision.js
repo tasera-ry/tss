@@ -3,6 +3,41 @@ const root = path.join(__dirname, '..');
 const knex = require(path.join(root, 'knex', 'knex'));
 const email = require('../mailer.js');
 const moment = require('moment');
+const schedule = require('node-schedule');
+
+
+//Runs the checker everyday and checks if officer has confirmed 7 days from today
+//Stars of the scheduler explained below:
+//'seconds', 'minutes', 'hour', 'day of month', 'month', 'day of week'
+//For test purposes value '(' */1 * * * * *', function()' runs the code every second.
+schedule.scheduleJob('00 00 01 * * 0-6', function(){
+  //make date object 7 days from this day.
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() + 7);
+  //function that returns the supervisor of 7 days into the future.
+  async function getFutureSupervision() {
+    return await knex
+      .from('user')
+      .leftJoin('supervisor', 'user.id', 'supervisor.user_id')
+      .leftJoin('scheduled_range_supervision', 'supervisor.user_id', 'scheduled_range_supervision.supervisor_id')
+      .leftJoin('range_supervision', 'scheduled_range_supervision.id', 'range_supervision.scheduled_range_supervision_id')
+      .leftJoin('range_reservation', 'scheduled_range_supervision.range_reservation_id', 'range_reservation.id')
+      .where('range_reservation.date', '=', currentDate)
+      .select('scheduled_range_supervision.supervisor_id', 'range_supervisor');
+  }
+
+  (async () => {
+    const receiver = await getFutureSupervision();
+    //first we check if the supervisor has confirmed or not.
+    //if status = not cnofirmed, fetches email with supervisor id and sends it to mailer.js 
+    if(receiver[0] != undefined){
+      if (await receiver[0].range_supervisor === 'not confirmed'){
+        const recipient = await getUserEmail(receiver[0].supervisor_id);
+        email('reminder', recipient[0].email, null);
+      }
+    }
+  })();
+});
 
 //knex part that should be done in models? returns the email based on the id fetched above:
 async function getUserEmail(key) {

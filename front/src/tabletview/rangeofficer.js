@@ -60,6 +60,7 @@ const greenButtonStyle = {
   borderRadius: 50,
   width: 250,
   height: 100,
+  margin: 8,
 };
 const orangeButtonStyle = {
   fontSize: 17,
@@ -67,6 +68,7 @@ const orangeButtonStyle = {
   borderRadius: 50,
   width: 250,
   height: 100,
+  margin: 8,
 };
 const redButtonStyle = {
   fontSize: 17,
@@ -74,6 +76,7 @@ const redButtonStyle = {
   borderRadius: 50,
   width: 250,
   height: 100,
+  margin: 8,
 };
 const saveButtonStyle = {
   backgroundColor: '#5f77a1',
@@ -82,15 +85,20 @@ const cancelButtonStyle = {
   backgroundColor: '#ede9e1',
 };
 const simpleButton = {
+  padding: '2px 10px',
   borderRadius: 15,
+  fontSize: '1.2rem',
 };
 const rangeStyle = {
   textAlign: 'center',
-  padding: 20,
-  marginLeft: 15,
+  margin: 10,
+  marginTop: 0,
 };
 const dialogStyle = {
   backgroundColor: '#f2f0eb',
+};
+const rangediv = {
+  width: 300,
 };
 
 // shooting track rows
@@ -103,14 +111,16 @@ const TrackRows = ({
   socket,
 }) => (
   tracks.map((track) => (
-    <div key={track.id}>
+    <div key={track.id} style={rangediv}>
       <div style={rangeStyle}>
         <Typography
+          variant="h6"
           align="center"
         >
           {track.name}
           {' '}
-          /
+          —
+          {' '}
           {track.short_description}
         </Typography>
 
@@ -123,6 +133,7 @@ const TrackRows = ({
           fin={fin}
           socket={socket}
         />
+        <TrackStatistics track={track} />
       </div>
     </div>
   ))
@@ -135,7 +146,7 @@ const TrackButtons = ({
   const buttonStyle = {
     backgroundColor: `${track.color}`,
     borderRadius: 30,
-    width: 100,
+    width: 230,
   };
   const [buttonColor, setButtonColor] = useState(track.color);
   let text = tablet.Green[fin];
@@ -434,7 +445,9 @@ const Tabletview = () => {
     color: 'black',
     backgroundColor: statusColor,
     borderRadius: 3,
-    width: 300,
+    width: 400,
+    margin: 4,
+    marginBottom: 0,
   };
 
   /*
@@ -526,16 +539,12 @@ const Tabletview = () => {
   };
   return (
     <div>
-      <Typography
-        variant="body1"
-        align="center"
-      >
-        <br />
+      <div className="Text">
         {today}
-      </Typography>
+      </div>
 
       <Typography
-        variant="body1"
+        variant="h5"
         align="center"
       >
         {tablet.Open[fin]}
@@ -543,19 +552,17 @@ const Tabletview = () => {
         &nbsp;
 
         <Button
-          size="small"
+          size="medium"
           variant="outlined"
           style={simpleButton}
           onClick={() => setDialogOpen(true)}
         >
           {hours.start}
-          {' '}
           -
           {hours.end}
         </Button>
 
       </Typography>
-      &nbsp;
 
       {dialogOpen
         ? (
@@ -571,7 +578,7 @@ const Tabletview = () => {
         )
         : ''}
 
-      <div style={rowStyle}>
+      <div className="Status" style={rowStyle}>
         <Button
           style={statusStyle}
           size="large"
@@ -583,13 +590,9 @@ const Tabletview = () => {
         </Button>
       </div>
 
-      <Typography
-        variant="body1"
-        align="center"
-      >
-        <br />
+      <div className="Text">
         {tablet.HelperFirst[fin]}
-      </Typography>
+      </div>
 
       <div style={rowStyle}>
         <Button
@@ -601,7 +604,6 @@ const Tabletview = () => {
         >
           {tablet.Green[fin]}
         </Button>
-        &nbsp;
         <Button
           style={orangeButtonStyle}
           size="large"
@@ -611,7 +613,6 @@ const Tabletview = () => {
         >
           {tablet.Orange[fin]}
         </Button>
-        &nbsp;
         <Button
           style={redButtonStyle}
           size="large"
@@ -623,13 +624,9 @@ const Tabletview = () => {
         </Button>
       </div>
 
-      &nbsp;
-      <Typography
-        variant="body1"
-        align="center"
-      >
+      <div className="Text">
         {tablet.HelperSecond[fin]}
-      </Typography>
+      </div>
 
       <div style={trackRowStyle}>
         <TrackRows
@@ -641,12 +638,7 @@ const Tabletview = () => {
           socket={socket}
         />
       </div>
-      <div className="addVisitors">
-        <TrackStatistics tracks={tracks} />
-      </div>
-
     </div>
-
   );
 };
 

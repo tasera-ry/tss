@@ -1,0 +1,27 @@
+.loggingContainer {
+  background-color: #d1d1d1;
+  width: auto;
+  padding: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inputContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.visitorInput {
+  margin: 15px 10px;
+}
+
+.modalButtonContainer {
+  display:flex;
+}
+
+.modalButton {
+  margin: 40px 4px 0 4px;
+}
