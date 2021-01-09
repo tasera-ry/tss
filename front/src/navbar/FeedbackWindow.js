@@ -11,7 +11,6 @@ import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import texts from '../texts/texts.json';
 
-const fin = localStorage.getItem('language');  // eslint-disable-line
 const { feedback } = texts;
 
 const dialogStyle = {
@@ -19,6 +18,7 @@ const dialogStyle = {
 };
 
 const FeedbackWindow = ({ user, dialogOpen, setDialogOpen }) => {
+  const fin = localStorage.getItem('language');
   const [textFeedback, setTextFeedback] = useState('');
   const handleSend = async () => {
     setDialogOpen(false);
@@ -37,6 +37,9 @@ const FeedbackWindow = ({ user, dialogOpen, setDialogOpen }) => {
           </DialogContentText>
           <TextField
             id="feedback-field"
+            inputProps={{
+              'data-testid': 'feedback-field',
+            }}
             variant="outlined"
             multiline
             rows={3}

@@ -37,6 +37,7 @@ const schedule = {
         updated_at: '2020-10-21T17:53:56.254Z',
         notice: 'Quis recusandae doloremque. Sapiente dolore illo qui et. Blanditiis sequi perferendis qui. Sit delectus doloremque.',
         track_supervisor: 'absent',
+        visitors: 5,
       },
     },
     {

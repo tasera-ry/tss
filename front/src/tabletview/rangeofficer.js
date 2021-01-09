@@ -149,14 +149,17 @@ const TrackButtons = ({
   };
   let text = tablet.Green[fin];
   const [buttonColor, setButtonColor] = useState(track.color);
-  const [textState, setTextState] = useState(text);
+  const [textState, setTextState] = useState(tablet.Green[fin]);
   const [supervision, setSupervision] = useState(text);
-
-  if (track.trackSupervision === 'absent') {
-    text = tablet.White[fin];
-  } else if (track.trackSupervision === 'closed') {
-    text = tablet.Red[fin];
-  }
+  useEffect(() => {
+    if (track.trackSupervision === 'absent') {
+      text = tablet.White[fin];
+      setTextState(tablet.White[fin]);
+    } else if (track.trackSupervision === 'closed') {
+      text = tablet.Red[fin];
+      setTextState(tablet.Red[fin]);
+    }
+  }, []);
 
   socket.on('trackUpdate', (msg) => {
     if (msg.id === track.id) {
@@ -176,8 +179,6 @@ const TrackButtons = ({
         setTextState(tablet.White[fin]);
         setSupervision('closed');
       }
-      // setButtonColor(track.color)
-      // setTextState(text)
     }
   });
   const HandleClick = () => {
