@@ -67,7 +67,7 @@ describe('testing weekview', () => {
     );
     expect(fetch).toHaveBeenCalledWith(
       '/api/range-supervision/0', {
-        body: '{"range_supervisor":"open"}',
+        body: '{"range_supervisor":"open","supervisor":"dummytoken"}',
         headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
         method: 'PUT',
       },

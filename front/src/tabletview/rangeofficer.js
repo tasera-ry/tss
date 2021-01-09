@@ -133,7 +133,6 @@ const TrackRows = ({
           fin={fin}
           socket={socket}
         />
-        <TrackStatistics track={track} />
       </div>
     </div>
   ))
@@ -148,46 +147,54 @@ const TrackButtons = ({
     borderRadius: 30,
     width: 230,
   };
-  const [buttonColor, setButtonColor] = useState(track.color);
   let text = tablet.Green[fin];
+  const [buttonColor, setButtonColor] = useState(track.color);
+  const [textState, setTextState] = useState(tablet.Green[fin]);
+  const [supervision, setSupervision] = useState(text);
+  useEffect(() => {
+    if (track.trackSupervision === 'absent') {
+      text = tablet.White[fin];
+      setTextState(tablet.White[fin]);
+    } else if (track.trackSupervision === 'closed') {
+      text = tablet.Red[fin];
+      setTextState(tablet.Red[fin]);
+    }
+  }, []);
 
-  if (track.trackSupervision === 'absent') {
-    text = tablet.White[fin];
-  } else if (track.trackSupervision === 'closed') {
-    text = tablet.Red[fin];
-  }
-
-  const [textState, setTextState] = useState(text);
   socket.on('trackUpdate', (msg) => {
     if (msg.id === track.id) {
       if (msg.super === 'present') {
         track.trackSupervision = 'absent'; // eslint-disable-line
         setButtonColor(colors.green);
         setTextState(tablet.Green[fin]);
+        setSupervision('absent');
       } else if (msg.super === 'closed') {
         track.trackSupervision = 'present'; // eslint-disable-line
         setButtonColor(colors.red);
         setTextState(tablet.Red[fin]);
+        setSupervision('present');
       } else if (msg.super === 'absent') {
         track.trackSupervision = 'closed'; // eslint-disable-line
         setButtonColor(colors.white);
         setTextState(tablet.White[fin]);
+        setSupervision('closed');
       }
-      // setButtonColor(track.color)
-      // setTextState(text)
     }
   });
   const HandleClick = () => {
     let newSupervision = 'absent';
+    setSupervision('absent');
     track.color = colors.white; // eslint-disable-line
     setTextState(tablet.White[fin]);
 
     if (track.trackSupervision === 'absent') {
       newSupervision = 'closed';
+      setSupervision('closed');
       track.color = colors.red; // eslint-disable-line
       setTextState(tablet.Red[fin]);
     } else if (track.trackSupervision === 'closed') {
       newSupervision = 'present';
+      setSupervision('present');
       track.color = colors.green; // eslint-disable-line
       setTextState(tablet.Green[fin]);
     }
@@ -246,15 +253,18 @@ const TrackButtons = ({
     }
   };
   return (
-    <Button
-      style={{ ...buttonStyle, backgroundColor: buttonColor }}
-      size="large"
-      variant="contained"
-      onClick={HandleClick}
-      data-testid={track.id}
-    >
-      {textState}
-    </Button>
+    <div>
+      <Button
+        style={{ ...buttonStyle, backgroundColor: buttonColor }}
+        size="large"
+        variant="contained"
+        onClick={HandleClick}
+        data-testid={track.id}
+      >
+        {textState}
+      </Button>
+      <TrackStatistics track={track} supervision={supervision} />
+    </div>
   );
 };
 

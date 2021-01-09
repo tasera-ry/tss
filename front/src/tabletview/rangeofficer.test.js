@@ -102,8 +102,8 @@ describe('testing rangeofficer', () => {
     await act(async () => {
       render(<Tabletview />);
     });
-    await waitFor(() => expect(screen.getByText('Shooting Track 0 /s 0')).toBeInTheDocument());
-    await waitFor(() => expect(screen.getByText('Shooting Track 6 /s 6')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Shooting Track 0 — s 0')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Shooting Track 6 — s 6')).toBeInTheDocument());
   });
 
   it('should change track officer status', async () => {
