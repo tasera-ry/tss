@@ -4,8 +4,8 @@ nav {
    align-items: center;
    flex-wrap: wrap;
    min-height: 20vh;
-   background-color: #d8c3a5;
-   /* background-color: cyan; */
+   /* background-color: #d8c3a5; */
+   background-color: cyan;
    /* color: black; */
 }
 
