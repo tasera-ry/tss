@@ -99,3 +99,4 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 RK
 AV
 LM
+KK
