@@ -94,3 +94,6 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 | `NODE_ENV`      | Control the mode the backend runs in, either `development` or `stable` | `development`           |
 | `SERVER_HOST`   | Manually set hostname                                                  | `http://localhost:3000` |
 | `JWT_SECRET`    | Secret key used to sign JSON Web Tokens                                | Random on startup       |
+
+# Spring 2021 Team
+RK
