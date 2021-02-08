@@ -100,7 +100,7 @@
     "NewEmail":[ "Lisää sähköposti","Add Email"],
     "EmailHelper":["Anna uusi sähköpostiosoite", "Please give your new email address"],
     "Email":[ "Sähköposti","Email"],
-    "EmailForUser":[ "Lisää sähköposti käyttäjälle:","Add Email for user:"],
+    "EmailForUser":[ "Vaihda sähköposti käyttäjälle:","Change Email for user:"],
     "Cancel": ["Peruuta", "Cancel"],
     "Confirm": ["Vahvista", "Save changes"],
     "ConfirmDelete": ["Vahvista", "Confirm"],

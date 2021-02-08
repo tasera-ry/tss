@@ -377,6 +377,7 @@ class UserManagementView extends Component {
       });
     } else {
       this.handleaddEmailClose();
+      this.makeDataFreshAgain();
     }
   }
 
@@ -398,15 +399,15 @@ class UserManagementView extends Component {
   returnaddEmailButton(id, manage, fin) { // eslint-disable-line
     return (
       <Button id={id} size="small" style={{ backgroundColor: '#55555' }} variant="contained" onClick={this.onaddEmailClick}>
-        {manage.NewEmail[fin]}
+        {manage.ChangeEmail[fin]}
       </Button>
     );
   }
 
-  createData(name, role, ButtonToChangePassword, ButtonToRemoveUser, ButtonToaddEmail) {
+  createData(name, role, email, ButtonToChangePassword, ButtonToRemoveUser, ButtonToaddEmail) {
     const roleToPrint = role === 'superuser' ? manage.Superuser[fin] : manage.Supervisor[fin];
     return {
-      name, roleToPrint, ButtonToChangePassword, ButtonToRemoveUser, ButtonToaddEmail,
+      name, roleToPrint, email, ButtonToChangePassword, ButtonToRemoveUser, ButtonToaddEmail,
     };
   }
 
@@ -636,6 +637,7 @@ class UserManagementView extends Component {
       if (this.state.username !== this.state.userList[i].name) {
         const row = this.createData(this.state.userList[i].name,
           this.state.userList[i].role,
+          this.state.userList[i].email,
           this.returnPassButton(this.state.userList[i].id, manage, fin),
           this.returnRemoveButton(this.state.userList[i].id, manage, fin),
           this.returnaddEmailButton(this.state.userList[i].id, manage, fin));
@@ -865,7 +867,7 @@ class UserManagementView extends Component {
               value={this.state.newemail}
               margin="dense"
               id="newemail"
-              label={manage.NewEmail[fin]}
+              label={manage.ChangeEmail[fin]}
               onChange={this.handleNewEmailChange}
               fullWidth
             />
@@ -961,7 +963,7 @@ class UserManagementView extends Component {
               value={this.state.email}
               margin="dense"
               id="name"
-              label={manage.NewEmail[fin]}
+              label={manage.ChangeEmail[fin]}
               onChange={(e) => {
                 this.setState({ email: e.target.value });
               }}
@@ -1028,14 +1030,14 @@ class UserManagementView extends Component {
         <h3 style={{ textAlign: 'center' }}>{`${manage.Users[fin]}:`}</h3>
         <Box style={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}>
 
-          <TableContainer component={Paper} style={{ maxWidth: 575, tableLayout: 'auto' }}>
+          <TableContainer component={Paper} style={{ maxWidth: 800, tableLayout: 'auto' }}>
             <Table aria-label="table of users" style={{ backgroundColor: '#F2F0EB' }}>
               <TableHead>
                 <TableRow>
                   <TableCell align="justify">{manage.Username[fin]}</TableCell>
                   <TableCell align="justify">{manage.ChangePass[fin]}</TableCell>
                   <TableCell align="justify">{manage.RemoveUser[fin]}</TableCell>
-                  <TableCell align="justify">{manage.NewEmail[fin]}</TableCell>
+                  <TableCell align="justify">{manage.ChangeEmail[fin]}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -1047,6 +1049,8 @@ class UserManagementView extends Component {
                       {' '}
                       <br />
                       {row.roleToPrint}
+                      <br />
+                      {row.email}
                     </TableCell>
                     <TableCell align="justify">{row.ButtonToChangePassword}</TableCell>
                     <TableCell align="justify">{row.ButtonToRemoveUser}</TableCell>
