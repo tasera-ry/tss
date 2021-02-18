@@ -1,7 +1,7 @@
 const path = require('path');
 const root = path.join(__dirname, '..');
 const knex = require(path.join(root, 'knex', 'knex'));
-const email = require('../mailer.js');
+const { sendEmail } = require('../mailer.js');
 const moment = require('moment');
 const schedule = require('node-schedule');
 
@@ -33,7 +33,7 @@ schedule.scheduleJob('00 00 01 * * 0-6', function(){
     if(receiver[0] != undefined){
       if (await receiver[0].range_supervisor === 'not confirmed'){
         const recipient = await getUserEmail(receiver[0].supervisor_id);
-        email('reminder', recipient[0].email, null);
+        sendEmail('reminder', recipient[0].email, null);
       }
     }
   })();
@@ -104,7 +104,7 @@ const controller = {
     const feedback = response.locals.query.feedback;
     const useremails = await getSuperuserEmails();
     for (const user of useremails) {
-      email('feedback', user.email, { user: response.locals.query.user, feedback });
+      sendEmail('feedback', user.email, { user: response.locals.query.user, feedback });
     }
 
     return response
@@ -118,7 +118,7 @@ const controller = {
       //fetches the supervisor id who is assgined to the range.
       const receiver = await getUserEmail(response.req.body.supervisor);
       //sending fetched email address to mailer.js where it is used to send message that user's supervision has been changed.
-      email('update', receiver[0].email, null);
+      sendEmail('update', receiver[0].email, null);
     } catch (error) {
       console.error(error);
     }
@@ -134,7 +134,7 @@ const controller = {
       if (response.locals.updates.range_supervisor === 'not confirmed' && response.locals.updates.supervisor){
         const receiver = await getUserEmail(response.locals.updates.supervisor);
         //sending fetched email address to mailer.js where it is used to send message that user's supervision has been changed.
-        email('update', receiver[0].email, null);
+        sendEmail('update', receiver[0].email, null);
       }
 
       if (response.locals.updates.range_supervisor === 'absent' && response.locals.id.scheduled_range_supervision_id && response.locals.user.name) {
@@ -142,7 +142,7 @@ const controller = {
         const supervision = await getCorrespondingSupervision(response.locals.id.scheduled_range_supervision_id);
         const date = moment(supervision.date).format('YYYY-MM-DD');
         for (const user of useremails) {
-          email('decline', user.email, { user: response.locals.user.name, date });
+          sendEmail('decline', user.email, { user: response.locals.user.name, date });
         }
       }
     } catch (error) {

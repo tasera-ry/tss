@@ -197,4 +197,11 @@ router.route('/datesupreme/:date')
 router.route('/validate')
   .get(middlewares.jwt.validate);
 
+router.route('/email-settings')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .get(controllers.emailSettings.readShouldSend)
+  .put(controllers.emailSettings.updateShouldSend);
+
 module.exports = router;

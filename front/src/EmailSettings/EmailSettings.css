@@ -1,0 +1,17 @@
+.email-settings {
+  padding: 1vmin 5vmin 1vmin 5vmin;
+}
+
+.settings-form {
+  display: grid;
+  max-width: 500px;
+}
+
+.email-settings legend {
+  font-size: 1.4rem;
+  padding-bottom: 15px;
+}
+
+.settings-label {
+  margin-top: 5vh;
+}
