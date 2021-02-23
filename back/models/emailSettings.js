@@ -4,30 +4,49 @@ const knex = require(path.join(root, 'knex', 'knex'));
 
 
 const model = {
-    read: async function readEmailSettings() {
-        //return knex("settings").where({"settings_type": "email_settings"}).first().select("json_settings");
-        return knex("settings").where({ setting_name: "email_sender" })
-            .orWhere({ setting_name: "email_user" })
-            .orWhere({ setting_name: "email_pass" })
-            .orWhere({ setting_name: "email_host" })
-            .orWhere({ setting_name: "email_port" })
-            .orWhere({ setting_name: "email_secure" })
-            .orWhere({ setting_name: "email_shouldsend" })
-            .select("setting_value");
-    },
-    update: async function updateEmailSettings(newSettings) {
-        return knex.transaction(async trx => {
-            await trx("settings").where({ setting_name: "email_sender" }).update({ setting_value: { sender: newSettings.sender } });
-            await trx("settings").where({ setting_name: "email_user" }).update({ setting_value: { user: newSettings.user }});
-            await trx("settings").where({ setting_name: "email_host" }).update({ setting_value: { host: newSettings.host }});
-            await trx("settings").where({ setting_name: "email_port" }).update({ setting_value: { port: newSettings.port }});
-            await trx("settings").where({ setting_name: "email_secure" }).update({ setting_value: { secure: newSettings.secure }});
-            await trx("settings").where({ setting_name: "email_shouldsend" }).update({ setting_value: { shouldSend: newSettings.shouldSend }});
-            if (newSettings.pass !== undefined && newSettings.pass !== "") {
-                await trx("settings").where({ setting_name: "email_pass" }).update({ setting_value: { pass: newSettings.pass }});
-            }
-        });
-    }
+  /**
+   * Gets all the email-related settings from the database.
+   * This does NOT return the data in the format that the front-end and mailer uses.
+   * @return {Promise<object[]>} A promise that resolves to an array with the settings
+   */
+  read: async function readEmailSettings() {
+    return knex("settings").where({ setting_name: "email_sender" })
+      .orWhere({ setting_name: "email_user" })
+      .orWhere({ setting_name: "email_pass" })
+      .orWhere({ setting_name: "email_host" })
+      .orWhere({ setting_name: "email_port" })
+      .orWhere({ setting_name: "email_secure" })
+      .orWhere({ setting_name: "email_shouldsend" })
+      .select("setting_value");
+  },
+  /**
+   * Updates all the email-related settings in the database with the exception of the password which may not be given, in which case it will remain unchanged.
+   * The parameter JSON object should be in the following form:
+   * emailSettings = {
+   *    sender: *Sender email address here*,
+   *    user: *SMTP user here*,
+   *    pass: *SMTP password here*,
+   *    host: *SMTP host address here*,
+   *    port: *SMTP port here*,
+   *    secure: *Whether or not to use SSL here*,
+   *    shouldSend: *Whether or not to automatically send emails here*
+   *  };
+   * @param {object} newSettings - A JSON object with the email settings in the format that the mailer uses.
+   */
+  update: async function updateEmailSettings(newSettings) {
+    return knex.transaction(async trx => {
+      await trx("settings").where({ setting_name: "email_sender" }).update({ setting_value: { sender: newSettings.sender } });
+      await trx("settings").where({ setting_name: "email_user" }).update({ setting_value: { user: newSettings.user }});
+      await trx("settings").where({ setting_name: "email_host" }).update({ setting_value: { host: newSettings.host }});
+      await trx("settings").where({ setting_name: "email_port" }).update({ setting_value: { port: newSettings.port }});
+      await trx("settings").where({ setting_name: "email_secure" }).update({ setting_value: { secure: newSettings.secure }});
+      await trx("settings").where({ setting_name: "email_shouldsend" }).update({ setting_value: { shouldSend: newSettings.shouldSend }});
+
+      if (newSettings.pass !== undefined && newSettings.pass !== "") {
+        await trx("settings").where({ setting_name: "email_pass" }).update({ setting_value: { pass: newSettings.pass }});
+      }
+    });
+  }
 };
 
 module.exports = model;

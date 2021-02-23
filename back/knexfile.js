@@ -1,7 +1,5 @@
 const path = require('path');
 
-require('dotenv').config();
-
 module.exports = {
   // Development environment is for development purposes. The running
   // database server should have a database matching your unix username,
