@@ -1,16 +1,8 @@
 const nodemailer = require('nodemailer');
-
-const emailSettings = {
-  sender: process.env.SENDER_EMAIL,
-  user: process.env.EMAIL_USER,
-  pass: process.env.EMAIL_PASSWORD,
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
-  secure: process.env.EMAIL_SECURE,
-  shouldSend: process.env.SHOULD_SEND_EMAIL
-};
+const services = require('./services');
 
 const sendEmail = async function(message, emailAddress, opts) {
+  const emailSettings = await services.emailSettings.read();
 
   if (emailSettings.shouldSend !== "true") {
     return;
@@ -74,4 +66,4 @@ const sendEmail = async function(message, emailAddress, opts) {
 
 
 };
-module.exports = { sendEmail, emailSettings };
+module.exports = { sendEmail };

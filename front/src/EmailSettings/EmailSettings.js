@@ -7,9 +7,13 @@ import {
     RadioGroup,
     Button,
     TextField,
-    FormHelperText } from '@material-ui/core';
+    FormHelperText,
+    CircularProgress,
+    Card,
+    CardActions,
+    CardContent } from '@material-ui/core';
 import './EmailSettings.css';
-import { nav } from '../texts/texts.json';
+import { emailSettings, nav } from '../texts/texts.json';
 
 const lang = localStorage.getItem('language');
 
@@ -19,6 +23,7 @@ const lang = localStorage.getItem('language');
  * On submit it makes another API call to set the specified settings on the server
  */
 const EmailSettings = () => {
+    const [pending, setPending] = React.useState(false);
     const [settings, setSettings] = React.useState({
         sender: "",
         user: "",
@@ -28,6 +33,7 @@ const EmailSettings = () => {
         secure: "false",
         shouldSend: "true"
     });
+    const [resultMessages, setResultMessages] = React.useState([]);
 
     const fetchAndSetSettings = () => {
         fetch("/api/email-settings")
@@ -52,16 +58,28 @@ const EmailSettings = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setPending(true);
         fetch("api/email-settings", {
             method: "PUT",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(settings)
+        }).then(res => {
+            if (res.status !== 200) {
+                throw Error(res.statusText);
+            } else {
+                setPending(false);
+                setResultMessages(prevArr => [...prevArr, {success: true, msg: emailSettings.success[lang]}]);
+            }
+        }).catch(e => {
+            console.log(e);
+            setPending(false);
+            setResultMessages(prevArr => [...prevArr, {success: false, msg: e.message}]);
         });
     };
-    // All hard coded text parts should be replaced by getting them based on language
+
     return (
         <div className="email-settings">
-            <form className="settings-form" onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
                 <FormLabel component="legend">{nav.EmailSettings[lang]}</FormLabel>
                 <FormControl component="fieldset">
                     <FormLabel>SMTP-asetukset</FormLabel>
@@ -80,34 +98,34 @@ const EmailSettings = () => {
                     />
                     <TextField
                         name="user"
-                        label="User"
+                        label={emailSettings.user[lang]}
                         value={settings.user}
                         onChange={handleChange}
                     />
                     <TextField
                         name="pass"
-                        label="Pass"
+                        label={emailSettings.pass[lang]}
                         value={settings.pass}
                         type="password"
                         onChange={handleChange}
                     />
-                    <FormHelperText>Secure</FormHelperText>
+                    <FormHelperText>{emailSettings.ssl[lang]}</FormHelperText>
                     <RadioGroup
                         name="secure"
                         value={settings.secure}
                         onChange={handleChange}
                     >
-                        <FormControlLabel value="false" control={<Radio />} label="False" />
-                        <FormControlLabel value="true" control={<Radio />} label="True" />
+                        <FormControlLabel value="false" control={<Radio />} label={emailSettings.no[lang]} />
+                        <FormControlLabel value="true" control={<Radio />} label={emailSettings.yes[lang]} />
                     </RadioGroup>
-                    <FormLabel className="settings-label">Sähköpostin lähettäjän osoite</FormLabel>
+                    <FormLabel className="settings-label">{emailSettings.senderAddress[lang]}</FormLabel>
                     <TextField
                         name="sender"
-                        label="Sender"
+                        label={emailSettings.address[lang]}
                         value={settings.sender}
                         onChange={handleChange}
                     />
-                    <FormLabel className="settings-label">Lähetä sähköpostia automaattisesti</FormLabel>
+                    <FormLabel className="settings-label">{emailSettings.sendAutomatically[lang]}</FormLabel>
                     <RadioGroup
                         name="shouldSend"
                         value={settings.shouldSend}
@@ -117,10 +135,27 @@ const EmailSettings = () => {
                         <FormControlLabel value="false" control={<Radio />} label="Ei" />
                     </RadioGroup>
                     <Button type="submit" variant="contained" color="primary">
-                        Submit
+                        {pending ? <CircularProgress/> : emailSettings.saveSettings[lang]}
                     </Button>
                 </FormControl>
             </form>
+            <div className="results-div">
+                {resultMessages.map((result, index) => (
+                    <Card className="result-card" key={index}>
+                        <CardContent className={result.success ? "result-success" : "result-failure"}>
+                            {result.msg}
+                        </CardContent>
+                        <CardActions>
+                            <Button
+                                size="small"
+                                onClick={() => setResultMessages(resultMessages.filter((val, i) => i !== index))}
+                            >
+                                {emailSettings.close[lang]}
+                            </Button>
+                        </CardActions>
+                    </Card>
+                ))}
+            </div>
         </div>
     );
 };

@@ -201,7 +201,9 @@ router.route('/email-settings')
   .all(
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', 'superuser'))
-  .get(controllers.emailSettings.readShouldSend)
-  .put(controllers.emailSettings.updateShouldSend);
+  .get(controllers.emailSettings.read)
+  .put(
+    validators.emailSettings.update,
+    controllers.emailSettings.update);
 
 module.exports = router;
