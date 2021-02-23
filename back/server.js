@@ -5,9 +5,11 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const router = require('./routes');
-const port = process.env.ALT_PORT || process.env.PORT || 8000; //azure gives port as an environment variable
 const os = require('os');
 const morgan = require('morgan');
+
+require('dotenv').config();
+const port = process.env.ALT_PORT || process.env.PORT || 8000; //azure gives port as an environment variable
 
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true }));
