@@ -29,7 +29,7 @@ class SupervisorNotification extends Component {
     this.checkSupervisions();
   }
 
-  componentWillReceiveProps(nextProps) {  // eslint-disable-line
+  UNSAFE_componentWillReceiveProps(nextProps) {  // eslint-disable-line
     if (nextProps.loggingOut) {
       this.setState({
         userHasSupervisions: false,

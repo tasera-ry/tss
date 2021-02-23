@@ -42,7 +42,7 @@ class Monthview extends Component {
     this.getMonth();
   }
 
-  componentWillReceiveProps() { // eslint-disable-line
+  UNSAFE_componentWillReceiveProps() { // eslint-disable-line
     this.setState({
       state: 'loading',
     }, () => {
