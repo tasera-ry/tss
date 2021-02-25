@@ -9,7 +9,8 @@
     "Feedback": ["Palaute", "Feedback"],
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
     "SignOut": ["Kirjaudu ulos", "Sign Out"],
-    "Statistics": ["Tilastot", "Statistics"]
+    "Statistics": ["Tilastot", "Statistics"],
+    "EmailSettings": ["Sähköpostiasetukset", "Email settings"]
   },
   "banner": {
     "Notification": ["Sinulla on varmistamattomia päävalvojavuoroja!", "You have unconfirmed range officer reservations!"],
@@ -233,5 +234,19 @@
     "Close": ["Sulje", "Close"],
     "Save": ["Tallenna", "Save changes"],
     "NoSchedule": ["Ei varauksia tälle päivälle. Aseta ratavalvonta Aikataulut-sivulla", "No reservations found. Set reservation in Schedules page"]
+  },
+  "emailSettings": {
+    "success": ["Onnistuneesti päivitetty", "Successfully updated"],
+    "smtpSettings": ["SMTP-asetukset", "SMTP-settings"],
+    "user": ["Käyttäjä", "User"],
+    "pass": ["Salasana", "Password"],
+    "ssl": ["Käytä SSL", "Use SSL"],
+    "yes": ["Kyllä", "Yes"],
+    "no": ["Ei", "No"],
+    "senderAddress": ["Sähköpostin lähettäjän osoite", "Sender email address"],
+    "sendAutomatically": ["Lähetä sähköpostia automaattisesti", "Send email automatically"],
+    "saveSettings": ["Tallenna asetukset", "Save settings"],
+    "address": ["Osoite", "Address"],
+    "close": ["Sulje", "Close"]
   }
 }

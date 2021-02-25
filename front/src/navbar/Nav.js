@@ -136,6 +136,16 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
           </ListItem>
         </Link>
 
+        <Link style={navStyle} to="/email-settings">
+          <ListItem
+            button
+            onClick={HandleClick}
+            style={elementStyle}
+          >
+            {nav.EmailSettings[fin]}
+          </ListItem>
+        </Link>
+
         <Link style={navStyle} to="/statistics">
           <ListItem
             button
