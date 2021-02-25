@@ -52,7 +52,7 @@ class Weekview extends Component {
   }
 
   // Re-renders the component and fetches new data when the logo to frontpage is clicked on weekview
-  componentWillReceiveProps() { // eslint-disable-line
+  UNSAFE_componentWillReceiveProps() { // eslint-disable-line
     this.setState({
       state: 'loading',
     }, () => {
