@@ -9,7 +9,12 @@ exports.seed = function(knex) {
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT,
     secure: process.env.EMAIL_SECURE,
-    shouldSend: process.env.SHOULD_SEND_EMAIL
+    shouldSend: process.env.SHOULD_SEND_EMAIL,
+    assignedMsg: "",
+    updateMsg: "",
+    reminderMsg: "",
+    declineMsg: "",
+    feedbackMsg: ""
   };
 
   return knex('settings').del()
@@ -22,7 +27,12 @@ exports.seed = function(knex) {
       { setting_name: "email_host", setting_value: { host: emailSettings.host }},
       { setting_name: "email_port", setting_value: { port: emailSettings.port }},
       { setting_name: "email_secure", setting_value: { secure: emailSettings.secure }},
-      { setting_name: "email_shouldsend", setting_value: { shouldSend: emailSettings.shouldSend }}
+      { setting_name: "email_shouldsend", setting_value: { shouldSend: emailSettings.shouldSend }},
+      { setting_name: "email_assigned_msg", setting_value: { assignedMsg: emailSettings.assignedMsg }},
+      { setting_name: "email_update_msg", setting_value: { updateMsg: emailSettings.updateMsg }},
+      { setting_name: "email_reminder_msg", setting_value: { reminderMsg: emailSettings.reminderMsg }},
+      { setting_name: "email_decline_msg", setting_value: { declineMsg: emailSettings.declineMsg }},
+      { setting_name: "email_feedback_msg", setting_value: { feedbackMsg: emailSettings.feedbackMsg }}
     ]);
   });
 };

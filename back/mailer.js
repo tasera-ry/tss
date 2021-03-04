@@ -27,21 +27,23 @@ const sendEmail = async function(message, emailAddress, opts) {
 
     switch (message) {
     case 'assigned':
-      text = 'Hei, teille on annettu valvojavuoro. Voitte nyt käydä vahvistamassa vuoronne. Terveisin TASERA ry';
+      text = emailSettings.assignedMsg;
       break;
     case 'update':
-      text = 'Hei, teille annettua valvojavuoroa on muutettu. Voitte nyt käydä tarkistamassa vuoronne. Terveisin TASERA ry';
+      text = emailSettings.updateMsg;
       break;
     case 'reminder':
-      text = 'Hei, ette ole varmistaneet viikon päästä alkavaa valvonta vuoroanne. Käykää pian varmistamassa vuoronne. Terveisin TASERA ry';
+      text = emailSettings.reminderMsg;
       break;
     case 'decline':
-      text = 'Hei, ' + opts.user + ' perui päävalvojavuoronsa päivältä ' + opts.date + '. Päävalvoja pitää vaihtaa mitä pikimmiten. Terveisin TASERA ry';
+      text = emailSettings.declineMsg;
       break;
     case 'feedback':
-      text = 'Hei, ' + opts.user + ' lähetti juuri palautteen:\n\n' + opts.feedback + '\n\nTerveisin TASERA ry';
+      text = emailSettings.feedbackMsg;
       break;
     }
+
+    /* TODO: Format message here*/
 
     let transporter = nodemailer.createTransport({
       host: emailSettings.host,

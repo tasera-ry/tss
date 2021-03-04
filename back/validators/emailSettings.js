@@ -12,7 +12,12 @@ const emailSettingConstraints = {
   host: {in: ["body"], exists: true, isURL: true, errorMessage: "Invalid host address"},
   port: {in: ["body"], exists: true, isInt: true, errorMessage: "Invalid port"},
   secure: {in: ["body"], exists: true},
-  shouldSend: {in: ["body"], exists: true}
+  shouldSend: {in: ["body"], exists: true},
+  assignedMsg: {in: ["body"]},
+  updateMsg: {in: ["body"]},
+  reminderMsg: {in: ["body"]},
+  declineMsg: {in: ["body"]},
+  feedbackMsg: {in: ["body"]}
 };
 
 function handleValidationErrors(request, response, next) {

@@ -11,7 +11,9 @@ import {
     CircularProgress,
     Card,
     CardActions,
-    CardContent } from '@material-ui/core';
+    CardContent,
+    Select,
+    MenuItem } from '@material-ui/core';
 import './EmailSettings.css';
 import { emailSettings, nav } from '../texts/texts.json';
 
@@ -31,9 +33,15 @@ const EmailSettings = () => {
         host: "",
         port: 0,
         secure: "false",
-        shouldSend: "true"
+        shouldSend: "true",
+        assignedMsg: "",
+        updateMsg: "",
+        reminderMsg: "",
+        declineMsg: "",
+        feedbackMsg: "",
     });
     const [resultMessages, setResultMessages] = React.useState([]);
+    const [messageSelection, setMessageSelection] = React.useState("assignedMsg");
 
     const fetchAndSetSettings = () => {
         fetch("/api/email-settings")
@@ -118,6 +126,8 @@ const EmailSettings = () => {
                         <FormControlLabel value="false" control={<Radio />} label={emailSettings.no[lang]} />
                         <FormControlLabel value="true" control={<Radio />} label={emailSettings.yes[lang]} />
                     </RadioGroup>
+                </FormControl>
+                <FormControl component="fieldset">
                     <FormLabel className="settings-label">{emailSettings.senderAddress[lang]}</FormLabel>
                     <TextField
                         name="sender"
@@ -125,6 +135,29 @@ const EmailSettings = () => {
                         value={settings.sender}
                         onChange={handleChange}
                     />
+                </FormControl>
+                <FormControl component="fieldset">
+                    <FormLabel className="settings-label">Email messages</FormLabel>
+                    <Select
+                        value={messageSelection}
+                        onChange={(e) => setMessageSelection(e.target.value)}
+                        label="Message type"
+                    >
+                        <MenuItem value={"assignedMsg"}>Assigned</MenuItem>
+                        <MenuItem value={"updateMsg"}>Updated</MenuItem>
+                        <MenuItem value={"reminderMsg"}>Reminder</MenuItem>
+                        <MenuItem value={"declineMsg"}>Declined</MenuItem>
+                        <MenuItem value={"feedbackMsg"}>Feedback</MenuItem>
+                    </Select>
+                    <TextField
+                        multiline
+                        name={messageSelection}
+                        label="Email content"
+                        value={settings[messageSelection]}
+                        onChange={handleChange}
+                    />
+                </FormControl>
+                <FormControl component="fieldset">
                     <FormLabel className="settings-label">{emailSettings.sendAutomatically[lang]}</FormLabel>
                     <RadioGroup
                         name="shouldSend"
@@ -134,10 +167,10 @@ const EmailSettings = () => {
                         <FormControlLabel value="true" control={<Radio />} label="Kyllä" />
                         <FormControlLabel value="false" control={<Radio />} label="Ei" />
                     </RadioGroup>
-                    <Button type="submit" variant="contained" color="primary">
-                        {pending ? <CircularProgress/> : emailSettings.saveSettings[lang]}
-                    </Button>
                 </FormControl>
+                <Button type="submit" variant="contained" color="primary">
+                    {pending ? <CircularProgress /> : emailSettings.saveSettings[lang]}
+                </Button>
             </form>
             <div className="results-div">
                 {resultMessages.map((result, index) => (
