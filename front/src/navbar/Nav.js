@@ -192,6 +192,16 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
           </ListItem>
         </Link>
 
+        <Link style={navStyle} to="/profile">
+          <ListItem
+            button
+            onClick={HandleClick}
+            style={elementStyle}
+          >
+            {nav.Profile[fin]}
+          </ListItem>
+        </Link>
+
         <ListItem
           button
           onClick={HandleFeedback}

@@ -5,6 +5,7 @@
     "Schedule": ["Aikataulut", "Schedules"],
     "UserManagement": ["Käyttäjienhallinta", "User management"],
     "Supervision": ["Valvonnat", "Supervisions"],
+    "Profile": ["Omat Tiedot", "Profile"],
     "Tablet": ["Tablettinäkymä", "Tablet view"],
     "Feedback": ["Palaute", "Feedback"],
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
