@@ -1,5 +1,15 @@
 import React from 'react';
 
+import PasswordChange from './profilepages/changepassword';
+
+import { Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
+import texts from '../texts/texts.json';
+
+const fin = localStorage.getItem('language');
+const { profileSettings } = texts;
+
 // Styles for the Profile page: The whole page, sidebar and content.
 
 const ProfileStyle = {
@@ -19,43 +29,34 @@ const ContentStyle = {
     marginLeft: '35px',
 };
 
+const listStyle = {
+    listStyleType: 'none',
+};
+
 // Returns the profile component, which consists of sidebar and content.
 
 function Profile() {
     return (
-        <div className="Profile" style={ProfileStyle}>
-            <div className="ProfileSidebar" style={SidebarStyle}>
-                <ul>
-                    <li>Change password</li>
-                    <li>a</li>
-                    <li>b</li>
-                </ul>
+        <Router>
+            <div className="Profile" style={ProfileStyle}>
+                <div className="ProfileSidebar" style={SidebarStyle}>
+                    <ul style={listStyle}>
+                        <Link to="/">
+                            <li>{profileSettings.navPassword[fin]}</li>
+                        </Link>
+                        <li>Lorem</li>
+                        <li>Ipsum</li>
+                    </ul>
+                </div>
+                <div className="ProfileContent" style={ContentStyle}>
+                    <Switch>
+                        <Route path="/">
+                            <PasswordChange/>
+                        </Route>
+                    </Switch>
+                </div>
             </div>
-            <div className="ProfileContent" style={ContentStyle}>
-                <h1>Change password</h1>
-                <form>
-                    <label>
-                        Old password
-                        <br/>
-                        <input type ="password" id="olkpword" name="oldpword"/>
-                    </label>
-                    <br/>
-                    <label>
-                        New password
-                        <br/>
-                        <input type ="password" id="newpword" name="newpword"/>
-                    </label>
-                    <br/>
-                    <label>
-                        Confirm new password
-                        <br/>
-                        <input type ="password" id="newpwordagain" name="newpwordagain"/>
-                    </label>
-                    <br/>
-                    <input type="submit" value="Confirm"></input>
-                </form>
-            </div>
-        </div>
+        </Router>
     );
 }
 
