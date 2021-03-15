@@ -24,6 +24,21 @@ const lang = localStorage.getItem('language');
  * Makes an API call to get the current settings and sets them on the page every time the page loads (ignoring undefined values).
  * On submit it makes another API call to set the specified settings on the server
  */
+
+const HelperText = (messageSelection) => {
+    switch (messageSelection) {
+    case "declineMsg":
+        return (<p>{emailSettings.dynamicValues[lang]}<br />{"{user} - " + emailSettings.userDecline[lang]}<br />{"{date} - " + emailSettings.declineDate[lang]}</p>);
+    case "feedbackMsg":
+        return (<p>{emailSettings.dynamicValues[lang]}<br />{"{user} - " + emailSettings.userDecline[lang]}<br />{"{feedback} - " + emailSettings.feedbackGiven[lang]}</p>);
+    case "assignedMsg":
+    case "updateMsg":
+    case "reminderMsg":
+    default:
+        return <p></p>;
+    }
+};
+
 const EmailSettings = () => {
     const [pending, setPending] = React.useState(false);
     const [settings, setSettings] = React.useState({
@@ -137,25 +152,26 @@ const EmailSettings = () => {
                     />
                 </FormControl>
                 <FormControl component="fieldset">
-                    <FormLabel className="settings-label">Email messages</FormLabel>
+                    <FormLabel className="settings-label">{emailSettings.emailMessages[lang]}</FormLabel>
                     <Select
                         value={messageSelection}
                         onChange={(e) => setMessageSelection(e.target.value)}
                         label="Message type"
                     >
-                        <MenuItem value={"assignedMsg"}>Assigned</MenuItem>
-                        <MenuItem value={"updateMsg"}>Updated</MenuItem>
-                        <MenuItem value={"reminderMsg"}>Reminder</MenuItem>
-                        <MenuItem value={"declineMsg"}>Declined</MenuItem>
-                        <MenuItem value={"feedbackMsg"}>Feedback</MenuItem>
+                        <MenuItem value={"assignedMsg"}>{emailSettings.assigned[lang]}</MenuItem>
+                        <MenuItem value={"updateMsg"}>{emailSettings.update[lang]}</MenuItem>
+                        <MenuItem value={"reminderMsg"}>{emailSettings.reminder[lang]}</MenuItem>
+                        <MenuItem value={"declineMsg"}>{emailSettings.decline[lang]}</MenuItem>
+                        <MenuItem value={"feedbackMsg"}>{emailSettings.feedback[lang]}</MenuItem>
                     </Select>
                     <TextField
                         multiline
                         name={messageSelection}
-                        label="Email content"
+                        label={emailSettings.emailContent[lang]}
                         value={settings[messageSelection]}
                         onChange={handleChange}
                     />
+                    <FormHelperText id="helper" display="inline">{HelperText(messageSelection)}</FormHelperText>
                 </FormControl>
                 <FormControl component="fieldset">
                     <FormLabel className="settings-label">{emailSettings.sendAutomatically[lang]}</FormLabel>
