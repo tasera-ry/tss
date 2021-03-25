@@ -14,7 +14,7 @@ const sendEmail = async function(message, emailAddress, opts) {
     //defaults message to command if for some reason fails in switch
     let text = message;
     let auth;
-    if (typeof emailSettings.user !== 'undefined'){
+    if (typeof emailSettings.user !== "undefined"){
       auth = {
         user: emailSettings.user,
         pass: emailSettings.pass,
@@ -24,24 +24,33 @@ const sendEmail = async function(message, emailAddress, opts) {
       auth = null;
     }
 
+    let allowedVars = {};
 
     switch (message) {
-    case 'assigned':
-      text = 'Hei, teille on annettu valvojavuoro. Voitte nyt käydä vahvistamassa vuoronne. Terveisin TASERA ry';
+    case "assigned":
+      text = emailSettings.assignedMsg;
       break;
-    case 'update':
-      text = 'Hei, teille annettua valvojavuoroa on muutettu. Voitte nyt käydä tarkistamassa vuoronne. Terveisin TASERA ry';
+    case "update":
+      text = emailSettings.updateMsg;
       break;
-    case 'reminder':
-      text = 'Hei, ette ole varmistaneet viikon päästä alkavaa valvonta vuoroanne. Käykää pian varmistamassa vuoronne. Terveisin TASERA ry';
+    case "reminder":
+      text = emailSettings.reminderMsg;
       break;
-    case 'decline':
-      text = 'Hei, ' + opts.user + ' perui päävalvojavuoronsa päivältä ' + opts.date + '. Päävalvoja pitää vaihtaa mitä pikimmiten. Terveisin TASERA ry';
+    case "decline":
+      text = emailSettings.declineMsg;
+      allowedVars["{date}"] = opts.date;
+      allowedVars["{user}"] = opts.user;
       break;
-    case 'feedback':
-      text = 'Hei, ' + opts.user + ' lähetti juuri palautteen:\n\n' + opts.feedback + '\n\nTerveisin TASERA ry';
+    case "feedback":
+      text = emailSettings.feedbackMsg;
+      allowedVars["{feedback}"] = opts.feedback;
+      allowedVars["{user}"] = opts.user;
       break;
     }
+    // Insert dynamic values into the message
+    Object.keys(allowedVars).forEach(token => {
+      text = text.replace(new RegExp(token, "g"), allowedVars[token]);
+    });
 
     let transporter = nodemailer.createTransport({
       host: emailSettings.host,

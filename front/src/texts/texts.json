@@ -247,6 +247,18 @@
     "sendAutomatically": ["Lähetä sähköpostia automaattisesti", "Send email automatically"],
     "saveSettings": ["Tallenna asetukset", "Save settings"],
     "address": ["Osoite", "Address"],
-    "close": ["Sulje", "Close"]
+    "close": ["Sulje", "Close"],
+    "emailMessages": ["Sähköpostiviestit", "Email messages"],
+    "emailContent": ["Viestin sisältö", "Message content"],
+    "assigned": ["Vuoro annettu", "Shift assigned"],
+    "update": ["Vuoro päivitetty", "Shift updated"],
+    "reminder": ["Varmistamattoman vuoron muistutus", "Unconfirmed shift reminder"],
+    "decline": ["Vuorosta kieltäydytty", "Shift declined"],
+    "feedback": ["Palautetta vastaanotettu", "Feedback received"],
+    "dynamicValues": ["Sallitut dynaamiset arvot", "Allowed dynamic values:"],
+    "userDecline": ["Kieltäytynyt käyttäjä", "The user who declined"],
+    "userFeedback": ["Palautetta antanut käyttäjä", "The user who gave feedback"],
+    "declineDate": ["Kieltäytymisen päivämäärä", "The date of the user declining"],
+    "feedbackGiven": ["Käyttäjän antama palaute", "The feedback given by the user"]
   }
 }
