@@ -19,18 +19,12 @@ import { emailSettings, nav } from '../texts/texts.json';
 
 const lang = localStorage.getItem('language');
 
-/**
- * Returns a page for specifying and submitting email-settings.
- * Makes an API call to get the current settings and sets them on the page every time the page loads (ignoring undefined values).
- * On submit it makes another API call to set the specified settings on the server
- */
-
 const HelperText = (messageSelection) => {
     switch (messageSelection) {
     case "declineMsg":
         return (<p>{emailSettings.dynamicValues[lang]}<br />{"{user} - " + emailSettings.userDecline[lang]}<br />{"{date} - " + emailSettings.declineDate[lang]}</p>);
     case "feedbackMsg":
-        return (<p>{emailSettings.dynamicValues[lang]}<br />{"{user} - " + emailSettings.userDecline[lang]}<br />{"{feedback} - " + emailSettings.feedbackGiven[lang]}</p>);
+        return (<p>{emailSettings.dynamicValues[lang]}<br />{"{user} - " + emailSettings.userFeedback[lang]}<br />{"{feedback} - " + emailSettings.feedbackGiven[lang]}</p>);
     case "assignedMsg":
     case "updateMsg":
     case "reminderMsg":
@@ -39,6 +33,11 @@ const HelperText = (messageSelection) => {
     }
 };
 
+/**
+ * Returns a page for specifying and submitting email-settings.
+ * Makes an API call to get the current settings and sets them on the page every time the page loads (ignoring undefined values).
+ * On submit it makes another API call to set the specified settings on the server
+ */
 const EmailSettings = () => {
     const [pending, setPending] = React.useState(false);
     const [settings, setSettings] = React.useState({
