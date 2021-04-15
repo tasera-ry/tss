@@ -15,189 +15,178 @@ import axios from 'axios';
 import data from '../texts/texts.json';
 
 const useStyles = makeStyles((theme) => ({
-    paper: {
-      marginTop: theme.spacing(8),
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-    },
-    avatar: {
-      margin: theme.spacing(1),
-    },
-    form: {
-      width: '100%',
-      marginTop: theme.spacing(1),
-    },
-    submit: {
-      margin: theme.spacing(3, 0, 2),
-    },
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+  },
+  form: {
+    width: '100%',
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
 }));
-  
+
 const textStyle = {
-    backgroundColor: '#fcfbf7',
-    borderRadius: 4,
+  backgroundColor: '#fcfbf7',
+  borderRadius: 4,
 };
 
 const ResetPassword = () => {
+  const classes = useStyles();
+  const fin = localStorage.getItem('language');
+  const { resetPW } = data;
 
-    const classes = useStyles();
-    const fin = localStorage.getItem('language');
-    const { resetPW } = data;
+  const [showForm, setShowForm] = useState(true);
+  const [email, setEmail] = useState('');
+  // const [messageFromServer, setMessageFromServer] = useState ('');
+  const [showNullError, setShowNullError] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [isWaiting, setIsWaiting] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
-    const [showForm, setShowForm] = useState(true);
-    const [email, setEmail] = useState ('');
-    //const [messageFromServer, setMessageFromServer] = useState ('');
-    const [showNullError, setShowNullError] = useState (false);
-    const [showError, setShowError] = useState (false);
-    const [isWaiting, setIsWaiting] = useState(false);
-    const [emailSent, setEmailSent] = useState(false);
+  document.body.style = 'background: #eae7dc;';
 
-    document.body.style = 'background: #eae7dc;';
-
-    const reset = async (e) => {
-        e.preventDefault();
-        setIsWaiting(true);
-        if (email === '') {
-            console.log('here');
-            setShowNullError(true);
-            setShowError(false);
-            //setMessageFromServer('');
-            setIsWaiting(false);
-        } else {
-            try {
-                const response = await axios.post('api/reset', {email});
-                if (response.data === 'recovery email sent') {
-                    //setMessageFromServer('recovery email sent');
-                    setEmailSent(true);
-                    setShowForm(false);
-                    setShowNullError(false);
-                    setShowError(false);
-                }
-            } catch (error) {
-                console.error(error.response.data);
-                if (error.response.data === 'email not in db') {
-                    setShowError(true);
-                    setShowNullError(false);
-                    //setMessageFromServer('');
-                    setEmailSent(false);
-                    setIsWaiting(false);
-                }
-            }
+  const reset = async (e) => {
+    e.preventDefault();
+    setIsWaiting(true);
+    if (email === '') {
+      console.log('here');
+      setShowNullError(true);
+      setShowError(false);
+      // setMessageFromServer('');
+      setIsWaiting(false);
+    } else {
+      try {
+        const response = await axios.post('api/reset', { email });
+        if (response.data === 'recovery email sent') {
+          // setMessageFromServer('recovery email sent');
+          setEmailSent(true);
+          setShowForm(false);
+          setShowNullError(false);
+          setShowError(false);
         }
-    };
-
-    const displayForm = () => {
-        return (
-            <Typography component="h3" variant="h5" align="center">
-                {resetPW.ResetPassword[fin]}
-                
-            <form className={classes.form} noValidate>
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="email"
-                    label={resetPW.eMail[fin]}
-                    name="email"
-                    autoComplete={resetPW.eMail[fin]}
-                    autoFocus
-                    value={email}
-                    error={showNullError || showError}
-                    onInput={(e) => setEmail(e.target.value)}
-                    style={textStyle}
-                    inputProps={{
-                    'data-testid': 'emailField',
-                    }}
-                />
-
-                {showNullError && (
-                    displayNullError()
-                )}
-
-                {showError && (
-                    displayError()
-                )}
-
-                {!isWaiting && (
-                    displayButton()
-                )}
-            </form>
-            </Typography>
-        )
+      } catch (error) {
+        console.error(error.response.data);
+        if (error.response.data === 'email not in db') {
+          setShowError(true);
+          setShowNullError(false);
+          // setMessageFromServer('');
+          setEmailSent(false);
+          setIsWaiting(false);
+        }
+      }
     }
+  };
 
-    const displayNullError = () => {
-        return (
-            <div>
-                <Typography
-                align="center"
-                style={{ color: '#c23a3a' }}
-                >
-                {resetPW.NullErr[fin]}
-                </Typography>
-            </div>
-        )
-    }
+  const displayNullError = () => (
+    <div>
+      <Typography
+        align="center"
+        style={{ color: '#c23a3a' }}
+      >
+        {resetPW.NullErr[fin]}
+      </Typography>
+    </div>
+  );
 
-    const displayError = () => {
-        return (
-            <div>
-                <Typography
-                align="center"
-                style={{ color: '#c23a3a' }}
-                >
-                {resetPW.InvErr[fin]}
-                </Typography>
-            </div>
-        )
-    }
+  const displayError = () => (
+    <div>
+      <Typography
+        align="center"
+        style={{ color: '#c23a3a' }}
+      >
+        {resetPW.InvErr[fin]}
+      </Typography>
+    </div>
+  );
 
-    const displayButton = () => {
-        return (
-            <Button
-                onClick={reset}
-                type="submit"
-                fullWidth
-                variant="contained"
-                style={{ backgroundColor: '#5f77a1' }}
-                >
-                    {resetPW.ResetBtn[fin]}
-            </Button>
-        )
-    }
+  const displayButton = () => (
+    <Button
+      onClick={reset}
+      type="submit"
+      fullWidth
+      variant="contained"
+      style={{ backgroundColor: '#5f77a1' }}
+    >
+      {resetPW.ResetBtn[fin]}
+    </Button>
+  );
 
-    const displayEmailSent = () => {
-        return (
-            <div>
-                <Typography
-                component = "h3"
-                variant = "h5"
-                align="center"
-                style={{ color: '#047a00' }}
-                >
-                {resetPW.Sent[fin]}
-                </Typography>
-            </div>
-        )
-    }
+  const displayForm = () => (
+    <Typography component="h3" variant="h5" align="center">
+      {resetPW.ResetPassword[fin]}
 
-    return (
-        <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <div className={classes.paper}>
+      <form className={classes.form} noValidate>
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id="email"
+          label={resetPW.eMail[fin]}
+          name="email"
+          autoComplete={resetPW.eMail[fin]}
+          autoFocus
+          value={email}
+          error={showNullError || showError}
+          onInput={(e) => setEmail(e.target.value)}
+          style={textStyle}
+          inputProps={{
+            'data-testid': 'emailField',
+          }}
+        />
 
-                {showForm && (
-                    displayForm()
-                )}
+        {showNullError && (
+          displayNullError()
+        )}
 
-                {emailSent && (
-                    displayEmailSent()
-                )}
+        {showError && (
+          displayError()
+        )}
 
-            </div>
-        </Container>
-    );
-}
- 
+        {!isWaiting && (
+          displayButton()
+        )}
+      </form>
+    </Typography>
+  );
+
+  const displayEmailSent = () => (
+    <div>
+      <Typography
+        component="h3"
+        variant="h5"
+        align="center"
+        style={{ color: '#047a00' }}
+      >
+        {resetPW.Sent[fin]}
+      </Typography>
+    </div>
+  );
+
+  return (
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <div className={classes.paper}>
+
+        {showForm && (
+          displayForm()
+        )}
+
+        {emailSent && (
+          displayEmailSent()
+        )}
+
+      </div>
+    </Container>
+  );
+};
+
 export default ResetPassword;

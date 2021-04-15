@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 
 // Material UI components
 import Button from '@material-ui/core/Button';
@@ -40,7 +40,6 @@ const textStyle = {
 };
 
 const RenewPassword = (props) => {
-
   const classes = useStyles();
   const fin = localStorage.getItem('language');
   const { renewPW } = data;
@@ -48,8 +47,8 @@ const RenewPassword = (props) => {
   document.body.style = 'background: #eae7dc;';
 
   const [username, setUsername] = useState('');
-  const [newPassword, setNewPassword] = useState ('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState ('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [updated, setUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -59,13 +58,13 @@ const RenewPassword = (props) => {
 
   const history = useHistory();
 
-  const token = props.match.params.token;
+  const { token } = props.match.params;
   const [tokenExpires, setTokenExpires] = useState('');
 
   useEffect(() => {
     async function verifyToken() {
       try {
-        const response = await axios.get('api/reset', {params: {reset_token: token},});
+        const response = await axios.get('api/reset', { params: { reset_token: token } });
         console.log(response.data.message);
 
         if (response.data.message === 'password reset link a-ok') {
@@ -75,27 +74,25 @@ const RenewPassword = (props) => {
           setTokenOK(true);
           setError(false);
         }
-
-      } catch (error) {
-        console.log(error.response.data);
+      } catch (err) {
+        console.log(err.response.data);
         setIsLoading(false);
         setError(true);
         setTokenOK(false);
       }
     }
     verifyToken();
-  },[]);
+  }, []);
 
   const redirectToReset = () => {
-    let path = `/signin/reset-password`;
+    const path = '/signin/reset-password';
     history.push(path);
-  }
+  };
 
   const redirectToLogin = () => {
-    let path = `/signin`;
+    const path = '/signin';
     setTimeout(() => history.push(path), 5000);
-    
-  }
+  };
 
   const renew = async (e) => {
     e.preventDefault();
@@ -103,13 +100,15 @@ const RenewPassword = (props) => {
 
     if (newPassword === confirmNewPassword && newPassword !== '') {
       try {
-        const response = await axios.put('api/reset', {username, newPassword, reset_token: token, reset_token_expire: tokenExpires,},);
+        const response = await axios.put('api/reset', {
+          username, newPassword, reset_token: token, reset_token_expire: tokenExpires,
+        });
         console.log(response.data);
         setUpdated(true);
         setTokenOK(false);
         redirectToLogin();
-      } catch (error) {
-        console.log(error.response.data);
+      } catch (err) {
+        console.log(err.response.data);
         setIsWaiting(false);
       }
     } else {
@@ -117,47 +116,65 @@ const RenewPassword = (props) => {
       setIsWaiting(false);
       console.log('mismatch or invalid');
     }
-  }
+  };
 
-  const displayLoading = () => {
-    return (  
-      <Typography component="h3" variant="h5" align="center">
-        {renewPW.Loading[fin]}
-      </Typography>
-    )
-  }
+  const displayLoading = () => (
+    <Typography component="h3" variant="h5" align="center">
+      {renewPW.Loading[fin]}
+    </Typography>
+  );
 
-  const displayError = () => {
-    return (  
-      <Typography component="h3" variant="h5" align="center" style={{ color: '#c23a3a' }}>
-        {renewPW.Error[fin]}
+  const displayError = () => (
+    <Typography component="h3" variant="h5" align="center" style={{ color: '#c23a3a' }}>
+      {renewPW.Error[fin]}
         &nbsp;
-        <div>
-          <Typography
+      <div>
+        <Typography
           align="center"
           style={{ color: '#000000' }}
-          >
-            {renewPW.ErrorDesc[fin]}
-          </Typography>
-        </div>          
+        >
+          {renewPW.ErrorDesc[fin]}
+        </Typography>
+      </div>
         &nbsp;
 
       <Button
-        onClick = {redirectToReset}
+        onClick={redirectToReset}
         fullWidth
         variant="contained"
         style={{ backgroundColor: '#5f77a1' }}
       >
         {renewPW.ForgotPassword[fin]}
       </Button>
-      </Typography>
-    )
-  }
+    </Typography>
+  );
 
-  const displayTokenOK = () => {
-    return (
-      <Typography component="h3" variant="h5" align="center">
-      {renewPW.RenewPassword[fin]} 
+  const displayMismatch = () => (
+    <div>
+      <Typography
+        align="center"
+        style={{ color: '#c23a3a' }}
+      >
+        {renewPW.Mismatch[fin]}
+      </Typography>
+    </div>
+  );
+
+  const displayButton = () => (
+    <Button
+      onClick={renew}
+      type="submit"
+      fullWidth
+      variant="contained"
+      style={{ backgroundColor: '#5f77a1' }}
+    >
+      {renewPW.RenewBtn[fin]}
+    </Button>
+  );
+
+  const displayTokenOK = () => (
+    <Typography component="h3" variant="h5" align="center">
+      {renewPW.RenewPassword[fin]}
 
       <form className={classes.form} noValidate>
         <TextField
@@ -176,7 +193,7 @@ const RenewPassword = (props) => {
           onInput={(e) => setNewPassword(e.target.value)}
           style={textStyle}
           inputProps={{
-          'data-testid': 'newPasswordField',
+            'data-testid': 'newPasswordField',
           }}
         />
 
@@ -195,7 +212,7 @@ const RenewPassword = (props) => {
           onInput={(e) => setConfirmNewPassword(e.target.value)}
           style={textStyle}
           inputProps={{
-          'data-testid': 'confirmNewPasswordField',
+            'data-testid': 'confirmNewPasswordField',
           }}
         />
 
@@ -208,53 +225,23 @@ const RenewPassword = (props) => {
         )}
 
       </form>
-      </Typography> 
-    )
-  }
+    </Typography>
+  );
 
-  const displayMismatch = () => {
-    return (
+  const displayUpdated = () => (
+    <Typography component="h3" variant="h5" align="center" style={{ color: '#047a00' }}>
+      {renewPW.Updated[fin]}
+        &nbsp;
       <div>
         <Typography
-        align="center"
-        style={{ color: '#c23a3a' }}
-        >
-        {renewPW.Mismatch[fin]}
-        </Typography>
-      </div>
-    )
-  }
-
-  const displayButton = () => {
-    return (
-      <Button
-        onClick={renew}
-        type="submit"
-        fullWidth
-        variant="contained"
-        style={{ backgroundColor: '#5f77a1' }}
-      >
-        {renewPW.RenewBtn[fin]}
-      </Button>
-    )
-  }
-
-  const displayUpdated = () => {
-    return (
-      <Typography component="h3" variant="h5" align="center" style={{ color: '#047a00' }}>
-        {renewPW.Updated[fin]}
-        &nbsp;
-        <div>
-          <Typography
           align="center"
           style={{ color: '#000000' }}
-          >
-            {renewPW.UpdatedDesc[fin]}
-          </Typography>
-        </div>
-      </Typography>
-    )
-  }
+        >
+          {renewPW.UpdatedDesc[fin]}
+        </Typography>
+      </div>
+    </Typography>
+  );
 
   return (
     <Container component="main" maxWidth="xs">
@@ -270,16 +257,16 @@ const RenewPassword = (props) => {
         )}
 
         {tokenOK && !updated && (
-          displayTokenOK()         
+          displayTokenOK()
         )}
 
         {updated && (
           displayUpdated()
         )}
-        
+
       </div>
-    </Container> 
+    </Container>
   );
-}
- 
+};
+
 export default RenewPassword;
