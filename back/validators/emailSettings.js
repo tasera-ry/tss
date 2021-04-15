@@ -2,11 +2,10 @@ const { checkSchema, validationResult, matchedData } = require('express-validato
 
 /* Returns a custom validation function for the email messages */
 const checkEmailMessage = (allowedVars) => {
-  return (value, _) => {
+  return (value) => {
     return new Promise((resolve, reject) => {
       const matches = value.match(/{(.*?)}/g) || [];
       matches.forEach(match => {
-        console.log(match);
         if (!allowedVars.includes(match)) {
           return reject();
         }
@@ -21,18 +20,18 @@ const checkEmailMessage = (allowedVars) => {
  Edit this if you want to change what is and isn't accepted. See https://express-validator.github.io/docs/schema-validation.html for info about the syntax.
 */
 const emailSettingConstraints = {
-  sender: {in: ["body"], exists: true, isEmail: true, normalizeEmail: true, errorMessage: "Invalid sender email"},
-  user: {in: ["body"]},
-  pass: {in: ["body"]},
-  host: {in: ["body"], exists: true, isURL: true, errorMessage: "Invalid host address"},
-  port: {in: ["body"], exists: true, isInt: true, errorMessage: "Invalid port"},
-  secure: {in: ["body"], exists: true},
-  shouldSend: {in: ["body"], exists: true},
-  assignedMsg: {in: ["body"], custom: {options: checkEmailMessage([])}},
-  updateMsg: {in: ["body"], custom: {options: checkEmailMessage([])}},
-  reminderMsg: {in: ["body"], custom: {options: checkEmailMessage([])}},
-  declineMsg: {in: ["body"], custom: {options: checkEmailMessage(["{date}", "{user}"])}},
-  feedbackMsg: {in: ["body"], custom: {options: checkEmailMessage(["{feedback}", "{user}"])}}
+  sender: {in: ['body'], exists: true, isEmail: true, normalizeEmail: true, errorMessage: 'Invalid sender email'},
+  user: {in: ['body']},
+  pass: {in: ['body']},
+  host: {in: ['body'], exists: true, isURL: true, errorMessage: 'Invalid host address'},
+  port: {in: ['body'], exists: true, isInt: true, errorMessage: 'Invalid port'},
+  secure: {in: ['body'], exists: true},
+  shouldSend: {in: ['body'], exists: true},
+  assignedMsg: {in: ['body'], custom: {options: checkEmailMessage([])}},
+  updateMsg: {in: ['body'], custom: {options: checkEmailMessage([])}},
+  reminderMsg: {in: ['body'], custom: {options: checkEmailMessage([])}},
+  declineMsg: {in: ['body'], custom: {options: checkEmailMessage(['{date}', '{user}'])}},
+  feedbackMsg: {in: ['body'], custom: {options: checkEmailMessage(['{feedback}', '{user}'])}}
 };
 
 function handleValidationErrors(request, response, next) {

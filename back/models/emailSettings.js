@@ -10,19 +10,19 @@ const model = {
    * @return {Promise<object[]>} A promise that resolves to an array with the settings
    */
   read: async function readEmailSettings() {
-    return knex("settings").where({ setting_name: "email_sender" })
-      .orWhere({ setting_name: "email_user" })
-      .orWhere({ setting_name: "email_pass" })
-      .orWhere({ setting_name: "email_host" })
-      .orWhere({ setting_name: "email_port" })
-      .orWhere({ setting_name: "email_secure" })
-      .orWhere({ setting_name: "email_shouldsend" })
-      .orWhere({ setting_name: "email_assigned_msg" })
-      .orWhere({ setting_name: "email_update_msg" })
-      .orWhere({ setting_name: "email_reminder_msg" })
-      .orWhere({ setting_name: "email_decline_msg" })
-      .orWhere({ setting_name: "email_feedback_msg" })
-      .select("setting_value");
+    return knex('settings').where({ setting_name: 'email_sender' })
+      .orWhere({ setting_name: 'email_user' })
+      .orWhere({ setting_name: 'email_pass' })
+      .orWhere({ setting_name: 'email_host' })
+      .orWhere({ setting_name: 'email_port' })
+      .orWhere({ setting_name: 'email_secure' })
+      .orWhere({ setting_name: 'email_shouldsend' })
+      .orWhere({ setting_name: 'email_assigned_msg' })
+      .orWhere({ setting_name: 'email_update_msg' })
+      .orWhere({ setting_name: 'email_reminder_msg' })
+      .orWhere({ setting_name: 'email_decline_msg' })
+      .orWhere({ setting_name: 'email_feedback_msg' })
+      .select('setting_value');
   },
   /**
    * Updates all the email-related settings in the database with the exception of the password which may not be given, in which case it will remain unchanged.
@@ -45,20 +45,20 @@ const model = {
    */
   update: async function updateEmailSettings(newSettings) {
     return knex.transaction(async trx => {
-      await trx("settings").where({ setting_name: "email_sender" }).update({ setting_value: { sender: newSettings.sender } });
-      await trx("settings").where({ setting_name: "email_user" }).update({ setting_value: { user: newSettings.user }});
-      await trx("settings").where({ setting_name: "email_host" }).update({ setting_value: { host: newSettings.host }});
-      await trx("settings").where({ setting_name: "email_port" }).update({ setting_value: { port: newSettings.port }});
-      await trx("settings").where({ setting_name: "email_secure" }).update({ setting_value: { secure: newSettings.secure }});
-      await trx("settings").where({ setting_name: "email_shouldsend" }).update({ setting_value: { shouldSend: newSettings.shouldSend }});
-      await trx("settings").where({ setting_name: "email_assigned_msg" }).update({ setting_value: { assignedMsg: newSettings.assignedMsg }});
-      await trx("settings").where({ setting_name: "email_update_msg" }).update({ setting_value: { updateMsg: newSettings.updateMsg }});
-      await trx("settings").where({ setting_name: "email_reminder_msg" }).update({ setting_value: { reminderMsg: newSettings.reminderMsg }});
-      await trx("settings").where({ setting_name: "email_decline_msg" }).update({ setting_value: { declineMsg: newSettings.declineMsg }});
-      await trx("settings").where({ setting_name: "email_feedback_msg" }).update({ setting_value: { feedbackMsg: newSettings.feedbackMsg }});
+      await trx('settings').where({ setting_name: 'email_sender' }).update({ setting_value: { sender: newSettings.sender } });
+      await trx('settings').where({ setting_name: 'email_user' }).update({ setting_value: { user: newSettings.user }});
+      await trx('settings').where({ setting_name: 'email_host' }).update({ setting_value: { host: newSettings.host }});
+      await trx('settings').where({ setting_name: 'email_port' }).update({ setting_value: { port: newSettings.port }});
+      await trx('settings').where({ setting_name: 'email_secure' }).update({ setting_value: { secure: newSettings.secure }});
+      await trx('settings').where({ setting_name: 'email_shouldsend' }).update({ setting_value: { shouldSend: newSettings.shouldSend }});
+      await trx('settings').where({ setting_name: 'email_assigned_msg' }).update({ setting_value: { assignedMsg: newSettings.assignedMsg }});
+      await trx('settings').where({ setting_name: 'email_update_msg' }).update({ setting_value: { updateMsg: newSettings.updateMsg }});
+      await trx('settings').where({ setting_name: 'email_reminder_msg' }).update({ setting_value: { reminderMsg: newSettings.reminderMsg }});
+      await trx('settings').where({ setting_name: 'email_decline_msg' }).update({ setting_value: { declineMsg: newSettings.declineMsg }});
+      await trx('settings').where({ setting_name: 'email_feedback_msg' }).update({ setting_value: { feedbackMsg: newSettings.feedbackMsg }});
 
-      if (newSettings.pass !== undefined && newSettings.pass !== "") {
-        await trx("settings").where({ setting_name: "email_pass" }).update({ setting_value: { pass: newSettings.pass }});
+      if (newSettings.pass !== undefined && newSettings.pass !== '') {
+        await trx('settings').where({ setting_name: 'email_pass' }).update({ setting_value: { pass: newSettings.pass }});
       }
     });
   }
