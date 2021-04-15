@@ -7,7 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
 // Call handling to backend
@@ -175,6 +175,10 @@ const SignIn = () => {
           >
             {signin.Back[fin]}
           </Button>
+
+          &nbsp;
+
+          <Link to="/signin/reset-password">{signin.ForgotPassword[fin]}</Link>
 
         </form>
       </div>
