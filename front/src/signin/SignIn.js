@@ -182,8 +182,7 @@ const SignIn = () => {
           </Button>
 
           &nbsp;
-
-          {/* <a href="/signin/reset-password">{signin.ForgotPassword[fin]}</a> */}
+          
           <Button
             onClick={() => forgot()}
             fullWidth
