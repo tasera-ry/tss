@@ -8,6 +8,8 @@ import axios from 'axios';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { CookiesProvider, withCookies } from 'react-cookie';
 import SignIn from './signin/SignIn';
+import ResetPassword from './resetPW/ResetPassword';
+import RenewPassword from './renewPW/RenewPassword';
 import Nav from './navbar/Nav';
 import Dayview from './dayview/Dayview';
 import Weekview from './weekview/Weekview';
@@ -63,8 +65,10 @@ class App extends Component {
             <header className="App-header">
               <Nav />
               <Switch>
-                <Route path="/" exact component={Weekview} />
-                <Route path="/signin" component={SignIn} />
+                <Route exact path="/" component={Weekview} />
+                <Route exact path="/signin" component={SignIn} />
+                <Route path="/signin/reset-password" component={ResetPassword} />
+                <Route path="/renew-password/:token?" component={RenewPassword} />
                 <Route path="/dayview/:date?" component={Dayview} />
                 <Route path="/weekview" component={Weekview} />
                 <Route path="/monthview" component={Monthview} />
