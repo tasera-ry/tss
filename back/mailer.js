@@ -8,7 +8,7 @@ const sendEmail = async function(message, emailAddress, opts) {
     return;
   }
 
-  try {
+  
     const toMail = emailAddress;
     const subject = 'Tasera info';
     //defaults message to command if for some reason fails in switch
@@ -46,6 +46,10 @@ const sendEmail = async function(message, emailAddress, opts) {
       allowedVars["{feedback}"] = opts.feedback;
       allowedVars["{user}"] = opts.user;
       break;
+    case 'password_reset':
+      text = 'Hei, olette pyytäneet salasanan palauttamista. Painamalla alla olevaa linkkiä (tai kopioimalla sen osoiteriville) pääsette asettamaan uuden salasanan.\n\n'
+        + 'http://localhost:3000/#/renew-password/' + opts.token + '\n\n'
+        + 'Mikäli ette ole pyytäneet salasanan palauttamista itse, voitte sivuuttaa tämän sähköpostin.\n\nTerveisin TASERA ry';
     }
     // Insert dynamic values into the message
     Object.keys(allowedVars).forEach(token => {
@@ -69,9 +73,7 @@ const sendEmail = async function(message, emailAddress, opts) {
     
     console.log('Message sent: %s', info.messageId);
 
-  } catch (error){
-    console.error(error);
-  }
+  
 
 
 };
