@@ -22,7 +22,29 @@
     "Password": ["Salasana", "Password"],
     "LogIn": ["Kirjaudu", "Log in"],
     "Back": ["Takaisin", "Go back"],
-    "Helper": ["Väärä käyttäjänimi tai salasana", "Wrong username or password"]
+    "Helper": ["Väärä käyttäjänimi tai salasana", "Wrong username or password"],
+    "ForgotPassword": ["Unohtuiko salasana?", "Forgot password?"]
+  },
+  "resetPW" : {
+    "ResetPassword": ["Syötä sähköpostiosoitteesi unohtuneen salasanan palauttamista varten", "Input your e-mail address in order to reset your password"],
+    "eMail": ["Sähköpostiosoite", "E-mail"],
+    "ResetBtn": ["Palauta", "Reset"],
+    "NullErr": ["Syötä sähköpostiosoite!", "E-mail address is required!"],
+    "InvErr": ["Annettua sähköpostiosoitetta ei löytynyt!", "Invalid e-mail address!"],
+    "Sent": ["Salasanan palautusviesti lähetetty onnistuneesti!", "Password reset e-mail succesfully sent!"]
+  },
+  "renewPW" : {
+    "RenewPassword": ["Syötä uusi salasana","Input new password"],
+    "NewPassword": ["Uusi salasana", "New password"],
+    "ConfirmNewPassword": ["Vahvista uusi salasana", "Confirm new password"],
+    "RenewBtn" : ["Lähetä","Submit"],
+    "Loading" : ["Ladataan käyttäjätietoja...", "Loading user data..."],
+    "Updated" : ["Salasana päivitetty onnistuneesti!", "Password updated succesfully!"],
+    "UpdatedDesc" : ["Sinut ohjataan sisäänkirjautumissivulle automaattisesti viiden sekunnin kuluttua.", "You will be redirected to the login page automatically in 5 seconds."],
+    "Error" : ["Ongelma tokenin varmennuksessa!", "Error verifying token!"],
+    "ErrorDesc" : ["Linkki ei kelpaa tai se on vanhentunut. Lähetä uusi salasananpalautuslinkki, kiitos!", "The link is incorrect or it has expired. Please send a new reset link!"],
+    "ForgotPassword": ["Unohtuiko salasana?", "Forgot password?"],
+    "Mismatch": ["Salasanat eivät täsmää!", "Passwords don't match!"]
   },
   "weekdayShorthand": {
     "0": ["Ma", "Mon"],
