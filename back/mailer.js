@@ -4,7 +4,7 @@ const services = require('./services');
 const sendEmail = async function(message, emailAddress, opts) {
   const emailSettings = await services.emailSettings.read();
 
-  if (emailSettings.shouldSend !== "true") {
+  if (emailSettings.shouldSend !== 'true') {
     return;
   }
 
@@ -14,7 +14,7 @@ const sendEmail = async function(message, emailAddress, opts) {
     //defaults message to command if for some reason fails in switch
     let text = message;
     let auth;
-    if (typeof emailSettings.user !== "undefined"){
+    if (typeof emailSettings.user !== 'undefined'){
       auth = {
         user: emailSettings.user,
         pass: emailSettings.pass,
@@ -27,24 +27,24 @@ const sendEmail = async function(message, emailAddress, opts) {
     let allowedVars = {};
 
     switch (message) {
-    case "assigned":
+    case 'assigned':
       text = emailSettings.assignedMsg;
       break;
-    case "update":
+    case 'update':
       text = emailSettings.updateMsg;
       break;
-    case "reminder":
+    case 'reminder':
       text = emailSettings.reminderMsg;
       break;
-    case "decline":
+    case 'decline':
       text = emailSettings.declineMsg;
-      allowedVars["{date}"] = opts.date;
-      allowedVars["{user}"] = opts.user;
+      allowedVars['{date}'] = opts.date;
+      allowedVars['{user}'] = opts.user;
       break;
-    case "feedback":
+    case 'feedback':
       text = emailSettings.feedbackMsg;
-      allowedVars["{feedback}"] = opts.feedback;
-      allowedVars["{user}"] = opts.user;
+      allowedVars['{feedback}'] = opts.feedback;
+      allowedVars['{user}'] = opts.user;
       break;
     case 'password_reset':
       text = 'Hei, olette pyytäneet salasanan palauttamista. Painamalla alla olevaa linkkiä (tai kopioimalla sen osoiteriville) pääsette asettamaan uuden salasanan.\n\n'
@@ -53,13 +53,13 @@ const sendEmail = async function(message, emailAddress, opts) {
     }
     // Insert dynamic values into the message
     Object.keys(allowedVars).forEach(token => {
-      text = text.replace(new RegExp(token, "g"), allowedVars[token]);
+      text = text.replace(new RegExp(token, 'g'), allowedVars[token]);
     });
 
     let transporter = nodemailer.createTransport({
       host: emailSettings.host,
       port: emailSettings.port,
-      secure: emailSettings.secure === "true",
+      secure: emailSettings.secure === 'true',
       auth: auth,
     });
 
