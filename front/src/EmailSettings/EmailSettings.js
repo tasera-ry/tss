@@ -42,6 +42,16 @@ const HelperText = (messageSelection) => {
           {`{feedback} - ${emailSettings.feedbackGiven[lang]}`}
         </p>
       );
+    case 'resetpassMsg':
+      return (
+        <p>
+          {emailSettings.dynamicValues[lang]}
+          <br />
+          {`{token} - ${emailSettings.resetpassToken[lang]}`}
+          <br />
+          {emailSettings.resetpassGuide[lang]}
+        </p>
+      );
     case 'assignedMsg':
     case 'updateMsg':
     case 'reminderMsg':
@@ -71,6 +81,7 @@ const EmailSettings = () => {
     reminderMsg: '',
     declineMsg: '',
     feedbackMsg: '',
+    resetpassMsg: '',
   });
   const [resultMessages, setResultMessages] = React.useState([]);
   let resultCounter = 0;
@@ -195,6 +206,7 @@ const EmailSettings = () => {
             <MenuItem value="reminderMsg">{emailSettings.reminder[lang]}</MenuItem>
             <MenuItem value="declineMsg">{emailSettings.decline[lang]}</MenuItem>
             <MenuItem value="feedbackMsg">{emailSettings.feedback[lang]}</MenuItem>
+            <MenuItem value="resetpassMsg">{emailSettings.resetpass[lang]}</MenuItem>
           </Select>
           <TextField
             multiline

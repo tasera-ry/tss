@@ -14,7 +14,8 @@ exports.seed = function(knex) {
     updateMsg: '',
     reminderMsg: '',
     declineMsg: '',
-    feedbackMsg: ''
+    feedbackMsg: '',
+    resetpassMsg: '',
   };
 
   return knex('settings').del()
@@ -32,7 +33,8 @@ exports.seed = function(knex) {
         { setting_name: 'email_update_msg', setting_value: { updateMsg: emailSettings.updateMsg }},
         { setting_name: 'email_reminder_msg', setting_value: { reminderMsg: emailSettings.reminderMsg }},
         { setting_name: 'email_decline_msg', setting_value: { declineMsg: emailSettings.declineMsg }},
-        { setting_name: 'email_feedback_msg', setting_value: { feedbackMsg: emailSettings.feedbackMsg }}
+        { setting_name: 'email_feedback_msg', setting_value: { feedbackMsg: emailSettings.feedbackMsg }},
+        { setting_name: 'email_resetpass_msg', setting_value: { resetpassMsg: emailSettings.resetpassMsg }},
       ]);
     });
 };

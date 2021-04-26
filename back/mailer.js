@@ -47,9 +47,9 @@ const sendEmail = async function(message, emailAddress, opts) {
       allowedVars['{user}'] = opts.user;
       break;
     case 'password_reset':
-      text = 'Hei, olette pyytäneet salasanan palauttamista. Painamalla alla olevaa linkkiä (tai kopioimalla sen osoiteriville) pääsette asettamaan uuden salasanan.\n\n'
-        + 'http://localhost:3000/#/renew-password/' + opts.token + '\n\n'
-        + 'Mikäli ette ole pyytäneet salasanan palauttamista itse, voitte sivuuttaa tämän sähköpostin.\n\nTerveisin TASERA ry';
+      text = emailSettings.resetpassMsg;
+      allowedVars['{token}'] = opts.token;
+      break;
     }
     // Insert dynamic values into the message
     Object.keys(allowedVars).forEach(token => {
