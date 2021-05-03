@@ -22,6 +22,7 @@ const model = {
       .orWhere({ setting_name: 'email_reminder_msg' })
       .orWhere({ setting_name: 'email_decline_msg' })
       .orWhere({ setting_name: 'email_feedback_msg' })
+      .orWhere({ setting_name: 'email_resetpass_msg' })
       .select('setting_value');
   },
   /**
@@ -56,6 +57,7 @@ const model = {
       await trx('settings').where({ setting_name: 'email_reminder_msg' }).update({ setting_value: { reminderMsg: newSettings.reminderMsg }});
       await trx('settings').where({ setting_name: 'email_decline_msg' }).update({ setting_value: { declineMsg: newSettings.declineMsg }});
       await trx('settings').where({ setting_name: 'email_feedback_msg' }).update({ setting_value: { feedbackMsg: newSettings.feedbackMsg }});
+      await trx('settings').where({ setting_name: 'email_resetpass_msg' }).update({ setting_value: { resetpassMsg: newSettings.resetpassMsg }});
 
       if (newSettings.pass !== undefined && newSettings.pass !== '') {
         await trx('settings').where({ setting_name: 'email_pass' }).update({ setting_value: { pass: newSettings.pass }});

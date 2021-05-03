@@ -27,14 +27,18 @@ schedule.scheduleJob('00 00 01 * * 0-6', function(){
   }
 
   (async () => {
-    const receiver = await getFutureSupervision();
-    //first we check if the supervisor has confirmed or not.
-    //if status = not cnofirmed, fetches email with supervisor id and sends it to mailer.js 
-    if(receiver[0] != undefined){
-      if (await receiver[0].range_supervisor === 'not confirmed'){
-        const recipient = await getUserEmail(receiver[0].supervisor_id);
-        sendEmail('reminder', recipient[0].email, null);
+    try {
+      const receiver = await getFutureSupervision();
+      //first we check if the supervisor has confirmed or not.
+      //if status = not cnofirmed, fetches email with supervisor id and sends it to mailer.js 
+      if(receiver[0] != undefined){
+        if (await receiver[0].range_supervisor === 'not confirmed'){
+          const recipient = await getUserEmail(receiver[0].supervisor_id);
+          sendEmail('reminder', recipient[0].email, null);
+        }
       }
+    } catch (error) {
+      console.error(error);
     }
   })();
 });
@@ -102,9 +106,13 @@ const controller = {
 
   feedback: async function sendFeedback(request, response) {
     const feedback = response.locals.query.feedback;
-    const useremails = await getSuperuserEmails();
-    for (const user of useremails) {
-      sendEmail('feedback', user.email, { user: response.locals.query.user, feedback });
+    try {
+      const useremails = await getSuperuserEmails();
+      for (const user of useremails) {
+        sendEmail('feedback', user.email, { user: response.locals.query.user, feedback });
+      }
+    } catch (error) {
+      console.log(error);
     }
 
     return response

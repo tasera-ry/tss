@@ -31,7 +31,8 @@ const emailSettingConstraints = {
   updateMsg: {in: ['body'], custom: {options: checkEmailMessage([])}},
   reminderMsg: {in: ['body'], custom: {options: checkEmailMessage([])}},
   declineMsg: {in: ['body'], custom: {options: checkEmailMessage(['{date}', '{user}'])}},
-  feedbackMsg: {in: ['body'], custom: {options: checkEmailMessage(['{feedback}', '{user}'])}}
+  feedbackMsg: {in: ['body'], custom: {options: checkEmailMessage(['{feedback}', '{user}'])}},
+  resetpassMsg: { in: ['body'], custom: { options: checkEmailMessage(['{token}'])}}
 };
 
 function handleValidationErrors(request, response, next) {

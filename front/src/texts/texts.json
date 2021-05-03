@@ -277,10 +277,16 @@
     "reminder": ["Varmistamattoman vuoron muistutus", "Unconfirmed shift reminder"],
     "decline": ["Vuorosta kieltäydytty", "Shift declined"],
     "feedback": ["Palautetta vastaanotettu", "Feedback received"],
+    "resetpass": ["Salasanan uusimislinkki", "Password reset link"],
     "dynamicValues": ["Sallitut dynaamiset arvot", "Allowed dynamic values:"],
     "userDecline": ["Kieltäytynyt käyttäjä", "The user who declined"],
     "userFeedback": ["Palautetta antanut käyttäjä", "The user who gave feedback"],
     "declineDate": ["Kieltäytymisen päivämäärä", "The date of the user declining"],
-    "feedbackGiven": ["Käyttäjän antama palaute", "The feedback given by the user"]
+    "feedbackGiven": ["Käyttäjän antama palaute", "The feedback given by the user"],
+    "resetpassToken": ["Salasanan uusintalinkin tokeni.", "The password reset link token."],
+    "resetpassGuide": [
+      "Linkki voidaan luoda näin: http://tss.tasera.fi/#/renew-password/{token}",
+      "The link can be made like this: http://tss.tasera.fi/#/renew-password/{token}"
+    ]
   }
 }
