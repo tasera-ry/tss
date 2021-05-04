@@ -1,7 +1,5 @@
 const crypto = require('crypto');
 const { default: knex } = require('knex');
-/* const nodemailer = require('nodemailer');
-const SMTPConnection = require('nodemailer/lib/smtp-connection'); */
 var model = require ('../models/user.js');
 const bcrypt = require('bcryptjs');
 const path = require('path');
@@ -28,8 +26,6 @@ const controller = {
       const user = await model.read({email: email}) //compares given e-mail to the db using models/user.js
       
       if (user === undefined || user.length == 0) {
-        console.log(user);
-        console.error('email not in database');
         res.status(403).send('email not in db');
       }
 
@@ -40,17 +36,13 @@ const controller = {
 
         await model.update({email: email}, {reset_token: token});
         await model.update({email: email}, {reset_token_expire: tokenExpire});
-
-        console.log('sending mail');
         
         await sendEmail('password_reset', user[0].email, {token})
-        console.log('here is the res: ', res);
         res.status(200).json('recovery email sent');
       }
     } catch (err) {
       console.error('there was an error: ', err);
     }
-    
   },
 
   //Verifies reset token
@@ -61,11 +53,9 @@ const controller = {
     model.read({reset_token: token})
       .then((user) => {
         if (user === undefined || user.length == 0) {
-          console.error('password reset link is invalid');
           res.status(403).send('password reset link is invalid');
         }
         else if (Date.now() > user[0].reset_token_expire) {
-          console.error('password reset token has expired');
           res.status(403).send('password reset token has expired');
         } 
         else {
@@ -84,13 +74,10 @@ const controller = {
     model.read({
       name: req.body.username,
       reset_token: req.body.reset_token,
-      /* reset_token_expire: req.body.reset_token_expire > Date.now(), */
     }).then(user => {
       if (user === undefined || user.length == 0) {
-        console.error('password reset link is invalid or has expired');
         res.status(403).send('password reset link is invalid or has expired');
       } else if (user != null && user.length > 0) {
-        console.log('user exists in db');
         hashPassword();
         
         async function hashPassword() {
@@ -101,11 +88,9 @@ const controller = {
           model.update({name: req.body.username}, {reset_token: null});
           model.update({name: req.body.username}, {reset_token_expire: null});
 
-          console.log('password updated');
           res.status(200).send({message: 'password updated'});
         }
       } else {
-        console.error('no user exists in db to update');
         res.status(401).json('no user exists in db to update');
       }
     })

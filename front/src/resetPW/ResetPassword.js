@@ -45,7 +45,6 @@ const ResetPassword = () => {
 
   const [showForm, setShowForm] = useState(true);
   const [email, setEmail] = useState('');
-  // const [messageFromServer, setMessageFromServer] = useState ('');
   const [showNullError, setShowNullError] = useState(false);
   const [showError, setShowError] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
@@ -56,28 +55,24 @@ const ResetPassword = () => {
   const reset = async (e) => {
     e.preventDefault();
     setIsWaiting(true);
+    
     if (email === '') {
-      console.log('here');
       setShowNullError(true);
       setShowError(false);
-      // setMessageFromServer('');
       setIsWaiting(false);
     } else {
       try {
         const response = await axios.post('api/reset', { email });
         if (response.data === 'recovery email sent') {
-          // setMessageFromServer('recovery email sent');
           setEmailSent(true);
           setShowForm(false);
           setShowNullError(false);
           setShowError(false);
         }
       } catch (error) {
-        console.error(error.response.data);
         if (error.response.data === 'email not in db') {
           setShowError(true);
           setShowNullError(false);
-          // setMessageFromServer('');
           setEmailSent(false);
           setIsWaiting(false);
         }

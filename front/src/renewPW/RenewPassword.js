@@ -65,7 +65,6 @@ const RenewPassword = (props) => {
     async function verifyToken() {
       try {
         const response = await axios.get('api/reset', { params: { reset_token: token } });
-        console.log(response.data.message);
 
         if (response.data.message === 'password reset link a-ok') {
           setUsername(response.data.username);
@@ -75,14 +74,13 @@ const RenewPassword = (props) => {
           setError(false);
         }
       } catch (err) {
-        console.log(err.response.data);
         setIsLoading(false);
         setError(true);
         setTokenOK(false);
       }
     }
     verifyToken();
-  }, []);
+  }, [token]);
 
   const redirectToReset = () => {
     const path = '/signin/reset-password';
@@ -103,18 +101,15 @@ const RenewPassword = (props) => {
         const response = await axios.put('api/reset', {
           username, newPassword, reset_token: token, reset_token_expire: tokenExpires,
         });
-        console.log(response.data);
         setUpdated(true);
         setTokenOK(false);
         redirectToLogin();
       } catch (err) {
-        console.log(err.response.data);
         setIsWaiting(false);
       }
     } else {
       setMismatch(true);
       setIsWaiting(false);
-      console.log('mismatch or invalid');
     }
   };
 
