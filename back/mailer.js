@@ -1,32 +1,52 @@
 const nodemailer = require('nodemailer');
 const services = require('./services');
+const path = require('path');
+const root = path.join(__dirname, '.');
+const knex = require(path.join(root, 'knex', 'knex'));
+const schedule = require('node-schedule');
 
-const sendEmail = async function(message, emailAddress, opts) {
+const clearPending = async () => {
+  return await knex('pending_emails').truncate();
+};
+
+const getPending = async () => {
+  return await knex.select('user_id', 'email', 'message_type')
+                   .from('pending_emails')
+                   .innerJoin('user', 'pending_emails.user_id', 'user.id');
+};
+
+const sendPending = async () => {
   const emailSettings = await services.emailSettings.read();
+  const pending = await getPending();
 
-  if (emailSettings.shouldSend !== 'true') {
-    return;
-  }
+  const emailInfo = pending.reduce((acc, val) => {
+    if (acc[val.user_id] === undefined)
+      acc[val.user_id] = { email: val.email };
+    const tmp = (acc[val.user_id])[val.message_type];
+    if (tmp === undefined)
+      (acc[val.user_id])[val.message_type] = 1;
+    else
+      (acc[val.user_id])[val.message_type] = tmp + 1;
+    return acc;
+  }, {});
+  console.log(emailInfo);
+  Object.keys(emailInfo).forEach((outerKey) => {
+    const address = emailInfo[outerKey].email;
+    let msg = 'Teillä on ';
+    Object.keys(emailInfo[outerKey]).forEach((innerKey) => {
+      if (innerKey !== 'email') {
+        msg += emailInfo[outerKey][innerKey] + ' ' + innerKey + ' viestiä.\n';
+      }
+    });
+    sendEmail(msg, address, emailSettings);
+  });
+  await clearPending();
+};
 
-  
-    const toMail = emailAddress;
-    const subject = 'Tasera info';
-    //defaults message to command if for some reason fails in switch
-    let text = message;
-    let auth;
-    if (typeof emailSettings.user !== 'undefined'){
-      auth = {
-        user: emailSettings.user,
-        pass: emailSettings.pass,
-      };
-    }
-    else{
-      auth = null;
-    }
-
-    let allowedVars = {};
-
-    switch (message) {
+const getText = (message, opts, emailSettings) => {
+  let text = message;
+  let allowedVars = {};
+  switch (message) {
     case 'assigned':
       text = emailSettings.assignedMsg;
       break;
@@ -50,11 +70,27 @@ const sendEmail = async function(message, emailAddress, opts) {
       text = emailSettings.resetpassMsg;
       allowedVars['{token}'] = opts.token;
       break;
+  }
+  // Insert dynamic values into the message
+  Object.keys(allowedVars).forEach(token => {
+    text = text.replace(new RegExp(token, 'g'), allowedVars[token]);
+  });
+  return text;
+};
+
+const sendEmail = async (text, emailAddress, emailSettings) => {
+  try {
+    const subject = 'Tasera';
+    let auth;
+    if (typeof emailSettings.user !== 'undefined') {
+      auth = {
+        user: emailSettings.user,
+        pass: emailSettings.pass,
+      };
     }
-    // Insert dynamic values into the message
-    Object.keys(allowedVars).forEach(token => {
-      text = text.replace(new RegExp(token, 'g'), allowedVars[token]);
-    });
+    else {
+      auth = null;
+    }
 
     let transporter = nodemailer.createTransport({
       host: emailSettings.host,
@@ -66,15 +102,56 @@ const sendEmail = async function(message, emailAddress, opts) {
     // send mail with defined transport object
     let info = await transporter.sendMail({
       from: emailSettings.sender,
-      to: toMail,
+      to: emailAddress,
       subject: subject,
       text: text,
     });
     
     console.log('Message sent: %s', info.messageId);
 
-  
-
-
+  } catch (error) {
+    console.error(error);
+  }
 };
-module.exports = { sendEmail };
+
+const queueEmail = async (message, key, scheduleId) => {
+  // delet all with same scheduleId
+  await knex('pending_emails').del().where({schedule_id: scheduleId});
+  await knex('pending_emails').insert({user_id: key, message_type: message, schedule_id: scheduleId });
+};
+
+const email = async (message, key, opts) => {
+  const emailSettings = await services.emailSettings.read();
+  const emailAddress = await services.user.getEmail(key);
+
+  if (emailSettings.shouldSend !== 'true') {
+    return;
+  }
+
+  switch (message) {
+  case 'assigned':
+  case 'update':
+    if (emailSettings.shouldQueue === 'true') {
+      queueEmail(message, key, opts.scheduleId);
+      break;
+    }
+  default:
+    sendEmail(getText(message, opts, emailSettings), emailAddress, emailSettings);
+    break;
+  }
+};
+
+const scheduleEmails = (() => {
+  const rule = new schedule.RecurrenceRule();
+  rule.tz = 'Etc/UTC';
+  rule.minute = 0;
+  rule.hour = 0;
+  const mailJob = schedule.scheduleJob(rule, sendPending);
+  return (newTime) => {
+    rule.minute = newTime.getUTCMinutes();
+    rule.hour = newTime.getUTCHours();
+    mailJob.reschedule(rule);
+  };
+})();
+
+module.exports = { scheduleEmails, email, sendPending };

@@ -110,6 +110,21 @@ const service = {
    */
   delete: async function deleteUser(key) {
     return models.user.delete(key);
+  },
+  /**
+   * Get email by user key
+   * @param {object} key - Users' identifying info.
+   * @return {Promise<string>} - Email address of the user
+   */
+  getEmail: async function getUserEmail(key) {
+    return (await models.user.getEmail(key)).email;
+  },
+  /**
+   * Get superuser ids
+   * @return {Promise<object>} - Keys of superusers
+   */
+  getSuperusers: async function getSuperusers() {
+    return models.user.getSuperusers();
   }
 };
 

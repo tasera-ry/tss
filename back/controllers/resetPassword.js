@@ -1,10 +1,9 @@
 const crypto = require('crypto');
-const { default: knex } = require('knex');
 var model = require ('../models/user.js');
 const bcrypt = require('bcryptjs');
 const path = require('path');
 const root = path.join(__dirname, '..');
-const { sendEmail } = require('../mailer.js');
+const { email } = require('../mailer.js');
 
 const config = require(path.join(root, 'config', 'config'));
 
@@ -17,13 +16,13 @@ const controller = {
   //controller to check whether the given e-mail address can be found from the database
   check: async function checkEmail(req, res) {
 
-    var email = req.body.email;
+    const emailAddress = req.body.email;
 
-    if (email === '') {
+    if (emailAddress === '') {
       res.status(400).send('email required');
     }
     try {
-      const user = await model.read({email: email}) //compares given e-mail to the db using models/user.js
+      const user = await model.read({email: emailAddress}) //compares given e-mail to the db using models/user.js
       
       if (user === undefined || user.length == 0) {
         res.status(403).send('email not in db');
@@ -34,10 +33,10 @@ const controller = {
         const token = crypto.randomBytes(32).toString('hex');
         const tokenExpire = Date.now() + 3600000;
 
-        await model.update({email: email}, {reset_token: token});
-        await model.update({email: email}, {reset_token_expire: tokenExpire});
+        await model.update({email: emailAddress}, {reset_token: token});
+        await model.update({email: emailAddress}, {reset_token_expire: tokenExpire});
         
-        await sendEmail('password_reset', user[0].email, {token})
+        await email('password_reset', user[0].id, {token});
         res.status(200).json('recovery email sent');
       }
     } catch (err) {
