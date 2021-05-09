@@ -1,23 +1,10 @@
 const nodemailer = require('nodemailer');
 const services = require('./services');
-const path = require('path');
-const root = path.join(__dirname, '.');
-const knex = require(path.join(root, 'knex', 'knex'));
 const schedule = require('node-schedule');
-
-const clearPending = async () => {
-  return await knex('pending_emails').truncate();
-};
-
-const getPending = async () => {
-  return await knex.select('user_id', 'email', 'message_type')
-                   .from('pending_emails')
-                   .innerJoin('user', 'pending_emails.user_id', 'user.id');
-};
 
 const sendPending = async () => {
   const emailSettings = await services.emailSettings.read();
-  const pending = await getPending();
+  const pending = await services.pendingEmails.read();
 
   const emailInfo = pending.reduce((acc, val) => {
     if (acc[val.user_id] === undefined)
@@ -52,7 +39,7 @@ const sendPending = async () => {
       sendEmail(getText(last, null, emailSettings), address, emailSettings);
     }
   });
-  await clearPending();
+  await services.pendingEmails.clear();
 };
 
 const getText = (message, opts, emailSettings) => {
@@ -131,12 +118,6 @@ const sendEmail = async (text, emailAddress, emailSettings) => {
   }
 };
 
-const queueEmail = async (message, key, scheduleId) => {
-  // delet all with same scheduleId
-  await knex('pending_emails').del().where({schedule_id: scheduleId});
-  await knex('pending_emails').insert({user_id: key, message_type: message, schedule_id: scheduleId });
-};
-
 const email = async (message, key, opts) => {
   const emailSettings = await services.emailSettings.read();
   const emailAddress = await services.user.getEmail(key);
@@ -149,7 +130,7 @@ const email = async (message, key, opts) => {
   case 'assigned':
   case 'update':
     if (emailSettings.shouldQueue === 'true') {
-      queueEmail(message, key, opts.scheduleId);
+      services.pendingEmails.add(message, key, opts.scheduleId);
       break;
     }
   default:

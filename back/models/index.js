@@ -9,6 +9,7 @@ const trackSupervision = require(path.join(models, 'trackSupervision'));
 const rangeSupervision = require(path.join(models, 'rangeSupervision'));
 const daterange = require(path.join(models, 'daterange'));
 const emailSettings = require(path.join(models, 'emailSettings'));
+const pendingEmails = require(path.join(models, 'pendingEmails'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -18,3 +19,4 @@ exports.schedule = schedule;
 exports.track = track;
 exports.daterange = daterange;
 exports.emailSettings = emailSettings;
+exports.pendingEmails = pendingEmails;
