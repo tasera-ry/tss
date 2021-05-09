@@ -103,7 +103,7 @@ const controller = {
     try {
       if (!response.req.body.supervisor) return;
       const scheduleId = response.locals.id;
-      email('update', response.req.body.supervisor, { scheduleId: scheduleId });
+      email('assigned', response.req.body.supervisor, { scheduleId: scheduleId });
     } catch (error) {
       console.error(error);
     }
