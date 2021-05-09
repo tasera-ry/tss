@@ -3,7 +3,8 @@ import React from 'react';
 import PasswordChange from './profilepages/changepassword';
 
 import { Link } from 'react-router-dom';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 import texts from '../texts/texts.json';
 
@@ -36,6 +37,7 @@ const listStyle = {
 // Returns the profile component, which consists of sidebar and content.
 
 function Profile() {
+    const [cookies] = useCookies(['username']);
     return (
         <Router>
             <div className="Profile" style={ProfileStyle}>
@@ -51,7 +53,7 @@ function Profile() {
                 <div className="ProfileContent" style={ContentStyle}>
                     <Switch>
                         <Route path="/">
-                            <PasswordChange/>
+                            <PasswordChange username={cookies.username}/>
                         </Route>
                     </Switch>
                 </div>

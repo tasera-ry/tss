@@ -55,6 +55,10 @@ router.route('/user/:id')
     middlewares.user.delete,
     controllers.user.delete);
 
+router.route('/changepassword')
+    .post(
+      
+    );
 
 // Track supervision
 router.route('/track-supervision')

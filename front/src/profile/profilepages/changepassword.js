@@ -1,29 +1,79 @@
 import React from 'react';
 
-function PasswordChange() {
+import texts from '../../texts/texts.json';
+
+const fin = localStorage.getItem('language');
+const { passwordSettings } = texts;
+
+// Handles the submission of password
+
+async function handleSubmit(username, e) {
+    e.preventDefault();
+    const secure = window.location.protocol === 'https:';
+    
+    let oldpword = document.getElementById("oldpword").value;
+    let newpword = document.getElementById("newpword").value;
+    let newpwordagain = document.getElementById("newpwordagain").value;
+
+    if((oldpword==="")||(newpword==="")||(newpwordagain==="")) {
+        alert(passwordSettings.alertFields[fin]);
+    } else if(newpwordagain !== newpword) {
+        alert(passwordSettings.alertPwordMatch[fin]);
+    } else {
+        let test = username.username;
+        console.log(test);
+        let response = await changeToDatabase(test, newpword);
+        console.log(response);
+    }
+}
+
+// Changes the password in database
+
+async function changeToDatabase(id, newpword) {
+    try {
+        let response = await fetch(`/api/user/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                password: newpword
+            }),
+            headers: {
+                Accept: 'application/json',
+                ContentType: 'application/json'
+            }
+        });
+        return response.ok;
+    } catch (err) {
+        console.error('GETTING USER FAILED', err);
+        return false;
+    }
+}
+
+// Returns the form for password change
+
+function PasswordChange(username) {
     return (
         <div>
-            <h1>Change password</h1>
+            <h1>{passwordSettings.title[fin]}</h1>
             <form>
                 <label>
-                    Old password:
+                    {passwordSettings.old[fin]}
                     <br/>
-                    <input type ="password" id="olkpword" name="oldpword"/>
+                    <input type ="password" id="oldpword" name="oldpword"/>
                 </label>
                 <br/>
                 <label>
-                    New password:
+                    {passwordSettings.new[fin]}
                     <br/>
                     <input type ="password" id="newpword" name="newpword"/>
                 </label>
                 <br/>
                 <label>
-                    Confirm new password:
+                    {passwordSettings.confirmNew[fin]}
                     <br/>
                     <input type ="password" id="newpwordagain" name="newpwordagain"/>
                 </label>
                 <br/>
-                <input type="submit" value="Confirm"></input>
+                <input type="submit" onClick={handleSubmit.bind(this, username)} value={passwordSettings.confirm[fin]}></input>
             </form>
         </div>
     );
