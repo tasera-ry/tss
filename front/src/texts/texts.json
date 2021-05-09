@@ -266,12 +266,13 @@
     "yes": ["Kyllä", "Yes"],
     "no": ["Ei", "No"],
     "senderAddress": ["Sähköpostin lähettäjän osoite", "Sender email address"],
-    "sendAutomatically": ["Lähetä sähköpostia automaattisesti", "Send email automatically"],
+    "sendAutomatically": ["Lähetä sähköpostia", "Send email"],
     "saveSettings": ["Tallenna asetukset", "Save settings"],
     "address": ["Osoite", "Address"],
     "close": ["Sulje", "Close"],
     "emailMessages": ["Sähköpostiviestit", "Email messages"],
     "emailContent": ["Viestin sisältö", "Message content"],
+    "collage": ["Kootut varausten muutokset", "Compiled shift changes"],
     "assigned": ["Vuoro annettu", "Shift assigned"],
     "update": ["Vuoro päivitetty", "Shift updated"],
     "reminder": ["Varmistamattoman vuoron muistutus", "Unconfirmed shift reminder"],
@@ -287,6 +288,12 @@
     "resetpassGuide": [
       "Linkki voidaan luoda näin: http://tss.tasera.fi/#/renew-password/{token}",
       "The link can be made like this: http://tss.tasera.fi/#/renew-password/{token}"
-    ]
+    ],
+    "updateCount": ["Muutettujen vuorojen määrä", "The number of updated shifts"],
+    "assignedCount": ["Annettujen vuorojen määrä", "The number of assigned shifts"],
+    "queueMessages": ["Lähetä viestit koosteena tiettyyn aikaan", "Send compiled messages at a certain time"],
+    "pendingTime": ["Viestien lähetysaika", "Time for sending emails"],
+    "sendPending": ["Lähetä viestit", "Send messages"],
+    "sendPendingTip": ["Voit lähettää odottavat viestit heti tällä napilla.", "You can force all pending emails to be sent immediately with the button."]
   }
 }

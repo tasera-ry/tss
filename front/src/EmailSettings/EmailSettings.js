@@ -54,6 +54,16 @@ const HelperText = (messageSelection) => {
           {emailSettings.resetpassGuide[lang]}
         </p>
       );
+    case 'collageMsg':
+      return (
+        <p>
+          {emailSettings.dynamicValues[lang]}
+          <br />
+          {`{assigned} - ${emailSettings.assignedCount[lang]}`}
+          <br />
+          {`{update} - ${emailSettings.updateCount[lang]}`}
+        </p>
+      );
     case 'assignedMsg':
     case 'updateMsg':
     case 'reminderMsg':
@@ -86,11 +96,12 @@ const EmailSettings = () => {
     declineMsg: '',
     feedbackMsg: '',
     resetpassMsg: '',
+    collageMsg: '',
     sendPendingTime: new Date(0),
   });
   const [resultMessages, setResultMessages] = React.useState([]);
   const [resultCounter, setResultCounter] = React.useState(0);
-  const [messageSelection, setMessageSelection] = React.useState('assignedMsg');
+  const [messageSelection, setMessageSelection] = React.useState('collageMsg');
 
   const fetchAndSetSettings = () => {
     fetch('/api/email-settings')
@@ -216,6 +227,7 @@ const EmailSettings = () => {
             onChange={(e) => setMessageSelection(e.target.value)}
             label="Message type"
           >
+            <MenuItem value="collageMsg">{emailSettings.collage[lang]}</MenuItem>
             <MenuItem value="assignedMsg">{emailSettings.assigned[lang]}</MenuItem>
             <MenuItem value="updateMsg">{emailSettings.update[lang]}</MenuItem>
             <MenuItem value="reminderMsg">{emailSettings.reminder[lang]}</MenuItem>
@@ -236,14 +248,14 @@ const EmailSettings = () => {
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardTimePicker
               margin="normal"
-              label="Sähköpostien lähetysaika"
+              label={emailSettings.pendingTime[lang]}
               value={settings.sendPendingTime}
               onChange={handleDateChange}
             />
           </MuiPickersUtilsProvider>
         </FormControl>
         <FormControl component="fieldset">
-          <FormLabel className="settings-label">Jonota viestit :--D</FormLabel>
+          <FormLabel className="settings-label">{emailSettings.queueMessages[lang]}</FormLabel>
           <RadioGroup
             name="shouldQueue"
             value={settings.shouldQueue}
@@ -255,9 +267,9 @@ const EmailSettings = () => {
           <Button
             variant="contained" color="primary" id="send-pending-button" onClick={sendPendingRequest}
           >
-            {pendingSend ? <CircularProgress /> : "Send pending"}
+            {pendingSend ? <CircularProgress /> : emailSettings.sendPending[lang]}
           </Button>
-          <FormHelperText display="inline">You can force all pending emails to be sent immediately with the button.</FormHelperText>
+          <FormHelperText display="inline">{emailSettings.sendPendingTip[lang]}</FormHelperText>
         </FormControl>
         <FormControl component="fieldset">
           <FormLabel className="settings-label">{emailSettings.sendAutomatically[lang]}</FormLabel>

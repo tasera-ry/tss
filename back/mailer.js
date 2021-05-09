@@ -21,24 +21,36 @@ const sendPending = async () => {
 
   const emailInfo = pending.reduce((acc, val) => {
     if (acc[val.user_id] === undefined)
-      acc[val.user_id] = { email: val.email };
+      acc[val.user_id] = { email: val.email, total: 0, last: null };
     const tmp = (acc[val.user_id])[val.message_type];
     if (tmp === undefined)
       (acc[val.user_id])[val.message_type] = 1;
     else
       (acc[val.user_id])[val.message_type] = tmp + 1;
+    acc[val.user_id].total += 1;
+    acc[val.user_id].last = val.message_type;
     return acc;
   }, {});
-  console.log(emailInfo);
   Object.keys(emailInfo).forEach((outerKey) => {
     const address = emailInfo[outerKey].email;
-    let msg = 'Teillä on ';
-    Object.keys(emailInfo[outerKey]).forEach((innerKey) => {
-      if (innerKey !== 'email') {
-        msg += emailInfo[outerKey][innerKey] + ' ' + innerKey + ' viestiä.\n';
-      }
-    });
-    sendEmail(msg, address, emailSettings);
+    const total = emailInfo[outerKey].total;
+    const last = emailInfo[outerKey].last;
+    if (total > 1) {
+      sendEmail(
+        getText(
+          'collage',
+          {
+            updateCount: emailInfo[outerKey].update ? emailInfo[outerKey].update.toString() : "0",
+            assignedCount: emailInfo[outerKey].assigned ? emailInfo[outerKey].assigned.toString() : "0"
+          },
+          emailSettings
+        ),
+        address,
+        emailSettings
+      );
+    } else {
+      sendEmail(getText(last, null, emailSettings), address, emailSettings);
+    }
   });
   await clearPending();
 };
@@ -69,6 +81,11 @@ const getText = (message, opts, emailSettings) => {
     case 'password_reset':
       text = emailSettings.resetpassMsg;
       allowedVars['{token}'] = opts.token;
+      break;
+    case 'collage':
+      text = emailSettings.collageMsg;
+      allowedVars['{update}'] = opts.updateCount;
+      allowedVars['{assigned}'] = opts.assignedCount;
       break;
   }
   // Insert dynamic values into the message
