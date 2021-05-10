@@ -22,7 +22,29 @@
     "Password": ["Salasana", "Password"],
     "LogIn": ["Kirjaudu", "Log in"],
     "Back": ["Takaisin", "Go back"],
-    "Helper": ["Väärä käyttäjänimi tai salasana", "Wrong username or password"]
+    "Helper": ["Väärä käyttäjänimi tai salasana", "Wrong username or password"],
+    "ForgotPassword": ["Unohtuiko salasana?", "Forgot password?"]
+  },
+  "resetPW" : {
+    "ResetPassword": ["Syötä sähköpostiosoitteesi unohtuneen salasanan palauttamista varten", "Input your e-mail address in order to reset your password"],
+    "eMail": ["Sähköpostiosoite", "E-mail"],
+    "ResetBtn": ["Palauta", "Reset"],
+    "NullErr": ["Syötä sähköpostiosoite!", "E-mail address is required!"],
+    "InvErr": ["Annettua sähköpostiosoitetta ei löytynyt!", "Invalid e-mail address!"],
+    "Sent": ["Salasanan palautusviesti lähetetty onnistuneesti!", "Password reset e-mail succesfully sent!"]
+  },
+  "renewPW" : {
+    "RenewPassword": ["Syötä uusi salasana","Input new password"],
+    "NewPassword": ["Uusi salasana", "New password"],
+    "ConfirmNewPassword": ["Vahvista uusi salasana", "Confirm new password"],
+    "RenewBtn" : ["Lähetä","Submit"],
+    "Loading" : ["Ladataan käyttäjätietoja...", "Loading user data..."],
+    "Updated" : ["Salasana päivitetty onnistuneesti!", "Password updated succesfully!"],
+    "UpdatedDesc" : ["Sinut ohjataan sisäänkirjautumissivulle automaattisesti viiden sekunnin kuluttua.", "You will be redirected to the login page automatically in 5 seconds."],
+    "Error" : ["Ongelma tokenin varmennuksessa!", "Error verifying token!"],
+    "ErrorDesc" : ["Linkki ei kelpaa tai se on vanhentunut. Lähetä uusi salasananpalautuslinkki, kiitos!", "The link is incorrect or it has expired. Please send a new reset link!"],
+    "ForgotPassword": ["Unohtuiko salasana?", "Forgot password?"],
+    "Mismatch": ["Salasanat eivät täsmää!", "Passwords don't match!"]
   },
   "weekdayShorthand": {
     "0": ["Ma", "Mon"],
@@ -255,10 +277,16 @@
     "reminder": ["Varmistamattoman vuoron muistutus", "Unconfirmed shift reminder"],
     "decline": ["Vuorosta kieltäydytty", "Shift declined"],
     "feedback": ["Palautetta vastaanotettu", "Feedback received"],
+    "resetpass": ["Salasanan uusimislinkki", "Password reset link"],
     "dynamicValues": ["Sallitut dynaamiset arvot", "Allowed dynamic values:"],
     "userDecline": ["Kieltäytynyt käyttäjä", "The user who declined"],
     "userFeedback": ["Palautetta antanut käyttäjä", "The user who gave feedback"],
     "declineDate": ["Kieltäytymisen päivämäärä", "The date of the user declining"],
-    "feedbackGiven": ["Käyttäjän antama palaute", "The feedback given by the user"]
+    "feedbackGiven": ["Käyttäjän antama palaute", "The feedback given by the user"],
+    "resetpassToken": ["Salasanan uusintalinkin tokeni.", "The password reset link token."],
+    "resetpassGuide": [
+      "Linkki voidaan luoda näin: http://tss.tasera.fi/#/renew-password/{token}",
+      "The link can be made like this: http://tss.tasera.fi/#/renew-password/{token}"
+    ]
   }
 }

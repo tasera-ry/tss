@@ -8,7 +8,7 @@ const sendEmail = async function(message, emailAddress, opts) {
     return;
   }
 
-  try {
+  
     const toMail = emailAddress;
     const subject = 'Tasera info';
     //defaults message to command if for some reason fails in switch
@@ -46,6 +46,10 @@ const sendEmail = async function(message, emailAddress, opts) {
       allowedVars['{feedback}'] = opts.feedback;
       allowedVars['{user}'] = opts.user;
       break;
+    case 'password_reset':
+      text = emailSettings.resetpassMsg;
+      allowedVars['{token}'] = opts.token;
+      break;
     }
     // Insert dynamic values into the message
     Object.keys(allowedVars).forEach(token => {
@@ -69,9 +73,7 @@ const sendEmail = async function(message, emailAddress, opts) {
     
     console.log('Message sent: %s', info.messageId);
 
-  } catch (error){
-    console.error(error);
-  }
+  
 
 
 };

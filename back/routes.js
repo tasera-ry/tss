@@ -16,6 +16,14 @@ router.route('/sign')
     middlewares.user.sign,
     controllers.user.sign);
 
+router.route('/reset')
+  .post(
+    controllers.resetPassword.check)
+  .get(
+    controllers.resetPassword.verify)
+  .put(
+    controllers.resetPassword.update);
+
 // NOTE: no checking token: if invalid, we can never
 // logout (remove the invalid cookie) in that case
 router.route('/signout')
