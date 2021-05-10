@@ -21,6 +21,7 @@
     "react-cookie": "^4.0.3",
     "react-dom": "^16.14.0",
     "react-moment": "^0.9.7",
+    "react-nice-input-password": "^2.7.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.4",
