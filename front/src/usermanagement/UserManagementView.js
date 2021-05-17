@@ -24,6 +24,8 @@ import {
   DialogTitle,
   TextField,
 } from '@material-ui/core';
+import NiceInputPassword from 'react-nice-input-password';
+import 'react-nice-input-password/dist/react-nice-input-password.css';
 
 // axios for calls to backend
 import axios from 'axios';
@@ -209,6 +211,9 @@ class UserManagementView extends Component {
     this.handleChangeOwnEmailDialogCloseAgree = this.handleChangeOwnEmailDialogCloseAgree.bind(this); //eslint-disable-line
     this.handleNewuserNameChange = this.handleNewuserNameChange.bind(this);
     this.handleNewuserPassChange = this.handleNewuserPassChange.bind(this);
+
+    this.handleNewuserSecurePassChange = this.handleNewuserSecurePassChange.bind(this);
+
     this.handleNewEmailChange = this.handleNewEmailChange.bind(this);
     this.handleAddNewUserDialogClose = this.handleAddNewUserDialogClose.bind(this);
     this.handleAddNewUserDialogCloseConfirmed = this.handleAddNewUserDialogCloseConfirmed.bind(this);  // eslint-disable-line
@@ -551,6 +556,15 @@ class UserManagementView extends Component {
     });
   }
 
+  //
+  handleNewuserSecurePassChange(data) {
+    console.log('Password:', data.value);
+    this.setState({
+      newUserPass: data.value,
+    });
+
+  }
+
   /**
     **  FUNCTIONS
     */
@@ -680,14 +694,34 @@ class UserManagementView extends Component {
               onChange={this.handleNewuserNameChange}
               fullWidth
             />
-            <TextField
+
+            <NiceInputPassword
+
+              style={dialogStyle}
               value={this.state.newUserPass}
               margin="dense"
-              id="password"
               label={manage.Password[fin]}
-              onChange={this.handleNewuserPassChange}
+              name="passwordField"
               fullWidth
+              securityLevels={[
+                {
+                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
+                  validator: /.*[0-9].*/,
+                },
+                {
+                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
+                  validator: /.*[a-z].*/,
+                },
+                {
+                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
+                  validator: /.*[A-Z].*/,
+                },
+              ]}
+              showSecurityLevelBar
+              showSecurityLevelDescription
+              onChange={this.handleNewuserSecurePassChange}
             />
+
             <TextField
               value={this.state.email}
               margin="dense"
