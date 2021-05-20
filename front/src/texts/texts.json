@@ -130,6 +130,7 @@
     "New": ["Luo uusi käyttäjä", "Create new user"],
     "Password": ["Salasana", "Password"],
     "Minimum": ["Vähintään", "Minimum"],
+    "MinimumLength": ["Salasanan minimipituus on 6 merkkiä", "Minimum length of password is 6 characters"],
     "PasswordNumber": ["numero", "number"],
     "PasswordLowercase": ["pieni kirjain", "lowercase letter"],
     "PasswordUppercase": ["iso kirjain", "uppercase letter"],

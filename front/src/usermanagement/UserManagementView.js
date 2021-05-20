@@ -695,8 +695,12 @@ class UserManagementView extends Component {
               fullWidth
             />
 
-            <NiceInputPassword
+            <br></br>
+            <br></br>
 
+            <NiceInputPassword
+              LabelComponent={InputLabel}
+              InputComponent={TextField}
               style={dialogStyle}
               value={this.state.newUserPass}
               margin="dense"
@@ -716,6 +720,10 @@ class UserManagementView extends Component {
                   descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
                   validator: /.*[A-Z].*/,
                 },
+                {
+                  descriptionLabel: manage.MinimumLength[fin],
+                  validator: /^.{6,}$/
+                }
               ]}
               showSecurityLevelBar
               showSecurityLevelDescription
