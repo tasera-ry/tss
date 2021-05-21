@@ -1,5 +1,7 @@
 import React from 'react';
 
+import axios from 'axios';
+
 import texts from '../../texts/texts.json';
 
 const fin = localStorage.getItem('language');
@@ -20,10 +22,21 @@ async function handleSubmit(username, e) {
     } else if(newpwordagain !== newpword) {
         alert(passwordSettings.alertPwordMatch[fin]);
     } else {
-        let test = username.username;
-        console.log(test);
-        let response = await changeToDatabase(test, newpword);
+        let name = username.username;
+
+        let query = `api/user?name=${name}`;
+        let response = await axios.get(query);
+
+        let id = response.data[0].id;
+        console.log(id);
+
+        response = await changeToDatabase(id, newpword);
         console.log(response);
+        if(response){
+            alert("Success");
+        } else {
+            alert("Fail");
+        }
     }
 }
 
@@ -31,15 +44,15 @@ async function handleSubmit(username, e) {
 
 async function changeToDatabase(id, newpword) {
     try {
-        let response = await fetch(`/api/user/${id}`, {
+        let response = await fetch(`/api/changeownpassword/${id}`, {
             method: 'PUT',
             body: JSON.stringify({
-                password: newpword
+                password: newpword,
             }),
             headers: {
                 Accept: 'application/json',
-                ContentType: 'application/json'
-            }
+                'Content-Type': 'application/json',
+            },
         });
         return response.ok;
     } catch (err) {
