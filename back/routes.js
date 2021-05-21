@@ -57,9 +57,12 @@ router.route('/user/:id')
 
 router.route('/changeownpassword/:id')
   .put(
+    middlewares.jwt.read,
+    middlewares.user.updateOwnPasswordFilter,
     middlewares.user.update,
     controllers.user.update
-  );
+);
+
 
 // Track supervision
 router.route('/track-supervision')
