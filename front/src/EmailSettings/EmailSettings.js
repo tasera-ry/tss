@@ -15,6 +15,8 @@ import {
   Select,
   MenuItem,
 } from '@material-ui/core';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
 import './EmailSettings.css';
 import { emailSettings, nav } from '../texts/texts.json';
 
@@ -52,6 +54,16 @@ const HelperText = (messageSelection) => {
           {emailSettings.resetpassGuide[lang]}
         </p>
       );
+    case 'collageMsg':
+      return (
+        <p>
+          {emailSettings.dynamicValues[lang]}
+          <br />
+          {`{assigned} - ${emailSettings.assignedCount[lang]}`}
+          <br />
+          {`{update} - ${emailSettings.updateCount[lang]}`}
+        </p>
+      );
     case 'assignedMsg':
     case 'updateMsg':
     case 'reminderMsg':
@@ -67,7 +79,8 @@ const HelperText = (messageSelection) => {
  * On submit it makes another API call to set the specified settings on the server
  */
 const EmailSettings = () => {
-  const [pending, setPending] = React.useState(false);
+  const [pendingSave, setPendingSave] = React.useState(false);
+  const [pendingSend, setPendingSend] = React.useState(false);
   const [settings, setSettings] = React.useState({
     sender: '',
     user: '',
@@ -75,6 +88,7 @@ const EmailSettings = () => {
     host: '',
     port: 0,
     secure: 'false',
+    shouldQueue: 'false',
     shouldSend: 'true',
     assignedMsg: '',
     updateMsg: '',
@@ -82,10 +96,12 @@ const EmailSettings = () => {
     declineMsg: '',
     feedbackMsg: '',
     resetpassMsg: '',
+    collageMsg: '',
+    sendPendingTime: new Date(0),
   });
   const [resultMessages, setResultMessages] = React.useState([]);
-  let resultCounter = 0;
-  const [messageSelection, setMessageSelection] = React.useState('assignedMsg');
+  const [resultCounter, setResultCounter] = React.useState(0);
+  const [messageSelection, setMessageSelection] = React.useState('collageMsg');
 
   const fetchAndSetSettings = () => {
     fetch('/api/email-settings')
@@ -99,16 +115,26 @@ const EmailSettings = () => {
         setSettings(filteredData);
       });
   };
+  const sendPendingRequest = () => {
+    setPendingSend(true);
+    fetch('/api/send-pending').then(() => {
+      setPendingSend(false);
+    });
+  };
     /* Runs the above whenever the page loads */
   React.useEffect(fetchAndSetSettings, []);
 
   const handleChange = (e) => {
-    setSettings({ ...settings, [e.target.name]: e.target.value });
+      setSettings({ ...settings, [e.target.name]: e.target.value });
   };
+  const handleDateChange = (date) => {
+    setSettings({ ...settings, "sendPendingTime": date });
+    console.log(date);
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setPending(true);
+    setPendingSave(true);
     fetch('api/email-settings', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -117,8 +143,8 @@ const EmailSettings = () => {
       if (res.status !== 200) {
         throw Error(res.statusText);
       } else {
-        setPending(false);
-        resultCounter += 1;
+        setPendingSave(false);
+        setResultCounter(resultCounter + 1);
         setResultMessages((prevArr) => [
           ...prevArr,
           {
@@ -130,8 +156,8 @@ const EmailSettings = () => {
       }
     }).catch((err) => {
       console.log(err);
-      setPending(false);
-      resultCounter += 1;
+      setPendingSave(false);
+      setResultCounter(resultCounter + 1);
       setResultMessages((prevArr) => [
         ...prevArr,
         {
@@ -201,6 +227,7 @@ const EmailSettings = () => {
             onChange={(e) => setMessageSelection(e.target.value)}
             label="Message type"
           >
+            <MenuItem value="collageMsg">{emailSettings.collage[lang]}</MenuItem>
             <MenuItem value="assignedMsg">{emailSettings.assigned[lang]}</MenuItem>
             <MenuItem value="updateMsg">{emailSettings.update[lang]}</MenuItem>
             <MenuItem value="reminderMsg">{emailSettings.reminder[lang]}</MenuItem>
@@ -215,7 +242,34 @@ const EmailSettings = () => {
             value={settings[messageSelection]}
             onChange={handleChange}
           />
-          <FormHelperText id="helper" display="inline">{HelperText(messageSelection)}</FormHelperText>
+          <FormHelperText display="inline" component="div">{HelperText(messageSelection)}</FormHelperText>
+        </FormControl>
+        <FormControl component="fieldset">
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardTimePicker
+              margin="normal"
+              label={emailSettings.pendingTime[lang]}
+              value={settings.sendPendingTime}
+              onChange={handleDateChange}
+            />
+          </MuiPickersUtilsProvider>
+        </FormControl>
+        <FormControl component="fieldset">
+          <FormLabel className="settings-label">{emailSettings.queueMessages[lang]}</FormLabel>
+          <RadioGroup
+            name="shouldQueue"
+            value={settings.shouldQueue}
+            onChange={handleChange}
+          >
+            <FormControlLabel value="true" control={<Radio />} label={emailSettings.yes[lang]} />
+            <FormControlLabel value="false" control={<Radio />} label={emailSettings.no[lang]} />
+          </RadioGroup>
+          <Button
+            variant="contained" color="primary" id="send-pending-button" onClick={sendPendingRequest}
+          >
+            {pendingSend ? <CircularProgress /> : emailSettings.sendPending[lang]}
+          </Button>
+          <FormHelperText display="inline">{emailSettings.sendPendingTip[lang]}</FormHelperText>
         </FormControl>
         <FormControl component="fieldset">
           <FormLabel className="settings-label">{emailSettings.sendAutomatically[lang]}</FormLabel>
@@ -224,12 +278,12 @@ const EmailSettings = () => {
             value={settings.shouldSend}
             onChange={handleChange}
           >
-            <FormControlLabel value="true" control={<Radio />} label="Kyllä" />
-            <FormControlLabel value="false" control={<Radio />} label="Ei" />
+            <FormControlLabel value="true" control={<Radio />} label={emailSettings.yes[lang]} />
+            <FormControlLabel value="false" control={<Radio />} label={emailSettings.no[lang]} />
           </RadioGroup>
         </FormControl>
         <Button type="submit" variant="contained" color="primary">
-          {pending ? <CircularProgress /> : emailSettings.saveSettings[lang]}
+          {pendingSave ? <CircularProgress /> : emailSettings.saveSettings[lang]}
         </Button>
       </form>
       <div className="results-div">

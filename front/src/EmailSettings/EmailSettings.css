@@ -33,3 +33,7 @@
 .result-failure {
   background-color: red;
 }
+
+#send-pending-button {
+  max-width: 35%;
+}

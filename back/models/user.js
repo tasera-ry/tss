@@ -130,6 +130,28 @@ const model = {
         .then(trx.commit)
         .catch(trx.rollback);
     });
+  },
+  /**
+   * Get email by user key
+   * @param {object} key - Users' identifying info.
+   * @return {Promise<json>} - Email address of the user
+   */
+  getEmail: async function getUserEmail(key) {
+    return await knex
+      .from('user')
+      .select('email')
+      .where({ 'id': key })
+      .first();
+  },
+  /**
+   * Get superuser ids
+   * @return {Promise<object>} - Keys of superusers
+   */
+  getSuperusers: async function getSuperusers() {
+    return await knex
+      .from('user')
+      .pluck('id')
+      .where({ role: 'superuser' });
   }
 };
 

@@ -1,16 +1,15 @@
 const path = require('path');
 const root = path.join(__dirname, '..');
 const knex = require(path.join(root, 'knex', 'knex'));
-const { sendEmail } = require('../mailer.js');
+const { email } = require('../mailer.js');
 const moment = require('moment');
 const schedule = require('node-schedule');
-
 
 //Runs the checker everyday and checks if officer has confirmed 7 days from today
 //Stars of the scheduler explained below:
 //'seconds', 'minutes', 'hour', 'day of month', 'month', 'day of week'
 //For test purposes value '(' */1 * * * * *', function()' runs the code every second.
-schedule.scheduleJob('00 00 01 * * 0-6', function(){
+schedule.scheduleJob('00 00 01 * * 0-6', async function(){
   //make date object 7 days from this day.
   const currentDate = new Date();
   currentDate.setDate(currentDate.getDate() + 7);
@@ -25,38 +24,17 @@ schedule.scheduleJob('00 00 01 * * 0-6', function(){
       .where('range_reservation.date', '=', currentDate)
       .select('scheduled_range_supervision.supervisor_id', 'range_supervisor');
   }
-
-  (async () => {
-    try {
-      const receiver = await getFutureSupervision();
-      //first we check if the supervisor has confirmed or not.
-      //if status = not cnofirmed, fetches email with supervisor id and sends it to mailer.js 
-      if(receiver[0] != undefined){
-        if (await receiver[0].range_supervisor === 'not confirmed'){
-          const recipient = await getUserEmail(receiver[0].supervisor_id);
-          sendEmail('reminder', recipient[0].email, null);
-        }
-      }
-    } catch (error) {
-      console.error(error);
+  try {
+    const receiver = await getFutureSupervision();
+    //first we check if the supervisor has confirmed or not.
+    //if status = not cnofirmed, fetches email with supervisor id and sends it to mailer.js 
+    if(receiver[0] != undefined && receiver[0].range_supervisor === 'not confirmed') {
+        email('reminder', receiver[0].supervisor_id, null);
     }
-  })();
+  } catch (error) {
+    console.log(error);
+  }
 });
-
-//knex part that should be done in models? returns the email based on the id fetched above:
-async function getUserEmail(key) {
-  return await knex
-    .from('user')
-    .select('email')
-    .where({ 'user.id': key });
-}
-
-async function getSuperuserEmails() {
-  return await knex
-    .from('user')
-    .select('email')
-    .where({ role: 'superuser' });
-}
 
 // TODO: definitely update the database 1:1 connections so you don't
 // have to do this crap
@@ -106,10 +84,11 @@ const controller = {
 
   feedback: async function sendFeedback(request, response) {
     const feedback = response.locals.query.feedback;
+    const superusers = response.locals.superusers;
+
     try {
-      const useremails = await getSuperuserEmails();
-      for (const user of useremails) {
-        sendEmail('feedback', user.email, { user: response.locals.query.user, feedback });
+      for (const superuser of superusers) {
+        email('feedback', superuser, { user: response.locals.query.user, feedback });
       }
     } catch (error) {
       console.log(error);
@@ -123,10 +102,8 @@ const controller = {
   create: async function createSupervision(request, response) {
     try {
       if (!response.req.body.supervisor) return;
-      //fetches the supervisor id who is assgined to the range.
-      const receiver = await getUserEmail(response.req.body.supervisor);
-      //sending fetched email address to mailer.js where it is used to send message that user's supervision has been changed.
-      sendEmail('update', receiver[0].email, null);
+      const scheduleId = response.locals.id;
+      email('assigned', response.req.body.supervisor, { scheduleId: scheduleId });
     } catch (error) {
       console.error(error);
     }
@@ -139,18 +116,17 @@ const controller = {
     //updates.range_supervisor returns "absent" if supervisor has not been assigned. it returns "not confirmed" is supervisor is assigned.
     //if - checks if supervisor is assigned and only sends email if it is set. otherwise it would send email aswell when supervisor is taken off.
     try {
+      const scheduleId = response.locals.id.scheduled_range_supervision_id;
       if (response.locals.updates.range_supervisor === 'not confirmed' && response.locals.updates.supervisor){
-        const receiver = await getUserEmail(response.locals.updates.supervisor);
-        //sending fetched email address to mailer.js where it is used to send message that user's supervision has been changed.
-        sendEmail('update', receiver[0].email, null);
+        email('update', response.locals.updates.supervisor, { scheduleId: scheduleId });
       }
 
-      if (response.locals.updates.range_supervisor === 'absent' && response.locals.id.scheduled_range_supervision_id && response.locals.user.name) {
-        const useremails = await getSuperuserEmails();
-        const supervision = await getCorrespondingSupervision(response.locals.id.scheduled_range_supervision_id);
+      if (response.locals.updates.range_supervisor === 'absent' && response.locals.user.name) {
+        const superusers = response.locals.superusers;
+        const supervision = await getCorrespondingSupervision(scheduleId);
         const date = moment(supervision.date).format('YYYY-MM-DD');
-        for (const user of useremails) {
-          sendEmail('decline', user.email, { user: response.locals.user.name, date });
+        for (const superuser of superusers) {
+          email('decline', superuser, { user: response.locals.user.name, date });
         }
       }
     } catch (error) {

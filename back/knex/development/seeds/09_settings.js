@@ -10,12 +10,15 @@ exports.seed = function(knex) {
     port: process.env.EMAIL_PORT,
     secure: process.env.EMAIL_SECURE,
     shouldSend: process.env.SHOULD_SEND_EMAIL,
+    shouldQueue: process.env.SHOULD_QUEUE_EMAIL,
+    sendPendingTime: '1970-01-01T00:00:00.000Z',
     assignedMsg: '',
     updateMsg: '',
     reminderMsg: '',
     declineMsg: '',
     feedbackMsg: '',
     resetpassMsg: '',
+    collageMsg: ''
   };
 
   return knex('settings').del()
@@ -35,6 +38,9 @@ exports.seed = function(knex) {
         { setting_name: 'email_decline_msg', setting_value: { declineMsg: emailSettings.declineMsg }},
         { setting_name: 'email_feedback_msg', setting_value: { feedbackMsg: emailSettings.feedbackMsg }},
         { setting_name: 'email_resetpass_msg', setting_value: { resetpassMsg: emailSettings.resetpassMsg }},
+        { setting_name: 'email_collage_msg', setting_value: { collageMsg: emailSettings.collageMsg }},
+        { setting_name: 'email_shouldqueue', setting_value: { shouldQueue: emailSettings.shouldQueue }},
+        { setting_name: 'email_sendpending_time', setting_value: { sendPendingTime: emailSettings.sendPendingTime }}
       ]);
     });
 };

@@ -23,6 +23,9 @@ const model = {
       .orWhere({ setting_name: 'email_decline_msg' })
       .orWhere({ setting_name: 'email_feedback_msg' })
       .orWhere({ setting_name: 'email_resetpass_msg' })
+      .orWhere({ setting_name: 'email_collage_msg' })
+      .orWhere({ setting_name: 'email_shouldqueue' })
+      .orWhere({ setting_name: 'email_sendpending_time' })
       .select('setting_value');
   },
   /**
@@ -52,12 +55,15 @@ const model = {
       await trx('settings').where({ setting_name: 'email_port' }).update({ setting_value: { port: newSettings.port }});
       await trx('settings').where({ setting_name: 'email_secure' }).update({ setting_value: { secure: newSettings.secure }});
       await trx('settings').where({ setting_name: 'email_shouldsend' }).update({ setting_value: { shouldSend: newSettings.shouldSend }});
+      await trx('settings').where({ setting_name: 'email_shouldqueue' }).update({ setting_value: { shouldQueue: newSettings.shouldQueue }});
       await trx('settings').where({ setting_name: 'email_assigned_msg' }).update({ setting_value: { assignedMsg: newSettings.assignedMsg }});
       await trx('settings').where({ setting_name: 'email_update_msg' }).update({ setting_value: { updateMsg: newSettings.updateMsg }});
       await trx('settings').where({ setting_name: 'email_reminder_msg' }).update({ setting_value: { reminderMsg: newSettings.reminderMsg }});
       await trx('settings').where({ setting_name: 'email_decline_msg' }).update({ setting_value: { declineMsg: newSettings.declineMsg }});
       await trx('settings').where({ setting_name: 'email_feedback_msg' }).update({ setting_value: { feedbackMsg: newSettings.feedbackMsg }});
       await trx('settings').where({ setting_name: 'email_resetpass_msg' }).update({ setting_value: { resetpassMsg: newSettings.resetpassMsg }});
+      await trx('settings').where({ setting_name: 'email_collage_msg' }).update({ setting_value: { collageMsg: newSettings.collageMsg }});
+      await trx('settings').where({ setting_name: 'email_sendpending_time' }).update({ setting_value: { sendPendingTime: newSettings.sendPendingTime }});
 
       if (newSettings.pass !== undefined && newSettings.pass !== '') {
         await trx('settings').where({ setting_name: 'email_pass' }).update({ setting_value: { pass: newSettings.pass }});

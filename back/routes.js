@@ -98,6 +98,7 @@ router.route('/range-supervision/feedback')
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes),
     validators.rangeSupervision.feedback,
+    middlewares.rangeSupervision.feedback,
     controllers.rangeSupervision.feedback);
 
 router.route('/range-supervision/usersupervisions/:id')
@@ -213,5 +214,11 @@ router.route('/email-settings')
   .put(
     validators.emailSettings.update,
     controllers.emailSettings.update);
+
+router.route('/send-pending')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .get(controllers.emailSettings.sendPendingEmails);
 
 module.exports = router;
