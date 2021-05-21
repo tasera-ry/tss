@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import NiceInputPassword from 'react-nice-input-password';
 
 // Material UI components
 import Button from '@material-ui/core/Button';
@@ -8,12 +9,16 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import InputLabel from '@material-ui/core/InputLabel';
 
 // Call handling to backend
 import axios from 'axios';
 
 // Translations
 import data from '../texts/texts.json';
+
+const fin = localStorage.getItem('language');
+const { manage, renewPW } = data;
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -39,10 +44,34 @@ const textStyle = {
   borderRadius: 4,
 };
 
+const passwordInputTextStyle = {
+  backgroundColor: '#fcfbf7',
+  borderRadius: 4,
+  /* margin: '5px', */
+};
+
+const passwordRules =
+  [
+    {
+      descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
+      validator: /.*[0-9].*/,
+    },
+    {
+      descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
+      validator: /.*[a-z].*/,
+    },
+    {
+      descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
+      validator: /.*[A-Z].*/,
+    },
+    {
+      descriptionLabel: manage.MinimumLength[fin],
+      validator: /^.{6,}$/
+    }
+  ]
+
 const RenewPassword = (props) => {
   const classes = useStyles();
-  const fin = localStorage.getItem('language');
-  const { renewPW } = data;
 
   document.body.style = 'background: #eae7dc;';
 
@@ -91,6 +120,10 @@ const RenewPassword = (props) => {
     const path = '/signin';
     setTimeout(() => history.push(path), 5000);
   };
+
+  const setNewPasswordHandler = (data) => {
+    setNewPassword(data.value);
+  }
 
   const renew = async (e) => {
     e.preventDefault();
@@ -172,7 +205,7 @@ const RenewPassword = (props) => {
       {renewPW.RenewPassword[fin]}
 
       <form className={classes.form} noValidate>
-        <TextField
+        {/* <TextField
           variant="outlined"
           margin="normal"
           required
@@ -190,6 +223,45 @@ const RenewPassword = (props) => {
           inputProps={{
             'data-testid': 'newPasswordField',
           }}
+        />
+
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id="confirmNewPassword"
+          label={renewPW.ConfirmNewPassword[fin]}
+          name="confirmNewPassword"
+          type="password"
+          autoComplete={renewPW.ConfirmNewPassword[fin]}
+          value={confirmNewPassword}
+          error={mismatch}
+          onInput={(e) => setConfirmNewPassword(e.target.value)}
+          style={textStyle}
+          inputProps={{
+            'data-testid': 'confirmNewPasswordField',
+          }}
+        /> */}
+
+        <NiceInputPassword
+          InputComponent={TextField}
+          style={passwordInputTextStyle}
+          value={newPassword}
+          label={renewPW.NewPassword[fin]}
+          autoComplete={renewPW.NewPassword[fin]}
+          name="newPassword"
+          id="newPassword"
+          showSecurityLevelBar
+          onChange={setNewPasswordHandler}
+          error={mismatch}
+          InputComponentProps={{
+            variant: 'outlined',
+            margin: 'normal',
+            required: true,
+            fullWidth: true,
+          }}
+          securityLevels={passwordRules}
         />
 
         <TextField
