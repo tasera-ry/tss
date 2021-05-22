@@ -8,13 +8,26 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 
 | Name       | Version |
 |:-----------|--------:|
-| Node.js    | 12+     |
+| Node.js    | 14+     |
 | PostgreSQL | 9+      |
 
 ## How to run the application (development)
 
+### Using an .env file
+1. Create a `.env` file into the `back/` directory (an .env.example file is included in the folder, which can be copied and renamed).
+2. Write the runtime variables into the `.env` file.
+3. When using `.env` file you can run the commands without the environment variables, 
+4. Migrations and seeds
+   ```sh
+       bash -c 'cd back && npx knex migrate:latest && npx knex seed:run && cd ..
+   ```
+5. Run the project
+   ```sh
+      bash -c 'cd back && npm run dev:withFront'
+   ```
+
 1. Install project dependencies
-   - https://nodejs.org/ (tested using the `LTS 12` release)
+   - https://nodejs.org/ (tested using the `LTS 14` release)
    - https://www.postgresql.org/
 
      Easiest way to set up a PSQL database is using docker:
@@ -30,7 +43,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
    env DB_USER=postgres \
        DB_PASSWORD=some_password \
        DB=postgres \
-       sh -c 'cd back && npx knex migrate:latest && npx knex seed:run && cd ..'
+       bash -c 'cd back && npx knex migrate:latest && npx knex seed:run && cd ..'
    ```
 5. Run the project
    ```sh
@@ -77,6 +90,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
    run.
 
 ## Runtime configuration
+**NOTE** These can be also set in a `.env` file in the `back/` directory.
 
 | Variable        | Explanation                                                            | Default value           |
 |-----------------|------------------------------------------------------------------------|-------------------------|
