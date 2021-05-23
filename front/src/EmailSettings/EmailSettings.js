@@ -200,6 +200,7 @@ const EmailSettings = () => {
             value={settings.pass}
             type="password"
             onChange={handleChange}
+            autoComplete="new-password"
           />
           <FormHelperText>{emailSettings.ssl[lang]}</FormHelperText>
           <RadioGroup
