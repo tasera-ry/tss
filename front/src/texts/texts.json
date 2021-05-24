@@ -5,6 +5,7 @@
     "Schedule": ["Aikataulut", "Schedules"],
     "UserManagement": ["Käyttäjienhallinta", "User management"],
     "Supervision": ["Valvonnat", "Supervisions"],
+    "Profile": ["Omat Tiedot", "Profile"],
     "Tablet": ["Tablettinäkymä", "Tablet view"],
     "Feedback": ["Palaute", "Feedback"],
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
@@ -300,5 +301,20 @@
     "pendingTime": ["Viestien lähetysaika", "Time for sending emails"],
     "sendPending": ["Lähetä viestit", "Send messages"],
     "sendPendingTip": ["Voit lähettää odottavat viestit heti tällä napilla.", "You can force all pending emails to be sent immediately with the button."]
+    },
+    "profileSettings": {
+      "navPassword": ["Vaihda salasana", "Change password"]
+    },
+    "passwordSettings": {
+      "title": ["Vaihda salasana", "Change password"],
+      "old": ["Vanha salasana:", "Old password:"],
+      "new": ["Uusi salasana:", "New password:"],
+      "confirmNew": ["Vahvista uusi salasana:", "Confirm new password:"],
+      "confirm": ["Vahvista", "Confirm"],
+      "alertFields": ["Täytä kaikki tekstikentät", "Fill all the text fields"],
+      "alertWrongPword": ["Nykyinen salasana virheellinen", "Old password isn't valid"],
+      "alertPwordMatch": ["Uusi salasana ja vahvistus eivät täsmää", "Confirmation doesn't match the new password"],
+      "alertSuccess": ["Vaihto onnistui", "Change successful"],
+      "alertFail": ["Vaihto epäonnistui", "Change failed"]
   }
 }

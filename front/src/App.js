@@ -16,6 +16,7 @@ import Weekview from './weekview/Weekview';
 import Trackview from './trackview/Trackview';
 import Scheduling from './scheduling/Scheduling';
 import RangeOfficerView from './tabletview/rangeofficer';
+import Profile from './profile/profilesettings';
 import UserManagementView from './usermanagement/UserManagementView';
 import TrackCRUD from './edittracks/tracks';
 import Monthview from './monthview/Monthview';
@@ -75,6 +76,7 @@ class App extends Component {
                 <Route path="/trackview/:date?/:track?" component={Trackview} />
                 <Route path="/scheduling/:date?" component={Scheduling} />
                 <Route path="/tablet" component={RangeOfficerView} />
+                <Route path="/profile" component={Profile}/>
                 <Route path="/usermanagement" component={UserManagementView} />
                 <Route path="/tracks" component={TrackCRUD} />
                 <Route path="/email-settings" component={EmailSettings} />
