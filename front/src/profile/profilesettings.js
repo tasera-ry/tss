@@ -7,6 +7,7 @@ import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
 import texts from '../texts/texts.json';
+import { List, ListItem } from '@material-ui/core';
 
 const fin = localStorage.getItem('language');
 const { profileSettings } = texts;
@@ -31,7 +32,13 @@ const ContentStyle = {
 };
 
 const listStyle = {
-    listStyleType: 'none',
+    padding: 10,
+};
+
+const elementStyle = {
+    color: 'black',
+    textDecoration: 'none',
+    fontWeight: 'bold',
 };
 
 // Returns the profile component, which consists of sidebar and content.
@@ -42,13 +49,14 @@ function Profile() {
         <Router>
             <div className="Profile" style={ProfileStyle}>
                 <div className="ProfileSidebar" style={SidebarStyle}>
-                    <ul style={listStyle}>
-                        <Link to="/">
-                            <li>{profileSettings.navPassword[fin]}</li>
+                    <List style={listStyle}>
+                        {/* When new profile features are added, change path*/}
+                        <Link style={elementStyle} to="/profile">
+                            <ListItem button>
+                                {profileSettings.navPassword[fin]}
+                            </ListItem>
                         </Link>
-                        <li>Lorem</li>
-                        <li>Ipsum</li>
-                    </ul>
+                    </List>
                 </div>
                 <div className="ProfileContent" style={ContentStyle}>
                     <Switch>
