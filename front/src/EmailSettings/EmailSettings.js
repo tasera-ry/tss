@@ -128,8 +128,9 @@ const EmailSettings = () => {
       setSettings({ ...settings, [e.target.name]: e.target.value });
   };
   const handleDateChange = (date) => {
-    setSettings({ ...settings, "sendPendingTime": date });
-    console.log(date);
+    const newDate = new Date();
+    newDate.setHours(date.getHours(), date.getMinutes());
+    setSettings({ ...settings, "sendPendingTime": newDate });
   }
 
   const handleSubmit = (e) => {
