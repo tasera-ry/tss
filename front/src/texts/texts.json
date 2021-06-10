@@ -307,9 +307,9 @@
     },
     "passwordSettings": {
       "title": ["Vaihda salasana", "Change password"],
-      "old": ["Vanha salasana:", "Old password:"],
-      "new": ["Uusi salasana:", "New password:"],
-      "confirmNew": ["Vahvista uusi salasana:", "Confirm new password:"],
+      "old": ["Vanha salasana", "Old password"],
+      "new": ["Uusi salasana", "New password"],
+      "confirmNew": ["Vahvista uusi salasana", "Confirm new password"],
       "confirm": ["Vahvista", "Confirm"],
       "alertFields": ["Täytä kaikki tekstikentät", "Fill all the text fields"],
       "alertWrongPword": ["Nykyinen salasana virheellinen", "Old password isn't valid"],

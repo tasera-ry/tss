@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+
 import axios from 'axios';
 
 import texts from '../../texts/texts.json';
@@ -7,9 +11,20 @@ import texts from '../../texts/texts.json';
 const fin = localStorage.getItem('language');
 const { passwordSettings } = texts;
 
+// Style for title
+const titleStyle = {
+    margin: "20px 20px 10px 20px",
+};
+
+// Style for text field
+const textStyle = {
+    backgroundColor: '#fcfbf7',
+    borderRadius: 4,
+};
+
 // Returns the form for password change
 
-function PasswordChange(username) {
+function PasswordChange({username}) {
     const [alertStatus, setAlert] = useState("");
     const [oldPass, setOldPass] = useState("");
     const [newPass, setNewPass] = useState("");
@@ -37,6 +52,8 @@ async function changeToDatabase(id, newpword) {
                 'Content-Type': 'application/json',
             },
         });
+        let data = response.json();
+        console.log(data);
         return response.ok;
     } catch (err) {
         console.error('GETTING USER FAILED', err);
@@ -45,7 +62,7 @@ async function changeToDatabase(id, newpword) {
 }
 
 // Handles the submission of password
-async function handleSubmit(username, e) {
+async function handleSubmit(e) {
     e.preventDefault();
     const secure = window.location.protocol === 'https:';
 
@@ -90,27 +107,58 @@ async function handleSubmit(username, e) {
 }
     return (
         <div>
-            <h1>{passwordSettings.title[fin]}</h1>
-            <form>
-                <label>
-                    {passwordSettings.old[fin]}
-                    <br/>
-                    <input type ="password" id="oldpword" name="oldpword" value={oldPass} onChange={({ target }) => setOldPass(target.value)}/>
-                </label>
-                <br/>
-                <label>
-                    {passwordSettings.new[fin]}
-                    <br/>
-                    <input type ="password" id="newpword" name="newpword" value={newPass} onChange={({ target }) => setNewPass(target.value)}/>
-                </label>
-                <br/>
-                <label>
-                    {passwordSettings.confirmNew[fin]}
-                    <br/>
-                    <input type ="password" id="newpwordagain" name="newpwordagain" value={confirmPass} onChange={({ target }) => setConfirmPass(target.value)}/>
-                </label>
-                <br/>
-                <input type="submit" onClick={handleSubmit.bind(this, username)} value={passwordSettings.confirm[fin]}></input>
+            <Typography component="h1" variant="h5" style={titleStyle}>
+                {passwordSettings.title[fin]}
+            </Typography>
+            <form className={passwordSettings.title[fin]} noValidate onSubmit={handleSubmit}>
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="oldpword"
+                    name="oldpword"
+                    value={oldPass}
+                    type="password"
+                    label={passwordSettings.old[fin]}
+                    onInput={(e) => setOldPass(e.target.value)}
+                    autoFocus
+                    style={textStyle}
+                />
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="newpword"
+                    name="newpword"
+                    value={newPass}
+                    type="password"
+                    label={passwordSettings.new[fin]}
+                    onInput={(e) => setNewPass(e.target.value)}
+                    style={textStyle}
+                />
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="confirmpword"
+                    name="confirmpword"
+                    value={confirmPass}
+                    type="password"
+                    label={passwordSettings.confirmNew[fin]}
+                    onInput={(e) => setConfirmPass(e.target.value)}
+                    style={textStyle}
+                />
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    style={{ backgroundColor: '#5f77a1' }}
+                >
+                    {passwordSettings.confirm[fin]}
+                </Button>
             </form>
         </div>
     );
