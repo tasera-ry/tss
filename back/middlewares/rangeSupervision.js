@@ -66,6 +66,7 @@ const serviceCalls = {
 
     try {
       response.locals.queryResult = await services.rangeSupervision.read({scheduled_range_supervision_id:id});
+      response.locals.id = id;
     }
     catch(e) {
       return next(e);
@@ -93,6 +94,12 @@ const serviceCalls = {
 
       return next(e);
     }
+    try {
+      response.locals.superusers = await services.user.getSuperusers();
+    }
+    catch (e) {
+      return next(e);
+    }
 
     return next();
   },
@@ -106,6 +113,16 @@ const serviceCalls = {
       return next(e);
     }
 
+    return next();
+  },
+
+  feedback: async function feedback(request, response, next) {
+    try {
+      response.locals.superusers = await services.user.getSuperusers();
+    }
+    catch (e) {
+      return next(e);
+    }
     return next();
   }
 };
@@ -138,4 +155,8 @@ exports.update = [
 exports.delete = [
   validators.rangeSupervision.delete,
   serviceCalls.delete
+];
+
+exports.feedback = [
+  serviceCalls.feedback
 ];

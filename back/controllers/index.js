@@ -8,6 +8,8 @@ const track = require(path.join(controllers, 'track'));
 const trackSupervision = require(path.join(controllers, 'trackSupervision'));
 const rangeSupervision = require(path.join(controllers, 'rangeSupervision'));
 const daterange = require(path.join(controllers, 'daterange'));
+const emailSettings = require(path.join(controllers, 'emailSettings'));
+const resetPassword = require(path.join(controllers, 'resetPassword'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -16,3 +18,5 @@ exports.reservation = reservation;
 exports.schedule = schedule;
 exports.track = track;
 exports.daterange = daterange;
+exports.emailSettings = emailSettings;
+exports.resetPassword = resetPassword;

@@ -5,11 +5,13 @@
     "Schedule": ["Aikataulut", "Schedules"],
     "UserManagement": ["Käyttäjienhallinta", "User management"],
     "Supervision": ["Valvonnat", "Supervisions"],
+    "Profile": ["Omat Tiedot", "Profile"],
     "Tablet": ["Tablettinäkymä", "Tablet view"],
     "Feedback": ["Palaute", "Feedback"],
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
     "SignOut": ["Kirjaudu ulos", "Sign Out"],
-    "Statistics": ["Tilastot", "Statistics"]
+    "Statistics": ["Tilastot", "Statistics"],
+    "EmailSettings": ["Sähköpostiasetukset", "Email settings"]
   },
   "banner": {
     "Notification": ["Sinulla on varmistamattomia päävalvojavuoroja!", "You have unconfirmed range officer reservations!"],
@@ -21,7 +23,29 @@
     "Password": ["Salasana", "Password"],
     "LogIn": ["Kirjaudu", "Log in"],
     "Back": ["Takaisin", "Go back"],
-    "Helper": ["Väärä käyttäjänimi tai salasana", "Wrong username or password"]
+    "Helper": ["Väärä käyttäjänimi tai salasana", "Wrong username or password"],
+    "ForgotPassword": ["Unohtuiko salasana?", "Forgot password?"]
+  },
+  "resetPW" : {
+    "ResetPassword": ["Syötä sähköpostiosoitteesi unohtuneen salasanan palauttamista varten", "Input your e-mail address in order to reset your password"],
+    "eMail": ["Sähköpostiosoite", "E-mail"],
+    "ResetBtn": ["Palauta", "Reset"],
+    "NullErr": ["Syötä sähköpostiosoite!", "E-mail address is required!"],
+    "InvErr": ["Annettua sähköpostiosoitetta ei löytynyt!", "Invalid e-mail address!"],
+    "Sent": ["Salasanan palautusviesti lähetetty onnistuneesti!", "Password reset e-mail succesfully sent!"]
+  },
+  "renewPW" : {
+    "RenewPassword": ["Syötä uusi salasana","Input new password"],
+    "NewPassword": ["Uusi salasana", "New password"],
+    "ConfirmNewPassword": ["Vahvista uusi salasana", "Confirm new password"],
+    "RenewBtn" : ["Lähetä","Submit"],
+    "Loading" : ["Ladataan käyttäjätietoja...", "Loading user data..."],
+    "Updated" : ["Salasana päivitetty onnistuneesti!", "Password updated succesfully!"],
+    "UpdatedDesc" : ["Sinut ohjataan sisäänkirjautumissivulle automaattisesti viiden sekunnin kuluttua.", "You will be redirected to the login page automatically in 5 seconds."],
+    "Error" : ["Ongelma tokenin varmennuksessa!", "Error verifying token!"],
+    "ErrorDesc" : ["Linkki ei kelpaa tai se on vanhentunut. Lähetä uusi salasananpalautuslinkki, kiitos!", "The link is incorrect or it has expired. Please send a new reset link!"],
+    "ForgotPassword": ["Unohtuiko salasana?", "Forgot password?"],
+    "Mismatch": ["Salasanat eivät täsmää!", "Passwords don't match!"]
   },
   "weekdayShorthand": {
     "0": ["Ma", "Mon"],
@@ -100,12 +124,17 @@
     "NewEmail":[ "Lisää sähköposti","Add Email"],
     "EmailHelper":["Anna uusi sähköpostiosoite", "Please give your new email address"],
     "Email":[ "Sähköposti","Email"],
-    "EmailForUser":[ "Lisää sähköposti käyttäjälle:","Add Email for user:"],
+    "EmailForUser":[ "Vaihda sähköposti käyttäjälle:","Change Email for user:"],
     "Cancel": ["Peruuta", "Cancel"],
     "Confirm": ["Vahvista", "Save changes"],
     "ConfirmDelete": ["Vahvista", "Confirm"],
     "New": ["Luo uusi käyttäjä", "Create new user"],
     "Password": ["Salasana", "Password"],
+    "Minimum": ["Vähintään", "Minimum"],
+    "MinimumLength": ["Salasanan minimipituus on 6 merkkiä", "Minimum length of password is 6 characters"],
+    "PasswordNumber": ["numero", "number"],
+    "PasswordLowercase": ["pieni kirjain", "lowercase letter"],
+    "PasswordUppercase": ["iso kirjain", "uppercase letter"],
     "Role": ["Rooli", "Role"],
     "Superuser": ["Superuser", "Superuser"],
     "Supervisor": ["Valvoja", "Range officer"],
@@ -113,6 +142,7 @@
     "Ask": ["Haluatko varmasti jatkaa?", "Are you sure?"],
     "AskDelete": ["Tämä poistaa pysyvästi käyttäjän", "This action will permanently remove user"],
     "Error": ["Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki", "Something went wrong"],
+    "ErrorPassword": ["Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä", "Something went wrong, password has to be at least 6 characters long"],
     "ErrorEmail": ["Jokin meni pieleen, Sähköpostia ei tallennettu", "Something went wrong, email not saved"],
     "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"]
   },
@@ -233,5 +263,59 @@
     "Close": ["Sulje", "Close"],
     "Save": ["Tallenna", "Save changes"],
     "NoSchedule": ["Ei varauksia tälle päivälle. Aseta ratavalvonta Aikataulut-sivulla", "No reservations found. Set reservation in Schedules page"]
+  },
+  "emailSettings": {
+    "success": ["Onnistuneesti päivitetty", "Successfully updated"],
+    "smtpSettings": ["SMTP-asetukset", "SMTP-settings"],
+    "user": ["Käyttäjä", "User"],
+    "pass": ["Salasana", "Password"],
+    "ssl": ["Käytä SSL", "Use SSL"],
+    "yes": ["Kyllä", "Yes"],
+    "no": ["Ei", "No"],
+    "senderAddress": ["Sähköpostin lähettäjän osoite", "Sender email address"],
+    "sendAutomatically": ["Lähetä sähköpostia", "Send email"],
+    "saveSettings": ["Tallenna asetukset", "Save settings"],
+    "address": ["Osoite", "Address"],
+    "close": ["Sulje", "Close"],
+    "emailMessages": ["Sähköpostiviestit", "Email messages"],
+    "emailContent": ["Viestin sisältö", "Message content"],
+    "collage": ["Kootut varausten muutokset", "Compiled shift changes"],
+    "assigned": ["Vuoro annettu", "Shift assigned"],
+    "update": ["Vuoro päivitetty", "Shift updated"],
+    "reminder": ["Varmistamattoman vuoron muistutus", "Unconfirmed shift reminder"],
+    "decline": ["Vuorosta kieltäydytty", "Shift declined"],
+    "feedback": ["Palautetta vastaanotettu", "Feedback received"],
+    "resetpass": ["Salasanan uusimislinkki", "Password reset link"],
+    "dynamicValues": ["Sallitut dynaamiset arvot", "Allowed dynamic values:"],
+    "userDecline": ["Kieltäytynyt käyttäjä", "The user who declined"],
+    "userFeedback": ["Palautetta antanut käyttäjä", "The user who gave feedback"],
+    "declineDate": ["Kieltäytymisen päivämäärä", "The date of the user declining"],
+    "feedbackGiven": ["Käyttäjän antama palaute", "The feedback given by the user"],
+    "resetpassToken": ["Salasanan uusintalinkin tokeni.", "The password reset link token."],
+    "resetpassGuide": [
+      "Linkki voidaan luoda näin: http://tss.tasera.fi/#/renew-password/{token}",
+      "The link can be made like this: http://tss.tasera.fi/#/renew-password/{token}"
+    ],
+    "updateCount": ["Muutettujen vuorojen määrä", "The number of updated shifts"],
+    "assignedCount": ["Annettujen vuorojen määrä", "The number of assigned shifts"],
+    "queueMessages": ["Lähetä viestit koosteena tiettyyn aikaan", "Send compiled messages at a certain time"],
+    "pendingTime": ["Viestien lähetysaika", "Time for sending emails"],
+    "sendPending": ["Lähetä viestit", "Send messages"],
+    "sendPendingTip": ["Voit lähettää odottavat viestit heti tällä napilla.", "You can force all pending emails to be sent immediately with the button."]
+    },
+    "profileSettings": {
+      "navPassword": ["Vaihda salasana", "Change password"]
+    },
+    "passwordSettings": {
+      "title": ["Vaihda salasana", "Change password"],
+      "old": ["Vanha salasana", "Old password"],
+      "new": ["Uusi salasana", "New password"],
+      "confirmNew": ["Vahvista uusi salasana", "Confirm new password"],
+      "confirm": ["Vahvista", "Confirm"],
+      "alertFields": ["Täytä kaikki tekstikentät", "Fill all the text fields"],
+      "alertWrongPword": ["Nykyinen salasana virheellinen", "Old password isn't valid"],
+      "alertPwordMatch": ["Uusi salasana ja vahvistus eivät täsmää", "Confirmation doesn't match the new password"],
+      "alertSuccess": ["Vaihto onnistui", "Change successful"],
+      "alertFail": ["Vaihto epäonnistui", "Change failed"]
   }
 }

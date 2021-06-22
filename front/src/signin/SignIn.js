@@ -99,6 +99,11 @@ const SignIn = () => {
     history.goBack();
   }
 
+  function forgot() {
+    const path = '/signin/reset-password';
+    history.push(path);
+  }
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -174,6 +179,16 @@ const SignIn = () => {
             style={{ color: '#5f77a1' }}
           >
             {signin.Back[fin]}
+          </Button>
+
+          &nbsp;
+          
+          <Button
+            onClick={() => forgot()}
+            fullWidth
+            style={{ color: '#5f77a1' }}
+          >
+            {signin.ForgotPassword[fin]}
           </Button>
 
         </form>

@@ -4,6 +4,24 @@ const services = require(path.join(root, 'services'));
 const validators = require(path.join(root, 'validators'));
 const _ = require('lodash');
 
+/* Check that the user id in the session is the same as in the request parameter 
+or that the user has admin role. */
+const userUpdateCheck = function canUpdatePassword(request, response, next) {
+  const session = response.locals.user;
+  
+  if (session.role === 'superuser') {
+    return next();
+  }
+
+  if (Number(session.id) === Number(request.params.id)) {
+    return next();
+  }
+
+  return response.status(403).send({
+    error: 'User doesn\'t have privileges to this resource',
+  });
+};
+
 const canRead = function canReadUserData(request, response, next) {
   const session = response.locals.user;
   const query = response.locals.query;
@@ -17,7 +35,6 @@ const canRead = function canReadUserData(request, response, next) {
   if(_.isMatch(_.pick(session, 'name', 'id'), _.pick(query, 'name', 'id'))) {
     return next();
   }
-
   return response.status(403).send({
     error: 'User doesn\'t have privileges to this resource'
   });
@@ -183,4 +200,9 @@ exports.update = [
 exports.delete = [
   validators.user.delete,
   serviceCalls.delete
+];
+
+exports.updateOwnPasswordFilter = [
+  validators.user.updatePassword,
+  userUpdateCheck,
 ];

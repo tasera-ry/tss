@@ -8,12 +8,11 @@ exports.read = [
   async function checkJwt(request, response, next) {
     let users;
 
-    const decoded = jwt.verify(request.cookies.token, config.jwt.secret);
-
     try {
+      const decoded = jwt.verify(request.cookies.token, config.jwt.secret);
       users = await services.user.read(decoded);
     } catch(e) {
-      return next(e);
+      return next(e.message);
     }
 
     if(users.length !== 1) {

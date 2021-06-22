@@ -16,6 +16,14 @@ router.route('/sign')
     middlewares.user.sign,
     controllers.user.sign);
 
+router.route('/reset')
+  .post(
+    controllers.resetPassword.check)
+  .get(
+    controllers.resetPassword.verify)
+  .put(
+    controllers.resetPassword.update);
+
 // NOTE: no checking token: if invalid, we can never
 // logout (remove the invalid cookie) in that case
 router.route('/signout')
@@ -46,6 +54,14 @@ router.route('/user/:id')
   .delete(
     middlewares.user.delete,
     controllers.user.delete);
+
+router.route('/changeownpassword/:id')
+  .put(
+    middlewares.jwt.read,
+    middlewares.user.updateOwnPasswordFilter,
+    middlewares.user.update,
+    controllers.user.update
+);
 
 
 // Track supervision
@@ -90,6 +106,7 @@ router.route('/range-supervision/feedback')
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes),
     validators.rangeSupervision.feedback,
+    middlewares.rangeSupervision.feedback,
     controllers.rangeSupervision.feedback);
 
 router.route('/range-supervision/usersupervisions/:id')
@@ -196,5 +213,20 @@ router.route('/datesupreme/:date')
 
 router.route('/validate')
   .get(middlewares.jwt.validate);
+
+router.route('/email-settings')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .get(controllers.emailSettings.read)
+  .put(
+    validators.emailSettings.update,
+    controllers.emailSettings.update);
+
+router.route('/send-pending')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .get(controllers.emailSettings.sendPendingEmails);
 
 module.exports = router;

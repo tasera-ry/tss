@@ -138,6 +138,15 @@ module.exports = {
       return next();
     }
   ],
+  updatePassword: [
+    fields.password(body, 'exists'),
+    handleValidationErrors,
+    function storeUpdateRequest(request, response, next) {
+      response.locals.id = matchedData(request, { locations: ['params'] });
+      response.locals.updates = matchedData(request, { locations: ['body'] });
+      return next();
+    },
+  ],
   update: [
     fields.id(param, 'exists'),
     fields.name(body, 'optional'),

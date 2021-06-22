@@ -84,7 +84,7 @@ const model = {
    * exports.update({ name: 'Mark }, { digest: 'new_password_digest' })
    */
   update: async function updateUser(current, update) {
-    const user = _.pick(update, 'name', 'digest', 'email');
+    const user = _.pick(update, 'name', 'digest', 'email', 'reset_token', 'reset_token_expire');
     const supervisor = _.pick(update, 'phone');
 
     const id = await model
@@ -130,6 +130,28 @@ const model = {
         .then(trx.commit)
         .catch(trx.rollback);
     });
+  },
+  /**
+   * Get email by user key
+   * @param {object} key - Users' identifying info.
+   * @return {Promise<json>} - Email address of the user
+   */
+  getEmail: async function getUserEmail(key) {
+    return await knex
+      .from('user')
+      .select('email')
+      .where({ 'id': key })
+      .first();
+  },
+  /**
+   * Get superuser ids
+   * @return {Promise<object>} - Keys of superusers
+   */
+  getSuperusers: async function getSuperusers() {
+    return await knex
+      .from('user')
+      .pluck('id')
+      .where({ role: 'superuser' });
   }
 };
 

@@ -24,6 +24,8 @@ import {
   DialogTitle,
   TextField,
 } from '@material-ui/core';
+import NiceInputPassword from 'react-nice-input-password';
+import 'react-nice-input-password/dist/react-nice-input-password.css';
 
 // axios for calls to backend
 import axios from 'axios';
@@ -209,6 +211,9 @@ class UserManagementView extends Component {
     this.handleChangeOwnEmailDialogCloseAgree = this.handleChangeOwnEmailDialogCloseAgree.bind(this); //eslint-disable-line
     this.handleNewuserNameChange = this.handleNewuserNameChange.bind(this);
     this.handleNewuserPassChange = this.handleNewuserPassChange.bind(this);
+
+    this.handleNewuserSecurePassChange = this.handleNewuserSecurePassChange.bind(this);
+
     this.handleNewEmailChange = this.handleNewEmailChange.bind(this);
     this.handleAddNewUserDialogClose = this.handleAddNewUserDialogClose.bind(this);
     this.handleAddNewUserDialogCloseConfirmed = this.handleAddNewUserDialogCloseConfirmed.bind(this);  // eslint-disable-line
@@ -219,6 +224,9 @@ class UserManagementView extends Component {
     this.handleChangeNewUserRole = this.handleChangeNewUserRole.bind(this);
     this.handleOldpassStringChange = this.handleOldpassStringChange.bind(this);
     this.handleNewpassStringChange = this.handleNewpassStringChange.bind(this);
+
+    this.handleNewSecurePassStringChange = this.handleNewSecurePassStringChange.bind(this);
+
     this.handleaddEmailDialog = this.handleaddEmailDialog.bind(this);
   }
 
@@ -377,6 +385,7 @@ class UserManagementView extends Component {
       });
     } else {
       this.handleaddEmailClose();
+      this.makeDataFreshAgain();
     }
   }
 
@@ -398,15 +407,15 @@ class UserManagementView extends Component {
   returnaddEmailButton(id, manage, fin) { // eslint-disable-line
     return (
       <Button id={id} size="small" style={{ backgroundColor: '#55555' }} variant="contained" onClick={this.onaddEmailClick}>
-        {manage.NewEmail[fin]}
+        {manage.ChangeEmail[fin]}
       </Button>
     );
   }
 
-  createData(name, role, ButtonToChangePassword, ButtonToRemoveUser, ButtonToaddEmail) {
+  createData(name, role, email, ButtonToChangePassword, ButtonToRemoveUser, ButtonToaddEmail) {
     const roleToPrint = role === 'superuser' ? manage.Superuser[fin] : manage.Supervisor[fin];
     return {
-      name, roleToPrint, ButtonToChangePassword, ButtonToRemoveUser, ButtonToaddEmail,
+      name, roleToPrint, email, ButtonToChangePassword, ButtonToRemoveUser, ButtonToaddEmail,
     };
   }
 
@@ -522,6 +531,15 @@ class UserManagementView extends Component {
     });
   }
 
+  // handles state change for newpassword securely
+  handleNewSecurePassStringChange(data) {
+    console.log('Password:', data.value);
+    this.setState({
+      newPassword: data.value,
+    });
+
+  }
+
   // handle state email change
   handleNewEmailChange(e) {
     this.setState({
@@ -548,6 +566,15 @@ class UserManagementView extends Component {
     this.setState({
       newUserPass: e.target.value,
     });
+  }
+
+  // handles state change for new users password securely
+  handleNewuserSecurePassChange(data) {
+    console.log('Password:', data.value);
+    this.setState({
+      newUserPass: data.value,
+    });
+
   }
 
   /**
@@ -636,6 +663,7 @@ class UserManagementView extends Component {
       if (this.state.username !== this.state.userList[i].name) {
         const row = this.createData(this.state.userList[i].name,
           this.state.userList[i].role,
+          this.state.userList[i].email,
           this.returnPassButton(this.state.userList[i].id, manage, fin),
           this.returnRemoveButton(this.state.userList[i].id, manage, fin),
           this.returnaddEmailButton(this.state.userList[i].id, manage, fin));
@@ -678,14 +706,42 @@ class UserManagementView extends Component {
               onChange={this.handleNewuserNameChange}
               fullWidth
             />
-            <TextField
+
+            <br></br>
+            <br></br>
+
+            <NiceInputPassword
+              LabelComponent={InputLabel}
+              InputComponent={TextField}
+              style={dialogStyle}
               value={this.state.newUserPass}
               margin="dense"
-              id="password"
               label={manage.Password[fin]}
-              onChange={this.handleNewuserPassChange}
+              name="passwordField"
               fullWidth
+              securityLevels={[
+                {
+                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
+                  validator: /.*[0-9].*/,
+                },
+                {
+                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
+                  validator: /.*[a-z].*/,
+                },
+                {
+                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
+                  validator: /.*[A-Z].*/,
+                },
+                {
+                  descriptionLabel: manage.MinimumLength[fin],
+                  validator: /^.{6,}$/
+                }
+              ]}
+              showSecurityLevelBar
+              showSecurityLevelDescription
+              onChange={this.handleNewuserSecurePassChange}
             />
+
             <TextField
               value={this.state.email}
               margin="dense"
@@ -809,19 +865,46 @@ class UserManagementView extends Component {
               onChange={this.handleOldpassStringChange}
               fullWidth
             />
-            <TextField
+
+            <br></br>
+            <br></br>
+
+            <NiceInputPassword
               type="password"
-              value={this.state.newpassword}
+              LabelComponent={InputLabel}
+              InputComponent={TextField}
+              style={dialogStyle}
+              value={this.state.newPassword}
               margin="dense"
-              id="newpassword"
               label={manage.NewPass[fin]}
-              onChange={this.handleNewpassStringChange}
+              name="passwordField"
               fullWidth
+              securityLevels={[
+                {
+                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
+                  validator: /.*[0-9].*/,
+                },
+                {
+                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
+                  validator: /.*[a-z].*/,
+                },
+                {
+                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
+                  validator: /.*[A-Z].*/,
+                },
+                {
+                  descriptionLabel: manage.MinimumLength[fin],
+                  validator: /^.{6,}$/
+                }
+              ]}
+              showSecurityLevelBar
+              showSecurityLevelDescription
+              onChange={this.handleNewSecurePassStringChange}
             />
 
             {this.state.changeOwnPassFailed ? (
               <p style={{ fontSize: 20, color: 'red', textAlign: 'center' }}>
-                {manage.Error[fin]}
+                {manage.ErrorPassword[fin]}
                 {' '}
               </p>
             ) : (
@@ -865,7 +948,7 @@ class UserManagementView extends Component {
               value={this.state.newemail}
               margin="dense"
               id="newemail"
-              label={manage.NewEmail[fin]}
+              label={manage.ChangeEmail[fin]}
               onChange={this.handleNewEmailChange}
               fullWidth
             />
@@ -908,20 +991,46 @@ class UserManagementView extends Component {
           <DialogContent
             style={dialogStyle}
           >
-            <TextField
+
+            <NiceInputPassword
               type="text"
+              LabelComponent={InputLabel}
+              InputComponent={TextField}
+              style={dialogStyle}
               value={this.state.password}
               margin="dense"
-              id="name"
               label={manage.NewPass[fin]}
-              onChange={(e) => {
-                this.setState({ password: e.target.value });
-              }}
+              name="passwordField"
               fullWidth
+              securityLevels={[
+                {
+                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
+                  validator: /.*[0-9].*/,
+                },
+                {
+                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
+                  validator: /.*[a-z].*/,
+                },
+                {
+                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
+                  validator: /.*[A-Z].*/,
+                },
+                {
+                  descriptionLabel: manage.MinimumLength[fin],
+                  validator: /^.{6,}$/
+                }
+              ]}
+              showSecurityLevelBar
+              showSecurityLevelDescription
+              onChange={(e) => {
+                console.log("password: " + e.value)
+                this.setState({ password: e.value });
+              }}
             />
+
             {this.state.changeErrors ? (
               <p style={{ fontSize: 20, color: 'red', textAlign: 'center' }}>
-                {manage.Error[fin]}
+                {manage.ErrorPassword[fin]}
                 {' '}
               </p>
             ) : (
@@ -961,7 +1070,7 @@ class UserManagementView extends Component {
               value={this.state.email}
               margin="dense"
               id="name"
-              label={manage.NewEmail[fin]}
+              label={manage.ChangeEmail[fin]}
               onChange={(e) => {
                 this.setState({ email: e.target.value });
               }}
@@ -1028,14 +1137,14 @@ class UserManagementView extends Component {
         <h3 style={{ textAlign: 'center' }}>{`${manage.Users[fin]}:`}</h3>
         <Box style={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}>
 
-          <TableContainer component={Paper} style={{ maxWidth: 575, tableLayout: 'auto' }}>
+          <TableContainer component={Paper} style={{ maxWidth: 800, tableLayout: 'auto' }}>
             <Table aria-label="table of users" style={{ backgroundColor: '#F2F0EB' }}>
               <TableHead>
                 <TableRow>
                   <TableCell align="justify">{manage.Username[fin]}</TableCell>
                   <TableCell align="justify">{manage.ChangePass[fin]}</TableCell>
                   <TableCell align="justify">{manage.RemoveUser[fin]}</TableCell>
-                  <TableCell align="justify">{manage.NewEmail[fin]}</TableCell>
+                  <TableCell align="justify">{manage.ChangeEmail[fin]}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -1047,6 +1156,8 @@ class UserManagementView extends Component {
                       {' '}
                       <br />
                       {row.roleToPrint}
+                      <br />
+                      {row.email}
                     </TableCell>
                     <TableCell align="justify">{row.ButtonToChangePassword}</TableCell>
                     <TableCell align="justify">{row.ButtonToRemoveUser}</TableCell>

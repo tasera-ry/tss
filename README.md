@@ -8,13 +8,14 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 
 | Name       | Version |
 |:-----------|--------:|
-| Node.js    | 12+     |
+| Node.js    | 14+     |
 | PostgreSQL | 9+      |
 
 ## How to run the application (development)
 
+## First steps
 1. Install project dependencies
-   - https://nodejs.org/ (tested using the `LTS 12` release)
+   - https://nodejs.org/ (tested using the `LTS 14` release)
    - https://www.postgresql.org/
 
      Easiest way to set up a PSQL database is using docker:
@@ -25,14 +26,30 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
    - `git clone https://github.com/tasera-ry/tss.git`
 3. Install project packages
    - `cd back && npm install && cd ../front && npm install && cd ..`
-4. Run database migrations
+
+### Starting up the app using an .env file 
+1. Create a `.env` file into the `back/` directory (an .env.example file is included in the folder, which can be copied and renamed).
+2. Write the runtime variables into the `.env` file.
+3. When using `.env` file you can run the commands without the environment variables, 
+4. Migrations and seeds
+   ```sh
+       bash -c 'cd back && npx knex migrate:latest && npx knex seed:run && cd ..
+   ```
+5. Run the project
+   ```sh
+      bash -c 'cd back && npm run dev:withFront'
+   ```
+6. The application should start at http://localhost:3000 (default host)
+
+### Starting the app with command line variables 
+1. Run database migrations
    ```sh
    env DB_USER=postgres \
        DB_PASSWORD=some_password \
        DB=postgres \
-       sh -c 'cd back && npx knex migrate:latest && npx knex seed:run && cd ..'
+       bash -c 'cd back && npx knex migrate:latest && npx knex seed:run && cd ..'
    ```
-5. Run the project
+2. Run the project
    ```sh
    env DB_USER=postgres \
        DB_PASSWORD=some_password \
@@ -40,7 +57,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
        SENDER_EMAIL=noreply@tasera.fi \
        bash -c 'cd back && npm run dev:withFront'
    ```
-6. The program should start up
+3. The program should start up at http://localhost:3000 (default host)
 
 ## How to run the application (production)
 1. Run steps 1., 2., & 3. from the previous section
@@ -77,6 +94,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
    run.
 
 ## Runtime configuration
+**NOTE** These can be also set in a `.env` file in the `back/` directory.
 
 | Variable        | Explanation                                                            | Default value           |
 |-----------------|------------------------------------------------------------------------|-------------------------|
