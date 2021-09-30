@@ -87,7 +87,10 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
 
   const toggleDrawer = (anchor, open) => (event) => {
     setOpenDial(false);
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+    if (
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
       return;
     }
     setMenu({ right: open });
@@ -97,61 +100,37 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
     <div style={drawerStyle}>
       <List>
         <Link style={navStyle} to="/scheduling">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
+          <ListItem button onClick={HandleClick} style={elementStyle}>
             {nav.Schedule[fin]}
           </ListItem>
         </Link>
 
         <Link style={navStyle} to="/usermanagement">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
+          <ListItem button onClick={HandleClick} style={elementStyle}>
             {nav.UserManagement[fin]}
           </ListItem>
         </Link>
 
         <Link style={navStyle} to="/tracks">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
+          <ListItem button onClick={HandleClick} style={elementStyle}>
             {nav.trackCRUD[fin]}
           </ListItem>
         </Link>
 
         <Link style={navStyle} to="/tablet">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
+          <ListItem button onClick={HandleClick} style={elementStyle}>
             {nav.Tablet[fin]}
           </ListItem>
         </Link>
 
         <Link style={navStyle} to="/email-settings">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
+          <ListItem button onClick={HandleClick} style={elementStyle}>
             {nav.EmailSettings[fin]}
           </ListItem>
         </Link>
 
         <Link style={navStyle} to="/statistics">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
+          <ListItem button onClick={HandleClick} style={elementStyle}>
             {nav.Statistics[fin]}
           </ListItem>
         </Link>
@@ -159,11 +138,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
         <Divider style={elementStyle} />
 
         <Link style={navStyle} to="/">
-          <ListItem
-            button
-            onClick={HandleSignOut}
-            style={elementStyle}
-          >
+          <ListItem button onClick={HandleSignOut} style={elementStyle}>
             {nav.SignOut[fin]}
           </ListItem>
         </Link>
@@ -174,50 +149,30 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
   const supervisorList = () => (
     <div style={drawerStyle}>
       <List>
-        <ListItem
-          button
-          onClick={HandleOpenDialog}
-          style={elementStyle}
-        >
+        <ListItem button onClick={HandleOpenDialog} style={elementStyle}>
           {nav.Supervision[fin]}
         </ListItem>
 
         <Link style={navStyle} to="/tablet">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
+          <ListItem button onClick={HandleClick} style={elementStyle}>
             {nav.Tablet[fin]}
           </ListItem>
         </Link>
 
         <Link style={navStyle} to="/profile">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
+          <ListItem button onClick={HandleClick} style={elementStyle}>
             {nav.Profile[fin]}
           </ListItem>
         </Link>
 
-        <ListItem
-          button
-          onClick={HandleFeedback}
-          style={elementStyle}
-        >
+        <ListItem button onClick={HandleFeedback} style={elementStyle}>
           {nav.Feedback[fin]}
         </ListItem>
 
         <Divider style={elementStyle} />
 
         <Link style={navStyle} to="/">
-          <ListItem
-            button
-            onClick={HandleSignOut}
-            style={elementStyle}
-          >
+          <ListItem button onClick={HandleSignOut} style={elementStyle}>
             {nav.SignOut[fin]}
           </ListItem>
         </Link>
@@ -227,16 +182,13 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
 
   return (
     <div className="pc">
-      {cookies.hasOwnProperty('username') // eslint-disable-line
-        ? (
-          <Button
-            className="clickable"
-            onClick={toggleDrawer('right', true)}
-          >
-            {nav.Menu[fin]}
-          </Button>
-        )
-        : ''}
+      {cookies.hasOwnProperty('username') ? ( // eslint-disable-line
+        <Button className="clickable" onClick={toggleDrawer('right', true)}>
+          {nav.Menu[fin]}
+        </Button>
+      ) : (
+        ''
+      )}
 
       <div>
         <Drawer
@@ -245,21 +197,19 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
           onClose={toggleDrawer('right', false)}
           classes={{ paper: styles.paper }}
         >
-          {superuser
-            ? superuserList('left')
-            : supervisorList('left')}
+          {superuser ? superuserList('left') : supervisorList('left')}
         </Drawer>
-
       </div>
       {openDial ? <DialogWindow /> : ''}
-      {openFeedback
-        ? (
-          <FeedbackWindow
-            user={cookies.username}
-            dialogOpen={openFeedback}
-            setDialogOpen={setOpenFeedback}
-          />
-        ) : ''}
+      {openFeedback ? (
+        <FeedbackWindow
+          user={cookies.username}
+          dialogOpen={openFeedback}
+          setDialogOpen={setOpenFeedback}
+        />
+      ) : (
+        ''
+      )}
     </div>
   );
 };
@@ -287,22 +237,35 @@ const Nav = () => {
   return (
     <div className="Nav">
       <nav>
-        <Link className="logoStyle" to="/" onClick={() => setCheckSupervisions(true)}>
+        <Link
+          className="logoStyle"
+          to="/"
+          onClick={() => setCheckSupervisions(true)}
+        >
           {icon}
         </Link>
 
         {!name ? (
-          <Link className="pc clickable" style={{ textDecoration: 'none' }} to="/signin">
-            <Button>
-              {nav.SignIn[fin]}
-            </Button>
+          <Link
+            className="pc clickable"
+            style={{ textDecoration: 'none' }}
+            to="/signin"
+          >
+            <Button>{nav.SignIn[fin]}</Button>
           </Link>
-        )
-          : <p className="pc" style={textStyle}>{name}</p>}
+        ) : (
+          <p className="pc" style={textStyle}>
+            {name}
+          </p>
+        )}
 
         <span className="pc">
-          <Button className="clickable" onClick={() => setLanguage(1)}>EN</Button>
-          <Button className="clickable" onClick={() => setLanguage(0)}>FI</Button>
+          <Button className="clickable" onClick={() => setLanguage(1)}>
+            EN
+          </Button>
+          <Button className="clickable" onClick={() => setLanguage(0)}>
+            FI
+          </Button>
         </span>
 
         <SideMenu
@@ -310,7 +273,6 @@ const Nav = () => {
           superuser={superuser}
           setLoggingOut={setLoggingOut}
         />
-
       </nav>
       <SupervisorNotification
         loggingOut={loggingOut}

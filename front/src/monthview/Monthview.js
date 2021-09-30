@@ -10,7 +10,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 // Moment for date management
 import moment from 'moment';
 import {
-  viewChanger, jumpToCurrent, getSchedulingFreeform, checkColor,
+  viewChanger,
+  jumpToCurrent,
+  getSchedulingFreeform,
+  checkColor,
 } from '../utils/Utils';
 import Infoboxes from '../infoboxes/Infoboxes';
 
@@ -19,7 +22,7 @@ import texts from '../texts/texts.json';
 
 const smallInfoIcon = require('../logo/Small-info.png');
 
-const { weekdayShorthand, month } = texts;  // eslint-disable-line
+const { weekdayShorthand, month } = texts; // eslint-disable-line
 const fin = localStorage.getItem('language');
 
 class Monthview extends Component {
@@ -42,12 +45,16 @@ class Monthview extends Component {
     this.getMonth();
   }
 
-  UNSAFE_componentWillReceiveProps() { // eslint-disable-line
-    this.setState({
-      state: 'loading',
-    }, () => {
-      this.update();
-    });
+  /* eslint-disable-next-line */
+  UNSAFE_componentWillReceiveProps() {
+    this.setState(
+      {
+        state: 'loading',
+      },
+      () => {
+        this.update();
+      },
+    );
   }
 
   getYear = () => {
@@ -69,7 +76,7 @@ class Monthview extends Component {
     const yyyy = today.getFullYear();
     this.setState({ yearNro: yyyy });
     return yyyy;
-  }
+  };
 
   getMonth = () => {
     try {
@@ -90,13 +97,13 @@ class Monthview extends Component {
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     this.setState({ monthNro: mm });
     return mm;
-  }
+  };
 
   createWeekDay = () => {
     const table = [];
     let dayNumber;
 
-    const fin = localStorage.getItem('language');// eslint-disable-line
+    const fin = localStorage.getItem('language'); // eslint-disable-line
     const { month } = texts; // eslint-disable-line
 
     for (let j = 0; j < 8; j += 1) {
@@ -118,7 +125,7 @@ class Monthview extends Component {
     }
 
     return table;
-  }
+  };
 
   createMonthTable = () => {
     const requestSchedulingFreeform = async (date) => {
@@ -138,9 +145,18 @@ class Monthview extends Component {
     }
 
     let help = 0;
-    const days = moment(`${this.state.yearNro}-${this.state.monthNro}`, 'YYYY-MM').daysInMonth();
-    const startDay = moment(`${this.state.yearNro}-${this.state.monthNro}-1`, 'YYYY-MM-DD');
-    let firstMon = moment(`${this.state.yearNro}-${this.state.monthNro}-1`, 'YYYY-MM-DD');
+    const days = moment(
+      `${this.state.yearNro}-${this.state.monthNro}`,
+      'YYYY-MM',
+    ).daysInMonth();
+    const startDay = moment(
+      `${this.state.yearNro}-${this.state.monthNro}-1`,
+      'YYYY-MM-DD',
+    );
+    let firstMon = moment(
+      `${this.state.yearNro}-${this.state.monthNro}-1`,
+      'YYYY-MM-DD',
+    );
     let info = false;
 
     const addDate = (target, isCurrent) => {
@@ -160,18 +176,18 @@ class Monthview extends Component {
           className={`${isCurrent}`}
           to={`/dayview/${firstMon.format('YYYY-MM-DD')}`}
         >
-          {info
-            ? (
-              <div className="monthview-day-img">
-                {target.date()}
-                <img className="Monthview-info" src={smallInfoIcon} alt={month.Notice[fin]} />
-              </div>
-            )
-            : (
-              <div>
-                {target.date()}
-              </div>
-            )}
+          {info ? (
+            <div className="monthview-day-img">
+              {target.date()}
+              <img
+                className="Monthview-info"
+                src={smallInfoIcon}
+                alt={month.Notice[fin]}
+              />
+            </div>
+          ) : (
+            <div>{target.date()}</div>
+          )}
         </Link>,
       );
       target.add(1, 'days');
@@ -181,7 +197,10 @@ class Monthview extends Component {
     // safety loop incase of errors in name detection due to wrong locale, e.g. Sweden
     let safetyLoop = 0;
 
-    while (firstMon.format('ddd') !== 'Mon' && firstMon.format('ddd') !== 'ma') {
+    while (
+      firstMon.format('ddd') !== 'Mon' &&
+      firstMon.format('ddd') !== 'ma'
+    ) {
       firstMon = firstMon.subtract(1, 'days');
       if (safetyLoop > 7) {
         break;
@@ -190,7 +209,10 @@ class Monthview extends Component {
     }
     safetyLoop = 0;
 
-    if (this.state.daysTable === undefined || this.state.daysTable[0].date !== firstMon.format('YYYY-MM-DD')) {
+    if (
+      this.state.daysTable === undefined ||
+      this.state.daysTable[0].date !== firstMon.format('YYYY-MM-DD')
+    ) {
       requestSchedulingFreeform(firstMon.format('YYYY-MM-DD'));
     }
     if (this.state.daysTable === undefined) {
@@ -209,20 +231,38 @@ class Monthview extends Component {
     addDate(firstMon, 'link');
 
     // add days until we get to end of week
-    while (firstMon.format('ddd') !== 'Mon' && firstMon.format('ddd') !== 'ma') {
+    while (
+      firstMon.format('ddd') !== 'Mon' &&
+      firstMon.format('ddd') !== 'ma'
+    ) {
       addDate(firstMon, 'link notCurMonth');
     }
 
     return table;
-  }
+  };
 
   createWeekNumber = () => {
     const table = [];
-    const days = moment(`${this.state.yearNro}-${this.state.monthNro}`, 'YYYY-MM').daysInMonth();
-    let startWeek = moment(`${this.state.yearNro}-${this.state.monthNro}-1`, 'YYYY-MM-DD').isoWeek();
-    const startHelp = moment(`${this.state.yearNro}-${this.state.monthNro}-1`, 'YYYY-MM-DD');
-    const endWeek = moment(`${this.state.yearNro}-${this.state.monthNro}-${days}`, 'YYYY-MM-DD').isoWeek();
-    const link = moment(`${this.state.yearNro}-${this.state.monthNro}-1`, 'YYYY-MM-DD');
+    const days = moment(
+      `${this.state.yearNro}-${this.state.monthNro}`,
+      'YYYY-MM',
+    ).daysInMonth();
+    let startWeek = moment(
+      `${this.state.yearNro}-${this.state.monthNro}-1`,
+      'YYYY-MM-DD',
+    ).isoWeek();
+    const startHelp = moment(
+      `${this.state.yearNro}-${this.state.monthNro}-1`,
+      'YYYY-MM-DD',
+    );
+    const endWeek = moment(
+      `${this.state.yearNro}-${this.state.monthNro}-${days}`,
+      'YYYY-MM-DD',
+    ).isoWeek();
+    const link = moment(
+      `${this.state.yearNro}-${this.state.monthNro}-1`,
+      'YYYY-MM-DD',
+    );
 
     if (this.state.yearNro === 0) {
       return false;
@@ -230,10 +270,12 @@ class Monthview extends Component {
 
     while (startHelp.isoWeek() !== endWeek) {
       table.push(
-        <Link key={startWeek} className="link" to={`/weekview/${link.format('YYYY-MM-DD')}`}>
-          <div>
-            {startWeek}
-          </div>
+        <Link
+          key={startWeek}
+          className="link"
+          to={`/weekview/${link.format('YYYY-MM-DD')}`}
+        >
+          <div>{startWeek}</div>
         </Link>,
       );
       link.add(1, 'weeks');
@@ -242,15 +284,17 @@ class Monthview extends Component {
     }
 
     table.push(
-      <Link key={startWeek} className="link" to={`/weekview/${link.format('YYYY-MM-DD')}`}>
-        <div>
-          {startWeek}
-        </div>
+      <Link
+        key={startWeek}
+        className="link"
+        to={`/weekview/${link.format('YYYY-MM-DD')}`}
+      >
+        <div>{startWeek}</div>
       </Link>,
     );
 
     return table;
-  }
+  };
 
   previousMonthClick(e) {
     this.setState({
@@ -267,10 +311,15 @@ class Monthview extends Component {
       const paramMonth = urlParamDateSplit[1].padStart(2, '0');
       const paramDay = urlParamDateSplit[2];
 
-      const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYYMMDD');
+      const paramDateCorrect = moment(
+        paramYear + paramMonth + paramDay,
+        'YYYYMMDD',
+      );
       paramDateCorrect.add(1, 'days');
       paramDateCorrect.subtract(1, 'month');
-      this.props.history.replace(`/monthview/${paramDateCorrect.toISOString().substring(0, 10)}`); // eslint-disable-line
+      this.props.history.replace(
+        `/monthview/${paramDateCorrect.toISOString().substring(0, 10)}`,
+      ); // eslint-disable-line
       this.setState(
         {
           monthNro: paramMonth,
@@ -301,10 +350,15 @@ class Monthview extends Component {
       const paramMonth = urlParamDateSplit[1].padStart(2, '0');
       const paramDay = urlParamDateSplit[2];
 
-      const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYYMMDD');
+      const paramDateCorrect = moment(
+        paramYear + paramMonth + paramDay,
+        'YYYYMMDD',
+      );
       paramDateCorrect.add(1, 'days');
       paramDateCorrect.add(1, 'month');
-      this.props.history.replace(`/monthview/${paramDateCorrect.toISOString().substring(0, 10)}`); // eslint-disable-line
+      this.props.history.replace(
+        `/monthview/${paramDateCorrect.toISOString().substring(0, 10)}`,
+      ); // eslint-disable-line
       this.setState(
         {
           monthNro: paramMonth,
@@ -329,13 +383,18 @@ class Monthview extends Component {
       const paramYear = urlParamDateSplit[0];
       const paramMonth = urlParamDateSplit[1].padStart(2, '0');
 
-      if ((paramMonth === this.state.monthNro && paramYear === this.state.yearNro)) {
+      if (
+        paramMonth === this.state.monthNro &&
+        paramYear === this.state.yearNro
+      ) {
         this.setState({
           state: 'ready',
         });
       }
-      if ((paramMonth !== this.state.monthNro && this.state.monthNro !== 0)
-        || (paramYear !== 0 && paramYear !== this.state.yearNro)) {
+      if (
+        (paramMonth !== this.state.monthNro && this.state.monthNro !== 0) ||
+        (paramYear !== 0 && paramYear !== this.state.yearNro)
+      ) {
         this.setState({
           monthNro: paramMonth,
           yearNro: paramYear,
@@ -349,64 +408,52 @@ class Monthview extends Component {
         yearNro: date.getYear(),
       });
       console.error(err);
-      this.props.history.replace(`/Monthview/${date.toISOString().substring(0, 10)}`);
+      this.props.history.replace(
+        `/Monthview/${date.toISOString().substring(0, 10)}`,
+      );
     }
   }
 
   render() {
     const fin = localStorage.getItem('language'); // eslint-disable-line
-    const { month } = texts;  // eslint-disable-line
+    const { month } = texts; // eslint-disable-line
     const monthTable = this.createMonthTable();
     return (
       <div>
-        {this.state.state !== 'ready'
-          ? (
-            <div className="progress">
-              <CircularProgress size="25vw" disableShrink />
+        {this.state.state !== 'ready' ? (
+          <div className="progress">
+            <CircularProgress size="25vw" disableShrink />
+          </div>
+        ) : (
+          <div>
+            <div className="date-headerM">
+              <div
+                className="hoverHand arrow-left"
+                onClick={this.previousMonthClick}
+                data-testid="previousMonth"
+              />
+              <h1 className="dateHeader-text">
+                {`${month[this.state.monthNro][fin]},`} {this.state.yearNro}
+              </h1>
+              <div
+                className="hoverHand arrow-right"
+                onClick={this.nextMonthClick}
+                data-testid="nextMonth"
+              />
             </div>
-          )
-          : (
-            <div>
-              <div className="date-headerM">
-                <div
-                  className="hoverHand arrow-left"
-                  onClick={this.previousMonthClick}
-                  data-testid="previousMonth"
-                />
-                <h1 className="dateHeader-text">
-                  {`${month[this.state.monthNro][fin]},`}
-                  {' '}
-                  {this.state.yearNro}
-                </h1>
-                <div
-                  className="hoverHand arrow-right"
-                  onClick={this.nextMonthClick}
-                  data-testid="nextMonth"
-                />
-              </div>
 
-              <div className="month-container">
-                <div className="viewChanger">
-                  <div className="viewChanger-current">
-                    {jumpToCurrent()}
-                  </div>
-                  <div className="viewChanger-container">
-                    {viewChanger()}
-                  </div>
-                </div>
-                <div className="weekdays">
-                  {this.createWeekDay()}
-                </div>
-                <div className="weekNumber">
-                  {this.createWeekNumber()}
-                </div>
-                <div className="month-days">
-                  { monthTable }
-                </div>
+            <div className="month-container">
+              <div className="viewChanger">
+                <div className="viewChanger-current">{jumpToCurrent()}</div>
+                <div className="viewChanger-container">{viewChanger()}</div>
               </div>
-              <Infoboxes />
+              <div className="weekdays">{this.createWeekDay()}</div>
+              <div className="weekNumber">{this.createWeekNumber()}</div>
+              <div className="month-days">{monthTable}</div>
             </div>
-          )}
+            <Infoboxes />
+          </div>
+        )}
       </div>
     );
   }

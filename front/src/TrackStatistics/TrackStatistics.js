@@ -15,9 +15,7 @@ const ButtonStyle = {
 
 export function TrackStatistics({ track, supervision }) {
   const [visitors, setVisitors] = useState(
-    track.scheduled && track.scheduled.visitors
-      ? track.scheduled.visitors
-      : 0,
+    track.scheduled && track.scheduled.visitors ? track.scheduled.visitors : 0,
   );
 
   // Function for raising or lowering number of visitors in a given track via buttons.
@@ -28,7 +26,7 @@ export function TrackStatistics({ track, supervision }) {
     if (operator === 'dec') {
       newVisitors = visitors - 1;
     }
-    if ((operator !== 'dec' || visitors !== 0) && (track.scheduled)) {
+    if ((operator !== 'dec' || visitors !== 0) && track.scheduled) {
       setVisitors(newVisitors);
       sendVisitors(newVisitors);
     }
@@ -38,7 +36,8 @@ export function TrackStatistics({ track, supervision }) {
   const sendStats = async (newVisitors) => {
     if (track.scheduled) {
       const trackOpts = {
-        scheduled_range_supervision_id: track.scheduled.scheduled_range_supervision_id,
+        scheduled_range_supervision_id:
+          track.scheduled.scheduled_range_supervision_id,
         track_id: track.id,
         notice: track.scheduled.notice,
         track_supervisor: supervision,
@@ -60,9 +59,7 @@ export function TrackStatistics({ track, supervision }) {
       >
         <div className="buttonText">-</div>
       </Button>
-      <div className="visitorAmount">
-        {visitors}
-      </div>
+      <div className="visitorAmount">{visitors}</div>
       <Button
         variant="contained"
         style={ButtonStyle}

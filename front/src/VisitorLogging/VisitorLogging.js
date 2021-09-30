@@ -3,14 +3,20 @@ import './VisitorLogging.css';
 import axios from 'axios';
 import MomentUtils from '@date-io/moment';
 
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
 import { visitorLogging as texts } from '../texts/texts.json';
 
 const VisitorLogging = ({
-  handleClose, setToastSeverity, setToastMessage, setToastOpen,
+  handleClose,
+  setToastSeverity,
+  setToastMessage,
+  setToastOpen,
 }) => {
   const lang = localStorage.getItem('language');
   const [tracks, setTracks] = useState([]);
@@ -40,7 +46,8 @@ const VisitorLogging = ({
       tracks.forEach(async (track) => {
         if (track.scheduled) {
           const trackOpts = {
-            scheduled_range_supervision_id: track.scheduled.scheduled_range_supervision_id,
+            scheduled_range_supervision_id:
+              track.scheduled.scheduled_range_supervision_id,
             track_id: track.id,
             notice: track.scheduled.notice,
             track_supervisor: track.scheduled.track_supervisor,
@@ -66,18 +73,20 @@ const VisitorLogging = ({
 
   const handleChange = (event) => {
     const { target } = event;
-    setTracks(tracks.map((track) => {
-      if (track.id === parseInt(target.id)) {
-        return {
-          ...track,
-          scheduled: {
-            ...track.scheduled,
-            visitors: parseInt(target.value),
-          },
-        };
-      }
-      return track;
-    }));
+    setTracks(
+      tracks.map((track) => {
+        if (track.id === parseInt(target.id)) {
+          return {
+            ...track,
+            scheduled: {
+              ...track.scheduled,
+              visitors: parseInt(target.value),
+            },
+          };
+        }
+        return track;
+      }),
+    );
   };
 
   let locale = 'fi';
@@ -89,10 +98,7 @@ const VisitorLogging = ({
   return (
     <div className="loggingContainer">
       <div>
-        <MuiPickersUtilsProvider
-          locale={locale}
-          utils={MomentUtils}
-        >
+        <MuiPickersUtilsProvider locale={locale} utils={MomentUtils}>
           <KeyboardDatePicker
             autoOk
             margin="normal"
@@ -105,24 +111,24 @@ const VisitorLogging = ({
             data-testid="datePicker"
           />
         </MuiPickersUtilsProvider>
-        {tracks[0] && tracks[0].id
-          ? (
-            <div className="inputContainer">
-              {tracks.map((track) => (
-                <div key={track.id} className="visitorInput">
-                  <TextField
-                    id={track.id.toString()}
-                    variant="outlined"
-                    label={track.short_description}
-                    type="number"
-                    value={track.scheduled.visitors}
-                    onChange={handleChange}
-                  />
-                </div>
-              ))}
-            </div>
-          )
-          : <div>{texts.NoSchedule[lang]}</div>}
+        {tracks[0] && tracks[0].id ? (
+          <div className="inputContainer">
+            {tracks.map((track) => (
+              <div key={track.id} className="visitorInput">
+                <TextField
+                  id={track.id.toString()}
+                  variant="outlined"
+                  label={track.short_description}
+                  type="number"
+                  value={track.scheduled.visitors}
+                  onChange={handleChange}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div>{texts.NoSchedule[lang]}</div>
+        )}
         <div className="modalButtonContainer">
           <div className="modalButton">
             <Button onClick={handleClose} variant="contained" color="secondary">
@@ -135,7 +141,6 @@ const VisitorLogging = ({
             </Button>
           </div>
         </div>
-
       </div>
     </div>
   );

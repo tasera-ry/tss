@@ -33,7 +33,11 @@ import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 
 import socketIOClient from 'socket.io-client';
-import { getSchedulingDate, rangeSupervision, validateLogin } from '../utils/Utils';
+import {
+  getSchedulingDate,
+  rangeSupervision,
+  validateLogin,
+} from '../utils/Utils';
 
 // Translation
 import data from '../texts/texts.json';
@@ -90,11 +94,12 @@ class Scheduling extends Component {
   }
 
   componentDidMount() {
-    this.setState({
-      datePickerKey: Math.random(), // force datepicker to re-render when language changed
-    }, function () {
-      validateLogin()
-        .then((logInSuccess) => {
+    this.setState(
+      {
+        datePickerKey: Math.random(), // force datepicker to re-render when language changed
+      },
+      function () {
+        validateLogin().then((logInSuccess) => {
           if (!logInSuccess) {
             this.props.history.push('/');
           } else {
@@ -115,7 +120,8 @@ class Scheduling extends Component {
               });
           }
         });
-    });
+      },
+    );
     this.socket = socketIOClient();
   }
 
@@ -129,7 +135,7 @@ class Scheduling extends Component {
         });
       });
     }
-  }
+  };
 
   emptyAllTracks = () => {
     if (this.state.tracks) {
@@ -158,26 +164,34 @@ class Scheduling extends Component {
   };
 
   handleDatePickChange = (date) => {
-    this.setState({
-      date,
-    },
-    function () {
-      this.continueWithDate();
-    });
+    this.setState(
+      {
+        date,
+      },
+      function () {
+        this.continueWithDate();
+      },
+    );
   };
 
   continueWithDate = (event) => {
-    if (event !== undefined && event.type !== undefined && event.type === 'submit') {
+    if (
+      event !== undefined &&
+      event.type !== undefined &&
+      event.type === 'submit'
+    ) {
       event.preventDefault();
     }
-    this.setState({
-      state: 'loading',
-    },
-    function () {
-      // console.log("TIME IS",this.state.date);
-      this.update();
-    });
-  }
+    this.setState(
+      {
+        state: 'loading',
+      },
+      function () {
+        // console.log("TIME IS",this.state.date);
+        this.update();
+      },
+    );
+  };
 
   handleTimeStartChange = (date) => {
     this.setState({
@@ -259,12 +273,15 @@ class Scheduling extends Component {
     const { tracks } = this.state;
     tracks[idx].notice = event.target.value;
 
-    this.setState({
-      tracks,
-    }, function () {
-      console.debug(this.state);
-    });
-  }
+    this.setState(
+      {
+        tracks,
+      },
+      function () {
+        console.debug(this.state);
+      },
+    );
+  };
 
   saveChanges = async () => {
     const { sched } = data;
@@ -275,9 +292,23 @@ class Scheduling extends Component {
     });
 
     // update call/error handling
-    const update = async (date, rsId, srsId, rangeSupervisionScheduled, tracks, isRepeat) => {
-      await this.updateCall(date, rsId, srsId, rangeSupervisionScheduled, tracks, isRepeat)
-        .then(() => {
+    const update = async (
+      date,
+      rsId,
+      srsId,
+      rangeSupervisionScheduled,
+      tracks,
+      isRepeat,
+    ) => {
+      await this.updateCall(
+        date,
+        rsId,
+        srsId,
+        rangeSupervisionScheduled,
+        tracks,
+        isRepeat,
+      ).then(
+        () => {
           this.setState({
             toast: true,
             toastMessage: sched.Success[fin],
@@ -299,7 +330,8 @@ class Scheduling extends Component {
               toast: true,
             });
           }
-        });
+        },
+      );
     };
 
     // this function calls the api repeatedly
@@ -315,10 +347,7 @@ class Scheduling extends Component {
         this.state.tracks,
         false,
       );
-      if (this.state.daily
-         || this.state.weekly
-         || this.state.monthly
-      ) {
+      if (this.state.daily || this.state.weekly || this.state.monthly) {
         for (let i = 0; i < this.state.repeatCount; i += 1) {
           if (this.state.daily) {
             date = moment(date).add(1, 'days');
@@ -328,7 +357,9 @@ class Scheduling extends Component {
             date = moment(date).add(1, 'months');
           }
 
-          const response = await this.updateRequirements(moment(date).format('YYYY-MM-DD'));
+          const response = await this.updateRequirements(
+            moment(date).format('YYYY-MM-DD'),
+          );
           await update(
             date,
             response.reservationId,
@@ -355,7 +386,8 @@ class Scheduling extends Component {
   // fetch new requirements for the next day
   updateRequirements = async (date) => {
     // console.log("UPDATE REQUIREMENTS",date);
-    const request = async (date) => { // eslint-disable-line
+    /* eslint-disable-next-line */
+    const request = async (date) => {
       const response = await getSchedulingDate(date);
 
       if (response !== false) {
@@ -364,30 +396,30 @@ class Scheduling extends Component {
       return response;
     };
     return await request(date); // eslint-disable-line
-  }
+  };
 
   /*
-  * requires:
-  * date,
-  * reservationId,
-  * scheduleId,
-  *
-  * from state:
-  * this.state.rangeId
-  * this.state.rangeSupervisorSwitch
-  * this.state.open
-  * this.state.close
-  * this.state.rangeSupervisorId
-  * this.state.tracks
-  * supervisorStatus = this.state[this.state.tracks[key].id]
-  */
+   * requires:
+   * date,
+   * reservationId,
+   * scheduleId,
+   *
+   * from state:
+   * this.state.rangeId
+   * this.state.rangeSupervisorSwitch
+   * this.state.open
+   * this.state.close
+   * this.state.rangeSupervisorId
+   * this.state.tracks
+   * supervisorStatus = this.state[this.state.tracks[key].id]
+   */
 
   /*
-  *   Components
-  *
-  *   TrackList for individual track states
-  *   RangeSupervisorSelect for supervisor select box
-  */
+   *   Components
+   *
+   *   TrackList for individual track states
+   *   RangeSupervisorSelect for supervisor select box
+   */
 
   // builds tracklist
   createTrackList = () => {
@@ -395,11 +427,9 @@ class Scheduling extends Component {
     const fin = localStorage.getItem('language');
     const items = [];
     const { tracks } = this.state;
-    for (var key in tracks) { // eslint-disable-line
+    for (const key in tracks) {
       items.push(
-        <React.Fragment
-          key={key}
-        >
+        <React.Fragment key={key}>
           <FormControl component="fieldset">
             <FormLabel component="legend">{tracks[key].name}</FormLabel>
             <RadioGroup
@@ -411,29 +441,23 @@ class Scheduling extends Component {
             >
               <FormControlLabel
                 value="present"
-                control={(
-                  <Radio
-                    style={{ fontColor: 'black', color: '#5f77a1' }}
-                  />
-                  )}
+                control={
+                  <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
+                }
                 label={sched.OfficerPresent[fin]}
               />
               <FormControlLabel
                 value="absent"
-                control={(
-                  <Radio
-                    style={{ fontColor: 'black', color: '#5f77a1' }}
-                  />
-                  )}
+                control={
+                  <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
+                }
                 label={sched.OfficerAbsent[fin]}
               />
               <FormControlLabel
                 value="closed"
-                control={(
-                  <Radio
-                    style={{ fontColor: 'black', color: '#5f77a1' }}
-                  />
-                )}
+                control={
+                  <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
+                }
                 label={sched.Closed[fin]}
               />
             </RadioGroup>
@@ -451,12 +475,8 @@ class Scheduling extends Component {
         </React.Fragment>,
       );
     }
-    return (
-      <>
-        {items}
-      </>
-    );
-  }
+    return <>{items}</>;
+  };
 
   // builds range officer select
   createSupervisorSelect = () => {
@@ -464,7 +484,7 @@ class Scheduling extends Component {
     let disabled = false;
     const { sched } = data;
     const fin = localStorage.getItem('language');
-    for (var key in this.state.rangeSupervisors) { // eslint-disable-line
+    for (const key in this.state.rangeSupervisors) {
       items.push(
         <MenuItem key={key} value={this.state.rangeSupervisors[key].id}>
           {this.state.rangeSupervisors[key].name}
@@ -476,9 +496,11 @@ class Scheduling extends Component {
     }
     return (
       <FormControl>
-        <InputLabel id="chooserangeSupervisorLabel">{sched.Select[fin]}</InputLabel>
+        <InputLabel id="chooserangeSupervisorLabel">
+          {sched.Select[fin]}
+        </InputLabel>
         <Select
-          {...disabled && { disabled: true }}
+          {...(disabled && { disabled: true })}
           labelId="chooserangeSupervisorLabel"
           name="rangeSupervisorId"
           value={this.state.rangeSupervisorId || ''}
@@ -489,10 +511,18 @@ class Scheduling extends Component {
         </Select>
       </FormControl>
     );
-  }
+  };
 
-  async updateCall(date, rsId, srsId, rangeSupervisionScheduled, tracks, isRepeat) {
-    return new Promise(async (resolve, reject) => { // eslint-disable-line
+  async updateCall(
+    date,
+    rsId,
+    srsId,
+    rangeSupervisionScheduled,
+    tracks,
+    isRepeat,
+  ) {
+    /* eslint-disable-next-line */
+    return new Promise(async (resolve, reject) => {
       let reservationMethod;
       let reservationPath = '';
       let scheduledRangeSupervisionMethod;
@@ -526,7 +556,8 @@ class Scheduling extends Component {
         };
       }
 
-      const reservation = async (rsId, params, method, path) => { // eslint-disable-line
+      /* eslint-disable-next-line */
+      const reservation = async (rsId, params, method, path) => {
         try {
           return await fetch(`/api/reservation${path}`, {
             method,
@@ -536,22 +567,25 @@ class Scheduling extends Component {
               'Content-Type': 'application/json',
             },
           })
-            .then((res) => { // eslint-disable-line
-            // 400 and so on
+            /* eslint-disable-next-line */
+            .then((res) => {
+              // 400 and so on
               if (!res.ok) {
                 return reject(new Error('update reservation failed'));
-              } if (res.status !== 204) {
+              }
+              if (res.status !== 204) {
                 return res.json();
               }
             })
             .then((json) => {
-            // pretty sure the code paths could be done better
+              // pretty sure the code paths could be done better
               if (typeof rsId !== 'number' && json !== undefined) {
-                rsId = json.id;  // eslint-disable-line
+                rsId = json.id; // eslint-disable-line
               }
               if (typeof rsId !== 'number') {
                 return reject(new Error('no reservation id for schedule'));
-              } return rsId;
+              }
+              return rsId;
             });
         } catch (error) {
           console.error('reservation', error);
@@ -559,7 +593,12 @@ class Scheduling extends Component {
         }
       };
 
-      const reservationRes = await reservation(rsId, params, reservationMethod, reservationPath);
+      const reservationRes = await reservation(
+        rsId,
+        params,
+        reservationMethod,
+        reservationPath,
+      );
       // if res grabbed from previous post
       if (reservationRes !== undefined) {
         rsId = reservationRes; // eslint-disable-line
@@ -581,7 +620,8 @@ class Scheduling extends Component {
         } else return reject(new Error('Range officer enabled but no id'));
       }
 
-      const schedule = async (rsId, srsId, params, method, path) => {  // eslint-disable-line
+      /* eslint-disable-next-line */
+      const schedule = async (rsId, srsId, params, method, path) => {
         try {
           return await fetch(`/api/schedule${path}`, {
             method,
@@ -591,11 +631,13 @@ class Scheduling extends Component {
               'Content-Type': 'application/json',
             },
           })
-            .then((res) => { // eslint-disable-line
-            // 400 and so on
+            /* eslint-disable-next-line */
+            .then((res) => {
+              // 400 and so on
               if (res.ok === false) {
                 return reject(new Error('update schedule failed'));
-              } if (res.status !== 204) {
+              }
+              if (res.status !== 204) {
                 return res.json();
               }
             })
@@ -604,8 +646,11 @@ class Scheduling extends Component {
                 srsId = json.id; // eslint-disable-line
               }
               if (typeof srsId !== 'number') {
-                return reject(new Error('no schedule id for track supervision'));
-              } return srsId;
+                return reject(
+                  new Error('no schedule id for track supervision'),
+                );
+              }
+              return srsId;
             });
         } catch (error) {
           console.error('schedule', error);
@@ -626,8 +671,8 @@ class Scheduling extends Component {
       }
 
       /*
-      *  Range supervision
-      */
+       *  Range supervision
+       */
 
       let rangeStatus = null;
 
@@ -635,8 +680,10 @@ class Scheduling extends Component {
         rangeStatus = 'closed';
       } else if (!this.state.rangeSupervisorSwitch) {
         rangeStatus = 'absent';
-      } else if (this.state.rangeSupervisorId !== null
-               && this.state.rangeSupervisorOriginal !== this.state.rangeSupervisorId) {
+      } else if (
+        this.state.rangeSupervisorId !== null &&
+        this.state.rangeSupervisorOriginal !== this.state.rangeSupervisorId
+      ) {
         rangeStatus = 'not confirmed';
       }
 
@@ -647,20 +694,21 @@ class Scheduling extends Component {
           rangeStatus,
           rangeSupervisionScheduled,
           this.state.rangeSupervisorId,
-
         );
         if (rangeSupervisionRes !== true) {
           return reject(new Error(rangeSupervisionRes));
         }
       }
 
-      const trackSupervision = async (srsId, key) => { // eslint-disable-line
+      /* eslint-disable-next-line */
+      const trackSupervision = async (srsId, key) => {
         try {
           // update only ones changed in state
           if (this.state[this.state.tracks[key].id] !== undefined || isRepeat) {
             const statusInState = this.state[this.state.tracks[key].id];
             // if coming from repeat and status was cleared
-            const supervisorStatus = statusInState !== undefined ? statusInState : 'absent';
+            const supervisorStatus =
+              statusInState !== undefined ? statusInState : 'absent';
 
             let { notice } = this.state.tracks[key];
             if (notice === null) {
@@ -668,7 +716,8 @@ class Scheduling extends Component {
               notice = undefined;
             }
 
-            let params = { // eslint-disable-line
+            /* eslint-disable-next-line */
+            let params = {
               track_supervisor: supervisorStatus,
               notice,
               supervisor: this.state.rangeSupervisorId,
@@ -696,11 +745,13 @@ class Scheduling extends Component {
                 'Content-Type': 'application/json',
               },
             })
-              .then((res) => { // eslint-disable-line
-              // 400 and so on
+              /* eslint-disable-next-line */
+              .then((res) => {
+                // 400 and so on
                 if (res.ok === false) {
                   return reject(new Error('update track supervision failed'));
-                } if (res.status !== 204) {
+                }
+                if (res.status !== 204) {
                   return res.json();
                 }
               });
@@ -710,9 +761,9 @@ class Scheduling extends Component {
           return reject(new Error('general track supervision failure'));
         }
       };
-      for (let key in this.state.tracks) { // eslint-disable-line
+      for (const key in this.state.tracks) {
         try {
-          const trackSupervisionRes = await trackSupervision(srsId, key);  // eslint-disable-line
+          const trackSupervisionRes = await trackSupervision(srsId, key); // eslint-disable-line
         } catch (error) {
           return reject(error);
         }
@@ -732,18 +783,14 @@ class Scheduling extends Component {
             rangeId: response.rangeId,
             reservationId: response.reservationId,
             scheduleId: response.scheduleId,
-            open: response.open !== null
-              ? moment(response.open, 'h:mm:ss').format()
-              : moment(response.date)
-                .hour(17)
-                .minute(0)
-                .second(0),
-            close: response.close !== null
-              ? moment(response.close, 'h:mm:ss').format()
-              : moment(response.date)
-                .hour(20)
-                .minute(0)
-                .second(0),
+            open:
+              response.open !== null
+                ? moment(response.open, 'h:mm:ss').format()
+                : moment(response.date).hour(17).minute(0).second(0),
+            close:
+              response.close !== null
+                ? moment(response.close, 'h:mm:ss').format()
+                : moment(response.date).hour(20).minute(0).second(0),
             available: response.available !== null ? response.available : false,
             rangeSupervisorSwitch: response.rangeSupervisorId !== null,
             rangeSupervisorId: response.rangeSupervisorId,
@@ -753,12 +800,15 @@ class Scheduling extends Component {
             state: 'ready',
           });
           // set current track state for scheduled
-          for (var key in response.tracks) { // eslint-disable-line
+          for (const key in response.tracks) {
+            // eslint-disable-line
             if (response.tracks[key].scheduled) {
               this.setState({
-                [this.state.tracks[key].id]: this.state.tracks[key].trackSupervision,
+                [this.state.tracks[key].id]:
+                  this.state.tracks[key].trackSupervision,
               });
-            } else { // clears track states between date changes
+            } else {
+              // clears track states between date changes
               this.setState({
                 [this.state.tracks[key].id]: undefined,
               });
@@ -782,8 +832,14 @@ class Scheduling extends Component {
 
     return (
       <div className="schedulingRoot">
-        <Modal open={this.state.state !== 'ready'} onClick={this.handleBackdropClick}>
-          <Backdrop open={this.state.state !== 'ready'} onClick={this.handleBackdropClick}>
+        <Modal
+          open={this.state.state !== 'ready'}
+          onClick={this.handleBackdropClick}
+        >
+          <Backdrop
+            open={this.state.state !== 'ready'}
+            onClick={this.handleBackdropClick}
+          >
             <CircularProgress disableShrink />
           </Backdrop>
         </Modal>
@@ -791,8 +847,7 @@ class Scheduling extends Component {
         {/* Section for selecting date */}
         <div className="firstSection">
           <form onSubmit={this.continueWithDate}>
-
-            { /* Datepicker */}
+            {/* Datepicker */}
             <MuiPickersUtilsProvider
               utils={MomentUtils}
               locale={lang}
@@ -812,7 +867,12 @@ class Scheduling extends Component {
               />
             </MuiPickersUtilsProvider>
             <div className="continue">
-              <Button type="submit" variant="contained" style={{ backgroundColor: '#d1ccc2' }} data-testid="dateButton">
+              <Button
+                type="submit"
+                variant="contained"
+                style={{ backgroundColor: '#d1ccc2' }}
+                data-testid="dateButton"
+              >
                 {sched.Day[fin]}
               </Button>
             </div>
@@ -886,9 +946,7 @@ class Scheduling extends Component {
 
         {/* Section for setting track-specific open/close/absent statuses */}
         <div className="thirdSection">
-          <div className="leftSide">
-            {this.createTrackList()}
-          </div>
+          <div className="leftSide">{this.createTrackList()}</div>
           <div className="rightSide">
             <Button
               variant="contained"
@@ -966,10 +1024,20 @@ class Scheduling extends Component {
             </div>
           </div>
           <div className="save">
-            <Button variant="contained" onClick={this.saveChanges} style={{ backgroundColor: '#d1ccc2' }}>{sched.Save[fin]}</Button>
+            <Button
+              variant="contained"
+              onClick={this.saveChanges}
+              style={{ backgroundColor: '#d1ccc2' }}
+            >
+              {sched.Save[fin]}
+            </Button>
             <div
               className="hoverHand arrow-right"
-              onClick={() => this.handleDatePickChange(moment(this.state.date).add(1, 'days').format('YYYY-MM-DD'))}
+              onClick={() =>
+                this.handleDatePickChange(
+                  moment(this.state.date).add(1, 'days').format('YYYY-MM-DD'),
+                )
+              }
             />
             <div className="toast">
               <Snackbar
@@ -977,16 +1045,17 @@ class Scheduling extends Component {
                 autoHideDuration={5000}
                 onClose={this.handleSnackbarClose}
               >
-                <Alert onClose={this.handleSnackbarClose} severity={this.state.toastSeverity}>
-                  {this.state.toastMessage}
-                  !
+                <Alert
+                  onClose={this.handleSnackbarClose}
+                  severity={this.state.toastSeverity}
+                >
+                  {this.state.toastMessage}!
                 </Alert>
               </Snackbar>
             </div>
           </div>
         </div>
       </div>
-
     );
   }
 }

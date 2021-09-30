@@ -1,112 +1,112 @@
 .schedulingRoot {
-  padding:1vmin 5vmin 1vmin 5vmin;
+  padding: 1vmin 5vmin 1vmin 5vmin;
 }
 
 .schedulingRoot .MuiButton-contained {
-  margin:1vmin 1vmin 1vmin 0vmin;
+  margin: 1vmin 1vmin 1vmin 0vmin;
 }
 
 hr {
-  margin:10px 0px 10px 0px;
+  margin: 10px 0px 10px 0px;
 }
 
 .schedulingRoot .firstSection form {
-  display:flex;
+  display: flex;
   flex-flow: row wrap;
   align-items: center;
 }
 
-.schedulingRoot .firstSection .continue .MuiButtonBase-root{
-  margin:15px 0 0 10px;
+.schedulingRoot .firstSection .continue .MuiButtonBase-root {
+  margin: 15px 0 0 10px;
 }
 
 .schedulingRoot .secondSection .text {
-  display:inline-block;
-  width:100px;
+  display: inline-block;
+  width: 100px;
 }
 
 .schedulingRoot .secondSection .topRow {
-  display:flex;
+  display: flex;
   flex-flow: row wrap;
   align-items: center;
-  padding:10px 20px 15px 0;
+  padding: 10px 20px 15px 0;
 }
 
-.schedulingRoot .secondSection .middleRow  {
-  display:flex;
+.schedulingRoot .secondSection .middleRow {
+  display: flex;
   flex-flow: row wrap;
   align-items: center;
-  padding:0px 20px 20px 0;
+  padding: 0px 20px 20px 0;
 }
 
 .schedulingRoot .secondSection .middleRow .officerSwitch {
-  margin-right:10px;
+  margin-right: 10px;
 }
 
 .schedulingRoot .secondSection .middleRow .roSwitch {
-  padding-top:15px;
+  padding-top: 15px;
 }
 
 .schedulingRoot .secondSection .middleRow .MuiFormControl-root:nth-child(2) {
-  min-width:150px;
+  min-width: 150px;
   /*background:red;*/
 }
 
 .schedulingRoot .secondSection .bottomRow {
-  display:flex;
+  display: flex;
   flex-flow: row wrap;
   align-items: center;
-  padding:0px 20px 10px 0;
+  padding: 0px 20px 10px 0;
 }
 
 .schedulingRoot .secondSection .bottomRow .text {
-  margin-right:15px;
+  margin-right: 15px;
 }
 
 .schedulingRoot .secondSection .bottomRow .MuiFormControl-root {
-  width:100px;
-  margin-top:-5px;
+  width: 100px;
+  margin-top: -5px;
 }
 
 .schedulingRoot .secondSection .bottomRow .dash {
-  padding:0px 20px 0 20px;
+  padding: 0px 20px 0 20px;
 }
 
 .schedulingRoot .thirdSection .leftSide {
-  padding-top:15px;
-  display:flex;
+  padding-top: 15px;
+  display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
 }
 
-.schedulingRoot .thirdSection .MuiFormControl-root{
+.schedulingRoot .thirdSection .MuiFormControl-root {
   padding: 0px 30px 30px 0px;
 }
 
 .schedulingRoot .fourthSection .repeatCount {
-  display:flex;
+  display: flex;
   flex-flow: row wrap;
   align-items: center;
 }
 
-.schedulingRoot .fourthSection .repeatCount .MuiFormControl-root{
-  padding-left:10px;
-  width:50px;
+.schedulingRoot .fourthSection .repeatCount .MuiFormControl-root {
+  padding-left: 10px;
+  width: 50px;
 }
 
-.schedulingRoot .fourthSection .repeatCount{
-  padding-bottom:10px;
+.schedulingRoot .fourthSection .repeatCount {
+  padding-bottom: 10px;
 }
 
 .schedulingRoot .arrow-right {
-  padding:0;
-  margin:0;
-  margin-left:5px;
-  width: 0; 
-  height: 0; 
+  padding: 0;
+  margin: 0;
+  margin-left: 5px;
+  width: 0;
+  height: 0;
   border-top: 20px solid transparent;
   border-bottom: 20px solid transparent;
-  
+
   border-left: 20px solid black;
 
   display: flex;

@@ -47,34 +47,37 @@ class Trackview extends Component {
       const response = await getSchedulingDate(date);
 
       if (response !== false) {
-        const selectedTrack = response.tracks.find((findItem) => findItem.name === track);
+        const selectedTrack = response.tracks.find(
+          (findItem) => findItem.name === track,
+        );
         // console.log("Results from api",response,selectedTrack);
 
         if (selectedTrack !== undefined) {
-          this.setState({
-            date: new Date(response.date),
-            trackSupervision: selectedTrack.trackSupervision,
-            rangeSupervision: response.rangeSupervision,
-            name: selectedTrack.name,
-            description: `(${selectedTrack.description})`,
-            info: selectedTrack.notice,
-          }, () => {
-            document.getElementById('date').style.visibility = 'visible';
-            document.getElementById('valvojat').style.visibility = 'visible';
-            if (selectedTrack.notice > 0) {
-              document.getElementById('infobox').style.visibility = 'visible';
-            } else {
-              document.getElementById('infobox').style.visibility = 'disabled';
-            }
-          });
+          this.setState(
+            {
+              date: new Date(response.date),
+              trackSupervision: selectedTrack.trackSupervision,
+              rangeSupervision: response.rangeSupervision,
+              name: selectedTrack.name,
+              description: `(${selectedTrack.description})`,
+              info: selectedTrack.notice,
+            },
+            () => {
+              document.getElementById('date').style.visibility = 'visible';
+              document.getElementById('valvojat').style.visibility = 'visible';
+              if (selectedTrack.notice > 0) {
+                document.getElementById('infobox').style.visibility = 'visible';
+              } else {
+                document.getElementById('infobox').style.visibility =
+                  'disabled';
+              }
+            },
+          );
         } else {
           console.error('track undefined');
 
           this.setState({
-            name:
-                  `Rataa nimeltä "${
-                    this.props.match.params.track
-                  }" ei löydy.`,
+            name: `Rataa nimeltä "${this.props.match.params.track}" ei löydy.`,
           });
           document.getElementById('date').style.visibility = 'hidden';
           document.getElementById('valvojat').style.visibility = 'hidden';
@@ -85,41 +88,50 @@ class Trackview extends Component {
     request();
   }
 
-  rangeAvailability(trackview, fin) { // eslint-disable-line
+  /* eslint-disable-next-line */
+  rangeAvailability(trackview, fin) {
     if (this.state.rangeSupervision === 'present') {
-      const returnable = <Box className="isAvailable">{trackview.SuperGreen[fin]}</Box>;
+      const returnable = (
+        <Box className="isAvailable">{trackview.SuperGreen[fin]}</Box>
+      );
       return returnable;
-    } if (this.state.rangeSupervision === 'absent') {
+    }
+    if (this.state.rangeSupervision === 'absent') {
       const returnable = (
         <Box className="isUnavailable">{trackview.SuperWhite[fin]}</Box>
       );
       return returnable;
-    } if (this.state.rangeSupervision === 'confirmed') {
+    }
+    if (this.state.rangeSupervision === 'confirmed') {
       const returnable = (
         <Box className="isConfirmed">{trackview.SuperLightGreen[fin]}</Box>
       );
       return returnable;
-    } if (this.state.rangeSupervision === 'not confirmed') {
+    }
+    if (this.state.rangeSupervision === 'not confirmed') {
       const returnable = (
         <Box className="isNotConfirmed">{trackview.SuperBlue[fin]}</Box>
       );
       return returnable;
-    } if (this.state.rangeSupervision === 'en route') {
+    }
+    if (this.state.rangeSupervision === 'en route') {
       const returnable = (
         <Box className="isEnRoute">{trackview.SuperOrange[fin]}</Box>
       );
       return returnable;
-    } if (this.state.rangeSupervision === 'closed') {
-      const returnable = (
-        <Box className="isClosed">{trackview.Red[fin]}</Box>
-      );
+    }
+    if (this.state.rangeSupervision === 'closed') {
+      const returnable = <Box className="isClosed">{trackview.Red[fin]}</Box>;
       return returnable;
     }
   }
 
-  trackAvailability(trackview, fin) { // eslint-disable-line
+  /* eslint-disable-next-line */
+  trackAvailability(trackview, fin) {
     if (this.state.trackSupervision === 'present') {
-      const returnable = <Box className="isAvailable">{trackview.RangeGreen[fin]}</Box>;
+      const returnable = (
+        <Box className="isAvailable">{trackview.RangeGreen[fin]}</Box>
+      );
       return returnable;
     }
     if (this.state.trackSupervision === 'absent') {
@@ -138,7 +150,9 @@ class Trackview extends Component {
 
   backlink() {
     const date = new Date(this.state.date.setDate(this.state.date.getDate()));
-    const dateFormatted = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const dateFormatted = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}`;
     return `/dayview/${dateFormatted}`;
   }
 
@@ -151,7 +165,7 @@ class Trackview extends Component {
     const fin = localStorage.getItem('language');
 
     return (
-    /*    Whole view */
+      /*    Whole view */
       <div className="wholeScreenDiv">
         {/*    Radan nimi ja kuvaus  */}
         <div className="trackNameAndType">
@@ -159,18 +173,14 @@ class Trackview extends Component {
             <h1>{this.state.name}</h1>
           </div>
           <div>
-            <h3>
-              {' '}
-              {this.state.description}
-            </h3>
+            <h3> {this.state.description}</h3>
           </div>
         </div>
 
         {/*    Päivämäärä */}
         <div id="date">
           <h2>
-            {dayToString(this.state.date.getDay())}
-            {' '}
+            {dayToString(this.state.date.getDay())}{' '}
             {this.state.date.toLocaleDateString('fi-FI')}
           </h2>
         </div>
@@ -195,10 +205,7 @@ class Trackview extends Component {
 
         {/*    Infobox  */}
         <div id="infobox">
-          <p>
-            {trackview.Info[fin]}
-            :
-          </p>
+          <p>{trackview.Info[fin]}:</p>
           <div className="infoBox">{this.state.info}</div>
         </div>
         {/*    Linkki taaksepäin  */}

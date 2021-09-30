@@ -1,79 +1,79 @@
 .containsAll {
-    margin: 20px;
-    align-content: center;
+  margin: 20px;
+  align-content: center;
 }
 
 .midInfo {
-    margin-left: 10px;
-    display:flex;
-    flex-flow: row wrap;
-    align-items: center;
+  margin-left: 10px;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
 }
 
 .hoverHand:hover {
-    cursor: pointer;
-  }
+  cursor: pointer;
+}
 
 .rangeOfficerStatus {
-    border-radius: 10px;
-    background-color: green;
-    padding: 10px;
-    margin: 0px 50% 10px 10px;
-    text-align: center;
+  border-radius: 10px;
+  background-color: green;
+  padding: 10px;
+  margin: 0px 50% 10px 10px;
+  text-align: center;
 }
 
 .dateInfo {
-    margin: 0px 50% 10px 10px;
-    text-align: center;
+  margin: 0px 50% 10px 10px;
+  text-align: center;
 }
 
 .changeStatus {
-    background-color: green;
-    padding: 5px 20px 5px 20px;
-    margin: 3px;
-    display: inline-block;
-    border-radius: 10px;
+  background-color: green;
+  padding: 5px 20px 5px 20px;
+  margin: 3px;
+  display: inline-block;
+  border-radius: 10px;
 }
 
 .changeTrack {
-    background-color: green;
-    padding: 5px 20px 5px 20px;
-    margin: 3px;
-    float: left;
-    border-radius: 10px;
-    width: 5vw;
-    max-width:5vw;
+  background-color: green;
+  padding: 5px 20px 5px 20px;
+  margin: 3px;
+  float: left;
+  border-radius: 10px;
+  width: 5vw;
+  max-width: 5vw;
 }
 
 .trackName {
-    padding: 5px 20px 5px 20px;
-    margin: 3px;
-    float: left;
-    border-radius: 10px;
-    width: 5vw;
-    max-width:5vw;
+  padding: 5px 20px 5px 20px;
+  margin: 3px;
+  float: left;
+  border-radius: 10px;
+  width: 5vw;
+  max-width: 5vw;
 }
 
 .addVisitors {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .MuiButton-label {
-    font-size: 1.2em;
+  font-size: 1.2em;
 }
 
 .Status {
-    display: flex;
-    max-width: 80%;
-    width: 400px;
-    margin: auto;
+  display: flex;
+  max-width: 80%;
+  width: 400px;
+  margin: auto;
 }
 
 .Text {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    margin: 4px;
-    font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin: 4px;
+  font-size: 2rem;
 }

@@ -35,11 +35,11 @@
   font-size: 32px;
 }
 
-h1.headerText{
+h1.headerText {
   font-size: 24px;
 }
 
-h2.headerText{
+h2.headerText {
   font-size: 16px;
   text-align: center;
 }
@@ -65,7 +65,7 @@ h2.headerText{
 }
 
 .dayviewContainer h1 {
-  margin:2vmin;
+  margin: 2vmin;
 }
 
 .dayviewContainer h2 {
@@ -73,80 +73,80 @@ h2.headerText{
 }
 
 .dayviewContainer .dateHeader {
-  flex-wrap:nowrap;
+  flex-wrap: nowrap;
   justify-content: center;
   margin-top: 12px;
   margin-bottom: 12px;
 }
 
-.dayviewTrackContainer{
+.dayviewTrackContainer {
   display: flex;
   margin-bottom: 16px;
   justify-content: center;
 }
 
 .dayviewContainer .dateHeader .titleContainer {
-  display:flex;
-  align-items:center;
+  display: flex;
+  align-items: center;
   text-align: start;
   justify-content: space-around;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
   width: 360px;
 }
 
 .dayviewContainer .info {
   text-align: center;
-  background:lightgreen;
+  background: lightgreen;
 }
 
-  .dayviewContainer .sevenGrid > div {
-    max-width:100%;
+.dayviewContainer .sevenGrid > div {
+  max-width: 100%;
 }
 
 .dayviewContainer .track {
   position: relative;
-  background:#b0aca0;
-  border:solid 1px black;
+  background: #b0aca0;
+  border: solid 1px black;
   box-sizing: border-box;
   min-height: 100px;
 }
 
 .dayviewContainer .clickableBox {
   box-sizing: border-box;
-  background:white;
-  padding:25% 0vh 25% 0vh;
+  background: white;
+  padding: 25% 0vh 25% 0vh;
   text-align: center;
 }
 
 .dayviewContainer .greenB {
-  background:#658f60;
+  background: #658f60;
 }
 
 .dayviewContainer .lightGreenB {
-  background:#b2d9ad;
+  background: #b2d9ad;
 }
 
 .dayviewContainer .blueB {
-  background:#95d5db;
+  background: #95d5db;
 }
 
 .dayviewContainer .redB {
-  background:#c97b7b;
+  background: #c97b7b;
 }
 
 .dayviewContainer .whiteB {
-  background:#f2f0eb;
+  background: #f2f0eb;
 }
 
 .dayviewContainer .yellowB {
-  background:#f2c66d;
+  background: #f2c66d;
 }
 
 .dayviewContainer .arrow-right {
-  padding:0;
-  margin:0;
-  width: 0; 
-  height: 0; 
+  padding: 0;
+  margin: 0;
+  width: 0;
+  height: 0;
   border-top: 20px solid transparent;
   border-bottom: 20px solid transparent;
   border-left: 20px solid black;
@@ -156,13 +156,13 @@ h2.headerText{
 }
 
 .dayviewContainer .arrow-left {
-  padding:0;
-  margin:0;
-  width: 0; 
-  height: 0; 
+  padding: 0;
+  margin: 0;
+  width: 0;
+  height: 0;
   border-top: 20px solid transparent;
-  border-bottom: 20px solid transparent; 
-  border-right:20px solid black; 
+  border-bottom: 20px solid transparent;
+  border-right: 20px solid black;
   text-align: right;
 
   display: flex;
@@ -170,51 +170,49 @@ h2.headerText{
 }
 
 .dayviewContainer .back > svg {
-  margin-bottom:-7px;
-  margin-right:5px;
+  margin-bottom: -7px;
+  margin-right: 5px;
 }
 
 .dayviewContainer .hoverHand:hover {
   cursor: pointer;
 }
 
-.dayviewContainer .trackBoxLink{
+.dayviewContainer .trackBoxLink {
   display: block;
   width: 96%;
   height: 100%;
   text-decoration: none;
-  color:black;
+  color: black;
   padding-left: 2%;
   padding-right: 2%;
-
 }
 
 .dayview-big-container {
-   width: 100vw;
-   max-width: 1025px;
-   margin: auto;
+  width: 100vw;
+  max-width: 1025px;
+  margin: auto;
 }
 
 /* media files */
 
 /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
-@media only screen and (min-width:320px) {
-
+@media only screen and (min-width: 320px) {
 }
 /* smartphones, Android phones, landscape iPhone */
-@media only screen and (min-width:480px) {
+@media only screen and (min-width: 480px) {
   .dayviewContainer .dateHeader {
-  flex-wrap:nowrap;
-  justify-content: center;
-  margin-top: 4px;
-  margin-bottom: 0;
+    flex-wrap: nowrap;
+    justify-content: center;
+    margin-top: 4px;
+    margin-bottom: 0;
   }
 
-  h1.headerText{
+  h1.headerText {
     font-size: 32px;
   }
 
-  h2.headerText{
+  h2.headerText {
     font-size: 24px;
     margin: 4px;
   }
@@ -228,19 +226,19 @@ h2.headerText{
   }
 }
 /* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
-@media only screen and (min-width:600px) {
+@media only screen and (min-width: 600px) {
   .dayviewContainer .dateHeader {
-  margin-top: 0;
+    margin-top: 0;
   }
   .sevenGrid {
     display: flex;
     flex-direction: row;
-    justify-content:center;
+    justify-content: center;
     width: 100%;
   }
   /* To have 7 boxes force size 100 / 7 = 14.28571428571429 */
   .dayviewContainer .sevenGrid > div {
-    width:14.28571428571429%;
+    width: 14.28571428571429%;
     max-width: 150px;
     height: 150px;
   }
@@ -253,7 +251,7 @@ h2.headerText{
     display: inline;
   }
 
-  .dayviewContainer .trackBoxLink{
+  .dayviewContainer .trackBoxLink {
     width: 90%;
     padding-left: 5%;
     padding-right: 5%;
@@ -266,26 +264,23 @@ h2.headerText{
   }
 }
 /* tablet, landscape iPad, lo-res laptops ands desktops */
-@media only screen and (min-width:801px) {
-
+@media only screen and (min-width: 801px) {
 }
 /* big landscape tablets, laptops, and desktops */
-@media only screen and (min-width:1025px) {
+@media only screen and (min-width: 1025px) {
   .infoImg-2 {
-   width: 44px;
-   max-height: 44px;
-   max-width: 44px;
+    width: 44px;
+    max-height: 44px;
+    max-width: 44px;
   }
 }
 /* hi-res laptops and desktops */
-@media only screen and (min-width:1281px) {
+@media only screen and (min-width: 1281px) {
   .dayviewContainer .sevenGrid > div {
-
     max-width: 150px;
     height: 150px;
   }
 }
 
 @media only screen and (orientation: landscape) {
-
 }

@@ -11,7 +11,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 // Utils
 import moment from 'moment';
 import {
-  dayToString, jumpToCurrent, getSchedulingDate, viewChanger,
+  dayToString,
+  jumpToCurrent,
+  getSchedulingDate,
+  viewChanger,
 } from '../utils/Utils';
 
 // Moment for date handling
@@ -48,12 +51,16 @@ class Dayview extends Component {
     this.update();
   }
 
-  UNSAFE_componentWillReceiveProps() { // eslint-disable-line
-    this.setState({
-      state: 'loading',
-    }, () => {
-      this.update();
-    });
+  /* eslint-disable-next-line */
+  UNSAFE_componentWillReceiveProps() {
+    this.setState(
+      {
+        state: 'loading',
+      },
+      () => {
+        this.update();
+      },
+    );
   }
 
   update() {
@@ -78,8 +85,12 @@ class Dayview extends Component {
 
   previousDayClick(e) {
     e.preventDefault();
-    const date = new Date(this.state.date.setDate(this.state.date.getDate() - 1)); // eslint-disable-line
-    const dateFormatted = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const date = new Date(
+      this.state.date.setDate(this.state.date.getDate() - 1),
+    ); // eslint-disable-line
+    const dateFormatted = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}`;
     this.props.history.replace(`/dayview/${dateFormatted}`); // eslint-disable-line
     this.setState(
       {
@@ -94,8 +105,12 @@ class Dayview extends Component {
 
   nextDayClick(e) {
     e.preventDefault();
-    const date = new Date(this.state.date.setDate(this.state.date.getDate() + 1)); // eslint-disable-line
-    const dateFormatted = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const date = new Date(
+      this.state.date.setDate(this.state.date.getDate() + 1),
+    ); // eslint-disable-line
+    const dateFormatted = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}`;
     this.props.history.replace(`/dayview/${dateFormatted}`); // eslint-disable-line
     this.setState(
       {
@@ -142,7 +157,7 @@ class Dayview extends Component {
     // builds tracklist with grid
     function TrackList(props) {
       const items = [];
-      for (var key in props.tracks) { // eslint-disable-line
+      for (const key in props.tracks) {
         items.push(
           <TrackBox
             key={key}
@@ -150,16 +165,14 @@ class Dayview extends Component {
             short_description={props.tracks[key].short_description}
             state={props.tracks[key].trackSupervision}
             notice={props.tracks[key].notice}
-            to={`/trackview/${props.date.toISOString().substring(0, 10)}/${props.tracks[key].name}`}
+            to={`/trackview/${props.date.toISOString().substring(0, 10)}/${
+              props.tracks[key].name
+            }`}
           />,
         );
       }
 
-      return (
-        <Grid className="sevenGrid">
-          {items}
-        </Grid>
-      );
+      return <Grid className="sevenGrid">{items}</Grid>;
     }
 
     // single track
@@ -179,25 +192,23 @@ class Dayview extends Component {
       return (
         <Grid item className={`track hoverHand ${color}`} xs={12} sm={2}>
           <Link className="trackBoxLink" to={props.to}>
-            <span className="bold">
-              {props.name}
-            </span>
-            <span className="hidden">
-              -
-            </span>
+            <span className="bold">{props.name}</span>
+            <span className="hidden">-</span>
             <span className="linebreak">
               <br />
             </span>
-            <span className="overflowHidden">
-              {props.short_description}
-            </span>
-            {props.notice.length === 0
-              ? <br />
-              : (
-                <div className="DayviewInfo">
-                  <img className="infoImg-2" src={info} alt={dayview.Notice[fin]} />
-                </div>
-              )}
+            <span className="overflowHidden">{props.short_description}</span>
+            {props.notice.length === 0 ? (
+              <br />
+            ) : (
+              <div className="DayviewInfo">
+                <img
+                  className="infoImg-2"
+                  src={info}
+                  alt={dayview.Notice[fin]}
+                />
+              </div>
+            )}
           </Link>
         </Grid>
       );
@@ -225,7 +236,6 @@ class Dayview extends Component {
                 <span>&nbsp;&nbsp;</span>
                 <span>{this.state.date.toLocaleDateString('fi-FI')}</span>
               </h1>
-
             </div>
             <div
               className="hoverHand arrow-right"
@@ -236,46 +246,42 @@ class Dayview extends Component {
           {/* Range officer info */}
           <Grid container direction="row" justify="center" alignItems="center">
             <Grid item xs={12}>
-              {this.state.state !== 'ready'
-                ? <br />
-                : <OfficerBanner rangeSupervision={this.state.rangeSupervision} />}
+              {this.state.state !== 'ready' ? (
+                <br />
+              ) : (
+                <OfficerBanner rangeSupervision={this.state.rangeSupervision} />
+              )}
             </Grid>
           </Grid>
 
           {/* open and close hours */}
           <h2 className="headerText">
-            {dayview.OpenHours[fin]}
-            :
-            {this.state.opens}
-            -
-            {this.state.closes}
+            {dayview.OpenHours[fin]}:{this.state.opens}-{this.state.closes}
           </h2>
           {/* Whole view */}
           <div className="dayview-big-container">
             <div className="viewChanger">
-              <div className="viewChanger-current">
-                {jumpToCurrent()}
-              </div>
-              <div className="viewChanger-container">
-                {viewChanger()}
-              </div>
+              <div className="viewChanger-current">{jumpToCurrent()}</div>
+              <div className="viewChanger-container">{viewChanger()}</div>
             </div>
             <div className="dayviewTrackContainer">
-
               {/* MUI grid - used for displaying the track info */}
-              {this.state.state !== 'ready'
-                ? (
-                  <div>
-                    <CircularProgress disableShrink />
-                  </div>
-                )
-                : <TrackList tracks={this.state.tracks} date={this.state.date} />}
+              {this.state.state !== 'ready' ? (
+                <div>
+                  <CircularProgress disableShrink />
+                </div>
+              ) : (
+                <TrackList tracks={this.state.tracks} date={this.state.date} />
+              )}
 
               {/* Other info */}
-
             </div>
           </div>
-          <Link className="back" style={{ color: 'black' }} to={`/weekview/${this.state.date.toISOString().substring(0, 10)}`}>
+          <Link
+            className="back"
+            style={{ color: 'black' }}
+            to={`/weekview/${this.state.date.toISOString().substring(0, 10)}`}
+          >
             <ArrowBackIcon />
             {dayview.WeekviewLink[fin]}
           </Link>
@@ -289,38 +295,34 @@ class Dayview extends Component {
             alignItems="flex-start"
             className="otherInfo"
           >
-
             {/* color info boxes */}
             <div className="info-item">
               <p className="box no-flex greenB" />
-              {/* Open */}
-              {' '}
-              <p>{dayview.Open[fin]}</p>
+              {/* Open */} <p>{dayview.Open[fin]}</p>
             </div>
             <div className="info-item">
               <p className="box no-flex redB" />
-              {/* Closed */}
-              {' '}
-              <p>{dayview.Closed[fin]}</p>
+              {/* Closed */} <p>{dayview.Closed[fin]}</p>
             </div>
             <div className="info-item">
               <p className="box no-flex whiteB" />
-              {/* No supervisor */}
-              {' '}
-              <p>{dayview.NotAvailable[fin]}</p>
+              {/* No supervisor */} <p>{dayview.NotAvailable[fin]}</p>
             </div>
             <div className="info-item-img">
               <p className="empty-box no-flex">
-                <img className="infoImg no-flex" src={info} alt={dayview.Notice[fin]} />
+                <img
+                  className="infoImg no-flex"
+                  src={info}
+                  alt={dayview.Notice[fin]}
+                />
               </p>
-              {/* Extra info on track */}
-              {' '}
-              <p className="info-text relative-text no-flex">{dayview.Notice[fin]}</p>
+              {/* Extra info on track */}{' '}
+              <p className="info-text relative-text no-flex">
+                {dayview.Notice[fin]}
+              </p>
             </div>
           </Grid>
-
         </div>
-
       </div>
     );
   }

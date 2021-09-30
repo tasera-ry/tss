@@ -3,13 +3,8 @@ module.exports = {
     'jest/globals': true,
     browser: true,
   },
-  extends: [
-    'airbnb',
-  ],
-  plugins: [
-    'react',
-    'jest',
-  ],
+  extends: ['airbnb'],
+  plugins: ['react', 'jest', 'prettier'],
   parser: 'babel-eslint',
   rules: {
     'react/jsx-filename-extension': [0],
@@ -30,5 +25,15 @@ module.exports = {
     'no-restricted-syntax': [0],
     'guard-for-in': [0],
     'linebreak-style': [0],
+    curly: 'off',
+    /* following conflicts with prettier */
+    'implicit-arrow-linebreak': 'off',
+    'operator-linebreak': 'off',
+    'function-paren-newline': 'off',
+    'react/jsx-one-expression-per-line': 'off',
+    'react/jsx-wrap-multilines': 'off',
+    'react/jsx-curly-newline': 'off',
+    'object-curly-newline': 'off',
+    'nonblock-statement-body-position': 'off',
   },
 };

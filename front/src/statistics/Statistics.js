@@ -73,7 +73,11 @@ const Statistics = () => {
     const fetchData = async () => {
       const monthResult = await getMonthlyVisitors(firstDate, lastDate); // eslint-disable-line
       const dayResult = await getDailyVisitors(singleDay); // eslint-disable-line
-      const monthlyTrackResult = await getMonthlyTrackVisitors(firstDate, lastDate); // eslint-disable-line
+      /* eslint-disable-next-line */
+      const monthlyTrackResult = await getMonthlyTrackVisitors(
+        firstDate,
+        lastDate,
+      );
       setDailyUsers(dayResult);
       setMonthlyUsers(monthResult);
       setMonthlyTrackUsers(monthlyTrackResult);
@@ -83,7 +87,10 @@ const Statistics = () => {
 
   useEffect(() => {
     // Count monthly visitors
-    const dayArray = Array.from({ length: monthlyUsers.length }, (_, i) => i + 1);
+    const dayArray = Array.from(
+      { length: monthlyUsers.length },
+      (_, i) => i + 1,
+    );
 
     // Options for the month chart
     setMonthOptions({
@@ -154,10 +161,12 @@ const Statistics = () => {
         },
       });
     });
-    setDaySeries([{
-      name: 'visitors',
-      data: dailyUsers,
-    }]);
+    setDaySeries([
+      {
+        name: 'visitors',
+        data: dailyUsers,
+      },
+    ]);
   }, [dailyUsers, date]);
 
   useEffect(() => {
@@ -202,13 +211,17 @@ const Statistics = () => {
         },
       });
     });
-    setMonthlyTrackSeries([{
-      name: 'visitors',
-      data: monthlyTrackUsers,
-    }]);
+    setMonthlyTrackSeries([
+      {
+        name: 'visitors',
+        data: monthlyTrackUsers,
+      },
+    ]);
   }, [monthlyTrackUsers, date]);
 
-  const Alert = (props) => (<MuiAlert elevation={6} variant="filled" {...props} />);
+  const Alert = (props) => (
+    <MuiAlert elevation={6} variant="filled" {...props} />
+  );
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -256,18 +269,14 @@ const Statistics = () => {
           onClose={handleSnackbarClose}
         >
           <Alert onClose={handleSnackbarClose} severity={toastSeverity}>
-            {toastMessage}
-            !
+            {toastMessage}!
           </Alert>
         </Snackbar>
         {/* Section for selecting date */}
         <div className="firstSection">
           <form onSubmit={continueWithDate}>
-            { /* Datepicker */}
-            <MuiPickersUtilsProvider
-              utils={MomentUtils}
-              locale={lang}
-            >
+            {/* Datepicker */}
+            <MuiPickersUtilsProvider utils={MomentUtils} locale={lang}>
               <KeyboardDatePicker
                 autoOk
                 margin="normal"
@@ -293,7 +302,11 @@ const Statistics = () => {
           </Button>
         </div>
         <Modal
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
           open={modalOpen}
           onClose={() => setModalOpen(false)}
         >
@@ -306,17 +319,9 @@ const Statistics = () => {
         </Modal>
         {/* Header with arrows */}
         <Grid class="date-header">
-          <div
-            className="hoverHand arrow-left"
-            onClick={previousDayClick}
-          />
-          <h1 className="headerText">
-            {date.toLocaleDateString('fi-FI')}
-          </h1>
-          <div
-            className="hoverHand arrow-right"
-            onClick={nextDayClick}
-          />
+          <div className="hoverHand arrow-left" onClick={previousDayClick} />
+          <h1 className="headerText">{date.toLocaleDateString('fi-FI')}</h1>
+          <div className="hoverHand arrow-right" onClick={nextDayClick} />
         </Grid>
         {/* Charts */}
         <div className="row">
@@ -324,11 +329,11 @@ const Statistics = () => {
             {/* Labels */}
             <h2>{statistics.Day[fin]}</h2>
             <h3>
-              {`${statistics.Total[fin]} ${date.toLocaleDateString('fi-FI')}: ${monthlyUsers[dayNumber - 1]}`}
+              {`${statistics.Total[fin]} ${date.toLocaleDateString('fi-FI')}: ${
+                monthlyUsers[dayNumber - 1]
+              }`}
             </h3>
-            <h3>
-              {statistics.DayChartHeader[fin]}
-            </h3>
+            <h3>{statistics.DayChartHeader[fin]}</h3>
             <div className="bar">
               <Chart
                 options={dayOptions}
@@ -341,11 +346,11 @@ const Statistics = () => {
             {/* Labels */}
             <h2>{statistics.Month[fin]}</h2>
             <h3>
-              {`${statistics.Total[fin]} ${(date.getMonth() + 1)}/${date.getFullYear()}: ${total}`}
+              {`${statistics.Total[fin]} ${
+                date.getMonth() + 1
+              }/${date.getFullYear()}: ${total}`}
             </h3>
-            <h3>
-              {statistics.MonthChart1Header[fin]}
-            </h3>
+            <h3>{statistics.MonthChart1Header[fin]}</h3>
             <div className="line">
               <Chart
                 options={monthOptions}
@@ -355,9 +360,7 @@ const Statistics = () => {
                 height="400"
               />
             </div>
-            <h3>
-              {statistics.MonthChart2Header[fin]}
-            </h3>
+            <h3>{statistics.MonthChart2Header[fin]}</h3>
             <div className="bar">
               <Chart
                 options={monthlyTrackOptions}
@@ -372,7 +375,7 @@ const Statistics = () => {
       </div>
     );
   }
-  return (<div />);
+  return <div />;
 };
 
 async function getMonthlyVisitors(firstDate, lastDate) {
@@ -433,12 +436,12 @@ async function getMonthlyTrackVisitors(firstDate, lastDate) {
       let trackPerMonthVisitors = 0;
       for (const track of supervision.tracks) {
         if (visitors.length === 7) {
-          trackPerMonthVisitors = visitors[(track.id - 1)];
+          trackPerMonthVisitors = visitors[track.id - 1];
           trackVisitors = track.scheduled.visitors + trackPerMonthVisitors;
-          visitors.splice((track.id - 1), 1, trackVisitors);
+          visitors.splice(track.id - 1, 1, trackVisitors);
         } else {
           trackVisitors = track.scheduled.visitors;
-          visitors.splice((track.id - 1), 1, trackVisitors);
+          visitors.splice(track.id - 1, 1, trackVisitors);
         }
       }
     }

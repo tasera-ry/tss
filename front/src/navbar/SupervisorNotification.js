@@ -7,12 +7,15 @@ import { withCookies } from 'react-cookie';
 
 // function for checking whether we should show banner
 // DialogWindow for supervisors to confirm their supervisions
-import { checkSupervisorReservations, DialogWindow } from '../upcomingsupervisions/LoggedIn';
+import {
+  checkSupervisorReservations,
+  DialogWindow,
+} from '../upcomingsupervisions/LoggedIn';
 
 // Translations
 import data from '../texts/texts.json';
 
-const fin = localStorage.getItem('language');  // eslint-disable-line
+const fin = localStorage.getItem('language'); // eslint-disable-line
 const { banner } = data;
 
 class SupervisorNotification extends Component {
@@ -29,7 +32,8 @@ class SupervisorNotification extends Component {
     this.checkSupervisions();
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {  // eslint-disable-line
+  /* eslint-disable-next-line */
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.loggingOut) {
       this.setState({
         userHasSupervisions: false,
@@ -41,11 +45,12 @@ class SupervisorNotification extends Component {
     }
   }
 
-  refreshSupervisionsOpen = () => {  // eslint-disable-line
+  refreshSupervisionsOpen = () => {
+    // eslint-disable-line
     this.setState({
       supervisionsOpen: false,
     });
-  }
+  };
 
   checkSupervisions = async () => {
     const reservations = await checkSupervisorReservations(this.state.username);
@@ -58,39 +63,37 @@ class SupervisorNotification extends Component {
         userHasSupervisions: false,
       });
     }
-  }
+  };
 
-  displaySupervisions = (e) => {  // eslint-disable-line
+  displaySupervisions = () => {
     this.setState({
       supervisionsOpen: true,
     });
-  }
+  };
 
   render() {
     const fin = localStorage.getItem('language'); // eslint-disable-line
     return (
       <div>
-        {this.state.userHasSupervisions
-          ? (
-            <Alert
-              severity="warning"
-              variant="filled"
-              action={(
-                <Button color="inherit" size="small">
-                  {banner.Check[fin]}
-                </Button>
-            )}
-              onClick={this.displaySupervisions}
-            >
-              {banner.Notification[fin]}
-            </Alert>
-          ) : null}
-        {this.state.supervisionsOpen
-          ? (
-            <DialogWindow
-              onCancel={() => this.refreshSupervisionsOpen()}
-            />
-          ) : ''}
+        {this.state.userHasSupervisions ? (
+          <Alert
+            severity="warning"
+            variant="filled"
+            action={
+              <Button color="inherit" size="small">
+                {banner.Check[fin]}
+              </Button>
+            }
+            onClick={this.displaySupervisions}
+          >
+            {banner.Notification[fin]}
+          </Alert>
+        ) : null}
+        {this.state.supervisionsOpen ? (
+          <DialogWindow onCancel={() => this.refreshSupervisionsOpen()} />
+        ) : (
+          ''
+        )}
       </div>
     );
   }

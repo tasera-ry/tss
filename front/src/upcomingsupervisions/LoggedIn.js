@@ -30,7 +30,8 @@ import data from '../texts/texts.json';
 const dialogStyle = {
   backgroundColor: '#f2f0eb',
 };
-const discardChanges = {// eslint-disable-line
+/* eslint-disable-next-line */
+const discardChanges = {
   color: 'gray',
 };
 const checkboxStyle = {
@@ -40,7 +41,8 @@ const styleA = {
   padding: 25,
   textAlign: 'center',
 };
-const useStyles = makeStyles((theme) => ({ // eslint-disable-line
+/* eslint-disable-next-line */
+const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
     marginLeft: '50%',
@@ -58,7 +60,10 @@ const DropDowns = (props) => {
   const obj = props.changes.find((o) => o.date === id);
   let text = props.sv.Present[fin];
   let color = '#f2f0eb';
-  if (obj.range_supervisor === 'confirmed' || obj.range_supervisor === 'en route') {
+  if (
+    obj.range_supervisor === 'confirmed' ||
+    obj.range_supervisor === 'en route'
+  ) {
     text = props.sv.Confirmed[fin];
     color = '#658f60';
   }
@@ -75,7 +80,8 @@ const DropDowns = (props) => {
     width: 180,
     backgroundColor: `${buttonColor}`,
   };
-  const discardChanges = { // eslint-disable-line
+  /* eslint-disable-next-line */
+  const discardChanges = {
     color: '#b0aca0',
   };
 
@@ -128,45 +134,33 @@ const DropDowns = (props) => {
         anchorEl={anchorEl}
         onClose={HandleClose}
       >
-        <MenuItem
-          onClick={HandleClose}
-          data-info=""
-          style={discardChanges}
-        >
+        <MenuItem onClick={HandleClose} data-info="" style={discardChanges}>
           {props.sv.Present[fin]}
         </MenuItem>
-        <MenuItem
-          onClick={HandleClose}
-          data-info="y"
-        >
+        <MenuItem onClick={HandleClose} data-info="y">
           {props.sv.Confirmed[fin]}
         </MenuItem>
-        <MenuItem
-          onClick={HandleClose}
-          data-info="n"
-        >
+        <MenuItem onClick={HandleClose} data-info="n">
           {props.sv.Absent[fin]}
         </MenuItem>
       </Menu>
       &nbsp;
-      {props.today === props.d
-        ? (
-          <Check
-            HandleChange={props.HandleChange}
-            checked={props.checked}
-            sv={props.sv}
-            disable={disable}
-          />
-        )
-        : '' }
+      {props.today === props.d ? (
+        <Check
+          HandleChange={props.HandleChange}
+          checked={props.checked}
+          sv={props.sv}
+          disable={disable}
+        />
+      ) : (
+        ''
+      )}
     </span>
   );
 };
 
 // prints matkalla-checkbox
-const Check = ({
-  HandleChange, checked, sv, disable,
-}) => {
+const Check = ({ HandleChange, checked, sv, disable }) => {
   const fin = localStorage.getItem('language');
 
   return (
@@ -175,22 +169,20 @@ const Check = ({
       <FormControlLabel
         label={sv.EnRoute[fin]}
         disabled={disable}
-        control={(
+        control={
           <Checkbox
             checked={checked}
             style={checkboxStyle}
             onChange={HandleChange}
           />
-      )}
+        }
       />
     </>
   );
 };
 
 // prints date info in rows
-const Rows = ({
-  HandleChange, changes, checked, setDone, sv,
-}) => {
+const Rows = ({ HandleChange, changes, checked, setDone, sv }) => {
   const language = localStorage.getItem('language');
   let num = 2;
   if (language === '1') {
@@ -215,25 +207,19 @@ const Rows = ({
 
   const today = moment().format().split('T')[0];
 
-  return (
-    changes.map((d) => (
-      <div key={d.date} style={styleA}>
-        {getWeekday(d.date)}
-        {' '}
-        {getDateString(d.date)}
-        {' '}
-&nbsp;
-        <DropDowns
-          d={d.date}
-          today={today}
-          changes={changes}
-          HandleChange={HandleChange}
-          checked={checked}
-          sv={sv}
-        />
-      </div>
-    ))
-  );
+  return changes.map((d) => (
+    <div key={d.date} style={styleA}>
+      {getWeekday(d.date)} {getDateString(d.date)} &nbsp;
+      <DropDowns
+        d={d.date}
+        today={today}
+        changes={changes}
+        HandleChange={HandleChange}
+        checked={checked}
+        sv={sv}
+      />
+    </div>
+  ));
 };
 
 // TODO: change config after relocating jwt
@@ -250,7 +236,8 @@ async function getId(username) {
 }
 
 // obtain date info
-async function getReservations(res, setNoSchedule) { // eslint-disable-line
+/* eslint-disable-next-line */
+async function getReservations(res, setNoSchedule) {
   const today = moment().format().split('T')[0];
 
   for (let i = 0; i < res.length; i += 1) {
@@ -279,10 +266,17 @@ async function checkSupervisorReservations(username) {
   // TODO: Make it be in form ?id=
   const query = `api/range-supervision/usersupervisions/${userID}`;
 
-  const response = await axios.get(query)
-    .then((response) => ( // eslint-disable-line
-      // check and return boolean about whether there's any unconfirmed reservations
-      response.data.some((sprvsn) => sprvsn.range_supervisor === 'not confirmed')))
+  const response = await axios
+    .get(query)
+    .then(
+      (
+        response, // eslint-disable-line
+      ) =>
+        // check and return boolean about whether there's any unconfirmed reservations
+        response.data.some(
+          (sprvsn) => sprvsn.range_supervisor === 'not confirmed',
+        ),
+    )
     .catch((error) => {
       if (error.response.status !== 404) {
         console.log(error);
@@ -293,19 +287,29 @@ async function checkSupervisorReservations(username) {
 }
 
 // obtain users schedule and range supervision states
-async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone, username) {
+async function getSchedule(
+  setSchedules,
+  setNoSchedule,
+  setChecked,
+  setDone,
+  username,
+) {
   const userID = await getId(username);
   let res = [];
   let temp = [];
 
   const query = `api/schedule?supervisor_id=${userID}`;
-  const response = await axios.get(query) // eslint-disable-line
-    .then((response) => { // eslint-disable-line
+  /* eslint-disable-next-line */
+  const response = await axios
+    .get(query)
+    /* eslint-disable-next-line */
+    .then((response) => {
       if (response) {
         temp = temp.concat(response.data);
       }
     })
-    .catch((error) => { // eslint-disable-line
+    /* eslint-disable-next-line */
+    .catch((error) => {
       // console.log(error);
     });
 
@@ -313,8 +317,10 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone, use
     const v = await temp[i];
 
     const rsquery = `api/range-supervision/${v.id}`;
-    await axios.get(rsquery)
-      .then((response) => { // eslint-disable-line
+    await axios
+      .get(rsquery)
+      /* eslint-disable-next-line */
+      .then((response) => {
         if (response) {
           // object id is schedule id
           const obj = {
@@ -328,7 +334,8 @@ async function getSchedule(setSchedules, setNoSchedule, setChecked, setDone, use
           res = res.concat(obj);
         }
       })
-      .catch((error) => { // eslint-disable-line
+      /* eslint-disable-next-line */
+      .catch((error) => {
         // console.log(error);
       });
   }
@@ -359,7 +366,13 @@ const DialogWindow = ({ onCancel }) => {
 
   // starting point
   useEffect(() => {
-    getSchedule(setSchedules, setNoSchedule, setChecked, setDone, cookies.username);
+    getSchedule(
+      setSchedules,
+      setNoSchedule,
+      setChecked,
+      setDone,
+      cookies.username,
+    );
   }, []); // eslint-disable-line
 
   return (
@@ -385,10 +398,9 @@ async function putSchedules(changes) {
     const { id } = changes[i];
     const query = `api/range-supervision/${id}`;
     const s = changes[i].range_supervisor;
-    await axios.put(query,
-      {
-        range_supervisor: s,
-      });
+    await axios.put(query, {
+      range_supervisor: s,
+    });
   }
 }
 
@@ -409,7 +421,8 @@ const Logic = ({
   const fin = localStorage.getItem('language');
   const changes = [...schedules];
 
-  const HandleChange = (event) => { // eslint-disable-line
+  /* eslint-disable-next-line */
+  const HandleChange = (event) => {
     setChecked(!checked);
   };
 
@@ -435,36 +448,35 @@ const Logic = ({
 
   return (
     <div>
-      <Dialog
-        open={open}
-        aria-labelledby="otsikko"
-      >
-        <DialogTitle id="otsikko" style={dialogStyle}>{sv.Header[fin]}</DialogTitle>
+      <Dialog open={open} aria-labelledby="otsikko">
+        <DialogTitle id="otsikko" style={dialogStyle}>
+          {sv.Header[fin]}
+        </DialogTitle>
         <DialogContent style={dialogStyle}>
           <DialogContentText>
             {noSchedule ? sv.No[fin] : ''}
             {done ? '' : sv.Wait[fin]}
           </DialogContentText>
-          {schedules.length !== 0
-            ? (
-              <Rows
-                HandleChange={HandleChange}
-                changes={changes}
-                checked={checked}
-                setDone={setDone}
-                sv={sv}
-              />
-            )
-            : ''}
+          {schedules.length !== 0 ? (
+            <Rows
+              HandleChange={HandleChange}
+              changes={changes}
+              checked={checked}
+              setDone={setDone}
+              sv={sv}
+            />
+          ) : (
+            ''
+          )}
         </DialogContent>
         <DialogActions style={dialogStyle}>
-          {wait
-            ? (
-              <div className={classes.root}>
-                <CircularProgress />
-              </div>
-            )
-            : ''}
+          {wait ? (
+            <div className={classes.root}>
+              <CircularProgress />
+            </div>
+          ) : (
+            ''
+          )}
           <Button
             variant="contained"
             onClick={() => {
@@ -475,17 +487,17 @@ const Logic = ({
           >
             {sv.Cancel[fin]}
           </Button>
-          {done && !noSchedule
-            ? (
-              <Button
-                variant="contained"
-                onClick={HandleClose}
-                style={{ backgroundColor: '#5f77a1' }}
-              >
-                {sv.Save[fin]}
-              </Button>
-            )
-            : ''}
+          {done && !noSchedule ? (
+            <Button
+              variant="contained"
+              onClick={HandleClose}
+              style={{ backgroundColor: '#5f77a1' }}
+            >
+              {sv.Save[fin]}
+            </Button>
+          ) : (
+            ''
+          )}
         </DialogActions>
       </Dialog>
     </div>

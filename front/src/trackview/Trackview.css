@@ -5,11 +5,11 @@
 
 .trackNameAndType {
   padding: 8;
-  background-color: "#f2f0eb";
+  background-color: '#f2f0eb';
   text-align: center;
   align-items: flex-end;
   display: grid;
-  flex-direction: "row";
+  flex-direction: 'row';
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -149,7 +149,7 @@
     width: 80vw;
     margin-left: 8vw;
   }
-  
+
   .isEnRoute {
     background-color: #f2c66d;
     color: black;
@@ -157,7 +157,7 @@
     width: 80vw;
     margin-left: 8vw;
   }
-  
+
   .isConfirmed {
     background-color: #b2d9ad;
     color: black;
@@ -165,7 +165,7 @@
     width: 80vw;
     margin-left: 8vw;
   }
-  
+
   .isNotConfirmed {
     background-color: #95d5db;
     color: black;
@@ -173,18 +173,18 @@
     width: 80vw;
     margin-left: 8vw;
   }
-  
+
   .wholeScreenDiv {
     text-align: center;
     align-items: left;
   }
   .trackNameAndType {
     padding: 8;
-    background-color: "#f2f0eb";
+    background-color: '#f2f0eb';
     text-align: center;
     align-items: flex-end;
     display: grid;
-    flex-direction: "row";
+    flex-direction: 'row';
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
