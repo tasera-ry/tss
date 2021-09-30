@@ -4,7 +4,9 @@ import * as utils from './Utils';
 import testUtils from '../_TestUtils/TestUtils';
 
 axios.get = jest.fn(() => Promise.resolve({ data: 'dummy axios response' }));
-global.fetch = jest.fn(() => (Promise.resolve({ json: () => Promise.resolve('dummy fetch response') })));
+global.fetch = jest.fn(() =>
+  Promise.resolve({ json: () => Promise.resolve('dummy fetch response') }),
+);
 
 describe('testing weekview', () => {
   it('testing getSchedulingDate', async () => {
@@ -45,50 +47,74 @@ describe('testing weekview', () => {
   it('testing validateLogin', async () => {
     localStorage.setItem('token', 'dummy_token');
 
-    global.fetch = jest.fn(() => (Promise.resolve({ status: 200 })));
+    global.fetch = jest.fn(() => Promise.resolve({ status: 200 }));
     const result = await utils.validateLogin();
     expect(result).toBe(true);
 
-    global.fetch = jest.fn(() => (Promise.resolve({ status: 401 })));
+    global.fetch = jest.fn(() => Promise.resolve({ status: 401 }));
     const result2 = await utils.validateLogin();
     expect(result2).toBe(false);
   });
 
   it('testing rangeSupervision', async () => {
-    global.fetch = jest.fn(() => (Promise.resolve({ ok: true })));
-    const result = await utils.rangeSupervision(0, 0, 'open', true, 'dummytoken');
+    global.fetch = jest.fn(() => Promise.resolve({ ok: true }));
+    const result = await utils.rangeSupervision(
+      0,
+      0,
+      'open',
+      true,
+      'dummytoken',
+    );
     expect(result).toBe(true);
-    expect(fetch).toHaveBeenCalledWith(
-      '/api/reservation/0', {
-        body: '{"available":true}',
-        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-        method: 'PUT',
+    expect(fetch).toHaveBeenCalledWith('/api/reservation/0', {
+      body: '{"available":true}',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
-    );
-    expect(fetch).toHaveBeenCalledWith(
-      '/api/range-supervision/0', {
-        body: '{"range_supervisor":"open","supervisor":"dummytoken"}',
-        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-        method: 'PUT',
+      method: 'PUT',
+    });
+    expect(fetch).toHaveBeenCalledWith('/api/range-supervision/0', {
+      body: '{"range_supervisor":"open","supervisor":"dummytoken"}',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
-    );
+      method: 'PUT',
+    });
 
     global.fetch = jest.fn((url) => {
       if (url === '/api/reservation/0') {
-        return (Promise.resolve({ ok: false }));
+        return Promise.resolve({ ok: false });
       }
-      return (Promise.resolve({ ok: true }));
+      return Promise.resolve({ ok: true });
     });
-    const result2 = await utils.rangeSupervision(0, 0, 'open', true, 'dummytoken');
-    expect(result2).toBe('general range supervision failure: Error: scheduled reserv fail');
+    const result2 = await utils.rangeSupervision(
+      0,
+      0,
+      'open',
+      true,
+      'dummytoken',
+    );
+    expect(result2).toBe(
+      'general range supervision failure: Error: scheduled reserv fail',
+    );
 
     global.fetch = jest.fn((url) => {
       if (url === '/api/range-supervision/0') {
-        return (Promise.resolve({ ok: false }));
+        return Promise.resolve({ ok: false });
       }
-      return (Promise.resolve({ ok: true }));
+      return Promise.resolve({ ok: true });
     });
-    const result3 = await utils.rangeSupervision(0, 0, 'open', true, 'dummytoken');
-    expect(result3).toBe('general range supervision failure: Error: scheduled superv fail');
+    const result3 = await utils.rangeSupervision(
+      0,
+      0,
+      'open',
+      true,
+      'dummytoken',
+    );
+    expect(result3).toBe(
+      'general range supervision failure: Error: scheduled superv fail',
+    );
   });
 });

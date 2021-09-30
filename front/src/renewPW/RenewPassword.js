@@ -64,7 +64,9 @@ const RenewPassword = (props) => {
   useEffect(() => {
     async function verifyToken() {
       try {
-        const response = await axios.get('api/reset', { params: { reset_token: token } });
+        const response = await axios.get('api/reset', {
+          params: { reset_token: token },
+        });
 
         if (response.data.message === 'password reset link a-ok') {
           setUsername(response.data.username);
@@ -98,8 +100,12 @@ const RenewPassword = (props) => {
 
     if (newPassword === confirmNewPassword && newPassword !== '') {
       try {
+        /* eslint-disable-next-line */
         const response = await axios.put('api/reset', {
-          username, newPassword, reset_token: token, reset_token_expire: tokenExpires,
+          username,
+          newPassword,
+          reset_token: token,
+          reset_token_expire: tokenExpires,
         });
         setUpdated(true);
         setTokenOK(false);
@@ -120,19 +126,20 @@ const RenewPassword = (props) => {
   );
 
   const displayError = () => (
-    <Typography component="h3" variant="h5" align="center" style={{ color: '#c23a3a' }}>
+    <Typography
+      component="h3"
+      variant="h5"
+      align="center"
+      style={{ color: '#c23a3a' }}
+    >
       {renewPW.Error[fin]}
-        &nbsp;
+      &nbsp;
       <div>
-        <Typography
-          align="center"
-          style={{ color: '#000000' }}
-        >
+        <Typography align="center" style={{ color: '#000000' }}>
           {renewPW.ErrorDesc[fin]}
         </Typography>
       </div>
-        &nbsp;
-
+      &nbsp;
       <Button
         onClick={redirectToReset}
         fullWidth
@@ -146,10 +153,7 @@ const RenewPassword = (props) => {
 
   const displayMismatch = () => (
     <div>
-      <Typography
-        align="center"
-        style={{ color: '#c23a3a' }}
-      >
+      <Typography align="center" style={{ color: '#c23a3a' }}>
         {renewPW.Mismatch[fin]}
       </Typography>
     </div>
@@ -211,27 +215,24 @@ const RenewPassword = (props) => {
           }}
         />
 
-        {mismatch && (
-          displayMismatch()
-        )}
+        {mismatch && displayMismatch()}
 
-        {!isWaiting && (
-          displayButton()
-        )}
-
+        {!isWaiting && displayButton()}
       </form>
     </Typography>
   );
 
   const displayUpdated = () => (
-    <Typography component="h3" variant="h5" align="center" style={{ color: '#047a00' }}>
+    <Typography
+      component="h3"
+      variant="h5"
+      align="center"
+      style={{ color: '#047a00' }}
+    >
       {renewPW.Updated[fin]}
-        &nbsp;
+      &nbsp;
       <div>
-        <Typography
-          align="center"
-          style={{ color: '#000000' }}
-        >
+        <Typography align="center" style={{ color: '#000000' }}>
           {renewPW.UpdatedDesc[fin]}
         </Typography>
       </div>
@@ -242,23 +243,13 @@ const RenewPassword = (props) => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
+        {isLoading && displayLoading()}
 
-        {isLoading && (
-          displayLoading()
-        )}
+        {error && !updated && displayError()}
 
-        {error && !updated && (
-          displayError()
-        )}
+        {tokenOK && !updated && displayTokenOK()}
 
-        {tokenOK && !updated && (
-          displayTokenOK()
-        )}
-
-        {updated && (
-          displayUpdated()
-        )}
-
+        {updated && displayUpdated()}
       </div>
     </Container>
   );

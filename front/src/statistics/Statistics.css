@@ -4,7 +4,7 @@
 
 .buttonContainer {
   display: flex;
-  align-items:center;
+  align-items: center;
   justify-content: center;
 }
 
@@ -16,11 +16,11 @@
 }
 
 .container .titleContainer {
-  display:flex;
-  align-items:center;
+  display: flex;
+  align-items: center;
   text-align: start;
   justify-content: space-around;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
 }
 
 .container .arrow-right {
@@ -48,11 +48,11 @@
 }
 
 .container .firstSection {
-  display:flex;
-  align-items:center;
+  display: flex;
+  align-items: center;
   text-align: start;
   justify-content: space-around;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
 }
 
 .mixed-chart .line {

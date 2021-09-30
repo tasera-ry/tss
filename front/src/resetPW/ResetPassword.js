@@ -55,7 +55,7 @@ const ResetPassword = () => {
   const reset = async (e) => {
     e.preventDefault();
     setIsWaiting(true);
-    
+
     if (email === '') {
       setShowNullError(true);
       setShowError(false);
@@ -82,10 +82,7 @@ const ResetPassword = () => {
 
   const displayNullError = () => (
     <div>
-      <Typography
-        align="center"
-        style={{ color: '#c23a3a' }}
-      >
+      <Typography align="center" style={{ color: '#c23a3a' }}>
         {resetPW.NullErr[fin]}
       </Typography>
     </div>
@@ -93,10 +90,7 @@ const ResetPassword = () => {
 
   const displayError = () => (
     <div>
-      <Typography
-        align="center"
-        style={{ color: '#c23a3a' }}
-      >
+      <Typography align="center" style={{ color: '#c23a3a' }}>
         {resetPW.InvErr[fin]}
       </Typography>
     </div>
@@ -138,17 +132,11 @@ const ResetPassword = () => {
           }}
         />
 
-        {showNullError && (
-          displayNullError()
-        )}
+        {showNullError && displayNullError()}
 
-        {showError && (
-          displayError()
-        )}
+        {showError && displayError()}
 
-        {!isWaiting && (
-          displayButton()
-        )}
+        {!isWaiting && displayButton()}
       </form>
     </Typography>
   );
@@ -170,15 +158,9 @@ const ResetPassword = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
+        {showForm && displayForm()}
 
-        {showForm && (
-          displayForm()
-        )}
-
-        {emailSent && (
-          displayEmailSent()
-        )}
-
+        {emailSent && displayEmailSent()}
       </div>
     </Container>
   );

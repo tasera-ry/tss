@@ -1,10 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import {
-  waitFor,
-  render,
-  screen,
-} from '@testing-library/react';
+import { waitFor, render, screen } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
 import { act } from 'react-dom/test-utils';
 import Trackview from './Trackview';
@@ -32,7 +28,8 @@ describe('testing Trackview', () => {
         </Router>,
       );
     });
-    await waitFor(() => expect(screen.getByText('Back to dayview'))
-      .toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText('Back to dayview')).toBeInTheDocument(),
+    );
   });
 });

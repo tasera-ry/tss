@@ -1,10 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import {
-  waitFor,
-  render,
-  screen,
-} from '@testing-library/react';
+import { waitFor, render, screen } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { act } from 'react-dom/test-utils';
@@ -41,8 +37,9 @@ describe('testing weekview', () => {
         </Router>,
       );
     });
-    await waitFor(() => expect(screen.getByText('Range officer present'))
-      .toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText('Range officer present')).toBeInTheDocument(),
+    );
   });
 
   // it('should render correct week', async () => {

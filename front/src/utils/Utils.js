@@ -8,13 +8,16 @@ import texts from '../texts/texts.json';
 
 export async function getSchedulingDate(date) {
   try {
-    const response = await fetch(`/api/datesupreme/${moment(date).format('YYYY-MM-DD')}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `/api/datesupreme/${moment(date).format('YYYY-MM-DD')}`,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
       },
-    });
+    );
     return await response.json();
   } catch (err) {
     console.error(err);
@@ -31,7 +34,9 @@ export async function getSchedulingWeek(date) {
     const current = moment(begin);
     moment.prototype.add.bind(current, 1, 'day');
 
-    const resp = await axios.get(`/api/daterange/week/${moment(begin).format('YYYY-MM-DD')}`);
+    const resp = await axios.get(
+      `/api/daterange/week/${moment(begin).format('YYYY-MM-DD')}`,
+    );
 
     /*
     const week = await Promise.all(lodash.times(7, (i) => {
@@ -58,7 +63,11 @@ export async function getSchedulingFreeform(date) {
     const begin = moment(date, 'YYYY-MM-DD');
     const end = moment(date, 'YYYY-MM-DD');
     end.add(45, 'days');
-    const longrange = await axios.get(`/api/daterange/freeform/${moment(begin).format('YYYY-MM-DD')}/${moment(end).format('YYYY-MM-DD')}`);
+    const longrange = await axios.get(
+      `/api/daterange/freeform/${moment(begin).format('YYYY-MM-DD')}/${moment(
+        end,
+      ).format('YYYY-MM-DD')}`,
+    );
     return {
       month: longrange.data,
     };
@@ -89,7 +98,7 @@ export function checkColor(paivat, paiva) {
 }
 
 export function viewChanger() {
-  const { viewChanger } = texts;  // eslint-disable-line
+  const { viewChanger } = texts; // eslint-disable-line
   const fin = localStorage.getItem('language');
   const table = [];
 
@@ -113,49 +122,52 @@ export function viewChanger() {
 
     table.push(
       <Link key="month" className="link" to={`/monthview/${time}`}>
-        <div>
-          {viewChanger.Month[fin]}
-        </div>
+        <div>{viewChanger.Month[fin]}</div>
       </Link>,
     );
     table.push(
       <Link key="week" className="link" to={`/weekview/${time}`}>
-        <div>
-          {viewChanger.Week[fin]}
-        </div>
+        <div>{viewChanger.Week[fin]}</div>
       </Link>,
     );
     table.push(
       <Link key="day" className="link" to={`/dayview/${time}`}>
-        <div>
-          {viewChanger.Day[fin]}
-        </div>
+        <div>{viewChanger.Day[fin]}</div>
       </Link>,
     );
     return table;
   } catch (err) {
     console.error(err);
     const date = new Date(Date.now());
-    const time = moment(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`, 'YYYY-MM-DD');
+    const time = moment(
+      `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+      'YYYY-MM-DD',
+    );
     table.push(
-      <Link className="link" key="1" to={`/monthview/${time.format('YYYY-MM-DD')}`}>
-        <div>
-          {viewChanger.Month[fin]}
-        </div>
+      <Link
+        className="link"
+        key="1"
+        to={`/monthview/${time.format('YYYY-MM-DD')}`}
+      >
+        <div>{viewChanger.Month[fin]}</div>
       </Link>,
     );
     table.push(
-      <Link className="link" key="2" to={`/weekview/${time.format('YYYY-MM-DD')}`}>
-        <div>
-          {viewChanger.Week[fin]}
-        </div>
+      <Link
+        className="link"
+        key="2"
+        to={`/weekview/${time.format('YYYY-MM-DD')}`}
+      >
+        <div>{viewChanger.Week[fin]}</div>
       </Link>,
     );
     table.push(
-      <Link className="link" key="3" to={`/dayview/${time.format('YYYY-MM-DD')}`}>
-        <div>
-          {viewChanger.Day[fin]}
-        </div>
+      <Link
+        className="link"
+        key="3"
+        to={`/dayview/${time.format('YYYY-MM-DD')}`}
+      >
+        <div>{viewChanger.Day[fin]}</div>
       </Link>,
     );
     return table;
@@ -163,7 +175,7 @@ export function viewChanger() {
 }
 
 export function jumpToCurrent() {
-  const { viewChanger } = texts;  // eslint-disable-line
+  const { viewChanger } = texts; // eslint-disable-line
   const fin = localStorage.getItem('language');
 
   try {
@@ -171,10 +183,14 @@ export function jumpToCurrent() {
     const urlParamDate = fullUrl[4];
     const date = new Date(Date.now());
     return (
-      <Link className="link" data-testid="jumpToCur" to={`/${urlParamDate}/${moment(date, 'YYYY-MM-DD').toISOString().substring(0, 10)}`}>
-        <div>
-          {viewChanger.JumpToCurrent[fin]}
-        </div>
+      <Link
+        className="link"
+        data-testid="jumpToCur"
+        to={`/${urlParamDate}/${moment(date, 'YYYY-MM-DD')
+          .toISOString()
+          .substring(0, 10)}`}
+      >
+        <div>{viewChanger.JumpToCurrent[fin]}</div>
       </Link>
     );
   } catch (err) {
@@ -234,7 +250,13 @@ export async function validateLogin() {
 // on success true
 // else returns string trying to explain what broke
 // requires reservation and schedule to exist
-export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, supervisor) {
+export async function rangeSupervision(
+  rsId,
+  srsId,
+  rangeStatus,
+  rsScheduled,
+  supervisor,
+) {
   try {
     if (rsId !== null && srsId !== null) {
       // only closed is different from the 6 states
@@ -249,10 +271,9 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, su
               Accept: 'application/json',
               'Content-Type': 'application/json',
             },
-          })
-            .then((status) => {
-              if (!status.ok) throw new Error('scheduled reserv fail');
-            });
+          }).then((status) => {
+            if (!status.ok) throw new Error('scheduled reserv fail');
+          });
 
           const updateBody = supervisor
             ? JSON.stringify({ range_supervisor: rangeStatus, supervisor })
@@ -266,11 +287,11 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, su
               Accept: 'application/json',
               'Content-Type': 'application/json',
             },
-          })
-            .then((status) => {
-              if (!status.ok) throw new Error('scheduled superv fail');
-            });
-        } else { // no supervision exists
+          }).then((status) => {
+            if (!status.ok) throw new Error('scheduled superv fail');
+          });
+        } else {
+          // no supervision exists
           // changing supervision force reservation open
           await fetch(`/api/reservation/${rsId}`, {
             method: 'PUT',
@@ -279,10 +300,9 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, su
               Accept: 'application/json',
               'Content-Type': 'application/json',
             },
-          })
-            .then((status) => {
-              if (!status.ok) throw new Error('not scheduled reserv fail');
-            });
+          }).then((status) => {
+            if (!status.ok) throw new Error('not scheduled reserv fail');
+          });
 
           // add new supervision
           await fetch('/api/range-supervision', {
@@ -296,10 +316,9 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, su
               Accept: 'application/json',
               'Content-Type': 'application/json',
             },
-          })
-            .then((status) => {
-              if (!status.ok) throw new Error('not scheduled superv fail');
-            });
+          }).then((status) => {
+            if (!status.ok) throw new Error('not scheduled superv fail');
+          });
         }
       } else {
         // range closed update reservation
@@ -310,10 +329,9 @@ export async function rangeSupervision(rsId, srsId, rangeStatus, rsScheduled, su
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
-        })
-          .then((status) => {
-            if (!status.ok) throw new Error('reservation update failed');
-          });
+        }).then((status) => {
+          if (!status.ok) throw new Error('reservation update failed');
+        });
       }
     } else throw new Error('reservation or schedule missing');
   } catch (e) {

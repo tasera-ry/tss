@@ -22,19 +22,19 @@ const FeedbackWindow = ({ user, dialogOpen, setDialogOpen }) => {
   const [textFeedback, setTextFeedback] = useState('');
   const handleSend = async () => {
     setDialogOpen(false);
-    await axios.put('api/range-supervision/feedback', { feedback: textFeedback, user });
+    await axios.put('api/range-supervision/feedback', {
+      feedback: textFeedback,
+      user,
+    });
   };
   return (
     <div>
-      <Dialog
-        open={dialogOpen}
-        aria-labelledby="title"
-      >
-        <DialogTitle id="title" style={dialogStyle}>{feedback.Title[fin]}</DialogTitle>
+      <Dialog open={dialogOpen} aria-labelledby="title">
+        <DialogTitle id="title" style={dialogStyle}>
+          {feedback.Title[fin]}
+        </DialogTitle>
         <DialogContent style={dialogStyle}>
-          <DialogContentText>
-            {feedback.Note[fin]}
-          </DialogContentText>
+          <DialogContentText>{feedback.Note[fin]}</DialogContentText>
           <TextField
             id="feedback-field"
             inputProps={{

@@ -1,11 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import {
-  waitFor,
-  render,
-  screen,
-  fireEvent,
-} from '@testing-library/react';
+import { waitFor, render, screen, fireEvent } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { act } from 'react-dom/test-utils';
@@ -17,16 +12,16 @@ utils.validateLogin = jest.fn(() => Promise.resolve(true));
 
 global.fetch = jest.fn((url, ops) => {
   if (ops.method === 'GET') {
-    return (Promise.resolve({
+    return Promise.resolve({
       json: () => Promise.resolve(testUtils.users),
-    }));
+    });
   }
   if (ops.method === 'DELETE') {
-    return (Promise.resolve({
+    return Promise.resolve({
       json: () => Promise.resolve({ ok: true }),
-    }));
+    });
   }
-  return (null);
+  return null;
 });
 
 describe('testing UserManagementView', () => {
@@ -36,13 +31,13 @@ describe('testing UserManagementView', () => {
     await act(async () => {
       render(
         <Router>
-          <UserManagementView
-            history={history}
-          />
+          <UserManagementView history={history} />
         </Router>,
       );
     });
-    await waitFor(() => expect(screen.getByText('User management')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText('User management')).toBeInTheDocument(),
+    );
   });
 
   it('should delete users', async () => {
@@ -50,35 +45,42 @@ describe('testing UserManagementView', () => {
     localStorage.setItem('language', '1'); // eslint-disable-line no-undef
     global.fetch = jest.fn((url) => {
       if (url.includes('/api/user')) {
-        return (Promise.resolve({
+        return Promise.resolve({
           json: () => Promise.resolve([testUtils.users[0]]),
-        }));
+        });
       }
       return null;
     });
     await act(async () => {
       render(
         <Router>
-          <UserManagementView
-            history={history}
-          />
+          <UserManagementView history={history} />
         </Router>,
       );
     });
-    await waitFor(() => expect(screen.getByText('Ruthie_Leuschke')).toBeInTheDocument());
-    await waitFor(() => expect(screen.getByTestId('del-1')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText('Ruthie_Leuschke')).toBeInTheDocument(),
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId('del-1')).toBeInTheDocument(),
+    );
     fireEvent.click(screen.getByTestId('del-1'));
-    await waitFor(() => expect(screen.getByText('Are you sure?')).toBeInTheDocument());
-    await waitFor(() => expect(screen.getByText('Confirm')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText('Are you sure?')).toBeInTheDocument(),
+    );
+    await waitFor(() =>
+      expect(screen.getByText('Confirm')).toBeInTheDocument(),
+    );
     fireEvent.click(screen.getByText('Confirm'));
-    await waitFor(() => expect(fetch).toHaveBeenCalledWith('/api/user/1',
-      {
+    await waitFor(() =>
+      expect(fetch).toHaveBeenCalledWith('/api/user/1', {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
         method: 'DELETE',
-      }));
+      }),
+    );
   });
   // TODO
   // it('should change own password', async () => {

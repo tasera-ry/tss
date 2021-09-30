@@ -43,14 +43,18 @@ const tableIcons = {
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
   Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
   Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-  DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+  DetailPanel: forwardRef((props, ref) => (
+    <ChevronRight {...props} ref={ref} />
+  )),
   Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
   Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
   Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
   FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
   LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
   NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
+  PreviousPage: forwardRef((props, ref) => (
+    <ChevronLeft {...props} ref={ref} />
+  )),
   ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
   SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
@@ -73,16 +77,14 @@ const RequestStatusAlert = ({ statusSetter, requestStatus, text }) => {
   }
   return (
     <Snackbar open={requestStatus !== null} onClose={() => statusSetter(null)}>
-      <Alert severity={requestStatus}>
-        {text}
-      </Alert>
+      <Alert severity={requestStatus}>{text}</Alert>
     </Snackbar>
   );
 };
 
-const MaybeProgress = ({ finished }) => (finished
-  ? <></>
-  : <LinearProgress variant="query" />);
+/* eslint-disable-next-line */
+const MaybeProgress = ({ finished }) =>
+  finished ? <></> : <LinearProgress variant="query" />;
 
 /*
   Main table for showing track information
@@ -125,81 +127,87 @@ const TrackTable = ({
     }}
     // Editing tracks
     editable={{
-      onRowAdd: ({ name, description, short_description }) => new Promise(async (resolve, reject) => { // eslint-disable-line
-        try {
-          const response = await axios.post(
-            '/api/track',
-            {
+      /* eslint-disable-next-line */
+      onRowAdd: ({ name, description, short_description }) =>
+        /* eslint-disable-next-line */
+        new Promise(async (resolve, reject) => {
+          try {
+            const response = await axios.post('/api/track', {
               name,
               description,
               short_description,
               range_id: trackData[0].range_id,
-            },
-          );
-          setTrackData(trackData.concat(response.data));
-          setRequestStatus('success');
-          setRequestText('Rata lisätty');
+            });
+            setTrackData(trackData.concat(response.data));
+            setRequestStatus('success');
+            setRequestText('Rata lisätty');
+            resolve();
+          } catch (e) {
+            setRequestStatus('error');
+            setRequestText('Radan lisäys epäonnistui');
+            reject();
+          }
+        }),
+      onRowUpdate: (newData, oldData) =>
+        /* eslint-disable-next-line */
+        new Promise(async (resolve, reject) => {
           resolve();
-        } catch (e) {
-          setRequestStatus('error');
-          setRequestText('Radan lisäys epäonnistui');
-          reject();
-        }
-      })
-      , onRowUpdate: (newData, oldData) => new Promise(async (resolve, reject) => { // eslint-disable-line
-        resolve();
-        const trackInfo = trackData
-          .filter((track) => track.name === oldData.name
-                          && track.short_description === oldData.short_description
-                          && track.description === oldData.description)[0];
+          const trackInfo = trackData.filter(
+            (track) =>
+              track.name === oldData.name &&
+              track.short_description === oldData.short_description &&
+              track.description === oldData.description,
+          )[0];
 
-        if (trackInfo === undefined) {
-          setRequestStatus('error');
-          setRequestText(l10n.rowUpdateFail[lang]);
-          reject();
-        }
+          if (trackInfo === undefined) {
+            setRequestStatus('error');
+            setRequestText(l10n.rowUpdateFail[lang]);
+            reject();
+          }
 
-        try {
-          await axios.put(
-            `/api/track/${trackInfo.id}`,
-            newData,
-          );
-          const modified = trackData.filter((track) => track.id !== trackInfo.id)
-            .concat({ ...trackInfo, ...newData });
-          setTrackData(modified);
-          setRequestStatus('success');
-          setRequestText(l10n.rowUpdateSuccess[lang]);
-        } catch (e) {
-          setRequestStatus('error');
-          setRequestText(l10n.rowUpdateFail[lang]);
-          reject();
-        }
-        resolve();
-      }),
-      onRowDelete: ({ name, description }) => new Promise(async (resolve, reject) => { // eslint-disable-line
-        const trackInfo = trackData
-          .filter((track) => track.name === name
-                  && track.description === description)[0];
-
-        // Should never happen
-        if (trackInfo === undefined) {
-          setRequestStatus('error');
-          setRequestText('Radan poisto epäonnistui');
-          reject();
-        }
-
-        try {
-          const response = await axios.delete(`/api/track/${trackInfo.id}`); // eslint-disable-line
-          setTrackData(trackData.filter((track) => track.id !== trackInfo.id));
-          setRequestStatus('success');
-          setRequestText('Rata poistettu');
+          try {
+            await axios.put(`/api/track/${trackInfo.id}`, newData);
+            const modified = trackData
+              .filter((track) => track.id !== trackInfo.id)
+              .concat({ ...trackInfo, ...newData });
+            setTrackData(modified);
+            setRequestStatus('success');
+            setRequestText(l10n.rowUpdateSuccess[lang]);
+          } catch (e) {
+            setRequestStatus('error');
+            setRequestText(l10n.rowUpdateFail[lang]);
+            reject();
+          }
           resolve();
-        } catch (e) {
-          setRequestStatus('error');
-          setRequestText('Radan poisto epäonnistui');
-          reject();
-        }
-      }),
+        }),
+      onRowDelete: ({ name, description }) =>
+        /* eslint-disable-next-line */
+        new Promise(async (resolve, reject) => {
+          const trackInfo = trackData.filter(
+            (track) => track.name === name && track.description === description,
+          )[0];
+
+          // Should never happen
+          if (trackInfo === undefined) {
+            setRequestStatus('error');
+            setRequestText('Radan poisto epäonnistui');
+            reject();
+          }
+
+          try {
+            const response = await axios.delete(`/api/track/${trackInfo.id}`); // eslint-disable-line
+            setTrackData(
+              trackData.filter((track) => track.id !== trackInfo.id),
+            );
+            setRequestStatus('success');
+            setRequestText('Rata poistettu');
+            resolve();
+          } catch (e) {
+            setRequestStatus('error');
+            setRequestText('Radan poisto epäonnistui');
+            reject();
+          }
+        }),
     }}
     options={{
       pageSize: 10,

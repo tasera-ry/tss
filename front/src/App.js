@@ -41,17 +41,16 @@ class App extends Component {
   // TODO: this works, but flashes if invalid
   componentDidMount() {
     if (this.state.cookies.username) {
-      validateLogin()
-        .then(async (tokenValid) => {
-          // If the token is expired, logout user
-          if (!tokenValid) {
-            const response = await axios.post('/api/signout'); // eslint-disable-line
-            this.props.cookies.remove('username');
-            this.props.cookies.remove('role');
+      validateLogin().then(async (tokenValid) => {
+        // If the token is expired, logout user
+        if (!tokenValid) {
+          const response = await axios.post('/api/signout'); // eslint-disable-line
+          this.props.cookies.remove('username');
+          this.props.cookies.remove('role');
 
-            window.location.reload();
-          }
-        });
+          window.location.reload();
+        }
+      });
     }
   }
 
@@ -68,15 +67,21 @@ class App extends Component {
               <Switch>
                 <Route exact path="/" component={Weekview} />
                 <Route exact path="/signin" component={SignIn} />
-                <Route path="/signin/reset-password" component={ResetPassword} />
-                <Route path="/renew-password/:token?" component={RenewPassword} />
+                <Route
+                  path="/signin/reset-password"
+                  component={ResetPassword}
+                />
+                <Route
+                  path="/renew-password/:token?"
+                  component={RenewPassword}
+                />
                 <Route path="/dayview/:date?" component={Dayview} />
                 <Route path="/weekview" component={Weekview} />
                 <Route path="/monthview" component={Monthview} />
                 <Route path="/trackview/:date?/:track?" component={Trackview} />
                 <Route path="/scheduling/:date?" component={Scheduling} />
                 <Route path="/tablet" component={RangeOfficerView} />
-                <Route path="/profile" component={Profile}/>
+                <Route path="/profile" component={Profile} />
                 <Route path="/usermanagement" component={UserManagementView} />
                 <Route path="/tracks" component={TrackCRUD} />
                 <Route path="/email-settings" component={EmailSettings} />

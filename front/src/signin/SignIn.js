@@ -58,7 +58,8 @@ const SignIn = () => {
   function RedirectToWeekview() {
     window.location.href = '/';
   }
-  async function setInfo(user) { // eslint-disable-line
+  async function setInfo(user) {
+    // eslint-disable-line
     setCookie('username', user.name, { sameSite: true, secure });
     setCookie('role', user.role, { sameSite: true, secure });
     // TODO: try to be SPA and remove this refresh
@@ -73,7 +74,7 @@ const SignIn = () => {
       for (let i = 0; i < error.response.data.errors.length; i += 1) {
         const { param } = error.response.data.errors[i];
         const { msg } = error.response.data.errors[i];
-        message += (`${param} ${msg}\n`);
+        message += `${param} ${msg}\n`;
       }
     }
     if (error.response.status === 401) {
@@ -84,15 +85,18 @@ const SignIn = () => {
   const login = (e) => {
     e.preventDefault();
 
-    axios.post('api/sign', {
-      name,
-      password,
-      secure,
-    }).then((resp) => {
-      setInfo(resp.data);
-    }).catch((error) => {
-      HandleError(error);
-    });
+    axios
+      .post('api/sign', {
+        name,
+        password,
+        secure,
+      })
+      .then((resp) => {
+        setInfo(resp.data);
+      })
+      .catch((error) => {
+        HandleError(error);
+      });
   };
 
   function backToPrev() {
@@ -149,18 +153,13 @@ const SignIn = () => {
               'data-testid': 'passwordField',
             }}
           />
-
-          {mistake
-            ? (
-              <Typography
-                align="center"
-                style={{ color: '#c23a3a' }}
-              >
-                {signin.Helper[fin]}
-              </Typography>
-            )
-            : ''}
-
+          {mistake ? (
+            <Typography align="center" style={{ color: '#c23a3a' }}>
+              {signin.Helper[fin]}
+            </Typography>
+          ) : (
+            ''
+          )}
           <Button
             onClick={login}
             type="submit"
@@ -170,9 +169,7 @@ const SignIn = () => {
           >
             {signin.LogIn[fin]}
           </Button>
-
           &nbsp;
-
           <Button
             onClick={() => backToPrev()}
             fullWidth
@@ -180,9 +177,7 @@ const SignIn = () => {
           >
             {signin.Back[fin]}
           </Button>
-
           &nbsp;
-          
           <Button
             onClick={() => forgot()}
             fullWidth
@@ -190,7 +185,6 @@ const SignIn = () => {
           >
             {signin.ForgotPassword[fin]}
           </Button>
-
         </form>
       </div>
     </Container>

@@ -102,26 +102,12 @@ const rangediv = {
 };
 
 // shooting track rows
-const TrackRows = ({
-  tracks,
-  setTracks,
-  scheduleId,
-  tablet,
-  fin,
-  socket,
-}) => (
+const TrackRows = ({ tracks, setTracks, scheduleId, tablet, fin, socket }) =>
   tracks.map((track) => (
     <div key={track.id} style={rangediv}>
       <div style={rangeStyle}>
-        <Typography
-          variant="h6"
-          align="center"
-        >
-          {track.name}
-          {' '}
-          —
-          {' '}
-          {track.short_description}
+        <Typography variant="h6" align="center">
+          {track.name} — {track.short_description}
         </Typography>
 
         <TrackButtons
@@ -135,12 +121,9 @@ const TrackRows = ({
         />
       </div>
     </div>
-  ))
-);
+  ));
 
-const TrackButtons = ({
-  track, scheduleId, tablet, fin, socket,
-}) => {
+const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
   // get this somewhere else
   const buttonStyle = {
     backgroundColor: `${track.color}`,
@@ -212,21 +195,21 @@ const TrackButtons = ({
 
     // if scheduled track supervision exists -> put otherwise -> post
     if (track.scheduled) {
-      axios.put(
-        `/api/track-supervision/${scheduleId}/${track.id}`,
-        params,
-      ).catch((error) => {
-        console.log(error);
-      }).then((res) => {
-        if (res) {
-          track.trackSupervision = newSupervision; // eslint-disable-line
-          socket.emit('trackUpdate', {
-            super: track.trackSupervision,
-            id: track.id,
-          });
-          setButtonColor(track.color);
-        }
-      });
+      axios
+        .put(`/api/track-supervision/${scheduleId}/${track.id}`, params)
+        .catch((error) => {
+          console.log(error);
+        })
+        .then((res) => {
+          if (res) {
+            track.trackSupervision = newSupervision; // eslint-disable-line
+            socket.emit('trackUpdate', {
+              super: track.trackSupervision,
+              id: track.id,
+            });
+            setButtonColor(track.color);
+          }
+        });
     } else {
       params = {
         ...params,
@@ -234,22 +217,22 @@ const TrackButtons = ({
         track_id: track.id,
       };
 
-      axios.post(
-        '/api/track-supervision',
-        params,
-      ).catch((error) => {
-        console.log(error);
-      }).then((res) => {
-        if (res) {
-          track.scheduled = res.data[0]; // eslint-disable-line
-          track.trackSupervision = newSupervision; // eslint-disable-line
-          socket.emit('trackUpdate', {
-            super: track.trackSupervision,
-            id: track.id,
-          });
-          setButtonColor(track.color);
-        }
-      });
+      axios
+        .post('/api/track-supervision', params)
+        .catch((error) => {
+          console.log(error);
+        })
+        .then((res) => {
+          if (res) {
+            track.scheduled = res.data[0]; // eslint-disable-line
+            track.trackSupervision = newSupervision; // eslint-disable-line
+            socket.emit('trackUpdate', {
+              super: track.trackSupervision,
+              id: track.id,
+            });
+            setButtonColor(track.color);
+          }
+        });
     }
   };
   return (
@@ -273,7 +256,15 @@ async function getColors(tracks, setTracks) {
 
   for (let i = 0; i < copy.length; i += 1) {
     const obj = copy[i];
-    if (copy[i].trackSupervision === 'present') { obj.color = colors.green; } else if (copy[i].trackSupervision === 'closed') { obj.color = colors.red; } else if (copy[i].trackSupervision === 'absent') { obj.color = colors.white; } else if (copy[i].trackSupervision === 'en route') { obj.color = colors.orange; }
+    if (copy[i].trackSupervision === 'present') {
+      obj.color = colors.green;
+    } else if (copy[i].trackSupervision === 'closed') {
+      obj.color = colors.red;
+    } else if (copy[i].trackSupervision === 'absent') {
+      obj.color = colors.white;
+    } else if (copy[i].trackSupervision === 'en route') {
+      obj.color = colors.orange;
+    }
   }
   setTracks(copy);
 }
@@ -330,11 +321,21 @@ async function getData(
 }
 
 const TimePick = ({
-  tablet, fin, scheduleId, hours, setHours, dialogOpen, setDialogOpen,
+  tablet,
+  fin,
+  scheduleId,
+  hours,
+  setHours,
+  dialogOpen,
+  setDialogOpen,
 }) => {
   const [errorMessage, setErrorMessage] = useState();
-  const [startDate, setStartDate] = useState(new Date(0, 0, 0, hours.start.split(':')[0], hours.start.split(':')[1], 0));
-  const [endDate, setEndDate] = useState(new Date(0, 0, 0, hours.end.split(':')[0], hours.end.split(':')[1], 0));
+  const [startDate, setStartDate] = useState(
+    new Date(0, 0, 0, hours.start.split(':')[0], hours.start.split(':')[1], 0),
+  );
+  const [endDate, setEndDate] = useState(
+    new Date(0, 0, 0, hours.end.split(':')[0], hours.end.split(':')[1], 0),
+  );
 
   async function handleTimeChange() {
     if (startDate === null || endDate === null) {
@@ -348,8 +349,8 @@ const TimePick = ({
 
     const query = `/api/schedule/${scheduleId}`;
 
-    await axios.put(query,
-      {
+    await axios
+      .put(query, {
         open: start,
         close: end,
       })
@@ -367,16 +368,13 @@ const TimePick = ({
 
   return (
     <div>
-      <Dialog
-        open={dialogOpen}
-        aria-labelledby="title"
-      >
-        <DialogTitle id="title" style={dialogStyle}>{tablet.PickTime[fin]}</DialogTitle>
+      <Dialog open={dialogOpen} aria-labelledby="title">
+        <DialogTitle id="title" style={dialogStyle}>
+          {tablet.PickTime[fin]}
+        </DialogTitle>
         <DialogContent style={dialogStyle}>
-
           <div style={rowStyle}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
-
               <KeyboardTimePicker
                 margin="normal"
                 id="starttime"
@@ -396,22 +394,17 @@ const TimePick = ({
                 onChange={(date) => setEndDate(date)}
                 minutesStep={5}
               />
-
             </MuiPickersUtilsProvider>
           </div>
 
           <br />
-          {errorMessage
-            ? (
-              <Typography
-                align="center"
-                style={{ color: '#c23a3a' }}
-              >
-                {errorMessage}
-              </Typography>
-            )
-            : ''}
-
+          {errorMessage ? (
+            <Typography align="center" style={{ color: '#c23a3a' }}>
+              {errorMessage}
+            </Typography>
+          ) : (
+            ''
+          )}
         </DialogContent>
 
         <DialogActions style={dialogStyle}>
@@ -431,7 +424,6 @@ const TimePick = ({
             {tablet.Save[fin]}
           </Button>
         </DialogActions>
-
       </Dialog>
     </div>
   );
@@ -469,35 +461,39 @@ const Tabletview = () => {
   }
 
   useEffect(() => {
-    validateLogin()
-      .then((logInSuccess) => {
-        if (logInSuccess) {
-          getData(tablet,
-            fin,
-            setHours,
-            tracks,
-            setTracks,
-            setStatusText,
-            setStatusColor,
-            setScheduleId,
-            setReservationId,
-            setRangeSupervisionScheduled);
-        } else { // Login failed, redirect to weekview
-          RedirectToWeekview();
-        }
-      });
+    validateLogin().then((logInSuccess) => {
+      if (logInSuccess) {
+        getData(
+          tablet,
+          fin,
+          setHours,
+          tracks,
+          setTracks,
+          setStatusText,
+          setStatusColor,
+          setScheduleId,
+          setReservationId,
+          setRangeSupervisionScheduled,
+        );
+      } else {
+        // Login failed, redirect to weekview
+        RedirectToWeekview();
+      }
+    });
 
-    setSocket(socketIOClient()
-      .on('rangeUpdate', (msg) => {
-        setStatusColor(msg.color);
-        setStatusText(msg.text);
-        if (rangeSupervisionScheduled === false) {
-          setRangeSupervisionScheduled(true);
-        }
-      })
-      .on('refresh', () => {
-        window.location.reload();
-      }));
+    setSocket(
+      socketIOClient()
+        .on('rangeUpdate', (msg) => {
+          setStatusColor(msg.color);
+          setStatusText(msg.text);
+          if (rangeSupervisionScheduled === false) {
+            setRangeSupervisionScheduled(true);
+          }
+        })
+        .on('refresh', () => {
+          window.location.reload();
+        }),
+    );
 
     setTimeout(() => {
       window.location.reload();
@@ -505,11 +501,13 @@ const Tabletview = () => {
   }, []); // eslint-disable-line
 
   async function updateSupervisor(status, color, text) {
-    const res = await rangeSupervision(reservationId,
+    const res = await rangeSupervision(
+      reservationId,
       scheduleId,
       status,
       rangeSupervisionScheduled,
-      null);
+      null,
+    );
 
     if (res === true) {
       setStatusColor(color);
@@ -549,44 +547,33 @@ const Tabletview = () => {
   };
   return (
     <div>
-      <div className="Text">
-        {today}
-      </div>
+      <div className="Text">{today}</div>
 
-      <Typography
-        variant="h5"
-        align="center"
-      >
-        {tablet.Open[fin]}
-        :
-        &nbsp;
-
+      <Typography variant="h5" align="center">
+        {tablet.Open[fin]}: &nbsp;
         <Button
           size="medium"
           variant="outlined"
           style={simpleButton}
           onClick={() => setDialogOpen(true)}
         >
-          {hours.start}
-          -
-          {hours.end}
+          {hours.start}-{hours.end}
         </Button>
-
       </Typography>
 
-      {dialogOpen
-        ? (
-          <TimePick
-            tablet={tablet}
-            fin={fin}
-            scheduleId={scheduleId}
-            hours={hours}
-            setHours={setHours}
-            dialogOpen={dialogOpen}
-            setDialogOpen={setDialogOpen}
-          />
-        )
-        : ''}
+      {dialogOpen ? (
+        <TimePick
+          tablet={tablet}
+          fin={fin}
+          scheduleId={scheduleId}
+          hours={hours}
+          setHours={setHours}
+          dialogOpen={dialogOpen}
+          setDialogOpen={setDialogOpen}
+        />
+      ) : (
+        ''
+      )}
 
       <div className="Status" style={rowStyle}>
         <Button
@@ -600,9 +587,7 @@ const Tabletview = () => {
         </Button>
       </div>
 
-      <div className="Text">
-        {tablet.HelperFirst[fin]}
-      </div>
+      <div className="Text">{tablet.HelperFirst[fin]}</div>
 
       <div style={rowStyle}>
         <Button
@@ -634,9 +619,7 @@ const Tabletview = () => {
         </Button>
       </div>
 
-      <div className="Text">
-        {tablet.HelperSecond[fin]}
-      </div>
+      <div className="Text">{tablet.HelperSecond[fin]}</div>
 
       <div style={trackRowStyle}>
         <TrackRows

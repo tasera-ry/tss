@@ -1,10 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import {
-  waitFor,
-  render,
-  screen,
-} from '@testing-library/react';
+import { waitFor, render, screen } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { act } from 'react-dom/test-utils';
@@ -34,15 +30,12 @@ describe('testing App', () => {
     await act(async () => {
       render(
         <Router>
-          <App
-            match={{ params: { date } }}
-            history={history}
-            state={state}
-          />
+          <App match={{ params: { date } }} history={history} state={state} />
         </Router>,
       );
     });
-    await waitFor(() => expect(screen.getByText('Päävalvoja paikalla'))
-      .toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText('Päävalvoja paikalla')).toBeInTheDocument(),
+    );
   });
 });

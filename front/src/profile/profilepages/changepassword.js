@@ -1,39 +1,40 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
-import axios from "axios";
+import axios from 'axios';
 
-import texts from "../../texts/texts.json";
+import texts from '../../texts/texts.json';
 
-const fin = localStorage.getItem("language");
+const fin = localStorage.getItem('language');
 const { passwordSettings } = texts;
 
 // Style for title
 const titleStyle = {
-  margin: "20px 20px 10px 20px",
+  margin: '20px 20px 10px 20px',
 };
 
 // Style for text field
 const textStyle = {
-  backgroundColor: "#fcfbf7",
+  backgroundColor: '#fcfbf7',
   borderRadius: 4,
 };
 
 // Returns the form for password change
 
 function PasswordChange({ username }) {
-  const [alertStatus, setAlert] = useState("");
-  const [oldPass, setOldPass] = useState("");
-  const [newPass, setNewPass] = useState("");
-  const [confirmPass, setConfirmPass] = useState("");
+  /* eslint-disable-next-line */
+  const [alertStatus, setAlert] = useState('');
+  const [oldPass, setOldPass] = useState('');
+  const [newPass, setNewPass] = useState('');
+  const [confirmPass, setConfirmPass] = useState('');
 
   /* function showAlert(status, text) {
     if(alertStatus) {
         return(
-            
+
         );
     }
 };
@@ -42,21 +43,21 @@ function PasswordChange({ username }) {
   // Changes the password in database
   async function changeToDatabase(id, newpword) {
     try {
-      let response = await fetch(`/api/changeownpassword/${id}`, {
-        method: "PUT",
+      const response = await fetch(`/api/changeownpassword/${id}`, {
+        method: 'PUT',
         body: JSON.stringify({
           password: newpword,
         }),
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
       });
-      let data = response.json();
+      const data = response.json();
       console.log(data);
       return response.ok;
     } catch (err) {
-      console.error("GETTING USER FAILED", err);
+      console.error('GETTING USER FAILED', err);
       return false;
     }
   }
@@ -64,21 +65,21 @@ function PasswordChange({ username }) {
   // Handles the submission of password
   async function handleSubmit(e) {
     e.preventDefault();
-    const secure = window.location.protocol === "https:";
+    const secure = window.location.protocol === 'https:';
 
-    if (oldPass === "" || newPass === "" || confirmPass === "") {
+    if (oldPass === '' || newPass === '' || confirmPass === '') {
       // showAlert("error", passwordSettings.alertFields[fin]);
       alert(passwordSettings.alertFields[fin]);
     } else if (confirmPass !== newPass) {
       alert(passwordSettings.alertPwordMatch[fin]);
     } else {
-      console.log("username", username);
-      let name = username;
+      console.log('username', username);
+      const name = username;
       let success = true;
 
       // Check if old password matches with username
       let response = await axios
-        .post("api/sign", {
+        .post('api/sign', {
           name: username,
           password: oldPass,
           secure,
@@ -90,19 +91,19 @@ function PasswordChange({ username }) {
 
       if (success) {
         // Get user's id
-        let query = `api/user?name=${name}`;
+        const query = `api/user?name=${name}`;
         response = await axios.get(query);
-        let id = response.data[0].id;
+        const { id } = response.data[0];
 
         response = await changeToDatabase(id, newPass);
 
         if (response) {
-          alert("Success");
-          setOldPass("");
-          setNewPass("");
-          setConfirmPass("");
+          alert('Success');
+          setOldPass('');
+          setNewPass('');
+          setConfirmPass('');
         } else {
-          alert("Fail");
+          alert('Fail');
         }
       }
     }
@@ -161,7 +162,7 @@ function PasswordChange({ username }) {
           type="submit"
           fullWidth
           variant="contained"
-          style={{ backgroundColor: "#5f77a1" }}
+          style={{ backgroundColor: '#5f77a1' }}
         >
           {passwordSettings.confirm[fin]}
         </Button>
