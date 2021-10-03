@@ -12,7 +12,11 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 | PostgreSQL | 9+      |
 
 ## How to run the application (development)
-
+## New easier way of running
+1. Have docker and docker-compose installed
+2. Run command
+```docker-compose -f docker-compose.dev.yaml up```
+3. Done! Frontend bound on host port 3000, backend on 8000.
 ## First steps
 1. Install project dependencies
    - https://nodejs.org/ (tested using the `LTS 14` release)
