@@ -5,13 +5,20 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: some_password
+      PGUSER: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   backend:
     build:
       context: ./back
       target: dev
     restart: always
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     environment:
       - DB_USER=postgres
       - DB_PASSWORD=some_password
