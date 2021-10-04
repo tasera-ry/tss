@@ -1,29 +1,8 @@
 import React from 'react';
-
 import moment from 'moment';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
-
+import api from '../api/api';
 import texts from '../texts/texts.json';
-
-export async function getSchedulingDate(date) {
-  try {
-    const response = await fetch(
-      `/api/datesupreme/${moment(date).format('YYYY-MM-DD')}`,
-      {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      },
-    );
-    return await response.json();
-  } catch (err) {
-    console.error(err);
-    return false;
-  }
-}
 
 export async function getSchedulingWeek(date) {
   try {
@@ -34,23 +13,13 @@ export async function getSchedulingWeek(date) {
     const current = moment(begin);
     moment.prototype.add.bind(current, 1, 'day');
 
-    const resp = await axios.get(
-      `/api/daterange/week/${moment(begin).format('YYYY-MM-DD')}`,
-    );
-
-    /*
-    const week = await Promise.all(lodash.times(7, (i) => {
-      const request = getSchedulingDate(current);
-      next();
-      return request;
-    }));
-    */
+    const week = await api.getSchedulingWeek(begin);
 
     return {
       weekNum,
       weekBegin: begin.format('YYYY-MM-DD'),
       weekEnd: end.format('YYYY-MM-DD'),
-      week: resp.data,
+      week,
     };
   } catch (err) {
     console.error(err);
@@ -63,14 +32,9 @@ export async function getSchedulingFreeform(date) {
     const begin = moment(date, 'YYYY-MM-DD');
     const end = moment(date, 'YYYY-MM-DD');
     end.add(45, 'days');
-    const longrange = await axios.get(
-      `/api/daterange/freeform/${moment(begin).format('YYYY-MM-DD')}/${moment(
-        end,
-      ).format('YYYY-MM-DD')}`,
-    );
-    return {
-      month: longrange.data,
-    };
+    const month = await api.getSchedulingFreeform(begin, end);
+
+    return { month };
   } catch (err) {
     console.error(err);
     return false;
@@ -231,111 +195,69 @@ export function monthToString(i) {
   return: boolean, is token valid (true = yes)
 */
 export async function validateLogin() {
-  let response;
   try {
-    response = await fetch('/api/validate', {
-      method: 'GET',
-    });
-  } catch (error) {
+    const res = await api.validateLogin();
+    return true;
+  } catch (err) {
     return false;
   }
-
-  if (response && response.status && response.status === 200) {
-    return true;
-  }
-
-  return false;
 }
 
 // on success true
 // else returns string trying to explain what broke
 // requires reservation and schedule to exist
-export async function rangeSupervision(
+export async function updateRangeSupervision(
   rsId,
   srsId,
   rangeStatus,
   rsScheduled,
   supervisor,
 ) {
-  try {
-    if (rsId !== null && srsId !== null) {
-      // only closed is different from the 6 states
-      if (rangeStatus !== 'closed') {
-        // range supervision exists
-        if (rsScheduled) {
-          // changing supervision force reservation open
-          await fetch(`/api/reservation/${rsId}`, {
-            method: 'PUT',
-            body: JSON.stringify({ available: true }),
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-          }).then((status) => {
-            if (!status.ok) throw new Error('scheduled reserv fail');
-          });
+  if (rsId === null || srsId === null)
+    throw new Error('reservation or schedule missing');
 
-          const updateBody = supervisor
-            ? JSON.stringify({ range_supervisor: rangeStatus, supervisor })
-            : JSON.stringify({ range_supervisor: rangeStatus });
-
-          // update supervision
-          await fetch(`/api/range-supervision/${srsId}`, {
-            method: 'PUT',
-            body: updateBody,
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-          }).then((status) => {
-            if (!status.ok) throw new Error('scheduled superv fail');
-          });
-        } else {
-          // no supervision exists
-          // changing supervision force reservation open
-          await fetch(`/api/reservation/${rsId}`, {
-            method: 'PUT',
-            body: JSON.stringify({ available: true }),
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-          }).then((status) => {
-            if (!status.ok) throw new Error('not scheduled reserv fail');
-          });
-
-          // add new supervision
-          await fetch('/api/range-supervision', {
-            method: 'POST',
-            body: JSON.stringify({
-              scheduled_range_supervision_id: srsId,
-              range_supervisor: rangeStatus,
-              supervisor,
-            }),
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-          }).then((status) => {
-            if (!status.ok) throw new Error('not scheduled superv fail');
-          });
-        }
-      } else {
-        // range closed update reservation
-        await fetch(`/api/reservation/${rsId}`, {
-          method: 'PUT',
-          body: JSON.stringify({ available: 'false' }),
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        }).then((status) => {
-          if (!status.ok) throw new Error('reservation update failed');
-        });
-      }
-    } else throw new Error('reservation or schedule missing');
-  } catch (e) {
-    return `general range supervision failure: ${e}`;
+  // only closed is different from the 6 states
+  if (rangeStatus === 'closed') {
+    try {
+      await api.patchReservation(rsId, { available: 'false' });
+      return true;
+    } catch (err) {
+      throw new Error('reservation update failed');
+    }
   }
-  return true;
+
+  // no range supervision exists
+  if (!rsScheduled) {
+    try {
+      await api.patchReservation(rsId, { available: 'true' });
+    } catch (err) {
+      throw new Error('not scheduled reserv fail');
+    }
+
+    try {
+      await api.addRangeSupervision(srsId, rangeStatus, supervisor);
+      return true;
+    } catch (err) {
+      throw new Error('not scheduled superv fail');
+    }
+  }
+
+  // range suprevision exists, update supervision
+  try {
+    await api.patchReservation(rsId, { available: 'true' });
+  } catch (err) {
+    throw new Error('scheduled reserv fail');
+  }
+
+  try {
+    await api.patchRangeSupervision(
+      srsId,
+      supervisor
+        ? { range_supervisor: rangeStatus, supervisor }
+        : { range_supervisor: rangeStatus },
+    );
+    return true;
+  } catch (err) {
+    throw new Error('scheduled superv fail');
+  }
 }

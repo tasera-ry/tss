@@ -9,11 +9,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-// Call handling to backend
-import axios from 'axios';
-
-// Translations
-import data from '../texts/texts.json';
+import api from '../api/api';
+import translations from '../texts/texts.json';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -42,7 +39,7 @@ const textStyle = {
 const RenewPassword = (props) => {
   const classes = useStyles();
   const fin = localStorage.getItem('language');
-  const { renewPW } = data;
+  const { renewPW } = translations;
 
   document.body.style = 'background: #eae7dc;';
 
@@ -64,13 +61,11 @@ const RenewPassword = (props) => {
   useEffect(() => {
     async function verifyToken() {
       try {
-        const response = await axios.get('api/reset', {
-          params: { reset_token: token },
-        });
+        const data = await api.resetPassword(token);
 
-        if (response.data.message === 'password reset link a-ok') {
-          setUsername(response.data.username);
-          setTokenExpires(response.data.token_expires);
+        if (data.message === 'password reset link a-ok') {
+          setUsername(data.username);
+          setTokenExpires(data.token_expires);
           setIsLoading(false);
           setTokenOK(true);
           setError(false);
@@ -98,23 +93,18 @@ const RenewPassword = (props) => {
     e.preventDefault();
     setIsWaiting(true);
 
-    if (newPassword === confirmNewPassword && newPassword !== '') {
-      try {
-        /* eslint-disable-next-line */
-        const response = await axios.put('api/reset', {
-          username,
-          newPassword,
-          reset_token: token,
-          reset_token_expire: tokenExpires,
-        });
-        setUpdated(true);
-        setTokenOK(false);
-        redirectToLogin();
-      } catch (err) {
-        setIsWaiting(false);
-      }
-    } else {
+    if (newPassword !== confirmNewPassword || newPassword !== '') {
       setMismatch(true);
+      setIsWaiting(false);
+      return;
+    }
+
+    try {
+      await api.renewPassword(username, newPassword, token, tokenExpires);
+      setUpdated(true);
+      setTokenOK(false);
+      redirectToLogin();
+    } catch (err) {
       setIsWaiting(false);
     }
   };

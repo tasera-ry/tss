@@ -8,7 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 
-import axios from 'axios';
+import api from '../api/api';
 import texts from '../texts/texts.json';
 
 const { feedback } = texts;
@@ -22,7 +22,7 @@ const FeedbackWindow = ({ user, dialogOpen, setDialogOpen }) => {
   const [textFeedback, setTextFeedback] = useState('');
   const handleSend = async () => {
     setDialogOpen(false);
-    await axios.put('api/range-supervision/feedback', {
+    await api.sendFeedback({
       feedback: textFeedback,
       user,
     });

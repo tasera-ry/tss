@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import axios from 'axios';
+import api from '../../api/api';
 
 import texts from '../../texts/texts.json';
 
@@ -40,74 +40,37 @@ function PasswordChange({ username }) {
 };
 */
 
-  // Changes the password in database
-  async function changeToDatabase(id, newpword) {
-    try {
-      const response = await fetch(`/api/changeownpassword/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          password: newpword,
-        }),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = response.json();
-      console.log(data);
-      return response.ok;
-    } catch (err) {
-      console.error('GETTING USER FAILED', err);
-      return false;
-    }
-  }
-
   // Handles the submission of password
   async function handleSubmit(e) {
     e.preventDefault();
-    const secure = window.location.protocol === 'https:';
 
     if (oldPass === '' || newPass === '' || confirmPass === '') {
-      // showAlert("error", passwordSettings.alertFields[fin]);
       alert(passwordSettings.alertFields[fin]);
-    } else if (confirmPass !== newPass) {
+      return;
+    }
+    if (confirmPass !== newPass) {
       alert(passwordSettings.alertPwordMatch[fin]);
-    } else {
-      console.log('username', username);
-      const name = username;
-      let success = true;
+      return;
+    }
+    const secure = window.location.protocol === 'https:';
 
-      // Check if old password matches with username
-      let response = await axios
-        .post('api/sign', {
-          name: username,
-          password: oldPass,
-          secure,
-        })
-        .catch(() => {
-          alert(passwordSettings.alertWrongPword[fin]);
-          success = false;
-        });
-
-      if (success) {
-        // Get user's id
-        const query = `api/user?name=${name}`;
-        response = await axios.get(query);
-        const { id } = response.data[0];
-
-        response = await changeToDatabase(id, newPass);
-
-        if (response) {
-          alert('Success');
-          setOldPass('');
-          setNewPass('');
-          setConfirmPass('');
-        } else {
-          alert('Fail');
-        }
+    try {
+      await api.signIn(username, oldPass, secure);
+      const data = await api.getUser(username);
+      try {
+        await api.patchPassword(data[0].id, newPass);
+        alert('Success');
+        setOldPass('');
+        setNewPass('');
+        setConfirmPass('');
+      } catch (err) {
+        alert('Fail');
       }
+    } catch (err) {
+      alert(passwordSettings.alertWrongPword[fin]);
     }
   }
+
   return (
     <div>
       <Typography component="h1" variant="h5" style={titleStyle}>

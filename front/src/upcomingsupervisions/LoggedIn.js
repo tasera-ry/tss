@@ -16,15 +16,12 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { useCookies } from 'react-cookie';
 
-// Axios for call-handling to backend
-import axios from 'axios';
-
 // Moment for date handling
 import moment from 'moment';
 import 'moment/locale/en-ca';
 
-// Translations
-import data from '../texts/texts.json';
+import api from '../api/api';
+import translations from '../texts/texts.json';
 
 // Styles
 const dialogStyle = {
@@ -224,25 +221,25 @@ const Rows = ({ HandleChange, changes, checked, setDone, sv }) => {
 
 // TODO: change config after relocating jwt
 // TODO: try to somehow check this alongside request
+// can throw an error if request fails
 async function getId(username) {
   if (!username) return;
 
-  const query = `api/user?name=${username}`;
-  const response = await axios.get(query);
+  const data = await api.getUser(username);
+  const userID = data[0].id;
 
-  const userID = response.data[0].id;
-
-  return userID; // eslint-disable-line
+  return userID;
 }
 
 // obtain date info
 /* eslint-disable-next-line */
+// can throw an error if request fails
 async function getReservations(res, setNoSchedule) {
+  // eslint-disable-line
   const today = moment().format().split('T')[0];
 
   for (let i = 0; i < res.length; i += 1) {
-    const query = `api/reservation?available=true&id=${res[i].reservation_id}`;
-    const response = await axios.get(query);
+    const response = await api.getAvailableReservation(res[i].reservation_id);
     if (response.data.length > 0) {
       const d = moment(response.data[0].date).format('YYYY-MM-DD');
       res[i].date = d;
@@ -257,33 +254,16 @@ async function getReservations(res, setNoSchedule) {
 }
 
 async function checkSupervisorReservations(username) {
-  const userID = await getId(username);
+  try {
+    const userID = await getId(username);
 
-  if (!userID) {
+    const data = await api.getSupervisorReservations(userID);
+    // check and return boolean about whether there's any unconfirmed reservations
+    return data.some((sprvsn) => sprvsn.range_supervisor === 'not confirmed');
+  } catch (err) {
+    console.log(err);
     return false;
   }
-
-  // TODO: Make it be in form ?id=
-  const query = `api/range-supervision/usersupervisions/${userID}`;
-
-  const response = await axios
-    .get(query)
-    .then(
-      (
-        response, // eslint-disable-line
-      ) =>
-        // check and return boolean about whether there's any unconfirmed reservations
-        response.data.some(
-          (sprvsn) => sprvsn.range_supervisor === 'not confirmed',
-        ),
-    )
-    .catch((error) => {
-      if (error.response.status !== 404) {
-        console.log(error);
-      }
-    });
-
-  return response;
 }
 
 // obtain users schedule and range supervision states
@@ -294,62 +274,39 @@ async function getSchedule(
   setDone,
   username,
 ) {
-  const userID = await getId(username);
-  let res = [];
-  let temp = [];
+  try {
+    const userID = await getId(username);
+    const res = [];
+    const schedules = [];
 
-  const query = `api/schedule?supervisor_id=${userID}`;
-  /* eslint-disable-next-line */
-  const response = await axios
-    .get(query)
+    const data = await api.getSupervisorSchedules(userID);
+    schedules.push(data);
+
     /* eslint-disable-next-line */
-    .then((response) => {
-      if (response) {
-        temp = temp.concat(response.data);
-      }
-    })
-    /* eslint-disable-next-line */
-    .catch((error) => {
-      // console.log(error);
-    });
+    schedules.forEach(async ({ id, range_reservation_id }) => {
+      const data = await api.getRangeSupervision(id);
 
-  for (let i = 0; i < temp.length; i += 1) {
-    const v = await temp[i];
-
-    const rsquery = `api/range-supervision/${v.id}`;
-    await axios
-      .get(rsquery)
-      /* eslint-disable-next-line */
-      .then((response) => {
-        if (response) {
-          // object id is schedule id
-          const obj = {
-            userID,
-            date: '',
-            id: v.id,
-            reservation_id: v.range_reservation_id,
-            range_supervisor: response.data[0].range_supervisor,
-          };
-
-          res = res.concat(obj);
-        }
-      })
-      /* eslint-disable-next-line */
-      .catch((error) => {
-        // console.log(error);
+      res.push({
+        userID,
+        date: '',
+        id,
+        reservation_id: range_reservation_id,
+        range_supervisor: data[0].range_supervisor,
       });
+    });
+    const reservations = await getReservations(res, setNoSchedule);
+
+    if (reservations.length === 0) {
+      await setNoSchedule(true);
+      await setDone(true);
+      return;
+    }
+
+    setSchedules(reservations);
+    setChecked(reservations[0].range_supervisor === 'en route');
+  } catch (err) {
+    console.log(err);
   }
-
-  res = await getReservations(res, setNoSchedule);
-
-  if (res.length === 0) {
-    await setNoSchedule(true);
-    await setDone(true);
-    return;
-  }
-
-  setSchedules(res);
-  setChecked(res[0].range_supervisor === 'en route');
 }
 
 const DialogWindow = ({ onCancel }) => {
@@ -358,7 +315,7 @@ const DialogWindow = ({ onCancel }) => {
   const [done, setDone] = useState(false);
   const [checked, setChecked] = useState(false);
   const [cookies] = useCookies(['username']);
-  const { sv } = data;
+  const { sv } = translations;
 
   if (onCancel === undefined) {
     onCancel = () => {}; // eslint-disable-line
@@ -373,7 +330,7 @@ const DialogWindow = ({ onCancel }) => {
       setDone,
       cookies.username,
     );
-  }, []); // eslint-disable-line
+  }, [cookies.username]);
 
   return (
     <div>
@@ -393,16 +350,14 @@ const DialogWindow = ({ onCancel }) => {
 };
 
 // sends updated info to database
-async function putSchedules(changes) {
-  for (let i = 0; i < changes.length; i += 1) {
-    const { id } = changes[i];
-    const query = `api/range-supervision/${id}`;
-    const s = changes[i].range_supervisor;
-    await axios.put(query, {
-      range_supervisor: s,
-    });
-  }
-}
+const putSchedules = async (changes) => {
+  /* eslint-disable-next-line */
+  const promises = changes.map(({ id, range_supervisor }) =>
+    api.patchRangeSupervision(id, range_supervisor),
+  );
+
+  await Promise.all(promises);
+};
 
 // creates dialog-window
 const Logic = ({

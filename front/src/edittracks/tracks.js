@@ -1,5 +1,4 @@
 import React, { useState, useEffect, forwardRef } from 'react';
-
 import './tracks.css';
 
 // Material UI components
@@ -9,13 +8,6 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Alert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 import MaterialTable from 'material-table';
-
-// Translations
-
-import lodash from 'lodash';
-
-// Axios for calls to backend
-import axios from 'axios';
 
 // Icon setup
 import AddBox from '@material-ui/icons/AddBox';
@@ -35,7 +27,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import * as l10nLines from '../texts/texts.json';
 
-// Token validation
+import api from '../api/api';
 import { validateLogin } from '../utils/Utils';
 
 const tableIcons = {
@@ -128,86 +120,58 @@ const TrackTable = ({
     // Editing tracks
     editable={{
       /* eslint-disable-next-line */
-      onRowAdd: ({ name, description, short_description }) =>
-        /* eslint-disable-next-line */
-        new Promise(async (resolve, reject) => {
-          try {
-            const response = await axios.post('/api/track', {
-              name,
-              description,
-              short_description,
-              range_id: trackData[0].range_id,
-            });
-            setTrackData(trackData.concat(response.data));
-            setRequestStatus('success');
-            setRequestText('Rata lisätty');
-            resolve();
-          } catch (e) {
-            setRequestStatus('error');
-            setRequestText('Radan lisäys epäonnistui');
-            reject();
-          }
-        }),
-      onRowUpdate: (newData, oldData) =>
-        /* eslint-disable-next-line */
-        new Promise(async (resolve, reject) => {
-          resolve();
-          const trackInfo = trackData.filter(
-            (track) =>
-              track.name === oldData.name &&
-              track.short_description === oldData.short_description &&
-              track.description === oldData.description,
-          )[0];
+      onRowAdd: async ({ name, description, short_description }) => {
+        try {
+          const data = await api.addTrack({
+            name,
+            description,
+            short_description,
+            range_id: trackData[0].range_id,
+          });
+          setTrackData(trackData.concat(data));
+          setRequestStatus('success');
+          setRequestText('Rata lisätty');
+        } catch (e) {
+          setRequestStatus('error');
+          setRequestText('Radan lisäys epäonnistui');
+        }
+      },
+      onRowUpdate: async (newData, oldData) => {
+        const trackInfo = trackData.filter(
+          (track) =>
+            track.name === oldData.name &&
+            track.short_description === oldData.short_description &&
+            track.description === oldData.description,
+        )[0];
 
-          if (trackInfo === undefined) {
-            setRequestStatus('error');
-            setRequestText(l10n.rowUpdateFail[lang]);
-            reject();
-          }
+        try {
+          await api.patchTrack(trackInfo.id, newData);
+          const modified = trackData
+            .filter((track) => track.id !== trackInfo.id)
+            .concat({ ...trackInfo, ...newData });
+          setTrackData(modified);
+          setRequestStatus('success');
+          setRequestText(l10n.rowUpdateSuccess[lang]);
+        } catch (err) {
+          setRequestStatus('error');
+          setRequestText(l10n.rowUpdateFail[lang]);
+        }
+      },
+      onRowDelete: async ({ name, description }) => {
+        const trackInfo = trackData.filter(
+          (track) => track.name === name && track.description === description,
+        )[0];
 
-          try {
-            await axios.put(`/api/track/${trackInfo.id}`, newData);
-            const modified = trackData
-              .filter((track) => track.id !== trackInfo.id)
-              .concat({ ...trackInfo, ...newData });
-            setTrackData(modified);
-            setRequestStatus('success');
-            setRequestText(l10n.rowUpdateSuccess[lang]);
-          } catch (e) {
-            setRequestStatus('error');
-            setRequestText(l10n.rowUpdateFail[lang]);
-            reject();
-          }
-          resolve();
-        }),
-      onRowDelete: ({ name, description }) =>
-        /* eslint-disable-next-line */
-        new Promise(async (resolve, reject) => {
-          const trackInfo = trackData.filter(
-            (track) => track.name === name && track.description === description,
-          )[0];
-
-          // Should never happen
-          if (trackInfo === undefined) {
-            setRequestStatus('error');
-            setRequestText('Radan poisto epäonnistui');
-            reject();
-          }
-
-          try {
-            const response = await axios.delete(`/api/track/${trackInfo.id}`); // eslint-disable-line
-            setTrackData(
-              trackData.filter((track) => track.id !== trackInfo.id),
-            );
-            setRequestStatus('success');
-            setRequestText('Rata poistettu');
-            resolve();
-          } catch (e) {
-            setRequestStatus('error');
-            setRequestText('Radan poisto epäonnistui');
-            reject();
-          }
-        }),
+        try {
+          await api.deleteTrack(trackInfo.id);
+          setTrackData(trackData.filter((track) => track.id !== trackInfo.id));
+          setRequestStatus('success');
+          setRequestText('Rata poistettu');
+        } catch (err) {
+          setRequestStatus('error');
+          setRequestText('Radan poisto epäonnistui');
+        }
+      },
     }}
     options={{
       pageSize: 10,
@@ -242,20 +206,16 @@ const TrackCRUD = () => {
   const [requestStatus, setRequestStatus] = useState(null);
   const [requestText, setRequestText] = useState(null);
 
-  const partialFetch = lodash.partial(fetch, '/api/track'); // eslint-disable-line
-
   // TODO: this needs to be centralized for best effect
-  function RedirectToWeekview() {
-    window.location.href = '/';
-  }
+  /* eslint-disable-next-line */
+  const RedirectToWeekview = () => (window.location.href = '/');
 
   useEffect(() => {
     (async () => {
       const logInSuccess = await validateLogin();
       if (logInSuccess) {
         try {
-          const response = await axios.get('/api/track');
-          setTrackData(response.data);
+          setTrackData(await api.getTracks());
         } catch (e) {
           // /api/track returns 404 when no tracks are set, should be fixed in
           // server code

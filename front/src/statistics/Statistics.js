@@ -20,10 +20,8 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-import axios from 'axios';
-
-// Translation
-import data from '../texts/texts.json';
+import api from '../api/api';
+import translations from '../texts/texts.json';
 import VisitorLogging from '../VisitorLogging/VisitorLogging';
 
 let lang = 'fi';
@@ -34,7 +32,7 @@ if (localStorage.getItem('language') === '0') {
 }
 
 moment.locale(lang);
-const { statistics } = data;
+const { statistics } = translations;
 const fin = localStorage.getItem('language');
 
 const Statistics = () => {
@@ -379,95 +377,100 @@ const Statistics = () => {
 };
 
 async function getMonthlyVisitors(firstDate, lastDate) {
-  const query = `api/daterange/freeform/${firstDate}/${lastDate}`;
-  const response = await axios.get(query);
-  if (!response) {
-    return [];
-  }
-  // Form an array including the visitors of a certain month and return it
-  const visitors = [];
-  for (const supervision of response.data) {
-    if (!supervision?.scheduleId) {
-      visitors.push(0);
-    } else {
-      let trackVisitors = 0;
-      for (const track of supervision.tracks) {
-        trackVisitors += track.scheduled.visitors;
-      }
-      visitors.push(trackVisitors);
-    }
-  }
-  return visitors;
-}
+  try {
+    const data = await api.getSchedulingFreeform(firstDate, lastDate);
+    const visitors = [];
 
-async function getDailyVisitors(date) {
-  const query = `api/daterange/freeform/${date}/${date}`;
-  const response = await axios.get(query);
-  if (!response) {
-    return [];
-  }
-  // Form an array including the visitors of a certain day and return it
-  const visitors = [];
-  for (const supervision of response.data) {
-    if (!supervision?.scheduleId) {
-      visitors.push(0);
-    } else {
-      for (const track of supervision.tracks) {
-        visitors.push(track.scheduled.visitors);
+    for (const supervision of data) {
+      if (!supervision?.scheduleId) {
+        visitors.push(0);
+      } else {
+        let trackVisitors = 0;
+        for (const track of supervision.tracks) {
+          trackVisitors += track.scheduled.visitors;
+        }
+        visitors.push(trackVisitors);
       }
     }
-  }
-  return visitors;
-}
 
-async function getMonthlyTrackVisitors(firstDate, lastDate) {
-  const query = `api/daterange/freeform/${firstDate}/${lastDate}`;
-  const response = await axios.get(query);
-  if (!response) {
+    return visitors;
+  } catch (err) {
     return [];
   }
-  // Form an array including the visitors of a certain track per month and return it
-  const visitors = [];
-  for (const supervision of response.data) {
-    if (!supervision?.scheduleId) {
-      // I think there should be something
-    } else {
-      let trackVisitors = 0;
-      let trackPerMonthVisitors = 0;
-      for (const track of supervision.tracks) {
-        if (visitors.length === 7) {
-          trackPerMonthVisitors = visitors[track.id - 1];
-          trackVisitors = track.scheduled.visitors + trackPerMonthVisitors;
-          visitors.splice(track.id - 1, 1, trackVisitors);
-        } else {
-          trackVisitors = track.scheduled.visitors;
-          visitors.splice(track.id - 1, 1, trackVisitors);
+}
+
+const getDailyVisitors = async (date) => {
+  try {
+    const data = await api.getSchedulingFreeform(date, date);
+    // Form an array including the visitors of a certain day and return it
+    const visitors = [];
+
+    for (const supervision of data) {
+      if (!supervision?.scheduleId) {
+        visitors.push(0);
+      } else {
+        for (const track of supervision.tracks) {
+          visitors.push(track.scheduled.visitors);
         }
       }
     }
+
+    return visitors;
+  } catch (err) {
+    return [];
   }
-  return visitors;
+};
+
+async function getMonthlyTrackVisitors(firstDate, lastDate) {
+  try {
+    const data = await api.getSchedulingFreeform(firstDate, lastDate);
+    // Form an array including the visitors of a certain track per month and return it
+    const visitors = [];
+
+    for (const supervision of data) {
+      if (!supervision?.scheduleId) {
+        // I think there should be something
+      } else {
+        let trackVisitors = 0;
+        let trackPerMonthVisitors = 0;
+        for (const track of supervision.tracks) {
+          if (visitors.length === 7) {
+            trackPerMonthVisitors = visitors[track.id - 1];
+            trackVisitors = track.scheduled.visitors + trackPerMonthVisitors;
+            visitors.splice(track.id - 1, 1, trackVisitors);
+          } else {
+            trackVisitors = track.scheduled.visitors;
+            visitors.splice(track.id - 1, 1, trackVisitors);
+          }
+        }
+      }
+    }
+
+    return visitors;
+  } catch (err) {
+    return [];
+  }
 }
 
 async function getShortDescriptions(firstDate, lastDate) {
-  const query = `api/daterange/freeform/${firstDate}/${lastDate}`;
-  const response = await axios.get(query);
-  if (!response) {
+  try {
+    const data = await api.getSchedulingFreeform(firstDate, lastDate);
+    // Form an array including the short_descriptions of each track
+    const descriptions = [];
+
+    for (const supervision of data) {
+      if (supervision?.scheduleId)
+        for (const track of supervision.tracks) {
+          const description = track.short_description;
+          descriptions.push(description);
+        }
+    }
+
+    // TODO: find out why an empty array is returned?
+    return [];
+  } catch (err) {
     return [];
   }
-  // Form an array including the short_descriptions of each track
-  const descriptions = [];
-  let description = '';
-  for (const supervision of response.data) {
-    if (supervision?.scheduleId) {
-      for (const track of supervision.tracks) {
-        description = track.short_description;
-        descriptions.push(description);
-      }
-      return descriptions;
-    }
-  }
-  return [];
 }
 
 export default Statistics;

@@ -1,9 +1,6 @@
 import React from 'react';
-
 import './Infoboxes.css';
-
 import InfoImg from '../logo/Info.png';
-
 import texts from '../texts/texts.json';
 
 const Infoboxes = () => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FormControl,
   FormControlLabel,
@@ -20,6 +20,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
 } from '@material-ui/pickers';
+import api from '../api/api';
 import './EmailSettings.css';
 import { emailSettings, nav } from '../texts/texts.json';
 
@@ -82,9 +83,9 @@ const HelperText = (messageSelection) => {
  * On submit it makes another API call to set the specified settings on the server
  */
 const EmailSettings = () => {
-  const [pendingSave, setPendingSave] = React.useState(false);
-  const [pendingSend, setPendingSend] = React.useState(false);
-  const [settings, setSettings] = React.useState({
+  const [pendingSave, setPendingSave] = useState(false);
+  const [pendingSend, setPendingSend] = useState(false);
+  const [settings, setSettings] = useState({
     sender: '',
     user: '',
     pass: '',
@@ -106,27 +107,26 @@ const EmailSettings = () => {
   const [resultCounter, setResultCounter] = React.useState(0);
   const [messageSelection, setMessageSelection] = React.useState('collageMsg');
 
-  const fetchAndSetSettings = () => {
-    fetch('/api/email-settings')
-      .then((res) => res.json())
-      .then((data) => {
-        const filteredData = {};
-        Object.keys(settings).forEach((key) => {
-          if (data[key] !== undefined && data[key] !== null)
-            filteredData[key] = data[key];
-          else filteredData[key] = settings[key];
-        });
-        setSettings(filteredData);
-      });
-  };
-  const sendPendingRequest = () => {
+  const sendPendingRequest = async () => {
     setPendingSend(true);
-    fetch('/api/send-pending').then(() => {
-      setPendingSend(false);
-    });
+    await api.sendPending();
+    setPendingSend(false);
   };
-  /* Runs the above whenever the page loads */
-  React.useEffect(fetchAndSetSettings, []);
+
+  /* Fetches and sets settings whenever the page loads */
+  useEffect(() => {
+    (async () => {
+      const data = await api.getEmailSettings();
+      const filteredData = {};
+
+      Object.keys(settings).forEach((key) => {
+        if (data[key] !== undefined && data[key] !== null)
+          filteredData[key] = data[key];
+        else filteredData[key] = settings[key];
+      });
+      setSettings(filteredData);
+    })();
+  }, [settings]);
 
   const handleChange = (e) => {
     setSettings({ ...settings, [e.target.name]: e.target.value });
@@ -137,43 +137,34 @@ const EmailSettings = () => {
     setSettings({ ...settings, sendPendingTime: newDate });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setPendingSave(true);
-    fetch('api/email-settings', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(settings),
-    })
-      .then((res) => {
-        if (res.status !== 200) {
-          throw Error(res.statusText);
-        } else {
-          setPendingSave(false);
-          setResultCounter(resultCounter + 1);
-          setResultMessages((prevArr) => [
-            ...prevArr,
-            {
-              success: true,
-              msg: emailSettings.success[lang],
-              id: resultCounter,
-            },
-          ]);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setPendingSave(false);
-        setResultCounter(resultCounter + 1);
-        setResultMessages((prevArr) => [
-          ...prevArr,
-          {
-            success: false,
-            msg: err.message,
-            id: resultCounter,
-          },
-        ]);
-      });
+    try {
+      await api.patchEmailSettings(settings);
+      setPendingSave(false);
+      setResultCounter(resultCounter + 1);
+      setResultMessages((prevArr) => [
+        ...prevArr,
+        {
+          success: true,
+          msg: emailSettings.success[lang],
+          id: resultCounter,
+        },
+      ]);
+    } catch (err) {
+      console.log(err);
+      setPendingSave(false);
+      setResultCounter(resultCounter + 1);
+      setResultMessages((prevArr) => [
+        ...prevArr,
+        {
+          success: false,
+          msg: err.message,
+          id: resultCounter,
+        },
+      ]);
+    }
   };
 
   return (

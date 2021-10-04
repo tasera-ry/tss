@@ -8,11 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-// Call handling to backend
-import axios from 'axios';
-
-// Translations
-import data from '../texts/texts.json';
+import api from '../api/api';
+import translations from '../texts/texts.json';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -41,7 +38,7 @@ const textStyle = {
 const ResetPassword = () => {
   const classes = useStyles();
   const fin = localStorage.getItem('language');
-  const { resetPW } = data;
+  const { resetPW } = translations;
 
   const [showForm, setShowForm] = useState(true);
   const [email, setEmail] = useState('');
@@ -62,8 +59,8 @@ const ResetPassword = () => {
       setIsWaiting(false);
     } else {
       try {
-        const response = await axios.post('api/reset', { email });
-        if (response.data === 'recovery email sent') {
+        const data = await api.sendResetPasswordToken(email);
+        if (data === 'recovery email sent') {
           setEmailSent(true);
           setShowForm(false);
           setShowNullError(false);

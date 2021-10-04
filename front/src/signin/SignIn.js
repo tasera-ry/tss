@@ -10,11 +10,8 @@ import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
-// Call handling to backend
-import axios from 'axios';
-
-// Translations
-import data from '../texts/texts.json';
+import api from '../api/api';
+import translations from '../texts/texts.json';
 
 /*
   Signin is the component for signing in to the frontend
@@ -49,7 +46,7 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [mistake, setMistake] = useState(false);
   const history = useHistory();
-  const { signin } = data;
+  const { signin } = translations;
   const fin = localStorage.getItem('language');
   const [cookies, setCookie] = useCookies(['username', 'role']); // eslint-disable-line
   const secure = window.location.protocol === 'https:';
@@ -82,21 +79,15 @@ const SignIn = () => {
     }
   };
 
-  const login = (e) => {
+  const login = async (e) => {
     e.preventDefault();
 
-    axios
-      .post('api/sign', {
-        name,
-        password,
-        secure,
-      })
-      .then((resp) => {
-        setInfo(resp.data);
-      })
-      .catch((error) => {
-        HandleError(error);
-      });
+    try {
+      const data = await api.signIn(name, password, secure);
+      setInfo(data);
+    } catch (err) {
+      HandleError(err);
+    }
   };
 
   function backToPrev() {

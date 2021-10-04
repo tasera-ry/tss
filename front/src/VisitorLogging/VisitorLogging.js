@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './VisitorLogging.css';
-import axios from 'axios';
 import MomentUtils from '@date-io/moment';
 
 import {
@@ -10,6 +9,7 @@ import {
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
+import api from '../api/api';
 import { visitorLogging as texts } from '../texts/texts.json';
 
 const VisitorLogging = ({
@@ -28,36 +28,35 @@ const VisitorLogging = ({
   }, []);
 
   useEffect(() => {
-    const getTracks = async () => {
-      if (date) {
-        const dateString = date.toISOString().split('T')[0];
-        const query = `api/daterange/freeform/${dateString}/${dateString}`;
-        const response = await axios.get(query);
-        if (response) {
-          setTracks(response.data[0].tracks);
-        }
+    (async () => {
+      if (!date) return;
+      const dateString = date.toISOString().split('T')[0];
+      try {
+        const data = await api.getSchedulingFreeform(dateString, dateString);
+        setTracks(data[0].tracks);
+      } catch (err) {
+        console.log(err);
       }
-    };
-    getTracks();
+    })();
   }, [date]);
 
   const sendStats = () => {
     try {
-      tracks.forEach(async (track) => {
-        if (track.scheduled) {
-          const trackOpts = {
-            scheduled_range_supervision_id:
-              track.scheduled.scheduled_range_supervision_id,
-            track_id: track.id,
-            notice: track.scheduled.notice,
-            track_supervisor: track.scheduled.track_supervisor,
-            visitors: track.scheduled.visitors,
-          };
-          await axios.put(
-            `/api/track-supervision/${track.scheduled.scheduled_range_supervision_id}/${track.id}`,
-            trackOpts,
-          );
-        }
+      tracks.forEach(async ({ scheduled, id }) => {
+        if (!scheduled) return;
+        const trackOpts = {
+          scheduled_range_supervision_id:
+            scheduled.scheduled_range_supervision_id,
+          track_id: id,
+          notice: scheduled.notice,
+          track_supervisor: scheduled.track_supervisor,
+          visitors: scheduled.visitors,
+        };
+        await api.patchScheduledSupervisionTrack(
+          scheduled.scheduled_range_supervision_id,
+          id,
+          trackOpts,
+        );
       });
     } catch (error) {
       setToastSeverity('error');

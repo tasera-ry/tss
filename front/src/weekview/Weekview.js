@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import '../App.css';
 import './Weekview.css';
 
@@ -10,12 +9,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Moment for date management
 import moment from 'moment';
-import {
-  getSchedulingWeek,
-  getSchedulingDate,
-  viewChanger,
-  jumpToCurrent,
-} from '../utils/Utils';
+import api from '../api/api';
+import { getSchedulingWeek, viewChanger, jumpToCurrent } from '../utils/Utils';
 import exclamation from '../logo/Info.png';
 import Infoboxes from '../infoboxes/Infoboxes';
 
@@ -384,13 +379,14 @@ class Weekview extends Component {
   update() {
     const { date } = this.state;
     const requestSchedulingDate = async () => {
-      const response = await getSchedulingDate(date);
-
-      if (response) {
+      try {
+        const data = await api.getSchedulingDate(date);
         this.setState({
-          date: new Date(response.date),
+          date: new Date(data.date),
         });
-      } else console.error('getting info failed');
+      } catch (err) {
+        console.error('getting info failed');
+      }
     };
 
     requestSchedulingDate();

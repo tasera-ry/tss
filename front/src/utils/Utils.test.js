@@ -9,12 +9,6 @@ global.fetch = jest.fn(() =>
 );
 
 describe('testing weekview', () => {
-  it('testing getSchedulingDate', async () => {
-    const { date } = testUtils;
-    const result = await utils.getSchedulingDate(date);
-    expect(result).toBe('dummy fetch response');
-  });
-
   it('testing getSchedulingWeek', async () => {
     const { date } = testUtils;
     const result = await utils.getSchedulingWeek(date);
@@ -56,9 +50,9 @@ describe('testing weekview', () => {
     expect(result2).toBe(false);
   });
 
-  it('testing rangeSupervision', async () => {
+  it('testing updateRangeSupervision', async () => {
     global.fetch = jest.fn(() => Promise.resolve({ ok: true }));
-    const result = await utils.rangeSupervision(
+    const result = await utils.updateRangeSupervision(
       0,
       0,
       'open',
@@ -89,7 +83,7 @@ describe('testing weekview', () => {
       }
       return Promise.resolve({ ok: true });
     });
-    const result2 = await utils.rangeSupervision(
+    const result2 = await utils.updateRangeSupervision(
       0,
       0,
       'open',
@@ -106,7 +100,7 @@ describe('testing weekview', () => {
       }
       return Promise.resolve({ ok: true });
     });
-    const result3 = await utils.rangeSupervision(
+    const result3 = await utils.updateRangeSupervision(
       0,
       0,
       'open',

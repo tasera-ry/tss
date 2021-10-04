@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import '../App.css';
 import './Scheduling.css';
 
@@ -33,14 +32,9 @@ import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 
 import socketIOClient from 'socket.io-client';
-import {
-  getSchedulingDate,
-  rangeSupervision,
-  validateLogin,
-} from '../utils/Utils';
-
-// Translation
-import data from '../texts/texts.json';
+import api from '../api/api';
+import { updateRangeSupervision, validateLogin } from '../utils/Utils';
+import translations from '../texts/texts.json';
 
 let lang = 'fi'; // fallback
 if (localStorage.getItem('language') === '0') {
@@ -52,14 +46,7 @@ moment.locale(lang);
 
 async function getRangeSupervisors() {
   try {
-    const response = await fetch('/api/user?role=supervisor', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-    return await response.json();
+    return await api.getRangeSupervisors();
   } catch (err) {
     console.error('GETTING USER FAILED', err);
     return false;
@@ -284,7 +271,7 @@ class Scheduling extends Component {
   };
 
   saveChanges = async () => {
-    const { sched } = data;
+    const { sched } = translations;
     const fin = localStorage.getItem('language');
 
     this.setState({
@@ -357,17 +344,22 @@ class Scheduling extends Component {
             date = moment(date).add(1, 'months');
           }
 
-          const response = await this.updateRequirements(
-            moment(date).format('YYYY-MM-DD'),
-          );
-          await update(
-            date,
-            response.reservationId,
-            response.scheduleId,
-            response.rangeSupervisionScheduled,
-            response.tracks,
-            true,
-          );
+          try {
+            // fetch new requirements for the next day
+            const data = await api.getSchedulingDate(
+              moment(date).format('YYYY-MM-DD'),
+            );
+            await update(
+              date,
+              data.reservationId,
+              data.scheduleId,
+              data.rangeSupervisionScheduled,
+              data.tracks,
+              true,
+            );
+          } catch (err) {
+            console.log(err);
+          }
         }
       }
     };
@@ -381,21 +373,6 @@ class Scheduling extends Component {
       state: 'ready',
     });
     this.socket.emit('refresh');
-  };
-
-  // fetch new requirements for the next day
-  updateRequirements = async (date) => {
-    // console.log("UPDATE REQUIREMENTS",date);
-    /* eslint-disable-next-line */
-    const request = async (date) => {
-      const response = await getSchedulingDate(date);
-
-      if (response !== false) {
-        // console.log("During update base results from api",response);
-      } else console.error('Getting base info failed');
-      return response;
-    };
-    return await request(date); // eslint-disable-line
   };
 
   /*
@@ -423,7 +400,7 @@ class Scheduling extends Component {
 
   // builds tracklist
   createTrackList = () => {
-    const { sched } = data;
+    const { sched } = translations;
     const fin = localStorage.getItem('language');
     const items = [];
     const { tracks } = this.state;
@@ -482,7 +459,7 @@ class Scheduling extends Component {
   createSupervisorSelect = () => {
     const items = [];
     let disabled = false;
-    const { sched } = data;
+    const { sched } = translations;
     const fin = localStorage.getItem('language');
     for (const key in this.state.rangeSupervisors) {
       items.push(
@@ -688,7 +665,7 @@ class Scheduling extends Component {
       }
 
       if (rangeStatus !== null) {
-        const rangeSupervisionRes = await rangeSupervision(
+        const rangeSupervisionRes = await updateRangeSupervision(
           rsId,
           srsId,
           rangeStatus,
@@ -702,68 +679,49 @@ class Scheduling extends Component {
 
       /* eslint-disable-next-line */
       const trackSupervision = async (srsId, key) => {
-        try {
-          // update only ones changed in state
-          if (this.state[this.state.tracks[key].id] !== undefined || isRepeat) {
-            const statusInState = this.state[this.state.tracks[key].id];
-            // if coming from repeat and status was cleared
-            const supervisorStatus =
-              statusInState !== undefined ? statusInState : 'absent';
+        // update only ones changed in state
+        if (this.state[this.state.tracks[key].id] !== undefined || isRepeat) {
+          const statusInState = this.state[this.state.tracks[key].id];
+          // if coming from repeat and status was cleared
+          const supervisorStatus =
+            statusInState !== undefined ? statusInState : 'absent';
 
-            let { notice } = this.state.tracks[key];
-            if (notice === null) {
-              // undefined gets removed in object
-              notice = undefined;
-            }
-
-            /* eslint-disable-next-line */
-            let params = {
-              track_supervisor: supervisorStatus,
-              notice,
-              supervisor: this.state.rangeSupervisorId,
-            };
-
-            let srsp = '';
-            let trackSupervisionMethod = '';
-            // if scheduled track supervision exists -> put otherwise -> post
-            if (tracks[key].scheduled) {
-              trackSupervisionMethod = 'PUT';
-              srsp = `/${srsId}/${this.state.tracks[key].id}`;
-            } else {
-              trackSupervisionMethod = 'POST';
-              params = {
-                ...params,
-                scheduled_range_supervision_id: srsId,
-                track_id: this.state.tracks[key].id,
-              };
-            }
-            return await fetch(`/api/track-supervision${srsp}`, {
-              method: trackSupervisionMethod,
-              body: JSON.stringify(params),
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-            })
-              /* eslint-disable-next-line */
-              .then((res) => {
-                // 400 and so on
-                if (res.ok === false) {
-                  return reject(new Error('update track supervision failed'));
-                }
-                if (res.status !== 204) {
-                  return res.json();
-                }
-              });
+          let { notice } = this.state.tracks[key];
+          if (notice === null) {
+            // undefined gets removed in object
+            notice = undefined;
           }
-        } catch (error) {
-          console.error('track supervision', error);
-          return reject(new Error('general track supervision failure'));
+
+          const data = {
+            track_supervisor: supervisorStatus,
+            notice,
+            supervisor: this.state.rangeSupervisorId,
+          };
+
+          // if scheduled track supervision exists -> patch
+          if (tracks[key].scheduled) {
+            const srsp = `/${srsId}/${this.state.tracks[key].id}`;
+            try {
+              await api.patchScheduledSupervision(srsp, data);
+            } catch (err) {
+              throw new Error('update track supervision failed');
+            }
+          }
+          // otherwise -> post
+          try {
+            await api.postScheduledSupervision({
+              ...data,
+              scheduled_range_supervision_id: srsId,
+              track_id: this.state.tracks[key].id,
+            });
+          } catch (err) {
+            throw new Error('update track supervision failed');
+          }
         }
       };
       for (const key in this.state.tracks) {
         try {
-          const trackSupervisionRes = await trackSupervision(srsId, key); // eslint-disable-line
+          await trackSupervision(srsId, key);
         } catch (error) {
           return reject(error);
         }
@@ -775,49 +733,60 @@ class Scheduling extends Component {
 
   update() {
     const request = async () => {
-      const response = await getSchedulingDate(this.state.date);
-      if (response !== false) {
-        try {
-          this.setState({
-            date: moment(response.date),
-            rangeId: response.rangeId,
-            reservationId: response.reservationId,
-            scheduleId: response.scheduleId,
-            open:
-              response.open !== null
-                ? moment(response.open, 'h:mm:ss').format()
-                : moment(response.date).hour(17).minute(0).second(0),
-            close:
-              response.close !== null
-                ? moment(response.close, 'h:mm:ss').format()
-                : moment(response.date).hour(20).minute(0).second(0),
-            available: response.available !== null ? response.available : false,
-            rangeSupervisorSwitch: response.rangeSupervisorId !== null,
-            rangeSupervisorId: response.rangeSupervisorId,
-            rangeSupervisorOriginal: response.rangeSupervisorId,
-            rangeSupervisionScheduled: response.rangeSupervisionScheduled,
-            tracks: response.tracks,
-            state: 'ready',
-          });
-          // set current track state for scheduled
-          for (const key in response.tracks) {
-            // eslint-disable-line
-            if (response.tracks[key].scheduled) {
-              this.setState({
-                [this.state.tracks[key].id]:
-                  this.state.tracks[key].trackSupervision,
-              });
-            } else {
-              // clears track states between date changes
-              this.setState({
-                [this.state.tracks[key].id]: undefined,
-              });
-            }
+      try {
+        const {
+          date,
+          rangeId,
+          reservationId,
+          scheduleId,
+          open,
+          close,
+          available,
+          rangeSupervisorId,
+          rangeSupervisionScheduled,
+          tracks,
+        } = await api.getSchedulingDate(this.state.date);
+
+        this.setState({
+          date: moment(date),
+          rangeId,
+          reservationId,
+          scheduleId,
+          open:
+            open !== null
+              ? moment(open, 'h:mm:ss').format()
+              : moment(date).hour(17).minute(0).second(0),
+          close:
+            close !== null
+              ? moment(close, 'h:mm:ss').format()
+              : moment(date).hour(20).minute(0).second(0),
+          available: available !== null ? available : false,
+          rangeSupervisorSwitch: rangeSupervisorId !== null,
+          rangeSupervisorId,
+          rangeSupervisorOriginal: rangeSupervisorId,
+          rangeSupervisionScheduled,
+          tracks,
+          state: 'ready',
+        });
+
+        // set current track state for scheduled
+        for (const key in tracks) {
+          // eslint-disable-line
+          if (tracks[key].scheduled) {
+            this.setState({
+              [this.state.tracks[key].id]:
+                this.state.tracks[key].trackSupervision,
+            });
+          } else {
+            // clears track states between date changes
+            this.setState({
+              [this.state.tracks[key].id]: undefined,
+            });
           }
-        } catch (e) {
-          console.log(e);
         }
-      } else console.error('getting info failed');
+      } catch (err) {
+        console.error('getting info failed');
+      }
     };
     request();
   }
@@ -827,7 +796,7 @@ class Scheduling extends Component {
       return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
 
-    const { sched } = data;
+    const { sched } = translations;
     const fin = localStorage.getItem('language');
 
     return (

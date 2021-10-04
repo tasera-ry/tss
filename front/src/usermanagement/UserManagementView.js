@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import '../App.css';
 
 // Material UI components
@@ -27,140 +26,20 @@ import {
 import NiceInputPassword from 'react-nice-input-password';
 import 'react-nice-input-password/dist/react-nice-input-password.css';
 
-// axios for calls to backend
-import axios from 'axios';
-
 // Token validation
 import { withCookies } from 'react-cookie';
 import { validateLogin } from '../utils/Utils';
 
-// Translations
-import data from '../texts/texts.json';
+import api from '../api/api';
+import translations from '../texts/texts.json';
 
 const fin = localStorage.getItem('language');
-const { manage } = data;
+const { manage } = translations;
 
 // Styles
 const dialogStyle = {
   backgroundColor: '#f2f0eb',
 };
-
-// Finds all users from database
-async function getUsers() {
-  try {
-    const response = await fetch('/api/user', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-    return await response.json();
-  } catch (err) {
-    console.error('GETTING USER FAILED', err);
-    return false;
-  }
-}
-
-// Changes password to database
-async function changePassword(id, passwordn) {
-  try {
-    const response = await fetch(`/api/user/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        password: passwordn,
-      }),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-    return response.ok;
-  } catch (err) {
-    console.error('GETTING USER FAILED', err);
-    return false;
-  }
-}
-
-// Changes email to database
-async function changeEmail(id, newEmail) {
-  try {
-    const response = await fetch(`/api/user/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        email: newEmail,
-      }),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-    return response.ok;
-  } catch (err) {
-    console.error('GETTING USER FAILED', err);
-    return false;
-  }
-}
-
-// Changes email to database
-async function addEmail(id, emailn) {
-  try {
-    const response = await fetch(`/api/user/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        email: emailn,
-      }),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-    return response.ok;
-  } catch (err) {
-    console.error('GETTING USER FAILED', err);
-    return false;
-  }
-}
-
-// Deletes user from database
-async function deleteUser(id) {
-  try {
-    const response = await fetch(`/api/user/${id}`, {
-      method: 'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-    return response.ok;
-  } catch (err) {
-    console.error('GETTING USER FAILED', err);
-    return false;
-  }
-}
-
-// Add user to database
-async function addUser(namen, rolen, passwordn, emailn) {
-  try {
-    const response = await fetch('/api/user/', {
-      method: 'POST',
-      body: JSON.stringify({
-        name: namen,
-        password: passwordn,
-        role: rolen,
-        email: emailn,
-      }),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-    return await response.json();
-  } catch (err) {
-    console.error('GETTING USER FAILED', err);
-    return false;
-  }
-}
 
 /**
  ** THE CLASS
@@ -245,26 +124,18 @@ class UserManagementView extends Component {
 
   componentDidMount() {
     this.setState(function () {
-      validateLogin().then((logInSuccess) => {
+      validateLogin().then(async (logInSuccess) => {
         if (!logInSuccess) {
           this.props.history.push('/');
-        } else {
-          getUsers()
-            .then((response) => {
-              if (response !== false) {
-                this.setState(
-                  {
-                    userList: response,
-                  },
-                  () => {
-                    this.update();
-                  },
-                );
-              }
-            })
-            .catch((error) => {
-              console.error('init failed', error);
-            });
+          return;
+        }
+        try {
+          const userList = await api.getUsers();
+          this.setState({ userList }, () => {
+            this.update();
+          });
+        } catch (err) {
+          console.log('init failed', err);
         }
       });
     });
@@ -281,26 +152,20 @@ class UserManagementView extends Component {
     this.setState({
       changeOwnPassFailed: false,
     });
-    let success = true;
-    let response = await axios
-      .post('api/sign', {
-        name: this.state.username,
-        password: this.state.oldPassword,
-        secure,
-      })
-      .catch(() => {
-        success = false;
+
+    try {
+      await api.signIn(this.state.username, this.state.oldPassword, secure);
+    } catch (err) {
+      this.setState({
+        changeOwnPassFailed: true,
       });
-    if (success) {
-      response = await changePassword(this.findOwnID(), this.state.newPassword);
-      if (response) {
-        this.handleChangeOwnPassDialogClose();
-      } else {
-        this.setState({
-          changeOwnPassFailed: true,
-        });
-      }
-    } else {
+      return;
+    }
+
+    try {
+      await api.patchPassword(this.findOwnID(), this.state.newPassword);
+      this.handleChangeOwnPassDialogClose();
+    } catch (err) {
       this.setState({
         changeOwnPassFailed: true,
       });
@@ -309,13 +174,10 @@ class UserManagementView extends Component {
 
   // handles changing own email address
   async handleChangeOwnEmailDialogCloseAgree() {
-    this.setState({
-      changeOwnEmailFailed: false,
-    });
-    const response = await changeEmail(this.findOwnID(), this.state.email);
-    if (response) {
+    try {
+      await api.patchEmail(this.findOwnID(), this.state.email);
       this.handleChangeOwnEmailDialogClose();
-    } else {
+    } catch {
       this.setState({
         changeOwnEmailFailed: true,
       });
@@ -325,33 +187,30 @@ class UserManagementView extends Component {
 
   // Handles adding new users
   async handleAddNewUserDialogCloseConfirmed() {
-    this.setState({
-      requestErrors: false,
-    });
-    const req = await addUser(
-      this.state.newUserName,
-      this.state.newUserRole,
-      this.state.newUserPass,
-      this.state.email,
-    );
-    if (req.errors !== undefined) {
+    try {
+      await api.addUser(
+        this.state.newUserName,
+        this.state.newUserRole,
+        this.state.newUserPass,
+        this.state.email,
+      );
+      this.handleAddNewUserDialogClose();
+      this.makeDataFreshAgain();
+    } catch (err) {
       this.setState({
         requestErrors: true,
       });
-    } else {
-      this.handleAddNewUserDialogClose();
-      this.makeDataFreshAgain();
     }
   }
 
   // Removes the user
   async handleRemoveWarningCloseAgree() {
-    const response = await deleteUser(this.findUserId());
-    if (response?.errors !== undefined) {
+    try {
+      await api.deleteUser(this.findUserId());
       this.setState({
         deleteErrors: true,
       });
-    } else {
+    } catch (err) {
       this.setState({
         openRemoveWarning: false,
       });
@@ -370,16 +229,13 @@ class UserManagementView extends Component {
 
   // Changes password for some1 else by their ID
   async handleChangePassCloseConfirm() {
-    const response = await changePassword(
-      this.findUserId(),
-      this.state.password,
-    );
-    if (!response) {
+    try {
+      await api.patchPassword(this.findUserId(), this.state.password);
+      this.handleChangePassClose();
+    } catch (err) {
       this.setState({
         changeErrors: true,
       });
-    } else {
-      this.handleChangePassClose();
     }
   }
 
@@ -393,14 +249,14 @@ class UserManagementView extends Component {
 
   // Adds email for some1 else by their ID
   async handleaddEmailCloseConfirm() {
-    const response = await addEmail(this.findUserId(), this.state.email);
-    if (!response) {
+    try {
+      await api.patchEmail(this.findUserId(), this.state.email);
+      this.handleaddEmailClose();
+      this.makeDataFreshAgain();
+    } catch (err) {
       this.setState({
         changeErrors: true,
       });
-    } else {
-      this.handleaddEmailClose();
-      this.makeDataFreshAgain();
     }
   }
 
@@ -473,20 +329,15 @@ class UserManagementView extends Component {
 
   async makeDataFreshAgain() {
     try {
-      const response = await getUsers();
-      if (response !== false) {
-        this.setState({
-          userList: response,
-        });
+      const userList = await api.getUsers();
+      this.setState({ userList }, () => {
         this.update();
-      } else {
-        console.error(
-          'getting users failed, most likely sign in token invalid -> kicking to root',
-        );
-        this.props.history.push('/');
-      }
-    } catch (error) {
-      console.error('init failed', error);
+      });
+    } catch (err) {
+      console.error(
+        'getting users failed, most likely sign in token invalid -> kicking to root',
+      );
+      this.props.history.push('/');
     }
   }
 

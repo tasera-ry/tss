@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import './rangeofficer.css';
 
 // Material UI components
@@ -15,19 +14,15 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-// Translations
-
 // Date handling
 import moment from 'moment';
 
-// Axios for backend calls
-import axios from 'axios';
-
 // Login validation
 import socketIOClient from 'socket.io-client';
-import { validateLogin, rangeSupervision } from '../utils/Utils';
+import { validateLogin, updateRangeSupervision } from '../utils/Utils';
 
-import data from '../texts/texts.json';
+import api from '../api/api';
+import translations from '../texts/texts.json';
 
 // Submitting track usage statistics
 import { TrackStatistics } from '../TrackStatistics/TrackStatistics';
@@ -164,7 +159,7 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
       }
     }
   });
-  const HandleClick = () => {
+  const HandleClick = async () => {
     let newSupervision = 'absent';
     setSupervision('absent');
     track.color = colors.white; // eslint-disable-line
@@ -188,51 +183,43 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
       notice = undefined;
     }
 
-    let params = {
+    const params = {
       track_supervisor: newSupervision,
       notice,
     };
 
-    // if scheduled track supervision exists -> put otherwise -> post
+    // if scheduled track supervision exists -> patch, otherwise -> post
     if (track.scheduled) {
-      axios
-        .put(`/api/track-supervision/${scheduleId}/${track.id}`, params)
-        .catch((error) => {
-          console.log(error);
-        })
-        .then((res) => {
-          if (res) {
-            track.trackSupervision = newSupervision; // eslint-disable-line
-            socket.emit('trackUpdate', {
-              super: track.trackSupervision,
-              id: track.id,
-            });
-            setButtonColor(track.color);
-          }
-        });
-    } else {
-      params = {
-        ...params,
-        scheduled_range_supervision_id: scheduleId,
-        track_id: track.id,
-      };
+      try {
+        await api.patchScheduledSupervisionTrack(scheduleId, track.id, params);
 
-      axios
-        .post('/api/track-supervision', params)
-        .catch((error) => {
-          console.log(error);
-        })
-        .then((res) => {
-          if (res) {
-            track.scheduled = res.data[0]; // eslint-disable-line
-            track.trackSupervision = newSupervision; // eslint-disable-line
-            socket.emit('trackUpdate', {
-              super: track.trackSupervision,
-              id: track.id,
-            });
-            setButtonColor(track.color);
-          }
+        track.trackSupervision = newSupervision; // eslint-disable-line
+        socket.emit('trackUpdate', {
+          super: track.trackSupervision,
+          id: track.id,
         });
+        setButtonColor(track.color);
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      try {
+        const data = await api.postScheduledSupervision({
+          ...params,
+          scheduled_range_supervision_id: scheduleId,
+          track_id: track.id,
+        });
+
+        track.scheduled = data[0]; // eslint-disable-line
+        track.trackSupervision = newSupervision; // eslint-disable-line
+        socket.emit('trackUpdate', {
+          super: track.trackSupervision,
+          id: track.id,
+        });
+        setButtonColor(track.color);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
   return (
@@ -281,43 +268,59 @@ async function getData(
   setReservationId,
   setRangeSupervisionScheduled,
 ) {
-  const date = moment(Date.now()).format('YYYY-MM-DD');
+  try {
+    const date = moment(Date.now()).format('YYYY-MM-DD');
+    const {
+      scheduleId,
+      reservationId,
+      rangeSupervisionScheduled,
+      rangeSupervision,
+      open,
+      close,
+    } = await api.getSchedulingDate(date);
 
-  await fetch(`/api/datesupreme/${date}`)
-    .then((res) => res.json())
-    .then((response) => {
-      // console.log(response);
-      setScheduleId(response.scheduleId);
-      setReservationId(response.reservationId);
-      setRangeSupervisionScheduled(response.rangeSupervisionScheduled);
-      setHours({
-        start: moment(response.open, 'h:mm').format('HH:mm'),
-        end: moment(response.close, 'h:mm').format('HH:mm'),
-      });
-      if (response.rangeSupervision === 'present') {
+    setScheduleId(scheduleId);
+    setReservationId(reservationId);
+    setRangeSupervisionScheduled(rangeSupervisionScheduled);
+    setHours({
+      start: moment(open, 'h:mm').format('HH:mm'),
+      end: moment(close, 'h:mm').format('HH:mm'),
+    });
+
+    switch (rangeSupervision) {
+      case 'present':
         setStatusText(tablet.SuperGreen[fin]);
         setStatusColor(colors.green);
-      } else if (response.rangeSupervision === 'en route') {
+        return;
+      case 'en route':
         setStatusText(tablet.SuperOrange[fin]);
         setStatusColor(colors.orange);
-      } else if (response.rangeSupervision === 'absent') {
+        return;
+      case 'absent':
         setStatusText(tablet.SuperWhite[fin]);
         setStatusColor(colors.white);
-      } else if (response.rangeSupervision === 'closed') {
+        return;
+      case 'closed':
         setStatusText(tablet.Red[fin]);
         setStatusColor(colors.red);
-      } else if (response.rangeSupervision === 'confirmed') {
+        return;
+      case 'confirmed':
         setStatusText(tablet.SuperLightGreen[fin]);
         setStatusColor(colors.lightgreen);
-      } else if (response.rangeSupervision === 'not confirmed') {
+        return;
+      case 'not confirmed':
         setStatusText(tablet.SuperBlue[fin]);
         setStatusColor(colors.blue);
-      } else {
+        return;
+      default:
         setStatusText(tablet.SuperWhite[fin]);
         setStatusColor(colors.white);
-      }
-      getColors(response.tracks, setTracks);
-    });
+    }
+
+    getColors(tracks, setTracks);
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 const TimePick = ({
@@ -347,23 +350,13 @@ const TimePick = ({
     const end = endDate.toTimeString().split(' ')[0].slice(0, 5);
     console.log(start, end);
 
-    const query = `/api/schedule/${scheduleId}`;
-
-    await axios
-      .put(query, {
-        open: start,
-        close: end,
-      })
-      .then((res) => {
-        if (res) {
-          setHours({ start, end });
-          setDialogOpen(false);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        setErrorMessage(tablet.Error[fin]);
-      });
+    try {
+      await api.patchSchedule(scheduleId, start, end);
+      setHours({ start, end });
+      setDialogOpen(false);
+    } catch (err) {
+      setErrorMessage(tablet.Error[fin]);
+    }
   }
 
   return (
@@ -440,7 +433,7 @@ const Tabletview = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [socket, setSocket] = useState();
   const fin = localStorage.getItem('language');
-  const { tablet } = data;
+  const { tablet } = translations;
   const today = moment().format('DD.MM.YYYY');
 
   const statusStyle = {
@@ -501,7 +494,7 @@ const Tabletview = () => {
   }, []); // eslint-disable-line
 
   async function updateSupervisor(status, color, text) {
-    const res = await rangeSupervision(
+    const res = await updateRangeSupervision(
       reservationId,
       scheduleId,
       status,

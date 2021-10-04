@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-
 import './App.css';
-
-import axios from 'axios';
 
 // Custom components
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { CookiesProvider, withCookies } from 'react-cookie';
+import api from './api/api';
 import SignIn from './signin/SignIn';
 import ResetPassword from './resetPW/ResetPassword';
 import RenewPassword from './renewPW/RenewPassword';
@@ -44,7 +42,7 @@ class App extends Component {
       validateLogin().then(async (tokenValid) => {
         // If the token is expired, logout user
         if (!tokenValid) {
-          const response = await axios.post('/api/signout'); // eslint-disable-line
+          await api.signOut();
           this.props.cookies.remove('username');
           this.props.cookies.remove('role');
 

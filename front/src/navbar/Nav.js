@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import '../App.css';
 import './Nav.css';
 
-import axios from 'axios';
 import { useCookies } from 'react-cookie';
 
 // TASERA logo & Burger icon
@@ -18,6 +17,7 @@ import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from '@material-ui/core/styles';
 import logo from '../logo/Logo.png';
 
+import api from '../api/api';
 import SupervisorNotification from './SupervisorNotification';
 import FeedbackWindow from './FeedbackWindow';
 
@@ -78,7 +78,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
   // TODO: centralize this one
   const HandleSignOut = async () => {
     setLoggingOut(true);
-    const response = await axios.post('/api/signout'); // eslint-disable-line
+    await api.signOut();
     removeCookie('username');
     removeCookie('role');
     setName(undefined);

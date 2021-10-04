@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-
-import './TrackStatistics.css';
 
 // Material-UI components
 import Button from '@material-ui/core/Button';
+
+import api from '../api/api';
+import './TrackStatistics.css';
 
 const ButtonStyle = {
   marginTop: 4,
@@ -34,7 +34,8 @@ export function TrackStatistics({ track, supervision }) {
 
   // Sends the changed visitors statistics to backend
   const sendStats = async (newVisitors) => {
-    if (track.scheduled) {
+    if (!track.scheduled) return;
+    try {
       const trackOpts = {
         scheduled_range_supervision_id:
           track.scheduled.scheduled_range_supervision_id,
@@ -43,10 +44,13 @@ export function TrackStatistics({ track, supervision }) {
         track_supervisor: supervision,
         visitors: newVisitors,
       };
-      await axios.put(
-        `/api/track-supervision/${track.scheduled.scheduled_range_supervision_id}/${track.id}`,
+      await api.patchScheduledSupervisionTrack(
+        track.scheduled.scheduled_range_supervision_id,
+        track.id,
         trackOpts,
       );
+    } catch (err) {
+      console.log(err);
     }
   };
 
