@@ -1,0 +1,56 @@
+version: "3.9"
+services:
+  database:
+    image: postgres:9.6.23-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: some_password
+      PGUSER: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  backend:
+    build:
+      context: ./back
+      target: dev
+    restart: always
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=some_password
+      - NODE_ENV=development
+      - DB_HOST=database
+      - DB_PORT=5432
+      - SENDER_EMAIL=noreply@tasera.fi
+      - SERVER_HOST=http://frontend:3000
+    ports:
+      - 8000:8000
+      - 5858:5858 # node debugger
+    volumes:
+      - ./back:/app
+    command: >
+      /bin/sh -c "npx knex migrate:latest
+      && npx knex seed:run
+      && nodemon --inspect=0.0.0.0:5858 --legacy-watch server.js"
+  frontend:
+    build:
+      context: ./front
+      target: dev
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - 3000:3000
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - PROXY_HOSTNAME=backend
+      - PROXY_PORT=8000
+    volumes:
+      - ./front:/app
+    stdin_open: true
+    links:
+      - backend
