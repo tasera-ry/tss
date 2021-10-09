@@ -1,5 +1,4 @@
-/**** Express imports ****/
-const app = require('./app.js')();
+const app = require('./app.js');
 const os = require('os');
 
 require('dotenv').config();
