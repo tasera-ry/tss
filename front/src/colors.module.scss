@@ -1,0 +1,35 @@
+$COLOR_GREEN: #658f60;
+$COLOR_GREEN_LIGHT: #b2d9ad;
+$COLOR_GREEN_DARK: #047a00;
+$COLOR_RED: #c23a3a;
+$COLOR_RED_LIGHT: #c97b7b;
+$COLOR_ORANGE: #f2c66d;
+$COLOR_TURQUOISE: #95d5db;
+$COLOR_BLUE: #5f77a1;
+$COLOR_CREAM0: #fcfbf7;
+$COLOR_CREAM5: #f2f0eb;
+$COLOR_CREAM10: #ebe7df; // TODO: use in place of ede9e1
+$COLOR_CREAM30: #b0aca0;
+$COLOR_CREAM50: #d8c3a5;
+$COLOR_GREY: #555555;
+$COLOR_BLACK: #000000;
+
+:export {
+  green: $COLOR_GREEN;
+  greenLight: $COLOR_GREEN_LIGHT;
+  greenDark: $COLOR_GREEN_DARK;
+  red: $COLOR_RED;
+  redLight: $COLOR_RED_LIGHT;
+  orange: $COLOR_ORANGE;
+  turquoise: $COLOR_TURQUOISE;
+  blue: $COLOR_BLUE;
+
+  cream0: $COLOR_CREAM0;
+  cream5: $COLOR_CREAM5;
+  cream10: $COLOR_CREAM10;
+  cream30: $COLOR_CREAM30;
+  cream50: $COLOR_CREAM50;
+
+  grey: $COLOR_GREY;
+  black: $COLOR_BLACK;
+}
