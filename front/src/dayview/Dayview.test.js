@@ -4,7 +4,7 @@ import { createMemoryHistory } from 'history';
 import '@testing-library/jest-dom/extend-expect';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import Dayview from './Dayview';
-import * as utils from '../utils/Utils';
+import api from '../api/api';
 import testUtils from '../_TestUtils/TestUtils';
 
 const { schedule } = testUtils;
@@ -21,7 +21,7 @@ const history = createMemoryHistory();
 
 describe('testing Dayview component', () => {
   it('should render Dayview', async () => {
-    utils.getSchedulingDate = jest.fn(() => schedule);
+    api.getSchedulingDate = jest.fn(() => schedule);
     localStorage.setItem('language', '1');
     Date.now = jest.fn(() => '2020-10-21T11:30:57.000Z');
 
@@ -60,7 +60,7 @@ describe('testing Dayview component', () => {
   it('should show range officer status', async () => {
     localStorage.setItem('language', '1');
     Date.now = jest.fn(() => '2020-10-21T11:30:57.000Z');
-    utils.getSchedulingDate = jest.fn(() => ({
+    api.getSchedulingDate = jest.fn(() => ({
       ...schedule,
       rangeSupervision: 'closed',
     }));

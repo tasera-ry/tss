@@ -10,6 +10,7 @@ import {
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
+import { getLanguage } from '../utils/Utils';
 import { visitorLogging as texts } from '../texts/texts.json';
 
 const VisitorLogging = ({
@@ -89,12 +90,7 @@ const VisitorLogging = ({
     );
   };
 
-  let locale = 'fi';
-  if (localStorage.getItem('language') === '0') {
-    locale = 'fi';
-  } else if (localStorage.getItem('language') === '1') {
-    locale = 'en';
-  }
+  const locale = getLanguage();
   return (
     <div className="loggingContainer">
       <div>

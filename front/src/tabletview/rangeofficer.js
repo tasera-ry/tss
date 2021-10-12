@@ -25,7 +25,7 @@ import axios from 'axios';
 
 // Login validation
 import socketIOClient from 'socket.io-client';
-import { validateLogin, rangeSupervision } from '../utils/Utils';
+import { validateLogin, updateRangeSupervision } from '../utils/Utils';
 
 import data from '../texts/texts.json';
 
@@ -501,7 +501,7 @@ const Tabletview = () => {
   }, []); // eslint-disable-line
 
   async function updateSupervisor(status, color, text) {
-    const res = await rangeSupervision(
+    const res = await updateRangeSupervision(
       reservationId,
       scheduleId,
       status,

@@ -21,17 +21,12 @@ import {
 } from '@material-ui/pickers';
 
 import axios from 'axios';
-
+import { getLanguage } from '../utils/Utils';
 // Translation
 import data from '../texts/texts.json';
 import VisitorLogging from '../VisitorLogging/VisitorLogging';
 
-let lang = 'fi';
-if (localStorage.getItem('language') === '0') {
-  lang = 'fi';
-} else if (localStorage.getItem('language') === '1') {
-  lang = 'en';
-}
+const lang = getLanguage();
 
 moment.locale(lang);
 const { statistics } = data;

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import '../App.css';
 import './Weekview.css';
 
@@ -10,11 +9,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Moment for date management
 import moment from 'moment';
+import api from '../api/api';
 import {
   getSchedulingWeek,
-  getSchedulingDate,
   viewChanger,
   jumpToCurrent,
+  getLanguage,
 } from '../utils/Utils';
 import exclamation from '../logo/Info.png';
 import Infoboxes from '../infoboxes/Infoboxes';
@@ -22,12 +22,7 @@ import Infoboxes from '../infoboxes/Infoboxes';
 // Translation
 import texts from '../texts/texts.json';
 
-let lang = 'fi'; // fallback
-if (localStorage.getItem('language') === '0') {
-  lang = 'fi';
-} else if (localStorage.getItem('language') === '1') {
-  lang = 'en';
-}
+const lang = getLanguage();
 
 const { weekdayShorthand, week } = texts;
 const fin = localStorage.getItem('language');
@@ -384,13 +379,14 @@ class Weekview extends Component {
   update() {
     const { date } = this.state;
     const requestSchedulingDate = async () => {
-      const response = await getSchedulingDate(date);
-
-      if (response) {
+      try {
+        const data = await api.getSchedulingDate(date);
         this.setState({
-          date: new Date(response.date),
+          date: new Date(data.date),
         });
-      } else console.error('getting info failed');
+      } catch (err) {
+        console.error('getting info failed');
+      }
     };
 
     requestSchedulingDate();

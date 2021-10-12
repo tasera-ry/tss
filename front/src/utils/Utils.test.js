@@ -4,17 +4,8 @@ import * as utils from './Utils';
 import testUtils from '../_TestUtils/TestUtils';
 
 axios.get = jest.fn(() => Promise.resolve({ data: 'dummy axios response' }));
-global.fetch = jest.fn(() =>
-  Promise.resolve({ json: () => Promise.resolve('dummy fetch response') }),
-);
 
 describe('testing weekview', () => {
-  it('testing getSchedulingDate', async () => {
-    const { date } = testUtils;
-    const result = await utils.getSchedulingDate(date);
-    expect(result).toBe('dummy fetch response');
-  });
-
   it('testing getSchedulingWeek', async () => {
     const { date } = testUtils;
     const result = await utils.getSchedulingWeek(date);
@@ -47,18 +38,18 @@ describe('testing weekview', () => {
   it('testing validateLogin', async () => {
     localStorage.setItem('token', 'dummy_token');
 
-    global.fetch = jest.fn(() => Promise.resolve({ status: 200 }));
+    axios.get = jest.fn(() => Promise.resolve({ status: 200 }));
     const result = await utils.validateLogin();
     expect(result).toBe(true);
 
-    global.fetch = jest.fn(() => Promise.resolve({ status: 401 }));
+    axios.get = jest.fn(() => Promise.reject({ status: 401 }));
     const result2 = await utils.validateLogin();
     expect(result2).toBe(false);
   });
 
-  it('testing rangeSupervision', async () => {
-    global.fetch = jest.fn(() => Promise.resolve({ ok: true }));
-    const result = await utils.rangeSupervision(
+  it('testing updateRangeSupervision', async () => {
+    axios.put = jest.fn(() => Promise.resolve({ ok: true }));
+    const result = await utils.updateRangeSupervision(
       0,
       0,
       'open',
@@ -66,30 +57,12 @@ describe('testing weekview', () => {
       'dummytoken',
     );
     expect(result).toBe(true);
-    expect(fetch).toHaveBeenCalledWith('/api/reservation/0', {
-      body: '{"available":true}',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'PUT',
-    });
-    expect(fetch).toHaveBeenCalledWith('/api/range-supervision/0', {
-      body: '{"range_supervisor":"open","supervisor":"dummytoken"}',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'PUT',
-    });
 
-    global.fetch = jest.fn((url) => {
-      if (url === '/api/reservation/0') {
-        return Promise.resolve({ ok: false });
-      }
+    axios.put = jest.fn((url) => {
+      if (url === '/api/reservation/0') return Promise.reject({ ok: false });
       return Promise.resolve({ ok: true });
     });
-    const result2 = await utils.rangeSupervision(
+    const result2 = await utils.updateRangeSupervision(
       0,
       0,
       'open',
@@ -100,13 +73,12 @@ describe('testing weekview', () => {
       'general range supervision failure: Error: scheduled reserv fail',
     );
 
-    global.fetch = jest.fn((url) => {
-      if (url === '/api/range-supervision/0') {
-        return Promise.resolve({ ok: false });
-      }
+    axios.put = jest.fn((url) => {
+      if (url === 'api/range-supervision/0')
+        return Promise.reject({ ok: false });
       return Promise.resolve({ ok: true });
     });
-    const result3 = await utils.rangeSupervision(
+    const result3 = await utils.updateRangeSupervision(
       0,
       0,
       'open',

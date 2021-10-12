@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import './Dayview.css';
 
 // Material UI components
@@ -10,18 +9,13 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Utils
 import moment from 'moment';
-import {
-  dayToString,
-  jumpToCurrent,
-  getSchedulingDate,
-  viewChanger,
-} from '../utils/Utils';
+import { dayToString, jumpToCurrent, viewChanger } from '../utils/Utils';
 
 // Moment for date handling
 import info from '../logo/Info.png';
 
-// Translations
-import data from '../texts/texts.json';
+import api from '../api/api';
+import translations from '../texts/texts.json';
 
 /*
   Dayview-component for handling day-specific view
@@ -67,18 +61,20 @@ class Dayview extends Component {
     // /dayview/2020-02-20
     const { date } = this.props.match.params; // eslint-disable-line
     const request = async () => {
-      const response = await getSchedulingDate(date);
+      try {
+        const data = await api.getSchedulingDate(date);
 
-      if (response !== false) {
         this.setState({
           state: 'ready',
-          date: new Date(response.date),
-          tracks: response.tracks,
-          rangeSupervision: response.rangeSupervision,
-          opens: moment(response.open, 'HH:mm').format('H.mm'),
-          closes: moment(response.close, 'HH:mm').format('H.mm'),
+          date: new Date(data.date),
+          tracks: data.tracks,
+          rangeSupervision: data.rangeSupervision,
+          opens: moment(data.open, 'HH:mm').format('H.mm'),
+          closes: moment(data.close, 'HH:mm').format('H.mm'),
         });
-      } else console.error('getting info failed');
+      } catch (err) {
+        console.error('getting info failed');
+      }
     };
     request();
   }
@@ -125,7 +121,7 @@ class Dayview extends Component {
 
   render() {
     const fin = localStorage.getItem('language');
-    const { dayview } = data;
+    const { dayview } = translations;
 
     function OfficerBanner(props) {
       let text;

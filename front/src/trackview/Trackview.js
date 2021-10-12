@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import '../App.css';
 import './Trackview.css';
 
@@ -9,11 +8,9 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
-// Utils
-import { dayToString, getSchedulingDate } from '../utils/Utils';
-
-// Translations
-import data from '../texts/texts.json';
+import api from '../api/api';
+import { dayToString } from '../utils/Utils';
+import translations from '../texts/texts.json';
 
 /*
  ** Main function
@@ -44,36 +41,14 @@ class Trackview extends Component {
     const { date } = this.props.match.params;
     const { track } = this.props.match.params;
     const request = async () => {
-      const response = await getSchedulingDate(date);
+      try {
+        const data = await api.getSchedulingDate(date);
 
-      if (response !== false) {
-        const selectedTrack = response.tracks.find(
+        const selectedTrack = data.tracks.find(
           (findItem) => findItem.name === track,
         );
-        // console.log("Results from api",response,selectedTrack);
 
-        if (selectedTrack !== undefined) {
-          this.setState(
-            {
-              date: new Date(response.date),
-              trackSupervision: selectedTrack.trackSupervision,
-              rangeSupervision: response.rangeSupervision,
-              name: selectedTrack.name,
-              description: `(${selectedTrack.description})`,
-              info: selectedTrack.notice,
-            },
-            () => {
-              document.getElementById('date').style.visibility = 'visible';
-              document.getElementById('valvojat').style.visibility = 'visible';
-              if (selectedTrack.notice > 0) {
-                document.getElementById('infobox').style.visibility = 'visible';
-              } else {
-                document.getElementById('infobox').style.visibility =
-                  'disabled';
-              }
-            },
-          );
-        } else {
+        if (selectedTrack === undefined) {
           console.error('track undefined');
 
           this.setState({
@@ -83,7 +58,29 @@ class Trackview extends Component {
           document.getElementById('valvojat').style.visibility = 'hidden';
           document.getElementById('infobox').style.visibility = 'hidden';
         }
-      } else console.error('getting info failed');
+
+        this.setState(
+          {
+            date: new Date(data.date),
+            trackSupervision: selectedTrack.trackSupervision,
+            rangeSupervision: data.rangeSupervision,
+            name: selectedTrack.name,
+            description: `(${selectedTrack.description})`,
+            info: selectedTrack.notice,
+          },
+          () => {
+            document.getElementById('date').style.visibility = 'visible';
+            document.getElementById('valvojat').style.visibility = 'visible';
+            if (selectedTrack.notice > 0) {
+              document.getElementById('infobox').style.visibility = 'visible';
+            } else {
+              document.getElementById('infobox').style.visibility = 'disabled';
+            }
+          },
+        );
+      } catch (err) {
+        console.log(err);
+      }
     };
     request();
   }
@@ -161,7 +158,7 @@ class Trackview extends Component {
     // alternative way without binding in constructor:
     this.update = this.update.bind(this);
 
-    const { trackview } = data;
+    const { trackview } = translations;
     const fin = localStorage.getItem('language');
 
     return (
