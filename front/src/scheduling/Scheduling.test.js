@@ -6,6 +6,7 @@ import { act } from 'react-dom/test-utils';
 import axios from 'axios';
 import Scheduling from './Scheduling';
 import * as utils from '../utils/Utils';
+import api from '../api/api';
 import testUtils from '../_TestUtils/TestUtils';
 
 const mockTracks = [
@@ -19,7 +20,7 @@ const mockTracks = [
 ];
 utils.validateLogin = jest.fn(() => Promise.resolve(true));
 utils.rangeSupervision = jest.fn(() => Promise.resolve(testUtils.reservation));
-utils.getSchedulingDate = jest.fn(() => Promise.resolve(testUtils.schedule));
+api.getSchedulingDate = jest.fn(() => Promise.resolve(testUtils.schedule));
 
 const tracks = { data: mockTracks };
 axios.get = jest.fn(() => Promise.resolve(tracks));

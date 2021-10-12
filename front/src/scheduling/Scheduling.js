@@ -34,20 +34,15 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 
 import socketIOClient from 'socket.io-client';
 import {
-  getSchedulingDate,
-  rangeSupervision,
+  updateRangeSupervision,
   validateLogin,
+  getLanguage,
 } from '../utils/Utils';
-
+import api from '../api/api';
 // Translation
 import data from '../texts/texts.json';
 
-let lang = 'fi'; // fallback
-if (localStorage.getItem('language') === '0') {
-  lang = 'fi';
-} else if (localStorage.getItem('language') === '1') {
-  lang = 'en';
-}
+const lang = getLanguage();
 moment.locale(lang);
 
 async function getRangeSupervisors() {
@@ -357,17 +352,22 @@ class Scheduling extends Component {
             date = moment(date).add(1, 'months');
           }
 
-          const response = await this.updateRequirements(
-            moment(date).format('YYYY-MM-DD'),
-          );
-          await update(
-            date,
-            response.reservationId,
-            response.scheduleId,
-            response.rangeSupervisionScheduled,
-            response.tracks,
-            true,
-          );
+          try {
+            // fetch new requirements for the next day
+            const response = await api.getSchedulingDate(
+              moment(date).format('YYYY-MM-DD'),
+            );
+            await update(
+              date,
+              response.reservationId,
+              response.scheduleId,
+              response.rangeSupervisionScheduled,
+              response.tracks,
+              true,
+            );
+          } catch (err) {
+            console.log(err);
+          }
         }
       }
     };
@@ -381,21 +381,6 @@ class Scheduling extends Component {
       state: 'ready',
     });
     this.socket.emit('refresh');
-  };
-
-  // fetch new requirements for the next day
-  updateRequirements = async (date) => {
-    // console.log("UPDATE REQUIREMENTS",date);
-    /* eslint-disable-next-line */
-    const request = async (date) => {
-      const response = await getSchedulingDate(date);
-
-      if (response !== false) {
-        // console.log("During update base results from api",response);
-      } else console.error('Getting base info failed');
-      return response;
-    };
-    return await request(date); // eslint-disable-line
   };
 
   /*
@@ -688,7 +673,7 @@ class Scheduling extends Component {
       }
 
       if (rangeStatus !== null) {
-        const rangeSupervisionRes = await rangeSupervision(
+        const rangeSupervisionRes = await updateRangeSupervision(
           rsId,
           srsId,
           rangeStatus,
@@ -763,7 +748,7 @@ class Scheduling extends Component {
       };
       for (const key in this.state.tracks) {
         try {
-          const trackSupervisionRes = await trackSupervision(srsId, key); // eslint-disable-line
+          await trackSupervision(srsId, key);
         } catch (error) {
           return reject(error);
         }
@@ -775,49 +760,47 @@ class Scheduling extends Component {
 
   update() {
     const request = async () => {
-      const response = await getSchedulingDate(this.state.date);
-      if (response !== false) {
-        try {
-          this.setState({
-            date: moment(response.date),
-            rangeId: response.rangeId,
-            reservationId: response.reservationId,
-            scheduleId: response.scheduleId,
-            open:
-              response.open !== null
-                ? moment(response.open, 'h:mm:ss').format()
-                : moment(response.date).hour(17).minute(0).second(0),
-            close:
-              response.close !== null
-                ? moment(response.close, 'h:mm:ss').format()
-                : moment(response.date).hour(20).minute(0).second(0),
-            available: response.available !== null ? response.available : false,
-            rangeSupervisorSwitch: response.rangeSupervisorId !== null,
-            rangeSupervisorId: response.rangeSupervisorId,
-            rangeSupervisorOriginal: response.rangeSupervisorId,
-            rangeSupervisionScheduled: response.rangeSupervisionScheduled,
-            tracks: response.tracks,
-            state: 'ready',
-          });
-          // set current track state for scheduled
-          for (const key in response.tracks) {
-            // eslint-disable-line
-            if (response.tracks[key].scheduled) {
-              this.setState({
-                [this.state.tracks[key].id]:
-                  this.state.tracks[key].trackSupervision,
-              });
-            } else {
-              // clears track states between date changes
-              this.setState({
-                [this.state.tracks[key].id]: undefined,
-              });
-            }
+      try {
+        const response = await api.getSchedulingDate(this.state.date);
+        this.setState({
+          date: moment(response.date),
+          rangeId: response.rangeId,
+          reservationId: response.reservationId,
+          scheduleId: response.scheduleId,
+          open:
+            response.open !== null
+              ? moment(response.open, 'h:mm:ss').format()
+              : moment(response.date).hour(17).minute(0).second(0),
+          close:
+            response.close !== null
+              ? moment(response.close, 'h:mm:ss').format()
+              : moment(response.date).hour(20).minute(0).second(0),
+          available: response.available !== null ? response.available : false,
+          rangeSupervisorSwitch: response.rangeSupervisorId !== null,
+          rangeSupervisorId: response.rangeSupervisorId,
+          rangeSupervisorOriginal: response.rangeSupervisorId,
+          rangeSupervisionScheduled: response.rangeSupervisionScheduled,
+          tracks: response.tracks,
+          state: 'ready',
+        });
+        // set current track state for scheduled
+        for (const key in response.tracks) {
+          // eslint-disable-line
+          if (response.tracks[key].scheduled) {
+            this.setState({
+              [this.state.tracks[key].id]:
+                this.state.tracks[key].trackSupervision,
+            });
+          } else {
+            // clears track states between date changes
+            this.setState({
+              [this.state.tracks[key].id]: undefined,
+            });
           }
-        } catch (e) {
-          console.log(e);
         }
-      } else console.error('getting info failed');
+      } catch (err) {
+        console.error('getting info failed');
+      }
     };
     request();
   }
