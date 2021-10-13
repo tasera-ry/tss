@@ -11,6 +11,7 @@ const hash = password => bcrypt.hashSync(password, config.bcrypt.hashRounds);
 
 const endpoint = '/api/sign';
 
+// Mock user module
 jest.mock('../models/user', () => {
   const users = []; 
 
@@ -22,26 +23,28 @@ jest.mock('../models/user', () => {
   return model;
 });
 
-describe('api/sign/', () => {
-  it('When no credentials are provided, returns status code 400.', async () => {
-    await request.post(endpoint).send().expect(400);
-  });
+describe(`${endpoint}`, () => {
+  describe('/post', () => {
+    it('When no credentials are provided: returns status code 400.', async () => {
+      await request.post(endpoint).send().expect(400);
+    });
 
-  it('When invalid credentials are provided, returns status code 401.', async () => {
-    await request.post(endpoint)
-      .send({name: 'hipsu', password: 'A@asd###ASDASD', secure: false})
-      .expect(401);
-  });
+    it('When invalid credentials are provided: returns status code 401.', async () => {
+      await request.post(endpoint)
+        .send({name: 'hipsu', password: 'A@asd###ASDASD', secure: false})
+        .expect(401);
+    });
 
-  it('When valid credentials are provided, returns status code 200 and sets token cookie', async () => {
-    // Create user
-    const user = {name: 'tiivitaavi', digest: hash('@L44L44L33')};
-    require('../models/user').create(user);
+    it('When valid credentials are provided: returns status code 200 and sets token cookie', async () => {
+      // Create user
+      const user = {name: 'tiivitaavi', digest: hash('@L44L44L33')};
+      require('../models/user').create(user);
 
-    let res = await request.post(endpoint)
-      .send({name: 'tiivitaavi', password: '@L44L44L33', secure: false});
+      let res = await request.post(endpoint)
+        .send({name: 'tiivitaavi', password: '@L44L44L33', secure: false});
  
-    expect(res.status).toBe(200);
-    expect(res['headers']['set-cookie'][0].slice(0, 5)).toBe('token');
+      expect(res.status).toBe(200);
+      expect(res['headers']['set-cookie'][0].slice(0, 5)).toBe('token');
+    });
   });
 });
