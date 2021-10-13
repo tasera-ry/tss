@@ -20,8 +20,9 @@ jest.mock('../models/user', () => {
   const users = []; 
 
   const model = {
-    read: (key) => users.filter(user => user.email === key.email),
-    create: (user) => users.push(user),
+    read: async (key) => users.filter(user => user.email === key.email ||
+                                (user.token === key.token && key.token !== undefined)),
+    create: async (user) => users.push(user),
     update: jest.fn(),
     clear: () => users.length = 0
   };
@@ -41,7 +42,7 @@ describe(`${endpoint}`, () => {
   describe('/post', () => {
     it('When email exists: sets token, sends reset email and returns 200', async () => {
       const user = {email: 'tiivitaavi@hotmail.com'};
-      userModel.create(user);
+      await userModel.create(user);
       await request.post(endpoint)
         .send({email: 'tiivitaavi@hotmail.com'})
         .expect(200);
@@ -53,7 +54,7 @@ describe(`${endpoint}`, () => {
 
     it('When email does not exist: returns 403', async () => {
       const user = {email: 'laalaa@hotmail.com'};
-      userModel.create(user);
+      await userModel.create(user);
       await request.post(endpoint)
         .send({email: 'tiivitaavi@hotmail.com'})
         .expect(403);
@@ -70,7 +71,37 @@ describe(`${endpoint}`, () => {
         .send({email: ''})
         .expect(400);
     });
-
   });
 
+  describe('/get', () => {
+    it('When token exists and has not expired: returns 200', async () => {
+      const user = {
+        reset_token: 'passwordresettoken',
+        reset_token_expire: (Date.now() + 3600000).toString()
+      };
+
+      await userModel.create(user);
+      await request.get(endpoint)
+        .send({token: 'passwordresettoken'})
+        .expect(200);
+    });
+
+    it('When token exists and has expired: returns 403', async () => {
+      const user = {
+        reset_token: 'passwordresettoken',
+        reset_token_expire: (Date.now() - 3600000).toString()
+      };
+
+      await userModel.create(user);
+      await request.get(endpoint)
+        .send({token: 'passwordresettoken'})
+        .expect(403);
+    });
+
+    it('When token does not exist: returns 403', async () => {
+      await request.get(endpoint)
+        .send({token: 'passwordresettoken'})
+        .expect(403);
+    });
+  });
 });
