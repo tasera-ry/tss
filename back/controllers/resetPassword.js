@@ -18,8 +18,9 @@ const controller = {
 
     const emailAddress = req.body.email;
 
-    if (emailAddress === '') {
+    if (emailAddress === '' || emailAddress === undefined) {
       res.status(400).send('email required');
+      return;
     }
     try {
       const user = await model.read({email: emailAddress}) //compares given e-mail to the db using models/user.js
