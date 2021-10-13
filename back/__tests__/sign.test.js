@@ -24,7 +24,7 @@ jest.mock('../models/user', () => {
 });
 
 describe(`${endpoint}`, () => {
-  describe('/post', () => {
+  describe('POST', () => {
     it('When no credentials are provided: returns status code 400.', async () => {
       await request.post(endpoint).send().expect(400);
     });

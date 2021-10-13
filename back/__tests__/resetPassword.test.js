@@ -20,8 +20,13 @@ jest.mock('../models/user', () => {
   const users = []; 
 
   const model = {
-    read: async (key) => users.filter(user => user.email === key.email ||
-                                (user.token === key.token && key.token !== undefined)),
+    read: async (key) => users.filter((user) => {
+      if (key.email && key.reset_token) 
+        return (user.email === key.email && user.reset_token === key.reset_token);
+      if (key.email) return user.email === key.email;
+      if (key.reset_token) return user.reset_token === key.reset_token;
+      return false;
+    }),
     create: async (user) => users.push(user),
     update: jest.fn(),
     clear: () => users.length = 0
@@ -39,7 +44,7 @@ describe(`${endpoint}`, () => {
     userModel.clear();
   });
 
-  describe('/post', () => {
+  describe('POST', () => {
     it('When email exists: sets token, sends reset email and returns 200', async () => {
       const user = {email: 'tiivitaavi@hotmail.com'};
       await userModel.create(user);
@@ -73,7 +78,7 @@ describe(`${endpoint}`, () => {
     });
   });
 
-  describe('/get', () => {
+  describe('GET', () => {
     it('When token exists and has not expired: returns 200', async () => {
       const user = {
         reset_token: 'passwordresettoken',
@@ -82,7 +87,7 @@ describe(`${endpoint}`, () => {
 
       await userModel.create(user);
       await request.get(endpoint)
-        .send({token: 'passwordresettoken'})
+        .query({reset_token: 'passwordresettoken'})
         .expect(200);
     });
 
@@ -94,13 +99,13 @@ describe(`${endpoint}`, () => {
 
       await userModel.create(user);
       await request.get(endpoint)
-        .send({token: 'passwordresettoken'})
+        .query({reset_token: 'passwordresettoken'})
         .expect(403);
     });
 
     it('When token does not exist: returns 403', async () => {
       await request.get(endpoint)
-        .send({token: 'passwordresettoken'})
+        .query({reset_token: 'passwordresettoken'})
         .expect(403);
     });
   });
