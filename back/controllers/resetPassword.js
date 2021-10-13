@@ -23,7 +23,7 @@ const controller = {
       return;
     }
     try {
-      const user = await model.read({email: emailAddress}) //compares given e-mail to the db using models/user.js
+      const user = await model.read({email: emailAddress}); //compares given e-mail to the db using models/user.js
       
       if (user === undefined || user.length == 0) {
         res.status(403).send('email not in db');
@@ -55,7 +55,7 @@ const controller = {
         if (user === undefined || user.length == 0) {
           res.status(403).send('password reset link is invalid');
         }
-        else if (Date.now() > user[0].reset_token_expire) {
+        else if (Date.now() > parseInt(user[0].reset_token_expire)) {
           res.status(403).send('password reset token has expired');
         } 
         else {
