@@ -1,11 +1,7 @@
 /* eslint-env jest */
 const supertest = require('supertest');
 const app = require('../app.js');
-const path = require('path');
 const bcrypt = require('bcryptjs');
-const root = path.join(__dirname, '..');
-const config = require(path.join(root, 'config', 'config'));
-const hash = password => bcrypt.hashSync(password, config.bcrypt.hashRounds);
 
 const request = supertest(app);
 
@@ -136,6 +132,28 @@ describe(`${endpoint}`, () => {
       expect(bcrypt.compareSync(req.newPassword, updatedUser.digest)).toEqual(true);
       expect(updatedUser.reset_token).toEqual(null);
       expect(updatedUser.reset_token_expire).toEqual(null);
+    });
+
+    it('When token does not exist: returns 403', async () => {
+      const user = {name: 'usr', reset_token: 'rsttoken'};
+      const req = {username: 'usr',
+        reset_token: 's',
+        newPassword: 'new'};
+      await userModel.create(user);
+      await request.put(endpoint)
+        .send(req)
+        .expect(403);
+    });
+
+    it('When user does not exist: returns 403', async () => {
+      const user = {name: 'usr', reset_token: 'rsttoken'};
+      const req = {username: 'usrs',
+        reset_token: 's',
+        newPassword: 'new'};
+      await userModel.create(user);
+      await request.put(endpoint)
+        .send(req)
+        .expect(403);
     });
   });
 });
