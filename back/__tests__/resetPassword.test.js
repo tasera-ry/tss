@@ -1,6 +1,11 @@
 /* eslint-env jest */
 const supertest = require('supertest');
 const app = require('../app.js');
+const path = require('path');
+const bcrypt = require('bcryptjs');
+const root = path.join(__dirname, '..');
+const config = require(path.join(root, 'config', 'config'));
+const hash = password => bcrypt.hashSync(password, config.bcrypt.hashRounds);
 
 const request = supertest(app);
 
@@ -20,15 +25,21 @@ jest.mock('../models/user', () => {
   const users = []; 
 
   const model = {
-    read: async (key) => users.filter((user) => {
-      if (key.email && key.reset_token) 
-        return (user.email === key.email && user.reset_token === key.reset_token);
-      if (key.email) return user.email === key.email;
-      if (key.reset_token) return user.reset_token === key.reset_token;
-      return false;
+    read: async (params) => users.filter((user) => {
+      const searchKeys = Object.keys(params);
+      let match = true;
+      searchKeys.forEach(key => {
+        if (params[key] !== user[key]) {
+          match = false;
+        }
+      });
+      return match;
     }),
     create: async (user) => users.push(user),
-    update: jest.fn(),
+    update: async (current, update) => {
+      const i = users.findIndex(user => user.name === current.name);
+      users[i] = {...users[i], ...update};
+    },
     clear: () => users.length = 0
   };
   
@@ -52,9 +63,9 @@ describe(`${endpoint}`, () => {
         .send({email: 'tiivitaavi@hotmail.com'})
         .expect(200);
       expect(email.mock.calls.length).toBe(1);
-      // expect the update function to be called twice; once for setting reset_token
-      // and once for setting reset_token_expire
-      expect(userModel.update.mock.calls.length).toBe(2);
+      const updatedUser = (await userModel.read(user))[0];
+      expect(updatedUser.reset_token).toEqual(expect.anything());
+      expect(updatedUser.reset_token_expire).toEqual(expect.anything());
     });
 
     it('When email does not exist: returns 403', async () => {
@@ -107,6 +118,24 @@ describe(`${endpoint}`, () => {
       await request.get(endpoint)
         .query({reset_token: 'passwordresettoken'})
         .expect(403);
+    });
+  });
+
+  describe('PUT', () => {
+    it('If user exists and reset_token exists, change user password and set reset_token null, returns 200', async () => {
+      const user = {name: 'usr', reset_token: 'rsttoken'};
+      const req = {username: 'usr',
+        reset_token: 'rsttoken',
+        newPassword: 'new'};
+      await userModel.create(user);
+      await request.put(endpoint)
+        .send(req)
+        .expect(200);
+      
+      const updatedUser = (await userModel.read({name: user.name}))[0];
+      expect(bcrypt.compareSync(req.newPassword, updatedUser.digest)).toEqual(true);
+      expect(updatedUser.reset_token).toEqual(null);
+      expect(updatedUser.reset_token_expire).toEqual(null);
     });
   });
 });
