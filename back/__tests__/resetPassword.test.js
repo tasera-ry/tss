@@ -118,7 +118,7 @@ describe(`${endpoint}`, () => {
   });
 
   describe('PUT', () => {
-    it('If user exists and reset_token exists, change user password and set reset_token null, returns 200', async () => {
+    it('When user exists and reset_token exists: change user password and set reset_token null, returns 200', async () => {
       const user = {name: 'usr', reset_token: 'rsttoken'};
       const req = {username: 'usr',
         reset_token: 'rsttoken',
