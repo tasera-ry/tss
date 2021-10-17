@@ -1,0 +1,26 @@
+@import '../shared.module.scss';
+
+.container {
+  padding: 0 1vh 2vh 1vh;
+
+  .titleContainer,
+  .firstSection {
+    @extend .layout-row;
+    align-items: center;
+    text-align: start;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+}
+
+.buttonContainer {
+  @extend .layout-row;
+  align-items: center;
+  justify-content: center;
+}
+
+.metrics {
+  @extend .layout-column;
+  width: 100%;
+  align-items: center;
+}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Chart from 'react-apexcharts';
-import '../App.css';
-import './Statistics.css';
+import classNames from 'classnames';
+import colors from '../colors.module.scss';
 
 // Date management
 import MomentUtils from '@date-io/moment';
@@ -14,23 +14,70 @@ import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-import axios from 'axios';
-import { getLanguage } from '../utils/Utils';
-// Translation
-import data from '../texts/texts.json';
+import { getLanguage, incrementOrDecrementDate } from '../utils/Utils';
+import api from '../api/api';
+import translations from '../texts/texts.json';
 import VisitorLogging from '../VisitorLogging/VisitorLogging';
+import css from './Statistics.module.scss';
+
+const classes = classNames.bind(css);
 
 const lang = getLanguage();
-
 moment.locale(lang);
-const { statistics } = data;
+const { statistics } = translations;
 const fin = localStorage.getItem('language');
+
+const getChart = (id, categories) => ({
+  chart: { id },
+  xaxis: {
+    categories,
+    title: {
+      text:
+        id === 'monthChart'
+          ? statistics.DayLabel[fin]
+          : statistics.TrackLabel[fin],
+      style: {
+        fontSize: '14px',
+      },
+    },
+  },
+  yaxis: {
+    title: {
+      text: statistics.VisitorLabel[fin],
+      style: {
+        fontSize: '14px',
+      },
+    },
+  },
+  // charts have same options except for the month chart
+  ...(id === 'monthChart'
+    ? {
+        stroke: {
+          curve: 'smooth',
+          colors: [colors.green],
+        },
+      }
+    : {
+        fill: {
+          colors: [colors.green],
+        },
+        dataLabels: {
+          enabled: true,
+          style: {
+            fontSize: '16px',
+          },
+          background: {
+            enabled: true,
+            foreColor: colors.black,
+          },
+        },
+      }),
+});
 
 const Statistics = () => {
   const [date, setDate] = useState(new Date());
@@ -61,14 +108,12 @@ const Statistics = () => {
 
     // dayNum is used as an index in monthlyUsers[] to define the total visitors of a day
     const dayNumberSplit = singleDay.split('-');
-    let dayNum = dayNumberSplit[2];
-    dayNum = dayNum.startsWith('0') ? dayNum.substring(1) : dayNum;
-    setDayNumber(dayNum);
+    const dayNum = dayNumberSplit[2];
+    setDayNumber(dayNum.startsWith('0') ? dayNum.substring(1) : dayNum);
 
     const fetchData = async () => {
-      const monthResult = await getMonthlyVisitors(firstDate, lastDate); // eslint-disable-line
-      const dayResult = await getDailyVisitors(singleDay); // eslint-disable-line
-      /* eslint-disable-next-line */
+      const monthResult = await getMonthlyVisitors(firstDate, lastDate);
+      const dayResult = await getDailyVisitors(singleDay);
       const monthlyTrackResult = await getMonthlyTrackVisitors(
         firstDate,
         lastDate,
@@ -87,31 +132,7 @@ const Statistics = () => {
       (_, i) => i + 1,
     );
 
-    // Options for the month chart
-    setMonthOptions({
-      chart: { id: 'monthChart' },
-      xaxis: {
-        categories: dayArray,
-        title: {
-          text: statistics.DayLabel[fin],
-          style: {
-            fontSize: '14px',
-          },
-        },
-      },
-      yaxis: {
-        title: {
-          text: statistics.VisitorLabel[fin],
-          style: {
-            fontSize: '14px',
-          },
-        },
-      },
-      stroke: {
-        curve: 'smooth',
-        colors: ['#658f60'],
-      },
-    });
+    setMonthOptions(getChart('monthChart', dayArray));
     setMonthSeries([{ name: 'visitors', data: monthlyUsers }]);
   }, [monthlyUsers]);
 
@@ -119,43 +140,8 @@ const Statistics = () => {
     // Get the short_descriptions of each track in order to use them as a label
     const firstDate = moment(date).startOf('month').format('YYYY-MM-DD');
     const lastDate = moment(date).endOf('month').format('YYYY-MM-DD');
-    const labelArray = getShortDescriptions(firstDate, lastDate); // eslint-disable-line
-    labelArray.then((result) => {
-      // Options for the day chart
-      setDayOptions({
-        chart: { id: 'dayChart' },
-        xaxis: {
-          categories: result,
-          title: {
-            text: statistics.TrackLabel[fin],
-            style: {
-              fontSize: '14px',
-            },
-          },
-        },
-        yaxis: {
-          title: {
-            text: statistics.VisitorLabel[fin],
-            style: {
-              fontSize: '14px',
-            },
-          },
-        },
-        fill: {
-          colors: ['#658f60'],
-        },
-        dataLabels: {
-          enabled: true,
-          style: {
-            fontSize: '16px',
-          },
-          background: {
-            enabled: true,
-            foreColor: '#000000',
-          },
-        },
-      });
-    });
+    const labelArray = getShortDescriptions(firstDate, lastDate);
+    labelArray.then((result) => setDayOptions(getChart('dayChart', result)));
     setDaySeries([
       {
         name: 'visitors',
@@ -168,44 +154,11 @@ const Statistics = () => {
     // Get the short_descriptions of each track in order to use them as a label
     const firstDate = moment(date).startOf('month').format('YYYY-MM-DD');
     const lastDate = moment(date).endOf('month').format('YYYY-MM-DD');
-    const labelArray = getShortDescriptions(firstDate, lastDate); // eslint-disable-line
+    const labelArray = getShortDescriptions(firstDate, lastDate);
 
-    labelArray.then((result) => {
-      // Options for the day chart
-      setMonthlyTrackOptions({
-        chart: { id: 'monthlyTrackChart' },
-        xaxis: {
-          categories: result,
-          title: {
-            text: statistics.TrackLabel[fin],
-            style: {
-              fontSize: '14px',
-            },
-          },
-        },
-        yaxis: {
-          title: {
-            text: statistics.VisitorLabel[fin],
-            style: {
-              fontSize: '14px',
-            },
-          },
-        },
-        fill: {
-          colors: ['#658f60'],
-        },
-        dataLabels: {
-          enabled: true,
-          style: {
-            fontSize: '16px',
-          },
-          background: {
-            enabled: true,
-            foreColor: '#000000',
-          },
-        },
-      });
-    });
+    labelArray.then((result) =>
+      setMonthlyTrackOptions(getChart('monthlyTrackChart', result)),
+    );
     setMonthlyTrackSeries([
       {
         name: 'visitors',
@@ -214,255 +167,226 @@ const Statistics = () => {
     ]);
   }, [monthlyTrackUsers, date]);
 
-  const Alert = (props) => (
-    <MuiAlert elevation={6} variant="filled" {...props} />
-  );
-
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
+  const handleSnackbarClose = (reason) => {
+    if (reason === 'clickaway') return;
     setToastOpen(false);
   };
 
-  const previousDayClick = () => {
-    const newDate = new Date(date.setDate(date.getDate() - 1));
-    setDate(newDate);
-  };
-
-  const nextDayClick = () => {
-    const newDate = new Date(date.setDate(date.getDate() + 1));
-    setDate(newDate);
-  };
-
-  const handleDateChange = (newDate) => {
-    setDate(newDate);
-  };
-
   const continueWithDate = (event) => {
-    if (event?.event.type?.event.type === 'submit') {
-      event.preventDefault();
-    }
+    if (event?.event.type?.event.type === 'submit') event.preventDefault();
   };
 
-  const countMonthlyVisitors = () => monthlyUsers.reduce((a, b) => a + b, 0);
+  if (monthlyUsers?.length <= 0) return <div />;
+  const totalUsers = monthlyUsers.reduce((a, b) => a + b, 0);
 
-  const handleDatePickChange = (newDate) => {
-    const newDateObject = new Date(newDate);
-    setDate(newDateObject);
-    continueWithDate();
-  };
-
-  if (monthlyUsers?.length > 0) {
-    const total = countMonthlyVisitors();
-
-    return (
-      <div className="container">
-        <Snackbar
-          open={toastOpen}
-          autoHideDuration={5000}
-          onClose={handleSnackbarClose}
+  return (
+    <div className={classes(css.container)}>
+      <Snackbar
+        open={toastOpen}
+        autoHideDuration={5000}
+        onClose={(_, reason) => handleSnackbarClose(reason)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          onClose={(_, reason) => handleSnackbarClose(reason)}
+          severity={toastSeverity}
         >
-          <Alert onClose={handleSnackbarClose} severity={toastSeverity}>
-            {toastMessage}!
-          </Alert>
-        </Snackbar>
-        {/* Section for selecting date */}
-        <div className="firstSection">
-          <form onSubmit={continueWithDate}>
-            {/* Datepicker */}
-            <MuiPickersUtilsProvider utils={MomentUtils} locale={lang}>
-              <KeyboardDatePicker
-                autoOk
-                margin="normal"
-                name="date"
-                label={statistics.DayChoose[fin]}
-                value={date}
-                onChange={(newDate) => handleDateChange(newDate)}
-                onAccept={handleDatePickChange}
-                format="DD.MM.YYYY"
-                showTodayButton
-              />
-            </MuiPickersUtilsProvider>
-          </form>
-        </div>
-        <hr />
-        <div className="buttonContainer">
-          <Button
-            className="openModal"
-            onClick={() => setModalOpen(true)}
-            variant="contained"
-          >
-            {statistics.OpenLogging[fin]}
-          </Button>
-        </div>
-        <Modal
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          open={modalOpen}
-          onClose={() => setModalOpen(false)}
+          {toastMessage}!
+        </MuiAlert>
+      </Snackbar>
+      {/* Section for selecting date */}
+      <div className={classes(css.firstSection)}>
+        <form onSubmit={continueWithDate}>
+          {/* Datepicker */}
+          <MuiPickersUtilsProvider utils={MomentUtils} locale={lang}>
+            <KeyboardDatePicker
+              autoOk
+              margin="normal"
+              name="date"
+              label={statistics.DayChoose[fin]}
+              value={date}
+              onChange={(newDate) => setDate(newDate)}
+              onAccept={(newDate) => {
+                setDate(new Date(newDate));
+                continueWithDate();
+              }}
+              format="DD.MM.YYYY"
+              showTodayButton
+            />
+          </MuiPickersUtilsProvider>
+        </form>
+      </div>
+      <hr />
+      <div className={classes(css.buttonContainer)}>
+        <Button
+          className={classes(css.openModal)}
+          onClick={() => setModalOpen(true)}
+          variant="contained"
         >
-          <VisitorLogging
-            handleClose={() => setModalOpen(false)}
-            setToastSeverity={setToastSeverity}
-            setToastMessage={setToastMessage}
-            setToastOpen={setToastOpen}
+          {statistics.OpenLogging[fin]}
+        </Button>
+      </div>
+      <Modal
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+      >
+        <VisitorLogging
+          handleClose={() => setModalOpen(false)}
+          setToastSeverity={setToastSeverity}
+          setToastMessage={setToastMessage}
+          setToastOpen={setToastOpen}
+        />
+      </Modal>
+      {/* Header with arrows */}
+      <Grid class="date-header">
+        <div
+          className={classes(css['arrow-left'])}
+          onClick={() => setDate(incrementOrDecrementDate(date, -1))}
+        />
+        <h1 className={classes(css.headerText)}>
+          {date.toLocaleDateString('fi-FI')}
+        </h1>
+        <div
+          className={classes(css['arrow-right'])}
+          onClick={() => setDate(incrementOrDecrementDate(date, 1))}
+        />
+      </Grid>
+      {/* Charts */}
+      <div>
+        {/* Labels */}
+        <h2>{statistics.Day[fin]}</h2>
+        <h3>
+          {`${statistics.Total[fin]} ${date.toLocaleDateString('fi-FI')}: ${
+            monthlyUsers[dayNumber - 1]
+          }`}
+        </h3>
+        <h3>{statistics.DayChartHeader[fin]}</h3>
+        <div className={classes(css.metrics)}>
+          <Chart
+            options={dayOptions}
+            series={daySeries}
+            type="bar"
+            width="700"
+            height="400"
           />
-        </Modal>
-        {/* Header with arrows */}
-        <Grid class="date-header">
-          <div className="hoverHand arrow-left" onClick={previousDayClick} />
-          <h1 className="headerText">{date.toLocaleDateString('fi-FI')}</h1>
-          <div className="hoverHand arrow-right" onClick={nextDayClick} />
-        </Grid>
-        {/* Charts */}
-        <div className="row">
-          <div className="mixed-chart">
-            {/* Labels */}
-            <h2>{statistics.Day[fin]}</h2>
-            <h3>
-              {`${statistics.Total[fin]} ${date.toLocaleDateString('fi-FI')}: ${
-                monthlyUsers[dayNumber - 1]
-              }`}
-            </h3>
-            <h3>{statistics.DayChartHeader[fin]}</h3>
-            <div className="bar">
-              <Chart
-                options={dayOptions}
-                series={daySeries}
-                type="bar"
-                width="700"
-                height="400"
-              />
-            </div>
-            {/* Labels */}
-            <h2>{statistics.Month[fin]}</h2>
-            <h3>
-              {`${statistics.Total[fin]} ${
-                date.getMonth() + 1
-              }/${date.getFullYear()}: ${total}`}
-            </h3>
-            <h3>{statistics.MonthChart1Header[fin]}</h3>
-            <div className="line">
-              <Chart
-                options={monthOptions}
-                series={monthSeries}
-                type="line"
-                width="700"
-                height="400"
-              />
-            </div>
-            <h3>{statistics.MonthChart2Header[fin]}</h3>
-            <div className="bar">
-              <Chart
-                options={monthlyTrackOptions}
-                series={monthlyTrackSeries}
-                type="bar"
-                width="700"
-                height="400"
-              />
-            </div>
-          </div>
+        </div>
+        {/* Labels */}
+        <h2>{statistics.Month[fin]}</h2>
+        <h3>
+          {`${statistics.Total[fin]} ${
+            date.getMonth() + 1
+          }/${date.getFullYear()}: ${totalUsers}`}
+        </h3>
+        <h3>{statistics.MonthChart1Header[fin]}</h3>
+        <div className={classes(css.metrics)}>
+          <Chart
+            options={monthOptions}
+            series={monthSeries}
+            type="line"
+            width="700"
+            height="400"
+          />
+        </div>
+        <h3>{statistics.MonthChart2Header[fin]}</h3>
+        <div className={classes(css.metrics)}>
+          <Chart
+            options={monthlyTrackOptions}
+            series={monthlyTrackSeries}
+            type="bar"
+            width="700"
+            height="400"
+          />
         </div>
       </div>
-    );
-  }
-  return <div />;
+    </div>
+  );
 };
 
-async function getMonthlyVisitors(firstDate, lastDate) {
-  const query = `api/daterange/freeform/${firstDate}/${lastDate}`;
-  const response = await axios.get(query);
-  if (!response) {
-    return [];
-  }
-  // Form an array including the visitors of a certain month and return it
-  const visitors = [];
-  for (const supervision of response.data) {
-    if (!supervision?.scheduleId) {
-      visitors.push(0);
-    } else {
-      let trackVisitors = 0;
-      for (const track of supervision.tracks) {
-        trackVisitors += track.scheduled.visitors;
-      }
-      visitors.push(trackVisitors);
-    }
-  }
-  return visitors;
-}
+const getMonthlyVisitors = async (firstDate, lastDate) => {
+  try {
+    const data = await api.getSchedulingFreeform(firstDate, lastDate);
+    const visitors = [];
 
-async function getDailyVisitors(date) {
-  const query = `api/daterange/freeform/${date}/${date}`;
-  const response = await axios.get(query);
-  if (!response) {
+    data.forEach(({ scheduleId, tracks }) => {
+      if (!scheduleId) visitors.push(0);
+      else
+        visitors.push(
+          tracks.reduce(
+            (total, { scheduled }) => total + scheduled.visitors,
+            0,
+          ),
+        );
+    });
+    return visitors;
+  } catch (err) {
     return [];
   }
-  // Form an array including the visitors of a certain day and return it
-  const visitors = [];
-  for (const supervision of response.data) {
-    if (!supervision?.scheduleId) {
-      visitors.push(0);
-    } else {
-      for (const track of supervision.tracks) {
-        visitors.push(track.scheduled.visitors);
-      }
-    }
+};
+
+const getDailyVisitors = async (date) => {
+  try {
+    const data = await api.getSchedulingFreeform(date, date);
+    // Form an array including the visitors of a certain day and return it
+    const visitors = [];
+
+    data.forEach(({ scheduleId, tracks }) => {
+      if (!scheduleId) visitors.push(0);
+      else tracks.forEach(({ scheduled }) => visitors.push(scheduled.visitors));
+    });
+    return visitors;
+  } catch (err) {
+    return [];
   }
-  return visitors;
-}
+};
 
 async function getMonthlyTrackVisitors(firstDate, lastDate) {
-  const query = `api/daterange/freeform/${firstDate}/${lastDate}`;
-  const response = await axios.get(query);
-  if (!response) {
+  try {
+    const data = await api.getSchedulingFreeform(firstDate, lastDate);
+    // Form an array including the visitors of a certain track per month and return it
+    const visitors = [];
+
+    data.forEach(({ scheduleId, tracks }) => {
+      if (!scheduleId) return;
+
+      tracks.forEach(({ id, scheduled }) => {
+        if (visitors.length !== 7)
+          visitors.splice(id - 1, 1, scheduled.visitors);
+        else {
+          const trackPerMonthVisitors = visitors[id - 1];
+          const trackVisitors = scheduled.visitors + trackPerMonthVisitors;
+          visitors.splice(id - 1, 1, trackVisitors);
+        }
+      });
+    });
+    return visitors;
+  } catch (err) {
     return [];
   }
-  // Form an array including the visitors of a certain track per month and return it
-  const visitors = [];
-  for (const supervision of response.data) {
-    if (!supervision?.scheduleId) {
-      // I think there should be something
-    } else {
-      let trackVisitors = 0;
-      let trackPerMonthVisitors = 0;
-      for (const track of supervision.tracks) {
-        if (visitors.length === 7) {
-          trackPerMonthVisitors = visitors[track.id - 1];
-          trackVisitors = track.scheduled.visitors + trackPerMonthVisitors;
-          visitors.splice(track.id - 1, 1, trackVisitors);
-        } else {
-          trackVisitors = track.scheduled.visitors;
-          visitors.splice(track.id - 1, 1, trackVisitors);
-        }
-      }
-    }
-  }
-  return visitors;
 }
 
 async function getShortDescriptions(firstDate, lastDate) {
-  const query = `api/daterange/freeform/${firstDate}/${lastDate}`;
-  const response = await axios.get(query);
-  if (!response) {
-    return [];
-  }
-  // Form an array including the short_descriptions of each track
-  const descriptions = [];
-  let description = '';
-  for (const supervision of response.data) {
-    if (supervision?.scheduleId) {
-      for (const track of supervision.tracks) {
-        description = track.short_description;
-        descriptions.push(description);
-      }
+  try {
+    const data = await api.getSchedulingFreeform(firstDate, lastDate);
+    // Form an array including the short_descriptions of each track
+    const descriptions = [];
+
+    for (const supervision of data) {
+      if (!supervision?.scheduleId) continue;
+      supervision.tracks.forEach(({ short_description }) =>
+        descriptions.push(short_description),
+      );
       return descriptions;
     }
+    return [];
+  } catch (err) {
+    return [];
   }
-  return [];
 }
 
 export default Statistics;
