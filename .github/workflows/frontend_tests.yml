@@ -30,7 +30,7 @@ jobs:
       - name: Install deps
         if: steps.front-modules-cache.outputs.cache-hit != 'true'
         run: npm ci
-      - run: npm test
+      - run: npm test -- --coverage
       - name: Coverage
         uses: codecov/codecov-action@v2
         if: matrix.node-version == '14.x'
