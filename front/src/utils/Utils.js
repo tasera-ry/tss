@@ -5,6 +5,16 @@ import api from '../api/api';
 import texts from '../texts/texts.json';
 import colors from '../colors.module.scss';
 
+/**
+ * Increments or decrements the date by the param amount
+ * @param {Date} date The date to be incemented or decremented
+ * @param {number} amountOfDays The amount of days to increment or decrement.
+ * Give a negative number for decrement.
+ * @returns {Date} new date
+ */
+export const incrementOrDecrementDate = (date, amountOfDays) =>
+  new Date(date.setDate(date.getDate() + amountOfDays));
+
 export const getSchedulingWeek = async (date) => {
   try {
     const weekNum = moment(date, 'YYYY-MM-DD').isoWeek();
