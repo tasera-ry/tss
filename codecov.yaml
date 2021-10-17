@@ -1,4 +1,23 @@
 coverage:
-  precision: 2
-  round: down
-  range: "50...100"
+ status:
+  project:
+    default:
+      target: 50%
+    front-end:
+      target: 50%
+      flags:
+        - front-end
+    back-end:
+      target: 50%
+      flags:
+        - backend
+
+flags:
+  front-end:
+    paths:
+      - front/
+    carryforward: true
+  back-end:
+    paths:
+      - back/
+    carryforward: true
