@@ -1,0 +1,49 @@
+@import '../shared.module.scss';
+
+.arrow {
+  @extend .layout-row;
+  align-items: center;
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  cursor: pointer;
+}
+
+.container {
+  padding: 0 1vh 2vh 1vh;
+
+  .titleContainer,
+  .firstSection {
+    @extend .layout-row;
+    align-items: center;
+    text-align: start;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+  .arrow-right {
+    @extend .arrow;
+    margin-left: 5vw;
+    float: right;
+    border-left: 20px solid $COLOR_BLACK;
+  }
+  .arrow-left {
+    @extend .arrow;
+    margin-right: 5vw;
+    text-align: right;
+    border-right: 20px solid $COLOR_BLACK;
+  }
+}
+
+.buttonContainer {
+  @extend .layout-row;
+  align-items: center;
+  justify-content: center;
+}
+
+.mixed-chart .bar,
+.mixed-chart .line {
+  @extend .layout-column;
+  width: 100%;
+  align-items: center;
+}

@@ -1,0 +1,28 @@
+@import './colors.module.scss';
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #d6d1bd;
+  /* enable in development
+     background-color: pink; */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.layout-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.layout-column {
+  display: flex;
+  flex-direction: column;
+}
