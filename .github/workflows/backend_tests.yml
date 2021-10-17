@@ -36,3 +36,4 @@ jobs:
         if: matrix.node-version == '14.x'
         with:
           flags: back-end
+          files: ./back/coverage/lcov.info
