@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
-import '../App.css';
-import './Trackview.css';
-
+import React, { useState, useEffect } from 'react';
+import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 
 import Box from '@material-ui/core/Box';
@@ -11,212 +9,169 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import api from '../api/api';
 import { dayToString } from '../utils/Utils';
 import translations from '../texts/texts.json';
+import css from './Trackview.module.scss';
 
-/*
- ** Main function
- */
-class Trackview extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      date: new Date(Date.now()),
-      opens: 16, // eslint-disable-line
-      closes: 20, // eslint-disable-line
-      rangeSupervision: false,
-      trackSupervision: false,
-      info: '',
-      parent: props.getParent, // eslint-disable-line
-      name: 'rata 1',
-      description: '',
-    };
-    this.update = this.update.bind(this);
+const classes = classNames.bind(css);
+
+const lang = localStorage.getItem('language');
+const { trackview } = translations;
+
+const getRangeStatus = (rangeSupervision) => {
+  switch (rangeSupervision) {
+    case 'present':
+      return { status: 'available', text: trackview.SuperGreen[lang] };
+    case 'absent':
+      return { status: 'unavailable', text: trackview.SuperWhite[lang] };
+    case 'confirmed':
+      return { status: 'confirmed', text: trackview.SuperLightGreen[lang] };
+    case 'not confirmed':
+      return { status: 'notConfirmed', text: trackview.SuperBlue[lang] };
+    case 'en route':
+      return { status: 'enRoute', text: trackview.SuperOrange[lang] };
+    default:
+      return { status: 'closed', text: trackview.Red[lang] };
   }
+};
 
-  componentDidMount() {
-    this.update();
+const getTrackAvailability = (trackSupervision) => {
+  switch (trackSupervision) {
+    case 'present':
+      return { status: 'available', text: trackview.RangeGreen[lang] };
+    case 'absent':
+      return { status: 'unavailable', text: trackview.RangeWhite[lang] };
+    default:
+      return { status: 'closed', text: trackview.RangeRed[lang] };
   }
+};
 
-  update() {
+const Trackview = (props) => {
+  const [state, setState] = useState({
+    date: new Date(Date.now()),
+    opens: 16,
+    closes: 20,
+    rangeSupervision: false,
+    trackSupervision: false,
+    info: '',
+    parent: props.getParent,
+    name: 'rata 1',
+    description: '',
+  });
+  const [visible, setVisible] = useState({
+    date: false,
+    supervisors: false,
+    infobox: false,
+  });
+
+  useEffect(() => {
     // /dayview/2020-02-20
-    const { date } = this.props.match.params;
-    const { track } = this.props.match.params;
+    const { date } = props.match.params;
+    const { track } = props.match.params;
     const request = async () => {
       try {
         const data = await api.getSchedulingDate(date);
-
-        const selectedTrack = data.tracks.find(
-          (findItem) => findItem.name === track,
-        );
+        const selectedTrack = data.tracks.find((item) => item.name === track);
 
         if (selectedTrack === undefined) {
-          console.error('track undefined');
-
-          this.setState({
-            name: `Rataa nimeltä "${this.props.match.params.track}" ei löydy.`,
+          setState({
+            ...state,
+            name: trackview.TrackNameError[lang],
           });
-          document.getElementById('date').style.visibility = 'hidden';
-          document.getElementById('valvojat').style.visibility = 'hidden';
-          document.getElementById('infobox').style.visibility = 'hidden';
+          setVisible({
+            date: false,
+            supervisors: false,
+            infobox: false,
+          });
+          return;
         }
 
-        this.setState(
-          {
-            date: new Date(data.date),
-            trackSupervision: selectedTrack.trackSupervision,
-            rangeSupervision: data.rangeSupervision,
-            name: selectedTrack.name,
-            description: `(${selectedTrack.description})`,
-            info: selectedTrack.notice,
-          },
-          () => {
-            document.getElementById('date').style.visibility = 'visible';
-            document.getElementById('valvojat').style.visibility = 'visible';
-            if (selectedTrack.notice > 0) {
-              document.getElementById('infobox').style.visibility = 'visible';
-            } else {
-              document.getElementById('infobox').style.visibility = 'disabled';
-            }
-          },
-        );
+        setState({
+          ...state,
+          date: new Date(data.date),
+          trackSupervision: selectedTrack.trackSupervision,
+          rangeSupervision: data.rangeSupervision,
+          name: selectedTrack.name,
+          description: `(${selectedTrack.description})`,
+          info: selectedTrack.notice,
+        });
+        setVisible({
+          date: true,
+          supervisors: true,
+          infobox: selectedTrack.notice.length > 0 ? true : false,
+        });
       } catch (err) {
         console.log(err);
       }
     };
     request();
-  }
+  }, [props]);
 
-  /* eslint-disable-next-line */
-  rangeAvailability(trackview, fin) {
-    if (this.state.rangeSupervision === 'present') {
-      const returnable = (
-        <Box className="isAvailable">{trackview.SuperGreen[fin]}</Box>
-      );
-      return returnable;
-    }
-    if (this.state.rangeSupervision === 'absent') {
-      const returnable = (
-        <Box className="isUnavailable">{trackview.SuperWhite[fin]}</Box>
-      );
-      return returnable;
-    }
-    if (this.state.rangeSupervision === 'confirmed') {
-      const returnable = (
-        <Box className="isConfirmed">{trackview.SuperLightGreen[fin]}</Box>
-      );
-      return returnable;
-    }
-    if (this.state.rangeSupervision === 'not confirmed') {
-      const returnable = (
-        <Box className="isNotConfirmed">{trackview.SuperBlue[fin]}</Box>
-      );
-      return returnable;
-    }
-    if (this.state.rangeSupervision === 'en route') {
-      const returnable = (
-        <Box className="isEnRoute">{trackview.SuperOrange[fin]}</Box>
-      );
-      return returnable;
-    }
-    if (this.state.rangeSupervision === 'closed') {
-      const returnable = <Box className="isClosed">{trackview.Red[fin]}</Box>;
-      return returnable;
-    }
-  }
+  const rangeStatus = getRangeStatus(state.rangeSupervision);
+  const trackAvailability = getTrackAvailability(state.trackSupervision);
 
-  /* eslint-disable-next-line */
-  trackAvailability(trackview, fin) {
-    if (this.state.trackSupervision === 'present') {
-      const returnable = (
-        <Box className="isAvailable">{trackview.RangeGreen[fin]}</Box>
-      );
-      return returnable;
-    }
-    if (this.state.trackSupervision === 'absent') {
-      const returnable = (
-        <Box className="isUnavailable">{trackview.RangeWhite[fin]}</Box>
-      );
-      return returnable;
-    }
-    if (this.state.trackSupervision === 'closed') {
-      const returnable = (
-        <Box className="isClosed">{trackview.RangeRed[fin]}</Box>
-      );
-      return returnable;
-    }
-  }
-
-  backlink() {
-    const date = new Date(this.state.date.setDate(this.state.date.getDate()));
-    const dateFormatted = `${date.getFullYear()}-${
-      date.getMonth() + 1
-    }-${date.getDate()}`;
-    return `/dayview/${dateFormatted}`;
-  }
-
-  render() {
-    // required for "this" to work in callback
-    // alternative way without binding in constructor:
-    this.update = this.update.bind(this);
-
-    const { trackview } = translations;
-    const fin = localStorage.getItem('language');
-
-    return (
-      /*    Whole view */
-      <div className="wholeScreenDiv">
-        {/*    Radan nimi ja kuvaus  */}
-        <div className="trackNameAndType">
-          <div>
-            <h1>{this.state.name}</h1>
-          </div>
-          <div>
-            <h3> {this.state.description}</h3>
-          </div>
+  return (
+    <div className={classes(css.wholeScreenDiv)}>
+      <div className={classes(css.trackNameAndType)}>
+        <div>
+          <h1>{state.name}</h1>
         </div>
-
-        {/*    Päivämäärä */}
-        <div id="date">
+        <div>
+          <h3> {state.description}</h3>
+        </div>
+      </div>
+      {visible.date && (
+        <div>
           <h2>
-            {dayToString(this.state.date.getDay())}{' '}
-            {this.state.date.toLocaleDateString('fi-FI')}
+            {dayToString(state.date.getDay())}{' '}
+            {state.date.toLocaleDateString('fi-FI')}
           </h2>
         </div>
-
-        {/*    Päävalvojan ja ratavalvojan status  */}
+      )}
+      {visible.supervisors && ( // state of range officer and range
         <Grid
           container
           direction="column"
           justify="center"
           alignItems="left"
           spacing={1}
-          id="valvojat"
         >
-          {/*   pyydetään metodeilta boxit joissa radan tila */}
           <Grid item xs={1} sm={6}>
-            {this.rangeAvailability(trackview, fin)}
+            {
+              <Box
+                className={classes(css.trackStyles, css[rangeStatus.status])}
+              >
+                {rangeStatus.text}
+              </Box>
+            }
           </Grid>
           <Grid item xs={1} sm={6}>
-            {this.trackAvailability(trackview, fin)}
+            <Box
+              className={classes(
+                css.trackStyles,
+                css[trackAvailability.status],
+              )}
+            >
+              {trackAvailability.text}
+            </Box>
           </Grid>
         </Grid>
-
-        {/*    Infobox  */}
-        <div id="infobox">
-          <p>{trackview.Info[fin]}:</p>
-          <div className="infoBox">{this.state.info}</div>
+      )}
+      {visible.infobox && ( // extra info of the track
+        <div>
+          <p>{trackview.Info[lang]}:</p>
+          <div className={classes(css.infoBox)}>{state.info}</div>
         </div>
-        {/*    Linkki taaksepäin  */}
-        <Link
-          className="backLink"
-          style={{ color: 'black' }}
-          to={this.backlink()}
-        >
-          <ArrowBackIcon />
-          {trackview.DayviewLink[fin]}
-        </Link>
-      </div>
-    );
-  }
-}
+      )}
+      <Link
+        className={classes(css.backLink)}
+        to={`/dayview/${state.date.getFullYear()}-${
+          state.date.getMonth() + 1
+        }-${state.date.getDate()}`}
+      >
+        <ArrowBackIcon />
+        {trackview.DayviewLink[lang]}
+      </Link>
+    </div>
+  );
+};
 
 export default Trackview;
