@@ -249,7 +249,8 @@
     "RangeWhite": ["Ratavalvojaa ei asetettu", "No defined track officer"],
     "RangeRed": ["Rata suljettu", "Range closed"],
     "Info": ["Lisätietoja", "Info"],
-    "DayviewLink": ["Päivänäkymään", "Back to dayview"]
+    "DayviewLink": ["Päivänäkymään", "Back to dayview"],
+    "TrackNameError": ["Rataa ei löydy.", "Track cannot be found."]
   },
   "tracks": {
     "tableHeaderName": ["Nimi", "Name"],
