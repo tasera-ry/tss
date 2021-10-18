@@ -3,6 +3,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import api from '../api/api';
 import texts from '../texts/texts.json';
+import colors from '../colors.module.scss';
 
 export const getSchedulingWeek = async (date) => {
   try {
@@ -46,17 +47,17 @@ export const checkColor = (paivat, paiva) => {
 
   switch (rataStatus) {
     case 'present':
-      return '#658f60';
+      return colors.green;
     case 'confirmed':
-      return '#b2d9ad';
+      return colors.greenLight;
     case 'not confirmed':
-      return '#95d5db';
+      return colors.turquoise;
     case 'en route':
-      return '#f2c66d';
+      return colors.orange;
     case 'closed':
-      return '#c97b7b';
+      return colors.redLight;
     case 'absent':
-      return '#f2f0eb';
+      return colors.cream5;
     default:
       return 'blue';
   }
