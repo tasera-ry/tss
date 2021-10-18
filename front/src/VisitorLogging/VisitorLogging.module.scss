@@ -1,17 +1,18 @@
+@import '../shared.module.scss';
+
 .loggingContainer {
-  background-color: #d1d1d1;
+  @extend .layout-row;
   width: auto;
   padding: 35px;
-  display: flex;
   align-items: center;
   justify-content: center;
+  background-color: $COLOR_CREAM10;
 }
 
 .inputContainer {
-  display: flex;
+  @extend .layout-column;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
 }
 
 .visitorInput {
@@ -19,7 +20,7 @@
 }
 
 .modalButtonContainer {
-  display: flex;
+  @extend .layout-row;
 }
 
 .modalButton {
