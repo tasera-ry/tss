@@ -41,6 +41,9 @@ const patchRangeSupervision = (id, rangeSupervisor) =>
     range_supervisor: rangeSupervisor,
   });
 
+const patchScheduledSupervisionTrack = (scheduleId, trackId, data) =>
+  axios.put(`/api/track-supervision/${scheduleId}/${trackId}`, data);
+
 export default {
   getSchedulingDate,
   getSchedulingWeek,
@@ -49,4 +52,5 @@ export default {
   patchReservation,
   addRangeSupervision,
   patchRangeSupervision,
+  patchScheduledSupervisionTrack,
 };
