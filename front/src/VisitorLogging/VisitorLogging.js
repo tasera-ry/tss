@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './VisitorLogging.css';
-import axios from 'axios';
+import classNames from 'classnames';
 import MomentUtils from '@date-io/moment';
 
 import {
@@ -10,8 +9,12 @@ import {
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
+import api from '../api/api';
 import { getLanguage } from '../utils/Utils';
 import { visitorLogging as texts } from '../texts/texts.json';
+import css from './VisitorLogging.module.scss';
+
+const classes = classNames.bind(css);
 
 const VisitorLogging = ({
   handleClose,
@@ -23,78 +26,74 @@ const VisitorLogging = ({
   const [tracks, setTracks] = useState([]);
   const [date, setDate] = useState();
 
-  useEffect(() => {
-    const currentDate = new Date();
-    setDate(currentDate);
-  }, []);
+  useEffect(() => setDate(new Date()), []);
 
   useEffect(() => {
-    const getTracks = async () => {
-      if (date) {
-        const dateString = date.toISOString().split('T')[0];
-        const query = `api/daterange/freeform/${dateString}/${dateString}`;
-        const response = await axios.get(query);
-        if (response) {
-          setTracks(response.data[0].tracks);
-        }
+    (async () => {
+      if (!date) return;
+      const dateString = date.toISOString().split('T')[0];
+      try {
+        const data = await api.getSchedulingFreeform(dateString, dateString);
+        setTracks(data[0].tracks);
+      } catch (err) {
+        console.log(err);
       }
-    };
-    getTracks();
+    })();
   }, [date]);
 
-  const sendStats = () => {
+  const sendStats = async () => {
     try {
-      tracks.forEach(async (track) => {
-        if (track.scheduled) {
+      const promises = tracks
+        .filter(({ scheduled }) => scheduled)
+        .map(({ scheduled, id }) => {
           const trackOpts = {
             scheduled_range_supervision_id:
-              track.scheduled.scheduled_range_supervision_id,
-            track_id: track.id,
-            notice: track.scheduled.notice,
-            track_supervisor: track.scheduled.track_supervisor,
-            visitors: track.scheduled.visitors,
+              scheduled.scheduled_range_supervision_id,
+            track_id: id,
+            notice: scheduled.notice,
+            track_supervisor: scheduled.track_supervisor,
+            visitors: scheduled.visitors,
           };
-          await axios.put(
-            `/api/track-supervision/${track.scheduled.scheduled_range_supervision_id}/${track.id}`,
+          api.patchScheduledSupervisionTrack(
+            scheduled.scheduled_range_supervision_id,
+            id,
             trackOpts,
           );
-        }
-      });
-    } catch (error) {
-      setToastSeverity('error');
-      setToastMessage(error);
-      setToastOpen(true);
-    } finally {
+        });
+      await Promise.all(promises);
+
       setToastOpen(true);
       setToastSeverity('success');
       setToastMessage(texts.SuccessfullyUpdated[lang]);
       handleClose();
+    } catch (error) {
+      setToastSeverity('error');
+      setToastMessage(error);
+      setToastOpen(true);
     }
   };
 
   const handleChange = (event) => {
     const { target } = event;
     setTracks(
-      tracks.map((track) => {
-        if (track.id === parseInt(target.id)) {
-          return {
-            ...track,
-            scheduled: {
-              ...track.scheduled,
-              visitors: parseInt(target.value),
-            },
-          };
-        }
-        return track;
-      }),
+      tracks.map((track) =>
+        track.id === parseInt(target.id)
+          ? {
+              ...track,
+              scheduled: {
+                ...track.scheduled,
+                visitors: parseInt(target.value),
+              },
+            }
+          : track,
+      ),
     );
   };
 
-  const locale = getLanguage();
   return (
-    <div className="loggingContainer">
+    <div className={classes(css.loggingContainer)}>
       <div>
-        <MuiPickersUtilsProvider locale={locale} utils={MomentUtils}>
+        <MuiPickersUtilsProvider locale={getLanguage()} utils={MomentUtils}>
           <KeyboardDatePicker
             autoOk
             margin="normal"
@@ -108,15 +107,15 @@ const VisitorLogging = ({
           />
         </MuiPickersUtilsProvider>
         {tracks[0] && tracks[0].id ? (
-          <div className="inputContainer">
-            {tracks.map((track) => (
-              <div key={track.id} className="visitorInput">
+          <div className={classes(css.inputContainer)}>
+            {tracks.map(({ id, short_description, scheduled }) => (
+              <div key={id} className={classes(css.visitorInput)}>
                 <TextField
-                  id={track.id.toString()}
+                  id={id.toString()}
                   variant="outlined"
-                  label={track.short_description}
+                  label={short_description}
                   type="number"
-                  value={track.scheduled.visitors}
+                  value={scheduled.visitors}
                   onChange={handleChange}
                 />
               </div>
@@ -125,13 +124,13 @@ const VisitorLogging = ({
         ) : (
           <div>{texts.NoSchedule[lang]}</div>
         )}
-        <div className="modalButtonContainer">
-          <div className="modalButton">
+        <div className={classes(css.modalButtonContainer)}>
+          <div className={classes(css.modalButton)}>
             <Button onClick={handleClose} variant="contained" color="secondary">
               {texts.Close[lang]}
             </Button>
           </div>
-          <div className="modalButton">
+          <div className={classes(css.modalButton)}>
             <Button onClick={sendStats} variant="contained" color="primary">
               {texts.Save[lang]}
             </Button>
