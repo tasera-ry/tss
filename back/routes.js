@@ -229,4 +229,12 @@ router.route('/send-pending')
     middlewares.user.hasProperty('role', 'superuser'))
   .get(controllers.emailSettings.sendPendingEmails);
 
+router.route('/raffle')
+  .get(
+    //TODO validator when interface is fixed
+    //validators.raffle.read,
+    middlewares.raffle.create,
+    controllers.raffle.create
+  );
+
 module.exports = router;
