@@ -71,7 +71,7 @@ describe(`${endpoint}`, () => {
       expect(res.body).toEqual([user]);
     });
 
-    // Probably should be 403 instead
+    // Probably should be 401 instead
     it('When invalid token is provided: returns code 500', async () => {
       await request.get(endpoint)
         .set('Cookie', ['token=THRASH'])
