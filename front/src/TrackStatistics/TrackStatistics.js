@@ -50,7 +50,7 @@ export const TrackStatistics = ({ track, supervision }) => {
           className={classes(css.button)}
           onClick={() => changeVisitors(visitors - 1)}
         >
-          <div className={classes(css.text)}>-</div>
+          -
         </Button>
         <div className={classes(css.visitorAmount)}>{visitors}</div>
         <Button
@@ -58,7 +58,7 @@ export const TrackStatistics = ({ track, supervision }) => {
           className={classes(css.button)}
           onClick={() => changeVisitors(visitors + 1)}
         >
-          <div className={classes(css.text)}>+</div>
+          +
         </Button>
       </div>
     </StylesProvider>
