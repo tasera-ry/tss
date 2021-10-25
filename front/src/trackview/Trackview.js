@@ -38,7 +38,7 @@ const getTrackAvailability = (trackSupervision) => {
     case 'present':
       return { status: 'available', text: trackview.RangeGreen[lang] };
     case 'absent':
-      return { status: 'unAvailable', text: trackview.RangeWhite[lang] };
+      return { status: 'unavailable', text: trackview.RangeWhite[lang] };
     default:
       return { status: 'closed', text: trackview.RangeRed[lang] };
   }
@@ -73,7 +73,8 @@ const Trackview = (props) => {
 
         if (selectedTrack === undefined) {
           setState({
-            name: `Rataa nimeltä "${props.match.params.track}" ei löydy.`,
+            ...state,
+            name: trackview.TrackNameError[lang],
           });
           setVisible({
             date: false,
@@ -84,6 +85,7 @@ const Trackview = (props) => {
         }
 
         setState({
+          ...state,
           date: new Date(data.date),
           trackSupervision: selectedTrack.trackSupervision,
           rangeSupervision: data.rangeSupervision,
