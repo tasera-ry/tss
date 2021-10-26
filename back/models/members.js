@@ -7,7 +7,7 @@ const model = {
   read: async function readMembers(key, fields) {
     return knex('members')
       .where(key)
-      .select(fields);
+      .select(fields)
       .orderBy('user_id');
   }
   //update:
