@@ -11,6 +11,7 @@ const daterange = require(path.join(controllers, 'daterange'));
 const emailSettings = require(path.join(controllers, 'emailSettings'));
 const resetPassword = require(path.join(controllers, 'resetPassword'));
 const raffle = require(path.join(controllers, 'raffle'));
+const members = require(path.join(controllers, 'members'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -22,3 +23,4 @@ exports.daterange = daterange;
 exports.emailSettings = emailSettings;
 exports.resetPassword = resetPassword;
 exports.raffle = raffle;
+exports.members = members;

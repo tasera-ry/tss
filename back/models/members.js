@@ -4,12 +4,12 @@ const knex = require(path.join(root, 'knex', 'knex'));
 
 const model = {
   //create:
-  read: async function readMembers(key, fields) {
+  read: async function readTrack(key, fields) {
     return knex('members')
-      //.leftJoin('supervisor', 'supervisor.user_id', 'user.id')
       .where(key)
-      .select(fields);
-  },
+      .select(fields)
+      .orderBy('user_id');
+  }
   //update:
   //delete:
 

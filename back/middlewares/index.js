@@ -9,6 +9,7 @@ const reservation = require(path.join(root, 'middlewares', 'reservation'));
 const schedule = require(path.join(root, 'middlewares', 'schedule'));
 const daterange = require(path.join(root, 'middlewares', 'daterange'));
 const raffle =  require(path.join(root, 'middlewares', 'raffle'));
+const members =  require(path.join(root, 'middlewares', 'members'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -19,3 +20,4 @@ exports.schedule = schedule;
 exports.track = track;
 exports.daterange = daterange;
 exports.raffle = raffle;
+exports.members = members;
