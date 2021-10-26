@@ -238,9 +238,12 @@ router.route('/members')
   middlewares.members.create,
   controllers.members.create);*/
 /** 
+<<<<<<< HEAD
 =======
 
 >>>>>>> required files for read members
+=======
+>>>>>>> members get doned
 router.route('/members/:id')
 .all(
   middlewares.jwt.read,
