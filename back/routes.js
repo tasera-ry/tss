@@ -229,6 +229,31 @@ router.route('/send-pending')
     middlewares.user.hasProperty('role', 'superuser'))
   .get(controllers.emailSettings.sendPendingEmails);
 
+router.route('/members')
+.all(
+  middlewares.jwt.read)
+.get(
+  middlewares.members.readFilter,
+  controllers.members.readFilter);
+/**.post(
+  middlewares.user.hasProperty('role', 'superuser'),
+  middlewares.members.create,
+  controllers.members.create);*/
+
+router.route('/members/:id')
+.all(
+  middlewares.jwt.read,
+  middlewares.user.hasProperty('role', 'superuser'))
+.get(
+  middlewares.members.read,
+  controllers.members.read)
+.put(
+  middlewares.members.update,
+  controllers.members.update)
+.delete(
+  middlewares.members.delete,
+  controllers.members.delete);
+
 router.route('/raffle')
   .get(
     //TODO validator when interface is fixed
