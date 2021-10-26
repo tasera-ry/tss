@@ -231,6 +231,13 @@ router.route('/send-pending')
 
 router.route('/members')
   .get(
+    validators.members.readAll,
+    middlewares.members.read,
+    controllers.members.read);
+
+router.route('/members/:user_id')
+  .get(
+    validators.members.read,
     middlewares.members.read,
     controllers.members.read);
 /**.post(
