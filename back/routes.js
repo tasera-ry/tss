@@ -230,16 +230,14 @@ router.route('/send-pending')
   .get(controllers.emailSettings.sendPendingEmails);
 
 router.route('/members')
-.all(
-  middlewares.jwt.read)
-.get(
-  middlewares.members.readFilter,
-  controllers.members.readFilter);
+  .get(
+    middlewares.members.read,
+    controllers.members.read);
 /**.post(
   middlewares.user.hasProperty('role', 'superuser'),
   middlewares.members.create,
   controllers.members.create);*/
-
+/** 
 router.route('/members/:id')
 .all(
   middlewares.jwt.read,
@@ -261,5 +259,5 @@ router.route('/raffle')
     middlewares.raffle.create,
     controllers.raffle.create
   );
-
+*/
 module.exports = router;
