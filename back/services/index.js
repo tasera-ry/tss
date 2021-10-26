@@ -11,6 +11,7 @@ const daterange = require(path.join(root, 'services', 'daterange'));
 const emailSettings = require(path.join(root, 'services', 'emailSettings'));
 const pendingEmails = require(path.join(root, 'services', 'pendingEmails'));
 const raffle = require(path.join(root, 'services', 'raffle'));
+const members = require(path.join(root, 'services', 'members'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -22,3 +23,4 @@ exports.daterange = daterange;
 exports.emailSettings = emailSettings;
 exports.pendingEmails = pendingEmails;
 exports.raffle = raffle;
+exports.members = members;
