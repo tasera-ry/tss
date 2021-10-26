@@ -8,6 +8,7 @@ const model = {
     return knex('members')
       .where(key)
       .select(fields);
+      .orderBy('user_id');
   }
   //update:
   //delete:

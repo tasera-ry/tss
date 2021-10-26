@@ -7,7 +7,6 @@ const _ = require('lodash');
 
 const service = {
   read: async function readMembers(key) {
-
     return (await models.members.read(_.pick(key, 'members', 'supervisors')));
   }
 };
