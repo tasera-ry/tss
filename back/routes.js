@@ -238,6 +238,9 @@ router.route('/members')
   middlewares.members.create,
   controllers.members.create);*/
 /** 
+=======
+
+>>>>>>> required files for read members
 router.route('/members/:id')
 .all(
   middlewares.jwt.read,

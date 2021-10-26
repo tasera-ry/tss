@@ -10,6 +10,7 @@ const service = {
 
     return (await models.members.read(_.pick(key, 'members', 'supervisors')));
   }
+
 };
 
 module.exports = service;
