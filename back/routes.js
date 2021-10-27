@@ -233,32 +233,30 @@ router.route('/members')
   .get(
     validators.members.readAll,
     middlewares.members.read,
-    controllers.members.read);
+    controllers.members.read)
+  .post(
+    validators.members.create,
+    middlewares.members.create,
+    controllers.members.create
+  );
 
 router.route('/members/:user_id')
+  //TODO jwt superuser required
   .get(
     validators.members.read,
     middlewares.members.read,
-    controllers.members.read);
-/**.post(
-  middlewares.user.hasProperty('role', 'superuser'),
-  middlewares.members.create,
-  controllers.members.create);*/
-/** 
-router.route('/members/:id')
-.all(
-  middlewares.jwt.read,
-  middlewares.user.hasProperty('role', 'superuser'))
-.get(
-  middlewares.members.read,
-  controllers.members.read)
-.put(
-  middlewares.members.update,
-  controllers.members.update)
-.delete(
-  middlewares.members.delete,
-  controllers.members.delete);
+    controllers.members.read)
+    /**
+  .put(
+    validators.members.update,
+    middlewares.members.update,
+    controllers.members.update)
+  .delete(
+    validators.members.delete,
+    middlewares.members.delete,
+    controllers.members.delete);
 
+/**
 router.route('/raffle')
   .get(
     //TODO validator when interface is fixed

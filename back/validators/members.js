@@ -31,6 +31,24 @@ const fields = {
       .toInt();
 
     return validatorAdditions(validator, opts);
+  },
+
+  members: function idValidation(requestObject, ...opts) {
+    const validator = requestObject('user_id')
+      .isInt()
+      .withMessage('must be an integer')
+      .toInt();
+
+    return validatorAdditions(validator, opts);
+  },
+
+  supervisors: function idValidation(requestObject, ...opts) {
+    const validator = requestObject('user_id')
+      .isInt()
+      .withMessage('must be an integer')
+      .toInt();
+
+    return validatorAdditions(validator, opts);
   }
 };
 
@@ -45,6 +63,17 @@ function handleValidationErrors(request, response, next) {
 }
 
 module.exports = {
+  create: [
+    fields.user_id(param, 'exists'),
+    fields.members(body, 'exists'),
+    fields.supervisors(body, 'exists'),
+    handleValidationErrors,
+    function storeUpdateRequest(request, response, next) {
+      response.locals.id = matchedData(request, { locations: ['params'] });
+      response.locals.updates = matchedData(request, { locations: ['body'] });
+      return next();
+    }
+  ],
   read: [
     fields.user_id(param, 'exists'),
     handleValidationErrors,
@@ -58,6 +87,25 @@ module.exports = {
     function storeID(request, response, next) {
       response.locals.filtered = !_.isEmpty(request.query);
       response.locals.query = matchedData(request, { locations: ['params', 'query'] });
+      return next();
+    }
+  ],
+  update: [
+    fields.user_id(param, 'exists'),
+    fields.members(body, 'optional'),
+    fields.supervisors(body, 'optional'),
+    handleValidationErrors,
+    function storeUpdateRequest(request, response, next) {
+      response.locals.id = matchedData(request, { locations: ['params'] });
+      response.locals.updates = matchedData(request, { locations: ['body'] });
+      return next();
+    }
+  ],
+  delete: [
+    fields.user_id(param, 'exists'),
+    handleValidationErrors,
+    function storeDeleteRequest(request, response, next) {
+      response.locals.query = matchedData(request, { locations: ['params'] });
       return next();
     }
   ]
