@@ -1,7 +1,8 @@
 
 exports.up = function(knex) {
   return knex.schema.createTable('members', table => {
-    table.integer('user_id').references('id').inTable('user').primary();
+    table.integer('user_id').references('id').inTable('user')
+      .primary().onDelete('CASCADE').onUpdate('CASCADE');
     table.integer('members');
     table.integer('supervisors');
   });
