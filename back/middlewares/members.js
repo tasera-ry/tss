@@ -5,6 +5,27 @@ const services = require(path.join(root, 'services'));
 const _ = require('lodash');
 
 const serviceCalls = {
+  create: async function createMembers(request, response, next) {
+    const query = response.locals.query;
+    let user_id;
+
+    try {
+      user_id = await services.members.create(query);
+    }
+    catch(e) {
+      return next(e);
+    }
+
+    try {
+      response.locals.queryResult = await services.members.read({'user_id': user_id});
+    }
+    catch(e) {
+      return next(e);
+    }
+
+    response.set('Location', `/api/members/${id}`);
+    return next();
+  },
   read: async function readMembers(request, response, next) {
     const query = response.locals.query;
 

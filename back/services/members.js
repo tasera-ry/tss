@@ -6,6 +6,10 @@ const models = require(path.join(root, 'models'));
 const _ = require('lodash');
 
 const service = {
+  create: async function createTrack(info) {
+    return (await models.members.create(info)).pop();
+  },
+
   read: async function readMembers(key) {
     let combinedKey = key;
 
