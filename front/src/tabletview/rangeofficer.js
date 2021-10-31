@@ -130,19 +130,17 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
     borderRadius: 30,
     width: 230,
   };
-  let text = tablet.Green[fin];
+
   const [buttonColor, setButtonColor] = useState(track.color);
-  const [textState, setTextState] = useState(tablet.Green[fin]);
-  const [supervision, setSupervision] = useState(text);
-  useEffect(() => {
-    if (track.trackSupervision === 'absent') {
-      text = tablet.White[fin];
-      setTextState(tablet.White[fin]);
-    } else if (track.trackSupervision === 'closed') {
-      text = tablet.Red[fin];
-      setTextState(tablet.Red[fin]);
-    }
-  }, []);
+
+  const supervisorState = track.scheduled.track_supervisor;
+  let supervisorStateTablet;
+  if (supervisorState === 'present') supervisorStateTablet = 'Green';
+  else if (supervisorState === 'closed') supervisorStateTablet = 'Red';
+  else supervisorStateTablet = 'White';
+
+  const [textState, setTextState] = useState(tablet[supervisorStateTablet][fin]);
+  const [supervision, setSupervision] = useState(supervisorState);
 
   socket.on('trackUpdate', (msg) => {
     if (msg.id === track.id) {
