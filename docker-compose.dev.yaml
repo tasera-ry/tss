@@ -31,6 +31,7 @@ services:
       - 8000:8000
       - 5858:5858 # node debugger
     volumes:
+      - './app/node_modules/'
       - ./back:/app
     command: >
       /bin/sh -c "npx knex migrate:latest
@@ -46,11 +47,12 @@ services:
     ports:
       - 3000:3000
     environment:
+      - ESLINT_NO_DEV_ERRORS=true
       - CHOKIDAR_USEPOLLING=true
       - PROXY_HOSTNAME=backend
       - PROXY_PORT=8000
     volumes:
-      - ./front:/app
+      - ./front/src:/app/src
     stdin_open: true
     links:
       - backend
