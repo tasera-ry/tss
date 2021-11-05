@@ -11,13 +11,12 @@ describe('testing FeedbackWindow', () => {
   it('should render FeedbackWindow', async () => {
     localStorage.setItem('language', '1');
     const dialogOpen = true;
-    const setDialogOpen = () => {};
 
     render(
       <FeedbackWindow
         user="dummyUser"
         dialogOpen={dialogOpen}
-        setDialogOpen={setDialogOpen}
+        onCloseDialog={() => {}}
       />,
     );
     await waitFor(() =>
@@ -27,13 +26,12 @@ describe('testing FeedbackWindow', () => {
   it('should send feedback', async () => {
     localStorage.setItem('language', '1');
     const dialogOpen = true;
-    const setDialogOpen = () => {};
 
     render(
       <FeedbackWindow
         user="dummyUser"
         dialogOpen={dialogOpen}
-        setDialogOpen={setDialogOpen}
+        onCloseDialog={() => {}}
       />,
     );
     await waitFor(() =>
