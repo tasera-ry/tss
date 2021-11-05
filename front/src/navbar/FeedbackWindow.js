@@ -17,11 +17,11 @@ const dialogStyle = {
   backgroundColor: '#f2f0eb',
 };
 
-const FeedbackWindow = ({ user, dialogOpen, setDialogOpen }) => {
+const FeedbackWindow = ({ user, dialogOpen, onCloseDialog }) => {
   const fin = localStorage.getItem('language');
   const [textFeedback, setTextFeedback] = useState('');
   const handleSend = async () => {
-    setDialogOpen(false);
+    onCloseDialog();
     await axios.put('api/range-supervision/feedback', {
       feedback: textFeedback,
       user,
@@ -50,9 +50,7 @@ const FeedbackWindow = ({ user, dialogOpen, setDialogOpen }) => {
         <DialogActions style={dialogStyle}>
           <Button
             variant="contained"
-            onClick={() => {
-              setDialogOpen(false);
-            }}
+            onClick={onCloseDialog}
             style={{ backgroundColor: '#ede9e1' }}
           >
             {feedback.Cancel[fin]}

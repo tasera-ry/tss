@@ -20,6 +20,8 @@ const getSchedulingFreeform = async (begin, end) => {
   return response.data;
 };
 
+const signOut = () => axios.post('/api/signout');
+
 const validateLogin = () => axios.get('/api/validate');
 
 const patchReservation = (reservationId, data) =>
@@ -48,6 +50,7 @@ export default {
   getSchedulingDate,
   getSchedulingWeek,
   getSchedulingFreeform,
+  signOut,
   validateLogin,
   patchReservation,
   addRangeSupervision,
