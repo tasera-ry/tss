@@ -43,6 +43,9 @@ const patchRangeSupervision = (id, rangeSupervisor) =>
     range_supervisor: rangeSupervisor,
   });
 
+const sendFeedback = (feedback, user) =>
+  axios.put('api/range-supervision/feedback', { feedback, user });
+
 const patchScheduledSupervisionTrack = (scheduleId, trackId, data) =>
   axios.put(`/api/track-supervision/${scheduleId}/${trackId}`, data);
 
@@ -55,5 +58,6 @@ export default {
   patchReservation,
   addRangeSupervision,
   patchRangeSupervision,
+  sendFeedback,
   patchScheduledSupervisionTrack,
 };

@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
+import api from '../api/api';
+import translations from '../texts/texts.json';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -7,65 +10,59 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
+import colors from '../colors.module.scss';
+import css from './FeedbackWindow.module.scss';
 
-import axios from 'axios';
-import texts from '../texts/texts.json';
-
-const { feedback } = texts;
-
-const dialogStyle = {
-  backgroundColor: '#f2f0eb',
-};
+const classes = classNames.bind(css);
+const { feedback } = translations;
 
 const FeedbackWindow = ({ user, dialogOpen, onCloseDialog }) => {
   const fin = localStorage.getItem('language');
   const [textFeedback, setTextFeedback] = useState('');
-  const handleSend = async () => {
-    onCloseDialog();
-    await axios.put('api/range-supervision/feedback', {
-      feedback: textFeedback,
-      user,
-    });
-  };
-  return (
-    <div>
-      <Dialog open={dialogOpen} aria-labelledby="title">
-        <DialogTitle id="title" style={dialogStyle}>
-          {feedback.Title[fin]}
-        </DialogTitle>
-        <DialogContent style={dialogStyle}>
-          <DialogContentText>{feedback.Note[fin]}</DialogContentText>
-          <TextField
-            id="feedback-field"
-            inputProps={{
-              'data-testid': 'feedback-field',
-            }}
-            variant="outlined"
-            multiline
-            rows={3}
-            style={{ width: '100%' }}
-            onChange={(e) => setTextFeedback(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions style={dialogStyle}>
-          <Button
-            variant="contained"
-            onClick={onCloseDialog}
-            style={{ backgroundColor: '#ede9e1' }}
-          >
-            {feedback.Cancel[fin]}
-          </Button>
 
-          <Button
-            variant="contained"
-            onClick={handleSend}
-            style={{ backgroundColor: '#5f77a1' }}
-          >
-            {feedback.Send[fin]}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+  return (
+    <Dialog
+      aria-labelledby="title"
+      className={classes(css.dialog)}
+      open={dialogOpen}
+      classes={{ paper: classes(css.paper) }}
+    >
+      <DialogTitle id="title">{feedback.Title[fin]}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{feedback.Note[fin]}</DialogContentText>
+        <TextField
+          id="feedback-field"
+          className={classes(css.textField)}
+          inputProps={{
+            'data-testid': 'feedback-field',
+          }}
+          variant="outlined"
+          multiline
+          rows={3}
+          onChange={(e) => setTextFeedback(e.target.value)}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button
+          style={{ backgroundColor: colors.cream10 }}
+          className={classes(css.cancelButton)}
+          variant="contained"
+          onClick={onCloseDialog}
+        >
+          {feedback.Cancel[fin]}
+        </Button>
+        <Button
+          style={{ backgroundColor: colors.blue }}
+          variant="contained"
+          onClick={async () => {
+            onCloseDialog();
+            await api.sendFeedback(textFeedback, user);
+          }}
+        >
+          {feedback.Send[fin]}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 
