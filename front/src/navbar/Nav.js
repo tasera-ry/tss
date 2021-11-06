@@ -187,6 +187,7 @@ const Nav = () => {
         />
       </nav>
       <SupervisorNotification
+        username={name}
         loggingOut={loggingOut}
         setLoggingOut={setLoggingOut}
         checkSupervisions={checkSupervisions}
