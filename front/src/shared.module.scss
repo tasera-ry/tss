@@ -49,3 +49,11 @@ code {
   text-align: right;
   border-right: 20px solid $COLOR_BLACK;
 }
+
+.acceptButton {
+  background-color: $COLOR_BLUE !important;
+}
+
+.cancel-button {
+  background-color: $COLOR_CREAM10 !important;
+}

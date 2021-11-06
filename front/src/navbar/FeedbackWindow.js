@@ -10,7 +10,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
-import colors from '../colors.module.scss';
 import css from './FeedbackWindow.module.scss';
 
 const classes = classNames.bind(css);
@@ -44,7 +43,6 @@ const FeedbackWindow = ({ user, dialogOpen, onCloseDialog }) => {
       </DialogContent>
       <DialogActions>
         <Button
-          style={{ backgroundColor: colors.cream10 }}
           className={classes(css.cancelButton)}
           variant="contained"
           onClick={onCloseDialog}
@@ -52,7 +50,7 @@ const FeedbackWindow = ({ user, dialogOpen, onCloseDialog }) => {
           {feedback.Cancel[fin]}
         </Button>
         <Button
-          style={{ backgroundColor: colors.blue }}
+          className={classes(css.acceptButton)}
           variant="contained"
           onClick={async () => {
             onCloseDialog();
