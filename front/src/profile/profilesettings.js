@@ -4,7 +4,7 @@ import { HashRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { List, ListItem } from '@material-ui/core';
 import translations from '../texts/texts.json';
-import PasswordChange from './profilepages/changepassword';
+import ChangePassword from './profilepages/changepassword';
 import css from './ProfileSettings.module.scss';
 
 const classes = classNames.bind(css);
@@ -29,7 +29,7 @@ const Profile = () => {
         <div className={classes(css.content)}>
           <Switch>
             <Route path="/">
-              <PasswordChange username={cookies.username} />
+              <ChangePassword username={cookies.username} />
             </Route>
           </Switch>
         </div>

@@ -20,9 +20,24 @@ const getSchedulingFreeform = async (begin, end) => {
   return response.data;
 };
 
+const signIn = async (name, password, secure) => {
+  const response = await axios.post('api/sign', { name, password, secure });
+  return response.data;
+};
+
 const signOut = () => axios.post('/api/signout');
 
 const validateLogin = () => axios.get('/api/validate');
+
+const patchPassword = (id, password) =>
+  axios.put(`/api/changeownpassword/${id}`, {
+    password,
+  });
+
+const getUser = async (name) => {
+  const response = await axios.get(`api/user?name=${name}`);
+  return response.data;
+};
 
 const patchReservation = (reservationId, data) =>
   axios.put(`/api/reservation/${reservationId}`, data);
@@ -53,8 +68,11 @@ export default {
   getSchedulingDate,
   getSchedulingWeek,
   getSchedulingFreeform,
+  signIn,
   signOut,
   validateLogin,
+  patchPassword,
+  getUser,
   patchReservation,
   addRangeSupervision,
   patchRangeSupervision,

@@ -415,7 +415,7 @@
       "Uusi salasana ja vahvistus eivät täsmää",
       "Confirmation doesn't match the new password"
     ],
-    "alertSuccess": ["Vaihto onnistui", "Change successful"],
-    "alertFail": ["Vaihto epäonnistui", "Change failed"]
+    "alertSuccess": ["Salasanan vaihto onnistui", "Password change successful"],
+    "alertFail": ["Salasanan vaihto epäonnistui", "Password change failed"]
   }
 }
