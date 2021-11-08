@@ -23,7 +23,7 @@ const serviceCalls = {
       return next(e);
     }
 
-    response.set('Location', `/api/members/${id}`);
+    response.set('Location', `/api/members/${user_id}`);
     return next();
   },
   read: async function readMembers(request, response, next) {
@@ -33,6 +33,24 @@ const serviceCalls = {
       response.locals.queryResult = await services.members.read(query, []);
     }
     catch(e) {
+      return next(e);
+    }
+
+    return next();
+  },
+  update: async function updateMembers(request, response, next) {
+    const user_id = response.locals.user_id;
+    const updates = response.locals.updates;
+    try {
+      response.locals.queryResult = await services.members.update(user_id, updates);
+    } catch(e) {
+      if(e.name === 'Unknown id') {
+        return response
+          .status(404)
+          .send({
+            error: e.name
+          });
+      }
       return next(e);
     }
 

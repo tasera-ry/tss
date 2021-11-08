@@ -230,6 +230,11 @@ router.route('/send-pending')
   .get(controllers.emailSettings.sendPendingEmails);
 
 router.route('/members')
+/** 
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+    */
   .get(
     validators.members.readAll,
     middlewares.members.read,
@@ -242,6 +247,11 @@ router.route('/members')
 
 router.route('/members/:user_id')
   //TODO jwt superuser required
+  /**
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+    */
   .get(
     validators.members.read,
     middlewares.members.read,
@@ -272,16 +282,20 @@ router.route('/members/:id')
   controllers.members.delete);
 =======
     controllers.members.read)
-    /**
   .put(
     validators.members.update,
     middlewares.members.update,
+<<<<<<< HEAD
     controllers.members.update)
   .delete(
     validators.members.delete,
     middlewares.members.delete,
     controllers.members.delete);
 >>>>>>> temp stash
+=======
+    controllers.members.update
+  );
+>>>>>>> members haku ja päivitys toimii
 
 /**
 router.route('/raffle')
