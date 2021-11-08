@@ -16,11 +16,19 @@ const service = {
     if(key.user_id) {
       combinedKey = Object.assign({'user_id': key.user_id}, combinedKey);
     }
-    else {
-      combinedKey = _.omit(combinedKey, ['user_id']);
-    }
 
     return (await models.members.read(_.pick(combinedKey, 'user_id', 'members', 'supervisors')));
+  },
+  
+  update: async function updateMembers(key, updates) {
+    let combinedKey = key;
+
+    //id was ambiguous
+    //TODO maybe omit the key thing like earlier years? example from services/track
+    if(key.user_id) {
+      combinedKey = Object.assign({'user_id': key.user_id}, combinedKey);
+    }
+    return models.members.update(combinedKey, updates);
   }
 };
 

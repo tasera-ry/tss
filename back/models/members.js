@@ -1,3 +1,5 @@
+const validate = require('validate.js');
+
 const path = require('path');
 const root = path.join(__dirname, '..');
 const knex = require(path.join(root, 'knex', 'knex'));
@@ -29,8 +31,34 @@ const model = {
       .where(key)
       .select(fields)
       .orderBy('user_id');
+  },
+
+  update: async function updateMembers(current, update) {
+    const membersConstraints = {
+      user_id: {},
+      members: {},
+      supervisors: {}
+    };
+
+    const members = validate.cleanAttributes(update, membersConstraints);
+
+    //exists
+    const id = await model
+      .read(current, ['user_id'])
+      .then(rows => rows[0]);
+
+    if(!id) {
+      const err = Error('Didn\'t identify id(s) to update');
+      err.name = 'Unknown id';
+      throw err;
+    }
+
+    return await knex.transaction(trx => {
+      return trx('members')
+        .where(id)
+        .update(members);
+    });
   }
-  //update:
   //delete:
 
 

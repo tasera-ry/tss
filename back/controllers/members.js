@@ -24,7 +24,14 @@ const controller = {
     return response
       .status(200)
       .send(response.locals.queryResult);
-  }
+  },
+
+  update: async function updateMembers(request, response) {
+    //return 204 no content
+    return response
+      .status(204)
+      .send();
+  },
 };
 
 module.exports = controller;

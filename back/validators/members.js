@@ -34,7 +34,7 @@ const fields = {
   },
 
   members: function idValidation(requestObject, ...opts) {
-    const validator = requestObject('user_id')
+    const validator = requestObject('members')
       .isInt()
       .withMessage('must be an integer')
       .toInt();
@@ -43,7 +43,7 @@ const fields = {
   },
 
   supervisors: function idValidation(requestObject, ...opts) {
-    const validator = requestObject('user_id')
+    const validator = requestObject('supervisors')
       .isInt()
       .withMessage('must be an integer')
       .toInt();
@@ -64,12 +64,12 @@ function handleValidationErrors(request, response, next) {
 
 module.exports = {
   create: [
-    fields.user_id(param, 'exists'),
+    fields.user_id(query, 'exists'),
     fields.members(body, 'exists'),
     fields.supervisors(body, 'exists'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
-      response.locals.id = matchedData(request, { locations: ['params'] });
+      response.locals.user_id = matchedData(request, { locations: ['params'] });
       response.locals.updates = matchedData(request, { locations: ['body'] });
       return next();
     }
@@ -96,7 +96,7 @@ module.exports = {
     fields.supervisors(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
-      response.locals.id = matchedData(request, { locations: ['params'] });
+      response.locals.user_id = matchedData(request, { locations: ['params'] });
       response.locals.updates = matchedData(request, { locations: ['body'] });
       return next();
     }
