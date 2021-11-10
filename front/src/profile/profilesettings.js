@@ -9,37 +9,14 @@ import { useCookies } from "react-cookie";
 import texts from "../texts/texts.json";
 import { List, ListItem } from "@material-ui/core";
 
+import css from './profilesettings.module.scss';
+
+import classNames from 'classnames';
+
+const classes = classNames.bind(css);
+
 const fin = localStorage.getItem("language");
 const { profileSettings } = texts;
-
-// Styles for the Profile page: The whole page, sidebar and content.
-
-const ProfileStyle = {
-  display: "flex",
-};
-
-const SidebarStyle = {
-  background: "#d8c3a5",
-  flexDirection: "row",
-  display: "flex",
-  justifyContent: "left",
-  width: 250,
-  height: "100vh",
-};
-
-const ContentStyle = {
-  marginLeft: "35px",
-};
-
-const listStyle = {
-  padding: 10,
-};
-
-const elementStyle = {
-  color: "black",
-  textDecoration: "none",
-  fontWeight: "bold",
-};
 
 // Returns the profile component, which consists of sidebar and content.
 
@@ -47,16 +24,16 @@ function Profile() {
   const [cookies] = useCookies(["username"]);
   return (
     <Router>
-      <div className="Profile" style={ProfileStyle}>
-        <div className="ProfileSidebar" style={SidebarStyle}>
-          <List style={listStyle}>
+      <div className={classes(css.ProfileStyle)}>
+        <div className={classes(css.SidebarStyle)}>
+          <List className={classes(css.listStyle)}>
             {/* When new profile features are added, change path*/}
-            <Link style={elementStyle} to="/profile">
+            <Link className={classes(css.elementStyle)} to="/profile">
               <ListItem button>{profileSettings.navPassword[fin]}</ListItem>
             </Link>
           </List>
         </div>
-        <div className="ProfileContent" style={ContentStyle}>
+        <div className={classes(css.ContentStyle)}>
           <Switch>
             <Route path="/">
               <PasswordChange username={cookies.username} />
