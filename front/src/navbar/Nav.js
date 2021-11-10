@@ -105,7 +105,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
             {nav.Schedule[fin]}
           </ListItem>
         </Link>
-
+        
         <Link style={navStyle} to="/usermanagement">
           <ListItem
             button
@@ -153,6 +153,12 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
             style={elementStyle}
           >
             {nav.Statistics[fin]}
+          </ListItem>
+        </Link>
+
+        <Link style={navStyle} to="/supervisor-raffle">
+          <ListItem button onClick={HandleClick} style={elementStyle}>
+            {nav.Raffle[fin]}
           </ListItem>
         </Link>
 

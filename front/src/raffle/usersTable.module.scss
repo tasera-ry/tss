@@ -1,0 +1,50 @@
+@import "../colors.module.scss";
+
+.table {
+  background-color: $COLOR_CREAM5;
+
+  .loading {
+    cursor: wait;
+  }
+}
+
+.smallCell {
+  max-width: 0.1em;
+}
+
+.mediumCell {
+  max-width: 1.5em;
+}
+
+.editedCell {
+  width: 145px;
+
+  .textField {
+    width: 80px;
+  }
+}
+
+.checkbox {
+  color: $COLOR_GREEN !important;
+}
+
+.editButton {
+  color: $COLOR_CREAM5 !important;
+
+  &.hover,
+  &:focus:not(.hover) {
+    color: $COLOR_BLACK !important;
+  }
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+
+  .cancelButton {
+    color: $COLOR_RED !important;
+  }
+  .acceptButton {
+    color: $COLOR_GREEN_DARK !important;
+  }
+}
