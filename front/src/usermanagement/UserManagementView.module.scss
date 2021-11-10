@@ -1,0 +1,32 @@
+@import '../colors.module.scss';
+
+.dialogStyle {
+    background-color: $COLOR_CREAM5;
+}
+
+.pstyle {
+    font-size: 20;
+    color: $COLOR_RED;
+    text-Align: center;
+}
+
+.blueButton {
+    background-color: $COLOR_BLUE;
+    margin: 15;
+    text-align: center;
+}
+
+.box {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap
+}
+
+.header{
+    text-align: center;
+}
+
+.tableContainer {
+    max-width: 800; 
+    table-layout: auto;
+}

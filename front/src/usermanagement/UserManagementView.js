@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 
 import '../App.css';
 
+import classNames from 'classnames';
+
+import colors from '../colors.module.scss';
+import css from './UserManagementView.module.scss';
+
 // Material UI components
 import {
   Divider,
@@ -37,13 +42,10 @@ import { validateLogin } from '../utils/Utils';
 // Translations
 import data from '../texts/texts.json';
 
+const classes = classNames.bind(css);
+
 const fin = localStorage.getItem('language');
 const { manage } = data;
-
-// Styles
-const dialogStyle = {
-  backgroundColor: '#f2f0eb',
-};
 
 // Finds all users from database
 async function getUsers() {
@@ -391,7 +393,7 @@ class UserManagementView extends Component {
 
   returnRemoveButton(id, manage, fin) { // eslint-disable-line
     return (
-      <Button data-testid={`del-${id}`} id={id} size="small" style={{ backgroundColor: '#c97b7b' }} variant="contained" onClick={this.onRemoveClick}>
+      <Button data-testid={`del-${id}`} id={id} size="small" style={{ backgroundColor: colors.redLight }} variant="contained" onClick={this.onRemoveClick}>
         {manage.RemoveUser[fin]}
       </Button>
     );
@@ -399,14 +401,14 @@ class UserManagementView extends Component {
 
   returnPassButton(id, manage, fin) { // eslint-disable-line
     return (
-      <Button data-testid={`pw-${id}`} id={id} size="small" style={{ backgroundColor: '#5f77a1' }} variant="contained" onClick={this.onChangePassClick}>
+      <Button data-testid={`pw-${id}`} id={id} size="small" style={{ backgroundColor: colors.blue }} variant="contained" onClick={this.onChangePassClick}>
         {manage.ChangePass[fin]}
       </Button>
     );
   }
   returnaddEmailButton(id, manage, fin) { // eslint-disable-line
     return (
-      <Button id={id} size="small" style={{ backgroundColor: '#55555' }} variant="contained" onClick={this.onaddEmailClick}>
+      <Button id={id} size="small" style={{ backgroundColor: colors.grey }} variant="contained" onClick={this.onaddEmailClick}>
         {manage.ChangeEmail[fin]}
       </Button>
     );
@@ -690,12 +692,12 @@ class UserManagementView extends Component {
         >
           <DialogTitle
             id="dialog-add-user-title"
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
             {manage.New[fin]}
           </DialogTitle>
           <DialogContent
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
 
             <TextField
@@ -713,7 +715,7 @@ class UserManagementView extends Component {
             <NiceInputPassword
               LabelComponent={InputLabel}
               InputComponent={TextField}
-              style={dialogStyle}
+              className={classes(css.dialogStyle)}
               value={this.state.newUserPass}
               margin="dense"
               label={manage.Password[fin]}
@@ -770,7 +772,7 @@ class UserManagementView extends Component {
             </FormControl>
 
             {this.state.requestErrors ? (
-              <p style={{ fontSize: 20, color: 'red', textAlign: 'center' }}>
+              <p className={classes(css.pstyle)}>
                 {manage.Error[fin]}
                 {' '}
               </p>
@@ -780,12 +782,12 @@ class UserManagementView extends Component {
 
           </DialogContent>
           <DialogActions
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
-            <Button onClick={this.handleAddNewUserDialogClose} style={{ color: '#c97b7b' }}>
+            <Button onClick={this.handleAddNewUserDialogClose} style={{ color: colors.redLight }}>
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleAddNewUserDialogCloseConfirmed} style={{ color: '#5f77a1' }}>
+            <Button onClick={this.handleAddNewUserDialogCloseConfirmed} style={{ color: colors.blue }}>
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -799,13 +801,13 @@ class UserManagementView extends Component {
         >
           <DialogTitle
             id="dialog-remove-user-title"
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
             {manage.Ask[fin]}
           </DialogTitle>
           <DialogContent
             id="dialog-remove-user-contet"
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
             <DialogContentText
               id="dialog-remove-user-text"
@@ -817,7 +819,7 @@ class UserManagementView extends Component {
 
             {this.state.deleteErrors
               ? (
-                <p style={{ fontSize: 20, color: 'red', textAlign: 'center' }}>
+                <p className={classes(css.pstyle)}>
                   {manage.ErrorSmall[fin]}
                   {' '}
 
@@ -827,12 +829,12 @@ class UserManagementView extends Component {
 
           </DialogContent>
           <DialogActions
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
-            <Button onClick={this.handleRemoveWarningClose} style={{ color: '#c97b7b' }}>
+            <Button onClick={this.handleRemoveWarningClose} style={{ color: colors.redLight }}>
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleRemoveWarningCloseAgree} style={{ color: '#5f77a1' }}>
+            <Button onClick={this.handleRemoveWarningCloseAgree} style={{ color: colors.blue }}>
               {manage.ConfirmDelete[fin]}
             </Button>
           </DialogActions>
@@ -845,12 +847,12 @@ class UserManagementView extends Component {
         >
           <DialogTitle
             id="dialog-change-own-pass-title"
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
             {manage.ChangePass[fin]}
           </DialogTitle>
           <DialogContent
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
             <DialogContentText>
               {manage.Helper[fin]}
@@ -873,7 +875,7 @@ class UserManagementView extends Component {
               type="password"
               LabelComponent={InputLabel}
               InputComponent={TextField}
-              style={dialogStyle}
+              className={classes(css.dialogStyle)}
               value={this.state.newPassword}
               margin="dense"
               label={manage.NewPass[fin]}
@@ -903,7 +905,7 @@ class UserManagementView extends Component {
             />
 
             {this.state.changeOwnPassFailed ? (
-              <p style={{ fontSize: 20, color: 'red', textAlign: 'center' }}>
+              <p className={classes(css.pstyle)}>
                 {manage.ErrorPassword[fin]}
                 {' '}
               </p>
@@ -913,12 +915,12 @@ class UserManagementView extends Component {
 
           </DialogContent>
           <DialogActions
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
-            <Button onClick={this.handleChangeOwnPassDialogClose} style={{ color: '#c97b7b' }}>
+            <Button onClick={this.handleChangeOwnPassDialogClose} style={{ color: colors.redLight }}>
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleChangeOwnPassDialogCloseAgree} style={{ color: '#5f77a1' }}>
+            <Button onClick={this.handleChangeOwnPassDialogCloseAgree} style={{ color: colors.blue }}>
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -931,12 +933,12 @@ class UserManagementView extends Component {
         >
           <DialogTitle
             id="dialog-change-own-email-title"
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
             {manage.ChangeEmail[fin]}
           </DialogTitle>
           <DialogContent
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
             <DialogContentText>
               {manage.EmailHelper[fin]}
@@ -954,7 +956,7 @@ class UserManagementView extends Component {
             />
 
             {this.state.changeOwnEmailFailed ? (
-              <p style={{ fontSize: 20, color: 'red', textAlign: 'center' }}>
+              <p className={classes(css.pstyle)}>
                 {manage.Error[fin]}
                 {' '}
               </p>
@@ -964,12 +966,12 @@ class UserManagementView extends Component {
 
           </DialogContent>
           <DialogActions
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
-            <Button onClick={this.handleChangeOwnEmailDialogClose} style={{ color: '#c97b7b' }}>
+            <Button onClick={this.handleChangeOwnEmailDialogClose} style={{ color: colors.redLight }}>
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleChangeOwnEmailDialogCloseAgree} style={{ color: '#5f77a1' }}>
+            <Button onClick={this.handleChangeOwnEmailDialogCloseAgree} style={{ color: colors.blue }}>
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -982,21 +984,21 @@ class UserManagementView extends Component {
         >
           <DialogTitle
             id="dialog-change-pass-title"
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
             {manage.ChangeFor[fin]}
             {' '}
             {this.state.selectedUserName}
           </DialogTitle>
           <DialogContent
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
 
             <NiceInputPassword
               type="text"
               LabelComponent={InputLabel}
               InputComponent={TextField}
-              style={dialogStyle}
+              className={classes(css.dialogStyle)}
               value={this.state.password}
               margin="dense"
               label={manage.NewPass[fin]}
@@ -1029,7 +1031,7 @@ class UserManagementView extends Component {
             />
 
             {this.state.changeErrors ? (
-              <p style={{ fontSize: 20, color: 'red', textAlign: 'center' }}>
+              <p className={classes(css.pstyle)}>
                 {manage.ErrorPassword[fin]}
                 {' '}
               </p>
@@ -1038,12 +1040,12 @@ class UserManagementView extends Component {
             )}
           </DialogContent>
           <DialogActions
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
-            <Button onClick={this.handleChangePassClose} style={{ color: '#c97b7b' }}>
+            <Button onClick={this.handleChangePassClose} style={{ color: colors.redLight }}>
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleChangePassCloseConfirm} style={{ color: '#5f77a1' }}>
+            <Button onClick={this.handleChangePassCloseConfirm} style={{ color: colors.blue }}>
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -1056,14 +1058,14 @@ class UserManagementView extends Component {
         >
           <DialogTitle
             id="dialog-add-email-title"
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
             {manage.EmailForUser[fin]}
             {' '}
             {this.state.selectedUserName}
           </DialogTitle>
           <DialogContent
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
             <TextField
               type="text"
@@ -1077,7 +1079,7 @@ class UserManagementView extends Component {
               fullWidth
             />
             {this.state.changeErrors ? (
-              <p style={{ fontSize: 20, color: 'red', textAlign: 'center' }}>
+              <p className={classes(css.pstyle)}>
                 {manage.ErrorEmail[fin]}
                 {' '}
               </p>
@@ -1086,12 +1088,12 @@ class UserManagementView extends Component {
             )}
           </DialogContent>
           <DialogActions
-            style={dialogStyle}
+            className={classes(css.dialogStyle)}
           >
-            <Button onClick={this.handleaddEmailClose} style={{ color: '#c97b7b' }}>
+            <Button onClick={this.handleaddEmailClose} style={{ color: colors.redLight }}>
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleaddEmailCloseConfirm} style={{ color: '#5f77a1' }}>
+            <Button onClick={this.handleaddEmailCloseConfirm} style={{ color: colors.blue }}>
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -1099,34 +1101,34 @@ class UserManagementView extends Component {
 
         {/* THE ACTUAL PAGE */}
 
-        <h1 style={{ textAlign: 'center' }}>{manage.UserManage[fin]}</h1>
+        <h1 className={classes(css.header)}>{manage.UserManage[fin]}</h1>
         <Divider />
-        <Box style={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}>
-          <h3 style={{ textAlign: 'center' }}>
+        <Box className={classes(css.box)}>
+          <h3 className={classes(css.header)}>
             {manage.ChangePass[fin]}
             :
           </h3>
-          <Button onClick={this.handleOpenOwnPassChangeDialog} variant="contained" style={{ backgroundColor: '#5f77a1', margin: 15, textAlign: 'center' }}>
+          <Button onClick={this.handleOpenOwnPassChangeDialog} variant="contained" className={classes(css.blueButton)}>
             {manage.ChangePass[fin]}
           </Button>
         </Box>
         <Divider />
-        <Box style={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}>
-          <h3 style={{ textAlign: 'center' }}>
+        <Box className={classes(css.box)}>
+          <h3 className={classes(css.header)}>
             {manage.ChangeEmail[fin]}
             :
           </h3>
-          <Button onClick={this.handleOpenOwnEmailChangeDialog} variant="contained" style={{ backgroundColor: '#5f77a1', margin: 15, textAlign: 'center' }}>
+          <Button onClick={this.handleOpenOwnEmailChangeDialog} variant="contained" style={css.blueButton}>
             {manage.ChangeEmail[fin]}
           </Button>
         </Box>
         <Divider />
-        <Box style={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}>
-          <h3 style={{ textAlign: 'center' }}>
+        <Box className={classes(css.box)}>
+          <h3 className={classes(css.header)}>
             {manage.CreateUser[fin]}
             :
           </h3>
-          <Button onClick={this.handleAddUserOpenDialog} variant="contained" style={{ backgroundColor: '#5f77a1', margin: 15, textAlign: 'center' }}>
+          <Button onClick={this.handleAddUserOpenDialog} variant="contained" style={css.blueButton}>
             {manage.CreateUser[fin]}
           </Button>
         </Box>
@@ -1134,11 +1136,11 @@ class UserManagementView extends Component {
 
         {/* USER PROFILES TABLE */}
 
-        <h3 style={{ textAlign: 'center' }}>{`${manage.Users[fin]}:`}</h3>
-        <Box style={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}>
+        <h3 className={classes(css.header)}>{`${manage.Users[fin]}:`}</h3>
+        <Box className={classes(css.box)}>
 
-          <TableContainer component={Paper} style={{ maxWidth: 800, tableLayout: 'auto' }}>
-            <Table aria-label="table of users" style={{ backgroundColor: '#F2F0EB' }}>
+          <TableContainer component={Paper} className={classes(css.tableContainer)}>
+            <Table aria-label="table of users" style={{ backgroundColor: colors.cream5 }}>
               <TableHead>
                 <TableRow>
                   <TableCell align="justify">{manage.Username[fin]}</TableCell>
