@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-import './rangeofficer.css';
+import classNames from 'classnames';
+
+import colors from '../colors.module.scss';
+import css from './rangeofficer.module.scss';
 
 // Material UI components
 import Typography from '@material-ui/core/Typography';
@@ -31,75 +34,9 @@ import data from '../texts/texts.json';
 
 // Submitting track usage statistics
 import { TrackStatistics } from '../TrackStatistics/TrackStatistics';
+import { CssBaseline } from '@material-ui/core';
 
-/*
-  Styles not in the rangeofficer.js file
-*/
-const colors = {
-  green: '#658f60',
-  red: '#c97b7b',
-  white: '#f2f0eb',
-  orange: '#f2c66d',
-  lightgreen: '#b2d9ad',
-  blue: '#95d5db',
-};
-const rowStyle = {
-  flexDirection: 'row',
-  display: 'flex',
-  justifyContent: 'center',
-};
-const trackRowStyle = {
-  flexDirection: 'row',
-  display: 'flex',
-  justifyContent: 'center',
-  flexWrap: 'wrap',
-};
-const greenButtonStyle = {
-  fontSize: 17,
-  backgroundColor: colors.green,
-  borderRadius: 50,
-  width: 250,
-  height: 100,
-  margin: 8,
-};
-const orangeButtonStyle = {
-  fontSize: 17,
-  backgroundColor: colors.orange,
-  borderRadius: 50,
-  width: 250,
-  height: 100,
-  margin: 8,
-};
-const redButtonStyle = {
-  fontSize: 17,
-  backgroundColor: colors.red,
-  borderRadius: 50,
-  width: 250,
-  height: 100,
-  margin: 8,
-};
-const saveButtonStyle = {
-  backgroundColor: '#5f77a1',
-};
-const cancelButtonStyle = {
-  backgroundColor: '#ede9e1',
-};
-const simpleButton = {
-  padding: '2px 10px',
-  borderRadius: 15,
-  fontSize: '1.2rem',
-};
-const rangeStyle = {
-  textAlign: 'center',
-  margin: 10,
-  marginTop: 0,
-};
-const dialogStyle = {
-  backgroundColor: '#f2f0eb',
-};
-const rangediv = {
-  width: 300,
-};
+const classes = classNames.bind(css);
 
 // shooting track rows
 const TrackRows = ({
@@ -111,8 +48,9 @@ const TrackRows = ({
   socket,
 }) => (
   tracks.map((track) => (
-    <div key={track.id} style={rangediv}>
-      <div style={rangeStyle}>
+
+    <div key={track.id} className={classes(css.rangediv)}>
+      <div className={classes(css.rangeStyle)}>
         <Typography
           variant="h6"
           align="center"
@@ -165,7 +103,7 @@ const TrackButtons = ({
     if (msg.id === track.id) {
       if (msg.super === 'present') {
         track.trackSupervision = 'absent'; // eslint-disable-line
-        setButtonColor(colors.green);
+        setButtonColor(colors.greenLight);
         setTextState(tablet.Green[fin]);
         setSupervision('absent');
       } else if (msg.super === 'closed') {
@@ -175,7 +113,7 @@ const TrackButtons = ({
         setSupervision('present');
       } else if (msg.super === 'absent') {
         track.trackSupervision = 'closed'; // eslint-disable-line
-        setButtonColor(colors.white);
+        setButtonColor(colors.cream5);
         setTextState(tablet.White[fin]);
         setSupervision('closed');
       }
@@ -184,7 +122,7 @@ const TrackButtons = ({
   const HandleClick = () => {
     let newSupervision = 'absent';
     setSupervision('absent');
-    track.color = colors.white; // eslint-disable-line
+    track.color = colors.cream5; // eslint-disable-line
     setTextState(tablet.White[fin]);
 
     if (track.trackSupervision === 'absent') {
@@ -195,7 +133,7 @@ const TrackButtons = ({
     } else if (track.trackSupervision === 'closed') {
       newSupervision = 'present';
       setSupervision('present');
-      track.color = colors.green; // eslint-disable-line
+      track.color = colors.greenLight; // eslint-disable-line
       setTextState(tablet.Green[fin]);
     }
 
@@ -273,7 +211,7 @@ async function getColors(tracks, setTracks) {
 
   for (let i = 0; i < copy.length; i += 1) {
     const obj = copy[i];
-    if (copy[i].trackSupervision === 'present') { obj.color = colors.green; } else if (copy[i].trackSupervision === 'closed') { obj.color = colors.red; } else if (copy[i].trackSupervision === 'absent') { obj.color = colors.white; } else if (copy[i].trackSupervision === 'en route') { obj.color = colors.orange; }
+    if (copy[i].trackSupervision === 'present') { obj.color = colors.greenLight; } else if (copy[i].trackSupervision === 'closed') { obj.color = colors.red; } else if (copy[i].trackSupervision === 'absent') { obj.color = colors.cream5; } else if (copy[i].trackSupervision === 'en route') { obj.color = colors.orange; }
   }
   setTracks(copy);
 }
@@ -305,13 +243,13 @@ async function getData(
       });
       if (response.rangeSupervision === 'present') {
         setStatusText(tablet.SuperGreen[fin]);
-        setStatusColor(colors.green);
+        setStatusColor(colors.greenLight);
       } else if (response.rangeSupervision === 'en route') {
         setStatusText(tablet.SuperOrange[fin]);
         setStatusColor(colors.orange);
       } else if (response.rangeSupervision === 'absent') {
         setStatusText(tablet.SuperWhite[fin]);
-        setStatusColor(colors.white);
+        setStatusColor(colors.cream5);
       } else if (response.rangeSupervision === 'closed') {
         setStatusText(tablet.Red[fin]);
         setStatusColor(colors.red);
@@ -320,10 +258,10 @@ async function getData(
         setStatusColor(colors.lightgreen);
       } else if (response.rangeSupervision === 'not confirmed') {
         setStatusText(tablet.SuperBlue[fin]);
-        setStatusColor(colors.blue);
+        setStatusColor(colors.turquoise);
       } else {
         setStatusText(tablet.SuperWhite[fin]);
-        setStatusColor(colors.white);
+        setStatusColor(colors.cream5);
       }
       getColors(response.tracks, setTracks);
     });
@@ -371,10 +309,10 @@ const TimePick = ({
         open={dialogOpen}
         aria-labelledby="title"
       >
-        <DialogTitle id="title" style={dialogStyle}>{tablet.PickTime[fin]}</DialogTitle>
-        <DialogContent style={dialogStyle}>
+        <DialogTitle id="title" className={classes(css.dialogStyle)}>{tablet.PickTime[fin]}</DialogTitle>
+        <DialogContent className={classes(css.dialogStyle)}>
 
-          <div style={rowStyle}>
+          <div className={classes(css.rowStyle)}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
 
               <KeyboardTimePicker
@@ -405,7 +343,7 @@ const TimePick = ({
             ? (
               <Typography
                 align="center"
-                style={{ color: '#c23a3a' }}
+                style={{ color: colors.red }}
               >
                 {errorMessage}
               </Typography>
@@ -414,11 +352,11 @@ const TimePick = ({
 
         </DialogContent>
 
-        <DialogActions style={dialogStyle}>
+        <DialogActions className={classes(css.dialogStyle)}>
           <Button
             variant="contained"
             onClick={() => setDialogOpen(false)}
-            style={cancelButtonStyle}
+            className={classes(css.cancelButtonStyle)}
           >
             {tablet.Cancel[fin]}
           </Button>
@@ -426,7 +364,7 @@ const TimePick = ({
           <Button
             variant="contained"
             onClick={() => handleTimeChange()}
-            style={saveButtonStyle}
+            className={classes(css.saveButtonStyle)}
           >
             {tablet.Save[fin]}
           </Button>
@@ -452,7 +390,7 @@ const Tabletview = () => {
   const today = moment().format('DD.MM.YYYY');
 
   const statusStyle = {
-    color: 'black',
+    color: colors.black,
     backgroundColor: statusColor,
     borderRadius: 3,
     width: 400,
@@ -524,10 +462,10 @@ const Tabletview = () => {
   const HandlePresentClick = () => {
     socket.emit('rangeUpdate', {
       status: 'present',
-      color: colors.green,
+      color: colors.greenLight,
       text: tablet.SuperGreen[fin],
     });
-    updateSupervisor('present', colors.green, tablet.SuperGreen[fin]);
+    updateSupervisor('present', colors.greenLight, tablet.SuperGreen[fin]);
   };
 
   const HandleEnRouteClick = () => {
@@ -549,7 +487,7 @@ const Tabletview = () => {
   };
   return (
     <div>
-      <div className="Text">
+      <div className={classes(css.Text)}>
         {today}
       </div>
 
@@ -564,7 +502,7 @@ const Tabletview = () => {
         <Button
           size="medium"
           variant="outlined"
-          style={simpleButton}
+          className={classes(css.simpleButton)}
           onClick={() => setDialogOpen(true)}
         >
           {hours.start}
@@ -588,9 +526,9 @@ const Tabletview = () => {
         )
         : ''}
 
-      <div className="Status" style={rowStyle}>
+      <div className="Status" className={classes(css.rowStyle)}>
         <Button
-          style={statusStyle}
+          style="statusStyle"
           size="large"
           variant="outlined"
           disabled
@@ -600,13 +538,13 @@ const Tabletview = () => {
         </Button>
       </div>
 
-      <div className="Text">
+      <div className={classes(css.Text)}>
         {tablet.HelperFirst[fin]}
       </div>
 
-      <div style={rowStyle}>
+      <div className={classes(css.rowStyle)}>
         <Button
-          style={greenButtonStyle}
+          className={classes(css.greenButtonStyle)}
           size="large"
           variant="contained"
           onClick={HandlePresentClick}
@@ -615,7 +553,7 @@ const Tabletview = () => {
           {tablet.Green[fin]}
         </Button>
         <Button
-          style={orangeButtonStyle}
+          className={classes(css.orangeButtonStyle)}
           size="large"
           variant="contained"
           onClick={HandleEnRouteClick}
@@ -624,7 +562,7 @@ const Tabletview = () => {
           {tablet.Orange[fin]}
         </Button>
         <Button
-          style={redButtonStyle}
+          className={classes(css.redButtonStyle)}
           size="large"
           variant="contained"
           onClick={HandleClosedClick}
@@ -634,11 +572,11 @@ const Tabletview = () => {
         </Button>
       </div>
 
-      <div className="Text">
+      <div className={classes(css.Text)}>
         {tablet.HelperSecond[fin]}
       </div>
 
-      <div style={trackRowStyle}>
+      <div className={classes(css.trackRowStyle)}>
         <TrackRows
           tracks={tracks}
           setTracks={setTracks}
