@@ -82,6 +82,15 @@ const sendFeedback = (feedback, user) =>
 const patchScheduledSupervisionTrack = (scheduleId, trackId, data) =>
   axios.put(`/api/track-supervision/${scheduleId}/${trackId}`, data);
 
+  
+const getMembers = async () => {
+  const response = await axios.get(`/api/members`);
+  return response.data;
+};
+
+const patchMembers = async (user_id, data) =>
+  axios.put(`/api/members/${user_id}`, data);
+
 export default {
   getSchedulingDate,
   getSchedulingWeek,
@@ -99,4 +108,6 @@ export default {
   patchRangeSupervision,
   sendFeedback,
   patchScheduledSupervisionTrack,
-};
+  getMembers,
+  patchMembers
+}

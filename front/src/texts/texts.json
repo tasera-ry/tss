@@ -11,7 +11,8 @@
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
     "SignOut": ["Kirjaudu ulos", "Sign Out"],
     "Statistics": ["Tilastot", "Statistics"],
-    "EmailSettings": ["Sähköpostiasetukset", "Email settings"]
+    "EmailSettings": ["Sähköpostiasetukset", "Email settings"],
+    "Raffle": ["Valvojien arvonta", "Supervisor raffle"]
   },
   "banner": {
     "Notification": [
@@ -417,5 +418,16 @@
     ],
     "alertSuccess": ["Salasanan vaihto onnistui", "Password change successful"],
     "alertFail": ["Salasanan vaihto epäonnistui", "Password change failed"]
+  },
+  "raffle": {
+    "tableTitle": ["Yhteisöt", "Organizations"],
+    "raffled": ["Arvonnassa", "In raffle"],
+    "user": ["Yhteisö", "Organization"],
+    "members": ["Ampujakortilliset", "Gun license owners"],
+    "supervisors": ["Valvojat", "Supervisors"],
+    "loadError": ["Yhteisöjen lataus epäonnistui", "Could not load organizations"],
+    "valueError": ["Arvot eivät saa olla negatiivisia", "Values cannot be negative"],
+    "updateError": ["Yhteisön päivitys epäonnistui", "Organization update failed"],
+    "updateSuccess": ["Yhteisö päivitetty", "Organization updated"]
   }
 }
