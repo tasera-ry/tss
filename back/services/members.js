@@ -17,7 +17,7 @@ const service = {
       combinedKey = Object.assign({'user_id': key.user_id}, combinedKey);
     }
 
-    return (await models.members.read(_.pick(combinedKey, 'user_id', 'members', 'supervisors')));
+    return (await models.members.read(_.pick(combinedKey, 'user_id', 'members', 'supervisors', 'name')));
   },
   
   update: async function updateMembers(key, updates) {
