@@ -28,6 +28,7 @@ const model = {
 
   read: async function readMembers(key, fields) {
     return knex('members')
+      .join('user', 'members.user_id', 'user.id')
       .where(key)
       .select(fields)
       .orderBy('user_id');
