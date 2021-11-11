@@ -4,6 +4,7 @@ exports.up = function(knex) {
     table.integer('user_id').references('id').inTable('user').primary();
     table.integer('members');
     table.integer('supervisors');
+    table.boolean('raffle');
   });
 };
 
