@@ -49,6 +49,15 @@ const fields = {
       .toInt();
 
     return validatorAdditions(validator, opts);
+  },
+
+  raffle: function idValidation(requestObject, ...opts) {
+    const validator = requestObject('raffle')
+      .isBoolean()
+      .withMessage('must be a boolean')
+      .toBoolean();
+
+    return validatorAdditions(validator, opts);
   }
 };
 
@@ -94,6 +103,7 @@ module.exports = {
     fields.user_id(param, 'exists'),
     fields.members(body, 'optional'),
     fields.supervisors(body, 'optional'),
+    fields.raffle(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
       response.locals.user_id = matchedData(request, { locations: ['params'] });
@@ -109,4 +119,4 @@ module.exports = {
       return next();
     }
   ]
-}
+};

@@ -38,7 +38,8 @@ const model = {
     const membersConstraints = {
       user_id: {},
       members: {},
-      supervisors: {}
+      supervisors: {},
+      raffle: {},
     };
 
     const members = validate.cleanAttributes(update, membersConstraints);

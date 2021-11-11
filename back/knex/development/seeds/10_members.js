@@ -6,6 +6,7 @@ exports.seed = async function (knex) {
     user_id: id,
     members: Math.floor(Math.random() * 100) + 1,
     supervisors: Math.floor(Math.random() * 10) + 1,
+    raffle: true,
   }));
 
   return knex('members')
