@@ -297,7 +297,7 @@ router.route('/members/:id')
   );
 >>>>>>> members haku ja päivitys toimii
 
-/**
+
 router.route('/raffle')
   .get(
     //TODO validator when interface is fixed
@@ -305,5 +305,5 @@ router.route('/raffle')
     middlewares.raffle.create,
     controllers.raffle.create
   );
-*/
+
 module.exports = router;
