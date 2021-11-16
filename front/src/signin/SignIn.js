@@ -1,136 +1,76 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
+import colors from '../colors.module.scss';
 
 // Material UI components
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+
 import { useHistory } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import api from '../api/api';
+import translations from '../texts/texts.json';
+import css from './SignIn.module.scss';
 
-// Call handling to backend
-import axios from 'axios';
+const classes = classNames.bind(css);
 
-// Translations
-import data from '../texts/texts.json';
-
-/*
-  Signin is the component for signing in to the frontend
-*/
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-  },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
-
-const textStyle = {
-  backgroundColor: '#fcfbf7',
-  borderRadius: 4,
-};
-
+/* Returns a component for signing in to the frontend */
 const SignIn = () => {
-  const classes = useStyles();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [mistake, setMistake] = useState(false);
   const history = useHistory();
-  const { signin } = data;
-  const fin = localStorage.getItem('language');
+  const { signin } = translations;
+  const lang = localStorage.getItem('language');
   const [cookies, setCookie] = useCookies(['username', 'role']); // eslint-disable-line
   const secure = window.location.protocol === 'https:';
 
-  document.body.style = 'background: #eae7dc;';
-  function RedirectToWeekview() {
-    window.location.href = '/';
-  }
-  async function setInfo(user) {
-    // eslint-disable-line
+  document.body.style = `background: ${colors.cream10};`;
+
+  const setInfo = async (user) => {
     setCookie('username', user.name, { sameSite: true, secure });
     setCookie('role', user.role, { sameSite: true, secure });
     // TODO: try to be SPA and remove this refresh
-    RedirectToWeekview();
-  }
-
-  const HandleError = (error) => {
-    setMistake(true);
-    // message contains all errors, might be useful
-    let message = ''; // eslint-disable-line
-    if (error.response.status === 400) {
-      for (let i = 0; i < error.response.data.errors.length; i += 1) {
-        const { param } = error.response.data.errors[i];
-        const { msg } = error.response.data.errors[i];
-        message += `${param} ${msg}\n`;
-      }
-    }
-    if (error.response.status === 401) {
-      message = error.response.data; // eslint-disable-line
-    }
+    window.location.href = '/';
   };
 
-  const login = (e) => {
+  const login = async (e) => {
     e.preventDefault();
 
-    axios
-      .post('api/sign', {
-        name,
-        password,
-        secure,
-      })
-      .then((resp) => {
-        setInfo(resp.data);
-      })
-      .catch((error) => {
-        HandleError(error);
-      });
+    try {
+      const data = await api.signIn(name, password, secure);
+      setInfo(data);
+    } catch (err) {
+      setMistake(true);
+    }
   };
-
-  function backToPrev() {
-    history.goBack();
-  }
-
-  function forgot() {
-    const path = '/signin/reset-password';
-    history.push(path);
-  }
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className={classes.paper}>
+      <div className={classes(css.paper)}>
         <Typography component="h1" variant="h5">
-          {signin.SignIn[fin]}
+          {signin.SignIn[lang]}
         </Typography>
 
-        <form className={classes.form} noValidate>
+        <form noValidate>
           <TextField
+            autoFocus
             variant="outlined"
             margin="normal"
             required
             fullWidth
             id="email"
-            label={signin.Name[fin]}
             name="username"
-            autoComplete={signin.Name[fin]}
-            autoFocus
+            label={signin.Name[lang]}
+            autoComplete={signin.Name[lang]}
             value={name}
             error={mistake}
             onInput={(e) => setName(e.target.value)}
-            style={textStyle}
+            className={classes(css.text)}
             inputProps={{
               'data-testid': 'nameField',
             }}
@@ -140,50 +80,47 @@ const SignIn = () => {
             margin="normal"
             required
             fullWidth
-            name="password"
-            label={signin.Password[fin]}
-            type="password"
             id="password"
+            name="password"
+            label={signin.Password[lang]}
+            type="password"
             autoComplete="current-password"
             value={password}
             error={mistake}
             onInput={(e) => setPassword(e.target.value)}
-            style={textStyle}
+            className={classes(css.text)}
             inputProps={{
               'data-testid': 'passwordField',
             }}
           />
-          {mistake ? (
-            <Typography align="center" style={{ color: '#c23a3a' }}>
-              {signin.Helper[fin]}
+          {mistake && (
+            <Typography align="center" className={classes(css.mistake)}>
+              {signin.Helper[lang]}
             </Typography>
-          ) : (
-            ''
           )}
           <Button
             onClick={login}
-            type="submit"
             fullWidth
             variant="contained"
-            style={{ backgroundColor: '#5f77a1' }}
+            className={classes(css.submitButton, css.acceptButton)}
           >
-            {signin.LogIn[fin]}
+            {signin.LogIn[lang]}
           </Button>
           &nbsp;
           <Button
-            onClick={() => backToPrev()}
+            onClick={() => history.goBack()}
             fullWidth
-            style={{ color: '#5f77a1' }}
+            className={classes(css.secondaryButton)}
           >
-            {signin.Back[fin]}
+            {signin.Back[lang]}
           </Button>
           &nbsp;
           <Button
-            onClick={() => forgot()}
+            onClick={() => history.push('/signin/reset-password')}
             fullWidth
-            style={{ color: '#5f77a1' }}
+            className={classes(css.secondaryButton)}
           >
-            {signin.ForgotPassword[fin]}
+            {signin.ForgotPassword[lang]}
           </Button>
         </form>
       </div>
