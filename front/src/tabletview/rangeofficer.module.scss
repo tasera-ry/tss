@@ -1,3 +1,75 @@
+@import '../colors.module.scss';
+
+.rowStyle {
+  flex-Direction: row;
+  display: flex;
+  justify-Content: center;
+}
+
+.trackRowStyle {
+  flex-Direction: row;
+  display: flex;
+  justify-Content: center;
+  flex-Wrap: wrap;
+}
+
+.greenButtonStyle {
+  font-Size: 17;
+  background-Color: $COLOR_GREEN;
+  border-Radius: 50;
+  width: 250;
+  height: 100;
+  margin: 8;
+}
+
+.orangeButtonStyle {
+  font-Size: 17;
+  background-Color: $COLOR_ORANGE;
+  border-Radius: 50;
+  width: 250;
+  height: 100;
+  margin: 8;
+}
+
+.redButtonStyle {
+  font-Size: 17;
+  background-Color: $COLOR_RED;
+  border-Radius: 50;
+  width: 250;
+  height: 100;
+  margin: 8;
+}
+
+.saveButtonStyle {
+  background-Color: $COLOR_BLUE;
+}
+
+.cancelButtonStyle {
+  background-Color: $COLOR_CREAM10;
+}
+
+.simpleButton {
+  padding: '2px 10px';
+  border-Radius: 15;
+  font-Size: '1.2rem';
+}
+
+.rangeStyle {
+  text-Align: center;
+  margin: 10;
+  margin-Top: 0;
+}
+
+.dialogStyle {
+  background-Color: $COLOR_CREAM5;
+}
+
+.rangediv {
+  width: 300;
+}
+
+// from rangeofficer.css
+
 .containsAll {
     margin: 20px;
     align-content: center;
@@ -16,7 +88,7 @@
 
 .rangeOfficerStatus {
     border-radius: 10px;
-    background-color: green;
+    background-color: $COLOR_GREEN;
     padding: 10px;
     margin: 0px 50% 10px 10px;
     text-align: center;
@@ -28,7 +100,7 @@
 }
 
 .changeStatus {
-    background-color: green;
+    background-color: $COLOR_GREEN;
     padding: 5px 20px 5px 20px;
     margin: 3px;
     display: inline-block;
@@ -36,7 +108,7 @@
 }
 
 .changeTrack {
-    background-color: green;
+    background-color: $COLOR_GREEN;
     padding: 5px 20px 5px 20px;
     margin: 3px;
     float: left;

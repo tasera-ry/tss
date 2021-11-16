@@ -1,3 +1,5 @@
+@import '../colors.module.scss';
+
 .exclamation {
   position: absolute;
   bottom: 1px;
@@ -10,14 +12,14 @@
   min-width: 22px;
 }
 
-.info-flex {
+.infoFlex {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin-bottom: 32px;
 }
 
-.info-item {
+.infoItem {
   display: flex;
   min-width: 320px;
   width: 30vw;
@@ -32,59 +34,59 @@
   margin-right: 8px;
   margin-left: 0px;
   margin-bottom: 0px;
-  border: 1px solid black;
+  border: 1px $COLOR_BLACK;
   clear: both;
   min-height: 20px;
   min-width: 20px;
 }
 
-#open-info {
+#openInfo {
   display: flex;
-  background: #658f60;
+  background: $COLOR_GREEN;
 }
 
-#range-officer-info {
+#rangeOfficerInfo {
   display: flex;
-  background: #b2d9ad;
+  background: $COLOR_GREEN_LIGHT;
 }
 
-#closed-info {
+#closedInfo {
   display: flex;
-  background: #c97b7b;
+  background: $COLOR_RED_LIGHT;
 }
 
-#closed-info2 {
+#closedInfo2 {
   display: flex;
-  background: #95d5db;
+  background: $COLOR_TURQUOISE;
 }
 
-#no-info {
+#noInfo {
   display: flex;
-  background: #f2f0eb;
+  background: $COLOR_CREAM5;
 }
 
-#onway-info {
+#onwayInfo {
   display: flex;
-  background: #f2c66d;
+  background: $COLOR_ORANGE;
 }
 
 .no-flex {
   display: inline-block;
 }
 
-.info-text {
+.infoText {
   display: inline;
   overflow: auto;
   margin-bottom: 0;
 }
 
-.relative-text {
+.relativeText {
   position: absolute;
   bottom: 0;
   left: 30px;
 }
 
-.info-item-img {
+.infoItemImg {
   position: relative;
   display: flex;
   min-width: 320px;

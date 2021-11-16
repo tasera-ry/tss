@@ -1,0 +1,28 @@
+@import '../colors.module.scss';
+
+.ProfileStyle {
+    display: flex;
+}
+  
+.SidebarStyle {
+    background: $COLOR_CREAM50;
+    flex-Direction: row;
+    display: flex;
+    justify-Content: left;
+    width: 250;
+    height: 100vh;
+}
+  
+.ContentStyle {
+    margin-Left: 35px;
+}
+  
+.listStyle {
+    padding: 10;
+}
+  
+.elementStyle {
+    color: $COLOR_BLACK;
+    text-Decoration: none;
+    font-Weight: bold;
+}
