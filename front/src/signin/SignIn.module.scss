@@ -1,0 +1,25 @@
+@import '../shared.module.scss';
+
+.paper {
+  @extend .layout-column;
+  align-items: center;
+  margin-top: 16px;
+}
+
+form {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.submitButton {
+  margin: 24px 0 16px;
+}
+
+.text {
+  background-color: $COLOR_CREAM0;
+  border-radius: 4px;
+}
+
+.mistake {
+  color: $COLOR_RED;
+}
