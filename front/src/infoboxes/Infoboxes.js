@@ -7,10 +7,6 @@ import texts from '../texts/texts.json';
 import classNames from 'classnames';
 import css from './Infoboxes.module.scss'
 
-// Dayview menee rikki ilman tätä
-//import './Infoboxes.css'
-//
-
 const classes = classNames.bind(css);
 
 const Infoboxes = () => {
@@ -22,42 +18,42 @@ const Infoboxes = () => {
       <hr />
       <div className={classes(css.infoFlex)}>
         <div className={classes(css.infoItem)}>
-          <p id="openInfo" className={classes(css.box, css.noFlex)} />
+          <p id={css.openInfo} className={classes(css.box, css.noFlex)} />
           {/* Open */}
           {' '}
           <p className={classes(css.infoText, css.noFlex)}>{week.Green[fin]}</p>
         </div>
 
         <div className={classes(css.infoItem)}>
-          <p id="closedInfo2" className={classes(css.box, css.noFlex)} />
+          <p id={css.closedInfo2} className={classes(css.box, css.noFlex)} />
           {/* Closed */}
           {' '}
           <p className={classes(css.infoText, css.noFlex)}>{week.Blue[fin]}</p>
         </div>
 
         <div className={classes(css.infoItem)}>
-          <p id="rangeOfficerInfo" className={classes(css.box, css.noFlex)} />
+          <p id={css.rangeOfficerInfo} className={classes(css.box, css.noFlex)} />
           {/* Range officer confirmed */}
           {' '}
           <p className={classes(css.infoText, css.noFlex)}>{week.Lightgreen[fin]}</p>
         </div>
 
         <div className={classes(css.infoItem)}>
-          <p id="onwayInfo" className={classes(css.box, css.noFlex)} />
+          <p id={css.onwayInfo} className={classes(css.box, css.noFlex)} />
           {/* Range officer on the way */}
           {' '}
           <p className={classes(css.infoText, css.noFlex)}>{week.Orange[fin]}</p>
         </div>
 
         <div className={classes(css.infoItem)}>
-          <p id="closedInfo" className={classes(css.box, css.noFlex)} />
+          <p id={css.closedInfo} className={classes(css.box, css.noFlex)} />
           {/* Range closed */}
           {' '}
           <p className={classes(css.infoText, css.noFlex)}>{week.Red[fin]}</p>
         </div>
 
         <div className={classes(css.infoItem)}>
-          <p id="css.noInfo" className={classes(css.box, css.noFlex)} />
+          <p id={css.noInfo} className={classes(css.box, css.noFlex)} />
           {/* Range officer undefined */}
           {' '}
           <p className={classes(css.infoText, css.noFlex)}>{week.White[fin]}</p>

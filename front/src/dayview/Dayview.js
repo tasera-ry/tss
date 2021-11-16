@@ -20,6 +20,11 @@ import info from '../logo/Info.png';
 // Translations
 import data from '../texts/texts.json';
 
+import classNames from 'classnames';
+import css from './Dayview.module.scss'
+
+const classes = classNames.bind(css);
+
 /*
   Dayview-component for handling day-specific view
   tracks for a certain date
@@ -156,7 +161,7 @@ class Dayview extends Component {
       }
 
       return (
-        <Grid className="sevenGrid">
+        <Grid className={classes(css.sevenGrid)}>
           {items}
         </Grid>
       );
@@ -178,24 +183,24 @@ class Dayview extends Component {
 
       return (
         <Grid item className={`track hoverHand ${color}`} xs={12} sm={2}>
-          <Link className="trackBoxLink" to={props.to}>
-            <span className="bold">
+          <Link className={classes(css.trackBoxLink)} to={props.to}>
+            <span className={classes(css.bold)}>
               {props.name}
             </span>
-            <span className="hidden">
+            <span className={classes(css.hidden)}>
               -
             </span>
-            <span className="linebreak">
+            <span className={classes(css.linebreak)}>
               <br />
             </span>
-            <span className="overflowHidden">
+            <span className={classes(css.overflowHidden)}>
               {props.short_description}
             </span>
             {props.notice.length === 0
               ? <br />
               : (
-                <div className="DayviewInfo">
-                  <img className="infoImg-2" src={info} alt={dayview.Notice[fin]} />
+                <div className={classes(css.DayviewInfo)}>
+                  <img className={classes(css.infoImg2)} src={info} alt={dayview.Notice[fin]} />
                 </div>
               )}
           </Link>
@@ -291,31 +296,31 @@ class Dayview extends Component {
           >
 
             {/* color info boxes */}
-            <div className="info-item">
-              <p className="box no-flex greenB" />
+            <div className={classes(css.infoItem)}>
+              <p className={classes(css.box, css.noFlex, css.greenB)} />
               {/* Open */}
               {' '}
               <p>{dayview.Open[fin]}</p>
             </div>
-            <div className="info-item">
-              <p className="box no-flex redB" />
+            <div className={classes(css.infoItem)}>
+              <p className={classes(css.box, css.noFlex, css.redB)} />
               {/* Closed */}
               {' '}
               <p>{dayview.Closed[fin]}</p>
             </div>
-            <div className="info-item">
-              <p className="box no-flex whiteB" />
+            <div className={classes(css.infoItem)}>
+              <p className={classes(css.box, css.noFlex, css.whiteB)} />
               {/* No supervisor */}
               {' '}
               <p>{dayview.NotAvailable[fin]}</p>
             </div>
-            <div className="info-item-img">
-              <p className="empty-box no-flex">
-                <img className="infoImg no-flex" src={info} alt={dayview.Notice[fin]} />
+            <div className={classes(css.infoItemImg)}>
+              <p className={classes(css.noFlex)}>
+                <img className={classes(css.infoImg, css.noFlex)} src={info} alt={dayview.Notice[fin]} />
               </p>
               {/* Extra info on track */}
               {' '}
-              <p className="info-text relative-text no-flex">{dayview.Notice[fin]}</p>
+              <p className={classes(css.infoText, css.relativeText, css.noFlex)}>{dayview.Notice[fin]}</p>
             </div>
           </Grid>
 
