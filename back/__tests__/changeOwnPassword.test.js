@@ -51,8 +51,6 @@ jest.mock('../models/user', () => {
 const userModel = require('../models/user');
 
 describe(`${endpoint}`, () => {
-  
-
   describe('PUT', () => {
     it(`When a valid token is provided:
     returns code 204 and updates password.`, async () => {
@@ -103,7 +101,6 @@ describe(`${endpoint}`, () => {
       const res = await request.put(`${endpoint}/223`)
         .set('Cookie', [`token=${jwt.sign({id: '123'}, config.jwt.secret)}`])
         .send({password: newPassword});
-      //console.log(res);
       expect(res.status).toBe(204);
 
       const updatedPassword = (await (userModel.read({id: '223'})))[0].digest;
