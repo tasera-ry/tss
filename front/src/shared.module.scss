@@ -50,7 +50,7 @@ code {
   border-right: 20px solid $COLOR_BLACK;
 }
 
-// From infoboxes
+// FROM INFOBOXES
 
 .infoItem {
     display: flex;
@@ -96,4 +96,73 @@ code {
     position: absolute;
     bottom: 0;
     left: 30px;
+}
+
+// FROM MONTHVIEW
+
+.viewChangerCurrent {
+  display: flex;
+  justify-content: flex-start;
+  border-right: 1px solid;
+}
+
+.viewChangerCurrent > a {
+  padding: 8px;
+  padding-top: 16px;
+  align-items: center;
+  border: 1px;
+  border-bottom: 0;
+  border-style: solid;
+  border-color: $COLOR_BLACK;
+  font-size: large;
+  font-weight: bold;
+  background-color: $COLOR_LIGHT_GREY;
+  color: $COLOR_LIGHT_GREY;
+}
+
+.viewChangerCurrent > a > div {
+  color: $COLOR_BLACK;
+}
+
+.viewChanger {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 57px;
+  font-weight: bold;
+}
+
+.viewChangerContainer {
+  display: flex;
+  justify-content: flex-end;
+  border-right: 1px solid;
+}
+
+.viewChangerContainer > a {
+  padding: 8px;
+  padding-top: 16px;
+  align-items: center;
+  border: 1px;
+  border-right: 0px;
+  border-bottom: 0;
+  border-style: solid;
+  border-color: $COLOR_BLACK;
+  font-size: large;
+  font-weight: bold;
+  background-color: $COLOR_LIGHT_GREY;
+  color: $COLOR_GREY;
+}
+
+.viewChangerContainer > a > div {
+  color: $COLOR_BLACK;
+}
+
+/* smartphones, Android phones, landscape iPhone */
+@media only screen and (min-width:480px) {
+  .viewChangerContainer > a {
+  padding: 16px;
+  }
+  .viewChangerCurrent > a {
+  padding: 16px;
+  }
 }
