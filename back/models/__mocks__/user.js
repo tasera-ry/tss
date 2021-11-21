@@ -2,6 +2,7 @@
 const users = [
   
 ]; 
+
 // Mock user model
 const model = {
   read: async (params) => users.filter((user) => {
