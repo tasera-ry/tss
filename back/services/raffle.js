@@ -15,6 +15,22 @@ const shuffleArray = array => {
   }
 }
 
+function compare( a, b ) {
+  if ( a.ratio < b.ratio ) {
+    return -1;
+  }
+  if ( a.ratio > b.ratio ) {
+    return 1;
+  }
+  if (a.members < b.members) {
+      return -1
+  }
+  if ( a.members > b.members ) {
+    return 1;
+  }
+  return 0;
+}
+
 
 const service = {
   /**
@@ -25,57 +41,78 @@ const service = {
   create: async function createRaffle(info) {
     // console.log(info);
     const dates = await models.reservation.read({ available: true }, [], '2021-01-01', '2021-12-31');
-    const members = await models.members.read({ raffle: true });
+    var members = await models.members.read({ raffle: true }, ['user_id', 'name', 'members', 'supervisors', 'raffle']);
+    // console.log(members);
     const n_supervisions = dates.length;
     // Count the number of supervisors
     var n_total = 0;
     members.forEach(function(m) {
       n_total += (m.members + m.supervisors);
     });
-    console.log(n_total, n_supervisions);
-    var supervisions = [];
+    
+    var current_supervisions = 0;
     sum = 0;
     members.forEach(function(m) {
-      //console.log(m);
       const n = Math.round((m.members + m.supervisors) / n_total * n_supervisions);
-      //supervisions.push(r);
-      for (i = 0; i < n; i++) {
-        supervisions.push(m.id);
+      current_supervisions += n;
+
+      m.supervisions = n;
+      m.ratio = n/(m.members + m.supervisors);
+    });
+
+
+    // trim extra supervisions
+    if ( current_supervisions > n_supervisions) {
+      while (0 < current_supervisions - n_supervisions) {
+        members.sort(compare).reverse();
+        current_supervisions--;
+        members[0].supervisions--;
+        members[0].ratio = members[0].supervisions/(members[0].members + members[0].supervisors)
+      }
+    }
+    
+    //add missing supervisions
+    if ( current_supervisions < n_supervisions) {
+      while (0 < n_supervisions - current_supervisions) {
+        members.sort(compare);
+        current_supervisions++;
+        members[0].supervisions++;
+        members[0].ratio = members[0].supervisions/(members[0].members + members[0].supervisors)
+      }
+    }
+    /*
+    members.forEach(function(m) {
+      console.log(m.members + m.supervisors, m.supervisions, m.ratio);
+    });
+    */
+
+    var supervisions = [];
+    members.forEach(function(m) {
+      for (i = 0; i < m.supervisions; i++) {
+        supervisions.push(m);
       }
     });
-    console.log(supervisions);
+    
     shuffleArray(supervisions);
-    if ( supervisions.length > n_supervisions) {
-      var temp = [];
-      for ( i = 0; i < supervisions.length - n_supervisions; i++) {
-        temp.push(supervisions.pop());
-      }
-      console.log("removed: " + temp);
-    }
-    if ( supervisions.length < n_supervisions) {
-      var temp = [];
-      for ( i = 0; i < n_supervisions - supervisions.length; i++) {
-        const id = supervisions[Math.floor(Math.random()*supervisions.length)];
-        temp.push(id);
-      }
-      console.log("temp to concat: " + temp);
-      supervisions = supervisions.concat(temp);
-    }
-    console.log(supervisions);
-    console.log("number of supervisions: " + n_supervisions);
-    console.log("number of raffled supervisions: " + supervisions.length);
-    const str = dates[0].date
-    const day = new Date('str');
+    //console.log(dates);
+    //console.log(supervisions);
+    //console.log(dates.length, supervisions.length);
 
-    /** return { [
-      {
-        "date": "01-01-1000",
-        "id": 12,
-        "name": "pamauttelijat"
-      },
+    var raffle = [];
 
-    ] } */
-    return {"available days in 2021": n_supervisions};
+    for (i = 0; i < dates.length; i++) {
+      var temp = {
+        "date": dates[i].date,
+        "range_id": dates[i].range_id,
+        "user_id": supervisions[i].user_id,
+        "name": supervisions[i].name
+      }
+      raffle.push(temp);
+    }
+
+    console.log(raffle);
+
+    return {raffle};
   }
 };
 
