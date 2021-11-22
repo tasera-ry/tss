@@ -114,7 +114,7 @@ const ResetPassword = () => {
             component="h3"
             variant="h5"
             align="center"
-            className={classes(css.emailSent)}
+            className={classes(css.success)}
           >
             {resetPW.Sent[lang]}
           </Typography>
