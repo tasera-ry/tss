@@ -1,10 +1,13 @@
 import React from 'react';
 
-import './Infoboxes.css';
-
 import InfoImg from '../logo/Info.png';
 
 import texts from '../texts/texts.json';
+
+import classNames from 'classnames';
+import css from './Infoboxes.module.scss'
+
+const classes = classNames.bind(css);
 
 const Infoboxes = () => {
   const fin = localStorage.getItem('language');
@@ -13,56 +16,56 @@ const Infoboxes = () => {
     <div>
       <br />
       <hr />
-      <div className="info-flex">
-        <div className="info-item">
-          <p id="open-info" className="box no-flex" />
+      <div className={classes(css.infoFlex)}>
+        <div className={classes(css.infoItem)}>
+          <p id={css.openInfo} className={classes(css.box, css.noFlex)} />
           {/* Open */}
           {' '}
-          <p className="info-text no-flex">{week.Green[fin]}</p>
+          <p className={classes(css.infoText, css.noFlex)}>{week.Green[fin]}</p>
         </div>
 
-        <div className="info-item">
-          <p id="closed-info2" className="box no-flex" />
+        <div className={classes(css.infoItem)}>
+          <p id={css.closedInfo2} className={classes(css.box, css.noFlex)} />
           {/* Closed */}
           {' '}
-          <p className="info-text no-flex">{week.Blue[fin]}</p>
+          <p className={classes(css.infoText, css.noFlex)}>{week.Blue[fin]}</p>
         </div>
 
-        <div className="info-item">
-          <p id="range-officer-info" className="box no-flex" />
+        <div className={classes(css.infoItem)}>
+          <p id={css.rangeOfficerInfo} className={classes(css.box, css.noFlex)} />
           {/* Range officer confirmed */}
           {' '}
-          <p className="info-text no-flex">{week.Lightgreen[fin]}</p>
+          <p className={classes(css.infoText, css.noFlex)}>{week.Lightgreen[fin]}</p>
         </div>
 
-        <div className="info-item">
-          <p id="onway-info" className="box no-flex" />
+        <div className={classes(css.infoItem)}>
+          <p id={css.onwayInfo} className={classes(css.box, css.noFlex)} />
           {/* Range officer on the way */}
           {' '}
-          <p className="info-text no-flex">{week.Orange[fin]}</p>
+          <p className={classes(css.infoText, css.noFlex)}>{week.Orange[fin]}</p>
         </div>
 
-        <div className="info-item">
-          <p id="closed-info" className="box no-flex" />
+        <div className={classes(css.infoItem)}>
+          <p id={css.closedInfo} className={classes(css.box, css.noFlex)} />
           {/* Range closed */}
           {' '}
-          <p className="info-text no-flex">{week.Red[fin]}</p>
+          <p className={classes(css.infoText, css.noFlex)}>{week.Red[fin]}</p>
         </div>
 
-        <div className="info-item">
-          <p id="no-info" className="box no-flex" />
+        <div className={classes(css.infoItem)}>
+          <p id={css.noInfo} className={classes(css.box, css.noFlex)} />
           {/* Range officer undefined */}
           {' '}
-          <p className="info-text no-flex">{week.White[fin]}</p>
+          <p className={classes(css.infoText, css.noFlex)}>{week.White[fin]}</p>
         </div>
 
-        <div className="info-item-img">
-          <p className="empty-box no-flex">
-            <img className="exclamation no-flex" src={InfoImg} alt={week.Notice[fin]} />
+        <div className={classes(css.infoItemImg)}>
+          <p className={classes(css.noFlex)}>
+            <img className={classes(css.exclamation, css.noFlex)} src={InfoImg} alt={week.Notice[fin]} />
           </p>
           {/* Track has additional information */}
           {' '}
-          <p className="info-text relative-text no-flex">{week.Notice[fin]}</p>
+          <p className={classes(css.infoText, css.relativeText, css.noFlex)}>{week.Notice[fin]}</p>
         </div>
 
       </div>
