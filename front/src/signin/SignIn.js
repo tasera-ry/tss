@@ -56,7 +56,7 @@ const SignIn = () => {
           {signin.SignIn[lang]}
         </Typography>
 
-        <form noValidate>
+        <form noValidate className={classes(css.wideForm)}>
           <TextField
             autoFocus
             variant="outlined"
@@ -94,7 +94,7 @@ const SignIn = () => {
             }}
           />
           {mistake && (
-            <Typography align="center" className={classes(css.mistake)}>
+            <Typography align="center" className={classes(css.error)}>
               {signin.Helper[lang]}
             </Typography>
           )}
