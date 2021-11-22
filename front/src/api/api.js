@@ -34,6 +34,9 @@ const patchPassword = (id, password) =>
     password,
   });
 
+const sendResetPasswordToken = async (email) =>
+  axios.post('api/reset', { email });
+
 const getUser = async (name) => {
   const response = await axios.get(`api/user?name=${name}`);
   return response.data;
@@ -72,6 +75,7 @@ export default {
   signOut,
   validateLogin,
   patchPassword,
+  sendResetPasswordToken,
   getUser,
   patchReservation,
   addRangeSupervision,
