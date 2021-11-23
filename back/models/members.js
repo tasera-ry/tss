@@ -27,7 +27,6 @@ const model = {
   },
 
   read: async function readMembers(key, fields) {
-    console.log(key, fields);
     return knex('members')
       .join('user', 'members.user_id', 'user.id')
       .where(key)
