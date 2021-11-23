@@ -102,6 +102,7 @@ const service = {
 
     for (i = 0; i < dates.length; i++) {
       var temp = {
+        "date_id": dates[i].id,
         "date": dates[i].date,
         "range_id": dates[i].range_id,
         "user_id": supervisions[i].user_id,
@@ -109,8 +110,6 @@ const service = {
       }
       raffle.push(temp);
     }
-
-    console.log(raffle);
 
     return {raffle};
   }
