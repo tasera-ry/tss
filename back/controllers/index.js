@@ -11,8 +11,9 @@ const daterange = require(path.join(controllers, 'daterange'));
 const emailSettings = require(path.join(controllers, 'emailSettings'));
 const resetPassword = require(path.join(controllers, 'resetPassword'));
 const raffle = require(path.join(controllers, 'raffle'));
+const raffleSupervisors = require(path.join(controllers, 'raffleSupervisors'));
 const members = require(path.join(controllers, 'members'));
-
+console.log(raffleSupervisors);
 exports.user = user;
 exports.trackSupervision = trackSupervision;
 exports.rangeSupervision = rangeSupervision;
@@ -24,3 +25,4 @@ exports.emailSettings = emailSettings;
 exports.resetPassword = resetPassword;
 exports.raffle = raffle;
 exports.members = members;
+exports.raffleSupervisors = raffleSupervisors;
