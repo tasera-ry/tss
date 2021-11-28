@@ -17,7 +17,8 @@ jest.mock('../models/user', () => {
 
   const model = {
     create: (user) => users.push(user),
-    read: (key) => users.filter(user => user.name === key.name),
+    readCaseInsensitive: (name) => 
+      users.filter(user => user.name.toLowerCase() === name.toLowerCase()),
   };
   
   return model;
