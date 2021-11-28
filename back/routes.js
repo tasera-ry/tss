@@ -272,6 +272,7 @@ router.route('/raffle')
   );
 
 router.route('/set-raffled-supervisors')
+  // TODO jwt superuser required
   .post(
     validators.raffleSupervisors.checkRaffleResults,
     controllers.raffleSupervisors.set
