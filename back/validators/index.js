@@ -11,6 +11,7 @@ const daterange = require(path.join(root, 'validators', 'daterange'));
 const emailSettings = require(path.join(root, 'validators', 'emailSettings'));
 const members = require(path.join(root, 'validators', 'members'));
 const raffle = require(path.join(root, 'validators', 'raffle'));
+const raffleSupervisors = require(path.join(root, 'validators', 'raffleSupervisors'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -22,3 +23,4 @@ exports.daterange = daterange;
 exports.emailSettings = emailSettings;
 exports.members = members;
 exports.raffle = raffle;
+exports.raffleSupervisors = raffleSupervisors;
