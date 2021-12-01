@@ -61,12 +61,11 @@ code {
 }
 
 .box {
+    @extend .noFlex;
     float: left;
     height: 20px;
     width: 20px;
     margin-right: 8px;
-    margin-left: 0px;
-    margin-bottom: 0px;
     border: 1px $COLOR_BLACK;
     clear: both;
     min-height: 20px;
@@ -87,6 +86,7 @@ code {
 }
 
 .infoText {
+    @extend .noFlex;
     display: inline;
     overflow: auto;
     margin-bottom: 0;
@@ -106,22 +106,25 @@ code {
   border-right: 1px solid;
 }
 
-.viewChangerCurrent > a {
+.viewChangerLink {
   padding: 8px;
   padding-top: 16px;
   align-items: center;
   border: 1px;
-  border-bottom: 0;
   border-style: solid;
   border-color: $COLOR_BLACK;
   font-size: large;
   font-weight: bold;
   background-color: $COLOR_LIGHT_GREY;
-  color: $COLOR_LIGHT_GREY;
 }
 
-.viewChangerCurrent > a > div {
-  color: $COLOR_BLACK;
+.viewChangerCurrent > a {
+  @extend .viewChangerLink;
+  color: $COLOR_LIGHT_GREY;
+
+  div {
+    color: $COLOR_BLACK;
+  }
 }
 
 .viewChanger {
@@ -139,22 +142,12 @@ code {
 }
 
 .viewChangerContainer > a {
-  padding: 8px;
-  padding-top: 16px;
-  align-items: center;
-  border: 1px;
-  border-right: 0px;
-  border-bottom: 0;
-  border-style: solid;
-  border-color: $COLOR_BLACK;
-  font-size: large;
-  font-weight: bold;
-  background-color: $COLOR_LIGHT_GREY;
+  @extend .viewChangerLink;
   color: $COLOR_GREY;
-}
 
-.viewChangerContainer > a > div {
-  color: $COLOR_BLACK;
+  div {
+    color: $COLOR_BLACK;
+  }
 }
 
 /* smartphones, Android phones, landscape iPhone */
