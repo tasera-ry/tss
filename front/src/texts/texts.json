@@ -269,10 +269,7 @@
     "labelRowsSelect": ["riviä", "rows"],
     "saveTooltip": ["Tallenna", "Save"],
     "cancelTooltip": ["Peruuta", "Cancel"],
-    "nextTooltip": ["Seuraava sivu", "Next page"],
-    "previousTooltip": ["Edellinen sivu", "Previous page"],
-    "firstTooltip": ["Ensimmäinen sivu", "First page"],
-    "lastTooltip": ["Viimeinen sivu", "Last page"]
+    "nextTooltip": ["Seuraava sivu", "Next page"], "previousTooltip": ["Edellinen sivu", "Previous page"], "firstTooltip": ["Ensimmäinen sivu", "First page"], "lastTooltip": ["Viimeinen sivu", "Last page"]
   },
   "month": {
     "0": ["Err", "Err"],
@@ -418,6 +415,19 @@
     ],
     "alertSuccess": ["Salasanan vaihto onnistui", "Password change successful"],
     "alertFail": ["Salasanan vaihto epäonnistui", "Password change failed"]
+  },
+  "raffleDatePicker": {
+    "weekdaysLong": {
+      "0": ["Sunnuntai", "Maanantai", "Tiistai", "Keskiviikko", "Torstai", "Perjantai", "Lauantai"],
+      "1": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]},
+    "weekdaysShort": {
+      "0": ["Su", "Ma", "Ti", "Ke", "To", "Pe", "La"],
+      "1": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]},
+    "months": {
+      "0": ["Tammikuu", "Helmikuu", "Maaliskuu", "Huhtikuu", "Toukokuu", "Kesäkuu",
+        "Heinäkuu", "Elokuu", "Syyskuu", "Lokakuu", "Marraskuu", "Joulukuu"],
+      "1": ["January", "February", "March", "April", "May", "June", "July", "August",
+        "September", "October", "November", "December"]}
   },
   "raffle": {
     "tableTitle": ["Yhteisöt", "Organizations"],
