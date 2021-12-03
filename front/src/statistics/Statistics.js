@@ -246,14 +246,14 @@ const Statistics = () => {
       {/* Header with arrows */}
       <Grid class="date-header">
         <div
-          className={classes(css['arrow-left'])}
+          className={classes(css.arrowLeft)}
           onClick={() => setDate(incrementOrDecrementDate(date, -1))}
         />
         <h1 className={classes(css.headerText)}>
           {date.toLocaleDateString('fi-FI')}
         </h1>
         <div
-          className={classes(css['arrow-right'])}
+          className={classes(css.arrowRight)}
           onClick={() => setDate(incrementOrDecrementDate(date, 1))}
         />
       </Grid>
