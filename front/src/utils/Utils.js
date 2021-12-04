@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 
 import texts from '../texts/texts.json';
 
+export const dateToString = (d) => `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+
 export async function getSchedulingDate(date) {
   try {
     const response = await fetch(`/api/datesupreme/${moment(date).format('YYYY-MM-DD')}`, {
