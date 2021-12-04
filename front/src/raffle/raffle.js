@@ -9,6 +9,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import translations from "../texts/texts.json";
 import { UsersTable } from "./usersTable";
+import RaffleDatePicker from "./RaffleDatePicker";
 import "../App.css";
 import css from "./raffle.module.scss";
 const classes = classNames.bind(css);
@@ -20,6 +21,7 @@ const { raffle } = translations;
 export const Raffle = () => {
   const [supervisorsOpen, setSupervisorsOpen] = useState(true);
   const [supervisors, setSupervisors] = useState([]);
+  const [selectedDays, setSelectedDays] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [toast, setToast] = useState({
     open: false,
@@ -96,6 +98,10 @@ export const Raffle = () => {
         ) : (
           <div className={classes(css.divider)} />
         )}
+        <RaffleDatePicker
+          selectedDays={selectedDays}
+          setSelectedDays={setSelectedDays}
+        />
         <Snackbar
           open={toast.open}
           autoHideDuration={5000}
