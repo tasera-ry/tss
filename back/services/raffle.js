@@ -39,18 +39,19 @@ const service = {
    * @returns 
    */
   create: async function createRaffle(info) {
-    // console.log(info);
-    const dates = await models.reservation.read({ available: true }, [], '2021-01-01', '2021-12-31');
-    var members = await models.members.read({ raffle: true }, ['user_id', 'name', 'members', 'supervisors', 'raffle']);
-    // console.log(members);
+    const range_id = info.range_id;
+    const dates = info.dates;
+    //const dates = await models.reservation.read({ available: true }, [], '2021-01-01', '2021-12-31');
+    //console.log(dates);
+    let members = await models.members.read({ raffle: true }, ['user_id', 'name', 'members', 'supervisors', 'raffle']);
     const n_supervisions = dates.length;
     // Count the number of supervisors
-    var n_total = 0;
+    let n_total = 0;
     members.forEach(function(m) {
       n_total += (m.members + m.supervisors);
     });
     
-    var current_supervisions = 0;
+    let current_supervisions = 0;
     sum = 0;
     members.forEach(function(m) {
       const n = Math.round((m.members + m.supervisors) / n_total * n_supervisions);
@@ -102,9 +103,8 @@ const service = {
 
     for (i = 0; i < dates.length; i++) {
       var temp = {
-        "date_id": dates[i].id,
-        "date": dates[i].date,
-        "range_id": dates[i].range_id,
+        "date": dates[i],
+        "range_id": range_id,
         "user_id": supervisions[i].user_id,
         "name": supervisions[i].name
       }
