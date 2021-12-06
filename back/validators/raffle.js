@@ -56,7 +56,11 @@ function handleValidationErrors(request, response, next) {
 
 module.exports = {
   create: [
+<<<<<<< HEAD
     fields.range_id(body, 'optional'),
+=======
+    fields.range_id(body, 'exists'),
+>>>>>>> dates as input for raffle backend
     fields.dates(body, 'exists'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
