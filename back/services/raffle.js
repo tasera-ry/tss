@@ -39,7 +39,8 @@ const service = {
    * @returns 
    */
   create: async function createRaffle(info) {
-    const range_id = info.range_id;
+    range_id = info.range_id == undefined ? 1 : info.range_id;
+    console.log(info.range_id, range_id);
     const dates = info.dates;
     //const dates = await models.reservation.read({ available: true }, [], '2021-01-01', '2021-12-31');
     //console.log(dates);
