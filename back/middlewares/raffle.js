@@ -4,10 +4,10 @@ const services = require(path.join(root, 'services'));
 
 const serviceCalls = {
   create: async function createRaffle(request, response, next) {
-    const query = response.locals.query;
+    const body = response.locals.body;
 
     try {
-      response.locals.queryResult = await services.raffle.create(query, []);
+      response.locals.queryResult = await services.raffle.create(body, []);
     }
     catch(e) {
       return next(e);
