@@ -5,7 +5,12 @@ import api from '../api/api';
 import texts from '../texts/texts.json';
 import colors from '../colors.module.scss';
 
-export const dateToString = (d) => `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+export const dateToString = (d) => {
+  const month = d.getMonth() + 1;
+  const date = d.getDate();
+  
+  return `${d.getFullYear()}-${month < 10 ? '0' : ''}${month}-${date < 10 ? '0' : ''}${date}`;
+}
 /**
  * Increments or decrements the date by the param amount
  * @param {Date} date The date to be incemented or decremented

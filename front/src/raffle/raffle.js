@@ -4,14 +4,18 @@ import api from "../api/api";
 import { StylesProvider } from "@material-ui/core/styles";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
+import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import translations from "../texts/texts.json";
 import { UsersTable } from "./usersTable";
+import { dateToString } from "../utils/Utils";
 import RaffleDatePicker from "./RaffleDatePicker";
 import "../App.css";
 import css from "./raffle.module.scss";
+import { ResultsTable } from "./resultsTable";
 const classes = classNames.bind(css);
 
 const lang = localStorage.getItem("language");
@@ -22,7 +26,11 @@ export const Raffle = () => {
   const [supervisorsOpen, setSupervisorsOpen] = useState(true);
   const [supervisors, setSupervisors] = useState([]);
   const [selectedDays, setSelectedDays] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [raffleResults, setRaffleResults] = useState(undefined);
+  const [isLoading, setIsLoading] = useState({
+    table: false,
+    raffle: false,
+  });
   const [toast, setToast] = useState({
     open: false,
     msg: "",
@@ -49,7 +57,7 @@ export const Raffle = () => {
       setToast({ open: true, msg: raffle.valueError[lang], severity: "error" });
       return;
     }
-    setIsLoading(true);
+    setIsLoading({ ...isLoading, table: true });
     try {
       await api.patchMembers(user_id, data);
 
@@ -70,7 +78,24 @@ export const Raffle = () => {
         severity: "error",
       });
     } finally {
-      setIsLoading(false);
+      setIsLoading({ ...isLoading, table: false });
+    }
+  };
+
+  const handleSubmitRaffle = async () => {
+    setIsLoading({ ...isLoading, raffle: true });
+    const raffleDates = selectedDays.map((date) => dateToString(date));
+    try {
+      const results = await api.raffleSupervisors(raffleDates);
+      setRaffleResults(results.raffle);
+    } catch (err) {
+      setToast({
+        open: true,
+        msg: raffle.raffleError[lang],
+        severity: "error",
+      });
+    } finally {
+      setIsLoading({ ...isLoading, raffle: false });
     }
   };
 
@@ -93,15 +118,44 @@ export const Raffle = () => {
           <UsersTable
             supervisors={supervisors}
             onSubmitUser={handleSubmitUser}
-            isLoading={isLoading}
+            isLoading={isLoading.table}
           />
         ) : (
           <div className={classes(css.divider)} />
         )}
-        <RaffleDatePicker
-          selectedDays={selectedDays}
-          setSelectedDays={setSelectedDays}
-        />
+        {supervisors.length !== 0 && (
+          <div className={classes(css.raffleForm)}>
+            <h2>{raffle.dates[lang]}</h2>
+            <RaffleDatePicker
+              selectedDays={selectedDays}
+              setSelectedDays={setSelectedDays}
+            />
+            <div className={classes(css.submitContainer)}>
+              {!isLoading.raffle ? (
+                <Button
+                  variant="contained"
+                  className={classes(css.acceptButton)}
+                  disabled={selectedDays.length === 0}
+                  onClick={handleSubmitRaffle}
+                >
+                  {raffle.raffle[lang]}
+                </Button>
+              ) : (
+                <CircularProgress />
+              )}
+            </div>
+          </div>
+        )}
+        {raffleResults && (
+          <>
+            <h2>{raffle.results[lang]}</h2>
+            <ResultsTable
+              results={raffleResults}
+              setResults={setRaffleResults}
+              supervisors={supervisors}
+            />
+          </>
+        )}
         <Snackbar
           open={toast.open}
           autoHideDuration={5000}

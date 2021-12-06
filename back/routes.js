@@ -265,5 +265,12 @@ router.route('/set-raffled-supervisors')
     validators.raffleSupervisors.checkRaffleResults,
     controllers.raffleSupervisors.set
   );
+  
+router.route('/raffle')
+  .post(
+    validators.raffle.create,
+    middlewares.raffle.create,
+    controllers.raffle.create
+  );
 
 module.exports = router;

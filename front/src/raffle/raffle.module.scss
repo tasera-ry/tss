@@ -7,6 +7,7 @@
   gap: 10px;
   max-width: 820px;
   margin: 0 auto;
+  margin-bottom: 50px;
 }
 
 .tableHeader {
@@ -19,4 +20,27 @@
   border: 0.5px solid lighten($COLOR_CREAM30, 15%);
   width: 100%;
   height: 0;
+}
+
+.wideForm {
+  width: 100%;
+  margin-top: 8px;
+  .submitButton,
+  .submitContainer {
+    margin: 24px 0 16px;
+  }
+}
+
+.raffleForm {
+  @extend .wideForm;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.acceptButton {
+  background-color: $COLOR_BLUE !important;
+  &:disabled {
+    background-color: lighten($COLOR_GREY, 40%) !important;
+  }
 }

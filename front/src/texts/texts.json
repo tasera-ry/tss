@@ -438,6 +438,12 @@
     "loadError": ["Yhteisöjen lataus epäonnistui", "Could not load organizations"],
     "valueError": ["Arvot eivät saa olla negatiivisia", "Values cannot be negative"],
     "updateError": ["Yhteisön päivitys epäonnistui", "Organization update failed"],
-    "updateSuccess": ["Yhteisö päivitetty", "Organization updated"]
+    "updateSuccess": ["Yhteisö päivitetty", "Organization updated"],
+    "raffleUnavailable": ["Lisää yhteisöjä arpoaksesi valvojat", "Add organizations to raffle supervisors"],
+    "dates": ["Valitse arvottavat päivämäärät", "Choose dates for the raffle"],
+    "date": ["Päivämäärä", "Date"],
+    "raffle": ["Arvo valvojat", "Raffle supervisors"],
+    "raffleError": ["Arvonnan suoritus epäonnistui", "The execution of the raffle failed"],
+    "results": ["Arvonnan tulokset", "Raffle results"]
   }
 }
