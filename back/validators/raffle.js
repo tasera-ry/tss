@@ -56,7 +56,7 @@ function handleValidationErrors(request, response, next) {
 
 module.exports = {
   create: [
-    fields.range_id(body, 'exists'),
+    fields.range_id(body, 'optional'),
     fields.dates(body, 'exists'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
