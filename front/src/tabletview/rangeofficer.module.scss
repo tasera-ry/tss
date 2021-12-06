@@ -1,0 +1,108 @@
+@import '../shared.module.scss';
+
+.hoverHand:hover {
+  cursor: pointer;
+}
+
+.rangeOfficerStatus {
+  border-radius: 10px;
+  background-color: $COLOR_GREEN;
+  padding: 10px;
+  margin: 0px 50% 10px 10px;
+  text-align: center;
+}
+
+:global(.MuiButton-label) {
+  font-size: 1.2em;
+}
+
+.Status {
+  display: flex;
+  max-width: 80%;
+  width: 400px;
+  margin: auto;
+}
+
+.Text {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin: 4px;
+  font-size: 2rem;
+}
+
+.rowStyle {
+  flex-Direction: row;
+  display: flex;
+  justify-Content: center;
+}
+
+.trackRowStyle {
+  flex-Direction: row;
+  display: flex;
+  justify-Content: center;
+  flex-Wrap: wrap;
+}
+
+.colorButton {
+  font-size: 17px;
+  border-radius: 50px;
+  width: 250px;
+  height: 100px;
+  margin: 8px;
+}
+
+.rowStyle > .greenButtonStyle {
+  @extend .colorButton;
+  background-Color: $COLOR_GREEN;
+}
+
+.rowStyle > .orangeButtonStyle {
+  @extend .colorButton;
+  background-Color: $COLOR_ORANGE;
+}
+
+.rowStyle > .redButtonStyle {
+  @extend .colorButton;
+  background-Color: $COLOR_RED_LIGHT;
+}
+
+.saveButtonStyle {
+  background-Color: $COLOR_BLUE;
+}
+
+.cancelButtonStyle {
+  background-Color: $COLOR_CREAM10;
+}
+
+.simpleButton {
+  padding: '2px 10px';
+  border-Radius: 15;
+  font-Size: '1.2rem';
+}
+
+.rangeStyle {
+  text-Align: center;
+  margin: 10;
+  margin-Top: 0;
+}
+
+.dialogStyle {
+  background-Color: $COLOR_CREAM5;
+}
+
+.rangediv {
+  width: 300;
+}
+
+.statusStyle {
+  border-radius: 3px;
+  width: 400px;
+  margin: 4px;
+  margin-bottom: 0px;
+}
+
+.buttonStyle {
+  border-radius: 30px;
+  width: 230px;
+}
