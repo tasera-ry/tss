@@ -27,6 +27,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.4",
+    "react-window": "^1.8.6",
     "sass": "^1.42.1",
     "socket.io-client": "^2.3.1"
   },
