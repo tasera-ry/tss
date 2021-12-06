@@ -6,7 +6,12 @@ import { Link } from 'react-router-dom';
 
 import texts from '../texts/texts.json';
 
-export const dateToString = (d) => `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+export const dateToString = (d) => {
+  const month = d.getMonth() + 1;
+  const date = d.getDate();
+  
+  return `${d.getFullYear()}-${month < 10 ? '0' : ''}${month}-${date < 10 ? '0' : ''}${date}`;
+}
 
 export async function getSchedulingDate(date) {
   try {

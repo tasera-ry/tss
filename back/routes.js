@@ -263,7 +263,7 @@ router.route('/members/:user_id')
   );
 
 router.route('/raffle')
-  .get(
+  .post(
     validators.raffle.create,
     middlewares.raffle.create,
     controllers.raffle.create

@@ -8,7 +8,13 @@ const getMembers = async () => {
 const patchMembers = async (user_id, data) =>
   axios.put(`/api/members/${user_id}`, data);
 
+const raffleSupervisors = async (dates) => {
+  const response = await axios.post("api/raffle", { dates });
+  return response.data;
+};
+
 export default {
   getMembers,
   patchMembers,
+  raffleSupervisors,
 };

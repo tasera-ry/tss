@@ -20,6 +20,22 @@
   max-width: 1.5em;
 }
 
+.flexCell {
+  flex: 1;
+}
+
+.flexRow {
+  width: 100%;
+  min-width: 100%;
+  display: flex;
+  justify-content: space-around;
+
+  .smallCell {
+    width: 36px;
+    max-width: 36px;
+  }
+}
+
 .editedCell {
   width: 145px;
 
