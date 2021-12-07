@@ -11,20 +11,15 @@ const hash = password => bcrypt.hashSync(password, config.bcrypt.hashRounds);
 
 const endpoint = '/api/sign';
 
-// Mock user module
-jest.mock('../models/user', () => {
-  const users = []; 
-
-  const model = {
-    create: (user) => users.push(user),
-    readCaseInsensitive: (name) => 
-      users.filter(user => user.name.toLowerCase() === name.toLowerCase()),
-  };
-  
-  return model;
-});
+jest.mock('../models/user');
+const userModel = require('../models/user');
 
 describe(`${endpoint}`, () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    userModel.clear();
+  });
+
   describe('POST', () => {
     it('When no credentials are provided: returns status code 400.', async () => {
       await request.post(endpoint).send().expect(400);
@@ -39,7 +34,7 @@ describe(`${endpoint}`, () => {
     it('When valid credentials are provided: returns status code 200 and sets token cookie', async () => {
       // Create user
       const user = {name: 'tiivitaavi', digest: hash('@L44L44L33')};
-      require('../models/user').create(user);
+      userModel.create(user);
 
       let res = await request.post(endpoint)
         .send({name: 'tiivitaavi', password: '@L44L44L33', secure: false});

@@ -16,33 +16,9 @@ jest.mock('../mailer', () => {
   return emailService;
 });
 
-// Mock user module
-jest.mock('../models/user', () => {
-  const users = []; 
-
-  const model = {
-    read: async (params) => users.filter((user) => {
-      const searchKeys = Object.keys(params);
-      let match = true;
-      searchKeys.forEach(key => {
-        if (params[key] !== user[key]) {
-          match = false;
-        }
-      });
-      return match;
-    }),
-    create: async (user) => users.push(user),
-    update: async (current, update) => {
-      const i = users.findIndex(user => user.name === current.name);
-      users[i] = {...users[i], ...update};
-    },
-    clear: () => users.length = 0
-  };
-  
-  return model;
-});
-
 const { email } = require('../mailer.js');
+
+jest.mock('../models/user');
 const userModel = require('../models/user');
 
 describe(`${endpoint}`, () => {

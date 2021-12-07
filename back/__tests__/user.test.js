@@ -9,47 +9,15 @@ const jwt = require('jsonwebtoken');
 
 const endpoint = '/api/user';
 
-// Mock user model
-jest.mock('../models/user', () => {
-  const users = [
-    {name: 'admin',
-      role: 'superuser',
-      id: 'id123',
-      email: 'usr@email.com',
-      digest: 't',
-      reset_token: null,
-      reset_token_expire: null
-    }
-  ]; 
-
-  const model = {
-    read: async (params) => users.filter((user) => {
-      const searchKeys = Object.keys(params);
-      let match = true;
-      searchKeys.forEach(key => {
-        if (params[key] !== user[key]) {
-          match = false;
-        }
-      });
-      return match;
-    }),
-    create: async (user) => { 
-      users.push(user);
-      return [user];
-    },
-    update: async (current, update) => {
-      const i = users.findIndex(user => user.name === current.name);
-      users[i] = {...users[i], ...update};
-    },
-    clear: () => users.length = 0
-  };
-  
-  return model;
-});
-
+jest.mock('../models/user');
 const userModel = require('../models/user');
 
 describe(`${endpoint}`, () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    userModel.clear();
+  });
+
   describe('GET', () => {
     it(`When requesting user by name and a valid token is provided:
     returns code 200 and user info.`, async () => {
@@ -60,9 +28,18 @@ describe(`${endpoint}`, () => {
         reset_token: null,
         reset_token_expire: null
       };
-      
-      userModel.create({...user, digest: 't'});
 
+      await userModel.create({...user, digest: 't'});
+
+      await userModel.create({name: 'admin',
+        role: 'superuser',
+        id: 'id123',
+        email: 'usr@email.com',
+        digest: 't',
+        reset_token: null,
+        reset_token_expire: null
+      });
+      
       const res = await request.get(endpoint)
         .set('Cookie', [`token=${jwt.sign({id: 'id123'}, config.jwt.secret)}`])
         .query({name: 'normal'});
@@ -94,6 +71,14 @@ describe(`${endpoint}`, () => {
     });
 
     it('When token bearer is not superuser: returns code 403 and doesnt create user', async () => {
+      await userModel.create({name: 'normal',
+        role: 'supervisor',
+        id: 'id223',
+        email: 'usr2@email.com',
+        reset_token: null,
+        reset_token_expire: null
+      });
+
       await request.post(endpoint)
         .set('Cookie', [`token=${jwt.sign({id: 'id223'}, config.jwt.secret)}`])
         .send({name: 'normal2',
@@ -108,6 +93,15 @@ describe(`${endpoint}`, () => {
     });
 
     it('When token bearer is superuser: returns code 201 and creates user', async () => {
+      await userModel.create({name: 'admin',
+        role: 'superuser',
+        id: 'id123',
+        email: 'usr@email.com',
+        digest: 't',
+        reset_token: null,
+        reset_token_expire: null
+      });
+
       await request.post(endpoint)
         .set('Cookie', [`token=${jwt.sign({id: 'id123'}, config.jwt.secret)}`])
         .send({name: 'normal3',
