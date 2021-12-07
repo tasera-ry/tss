@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-
-import '../App.css';
-import './Monthview.css';
+import classNames from 'classnames';
 
 // Material UI components
 import { Link } from 'react-router-dom';
@@ -16,9 +14,11 @@ import {
   checkColor,
 } from '../utils/Utils';
 import Infoboxes from '../infoboxes/Infoboxes';
-
 // Translation
 import texts from '../texts/texts.json';
+import css from './Monthview.module.scss';
+
+const classes = classNames.bind(css);
 
 const smallInfoIcon = require('../logo/Small-info.png');
 
@@ -111,7 +111,7 @@ class Monthview extends Component {
 
       if (dayNumber === '0') {
         table.push(
-          <div key="weekLabel" className="weekNumber">
+          <div key="weekLabel" className={classes(css.weekNumber)}>
             {month.weekNumber[fin]}
           </div>,
         );
@@ -177,10 +177,10 @@ class Monthview extends Component {
           to={`/dayview/${firstMon.format('YYYY-MM-DD')}`}
         >
           {info ? (
-            <div className="monthview-day-img">
+            <div className={classes(css.monthviewDayImg)}>
               {target.date()}
               <img
-                className="Monthview-info"
+                className={classes(css.MonthviewInfo)}
                 src={smallInfoIcon}
                 alt={month.Notice[fin]}
               />
@@ -421,35 +421,43 @@ class Monthview extends Component {
     return (
       <div>
         {this.state.state !== 'ready' ? (
-          <div className="progress">
+          <div className={classes(css.progress)}>
             <CircularProgress size="25vw" disableShrink />
           </div>
         ) : (
           <div>
-            <div className="date-headerM">
+            <div className={classes(css.dateHeaderM)}>
               <div
-                className="hoverHand arrow-left"
+                className={classes(css.hoverHand, css.arrowLeft)}
                 onClick={this.previousMonthClick}
                 data-testid="previousMonth"
               />
-              <h1 className="dateHeader-text">
+              <h1 className={classes(css.dateHeaderText)}>
                 {`${month[this.state.monthNro][fin]},`} {this.state.yearNro}
               </h1>
               <div
-                className="hoverHand arrow-right"
+                className={classes(css.hoverHand, css.arrowRight)}
                 onClick={this.nextMonthClick}
                 data-testid="nextMonth"
               />
             </div>
 
-            <div className="month-container">
-              <div className="viewChanger">
-                <div className="viewChanger-current">{jumpToCurrent()}</div>
-                <div className="viewChanger-container">{viewChanger()}</div>
+            <div className={classes(css.monthContainer)}>
+              <div className={classes(css.viewChanger)}>
+                <div className={classes(css.viewChangerCurrent)}>
+                  {jumpToCurrent()}
+                </div>
+                <div className={classes(css.viewChangerContainer)}>
+                  {viewChanger()}
+                </div>
               </div>
-              <div className="weekdays">{this.createWeekDay()}</div>
-              <div className="weekNumber">{this.createWeekNumber()}</div>
-              <div className="month-days">{monthTable}</div>
+              <div className={classes(css.weekdays)}>
+                {this.createWeekDay()}
+              </div>
+              <div className={classes(css.weekNumber)}>
+                {this.createWeekNumber()}
+              </div>
+              <div className={classes(css.monthDays)}>{monthTable}</div>
             </div>
             <Infoboxes />
           </div>

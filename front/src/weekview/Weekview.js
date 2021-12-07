@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import '../App.css';
-import './Weekview.css';
+import classNames from 'classnames';
 
 // Material UI components
 import { Link } from 'react-router-dom';
@@ -18,14 +17,15 @@ import {
 } from '../utils/Utils';
 import exclamation from '../logo/Info.png';
 import Infoboxes from '../infoboxes/Infoboxes';
-
 // Translation
 import texts from '../texts/texts.json';
+import css from './Weekview.module.scss';
 
-const lang = getLanguage();
+const classes = classNames.bind(css);
 
 const { weekdayShorthand, week } = texts;
 const fin = localStorage.getItem('language');
+const lang = getLanguage();
 
 class Weekview extends Component {
   constructor(props) {
@@ -355,7 +355,7 @@ class Weekview extends Component {
           <p>
             {info ? (
               <img
-                className="exclamation-2"
+                className={classes(css.exclamation2)}
                 src={exclamation}
                 alt={week.Notice[fin]}
               />
@@ -480,43 +480,51 @@ class Weekview extends Component {
     const { week } = texts; // eslint-disable-line
     return (
       <div>
-        <div className="container">
-          <Grid className="date-header">
+        <div className={classes(css.container)}>
+          <Grid className={classes(css.dateHeader)}>
             <div
-              className="hoverHand arrow-left"
+              className={classes(css.hoverHand, css.arrowLeft)}
               onClick={this.previousWeekClick}
             />
-            <h1 className="dateHeader-text">
+            <h1 className={classes(css.dateHeaderText)}>
               {' '}
               {`${week.Week[fin]} ${this.state.weekNro}, ${this.state.yearNro}`}
             </h1>
             {/* Month if needed: {monthToString(date.getMonth())} */}
             <div
-              className="hoverHand arrow-right"
+              className={classes(css.hoverHand, css.arrowRight)}
               onClick={this.nextWeekClick}
             />
           </Grid>
-          <div className="big-container">
-            <div className="viewChanger">
-              <div className="viewChanger-current">{jumpToCurrent()}</div>
-              <div className="viewChanger-container">{viewChanger()}</div>
+          <div className={classes(css.bigContainer)}>
+            <div className={classes(css.viewChanger)}>
+              <div className={classes(css.viewChangerCurrent)}>
+                {jumpToCurrent()}
+              </div>
+              <div className={classes(css.viewChangerContainer)}>
+                {viewChanger()}
+              </div>
             </div>
 
             {/* Date boxes */}
-            <Grid className="flex-container2">{this.createWeekDay()}</Grid>
+            <Grid className={classes(css.flexContainer2)}>
+              {this.createWeekDay()}
+            </Grid>
 
             {/* Date boxes */}
-            <Grid className="flex-container2">
+            <Grid className={classes(css.flexContainer2)}>
               {this.state.state !== 'ready' ? '' : this.createDate()}
             </Grid>
 
             {/* Colored boxes for dates */}
             {this.state.state !== 'ready' ? (
-              <div className="progress">
+              <div className={classes(css.progress)}>
                 <CircularProgress disableShrink />
               </div>
             ) : (
-              <Grid className="flex-container">{this.createColorInfo()}</Grid>
+              <Grid className={classes(css.flexContainer)}>
+                {this.createColorInfo()}
+              </Grid>
             )}
           </div>
         </div>

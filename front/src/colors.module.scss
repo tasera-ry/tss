@@ -12,7 +12,9 @@ $COLOR_CREAM10: #ebe7df; // TODO: use in place of ede9e1
 $COLOR_CREAM30: #b0aca0;
 $COLOR_CREAM50: #d8c3a5;
 $COLOR_GREY: #555555;
+$COLOR_LIGHT_GREY: #808080;
 $COLOR_BLACK: #000000;
+$COLOR_WHITE: #ffffff;
 
 :export {
   green: $COLOR_GREEN;
@@ -31,5 +33,7 @@ $COLOR_BLACK: #000000;
   cream50: $COLOR_CREAM50;
 
   grey: $COLOR_GREY;
+  lightGrey: $COLOR_LIGHT_GREY;
   black: $COLOR_BLACK;
+  white: $COLOR_WHITE;
 }

@@ -22,9 +22,10 @@ const service = {
    * service.authenticate({ name: 'Mark', password: 'mark_password' })
    */
   authenticate: async function authenticateUser(credentials) {
-    const users = await models.user.read({
-      name: credentials.name
-    }, ['id', 'name', 'role', 'digest']);
+    const users = await models.user.readCaseInsensitive(
+      credentials.name, 
+      ['id', 'name', 'role', 'digest']
+    );
 
     if(users.length === 0) {
       const err = Error('Invalid credentials');

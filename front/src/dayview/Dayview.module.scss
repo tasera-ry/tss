@@ -1,3 +1,5 @@
+@import '../shared.module.scss';
+
 .sevenGrid {
   display: flex;
   flex-direction: column;
@@ -56,7 +58,7 @@ h2.headerText {
   min-width: 22px;
 }
 
-.infoImg-2 {
+.infoImg2 {
   position: relative;
   margin: 0;
   width: 32px;
@@ -96,7 +98,7 @@ h2.headerText {
 
 .dayviewContainer .info {
   text-align: center;
-  background: lightgreen;
+  background: $COLOR_GREEN_LIGHT;
 }
 
 .dayviewContainer .sevenGrid > div {
@@ -105,68 +107,73 @@ h2.headerText {
 
 .dayviewContainer .track {
   position: relative;
-  background: #b0aca0;
-  border: solid 1px black;
+  background: $COLOR_CREAM30;
+  border: solid 1px $COLOR_BLACK;
   box-sizing: border-box;
   min-height: 100px;
 }
 
 .dayviewContainer .clickableBox {
   box-sizing: border-box;
-  background: white;
+  background: $COLOR_WHITE;
   padding: 25% 0vh 25% 0vh;
   text-align: center;
 }
 
 .dayviewContainer .greenB {
-  background: #658f60;
+  background: $COLOR_GREEN;
+}
+
+.infoItem .greenB {
+  background: $COLOR_GREEN;
 }
 
 .dayviewContainer .lightGreenB {
-  background: #b2d9ad;
+  background: $COLOR_GREEN_LIGHT;
 }
 
 .dayviewContainer .blueB {
-  background: #95d5db;
+  background: $COLOR_TURQUOISE;
 }
 
 .dayviewContainer .redB {
-  background: #c97b7b;
+  background: $COLOR_RED_LIGHT;
+}
+
+.infoItem .redB {
+  background: $COLOR_RED_LIGHT;
 }
 
 .dayviewContainer .whiteB {
-  background: #f2f0eb;
+  background: $COLOR_CREAM5;
+}
+
+.infoItem .whiteB {
+  background: $COLOR_CREAM5;
 }
 
 .dayviewContainer .yellowB {
-  background: #f2c66d;
+  background: $COLOR_ORANGE;
 }
 
-.dayviewContainer .arrow-right {
+.dayviewContainer .arrowRight {
+  @extend .arrow;
   padding: 0;
   margin: 0;
-  width: 0;
-  height: 0;
-  border-top: 20px solid transparent;
-  border-bottom: 20px solid transparent;
-  border-left: 20px solid black;
 
   display: flex;
-  align-items: center;
 }
 
-.dayviewContainer .arrow-left {
+.dayviewContainer .arrowLeft {
+  @extend .arrow;
   padding: 0;
   margin: 0;
-  width: 0;
-  height: 0;
-  border-top: 20px solid transparent;
-  border-bottom: 20px solid transparent;
-  border-right: 20px solid black;
-  text-align: right;
 
   display: flex;
-  align-items: center;
+}
+
+.back {
+  color: $COLOR_BLACK;
 }
 
 .dayviewContainer .back > svg {
@@ -183,12 +190,12 @@ h2.headerText {
   width: 96%;
   height: 100%;
   text-decoration: none;
-  color: black;
+  color: $COLOR_BLACK;
   padding-left: 2%;
   padding-right: 2%;
 }
 
-.dayview-big-container {
+.dayviewBigContainer {
   width: 100vw;
   max-width: 1025px;
   margin: auto;
@@ -217,11 +224,11 @@ h2.headerText {
     margin: 4px;
   }
 
-  .dayviewContainer .arrow-right {
+  .dayviewContainer .arrowRight {
     margin-left: 2vw;
   }
 
-  .dayviewContainer .arrow-left {
+  .dayviewContainer .arrowLeft {
     margin-right: 2vw;
   }
 }
@@ -268,7 +275,7 @@ h2.headerText {
 }
 /* big landscape tablets, laptops, and desktops */
 @media only screen and (min-width: 1025px) {
-  .infoImg-2 {
+  .infoImg2 {
     width: 44px;
     max-height: 44px;
     max-width: 44px;
