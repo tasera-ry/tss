@@ -15,6 +15,9 @@ const model = {
     });
     return match;
   }),
+  readCaseInsensitive: async (username) => users.filter((user) => {
+    return user.name.toLowerCase() === username.toLowerCase();
+  }),
   create: async (user) => { 
     users.push(user);
     return [user];
