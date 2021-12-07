@@ -70,3 +70,10 @@
     color: $COLOR_GREEN_DARK;
   }
 }
+
+select {
+  padding: 10px;
+  background-color: transparent;
+  border-radius: 4px;
+  border-color: lighten($COLOR_GREY, 40%);
+}
