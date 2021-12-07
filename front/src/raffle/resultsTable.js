@@ -7,8 +7,6 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
 import EditSharpIcon from "@material-ui/icons/EditSharp";
 import CloseSharpIcon from "@material-ui/icons/CloseSharp";
 import CheckSharpIcon from "@material-ui/icons/CheckSharp";
@@ -49,17 +47,16 @@ const ResultsRow = ({
       </TableCell>
       <TableCell component="div" className={classes(css.flexCell)}>
         {isEdited ? (
-          <Select
-            id="select-supervisor"
+          <select
             value={editUser}
             onChange={(e) => setEditUser(e.target.value)}
           >
             {supervisors.map(({ name, user_id }) => (
-              <MenuItem value={name} key={user_id}>
+              <option value={name} key={user_id}>
                 {name}
-              </MenuItem>
+              </option>
             ))}
-          </Select>
+          </select>
         ) : (
           name
         )}
