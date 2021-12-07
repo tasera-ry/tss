@@ -30,6 +30,7 @@ export const Raffle = () => {
   const [isLoading, setIsLoading] = useState({
     table: false,
     raffle: false,
+    save: false,
   });
   const [toast, setToast] = useState({
     open: false,
@@ -99,6 +100,35 @@ export const Raffle = () => {
     }
   };
 
+  const handleSubmitResults = async () => {
+    setIsLoading({ ...isLoading, save: true });
+    // only supervisor_id (= user_id), range_id and date are needed
+    const results = raffleResults.map(({ user_id, range_id, date }) => ({
+      supervisor_id: user_id,
+      range_id,
+      date,
+    }));
+    try {
+      await api.saveRaffledSupervisors(results);
+
+      setToast({
+        open: true,
+        msg: raffle.saveSuccess[lang],
+        severity: "success",
+      });
+      setSelectedDays([]);
+      setRaffleResults(undefined);
+    } catch (err) {
+      setToast({
+        open: true,
+        msg: raffle.saveError[lang],
+        severity: "error",
+      });
+    } finally {
+      setIsLoading({ ...isLoading, save: false });
+    }
+  };
+
   const handleSnackbarClose = (_, reason) => {
     if (reason === "clickaway") return;
     setToast({ ...toast, open: false });
@@ -152,8 +182,20 @@ export const Raffle = () => {
             <ResultsTable
               results={raffleResults}
               setResults={setRaffleResults}
-              supervisors={supervisors}
+              supervisors={supervisors.filter(({ raffle }) => raffle)}
             />
+            {!isLoading.save ? (
+              <Button
+                variant="contained"
+                className={classes(css.acceptButton)}
+                disabled={selectedDays.length === 0}
+                onClick={handleSubmitResults}
+              >
+                {raffle.save[lang]}
+              </Button>
+            ) : (
+              <CircularProgress />
+            )}
           </>
         )}
         <Snackbar

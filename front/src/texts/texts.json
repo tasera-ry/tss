@@ -344,6 +344,9 @@
     "date": ["Päivämäärä", "Date"],
     "raffle": ["Arvo valvojat", "Raffle supervisors"],
     "raffleError": ["Arvonnan suoritus epäonnistui", "The execution of the raffle failed"],
-    "results": ["Arvonnan tulokset", "Raffle results"]
+    "results": ["Arvonnan tulokset", "Raffle results"],
+    "save": ["Tallenna tulokset", "Save results"],
+    "saveSuccess": ["Tulokset tallennettu", "Results saved"],
+    "saveError": ["Tuloksien tallennus epäonnistui", "The saving of the results failed"]
   }
 }

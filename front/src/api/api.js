@@ -13,8 +13,12 @@ const raffleSupervisors = async (dates) => {
   return response.data;
 };
 
+const saveRaffledSupervisors = async (results) =>
+  axios.post("api/set-raffled-supervisors", { results });
+
 export default {
   getMembers,
   patchMembers,
   raffleSupervisors,
+  saveRaffledSupervisors,
 };
