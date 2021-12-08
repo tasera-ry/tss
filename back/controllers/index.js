@@ -13,7 +13,6 @@ const resetPassword = require(path.join(controllers, 'resetPassword'));
 const raffle = require(path.join(controllers, 'raffle'));
 const raffleSupervisors = require(path.join(controllers, 'raffleSupervisors'));
 const members = require(path.join(controllers, 'members'));
-console.log(raffleSupervisors);
 exports.user = user;
 exports.trackSupervision = trackSupervision;
 exports.rangeSupervision = rangeSupervision;
