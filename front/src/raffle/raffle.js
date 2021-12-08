@@ -11,8 +11,8 @@ import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import translations from "../texts/texts.json";
 import { UsersTable } from "./usersTable";
-import { dateToString } from "../utils/Utils";
 import RaffleDatePicker from "./RaffleDatePicker";
+import { dateToString, validateLogin } from "../utils/Utils";
 import "../App.css";
 import css from "./raffle.module.scss";
 import { ResultsTable } from "./resultsTable";
@@ -28,6 +28,7 @@ export const Raffle = () => {
   const [selectedDays, setSelectedDays] = useState([]);
   const [raffleResults, setRaffleResults] = useState(undefined);
   const [isLoading, setIsLoading] = useState({
+    page: true,
     table: false,
     raffle: false,
     save: false,
@@ -40,6 +41,8 @@ export const Raffle = () => {
 
   useEffect(() => {
     (async () => {
+      const logInSuccess = await validateLogin();
+      if (!logInSuccess) window.location.href = "/";
       try {
         const res = await api.getMembers();
         setSupervisors(res);
@@ -49,9 +52,11 @@ export const Raffle = () => {
           msg: raffle.loadError[lang],
           severity: "error",
         });
+      } finally {
+        setIsLoading({ ...isLoading, page: false });
       }
     })();
-  }, []);
+  }, []); // eslint-disable-line
 
   const handleSubmitUser = async (user_id, data) => {
     if (data.members < 0 || data.supervisors < 0) {
@@ -134,6 +139,7 @@ export const Raffle = () => {
     setToast({ ...toast, open: false });
   };
 
+  if (isLoading.page) return null;
   return (
     <StylesProvider injectFirst>
       <div className={classes(css.members)}>
