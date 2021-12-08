@@ -39,76 +39,134 @@ const service = {
    * @returns 
    */
   create: async function createRaffle(info) {
+    const weekendratio = 2;
     // if range_id is undefined assign 1 to it
     const range_id = info.range_id == undefined ? 1 : info.range_id;
     const dates = info.dates;
+    // split dates to weekdays and weekends
+    let weekdays = [];
+    let weekends = [];
+    for (i = 0; i < dates.length; i++) {
+      let day = new Date(dates[i]).getDay();
+      if (day == 5 || day == 6) {
+        weekends.push(dates[i]);
+      } else {
+        weekdays.push(dates[i]);
+      }
+    }
+
     let members = await models.members.read({ raffle: true }, ['user_id', 'name', 'members', 'supervisors', 'raffle']);
-    const n_supervisions = dates.length;
-    // Count the number of supervisors
+
+    const n_weekendsupervisions = weekends.length;
+    const n_weekdaysupervisions = weekdays.length;
+    // Count the number of supervisors and set supervisions to 0
     let n_total = 0;
     members.forEach(function(m) {
       n_total += (m.members + m.supervisors);
+      m.weekendsupervisions = 0;
+      m.weekdaysupervisions = 0;
     });
     
-    let current_supervisions = 0;
+    // Start by raffling weekend supervisions
+    let current_weekendsupervisions = 0;
     sum = 0;
     members.forEach(function(m) {
-      const n = Math.round((m.members + m.supervisors) / n_total * n_supervisions);
-      current_supervisions += n;
-
-      m.supervisions = n;
-      m.ratio = n/(m.members + m.supervisors);
+      const n = Math.round((m.members + m.supervisors) / n_total * n_weekendsupervisions);
+      current_weekendsupervisions += n;
+      m.weekendsupervisions += n;
+      m.ratio = (m.weekendsupervisions * weekendratio + m.weekdaysupervisions)/(m.members + m.supervisors);
     });
 
-
-    // trim extra supervisions
-    if ( current_supervisions > n_supervisions) {
-      while (0 < current_supervisions - n_supervisions) {
+    // trim extra weekendsupervisions
+    if ( current_weekendsupervisions > n_weekendsupervisions) {
+      while (0 < current_weekendsupervisions - n_weekendsupervisions) {
         members.sort(compare).reverse();
-        current_supervisions--;
-        members[0].supervisions--;
-        members[0].ratio = members[0].supervisions/(members[0].members + members[0].supervisors)
+        current_weekendsupervisions--;
+        members[0].weekendsupervisions --;
+        // update ratio to reflect new supervisions
+        members[0].ratio = (members[0].weekendsupervisions * weekendratio + members[0].weekdaysupervisions)/(members[0].members + members[0].supervisors)
       }
     }
-    
-    //add missing supervisions
-    if ( current_supervisions < n_supervisions) {
-      while (0 < n_supervisions - current_supervisions) {
+    //add missing weekendsupervisions
+    if ( current_weekendsupervisions < n_weekendsupervisions) {
+      while (0 < n_weekendsupervisions - current_weekendsupervisions) {
         members.sort(compare);
-        current_supervisions++;
-        members[0].supervisions++;
-        members[0].ratio = members[0].supervisions/(members[0].members + members[0].supervisors)
+        current_weekendsupervisions++;
+        members[0].weekendsupervisions ++;
+        members[0].ratio = members[0].weekendsupervisions/(members[0].members + members[0].supervisors)
       }
     }
-    /*
-    members.forEach(function(m) {
-      console.log(m.members + m.supervisors, m.supervisions, m.ratio);
-    });
-    */
 
+    // Now repeat this all for weekdays
+    let current_weekdaysupervisions = 0;
+    sum = 0;
+    members.forEach(function(m) {
+      const n = Math.round((m.members + m.supervisors) / n_total * n_weekdaysupervisions);
+      current_weekdaysupervisions += n;
+      m.weekdaysupervisions += n;
+      m.ratio = (m.weekdaysupervisions * weekendratio + m.weekdaysupervisions)/(m.members + m.supervisors);
+    });
+
+    // trim extra weekdaysupervisions
+    if ( current_weekdaysupervisions > n_weekdaysupervisions) {
+      while (0 < current_weekdaysupervisions - n_weekdaysupervisions) {
+        members.sort(compare).reverse();
+        current_weekdaysupervisions--;
+        members[0].weekdaysupervisions --;
+        // update ratio to reflect new supervisions
+        members[0].ratio = (members[0].weekdaysupervisions * weekendratio + members[0].weekdaysupervisions)/(members[0].members + members[0].supervisors)
+      }
+    }
+    //add missing weekdaysupervisions
+    if ( current_weekdaysupervisions < n_weekdaysupervisions) {
+      while (0 < n_weekdaysupervisions - current_weekdaysupervisions) {
+        members.sort(compare);
+        current_weekdaysupervisions++;
+        members[0].weekdaysupervisions ++;
+        members[0].ratio = members[0].weekdaysupervisions/(members[0].members + members[0].supervisors)
+      }
+    }
+
+    // add counted supervisions to list
     var supervisions = [];
     members.forEach(function(m) {
-      for (i = 0; i < m.supervisions; i++) {
+      for (i = 0; i < m.weekendsupervisions; i++) {
+        supervisions.push(m);
+      }for (i = 0; i < m.weekdaysupervisions; i++) {
         supervisions.push(m);
       }
     });
-    
     shuffleArray(supervisions);
-    //console.log(dates);
-    //console.log(supervisions);
-    //console.log(dates.length, supervisions.length);
 
     var raffle = [];
 
-    for (i = 0; i < dates.length; i++) {
+    for (i = 0; i < weekends.length; i++) {
       var temp = {
-        "date": dates[i],
+        "date": weekends[i],
         "range_id": range_id,
         "user_id": supervisions[i].user_id,
         "name": supervisions[i].name
       }
       raffle.push(temp);
     }
+
+    //raffle weekdays
+    for (i = 0; i < weekdays.length; i++) {
+      var temp = {
+        "date": weekdays[i],
+        "range_id": range_id,
+        "user_id": supervisions[i].user_id,
+        "name": supervisions[i].name
+      }
+      raffle.push(temp);
+    }
+
+    //Log results for inspection
+    /* */
+    members.forEach(function(m) {
+      console.log(Number(m.ratio).toFixed(2), m.weekdaysupervisions, m.weekendsupervisions, m.name, m.user_id);
+    });
+    
 
     return {raffle};
   }
