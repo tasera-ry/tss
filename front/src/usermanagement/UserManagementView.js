@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
-
-import '../App.css';
-
 import classNames from 'classnames';
-
-import colors from '../colors.module.scss';
-import css from './UserManagementView.module.scss';
 
 // Material UI components
 import {
@@ -38,14 +32,13 @@ import axios from 'axios';
 // Token validation
 import { withCookies } from 'react-cookie';
 import { validateLogin } from '../utils/Utils';
-
-// Translations
-import data from '../texts/texts.json';
+import translations from '../texts/texts.json';
+import css from './UserManagementView.module.scss';
 
 const classes = classNames.bind(css);
 
 const fin = localStorage.getItem('language');
-const { manage } = data;
+const { manage } = translations;
 
 // Finds all users from database
 async function getUsers() {
@@ -393,7 +386,7 @@ class UserManagementView extends Component {
 
   returnRemoveButton(id, manage, fin) { // eslint-disable-line
     return (
-      <Button data-testid={`del-${id}`} id={id} size="small" style={{ backgroundColor: colors.redLight }} variant="contained" onClick={this.onRemoveClick}>
+      <Button data-testid={`del-${id}`} id={id} size="small" className={classes(css.removeButton)} variant="contained" onClick={this.onRemoveClick}>
         {manage.RemoveUser[fin]}
       </Button>
     );
@@ -401,7 +394,7 @@ class UserManagementView extends Component {
 
   returnPassButton(id, manage, fin) { // eslint-disable-line
     return (
-      <Button data-testid={`pw-${id}`} id={id} size="small" style={{ backgroundColor: colors.blue }} variant="contained" onClick={this.onChangePassClick}>
+      <Button data-testid={`pw-${id}`} id={id} size="small" className={classes(css.acceptButton)} variant="contained" onClick={this.onChangePassClick}>
         {manage.ChangePass[fin]}
       </Button>
     );
@@ -756,7 +749,7 @@ class UserManagementView extends Component {
             <FormControl>
               <InputLabel>{manage.Role[fin]}</InputLabel>
               <Select
-                style={{ marginTop: 15 }}
+                className={classes(css.select)}
                 native
                 value={this.state.newUserRole}
                 onChange={this.handleChangeNewUserRole}
@@ -772,7 +765,7 @@ class UserManagementView extends Component {
             </FormControl>
 
             {this.state.requestErrors ? (
-              <p className={classes(css.pstyle)}>
+              <p className={classes(css.errorText)}>
                 {manage.Error[fin]}
                 {' '}
               </p>
@@ -784,10 +777,10 @@ class UserManagementView extends Component {
           <DialogActions
             className={classes(css.dialogStyle)}
           >
-            <Button onClick={this.handleAddNewUserDialogClose} style={{ color: colors.redLight }}>
+            <Button onClick={this.handleAddNewUserDialogClose} className={classes(css.removeButton)}>
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleAddNewUserDialogCloseConfirmed} style={{ color: colors.blue }}>
+            <Button onClick={this.handleAddNewUserDialogCloseConfirmed} className={classes(css.acceptButton)}>
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -819,7 +812,7 @@ class UserManagementView extends Component {
 
             {this.state.deleteErrors
               ? (
-                <p className={classes(css.pstyle)}>
+                <p className={classes(css.errorText)}>
                   {manage.ErrorSmall[fin]}
                   {' '}
 
@@ -831,10 +824,10 @@ class UserManagementView extends Component {
           <DialogActions
             className={classes(css.dialogStyle)}
           >
-            <Button onClick={this.handleRemoveWarningClose} style={{ color: colors.redLight }}>
+            <Button onClick={this.handleRemoveWarningClose} className={classes(css.removeButton)}>
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleRemoveWarningCloseAgree} style={{ color: colors.blue }}>
+            <Button onClick={this.handleRemoveWarningCloseAgree} className={classes(css.acceptButton)}>
               {manage.ConfirmDelete[fin]}
             </Button>
           </DialogActions>
@@ -905,7 +898,7 @@ class UserManagementView extends Component {
             />
 
             {this.state.changeOwnPassFailed ? (
-              <p className={classes(css.pstyle)}>
+              <p className={classes(css.errorText)}>
                 {manage.ErrorPassword[fin]}
                 {' '}
               </p>
@@ -917,10 +910,10 @@ class UserManagementView extends Component {
           <DialogActions
             className={classes(css.dialogStyle)}
           >
-            <Button onClick={this.handleChangeOwnPassDialogClose} style={{ color: colors.redLight }}>
+            <Button onClick={this.handleChangeOwnPassDialogClose} className={classes(css.removeButton)}>
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleChangeOwnPassDialogCloseAgree} style={{ color: colors.blue }}>
+            <Button onClick={this.handleChangeOwnPassDialogCloseAgree} className={classes(css.acceptButton)}>
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -956,7 +949,7 @@ class UserManagementView extends Component {
             />
 
             {this.state.changeOwnEmailFailed ? (
-              <p className={classes(css.pstyle)}>
+              <p className={classes(css.errorText)}>
                 {manage.Error[fin]}
                 {' '}
               </p>
@@ -968,10 +961,10 @@ class UserManagementView extends Component {
           <DialogActions
             className={classes(css.dialogStyle)}
           >
-            <Button onClick={this.handleChangeOwnEmailDialogClose} style={{ color: colors.redLight }}>
+            <Button onClick={this.handleChangeOwnEmailDialogClose} className={classes(css.removeButton)}>
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleChangeOwnEmailDialogCloseAgree} style={{ color: colors.blue }}>
+            <Button onClick={this.handleChangeOwnEmailDialogCloseAgree} className={classes(css.accceptButton)}>
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -1031,7 +1024,7 @@ class UserManagementView extends Component {
             />
 
             {this.state.changeErrors ? (
-              <p className={classes(css.pstyle)}>
+              <p className={classes(css.errorText)}>
                 {manage.ErrorPassword[fin]}
                 {' '}
               </p>
@@ -1042,10 +1035,10 @@ class UserManagementView extends Component {
           <DialogActions
             className={classes(css.dialogStyle)}
           >
-            <Button onClick={this.handleChangePassClose} style={{ color: colors.redLight }}>
+            <Button onClick={this.handleChangePassClose} className={classes(css.removeButton)}>
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleChangePassCloseConfirm} style={{ color: colors.blue }}>
+            <Button onClick={this.handleChangePassCloseConfirm} className={classes(css.acceptButton)}>
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -1079,7 +1072,7 @@ class UserManagementView extends Component {
               fullWidth
             />
             {this.state.changeErrors ? (
-              <p className={classes(css.pstyle)}>
+              <p className={classes(css.errorText)}>
                 {manage.ErrorEmail[fin]}
                 {' '}
               </p>
@@ -1090,10 +1083,10 @@ class UserManagementView extends Component {
           <DialogActions
             className={classes(css.dialogStyle)}
           >
-            <Button onClick={this.handleaddEmailClose} style={{ color: colors.redLight }}>
+            <Button onClick={this.handleaddEmailClose} className={classes(css.removeButton)}>
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleaddEmailCloseConfirm} style={{ color: colors.blue }}>
+            <Button onClick={this.handleaddEmailCloseConfirm} className={classes(css.acceptButton)}>
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -1140,7 +1133,7 @@ class UserManagementView extends Component {
         <Box className={classes(css.userbox)}>
 
           <TableContainer component={Paper} className={classes(css.tableContainer)}>
-            <Table aria-label="table of users" style={{ backgroundColor: colors.cream5 }}>
+            <Table aria-label="table of users" className={classes(css.table)}>
               <TableHead>
                 <TableRow>
                   <TableCell align="justify">{manage.Username[fin]}</TableCell>
