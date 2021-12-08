@@ -162,11 +162,11 @@ const service = {
     }
 
     //Log results for inspection
-    /* */
+    /*
     members.forEach(function(m) {
       console.log(Number(m.ratio).toFixed(2), m.weekdaysupervisions, m.weekendsupervisions, m.name, m.user_id);
     });
-    
+    */
 
     return {raffle};
   }
