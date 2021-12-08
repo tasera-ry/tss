@@ -10,7 +10,6 @@ const validateRaffleResults  = [
     .not()  
     .isEmpty()
     .isInt(),
-  // Sano henrille et pls tää 2000-01-02 muodossa
   check('results.*.date')  
     .not()  
     .isEmpty()
