@@ -10,6 +10,7 @@ const rangeSupervision = require(path.join(controllers, 'rangeSupervision'));
 const daterange = require(path.join(controllers, 'daterange'));
 const emailSettings = require(path.join(controllers, 'emailSettings'));
 const resetPassword = require(path.join(controllers, 'resetPassword'));
+const infoMessage = require(path.join(controllers, 'infoMessage'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -20,3 +21,4 @@ exports.track = track;
 exports.daterange = daterange;
 exports.emailSettings = emailSettings;
 exports.resetPassword = resetPassword;
+exports.infoMessage = infoMessage;
