@@ -61,7 +61,7 @@ router.route('/changeownpassword/:id')
     middlewares.user.updateOwnPasswordFilter,
     middlewares.user.update,
     controllers.user.update
-);
+  );
 
 
 // Track supervision
@@ -228,5 +228,64 @@ router.route('/send-pending')
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', 'superuser'))
   .get(controllers.emailSettings.sendPendingEmails);
+
+router.route('/infomessage')
+  /*
+  Parameters as query parameters
+  start?: Date (YYYY-MM-DD)
+  end?: Date (YYYY-MM-DD)
+  show_weekly?: Boolean
+  show_monthly?: Boolean
+  */
+  .get(
+    validators.infoMessage.read,
+    controllers.infoMessage.read
+  )
+  /*
+  Parameters as json body
+  message: String
+  start: Date (YYYY-MM-DD)
+  end: Date (YYYY-MM-DD)
+  show_weekly: Boolean => defaults to false if omitted
+  show_monthly: Boolean => defaults to false if omitted
+  level: "info" | "warn" | "error" => defaults to "info" if omitted
+  sticky: Boolean => defaults to false if omitted
+  */
+  .post(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'),
+    validators.infoMessage.create,
+    controllers.infoMessage.create
+  );
+
+router.route('/infomessage/:id')
+/*
+  Parameters as route parameters
+  id: Number
+  Parameters as json body
+  message?: String
+  start?: Date (YYYY-MM-DD)
+  end?: Date (YYYY-MM-DD)
+  show_weekly?: Boolean
+  show_monthly?: Boolean
+  level?: "info" | "warn" | "error"
+  sticky?: Boolean
+*/
+  .put(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'),
+    validators.infoMessage.update,
+    controllers.infoMessage.update
+  )
+  /*
+  Parameters as route parameters
+  id: Number
+  */
+  .delete(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'),
+    validators.infoMessage.delete,
+    controllers.infoMessage.delete
+  );
 
 module.exports = router;
