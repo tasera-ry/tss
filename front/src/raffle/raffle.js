@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import classNames from "classnames";
 import api from "../api/api";
+
 import { StylesProvider } from "@material-ui/core/styles";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
@@ -9,14 +10,15 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
+
 import translations from "../texts/texts.json";
-import { UsersTable } from "./usersTable";
 import RaffleDatePicker from "./RaffleDatePicker";
+import { SupervisorsTable } from "./SupervisorsTable";
 import { dateToString, validateLogin } from "../utils/Utils";
+import { SupervisionResultsTable } from "./SupervisionResultsTable";
+import { SupervisionAmountsTable } from "./SupervisionAmountsTable";
 import "../App.css";
 import css from "./raffle.module.scss";
-import { ResultsTable } from "./resultsTable";
-import { SupervisionAmountsTable } from "./SupervisionAmountsTable";
 
 const classes = classNames.bind(css);
 
@@ -24,7 +26,7 @@ const lang = localStorage.getItem("language");
 const { nav } = translations;
 const { raffle } = translations;
 
-const amountsOfSupervisions = (raffleResults, supervisors) => {
+const supervisionAmounts = (raffleResults, supervisors) => {
   const userMap = new Map();
   supervisors.forEach(({ name, raffle }) => {
     if (raffle) userMap.set(name, 0);
@@ -41,7 +43,7 @@ export const Raffle = () => {
   const [supervisors, setSupervisors] = useState([]);
   const [selectedDays, setSelectedDays] = useState([]);
   const [raffleResults, setRaffleResults] = useState([]);
-  const [raffleStats, setRaffleStats] = useState([]);
+  const [raffleResultAmounts, setRaffleResultAmounts] = useState([]);
   const [isLoading, setIsLoading] = useState({
     page: true,
     table: false,
@@ -53,7 +55,6 @@ export const Raffle = () => {
     msg: "",
     severity: "success",
   });
-  console.log(raffleStats);
 
   useEffect(() => {
     (async () => {
@@ -61,7 +62,6 @@ export const Raffle = () => {
       if (!logInSuccess) window.location.href = "/";
       try {
         const res = await api.getMembers();
-        console.log("res", res);
         setSupervisors(res);
       } catch (err) {
         setToast({
@@ -77,12 +77,11 @@ export const Raffle = () => {
 
   useEffect(() => {
     if (raffleResults.length > 0) {
-      const amounts = amountsOfSupervisions(raffleResults, supervisors);
-      console.log(Array.from(amounts, ([name, amount]) => ({ name, amount })));
-      setRaffleStats(
+      const amounts = supervisionAmounts(raffleResults, supervisors);
+      setRaffleResultAmounts(
         Array.from(amounts, ([name, amount]) => ({ name, amount }))
       );
-    } else setRaffleStats([]);
+    } else setRaffleResultAmounts([]);
   }, [raffleResults, supervisors]);
 
   const handleSubmitUser = async (user_id, data) => {
@@ -181,7 +180,7 @@ export const Raffle = () => {
           </IconButton>
         </div>
         {supervisorsOpen ? (
-          <UsersTable
+          <SupervisorsTable
             supervisors={supervisors}
             onSubmitUser={handleSubmitUser}
             isLoading={isLoading.table}
@@ -216,13 +215,13 @@ export const Raffle = () => {
           <>
             <h2>{raffle.results[lang]}</h2>
             <div className={classes(css.raffleResults)}>
-              <ResultsTable
+              <SupervisionResultsTable
                 results={raffleResults}
                 setResults={setRaffleResults}
                 supervisors={supervisors.filter(({ raffle }) => raffle)}
               />
-              {raffleStats.length > 0 && (
-                <SupervisionAmountsTable amounts={raffleStats} />
+              {raffleResultAmounts.length > 0 && (
+                <SupervisionAmountsTable amounts={raffleResultAmounts} />
               )}
             </div>
             {!isLoading.save ? (

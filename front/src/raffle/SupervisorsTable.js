@@ -32,7 +32,7 @@ const EditField = (props) => (
   />
 );
 
-export const UsersTable = ({ supervisors, onSubmitUser, isLoading }) => {
+export const SupervisorsTable = ({ supervisors, onSubmitUser, isLoading }) => {
   const [hoveredRow, setHoveredRow] = useState(undefined);
   const [editOpen, setEditOpen] = useState(undefined);
   const [editFields, setEditFields] = useState({ members: 0, supervisors: 0 });
