@@ -5,7 +5,6 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  max-width: 820px;
   margin: 0 auto;
   margin-bottom: 50px;
 }
@@ -18,7 +17,7 @@
 
 .divider {
   border: 0.5px solid lighten($COLOR_CREAM30, 15%);
-  width: 100%;
+  width: 820px;
   height: 0;
 }
 
@@ -43,4 +42,10 @@
   &:disabled {
     background-color: lighten($COLOR_GREY, 40%) !important;
   }
+}
+
+.raffleResults {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
 }

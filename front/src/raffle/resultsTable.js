@@ -13,7 +13,7 @@ import CheckSharpIcon from "@material-ui/icons/CheckSharp";
 import IconButton from "@material-ui/core/IconButton";
 import translations from "../texts/texts.json";
 import { FixedSizeList as List } from "react-window";
-import css from "./usersTable.module.scss";
+import css from "./table.module.scss";
 const classes = classNames.bind(css);
 
 const lang = localStorage.getItem("language");
@@ -117,11 +117,14 @@ export const ResultsTable = ({ results, setResults, supervisors }) => {
   };
 
   return (
-    <TableContainer component={Paper} className={classes(css.tableContainer)}>
+    <TableContainer
+      component={Paper}
+      className={classes(css.tableContainer, css.medium)}
+    >
       <Table
         className={classes(css.table)}
         component="div"
-        aria-label="members table"
+        aria-label="raffle results table"
       >
         <TableHead component="div">
           <div className={classes(css.flexRow)}>
@@ -138,7 +141,7 @@ export const ResultsTable = ({ results, setResults, supervisors }) => {
           <List
             itemSize={72.5}
             itemCount={results.length}
-            height={Math.min(600, results.length * 72.5)}
+            height={Math.min(700, results.length * 72.5)}
             width="100%"
           >
             {({ index, style }) => (
