@@ -16,17 +16,32 @@ import { dateToString, validateLogin } from "../utils/Utils";
 import "../App.css";
 import css from "./raffle.module.scss";
 import { ResultsTable } from "./resultsTable";
+import { SupervisionAmountsTable } from "./SupervisionAmountsTable";
+
 const classes = classNames.bind(css);
 
 const lang = localStorage.getItem("language");
 const { nav } = translations;
 const { raffle } = translations;
 
+const amountsOfSupervisions = (raffleResults, supervisors) => {
+  const userMap = new Map();
+  supervisors.forEach(({ name, raffle }) => {
+    if (raffle) userMap.set(name, 0);
+  });
+
+  return raffleResults.reduce((acc, result) => {
+    const prevAmount = acc.get(result.name);
+    return acc.set(result.name, prevAmount + 1);
+  }, userMap);
+};
+
 export const Raffle = () => {
   const [supervisorsOpen, setSupervisorsOpen] = useState(true);
   const [supervisors, setSupervisors] = useState([]);
   const [selectedDays, setSelectedDays] = useState([]);
-  const [raffleResults, setRaffleResults] = useState(undefined);
+  const [raffleResults, setRaffleResults] = useState([]);
+  const [raffleStats, setRaffleStats] = useState([]);
   const [isLoading, setIsLoading] = useState({
     page: true,
     table: false,
@@ -38,6 +53,7 @@ export const Raffle = () => {
     msg: "",
     severity: "success",
   });
+  console.log(raffleStats);
 
   useEffect(() => {
     (async () => {
@@ -45,6 +61,7 @@ export const Raffle = () => {
       if (!logInSuccess) window.location.href = "/";
       try {
         const res = await api.getMembers();
+        console.log("res", res);
         setSupervisors(res);
       } catch (err) {
         setToast({
@@ -57,6 +74,16 @@ export const Raffle = () => {
       }
     })();
   }, []); // eslint-disable-line
+
+  useEffect(() => {
+    if (raffleResults.length > 0) {
+      const amounts = amountsOfSupervisions(raffleResults, supervisors);
+      console.log(Array.from(amounts, ([name, amount]) => ({ name, amount })));
+      setRaffleStats(
+        Array.from(amounts, ([name, amount]) => ({ name, amount }))
+      );
+    } else setRaffleStats([]);
+  }, [raffleResults, supervisors]);
 
   const handleSubmitUser = async (user_id, data) => {
     if (data.members < 0 || data.supervisors < 0) {
@@ -93,7 +120,10 @@ export const Raffle = () => {
     const raffleDates = selectedDays.map((date) => dateToString(date));
     try {
       const results = await api.raffleSupervisors(raffleDates);
-      setRaffleResults(results.raffle);
+      const sortedResults = results.raffle.sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
+      setRaffleResults(sortedResults);
     } catch (err) {
       setToast({
         open: true,
@@ -122,7 +152,7 @@ export const Raffle = () => {
         severity: "success",
       });
       setSelectedDays([]);
-      setRaffleResults(undefined);
+      setRaffleResults([]);
     } catch (err) {
       setToast({
         open: true,
@@ -182,14 +212,19 @@ export const Raffle = () => {
             </div>
           </div>
         )}
-        {raffleResults && (
+        {raffleResults.length > 0 && (
           <>
             <h2>{raffle.results[lang]}</h2>
-            <ResultsTable
-              results={raffleResults}
-              setResults={setRaffleResults}
-              supervisors={supervisors.filter(({ raffle }) => raffle)}
-            />
+            <div className={classes(css.raffleResults)}>
+              <ResultsTable
+                results={raffleResults}
+                setResults={setRaffleResults}
+                supervisors={supervisors.filter(({ raffle }) => raffle)}
+              />
+              {raffleStats.length > 0 && (
+                <SupervisionAmountsTable amounts={raffleStats} />
+              )}
+            </div>
             {!isLoading.save ? (
               <Button
                 variant="contained"

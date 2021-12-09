@@ -14,7 +14,7 @@ import IconButton from "@material-ui/core/IconButton";
 import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import translations from "../texts/texts.json";
-import css from "./usersTable.module.scss";
+import css from "./table.module.scss";
 const classes = classNames.bind(css);
 
 const lang = localStorage.getItem("language");
@@ -38,7 +38,10 @@ export const UsersTable = ({ supervisors, onSubmitUser, isLoading }) => {
   const [editFields, setEditFields] = useState({ members: 0, supervisors: 0 });
 
   return (
-    <TableContainer component={Paper} className={classes(css.tableContainer)}>
+    <TableContainer
+      component={Paper}
+      className={classes(css.tableContainer, css.large)}
+    >
       <Table className={classes(css.table)} aria-label="members table">
         <TableHead>
           <TableRow>

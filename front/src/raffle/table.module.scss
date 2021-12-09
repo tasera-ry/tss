@@ -2,6 +2,16 @@
 
 .tableContainer {
   margin-bottom: 30px;
+
+  &.small {
+    width: 300px;
+  }
+  &.medium {
+    width: 500px;
+  }
+  &.large {
+    width: 820px;
+  }
 }
 
 .table {
