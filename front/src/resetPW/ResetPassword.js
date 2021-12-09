@@ -27,7 +27,7 @@ const classes = classNames.bind(css);
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: colors.grey,
+      main: '#555555',
     },
   },
 });
