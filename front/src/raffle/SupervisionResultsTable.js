@@ -101,7 +101,11 @@ const ResultsRow = ({
   );
 };
 
-export const ResultsTable = ({ results, setResults, supervisors }) => {
+export const SupervisionResultsTable = ({
+  results,
+  setResults,
+  supervisors,
+}) => {
   const [hoveredRow, setHoveredRow] = useState(undefined);
   const [editOpen, setEditOpen] = useState(undefined);
   const [editUser, setEditUser] = useState(undefined);
