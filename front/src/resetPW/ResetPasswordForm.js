@@ -6,12 +6,13 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
+import { useHistory } from 'react-router-dom';
 import translations from '../texts/texts.json';
 import css from './ResetPassword.module.scss';
 
 const classes = classNames.bind(css);
 
-export const ResetPasswordForm = ({
+const ResetPasswordForm = ({
   showNullError,
   showError,
   isWaiting,
@@ -19,13 +20,15 @@ export const ResetPasswordForm = ({
 }) => {
   const lang = localStorage.getItem('language');
   const { resetPW } = translations;
+  const history = useHistory();
 
   const [email, setEmail] = useState('');
 
   return (
-    <Typography component="h3" variant="h5" align="center">
-      {resetPW.ResetPassword[lang]}
-
+    <>
+      <Typography component="h1" variant="h5" align="center">
+        {resetPW.ResetPassword[lang]}
+      </Typography>
       <form noValidate className={classes(css.wideForm)}>
         <TextField
           variant="outlined"
@@ -73,6 +76,15 @@ export const ResetPasswordForm = ({
           </Button>
         )}
       </form>
-    </Typography>
+      <Button
+        onClick={() => history.push('/signin')}
+        fullWidth
+        className={classes(css.secondaryButton)}
+      >
+        {resetPW.Back[lang]}
+      </Button>
+    </>
   );
 };
+
+export default ResetPasswordForm;

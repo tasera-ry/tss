@@ -1,18 +1,36 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import colors from '../colors.module.scss';
 
 // Material UI components
+import {
+  createMuiTheme,
+  ThemeProvider,
+} from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
-import { ResetPasswordForm } from './ResetPasswordForm';
+import colors from '../colors.module.scss';
+
+import ResetPasswordForm from './ResetPasswordForm';
 import api from '../api/api';
 import translations from '../texts/texts.json';
 import css from './ResetPassword.module.scss';
 
 const classes = classNames.bind(css);
+
+/*
+  TO DO: This same theme is used in SignIn.js
+  -Find out if this theme can be applied to both without two separate declarations
+  (without causing side-effects to other parts of the app)
+*/
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: colors.grey,
+    },
+  },
+});
 
 const ResetPassword = () => {
   const lang = localStorage.getItem('language');
@@ -50,30 +68,32 @@ const ResetPassword = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes(css.paper)}>
-        {showForm && (
-          <ResetPasswordForm
-            showNullError={showNullError}
-            showError={showError}
-            isWaiting={isWaiting}
-            onSubmit={reset}
-          />
-        )}
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes(css.paper)}>
+          {showForm && (
+            <ResetPasswordForm
+              showNullError={showNullError}
+              showError={showError}
+              isWaiting={isWaiting}
+              onSubmit={reset}
+            />
+          )}
 
-        {emailSent && (
-          <Typography
-            component="h3"
-            variant="h5"
-            align="center"
-            className={classes(css.success)}
-          >
-            {resetPW.Sent[lang]}
-          </Typography>
-        )}
-      </div>
-    </Container>
+          {emailSent && (
+            <Typography
+              component="h3"
+              variant="h5"
+              align="center"
+              className={classes(css.success)}
+            >
+              {resetPW.Sent[lang]}
+            </Typography>
+          )}
+        </div>
+      </Container>
+    </ThemeProvider>
   );
 };
 
