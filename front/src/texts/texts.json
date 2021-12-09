@@ -45,7 +45,8 @@
     "Sent": [
       "Salasanan palautusviesti lähetetty onnistuneesti!",
       "Password reset e-mail succesfully sent!"
-    ]
+    ],
+    "Back": ["Takaisin", "Go back"]
   },
   "renewPW": {
     "RenewPassword": ["Syötä uusi salasana", "Input new password"],
