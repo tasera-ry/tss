@@ -1,9 +1,3 @@
-const jwt = require('jsonwebtoken');
-const path = require('path');
-const root = path.join(__dirname, '..');
-const config = require(path.join(root, 'config'));
-const _ = require('lodash');
-
 const controller = {
   create: async function createTrack(request, response) {
     return response
