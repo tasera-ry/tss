@@ -230,11 +230,9 @@ router.route('/send-pending')
   .get(controllers.emailSettings.sendPendingEmails);
 
 router.route('/members')
-/** 
   .all(
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', 'superuser'))
-    */
   .get(
     validators.members.readAll,
     middlewares.members.read,
@@ -246,66 +244,23 @@ router.route('/members')
   );
 
 router.route('/members/:user_id')
-  //TODO jwt superuser required
-  /**
   .all(
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', 'superuser'))
-    */
   .get(
     validators.members.read,
     middlewares.members.read,
-    controllers.members.read);
-/**.post(
-  middlewares.user.hasProperty('role', 'superuser'),
-  middlewares.members.create,
-  controllers.members.create);*/
-/** 
-<<<<<<< HEAD
-=======
-
->>>>>>> required files for read members
-=======
->>>>>>> members get doned
-router.route('/members/:id')
-.all(
-  middlewares.jwt.read,
-  middlewares.user.hasProperty('role', 'superuser'))
-.get(
-  middlewares.members.read,
-  controllers.members.read)
-.put(
-  middlewares.members.update,
-  controllers.members.update)
-.delete(
-  middlewares.members.delete,
-  controllers.members.delete);
-=======
     controllers.members.read)
   .put(
     validators.members.update,
     middlewares.members.update,
-<<<<<<< HEAD
-    controllers.members.update)
-  .delete(
-    validators.members.delete,
-    middlewares.members.delete,
-    controllers.members.delete);
->>>>>>> temp stash
-=======
     controllers.members.update
-  );
->>>>>>> members haku ja päivitys toimii
-
-router.route('/raffle')
-  .get(
-    validators.raffle.create,
-    middlewares.raffle.create,
-    controllers.raffle.create
   );
 
 router.route('/set-raffled-supervisors')
-  // TODO jwt superuser required
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
   .post(
     validators.raffleSupervisors.checkRaffleResults,
     controllers.raffleSupervisors.set
