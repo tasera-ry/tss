@@ -63,7 +63,8 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
     { to: '/tablet', name: nav.Tablet[lang] },
     { to: '/email-settings', name: nav.EmailSettings[lang] },
     { to: '/statistics', name: nav.Statistics[lang] },
-    { to: '/supervisor-raffle', name: nav.Raffle[lang]}
+    { to: '/supervisor-raffle', name: nav.Raffle[lang] },
+    { to: '/info', name: nav.Info[lang] },
   ];
   const supervisorList = [
     { to: '/tablet', name: nav.Tablet[lang] },

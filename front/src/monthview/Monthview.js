@@ -14,6 +14,7 @@ import {
   checkColor,
 } from '../utils/Utils';
 import Infoboxes from '../infoboxes/Infoboxes';
+import InfoBox from '../infoBox/InfoBox';
 // Translation
 import texts from '../texts/texts.json';
 import css from './Monthview.module.scss';
@@ -420,6 +421,7 @@ class Monthview extends Component {
     const monthTable = this.createMonthTable();
     return (
       <div>
+        <InfoBox />
         {this.state.state !== 'ready' ? (
           <div className={classes(css.progress)}>
             <CircularProgress size="25vw" disableShrink />
