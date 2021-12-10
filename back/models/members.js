@@ -61,9 +61,6 @@ const model = {
         .update(members);
     });
   }
-  //delete:
-
-
 };
 
 module.exports = model;
