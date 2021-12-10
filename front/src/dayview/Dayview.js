@@ -12,6 +12,7 @@ import moment from 'moment';
 import { dayToString, jumpToCurrent, viewChanger } from '../utils/Utils';
 import info from '../logo/Info.png';
 import api from '../api/api';
+import InfoBox from '../infoBox/InfoBox';
 import translations from '../texts/texts.json';
 import css from './Dayview.module.scss';
 
@@ -219,6 +220,7 @@ class Dayview extends Component {
 
     return (
       <div>
+        <InfoBox />
         <div className={classes(css.dayviewContainer)}>
           {/* Date header */}
           <Grid

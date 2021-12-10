@@ -99,6 +99,19 @@ const raffleSupervisors = async (dates) => {
 const saveRaffledSupervisors = async (results) =>
   axios.post("api/set-raffled-supervisors", { results });
 
+const getInfoMessage = async () => {
+  const response = await axios.get('api/infomessage');
+  return response.data;
+};
+
+const postInfoMessage = async (infoRequest) => {
+  await axios.post('api/infomessage', { message: infoRequest.message, start: infoRequest.start, end: infoRequest.end, show_weekly: infoRequest.show_weekly, show_monthly: infoRequest.show_monthly });
+};
+
+const deleteInfoMessage = async (info) => {
+  await axios.delete(`api/infomessage/${info.id}`);
+};
+
 export default {
   getSchedulingDate,
   getSchedulingWeek,
@@ -120,4 +133,7 @@ export default {
   patchMembers,
   raffleSupervisors,
   saveRaffledSupervisors,
+  getInfoMessage,
+  postInfoMessage,
+  deleteInfoMessage,
 };

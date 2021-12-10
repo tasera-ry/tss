@@ -15,6 +15,7 @@ import SignIn from './signin/SignIn';
 import ResetPassword from './resetPW/ResetPassword';
 import RenewPassword from './renewPW/RenewPassword';
 import Nav from './navbar/Nav';
+import AddInfo from './infoBox/AddInfo';
 import Dayview from './dayview/Dayview';
 import Weekview from './weekview/Weekview';
 import Trackview from './trackview/Trackview';
@@ -102,6 +103,7 @@ class App extends Component {
                   <Route path="/tracks" component={TrackCRUD} />
                   <Route path="/email-settings" component={EmailSettings} />
                   <Route path="/statistics" component={Statistics} />
+                  <Route path="/info" component={AddInfo} />
                 </Switch>
               </header>
             </div>

@@ -12,7 +12,8 @@
     "SignOut": ["Kirjaudu ulos", "Sign Out"],
     "Statistics": ["Tilastot", "Statistics"],
     "EmailSettings": ["Sähköpostiasetukset", "Email settings"],
-    "Raffle": ["Valvojien arvonta", "Supervisor raffle"]
+    "Raffle": ["Valvojien arvonta", "Supervisor raffle"],
+    "Info": ["Lisää infoviesti", "Add info message"]
   },
   "banner": {
     "Notification": [
@@ -450,5 +451,14 @@
     "save": ["Tallenna tulokset", "Save results"],
     "saveSuccess": ["Tulokset tallennettu", "Results saved"],
     "saveError": ["Tuloksien tallennus epäonnistui", "The saving of the results failed"]
+  },
+  "infoPage": {
+    "title": ["Lisää viesti", "Add info"],
+    "message": ["Viesti", "Message"],
+    "startDate": ["Alkamispäivämäärä", "Start date"],
+    "endDate": ["Loppumispäivämäärä", "End date"],
+    "repeatWeekly": ["Toista viikoittain", "Repeat weekly"],
+    "repeatMonthly": ["Toista kuukausittain", "Repeat monthly"],
+    "send": ["Lähetä", "Send"]
   }
 }
