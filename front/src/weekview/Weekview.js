@@ -17,6 +17,7 @@ import {
 } from '../utils/Utils';
 import exclamation from '../logo/Info.png';
 import Infoboxes from '../infoboxes/Infoboxes';
+import InfoBox from '../infoBox/InfoBox';
 // Translation
 import texts from '../texts/texts.json';
 import css from './Weekview.module.scss';
@@ -480,6 +481,7 @@ class Weekview extends Component {
     const { week } = texts; // eslint-disable-line
     return (
       <div>
+        <InfoBox />
         <div className={classes(css.container)}>
           <Grid className={classes(css.dateHeader)}>
             <div
