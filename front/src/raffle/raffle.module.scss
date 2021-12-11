@@ -1,8 +1,7 @@
-@import "../colors.module.scss";
+@import '../shared.module.scss';
 
 .members {
-  display: flex;
-  flex-direction: column;
+  @extend .layout-column;
   align-items: center;
   gap: 10px;
   margin: 0 auto;
@@ -10,7 +9,7 @@
 }
 
 .tableHeader {
-  display: flex;
+  @extend .layout-row;
   gap: 5px;
   align-items: center;
 }
@@ -21,31 +20,14 @@
   height: 0;
 }
 
-.wideForm {
-  width: 100%;
-  margin-top: 8px;
-  .submitButton,
-  .submitContainer {
-    margin: 24px 0 16px;
-  }
-}
-
 .raffleForm {
   @extend .wideForm;
-  display: flex;
-  flex-direction: column;
+  @extend .layout-column;
   align-items: center;
 }
 
-.acceptButton {
-  background-color: $COLOR_BLUE !important;
-  &:disabled {
-    background-color: lighten($COLOR_GREY, 40%) !important;
-  }
-}
-
 .raffleResults {
-  display: flex;
+  @extend .layout-row;
   gap: 20px;
   align-items: flex-start;
 }
