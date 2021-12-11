@@ -1,28 +1,27 @@
-import React, { useState, useEffect } from "react";
-import classNames from "classnames";
-import api from "../api/api";
+import React, { useState, useEffect } from 'react';
+import classNames from 'classnames';
+import api from '../api/api';
 
-import { StylesProvider } from "@material-ui/core/styles";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import IconButton from "@material-ui/core/IconButton";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
+import { StylesProvider } from '@material-ui/core/styles';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import IconButton from '@material-ui/core/IconButton';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
-import translations from "../texts/texts.json";
-import RaffleDatePicker from "./RaffleDatePicker";
-import { SupervisorsTable } from "./SupervisorsTable";
-import { dateToString, validateLogin } from "../utils/Utils";
-import { SupervisionResultsTable } from "./SupervisionResultsTable";
-import { SupervisionAmountsTable } from "./SupervisionAmountsTable";
-import "../App.css";
-import css from "./raffle.module.scss";
+import translations from '../texts/texts.json';
+import RaffleDatePicker from './RaffleDatePicker';
+import { SupervisorsTable } from './SupervisorsTable';
+import { dateToString, validateLogin } from '../utils/Utils';
+import { SupervisionResultsTable } from './SupervisionResultsTable';
+import { SupervisionAmountsTable } from './SupervisionAmountsTable';
+import css from './raffle.module.scss';
 
 const classes = classNames.bind(css);
 
-const lang = localStorage.getItem("language");
+const lang = localStorage.getItem('language');
 const { nav } = translations;
 const { raffle } = translations;
 
@@ -52,14 +51,14 @@ export const Raffle = () => {
   });
   const [toast, setToast] = useState({
     open: false,
-    msg: "",
-    severity: "success",
+    msg: '',
+    severity: 'success',
   });
 
   useEffect(() => {
     (async () => {
       const logInSuccess = await validateLogin();
-      if (!logInSuccess) window.location.href = "/";
+      if (!logInSuccess) window.location.href = '/';
       try {
         const res = await api.getMembers();
         setSupervisors(res);
@@ -67,7 +66,7 @@ export const Raffle = () => {
         setToast({
           open: true,
           msg: raffle.loadError[lang],
-          severity: "error",
+          severity: 'error',
         });
       } finally {
         setIsLoading({ ...isLoading, page: false });
@@ -79,14 +78,14 @@ export const Raffle = () => {
     if (raffleResults.length > 0) {
       const amounts = supervisionAmounts(raffleResults, supervisors);
       setRaffleResultAmounts(
-        Array.from(amounts, ([name, amount]) => ({ name, amount }))
+        Array.from(amounts, ([name, amount]) => ({ name, amount })),
       );
     } else setRaffleResultAmounts([]);
   }, [raffleResults, supervisors]);
 
   const handleSubmitUser = async (user_id, data) => {
     if (data.members < 0 || data.supervisors < 0) {
-      setToast({ open: true, msg: raffle.valueError[lang], severity: "error" });
+      setToast({ open: true, msg: raffle.valueError[lang], severity: 'error' });
       return;
     }
     setIsLoading({ ...isLoading, table: true });
@@ -100,14 +99,14 @@ export const Raffle = () => {
       setToast({
         open: true,
         msg: raffle.updateSuccess[lang],
-        severity: "success",
+        severity: 'success',
       });
       setSupervisors(updatedSupervisors);
     } catch (err) {
       setToast({
         open: true,
         msg: raffle.updateError[lang],
-        severity: "error",
+        severity: 'error',
       });
     } finally {
       setIsLoading({ ...isLoading, table: false });
@@ -120,14 +119,14 @@ export const Raffle = () => {
     try {
       const results = await api.raffleSupervisors(raffleDates);
       const sortedResults = results.raffle.sort(
-        (a, b) => new Date(a.date) - new Date(b.date)
+        (a, b) => new Date(a.date) - new Date(b.date),
       );
       setRaffleResults(sortedResults);
     } catch (err) {
       setToast({
         open: true,
         msg: raffle.raffleError[lang],
-        severity: "error",
+        severity: 'error',
       });
     } finally {
       setIsLoading({ ...isLoading, raffle: false });
@@ -148,7 +147,7 @@ export const Raffle = () => {
       setToast({
         open: true,
         msg: raffle.saveSuccess[lang],
-        severity: "success",
+        severity: 'success',
       });
       setSelectedDays([]);
       setRaffleResults([]);
@@ -156,7 +155,7 @@ export const Raffle = () => {
       setToast({
         open: true,
         msg: raffle.saveError[lang],
-        severity: "error",
+        severity: 'error',
       });
     } finally {
       setIsLoading({ ...isLoading, save: false });
@@ -164,7 +163,7 @@ export const Raffle = () => {
   };
 
   const handleSnackbarClose = (_, reason) => {
-    if (reason === "clickaway") return;
+    if (reason === 'clickaway') return;
     setToast({ ...toast, open: false });
   };
 
