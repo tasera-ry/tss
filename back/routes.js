@@ -265,8 +265,11 @@ router.route('/set-raffled-supervisors')
     validators.raffleSupervisors.checkRaffleResults,
     controllers.raffleSupervisors.set
   );
-  
+
 router.route('/raffle')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
   .post(
     validators.raffle.create,
     middlewares.raffle.create,
