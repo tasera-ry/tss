@@ -5,6 +5,7 @@ const models = require(path.join(root, 'models'));
 const reservationModel = models.reservation;
 const scheduleModel = models.schedule;
 const rangeSupervisionModel = models.rangeSupervision;
+const rangeModel = models.range;
 
 const DEFAULT_OPENING_HOURS = { 
   weekend : { open: '10:00', close : '16:00' },
@@ -23,8 +24,9 @@ async function setSupervisors(raffleResults) {
     await updateOrCreateRangeSupervision(scheduledRangeSupervisionId);  
   };
   
+  const range_id = await getRangeId(); 
   await Promise.all(raffleResults.map(async result => {
-    const { range_id, supervisor_id, date  } = result;
+    const { supervisor_id, date  } = result;
     await setSingleSupervisor(range_id, supervisor_id, date);
   })
   );
@@ -37,6 +39,12 @@ const service = {
 module.exports = service;
 
 // Helper functions
+
+const getRangeId = async () => {
+  // There is only one shooting range
+  return (await rangeModel.readAllRanges())[0].id;
+};
+
 const getRangeReservationId = async (date, rangeId) => {
   const fields = [ 'id' ];
   const searchKey = { date, range_id: rangeId };
