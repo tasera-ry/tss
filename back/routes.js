@@ -257,6 +257,16 @@ router.route('/members/:user_id')
     controllers.members.update
   );
 
+router.route('/raffle')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .post(
+    validators.raffle.create,
+    middlewares.raffle.create,
+    controllers.raffle.create,
+  );
+
 router.route('/set-raffled-supervisors')
   .all(
     middlewares.jwt.read,
