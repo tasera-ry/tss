@@ -61,7 +61,7 @@ router.route('/changeownpassword/:id')
     middlewares.user.updateOwnPasswordFilter,
     middlewares.user.update,
     controllers.user.update
-);
+  );
 
 
 // Track supervision
