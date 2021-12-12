@@ -15,60 +15,28 @@ const shuffleArray = array => {
 // this compare function ranks clubs by the thier currently raffled supervisions
 // if supervisions are equal the one with more supervisors gets more supervisions
 function compare( a, b ) {
-  if ( a.ratio < b.ratio ) {
-    return -1;
-  }
-  if ( a.ratio > b.ratio ) {
-    return 1;
-  }
-  if ( a.members + a.supervisors < b.members + b.supervisors ) {
-    return -1;
-  }
-  if ( a.members + a.supervisors > b.members + b.supervisors ) {
-    return 1;
-  }
-  if ( a.members < b.members ) {
-    return -1;
-  }
-  if ( a.members > b.members ) {
-    return 1;
-  }
+  if ( a.ratio < b.ratio ) { return -1; }
+  if ( a.ratio > b.ratio ) { return 1; }
+  if ( a.members + a.supervisors < b.members + b.supervisors ) { return -1; }
+  if ( a.members + a.supervisors > b.members + b.supervisors ) { return 1; }
+  if ( a.members < b.members ) { return -1; }
+  if ( a.members > b.members ) { return 1; }
   return 0;
 }
 
 // compare function for debugging
 function compare_size( a, b ) {
-  if ( a.members + a.supervisors < b.members + b.supervisors ) {
-    return -1;
-  }
-  if ( a.members + a.supervisors > b.members + b.supervisors ) {
-    return 1;
-  }
+  if ( a.members + a.supervisors < b.members + b.supervisors ) { return -1; }
+  if ( a.members + a.supervisors > b.members + b.supervisors ) { return 1; }
   return 0;
 }
 
 // function to calculate the current ratio for supervisions to members
 function calculate_ratio( m ) {
   // weekend to weekday weighting
-  const weekendratio = 2;
-  /*
-  this is an abomination that would use ratio of the possible added supervisions to count which one gets the next supervision
-  const current = m.weekendsupervisions * weekendratio + m.weekdaysupervisions;
-  const added = (() => {
-    if ( i == 1) {
-      return m.weekendsupervisions * weekendratio + m.weekdaysupervisions+1;
-    } else if ( i == 2 ) {
-      return (m.weekendsupervisions+1) * weekendratio + m.weekdaysupervisions;
-    } else {
-      return (m.weekendsupervisions+1) * weekendratio + m.weekdaysupervisions+1;
-    }
-  })();
-  //added = (m.weekendsupervisions+1) * weekendratio + m.weekdaysupervisions;
-  */
-  
+  const weekendratio = 2;  
   return (m.weekendsupervisions * weekendratio + m.weekdaysupervisions)/(m.members + m.supervisors);
 }
-
 
 const service = {
   /**
@@ -85,7 +53,7 @@ const service = {
     let weekends = [];
     for (let i = 0; i < dates.length; i++) {
       let day = new Date(dates[i]).getDay();
-      if (day == 5 || day == 6) {
+      if (day == 0 || day == 6) {
         weekends.push(dates[i]);
       } else {
         weekdays.push(dates[i]);
@@ -179,7 +147,8 @@ const service = {
     members.forEach(function(m) {
       for (let i = 0; i < m.weekendsupervisions; i++) {
         supervisions.push(m);
-      }for (let i = 0; i < m.weekdaysupervisions; i++) {
+      }
+      for (let i = 0; i < m.weekdaysupervisions; i++) {
         supervisions.push(m);
       }
     });
@@ -203,24 +172,27 @@ const service = {
       let temp = {
         'date': weekdays[i],
         'range_id': range_id,
-        'user_id': supervisions[i].user_id,
-        'name': supervisions[i].name
+        'user_id': supervisions[weekends.length + i].user_id,
+        'name': supervisions[weekends.length + i].name
       };
       raffle.push(temp);
     }
     
-    //console.log(raffle);
+    raffle.sort(function (a,b) {
+      if (new Date(a.date) > new Date(b.date)) { return -1; }
+      if (new Date(a.date) < new Date(b.date)) { return 1; }
+      return 0;
+    });
     //Log results for inspection
-    
     /*
+    console.log(raffle);
     members.sort(compare_size);
     console.log('members, ratio, weekdaysupervisions, weekendsupervisions, user_id');
     members.forEach(function(m) {
       console.log(m.supervisors + m.members, Number(m.ratio).toFixed(2), m.weekdaysupervisions, m.weekendsupervisions, m.name, m.user_id);
     });
-    console.log(raffle.length, n_weekendsupervisions + n_weekdaysupervisions);
+    console.log(raffle.length, supervisions.length);
     */
-
     return {raffle};
   }
 };
