@@ -31,7 +31,11 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
     dialog: false,
     feedback: false,
   });
-  const [cookies, setCookie, removeCookie] = useCookies(['username', 'role']); // eslint-disable-line
+  const [cookies, setCookie, removeCookie] = useCookies([
+    'username',
+    'role',
+    'id',
+  ]); // eslint-disable-line
 
   // TODO: centralize this one
   const HandleSignOut = async () => {

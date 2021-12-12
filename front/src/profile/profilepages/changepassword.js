@@ -12,7 +12,7 @@ const classes = classNames.bind(css);
 const lang = localStorage.getItem('language');
 const { passwordSettings } = translations;
 
-const ChangePassword = ({ username }) => {
+const ChangePassword = ({ username, id }) => {
   const [oldPass, setOldPass] = useState('');
   const [newPass, setNewPass] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
@@ -36,7 +36,7 @@ const ChangePassword = ({ username }) => {
       alert(passwordSettings.alertWrongPword[lang]);
     }
     try {
-      const data = await api.getUser(username);
+      const data = await api.getUser(id);
       await api.patchPassword(data[0].id, newPass);
       alert(passwordSettings.alertSuccess[lang]);
       setOldPass('');

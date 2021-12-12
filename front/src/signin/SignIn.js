@@ -34,6 +34,7 @@ const SignIn = () => {
   const setInfo = async (user) => {
     setCookie('username', user.name, { sameSite: true, secure });
     setCookie('role', user.role, { sameSite: true, secure });
+    setCookie('id', user.id, { sameSite: true, secure });
     // TODO: try to be SPA and remove this refresh
     window.location.href = '/';
   };
