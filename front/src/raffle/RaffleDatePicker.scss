@@ -1,0 +1,40 @@
+@import "../colors.module.scss";
+
+.round-elem {
+  border-radius: 15%;
+  transition: 0.2s ease-out;
+}
+
+.DayPicker-Day {
+  @extend .round-elem;
+
+  &.DayPicker-Day--disabled {
+    color: $COLOR_CREAM50;
+  }
+  &.DayPicker-Day--selected:not(.DayPicker-Day--outside) {
+    background-color: $COLOR_GREEN !important;
+  }
+  &:hover:not(.DayPicker-Day--selected, .DayPicker-Day--disabled) {
+    background-color: lighten($COLOR_GREEN_LIGHT, 17%) !important;
+  }
+  &:active:not(.DayPicker-Day--selected, .DayPicker-Day--disabled) {
+    background-color: lighten($COLOR_GREEN_LIGHT, 19%) !important;
+  }
+}
+
+.DayPicker-Weekday {
+  color: darken($COLOR_CREAM50, 35%);
+}
+
+.DayPicker-WeekNumber {
+  @extend .round-elem;
+  color: darken($COLOR_CREAM50, 35%);
+  border-color: lighten($COLOR_CREAM50, 5%);
+
+  &:hover {
+    background-color: lighten($COLOR_ORANGE, 24%) !important;
+  }
+  &:active {
+    background-color: lighten($COLOR_ORANGE, 26%) !important;
+  }
+}

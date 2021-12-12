@@ -61,7 +61,7 @@ router.route('/changeownpassword/:id')
     middlewares.user.updateOwnPasswordFilter,
     middlewares.user.update,
     controllers.user.update
-);
+  );
 
 
 // Track supervision
@@ -228,5 +228,52 @@ router.route('/send-pending')
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', 'superuser'))
   .get(controllers.emailSettings.sendPendingEmails);
+
+router.route('/members')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .get(
+    validators.members.readAll,
+    middlewares.members.read,
+    controllers.members.read)
+  .post(
+    validators.members.create,
+    middlewares.members.create,
+    controllers.members.create
+  );
+
+router.route('/members/:user_id')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .get(
+    validators.members.read,
+    middlewares.members.read,
+    controllers.members.read)
+  .put(
+    validators.members.update,
+    middlewares.members.update,
+    controllers.members.update
+  );
+
+router.route('/set-raffled-supervisors')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .post(
+    validators.raffleSupervisors.checkRaffleResults,
+    controllers.raffleSupervisors.set
+  );
+
+router.route('/raffle')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .post(
+    validators.raffle.create,
+    middlewares.raffle.create,
+    controllers.raffle.create
+  );
 
 module.exports = router;

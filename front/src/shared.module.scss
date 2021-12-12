@@ -53,6 +53,9 @@ code {
 
 .acceptButton {
   background-color: $COLOR_BLUE !important;
+  &:disabled {
+    background-color: lighten($COLOR_GREY, 40%) !important;
+  }
 }
 
 .secondaryButton {
@@ -71,7 +74,8 @@ code {
     background-color: $COLOR_CREAM0;
     border-radius: 4px;
   }
-  .submitButton {
+  .submitButton,
+  .submitContainer {
     margin: 24px 0 16px;
   }
 }
