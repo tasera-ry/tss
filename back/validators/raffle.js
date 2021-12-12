@@ -1,9 +1,9 @@
-const _ = require('lodash');
+//const _ = require('lodash');
 
 const {
   body,
-  query,
-  param,
+  //query,
+  //param,
   validationResult,
   matchedData
 } = require('express-validator');
@@ -26,9 +26,9 @@ function validatorAdditions(validator, opts) {
 const fields = {
   range_id: function range_idValidation(requestObject, ...opts) {
     const validator = requestObject('range_id')
-    .isInt()
-    .withMessage('must be an int')
-    .toInt();
+      .isInt()
+      .withMessage('must be an int')
+      .toInt();
 
     return validatorAdditions(validator, opts);
   },
