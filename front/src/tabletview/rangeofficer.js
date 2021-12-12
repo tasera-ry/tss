@@ -494,10 +494,10 @@ const Tabletview = () => {
         ''
       )}
 
-      <div className={classes(css.Status), css.rowStyle}>
+      <div className={classes(css.Status, css.rowStyle)}>
         <Button
           className = {classes(css.statusStyle)}
-          style={{color: colors.black, backgroundColor: statusColor}}
+          style={{backgroundColor: statusColor}}
           size="large"
           variant="outlined"
           disabled

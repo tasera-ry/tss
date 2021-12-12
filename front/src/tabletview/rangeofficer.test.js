@@ -53,7 +53,7 @@ describe('testing rangeofficer', () => {
     );
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveStyle(
-        'background-color: rgb(101, 143, 96);',
+        'background-color: green;',
       ),
     );
     fireEvent.click(screen.getByTestId('tracksupervisorOnWay'));
@@ -64,7 +64,7 @@ describe('testing rangeofficer', () => {
     );
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveStyle(
-        'background-color: rgb(242, 198, 109);',
+        'background-color: orange;',
       ),
     );
     fireEvent.click(screen.getByTestId('tracksupervisorClosed'));
@@ -93,7 +93,7 @@ describe('testing rangeofficer', () => {
     render(<Tabletview />);
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveStyle(
-        'background-color: rgb(101, 143, 96);',
+        'background-color: green;',
       ),
     );
   });
@@ -110,7 +110,7 @@ describe('testing rangeofficer', () => {
     render(<Tabletview />);
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveStyle(
-        'background-color: rgb(242, 198, 109);',
+        'background-color: orange;',
       ),
     );
   });
@@ -178,7 +178,7 @@ describe('testing rangeofficer', () => {
     render(<Tabletview />);
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveStyle(
-        'background-color: rgb(149, 213, 219);',
+        'background-color: turquoise;',
       ),
     );
   });
