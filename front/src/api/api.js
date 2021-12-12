@@ -52,8 +52,8 @@ const renewPassword = (username, newPassword, resetToken, resetTokenExpire) =>
     reset_token_expire: resetTokenExpire,
   });
 
-const getUser = async (name) => {
-  const response = await axios.get(`api/user?name=${name}`);
+const getUser = async (id) => {
+  const response = await axios.get(`api/user/${id}`);
   return response.data;
 };
 

@@ -196,66 +196,79 @@ class UserManagementView extends Component {
     this.handleRemoveWarningClose = this.handleRemoveWarningClose.bind(this);
     this.onChangePassClick = this.onChangePassClick.bind(this);
     this.onaddEmailClick = this.onaddEmailClick.bind(this);
-    this.handleRemoveWarningCloseAgree = this.handleRemoveWarningCloseAgree.bind(this);
+    this.handleRemoveWarningCloseAgree =
+      this.handleRemoveWarningCloseAgree.bind(this);
     this.handleAddUserOpenDialog = this.handleAddUserOpenDialog.bind(this);
-    this.handleOpenOwnPassChangeDialog = this.handleOpenOwnPassChangeDialog.bind(this);
-    this.handleOpenOwnEmailChangeDialog = this.handleOpenOwnEmailChangeDialog.bind(this);
-    this.handleChangeOwnPassDialogClose = this.handleChangeOwnPassDialogClose.bind(this);
-    this.handleChangeOwnEmailDialogClose = this.handleChangeOwnEmailDialogClose.bind(this);
-    this.handleChangeOwnPassDialogCloseAgree = this.handleChangeOwnPassDialogCloseAgree.bind(this);
-    this.handleChangeOwnEmailDialogCloseAgree = this.handleChangeOwnEmailDialogCloseAgree.bind(this); //eslint-disable-line
+    this.handleOpenOwnPassChangeDialog =
+      this.handleOpenOwnPassChangeDialog.bind(this);
+    this.handleOpenOwnEmailChangeDialog =
+      this.handleOpenOwnEmailChangeDialog.bind(this);
+    this.handleChangeOwnPassDialogClose =
+      this.handleChangeOwnPassDialogClose.bind(this);
+    this.handleChangeOwnEmailDialogClose =
+      this.handleChangeOwnEmailDialogClose.bind(this);
+    this.handleChangeOwnPassDialogCloseAgree =
+      this.handleChangeOwnPassDialogCloseAgree.bind(this);
+    this.handleChangeOwnEmailDialogCloseAgree =
+      this.handleChangeOwnEmailDialogCloseAgree.bind(this); //eslint-disable-line
     this.handleNewuserNameChange = this.handleNewuserNameChange.bind(this);
     this.handleNewuserPassChange = this.handleNewuserPassChange.bind(this);
 
-    this.handleNewuserSecurePassChange = this.handleNewuserSecurePassChange.bind(this);
+    this.handleNewuserSecurePassChange =
+      this.handleNewuserSecurePassChange.bind(this);
 
     this.handleNewEmailChange = this.handleNewEmailChange.bind(this);
-    this.handleAddNewUserDialogClose = this.handleAddNewUserDialogClose.bind(this);
-    this.handleAddNewUserDialogCloseConfirmed = this.handleAddNewUserDialogCloseConfirmed.bind(this);  // eslint-disable-line
-    this.handleChangePassCloseConfirm = this.handleChangePassCloseConfirm.bind(this);
-    this.handleaddEmailCloseConfirm = this.handleaddEmailCloseConfirm.bind(this);
+    this.handleAddNewUserDialogClose =
+      this.handleAddNewUserDialogClose.bind(this);
+    this.handleAddNewUserDialogCloseConfirmed =
+      this.handleAddNewUserDialogCloseConfirmed.bind(this); // eslint-disable-line
+    this.handleChangePassCloseConfirm =
+      this.handleChangePassCloseConfirm.bind(this);
+    this.handleaddEmailCloseConfirm =
+      this.handleaddEmailCloseConfirm.bind(this);
     this.handleChangePassClose = this.handleChangePassClose.bind(this);
     this.handleaddEmailClose = this.handleaddEmailClose.bind(this);
     this.handleChangeNewUserRole = this.handleChangeNewUserRole.bind(this);
     this.handleOldpassStringChange = this.handleOldpassStringChange.bind(this);
     this.handleNewpassStringChange = this.handleNewpassStringChange.bind(this);
 
-    this.handleNewSecurePassStringChange = this.handleNewSecurePassStringChange.bind(this);
+    this.handleNewSecurePassStringChange =
+      this.handleNewSecurePassStringChange.bind(this);
 
     this.handleaddEmailDialog = this.handleaddEmailDialog.bind(this);
   }
 
   componentDidMount() {
-    this.setState(
-      function () {
-        validateLogin()
-          .then((logInSuccess) => {
-            if (!logInSuccess) {
-              this.props.history.push('/');
-            } else {
-              getUsers()
-                .then((response) => {
-                  if (response !== false) {
-                    this.setState({
-                      userList: response,
-                    }, () => {
-                      this.update();
-                    });
-                  }
-                })
-                .catch((error) => {
-                  console.error('init failed', error);
-                });
-            }
-          });
-      },
-    );
+    this.setState(function () {
+      validateLogin().then((logInSuccess) => {
+        if (!logInSuccess) {
+          this.props.history.push('/');
+        } else {
+          getUsers()
+            .then((response) => {
+              if (response !== false) {
+                this.setState(
+                  {
+                    userList: response,
+                  },
+                  () => {
+                    this.update();
+                  },
+                );
+              }
+            })
+            .catch((error) => {
+              console.error('init failed', error);
+            });
+        }
+      });
+    });
   }
 
   /**
-    **  HANDLE DIALOGS
-    **  opening and closings
-    */
+   **  HANDLE DIALOGS
+   **  opening and closings
+   */
 
   // handles changing own password
   async handleChangeOwnPassDialogCloseAgree() {
@@ -343,7 +356,8 @@ class UserManagementView extends Component {
   }
 
   // Closes dialog for changing password for some1 else
-  handleChangePassClose(e) { // eslint-disable-line
+  handleChangePassClose(e) {
+    // eslint-disable-line
     this.setState({
       password: '',
       changePassDialogOpen: false,
@@ -352,7 +366,10 @@ class UserManagementView extends Component {
 
   // Changes password for some1 else by their ID
   async handleChangePassCloseConfirm() {
-    const response = await changePassword(this.findUserId(), this.state.password);
+    const response = await changePassword(
+      this.findUserId(),
+      this.state.password,
+    );
     if (!response) {
       this.setState({
         changeErrors: true,
@@ -363,7 +380,8 @@ class UserManagementView extends Component {
   }
 
   // Closes dialog for adding email for some1 else
-  handleaddEmailClose(e) { // eslint-disable-line
+  handleaddEmailClose(e) {
+    // eslint-disable-line
     this.setState({
       email: '',
       addEmailDialogOpen: false,
@@ -376,7 +394,6 @@ class UserManagementView extends Component {
     if (!response) {
       this.setState({
         changeErrors: true,
-
       });
     } else {
       this.handleaddEmailClose();
@@ -384,33 +401,68 @@ class UserManagementView extends Component {
     }
   }
 
-  returnRemoveButton(id, manage, fin) { // eslint-disable-line
+  returnRemoveButton(id, manage, fin) {
+    // eslint-disable-line
     return (
-      <Button data-testid={`del-${id}`} id={id} size="small" className={classes(css.removeButton)} variant="contained" onClick={this.onRemoveClick}>
+      <Button
+        data-testid={`del-${id}`}
+        id={id}
+        size="small"
+        className={classes(css.removeButton)}
+        variant="contained"
+        onClick={this.onRemoveClick}
+      >
         {manage.RemoveUser[fin]}
       </Button>
     );
   }
 
-  returnPassButton(id, manage, fin) { // eslint-disable-line
+  returnPassButton(id, manage, fin) {
+    // eslint-disable-line
     return (
-      <Button data-testid={`pw-${id}`} id={id} size="small" className={classes(css.acceptButton)} variant="contained" onClick={this.onChangePassClick}>
+      <Button
+        data-testid={`pw-${id}`}
+        id={id}
+        size="small"
+        className={classes(css.acceptButton)}
+        variant="contained"
+        onClick={this.onChangePassClick}
+      >
         {manage.ChangePass[fin]}
       </Button>
     );
   }
-  returnaddEmailButton(id, manage, fin) { // eslint-disable-line
+  returnaddEmailButton(id, manage, fin) {
+    // eslint-disable-line
     return (
-      <Button id={id} size="small" variant="contained" onClick={this.onaddEmailClick}>
+      <Button
+        id={id}
+        size="small"
+        variant="contained"
+        onClick={this.onaddEmailClick}
+      >
         {manage.ChangeEmail[fin]}
       </Button>
     );
   }
 
-  createData(name, role, email, ButtonToChangePassword, ButtonToRemoveUser, ButtonToaddEmail) {
-    const roleToPrint = role === 'superuser' ? manage.Superuser[fin] : manage.Supervisor[fin];
+  createData(
+    name,
+    role,
+    email,
+    ButtonToChangePassword,
+    ButtonToRemoveUser,
+    ButtonToaddEmail,
+  ) {
+    const roleToPrint =
+      role === 'superuser' ? manage.Superuser[fin] : manage.Supervisor[fin];
     return {
-      name, roleToPrint, email, ButtonToChangePassword, ButtonToRemoveUser, ButtonToaddEmail,
+      name,
+      roleToPrint,
+      email,
+      ButtonToChangePassword,
+      ButtonToRemoveUser,
+      ButtonToaddEmail,
     };
   }
 
@@ -423,7 +475,9 @@ class UserManagementView extends Component {
         });
         this.update();
       } else {
-        console.error('getting users failed, most likely sign in token invalid -> kicking to root');
+        console.error(
+          'getting users failed, most likely sign in token invalid -> kicking to root',
+        );
         this.props.history.push('/');
       }
     } catch (error) {
@@ -509,8 +563,8 @@ class UserManagementView extends Component {
   }
 
   /**
-    **  HANDLE STATE CHANGES
-    */
+   **  HANDLE STATE CHANGES
+   */
 
   // handles state change for oldpassword
   handleOldpassStringChange(e) {
@@ -532,7 +586,6 @@ class UserManagementView extends Component {
     this.setState({
       newPassword: data.value,
     });
-
   }
 
   // handle state email change
@@ -569,12 +622,11 @@ class UserManagementView extends Component {
     this.setState({
       newUserPass: data.value,
     });
-
   }
 
   /**
-    **  FUNCTIONS
-    */
+   **  FUNCTIONS
+   */
 
   // Opens warning for removing user
   async onRemoveClick(e) {
@@ -613,8 +665,8 @@ class UserManagementView extends Component {
   }
 
   /**
-    **ALGORITHMS
-    */
+   **ALGORITHMS
+   */
 
   findUserName() {
     for (const i in this.state.userList) {
@@ -656,12 +708,14 @@ class UserManagementView extends Component {
     const tempRows = [];
     for (const i in this.state.userList) {
       if (this.state.username !== this.state.userList[i].name) {
-        const row = this.createData(this.state.userList[i].name,
+        const row = this.createData(
+          this.state.userList[i].name,
           this.state.userList[i].role,
           this.state.userList[i].email,
           this.returnPassButton(this.state.userList[i].id, manage, fin),
           this.returnRemoveButton(this.state.userList[i].id, manage, fin),
-          this.returnaddEmailButton(this.state.userList[i].id, manage, fin));
+          this.returnaddEmailButton(this.state.userList[i].id, manage, fin),
+        );
         tempRows.push(row);
       }
     }
@@ -671,8 +725,8 @@ class UserManagementView extends Component {
   }
 
   /**
-    **  ACTUAL PAGE RENDERING
-    */
+   **  ACTUAL PAGE RENDERING
+   */
   render() {
     const fin = localStorage.getItem('language'); // eslint-disable-line
     return (
@@ -689,10 +743,7 @@ class UserManagementView extends Component {
           >
             {manage.New[fin]}
           </DialogTitle>
-          <DialogContent
-            className={classes(css.dialogStyle)}
-          >
-
+          <DialogContent className={classes(css.dialogStyle)}>
             <TextField
               value={this.state.newUserName}
               margin="dense"
@@ -716,21 +767,24 @@ class UserManagementView extends Component {
               fullWidth
               securityLevels={[
                 {
-                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
+                  descriptionLabel:
+                    manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
                   validator: /.*[0-9].*/,
                 },
                 {
-                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
+                  descriptionLabel:
+                    manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
                   validator: /.*[a-z].*/,
                 },
                 {
-                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
+                  descriptionLabel:
+                    manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
                   validator: /.*[A-Z].*/,
                 },
                 {
                   descriptionLabel: manage.MinimumLength[fin],
-                  validator: /^.{6,}$/
-                }
+                  validator: /^.{6,}$/,
+                },
               ]}
               showSecurityLevelBar
               showSecurityLevelDescription
@@ -758,29 +812,27 @@ class UserManagementView extends Component {
                 <option aria-label={manage.Supervisor[fin]} value="supervisor">
                   {manage.Supervisor[fin]}
                 </option>
-                <option value="superuser">
-                  {manage.Superuser[fin]}
-                </option>
+                <option value="superuser">{manage.Superuser[fin]}</option>
               </Select>
             </FormControl>
 
             {this.state.requestErrors ? (
-              <p className={classes(css.errorText)}>
-                {manage.Error[fin]}
-                {' '}
-              </p>
+              <p className={classes(css.errorText)}>{manage.Error[fin]} </p>
             ) : (
               <p />
             )}
-
           </DialogContent>
-          <DialogActions
-            className={classes(css.dialogStyle)}
-          >
-            <Button onClick={this.handleAddNewUserDialogClose} className={classes(css.removeButton)}>
+          <DialogActions className={classes(css.dialogStyle)}>
+            <Button
+              onClick={this.handleAddNewUserDialogClose}
+              className={classes(css.removeButton)}
+            >
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleAddNewUserDialogCloseConfirmed} className={classes(css.acceptButton)}>
+            <Button
+              onClick={this.handleAddNewUserDialogCloseConfirmed}
+              className={classes(css.acceptButton)}
+            >
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -802,32 +854,29 @@ class UserManagementView extends Component {
             id="dialog-remove-user-contet"
             className={classes(css.dialogStyle)}
           >
-            <DialogContentText
-              id="dialog-remove-user-text"
-            >
-              {manage.AskDelete[fin]}
-              {' '}
-              {this.state.selectedUserName}
+            <DialogContentText id="dialog-remove-user-text">
+              {manage.AskDelete[fin]} {this.state.selectedUserName}
             </DialogContentText>
 
-            {this.state.deleteErrors
-              ? (
-                <p className={classes(css.errorText)}>
-                  {manage.ErrorSmall[fin]}
-                  {' '}
-
-                </p>
-              )
-              : <p />}
-
+            {this.state.deleteErrors ? (
+              <p className={classes(css.errorText)}>
+                {manage.ErrorSmall[fin]}{' '}
+              </p>
+            ) : (
+              <p />
+            )}
           </DialogContent>
-          <DialogActions
-            className={classes(css.dialogStyle)}
-          >
-            <Button onClick={this.handleRemoveWarningClose} className={classes(css.removeButton)}>
+          <DialogActions className={classes(css.dialogStyle)}>
+            <Button
+              onClick={this.handleRemoveWarningClose}
+              className={classes(css.removeButton)}
+            >
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleRemoveWarningCloseAgree} className={classes(css.acceptButton)}>
+            <Button
+              onClick={this.handleRemoveWarningCloseAgree}
+              className={classes(css.acceptButton)}
+            >
               {manage.ConfirmDelete[fin]}
             </Button>
           </DialogActions>
@@ -844,12 +893,8 @@ class UserManagementView extends Component {
           >
             {manage.ChangePass[fin]}
           </DialogTitle>
-          <DialogContent
-            className={classes(css.dialogStyle)}
-          >
-            <DialogContentText>
-              {manage.Helper[fin]}
-            </DialogContentText>
+          <DialogContent className={classes(css.dialogStyle)}>
+            <DialogContentText>{manage.Helper[fin]}</DialogContentText>
 
             <TextField
               type="password"
@@ -876,21 +921,24 @@ class UserManagementView extends Component {
               fullWidth
               securityLevels={[
                 {
-                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
+                  descriptionLabel:
+                    manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
                   validator: /.*[0-9].*/,
                 },
                 {
-                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
+                  descriptionLabel:
+                    manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
                   validator: /.*[a-z].*/,
                 },
                 {
-                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
+                  descriptionLabel:
+                    manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
                   validator: /.*[A-Z].*/,
                 },
                 {
                   descriptionLabel: manage.MinimumLength[fin],
-                  validator: /^.{6,}$/
-                }
+                  validator: /^.{6,}$/,
+                },
               ]}
               showSecurityLevelBar
               showSecurityLevelDescription
@@ -899,21 +947,23 @@ class UserManagementView extends Component {
 
             {this.state.changeOwnPassFailed ? (
               <p className={classes(css.errorText)}>
-                {manage.ErrorPassword[fin]}
-                {' '}
+                {manage.ErrorPassword[fin]}{' '}
               </p>
             ) : (
               <p />
             )}
-
           </DialogContent>
-          <DialogActions
-            className={classes(css.dialogStyle)}
-          >
-            <Button onClick={this.handleChangeOwnPassDialogClose} className={classes(css.removeButton)}>
+          <DialogActions className={classes(css.dialogStyle)}>
+            <Button
+              onClick={this.handleChangeOwnPassDialogClose}
+              className={classes(css.removeButton)}
+            >
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleChangeOwnPassDialogCloseAgree} className={classes(css.acceptButton)}>
+            <Button
+              onClick={this.handleChangeOwnPassDialogCloseAgree}
+              className={classes(css.acceptButton)}
+            >
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -930,12 +980,8 @@ class UserManagementView extends Component {
           >
             {manage.ChangeEmail[fin]}
           </DialogTitle>
-          <DialogContent
-            className={classes(css.dialogStyle)}
-          >
-            <DialogContentText>
-              {manage.EmailHelper[fin]}
-            </DialogContentText>
+          <DialogContent className={classes(css.dialogStyle)}>
+            <DialogContentText>{manage.EmailHelper[fin]}</DialogContentText>
 
             <div>{`${manage.OldEmail[fin]}: ${this.findOwnEmail()}`}</div>
             <TextField
@@ -949,22 +995,22 @@ class UserManagementView extends Component {
             />
 
             {this.state.changeOwnEmailFailed ? (
-              <p className={classes(css.errorText)}>
-                {manage.Error[fin]}
-                {' '}
-              </p>
+              <p className={classes(css.errorText)}>{manage.Error[fin]} </p>
             ) : (
               <p />
             )}
-
           </DialogContent>
-          <DialogActions
-            className={classes(css.dialogStyle)}
-          >
-            <Button onClick={this.handleChangeOwnEmailDialogClose} className={classes(css.removeButton)}>
+          <DialogActions className={classes(css.dialogStyle)}>
+            <Button
+              onClick={this.handleChangeOwnEmailDialogClose}
+              className={classes(css.removeButton)}
+            >
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleChangeOwnEmailDialogCloseAgree} className={classes(css.accceptButton)}>
+            <Button
+              onClick={this.handleChangeOwnEmailDialogCloseAgree}
+              className={classes(css.accceptButton)}
+            >
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -979,14 +1025,9 @@ class UserManagementView extends Component {
             id="dialog-change-pass-title"
             className={classes(css.dialogStyle)}
           >
-            {manage.ChangeFor[fin]}
-            {' '}
-            {this.state.selectedUserName}
+            {manage.ChangeFor[fin]} {this.state.selectedUserName}
           </DialogTitle>
-          <DialogContent
-            className={classes(css.dialogStyle)}
-          >
-
+          <DialogContent className={classes(css.dialogStyle)}>
             <NiceInputPassword
               type="text"
               LabelComponent={InputLabel}
@@ -999,46 +1040,52 @@ class UserManagementView extends Component {
               fullWidth
               securityLevels={[
                 {
-                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
+                  descriptionLabel:
+                    manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
                   validator: /.*[0-9].*/,
                 },
                 {
-                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
+                  descriptionLabel:
+                    manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
                   validator: /.*[a-z].*/,
                 },
                 {
-                  descriptionLabel: manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
+                  descriptionLabel:
+                    manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
                   validator: /.*[A-Z].*/,
                 },
                 {
                   descriptionLabel: manage.MinimumLength[fin],
-                  validator: /^.{6,}$/
-                }
+                  validator: /^.{6,}$/,
+                },
               ]}
               showSecurityLevelBar
               showSecurityLevelDescription
               onChange={(e) => {
-                console.log("password: " + e.value)
+                console.log('password: ' + e.value);
                 this.setState({ password: e.value });
               }}
             />
 
             {this.state.changeErrors ? (
               <p className={classes(css.errorText)}>
-                {manage.ErrorPassword[fin]}
-                {' '}
+                {manage.ErrorPassword[fin]}{' '}
               </p>
             ) : (
               <p />
             )}
           </DialogContent>
-          <DialogActions
-            className={classes(css.dialogStyle)}
-          >
-            <Button onClick={this.handleChangePassClose} className={classes(css.removeButton)}>
+          <DialogActions className={classes(css.dialogStyle)}>
+            <Button
+              onClick={this.handleChangePassClose}
+              className={classes(css.removeButton)}
+            >
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleChangePassCloseConfirm} className={classes(css.acceptButton)}>
+            <Button
+              onClick={this.handleChangePassCloseConfirm}
+              className={classes(css.acceptButton)}
+            >
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -1053,13 +1100,9 @@ class UserManagementView extends Component {
             id="dialog-add-email-title"
             className={classes(css.dialogStyle)}
           >
-            {manage.EmailForUser[fin]}
-            {' '}
-            {this.state.selectedUserName}
+            {manage.EmailForUser[fin]} {this.state.selectedUserName}
           </DialogTitle>
-          <DialogContent
-            className={classes(css.dialogStyle)}
-          >
+          <DialogContent className={classes(css.dialogStyle)}>
             <TextField
               type="text"
               value={this.state.email}
@@ -1073,20 +1116,23 @@ class UserManagementView extends Component {
             />
             {this.state.changeErrors ? (
               <p className={classes(css.errorText)}>
-                {manage.ErrorEmail[fin]}
-                {' '}
+                {manage.ErrorEmail[fin]}{' '}
               </p>
             ) : (
               <p />
             )}
           </DialogContent>
-          <DialogActions
-            className={classes(css.dialogStyle)}
-          >
-            <Button onClick={this.handleaddEmailClose} className={classes(css.removeButton)}>
+          <DialogActions className={classes(css.dialogStyle)}>
+            <Button
+              onClick={this.handleaddEmailClose}
+              className={classes(css.removeButton)}
+            >
               {manage.Cancel[fin]}
             </Button>
-            <Button onClick={this.handleaddEmailCloseConfirm} className={classes(css.acceptButton)}>
+            <Button
+              onClick={this.handleaddEmailCloseConfirm}
+              className={classes(css.acceptButton)}
+            >
               {manage.Confirm[fin]}
             </Button>
           </DialogActions>
@@ -1097,31 +1143,34 @@ class UserManagementView extends Component {
         <h1 className={classes(css.header)}>{manage.UserManage[fin]}</h1>
         <Divider />
         <Box className={classes(css.userbox)}>
-          <h3 className={classes(css.header)}>
-            {manage.ChangePass[fin]}
-            :
-          </h3>
-          <Button onClick={this.handleOpenOwnPassChangeDialog} variant="contained" className={classes(css.blueButton)}>
+          <h3 className={classes(css.header)}>{manage.ChangePass[fin]}:</h3>
+          <Button
+            onClick={this.handleOpenOwnPassChangeDialog}
+            variant="contained"
+            className={classes(css.blueButton)}
+          >
             {manage.ChangePass[fin]}
           </Button>
         </Box>
         <Divider />
         <Box className={classes(css.userbox)}>
-          <h3 className={classes(css.header)}>
-            {manage.ChangeEmail[fin]}
-            :
-          </h3>
-          <Button onClick={this.handleOpenOwnEmailChangeDialog} variant="contained" className={css.blueButton}>
+          <h3 className={classes(css.header)}>{manage.ChangeEmail[fin]}:</h3>
+          <Button
+            onClick={this.handleOpenOwnEmailChangeDialog}
+            variant="contained"
+            className={css.blueButton}
+          >
             {manage.ChangeEmail[fin]}
           </Button>
         </Box>
         <Divider />
         <Box className={classes(css.userbox)}>
-          <h3 className={classes(css.header)}>
-            {manage.CreateUser[fin]}
-            :
-          </h3>
-          <Button onClick={this.handleAddUserOpenDialog} variant="contained" className={css.blueButton}>
+          <h3 className={classes(css.header)}>{manage.CreateUser[fin]}:</h3>
+          <Button
+            onClick={this.handleAddUserOpenDialog}
+            variant="contained"
+            className={css.blueButton}
+          >
             {manage.CreateUser[fin]}
           </Button>
         </Box>
@@ -1131,32 +1180,43 @@ class UserManagementView extends Component {
 
         <h3 className={classes(css.header)}>{`${manage.Users[fin]}:`}</h3>
         <Box className={classes(css.userbox)}>
-
-          <TableContainer component={Paper} className={classes(css.tableContainer)}>
+          <TableContainer
+            component={Paper}
+            className={classes(css.tableContainer)}
+          >
             <Table aria-label="table of users" className={classes(css.table)}>
               <TableHead>
                 <TableRow>
                   <TableCell align="justify">{manage.Username[fin]}</TableCell>
-                  <TableCell align="justify">{manage.ChangePass[fin]}</TableCell>
-                  <TableCell align="justify">{manage.RemoveUser[fin]}</TableCell>
-                  <TableCell align="justify">{manage.ChangeEmail[fin]}</TableCell>
+                  <TableCell align="justify">
+                    {manage.ChangePass[fin]}
+                  </TableCell>
+                  <TableCell align="justify">
+                    {manage.RemoveUser[fin]}
+                  </TableCell>
+                  <TableCell align="justify">
+                    {manage.ChangeEmail[fin]}
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-
                 {this.state.rows.map((row) => (
                   <TableRow key={row.name} hover>
                     <TableCell align="justify" component="th" scope="row">
-                      {row.name}
-                      {' '}
-                      <br />
+                      {row.name} <br />
                       {row.roleToPrint}
                       <br />
                       {row.email}
                     </TableCell>
-                    <TableCell align="justify">{row.ButtonToChangePassword}</TableCell>
-                    <TableCell align="justify">{row.ButtonToRemoveUser}</TableCell>
-                    <TableCell align="justify">{row.ButtonToaddEmail}</TableCell>
+                    <TableCell align="justify">
+                      {row.ButtonToChangePassword}
+                    </TableCell>
+                    <TableCell align="justify">
+                      {row.ButtonToRemoveUser}
+                    </TableCell>
+                    <TableCell align="justify">
+                      {row.ButtonToaddEmail}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

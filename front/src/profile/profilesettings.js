@@ -29,7 +29,7 @@ const Profile = () => {
         <div className={classes(css.content)}>
           <Switch>
             <Route path="/">
-              <ChangePassword username={cookies.username} />
+              <ChangePassword username={cookies.username} id={cookies.id} />
             </Route>
           </Switch>
         </div>

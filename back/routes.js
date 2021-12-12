@@ -32,19 +32,19 @@ router.route('/signout')
 
 router.route('/user')
   .all(
-    middlewares.jwt.read)
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
   .get(
     middlewares.user.readFilter,
     controllers.user.readFilter)
   .post(
-    middlewares.user.hasProperty('role', 'superuser'),
     middlewares.user.create,
     controllers.user.create);
 
 router.route('/user/:id')
   .all(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', 'superuser'))
+    middlewares.user.userUpdateCheck)
   .get(
     middlewares.user.read,
     controllers.user.read)
@@ -61,7 +61,7 @@ router.route('/changeownpassword/:id')
     middlewares.user.updateOwnPasswordFilter,
     middlewares.user.update,
     controllers.user.update
-);
+  );
 
 
 // Track supervision
