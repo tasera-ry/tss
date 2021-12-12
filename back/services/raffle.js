@@ -37,7 +37,6 @@ function compare( a, b ) {
 }
 
 // compare function for debugging
-/*
 function compare_size( a, b ) {
   if ( a.members + a.supervisors < b.members + b.supervisors ) {
     return -1;
@@ -47,7 +46,6 @@ function compare_size( a, b ) {
   }
   return 0;
 }
-*/
 
 // function to calculate the current ratio for supervisions to members
 function calculate_ratio( m ) {
@@ -213,6 +211,7 @@ const service = {
     
     //console.log(raffle);
     //Log results for inspection
+    
     /*
     members.sort(compare_size);
     console.log('members, ratio, weekdaysupervisions, weekendsupervisions, user_id');
