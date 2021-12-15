@@ -286,6 +286,7 @@ router.route('/infomessage/:id')
     middlewares.user.hasProperty('role', 'superuser'),
     validators.infoMessage.delete,
     controllers.infoMessage.delete
+  )
  
 router.route('/members')
   .all(
