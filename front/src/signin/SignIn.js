@@ -2,10 +2,6 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 
 // Material UI components
-import {
-  createMuiTheme,
-  ThemeProvider,
-} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -21,19 +17,6 @@ import translations from '../texts/texts.json';
 import css from './SignIn.module.scss';
 
 const classes = classNames.bind(css);
-
-/*
-  TO DO: This same theme is used in ResetPassword.js
-  -Find out if this theme can be applied to both without two separate declarations
-  (without causing side-effects to other parts of the app)
-*/
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#555555',
-    },
-  },
-});
 
 /* Returns a component for signing in to the frontend */
 const SignIn = () => {
@@ -67,80 +50,78 @@ const SignIn = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={classes(css.paper)}>
-          <div className={classes(css.flexWrap)}>
-            <ArrowBackIcon
-              className={classes(css.arrowBackIcon)}
-              onClick={() => history.push('/')}
-            />
-            <Typography component="h1" variant="h5">
-              {signin.SignIn[lang]}
-            </Typography>
-          </div>
-          <form noValidate className={classes(css.wideForm)}>
-            <TextField
-              autoFocus
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              name="username"
-              label={signin.Name[lang]}
-              autoComplete={signin.Name[lang]}
-              value={name}
-              error={mistake}
-              onInput={(e) => setName(e.target.value)}
-              className={classes(css.text)}
-              inputProps={{
-                'data-testid': 'nameField',
-              }}
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="password"
-              name="password"
-              label={signin.Password[lang]}
-              type="password"
-              autoComplete="current-password"
-              value={password}
-              error={mistake}
-              onInput={(e) => setPassword(e.target.value)}
-              className={classes(css.text)}
-              inputProps={{
-                'data-testid': 'passwordField',
-              }}
-            />
-            {mistake && (
-            <Typography align="center" className={classes(css.error)}>
-              {signin.Helper[lang]}
-            </Typography>
-            )}
-            <Button
-              onClick={login}
-              fullWidth
-              variant="contained"
-              className={classes(css.submitButton, css.acceptButton)}
-            >
-              {signin.LogIn[lang]}
-            </Button>
-            <Button
-              onClick={() => history.push('/signin/reset-password')}
-              fullWidth
-              className={classes(css.secondaryButton)}
-            >
-              {signin.ForgotPassword[lang]}
-            </Button>
-          </form>
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <div className={classes(css.paper)}>
+        <div className={classes(css.flexWrap)}>
+          <ArrowBackIcon
+            className={classes(css.arrowBackIcon)}
+            onClick={() => history.push('/')}
+          />
+          <Typography component="h1" variant="h5">
+            {signin.SignIn[lang]}
+          </Typography>
         </div>
-      </Container>
-    </ThemeProvider>
+        <form noValidate className={classes(css.wideForm)}>
+          <TextField
+            autoFocus
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            name="username"
+            label={signin.Name[lang]}
+            autoComplete={signin.Name[lang]}
+            value={name}
+            error={mistake}
+            onInput={(e) => setName(e.target.value)}
+            className={classes(css.text)}
+            inputProps={{
+              'data-testid': 'nameField',
+            }}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="password"
+            name="password"
+            label={signin.Password[lang]}
+            type="password"
+            autoComplete="current-password"
+            value={password}
+            error={mistake}
+            onInput={(e) => setPassword(e.target.value)}
+            className={classes(css.text)}
+            inputProps={{
+              'data-testid': 'passwordField',
+            }}
+          />
+          {mistake && (
+          <Typography align="center" className={classes(css.error)}>
+            {signin.Helper[lang]}
+          </Typography>
+          )}
+          <Button
+            onClick={login}
+            fullWidth
+            variant="contained"
+            className={classes(css.submitButton, css.acceptButton)}
+          >
+            {signin.LogIn[lang]}
+          </Button>
+          <Button
+            onClick={() => history.push('/signin/reset-password')}
+            fullWidth
+            className={classes(css.secondaryButton)}
+          >
+            {signin.ForgotPassword[lang]}
+          </Button>
+        </form>
+      </div>
+    </Container>
   );
 };
 
