@@ -31,7 +31,11 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
     dialog: false,
     feedback: false,
   });
-  const [cookies, setCookie, removeCookie] = useCookies(['username', 'role']); // eslint-disable-line
+  const [cookies, setCookie, removeCookie] = useCookies([
+    'username',
+    'role',
+    'id',
+  ]); // eslint-disable-line
 
   // TODO: centralize this one
   const HandleSignOut = async () => {
@@ -59,6 +63,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
     { to: '/tablet', name: nav.Tablet[lang] },
     { to: '/email-settings', name: nav.EmailSettings[lang] },
     { to: '/statistics', name: nav.Statistics[lang] },
+    { to: '/supervisor-raffle', name: nav.Raffle[lang]}
   ];
   const supervisorList = [
     { to: '/tablet', name: nav.Tablet[lang] },

@@ -15,7 +15,8 @@ const controller = {
           secure: response.locals.credentials.secure,
           sameSite: true
         })
-      .send(_.pick(response.locals.user, 'name', 'role'));
+      .send(_.pick(response.locals.user, 'name', 'role', 
+        'id'));
   },
 
   signout: async function signoutUser(request, response) {

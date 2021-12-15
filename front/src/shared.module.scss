@@ -52,11 +52,16 @@ code {
 }
 
 .acceptButton {
-  background-color: $COLOR_BLUE !important;
+  background-color: $COLOR_CREAM40 !important;
+  &:disabled {
+    background-color: lighten($COLOR_GREY, 40%) !important;
+  }
 }
 
 .secondaryButton {
-  color: $COLOR_BLUE !important;
+  font-size: 11px !important;
+  font-style: italic;
+  color: $COLOR_BLACK !important;
 }
 
 .cancel-button {
@@ -71,7 +76,8 @@ code {
     background-color: $COLOR_CREAM0;
     border-radius: 4px;
   }
-  .submitButton {
+  .submitButton,
+  .submitContainer {
     margin: 24px 0 16px;
   }
 }
@@ -107,6 +113,11 @@ code {
 
 .noFlex {
   display: inline-block;
+}
+
+.flexWrap {
+  display: flex; 
+  flex-wrap: wrap;
 }
 
 .infoItemImg {

@@ -10,6 +10,9 @@ const rangeSupervision = require(path.join(root, 'validators', 'rangeSupervision
 const daterange = require(path.join(root, 'validators', 'daterange'));
 const emailSettings = require(path.join(root, 'validators', 'emailSettings'));
 const infoMessage = require(path.join(root, 'validators', 'infoMessage'));
+const members = require(path.join(root, 'validators', 'members'));
+const raffle = require(path.join(root, 'validators', 'raffle'));
+const raffleSupervisors = require(path.join(root, 'validators', 'raffleSupervisors'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -20,3 +23,7 @@ exports.track = track;
 exports.daterange = daterange;
 exports.emailSettings = emailSettings;
 exports.infoMessage = infoMessage;
+exports.members = members;
+exports.raffle = raffle;
+exports.raffleSupervisors = raffleSupervisors;
+exports.raffle = raffle;

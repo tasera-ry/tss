@@ -32,19 +32,19 @@ router.route('/signout')
 
 router.route('/user')
   .all(
-    middlewares.jwt.read)
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
   .get(
     middlewares.user.readFilter,
     controllers.user.readFilter)
   .post(
-    middlewares.user.hasProperty('role', 'superuser'),
     middlewares.user.create,
     controllers.user.create);
 
 router.route('/user/:id')
   .all(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', 'superuser'))
+    middlewares.user.userUpdateCheck)
   .get(
     middlewares.user.read,
     controllers.user.read)
@@ -286,6 +286,52 @@ router.route('/infomessage/:id')
     middlewares.user.hasProperty('role', 'superuser'),
     validators.infoMessage.delete,
     controllers.infoMessage.delete
+ 
+router.route('/members')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .get(
+    validators.members.readAll,
+    middlewares.members.read,
+    controllers.members.read)
+  .post(
+    validators.members.create,
+    middlewares.members.create,
+    controllers.members.create
+  );
+
+router.route('/members/:user_id')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .get(
+    validators.members.read,
+    middlewares.members.read,
+    controllers.members.read)
+  .put(
+    validators.members.update,
+    middlewares.members.update,
+    controllers.members.update
+  );
+
+router.route('/set-raffled-supervisors')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .post(
+    validators.raffleSupervisors.checkRaffleResults,
+    controllers.raffleSupervisors.set
+  );
+
+router.route('/raffle')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .post(
+    validators.raffle.create,
+    middlewares.raffle.create,
+    controllers.raffle.create
   );
 
 module.exports = router;

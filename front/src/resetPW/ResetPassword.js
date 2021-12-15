@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import colors from '../colors.module.scss';
 
 // Material UI components
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
-import { ResetPasswordForm } from './ResetPasswordForm';
+import colors from '../colors.module.scss';
+
+import ResetPasswordForm from './ResetPasswordForm';
 import api from '../api/api';
 import translations from '../texts/texts.json';
 import css from './ResetPassword.module.scss';

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import './rangeofficer.css';
-
 // Material UI components
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -32,80 +30,17 @@ import data from '../texts/texts.json';
 // Submitting track usage statistics
 import { TrackStatistics } from '../TrackStatistics/TrackStatistics';
 
-/*
-  Styles not in the rangeofficer.js file
-*/
-const colors = {
-  green: '#658f60',
-  red: '#c97b7b',
-  white: '#f2f0eb',
-  orange: '#f2c66d',
-  lightgreen: '#b2d9ad',
-  blue: '#95d5db',
-};
-const rowStyle = {
-  flexDirection: 'row',
-  display: 'flex',
-  justifyContent: 'center',
-};
-const trackRowStyle = {
-  flexDirection: 'row',
-  display: 'flex',
-  justifyContent: 'center',
-  flexWrap: 'wrap',
-};
-const greenButtonStyle = {
-  fontSize: 17,
-  backgroundColor: colors.green,
-  borderRadius: 50,
-  width: 250,
-  height: 100,
-  margin: 8,
-};
-const orangeButtonStyle = {
-  fontSize: 17,
-  backgroundColor: colors.orange,
-  borderRadius: 50,
-  width: 250,
-  height: 100,
-  margin: 8,
-};
-const redButtonStyle = {
-  fontSize: 17,
-  backgroundColor: colors.red,
-  borderRadius: 50,
-  width: 250,
-  height: 100,
-  margin: 8,
-};
-const saveButtonStyle = {
-  backgroundColor: '#5f77a1',
-};
-const cancelButtonStyle = {
-  backgroundColor: '#ede9e1',
-};
-const simpleButton = {
-  padding: '2px 10px',
-  borderRadius: 15,
-  fontSize: '1.2rem',
-};
-const rangeStyle = {
-  textAlign: 'center',
-  margin: 10,
-  marginTop: 0,
-};
-const dialogStyle = {
-  backgroundColor: '#f2f0eb',
-};
-const rangediv = {
-  width: 300,
-};
+import classNames from 'classnames';
+import colors from '../colors.module.scss';
+import css from './rangeofficer.module.scss';
+
+const classes = classNames.bind(css);
 
 // shooting track rows
 const TrackRows = ({ tracks, setTracks, scheduleId, tablet, fin, socket }) =>
   tracks.map((track) => (
-    <div key={track.id} style={rangediv}>
-      <div style={rangeStyle}>
+    <div key={track.id} className={classes(css.rangediv)}>
+      <div className={classes(css.rangeStyle)}>
         <Typography variant="h6" align="center">
           {track.name} — {track.short_description}
         </Typography>
@@ -124,12 +59,6 @@ const TrackRows = ({ tracks, setTracks, scheduleId, tablet, fin, socket }) =>
   ));
 
 const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
-  // get this somewhere else
-  const buttonStyle = {
-    backgroundColor: `${track.color}`,
-    borderRadius: 30,
-    width: 230,
-  };
 
   const [buttonColor, setButtonColor] = useState(track.color);
 
@@ -151,12 +80,12 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
         setSupervision('absent');
       } else if (msg.super === 'closed') {
         track.trackSupervision = 'present'; // eslint-disable-line
-        setButtonColor(colors.red);
+        setButtonColor(colors.redLight);
         setTextState(tablet.Red[fin]);
         setSupervision('present');
       } else if (msg.super === 'absent') {
         track.trackSupervision = 'closed'; // eslint-disable-line
-        setButtonColor(colors.white);
+        setButtonColor(colors.cream5);
         setTextState(tablet.White[fin]);
         setSupervision('closed');
       }
@@ -165,13 +94,13 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
   const HandleClick = () => {
     let newSupervision = 'absent';
     setSupervision('absent');
-    track.color = colors.white; // eslint-disable-line
+    track.color = colors.cream5; // eslint-disable-line
     setTextState(tablet.White[fin]);
 
     if (track.trackSupervision === 'absent') {
       newSupervision = 'closed';
       setSupervision('closed');
-      track.color = colors.red; // eslint-disable-line
+      track.color = colors.redLight; // eslint-disable-line
       setTextState(tablet.Red[fin]);
     } else if (track.trackSupervision === 'closed') {
       newSupervision = 'present';
@@ -236,7 +165,8 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
   return (
     <div>
       <Button
-        style={{ ...buttonStyle, backgroundColor: buttonColor }}
+        className = {classes(css.buttonStyle)}
+        style={{backgroundColor: buttonColor}}
         size="large"
         variant="contained"
         onClick={HandleClick}
@@ -257,9 +187,9 @@ async function getColors(tracks, setTracks) {
     if (copy[i].trackSupervision === 'present') {
       obj.color = colors.green;
     } else if (copy[i].trackSupervision === 'closed') {
-      obj.color = colors.red;
+      obj.color = colors.redLight;
     } else if (copy[i].trackSupervision === 'absent') {
-      obj.color = colors.white;
+      obj.color = colors.cream5;
     } else if (copy[i].trackSupervision === 'en route') {
       obj.color = colors.orange;
     }
@@ -300,19 +230,19 @@ async function getData(
         setStatusColor(colors.orange);
       } else if (response.rangeSupervision === 'absent') {
         setStatusText(tablet.SuperWhite[fin]);
-        setStatusColor(colors.white);
+        setStatusColor(colors.cream5);
       } else if (response.rangeSupervision === 'closed') {
         setStatusText(tablet.Red[fin]);
-        setStatusColor(colors.red);
+        setStatusColor(colors.redLight);
       } else if (response.rangeSupervision === 'confirmed') {
         setStatusText(tablet.SuperLightGreen[fin]);
-        setStatusColor(colors.lightgreen);
+        setStatusColor(colors.greenLight);
       } else if (response.rangeSupervision === 'not confirmed') {
         setStatusText(tablet.SuperBlue[fin]);
-        setStatusColor(colors.blue);
+        setStatusColor(colors.turquoise);
       } else {
         setStatusText(tablet.SuperWhite[fin]);
-        setStatusColor(colors.white);
+        setStatusColor(colors.cream5);
       }
       getColors(response.tracks, setTracks);
     });
@@ -367,11 +297,11 @@ const TimePick = ({
   return (
     <div>
       <Dialog open={dialogOpen} aria-labelledby="title">
-        <DialogTitle id="title" style={dialogStyle}>
+        <DialogTitle id="title" className={classes(css.dialogStyle)}>
           {tablet.PickTime[fin]}
         </DialogTitle>
-        <DialogContent style={dialogStyle}>
-          <div style={rowStyle}>
+        <DialogContent className={classes(css.dialogStyle)}>
+          <div className={classes(css.rowStyle)}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardTimePicker
                 margin="normal"
@@ -397,7 +327,7 @@ const TimePick = ({
 
           <br />
           {errorMessage ? (
-            <Typography align="center" style={{ color: '#c23a3a' }}>
+            <Typography align="center" style={{ color: colors.redLight }}>
               {errorMessage}
             </Typography>
           ) : (
@@ -405,11 +335,11 @@ const TimePick = ({
           )}
         </DialogContent>
 
-        <DialogActions style={dialogStyle}>
+        <DialogActions className={classes(css.dialogStyle)}>
           <Button
             variant="contained"
             onClick={() => setDialogOpen(false)}
-            style={cancelButtonStyle}
+            className={classes(css.cancelButtonStyle)}
           >
             {tablet.Cancel[fin]}
           </Button>
@@ -417,7 +347,7 @@ const TimePick = ({
           <Button
             variant="contained"
             onClick={() => handleTimeChange()}
-            style={saveButtonStyle}
+            className={classes(css.saveButtonStyle)}
           >
             {tablet.Save[fin]}
           </Button>
@@ -440,15 +370,6 @@ const Tabletview = () => {
   const fin = localStorage.getItem('language');
   const { tablet } = data;
   const today = moment().format('DD.MM.YYYY');
-
-  const statusStyle = {
-    color: 'black',
-    backgroundColor: statusColor,
-    borderRadius: 3,
-    width: 400,
-    margin: 4,
-    marginBottom: 0,
-  };
 
   /*
     Basically the functional component version of componentdidmount
@@ -538,21 +459,21 @@ const Tabletview = () => {
   const HandleClosedClick = () => {
     socket.emit('rangeUpdate', {
       status: 'closed',
-      color: colors.red,
+      color: colors.redLight,
       text: tablet.Red[fin],
     });
-    updateSupervisor('closed', colors.red, tablet.Red[fin]);
+    updateSupervisor('closed', colors.redLight, tablet.Red[fin]);
   };
   return (
     <div>
-      <div className="Text">{today}</div>
+      <div className={classes(css.Text)}>{today}</div>
 
       <Typography variant="h5" align="center">
         {tablet.Open[fin]}: &nbsp;
         <Button
           size="medium"
           variant="outlined"
-          style={simpleButton}
+          className={classes(css.simpleButton)}
           onClick={() => setDialogOpen(true)}
         >
           {hours.start}-{hours.end}
@@ -573,9 +494,10 @@ const Tabletview = () => {
         ''
       )}
 
-      <div className="Status" style={rowStyle}>
+      <div className={classes(css.Status, css.rowStyle)}>
         <Button
-          style={statusStyle}
+          className = {classes(css.statusStyle)}
+          style={{color: colors.black, backgroundColor: statusColor}}
           size="large"
           variant="outlined"
           disabled
@@ -585,11 +507,11 @@ const Tabletview = () => {
         </Button>
       </div>
 
-      <div className="Text">{tablet.HelperFirst[fin]}</div>
+      <div className={classes(css.Text)}>{tablet.HelperFirst[fin]}</div>
 
-      <div style={rowStyle}>
+      <div className={classes(css.rowStyle)}>
         <Button
-          style={greenButtonStyle}
+          className={classes(css.greenButtonStyle)}
           size="large"
           variant="contained"
           onClick={HandlePresentClick}
@@ -598,7 +520,7 @@ const Tabletview = () => {
           {tablet.Green[fin]}
         </Button>
         <Button
-          style={orangeButtonStyle}
+          className={classes(css.orangeButtonStyle)}
           size="large"
           variant="contained"
           onClick={HandleEnRouteClick}
@@ -607,7 +529,7 @@ const Tabletview = () => {
           {tablet.Orange[fin]}
         </Button>
         <Button
-          style={redButtonStyle}
+          className={classes(css.redButtonStyle)}
           size="large"
           variant="contained"
           onClick={HandleClosedClick}
@@ -617,9 +539,9 @@ const Tabletview = () => {
         </Button>
       </div>
 
-      <div className="Text">{tablet.HelperSecond[fin]}</div>
+      <div className={classes(css.Text)}>{tablet.HelperSecond[fin]}</div>
 
-      <div style={trackRowStyle}>
+      <div className={classes(css.trackRowStyle)}>
         <TrackRows
           tracks={tracks}
           setTracks={setTracks}

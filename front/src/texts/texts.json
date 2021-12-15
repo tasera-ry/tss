@@ -11,7 +11,8 @@
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
     "SignOut": ["Kirjaudu ulos", "Sign Out"],
     "Statistics": ["Tilastot", "Statistics"],
-    "EmailSettings": ["Sähköpostiasetukset", "Email settings"]
+    "EmailSettings": ["Sähköpostiasetukset", "Email settings"],
+    "Raffle": ["Valvojien arvonta", "Supervisor raffle"]
   },
   "banner": {
     "Notification": [
@@ -44,7 +45,8 @@
     "Sent": [
       "Salasanan palautusviesti lähetetty onnistuneesti!",
       "Password reset e-mail succesfully sent!"
-    ]
+    ],
+    "Back": ["Takaisin", "Go back"]
   },
   "renewPW": {
     "RenewPassword": ["Syötä uusi salasana", "Input new password"],
@@ -268,10 +270,7 @@
     "labelRowsSelect": ["riviä", "rows"],
     "saveTooltip": ["Tallenna", "Save"],
     "cancelTooltip": ["Peruuta", "Cancel"],
-    "nextTooltip": ["Seuraava sivu", "Next page"],
-    "previousTooltip": ["Edellinen sivu", "Previous page"],
-    "firstTooltip": ["Ensimmäinen sivu", "First page"],
-    "lastTooltip": ["Viimeinen sivu", "Last page"]
+    "nextTooltip": ["Seuraava sivu", "Next page"], "previousTooltip": ["Edellinen sivu", "Previous page"], "firstTooltip": ["Ensimmäinen sivu", "First page"], "lastTooltip": ["Viimeinen sivu", "Last page"]
   },
   "month": {
     "0": ["Err", "Err"],
@@ -417,5 +416,39 @@
     ],
     "alertSuccess": ["Salasanan vaihto onnistui", "Password change successful"],
     "alertFail": ["Salasanan vaihto epäonnistui", "Password change failed"]
+  },
+  "raffleDatePicker": {
+    "weekdaysLong": {
+      "0": ["Sunnuntai", "Maanantai", "Tiistai", "Keskiviikko", "Torstai", "Perjantai", "Lauantai"],
+      "1": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]},
+    "weekdaysShort": {
+      "0": ["Su", "Ma", "Ti", "Ke", "To", "Pe", "La"],
+      "1": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]},
+    "months": {
+      "0": ["Tammikuu", "Helmikuu", "Maaliskuu", "Huhtikuu", "Toukokuu", "Kesäkuu",
+        "Heinäkuu", "Elokuu", "Syyskuu", "Lokakuu", "Marraskuu", "Joulukuu"],
+      "1": ["January", "February", "March", "April", "May", "June", "July", "August",
+        "September", "October", "November", "December"]}
+  },
+  "raffle": {
+    "tableTitle": ["Yhteisöt", "Organizations"],
+    "raffled": ["Arvonnassa", "In raffle"],
+    "user": ["Yhteisö", "Organization"],
+    "members": ["Ampujakortilliset", "Gun license owners"],
+    "supervisors": ["Valvojat", "Supervisors"],
+    "loadError": ["Yhteisöjen lataus epäonnistui", "Could not load organizations"],
+    "valueError": ["Arvot eivät saa olla negatiivisia", "Values cannot be negative"],
+    "updateError": ["Yhteisön päivitys epäonnistui", "Organization update failed"],
+    "updateSuccess": ["Yhteisö päivitetty", "Organization updated"],
+    "raffleUnavailable": ["Lisää yhteisöjä arpoaksesi valvojat", "Add organizations to raffle supervisors"],
+    "dates": ["Valitse arvottavat päivämäärät", "Choose dates for the raffle"],
+    "date": ["Päivämäärä", "Date"],
+    "amount": ["Vuorojen määrä", "Amount of supervisions"],
+    "raffle": ["Arvo valvojat", "Raffle supervisors"],
+    "raffleError": ["Arvonnan suoritus epäonnistui", "The execution of the raffle failed"],
+    "results": ["Arvonnan tulokset", "Raffle results"],
+    "save": ["Tallenna tulokset", "Save results"],
+    "saveSuccess": ["Tulokset tallennettu", "Results saved"],
+    "saveError": ["Tuloksien tallennus epäonnistui", "The saving of the results failed"]
   }
 }

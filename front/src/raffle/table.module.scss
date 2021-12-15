@@ -1,0 +1,89 @@
+@import "../colors.module.scss";
+
+.tableContainer {
+  margin-bottom: 30px;
+
+  &.small {
+    width: 300px;
+  }
+  &.medium {
+    width: 500px;
+  }
+  &.large {
+    width: 820px;
+  }
+}
+
+.table {
+  background-color: $COLOR_CREAM5;
+
+  .loading {
+    cursor: wait;
+  }
+}
+
+.smallCell {
+  max-width: 0.1em;
+}
+
+.mediumCell {
+  max-width: 1.5em;
+}
+
+.flexCell {
+  flex: 1;
+}
+
+.flexRow {
+  width: 100%;
+  min-width: 100%;
+  display: flex;
+  justify-content: space-around;
+
+  .smallCell {
+    width: 36px;
+    max-width: 36px;
+  }
+}
+
+.editedCell {
+  width: 145px;
+
+  .textField {
+    width: 80px;
+  }
+}
+
+.checkbox {
+  color: $COLOR_GREEN !important;
+}
+
+.editButton {
+  path {
+    color: $COLOR_CREAM5;
+  }
+
+  &.hover path,
+  &:focus:not(.hover) path {
+    color: $COLOR_BLACK;
+  }
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+
+  .cancelButton path {
+    color: $COLOR_RED;
+  }
+  .acceptButton path {
+    color: $COLOR_GREEN_DARK;
+  }
+}
+
+select {
+  padding: 10px;
+  background-color: transparent;
+  border-radius: 4px;
+  border-color: lighten($COLOR_GREY, 40%);
+}

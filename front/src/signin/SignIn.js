@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import colors from '../colors.module.scss';
 
 // Material UI components
 import Button from '@material-ui/core/Button';
@@ -8,9 +7,11 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import { useHistory } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import colors from '../colors.module.scss';
 import api from '../api/api';
 import translations from '../texts/texts.json';
 import css from './SignIn.module.scss';
@@ -33,6 +34,7 @@ const SignIn = () => {
   const setInfo = async (user) => {
     setCookie('username', user.name, { sameSite: true, secure });
     setCookie('role', user.role, { sameSite: true, secure });
+    setCookie('id', user.id, { sameSite: true, secure });
     // TODO: try to be SPA and remove this refresh
     window.location.href = '/';
   };
@@ -52,10 +54,15 @@ const SignIn = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes(css.paper)}>
-        <Typography component="h1" variant="h5">
-          {signin.SignIn[lang]}
-        </Typography>
-
+        <div className={classes(css.flexWrap)}>
+          <ArrowBackIcon
+            className={classes(css.arrowBackIcon)}
+            onClick={() => history.push('/')}
+          />
+          <Typography component="h1" variant="h5">
+            {signin.SignIn[lang]}
+          </Typography>
+        </div>
         <form noValidate className={classes(css.wideForm)}>
           <TextField
             autoFocus
@@ -94,9 +101,9 @@ const SignIn = () => {
             }}
           />
           {mistake && (
-            <Typography align="center" className={classes(css.error)}>
-              {signin.Helper[lang]}
-            </Typography>
+          <Typography align="center" className={classes(css.error)}>
+            {signin.Helper[lang]}
+          </Typography>
           )}
           <Button
             onClick={login}
@@ -106,15 +113,6 @@ const SignIn = () => {
           >
             {signin.LogIn[lang]}
           </Button>
-          &nbsp;
-          <Button
-            onClick={() => history.goBack()}
-            fullWidth
-            className={classes(css.secondaryButton)}
-          >
-            {signin.Back[lang]}
-          </Button>
-          &nbsp;
           <Button
             onClick={() => history.push('/signin/reset-password')}
             fullWidth
