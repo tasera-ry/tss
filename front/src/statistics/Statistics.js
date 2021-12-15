@@ -244,7 +244,7 @@ const Statistics = () => {
         />
       </Modal>
       {/* Header with arrows */}
-      <Grid class="date-header">
+      <Grid className={classes(css.dateHeader)}>
         <div
           className={classes(css.arrowLeft)}
           onClick={() => setDate(incrementOrDecrementDate(date, -1))}
@@ -258,7 +258,7 @@ const Statistics = () => {
         />
       </Grid>
       {/* Charts */}
-      <div>
+      <div className={classes(css.charts)}>
         {/* Labels */}
         <h2>{statistics.Day[fin]}</h2>
         <h3>
@@ -267,15 +267,13 @@ const Statistics = () => {
           }`}
         </h3>
         <h3>{statistics.DayChartHeader[fin]}</h3>
-        <div className={classes(css.metrics)}>
-          <Chart
-            options={dayOptions}
-            series={daySeries}
-            type="bar"
-            width="700"
-            height="400"
-          />
-        </div>
+        <Chart
+          options={dayOptions}
+          series={daySeries}
+          type="bar"
+          width="700"
+          height="400"
+        />
         {/* Labels */}
         <h2>{statistics.Month[fin]}</h2>
         <h3>
@@ -284,25 +282,21 @@ const Statistics = () => {
           }/${date.getFullYear()}: ${totalUsers}`}
         </h3>
         <h3>{statistics.MonthChart1Header[fin]}</h3>
-        <div className={classes(css.metrics)}>
-          <Chart
-            options={monthOptions}
-            series={monthSeries}
-            type="line"
-            width="700"
-            height="400"
-          />
-        </div>
+        <Chart
+          options={monthOptions}
+          series={monthSeries}
+          type="line"
+          width="700"
+          height="400"
+        />
         <h3>{statistics.MonthChart2Header[fin]}</h3>
-        <div className={classes(css.metrics)}>
-          <Chart
-            options={monthlyTrackOptions}
-            series={monthlyTrackSeries}
-            type="bar"
-            width="700"
-            height="400"
-          />
-        </div>
+        <Chart
+          options={monthlyTrackOptions}
+          series={monthlyTrackSeries}
+          type="bar"
+          width="700"
+          height="400"
+        />
       </div>
     </div>
   );

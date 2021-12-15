@@ -13,13 +13,21 @@
   }
 }
 
+.dateHeader {
+  @extend .layout-row;
+  height: 10em;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
 .buttonContainer {
   @extend .layout-row;
   align-items: center;
   justify-content: center;
 }
 
-.metrics {
+.charts {
   @extend .layout-column;
   width: 100%;
   align-items: center;
