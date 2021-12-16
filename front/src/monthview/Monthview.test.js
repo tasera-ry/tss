@@ -1,4 +1,7 @@
 import React from 'react';
+import * as InfoBox from '../infoBox/InfoBox';
+import * as Infoboxes from '../infoboxes/Infoboxes';
+
 import '@testing-library/jest-dom/extend-expect';
 import { waitFor, render, screen, fireEvent } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
@@ -6,7 +9,12 @@ import { createMemoryHistory } from 'history';
 import * as utils from '../utils/Utils';
 import Monthview from './Monthview';
 import monthTestUtil from '../_TestUtils/monthTestUtil';
+import axios from 'axios';
 
+jest.mock('axios');
+axios.get.mockResolvedValue({
+  data: [{ id: 1, message: 'ok', start: '', end: '' }],
+});
 const mockMonth = monthTestUtil.month;
 
 const history = createMemoryHistory();

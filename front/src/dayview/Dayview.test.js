@@ -6,6 +6,12 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import Dayview from './Dayview';
 import api from '../api/api';
 import testUtils from '../_TestUtils/TestUtils';
+import * as axios from 'axios';
+
+jest.mock('axios');
+axios.get.mockResolvedValue({
+  data: [{ id: 1, message: 'ok', start: '', end: '' }],
+});
 
 const { schedule } = testUtils;
 const date = new Date('2020-10-21T11:30:57.000Z');
