@@ -7,6 +7,12 @@ import { act } from 'react-dom/test-utils';
 import * as utils from './utils/Utils';
 import App from './App';
 import testUtils from './_TestUtils/TestUtils';
+import * as axios from 'axios';
+
+jest.mock('axios');
+axios.get.mockResolvedValue({
+  data: [{ id: 1, message: 'ok', start: '', end: '' }],
+});
 
 const { date, week, schedule } = testUtils;
 
