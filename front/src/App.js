@@ -29,6 +29,7 @@ import EmailSettings from './EmailSettings/EmailSettings';
 import { Raffle } from './raffle/raffle';
 
 // React router. Hashrouter, because normal router won't work in apache
+// Test commit
 
 import { validateLogin } from './utils/Utils';
 
