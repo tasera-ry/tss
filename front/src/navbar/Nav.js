@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
-
-import '../App.css';
-import './Nav.css';
-
-import axios from 'axios';
+import classNames from 'classnames';
+import api from '../api/api';
 import { useCookies } from 'react-cookie';
-
-// TASERA logo & Burger icon
 
 // Material UI elements
 import { Link } from 'react-router-dom';
@@ -15,259 +10,131 @@ import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import { makeStyles } from '@material-ui/core/styles';
-import logo from '../logo/Logo.png';
 
+import logo from '../logo/Logo.png';
 import SupervisorNotification from './SupervisorNotification';
 import FeedbackWindow from './FeedbackWindow';
-
 import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
+import translations from '../texts/texts.json';
+// enables overriding material-ui component styles in scss
+import { StylesProvider } from '@material-ui/core/styles';
+import css from './Nav.module.scss';
 
-// Translations
-import texts from '../texts/texts.json';
+const classes = classNames.bind(css);
 
-// 0: finnish, 1: english
-const fin = localStorage.getItem('language'); // eslint-disable-line
-const { nav } = texts;
-
-// Styles
-const useStyles = makeStyles({
-  paper: {
-    background: '#f2f0eb',
-  },
-});
-const navStyle = {
-  color: 'black',
-  textDecoration: 'none',
-};
-const drawerStyle = {
-  fontSize: 17,
-  padding: 10,
-  marginTop: 10,
-  width: 200,
-};
-const elementStyle = {
-  marginTop: 10,
-};
-const textStyle = {
-  fontSize: '1.2rem',
-};
+const { nav } = translations;
 
 const SideMenu = ({ setName, superuser, setLoggingOut }) => {
-  const fin = localStorage.getItem('language'); // eslint-disable-line
-  const styles = useStyles();
-  const [menu, setMenu] = useState({ right: false });
-  const [openDial, setOpenDial] = useState(false);
-  const [openFeedback, setOpenFeedback] = useState(false);
-  const [cookies, setCookie, removeCookie] = useCookies(['username', 'role']); // eslint-disable-line
-
-  const HandleClick = () => {
-    setMenu({ right: false });
-  };
-
-  const HandleOpenDialog = () => {
-    setMenu({ right: false });
-    setOpenDial(true);
-  };
-
-  const HandleFeedback = () => {
-    setMenu({ right: false });
-    setOpenFeedback(true);
-  };
+  const lang = localStorage.getItem('language');
+  const [open, setOpen] = useState({
+    drawer: false,
+    dialog: false,
+    feedback: false,
+  });
+  const [cookies, setCookie, removeCookie] = useCookies([
+    'username',
+    'role',
+    'id',
+  ]); // eslint-disable-line
 
   // TODO: centralize this one
   const HandleSignOut = async () => {
     setLoggingOut(true);
-    const response = await axios.post('/api/signout'); // eslint-disable-line
+    await api.signOut();
     removeCookie('username');
     removeCookie('role');
     setName(undefined);
-    setMenu({ right: false });
+    setOpen({ ...open, drawer: false });
   };
 
-  const toggleDrawer = (anchor, open) => (event) => {
-    setOpenDial(false);
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+  const toggleDrawer = (drawerOpen) => (event) => {
+    if (
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    )
       return;
-    }
-    setMenu({ right: open });
+    setOpen({ ...open, drawer: drawerOpen, dialog: false });
   };
 
-  const superuserList = () => (
-    <div style={drawerStyle}>
-      <List>
-        <Link style={navStyle} to="/scheduling">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
-            {nav.Schedule[fin]}
+  const superuserList = [
+    { to: '/scheduling', name: nav.Schedule[lang] },
+    { to: '/usermanagement', name: nav.UserManagement[lang] },
+    { to: '/tracks', name: nav.trackCRUD[lang] },
+    { to: '/tablet', name: nav.Tablet[lang] },
+    { to: '/email-settings', name: nav.EmailSettings[lang] },
+    { to: '/statistics', name: nav.Statistics[lang] },
+    { to: '/supervisor-raffle', name: nav.Raffle[lang] },
+    { to: '/info', name: nav.Info[lang] },
+  ];
+  const supervisorList = [
+    { to: '/tablet', name: nav.Tablet[lang] },
+    { to: '/profile', name: nav.Profile[lang] },
+  ];
+
+  const navList = (list) => (
+    <>
+      {list.map(({ to, name }) => (
+        <Link to={to} key={name}>
+          <ListItem button onClick={() => setOpen({ ...open, drawer: false })}>
+            {name}
           </ListItem>
         </Link>
-
-        <Link style={navStyle} to="/usermanagement">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
-            {nav.UserManagement[fin]}
-          </ListItem>
-        </Link>
-
-        <Link style={navStyle} to="/tracks">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
-            {nav.trackCRUD[fin]}
-          </ListItem>
-        </Link>
-
-        <Link style={navStyle} to="/tablet">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
-            {nav.Tablet[fin]}
-          </ListItem>
-        </Link>
-
-        <Link style={navStyle} to="/email-settings">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
-            {nav.EmailSettings[fin]}
-          </ListItem>
-        </Link>
-
-        <Link style={navStyle} to="/statistics">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
-            {nav.Statistics[fin]}
-          </ListItem>
-        </Link>
-
-        <Divider style={elementStyle} />
-
-        <Link style={navStyle} to="/">
-          <ListItem
-            button
-            onClick={HandleSignOut}
-            style={elementStyle}
-          >
-            {nav.SignOut[fin]}
-          </ListItem>
-        </Link>
-      </List>
-    </div>
-  );
-
-  const supervisorList = () => (
-    <div style={drawerStyle}>
-      <List>
-        <ListItem
-          button
-          onClick={HandleOpenDialog}
-          style={elementStyle}
-        >
-          {nav.Supervision[fin]}
-        </ListItem>
-
-        <Link style={navStyle} to="/tablet">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
-            {nav.Tablet[fin]}
-          </ListItem>
-        </Link>
-
-        <Link style={navStyle} to="/profile">
-          <ListItem
-            button
-            onClick={HandleClick}
-            style={elementStyle}
-          >
-            {nav.Profile[fin]}
-          </ListItem>
-        </Link>
-
-        <ListItem
-          button
-          onClick={HandleFeedback}
-          style={elementStyle}
-        >
-          {nav.Feedback[fin]}
-        </ListItem>
-
-        <Divider style={elementStyle} />
-
-        <Link style={navStyle} to="/">
-          <ListItem
-            button
-            onClick={HandleSignOut}
-            style={elementStyle}
-          >
-            {nav.SignOut[fin]}
-          </ListItem>
-        </Link>
-      </List>
-    </div>
+      ))}
+    </>
   );
 
   return (
-    <div className="pc">
-      {cookies.hasOwnProperty('username') // eslint-disable-line
-        ? (
-          <Button
-            className="clickable"
-            onClick={toggleDrawer('right', true)}
-          >
-            {nav.Menu[fin]}
-          </Button>
-        )
-        : ''}
-
-      <div>
-        <Drawer
-          anchor="right"
-          open={menu.right}
-          onClose={toggleDrawer('right', false)}
-          classes={{ paper: styles.paper }}
-        >
-          {superuser
-            ? superuserList('left')
-            : supervisorList('left')}
-        </Drawer>
-
-      </div>
-      {openDial ? <DialogWindow /> : ''}
-      {openFeedback
-        ? (
-          <FeedbackWindow
-            user={cookies.username}
-            dialogOpen={openFeedback}
-            setDialogOpen={setOpenFeedback}
-          />
-        ) : ''}
+    <div className={classes(css.pc)}>
+      {cookies.hasOwnProperty('username') && (
+        <Button className={classes(css.clickable)} onClick={toggleDrawer(true)}>
+          {nav.Menu[lang]}
+        </Button>
+      )}
+      <Drawer
+        anchor="right"
+        open={open.drawer}
+        onClose={toggleDrawer(false)}
+        classes={{ paper: classes(css.paper) }}
+      >
+        <List className={classes(css.navList)}>
+          {!superuser && (
+            <ListItem
+              button
+              onClick={() => setOpen({ ...open, drawer: false, dialog: true })}
+            >
+              {nav.Supervision[lang]}
+            </ListItem>
+          )}
+          {superuser ? navList(superuserList) : navList(supervisorList)}
+          {!superuser && (
+            <ListItem
+              button
+              onClick={() =>
+                setOpen({ ...open, drawer: false, feedback: true })
+              }
+            >
+              {nav.Feedback[lang]}
+            </ListItem>
+          )}
+          <Divider />
+          <Link to="/">
+            <ListItem button onClick={HandleSignOut}>
+              {nav.SignOut[lang]}
+            </ListItem>
+          </Link>
+        </List>
+      </Drawer>
+      {open.dialog && <DialogWindow />}
+      {open.feedback && (
+        <FeedbackWindow
+          user={cookies.username}
+          dialogOpen={open.feedback}
+          onCloseDialog={() => setOpen({ ...open, feedback: false })}
+        />
+      )}
     </div>
   );
 };
-
-function setLanguage(num) {
-  localStorage.setItem('language', num);
-  window.location.reload();
-}
 
 const Nav = () => {
   const [cookies] = useCookies(['username', 'role']);
@@ -275,50 +142,64 @@ const Nav = () => {
   const [superuser] = useState(cookies.role === 'superuser');
   const [loggingOut, setLoggingOut] = useState(false);
   const [checkSupervisions, setCheckSupervisions] = useState(false);
-  const fin = localStorage.getItem('language'); // eslint-disable-line
-  const { nav } = texts; // eslint-disable-line
+  const lang = localStorage.getItem('language');
+  const { nav } = translations;
 
-  const icon = (
-    <span className="logo">
-      <img className="logoStyle" src={logo} alt="Tasera" />
-    </span>
-  );
+  const langButtons = [
+    { name: 'EN', num: 1 },
+    { name: 'FIN', num: 0 },
+  ];
 
   return (
-    <div className="Nav">
+    <StylesProvider injectFirst>
       <nav>
-        <Link className="logoStyle" to="/" onClick={() => setCheckSupervisions(true)}>
-          {icon}
+        <Link
+          className={classes(css.logo)}
+          to="/"
+          onClick={() => setCheckSupervisions(true)}
+        >
+          <span>
+            <img className={classes(css.logo)} src={logo} alt="Tasera" />
+          </span>
         </Link>
-
-        {!name ? (
-          <Link className="pc clickable" style={{ textDecoration: 'none' }} to="/signin">
-            <Button>
-              {nav.SignIn[fin]}
-            </Button>
+        {name ? (
+          <p className={classes(css.pc, css.text)}>{name}</p>
+        ) : (
+          <Link
+            className={classes(css.loginLink, css.pc, css.clickable)}
+            to="/signin"
+          >
+            <Button>{nav.SignIn[lang]}</Button>
           </Link>
-        )
-          : <p className="pc" style={textStyle}>{name}</p>}
-
-        <span className="pc">
-          <Button className="clickable" onClick={() => setLanguage(1)}>EN</Button>
-          <Button className="clickable" onClick={() => setLanguage(0)}>FI</Button>
-        </span>
-
+        )}
+        <div className={classes(css.langButtons, css.pc)}>
+          {langButtons.map(({ name, num }) => (
+            <Button
+              className={classes(css.clickable)}
+              onClick={() => {
+                localStorage.setItem('language', num);
+                window.location.reload();
+              }}
+              key={name}
+            >
+              {name}
+            </Button>
+          ))}
+        </div>
         <SideMenu
           setName={setName}
           superuser={superuser}
           setLoggingOut={setLoggingOut}
         />
-
       </nav>
       <SupervisorNotification
+        username={name}
         loggingOut={loggingOut}
         setLoggingOut={setLoggingOut}
         checkSupervisions={checkSupervisions}
         setCheckSupervisions={setCheckSupervisions}
       />
-    </div>
+    </StylesProvider>
   );
 };
 export default Nav;

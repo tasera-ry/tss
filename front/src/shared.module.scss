@@ -1,0 +1,219 @@
+@import './colors.module.scss';
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #eae7dc;
+  /* enable in development
+     background-color: pink; */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.layout-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.layout-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.arrow {
+  @extend .layout-row;
+  align-items: center;
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  cursor: pointer;
+}
+
+.arrowRight {
+  @extend .arrow;
+  margin-left: 5vw;
+  float: right;
+  border-left: 20px solid $COLOR_BLACK;
+}
+
+.arrowLeft {
+  @extend .arrow;
+  margin-right: 5vw;
+  text-align: right;
+  border-right: 20px solid $COLOR_BLACK;
+}
+
+.acceptButton {
+  background-color: $COLOR_CREAM40 !important;
+  &:disabled {
+    background-color: lighten($COLOR_GREY, 40%) !important;
+  }
+}
+
+.secondaryButton {
+  font-size: 11px !important;
+  font-style: italic;
+  color: $COLOR_BLACK !important;
+}
+
+.cancel-button {
+  background-color: $COLOR_CREAM10 !important;
+}
+
+.wideForm {
+  width: 100%;
+  margin-top: 8px;
+
+  .text {
+    background-color: $COLOR_CREAM0;
+    border-radius: 4px;
+  }
+  .submitButton,
+  .submitContainer {
+    margin: 24px 0 16px;
+  }
+}
+
+.error {
+  color: $COLOR_RED;
+}
+
+.success {
+  color: $COLOR_GREEN_DARK;
+}
+// FROM INFOBOXES
+
+.infoItem {
+  display: flex;
+  min-width: 320px;
+  width: 30vw;
+  height: 38px;
+  justify-content: left;
+}
+
+.box {
+  @extend .noFlex;
+  float: left;
+  height: 20px;
+  width: 20px;
+  margin-right: 8px;
+  border: 1px solid $COLOR_BLACK;
+  clear: both;
+  min-height: 20px;
+  min-width: 20px;
+}
+
+.noFlex {
+  display: inline-block;
+}
+
+.flexWrap {
+  display: flex; 
+  flex-wrap: wrap;
+}
+
+.infoItemImg {
+  position: relative;
+  display: flex;
+  min-width: 320px;
+  width: 30vw;
+  height: 38px;
+  justify-content: left;
+}
+
+.infoText {
+  @extend .noFlex;
+  display: inline;
+  overflow: auto;
+  margin-bottom: 0;
+}
+
+.relativeText {
+  position: relative;
+  bottom: 0;
+  left: 30px;
+}
+
+// FROM MONTHVIEW
+
+.dateHeaderText {
+  max-width: 320px;
+  width: 100vw;
+}
+
+.viewChangerCurrent {
+  display: flex;
+  justify-content: flex-start;
+  border-right: 1px solid;
+}
+
+.viewChangerLink {
+  padding: 8px;
+  padding-top: 16px;
+  align-items: center;
+  border: 1px;
+  border-bottom: 0px;
+  border-style: solid;
+  border-color: $COLOR_BLACK;
+  text-decoration: none;
+  font-size: large;
+  font-weight: bold;
+  background-color: $COLOR_LIGHT_GREY;
+}
+
+.viewChangerCurrent > a {
+  @extend .viewChangerLink;
+  color: $COLOR_LIGHT_GREY;
+
+  div {
+    color: $COLOR_BLACK;
+  }
+}
+
+.viewChanger {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 57px;
+  font-weight: bold;
+}
+
+.viewChangerContainer {
+  display: flex;
+  justify-content: flex-end;
+  border-right: 1px solid;
+}
+
+.viewChangerContainer > a {
+  @extend .viewChangerLink;
+  color: $COLOR_GREY;
+  border-right: 0px;
+
+  div {
+    color: $COLOR_BLACK;
+  }
+}
+
+/* smartphones, Android phones, landscape iPhone */
+@media only screen and (min-width: 480px) {
+  .viewChangerContainer > a {
+    padding: 16px;
+  }
+  .viewChangerCurrent > a {
+    padding: 16px;
+  }
+}
+
+// FROM STATISTICS
+
+.container {
+  padding: 0 1vh 2vh 1vh;
+}

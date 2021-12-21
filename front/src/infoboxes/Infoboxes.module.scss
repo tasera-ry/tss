@@ -1,0 +1,51 @@
+@import '../shared.module.scss';
+
+.exclamation {
+  @extend .noFlex;
+  position: absolute;
+  bottom: 1px;
+  height: 20px;
+  width: 20px;
+  margin-right: 16px;
+  margin-bottom: 0px;
+  clear: both;
+  min-height: 22px;
+  min-width: 22px;
+}
+
+.infoFlex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+#openInfo {
+  display: flex;
+  background: $COLOR_GREEN;
+}
+
+#rangeOfficerInfo {
+  display: flex;
+  background: $COLOR_GREEN_LIGHT;
+}
+
+#closedInfo {
+  display: flex;
+  background: $COLOR_RED_LIGHT;
+}
+
+#closedInfo2 {
+  display: flex;
+  background: $COLOR_TURQUOISE;
+}
+
+#noInfo {
+  display: flex;
+  background: $COLOR_CREAM5;
+}
+
+#onwayInfo {
+  display: flex;
+  background: $COLOR_ORANGE;
+}

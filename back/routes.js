@@ -32,19 +32,19 @@ router.route('/signout')
 
 router.route('/user')
   .all(
-    middlewares.jwt.read)
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
   .get(
     middlewares.user.readFilter,
     controllers.user.readFilter)
   .post(
-    middlewares.user.hasProperty('role', 'superuser'),
     middlewares.user.create,
     controllers.user.create);
 
 router.route('/user/:id')
   .all(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', 'superuser'))
+    middlewares.user.userUpdateCheck)
   .get(
     middlewares.user.read,
     controllers.user.read)
@@ -61,7 +61,7 @@ router.route('/changeownpassword/:id')
     middlewares.user.updateOwnPasswordFilter,
     middlewares.user.update,
     controllers.user.update
-);
+  );
 
 
 // Track supervision
@@ -228,5 +228,111 @@ router.route('/send-pending')
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', 'superuser'))
   .get(controllers.emailSettings.sendPendingEmails);
+
+router.route('/infomessage')
+  /*
+  Parameters as query parameters
+  start?: Date (YYYY-MM-DD)
+  end?: Date (YYYY-MM-DD)
+  show_weekly?: Boolean
+  show_monthly?: Boolean
+  */
+  .get(
+    validators.infoMessage.read,
+    controllers.infoMessage.read
+  )
+  /*
+  Parameters as json body
+  message: String
+  start: Date (YYYY-MM-DD)
+  end: Date (YYYY-MM-DD)
+  show_weekly: Boolean => defaults to false if omitted
+  show_monthly: Boolean => defaults to false if omitted
+  level: "info" | "warn" | "error" => defaults to "info" if omitted
+  sticky: Boolean => defaults to false if omitted
+  */
+  .post(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'),
+    validators.infoMessage.create,
+    controllers.infoMessage.create
+  );
+
+router.route('/infomessage/:id')
+/*
+  Parameters as route parameters
+  id: Number
+  Parameters as json body
+  message?: String
+  start?: Date (YYYY-MM-DD)
+  end?: Date (YYYY-MM-DD)
+  show_weekly?: Boolean
+  show_monthly?: Boolean
+  level?: "info" | "warn" | "error"
+  sticky?: Boolean
+*/
+  .put(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'),
+    validators.infoMessage.update,
+    controllers.infoMessage.update
+  )
+  /*
+  Parameters as route parameters
+  id: Number
+  */
+  .delete(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'),
+    validators.infoMessage.delete,
+    controllers.infoMessage.delete
+  );
+ 
+router.route('/members')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .get(
+    validators.members.readAll,
+    middlewares.members.read,
+    controllers.members.read)
+  .post(
+    validators.members.create,
+    middlewares.members.create,
+    controllers.members.create
+  );
+
+router.route('/members/:user_id')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .get(
+    validators.members.read,
+    middlewares.members.read,
+    controllers.members.read)
+  .put(
+    validators.members.update,
+    middlewares.members.update,
+    controllers.members.update
+  );
+
+router.route('/set-raffled-supervisors')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .post(
+    validators.raffleSupervisors.checkRaffleResults,
+    controllers.raffleSupervisors.set
+  );
+
+router.route('/raffle')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'))
+  .post(
+    validators.raffle.create,
+    middlewares.raffle.create,
+    controllers.raffle.create
+  );
 
 module.exports = router;

@@ -1,99 +1,70 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 
 import { withCookies } from 'react-cookie';
-
 // function for checking whether we should show banner
 // DialogWindow for supervisors to confirm their supervisions
-import { checkSupervisorReservations, DialogWindow } from '../upcomingsupervisions/LoggedIn';
+import {
+  checkSupervisorReservations,
+  DialogWindow,
+} from '../upcomingsupervisions/LoggedIn';
+import translations from '../texts/texts.json';
 
-// Translations
-import data from '../texts/texts.json';
+const { banner } = translations;
 
-const fin = localStorage.getItem('language');  // eslint-disable-line
-const { banner } = data;
+const SupervisorNotification = ({
+  username,
+  loggingOut,
+  setLoggingOut,
+  checkSupervisions,
+  setCheckSupervisions,
+}) => {
+  const lang = localStorage.getItem('language');
+  const [userHasSupervisors, setUserHasSupervisors] = useState(false);
+  const [supervisionsOpen, setSupervisionsOpen] = useState(false);
 
-class SupervisorNotification extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      userHasSupervisions: false,
-      supervisionsOpen: false,
-      username: props.cookies.cookies.username,
-    };
-  }
+  const updateSupervisors = async () => {
+    const reservations = await checkSupervisorReservations(username);
+    setUserHasSupervisors(!!reservations);
+  };
 
-  componentDidMount() {
-    this.checkSupervisions();
-  }
+  useEffect(() => {
+    updateSupervisors();
+  }, []);
 
-  UNSAFE_componentWillReceiveProps(nextProps) {  // eslint-disable-line
-    if (nextProps.loggingOut) {
-      this.setState({
-        userHasSupervisions: false,
-      });
-      nextProps.setLoggingOut(false);
-    } else if (nextProps.checkSupervisions) {
-      this.checkSupervisions();
-      nextProps.setCheckSupervisions(false);
+  useEffect(() => {
+    if (loggingOut) {
+      setUserHasSupervisors(false);
+      setLoggingOut(false);
+    } else if (checkSupervisions) {
+      updateSupervisors();
+      setCheckSupervisions(false);
     }
-  }
+  }, [loggingOut, checkSupervisions, setCheckSupervisions, setLoggingOut]);
 
-  refreshSupervisionsOpen = () => {  // eslint-disable-line
-    this.setState({
-      supervisionsOpen: false,
-    });
-  }
-
-  checkSupervisions = async () => {
-    const reservations = await checkSupervisorReservations(this.state.username);
-    if (reservations) {
-      this.setState({
-        userHasSupervisions: true,
-      });
-    } else {
-      this.setState({
-        userHasSupervisions: false,
-      });
-    }
-  }
-
-  displaySupervisions = (e) => {  // eslint-disable-line
-    this.setState({
-      supervisionsOpen: true,
-    });
-  }
-
-  render() {
-    const fin = localStorage.getItem('language'); // eslint-disable-line
-    return (
-      <div>
-        {this.state.userHasSupervisions
-          ? (
-            <Alert
-              severity="warning"
-              variant="filled"
-              action={(
-                <Button color="inherit" size="small">
-                  {banner.Check[fin]}
-                </Button>
-            )}
-              onClick={this.displaySupervisions}
-            >
-              {banner.Notification[fin]}
-            </Alert>
-          ) : null}
-        {this.state.supervisionsOpen
-          ? (
-            <DialogWindow
-              onCancel={() => this.refreshSupervisionsOpen()}
-            />
-          ) : ''}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      {userHasSupervisors && (
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <Button color="inherit" size="small">
+              {banner.Check[lang]}
+            </Button>
+          }
+          onClick={() => setSupervisionsOpen(true)}
+        >
+          {banner.Notification[lang]}
+        </Alert>
+      )}
+      {supervisionsOpen && (
+        <DialogWindow onCancel={() => setSupervisionsOpen(false)} />
+      )}
+    </div>
+  );
+};
 
 export default withCookies(SupervisorNotification);

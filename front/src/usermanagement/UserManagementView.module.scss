@@ -1,0 +1,44 @@
+@import '../shared.module.scss';
+
+.dialogStyle {
+  background-color: $COLOR_CREAM5;
+}
+
+.errorText {
+  font-size: 20px;
+  color: $COLOR_RED !important;
+  text-align: center;
+}
+
+.userbox {
+  @extend .layout-row;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  .blueButton {
+    background-color: $COLOR_BLUE;
+    margin: 15px;
+    text-align: center;
+  }
+}
+
+.header {
+  text-align: center;
+}
+
+.tableContainer {
+  max-width: 800px;
+  table-layout: auto;
+
+  .table {
+    background-color: $COLOR_CREAM5;
+  }
+}
+
+.select {
+    margin-top: 15px;
+}
+
+.removeButton {
+    background-color: $COLOR_RED_LIGHT;
+}

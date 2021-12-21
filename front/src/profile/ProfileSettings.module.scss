@@ -1,0 +1,27 @@
+@import '../shared.module.scss';
+
+.profile {
+  @extend .layout-row;
+}
+
+.sidebar {
+  @extend .layout-row;
+  background: $COLOR_CREAM50;
+  justify-content: left;
+  width: 250px;
+  height: 100vh;
+}
+
+.content {
+  margin-left: 35px;
+}
+
+.list {
+  padding: 10px;
+}
+
+.link {
+  color: $COLOR_BLACK;
+  text-decoration: none;
+  font-weight: bold;
+}

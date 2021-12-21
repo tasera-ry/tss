@@ -206,3 +206,5 @@ exports.updateOwnPasswordFilter = [
   validators.user.updatePassword,
   userUpdateCheck,
 ];
+
+exports.userUpdateCheck = userUpdateCheck;

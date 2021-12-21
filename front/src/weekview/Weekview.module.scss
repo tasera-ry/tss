@@ -1,4 +1,6 @@
-.exclamation-2 {
+@import '../shared.module.scss';
+
+.exclamation2 {
   position: relative;
   top: 30px;
   margin: 0;
@@ -7,13 +9,13 @@
   max-width: 80%;
 }
 
-.big-container {
+.bigContainer {
   width: 100vw;
   max-width: 1025px;
   margin: auto;
 }
 
-.flex-container {
+.flexContainer {
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
@@ -21,7 +23,7 @@
   border-right: 0px;
 }
 
-.flex-container2 {
+.flexContainer2 {
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
@@ -31,11 +33,11 @@
   border-top: 1px solid;
 }
 
-.flex-container2 ~ .flex-container2 {
+.flexContainer2 ~ .flexContainer2 {
   border-top: 0px;
 }
 
-.date-header {
+.dateHeader {
   height: 10em;
   display: flex;
   align-items: center;
@@ -43,56 +45,40 @@
   text-align: center;
 }
 
-.flex-container2 > a {
-  outline: 0px solid black;
-  background-color: #eae7dc;
+.flexContainer2 > a {
+  outline: 0px $COLOR_BLACK;
+  background-color: $COLOR_CREAM10;
   width: calc(100% / 7);
   margin: 0px;
   text-align: center;
   line-height: 30px;
   font-size: 20px;
   text-decoration: none;
-  color: black;
+  color: $COLOR_BLACK;
 }
 
-.flex-container > a {
+.flexContainer > a {
   border-right: 1px solid;
   width: calc(100% / 7);
   margin: 0px;
   text-align: center;
   height: 125px;
   text-decoration: none;
-  color: black;
+  color: $COLOR_BLACK;
 }
 
-.main-grid {
+.mainGrid {
   direction: column;
   justify-content: left;
   align-items: center;
 }
 
-.arrow-right {
-  width: 0;
-  height: 0;
-  border-top: 20px solid transparent;
-  border-bottom: 20px solid transparent;
-  border-left: 20px solid black;
+.arrowRight {
   margin-left: 1vw;
-  display: flex;
-  float: right;
-  align-items: center;
 }
 
-.arrow-left {
-  width: 0;
-  height: 0;
-  border-top: 20px solid transparent;
-  border-bottom: 20px solid transparent;
-  border-right: 20px solid black;
-  text-align: right;
+.arrowLeft {
   margin-right: 1vw;
-  display: flex;
-  align-items: center;
 }
 
 .progress {
@@ -112,12 +98,11 @@
 /* media files */
 
 /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
-@media only screen and (min-width:320px) {
-
+@media only screen and (min-width: 320px) {
 }
 /* smartphones, Android phones, landscape iPhone */
-@media only screen and (min-width:480px) {
-  .exclamation-2 {
+@media only screen and (min-width: 480px) {
+  .exclamation2 {
     top: 15px;
     width: 70%;
     max-height: 70%;
@@ -126,25 +111,23 @@
   }
 }
 /* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
-@media only screen and (min-width:600px) {
-  .exclamation-2 {
+@media only screen and (min-width: 600px) {
+  .exclamation2 {
     width: 60%;
     max-height: 60%;
     max-width: 60%;
     padding-top: 10%;
-   }
+  }
 }
 /* tablet, landscape iPad, lo-res laptops ands desktops */
-@media only screen and (min-width:801px) {
-  .exclamation-2 {
+@media only screen and (min-width: 801px) {
+  .exclamation2 {
     padding-top: 0;
-   }
+  }
 }
 /* big landscape tablets, laptops, and desktops */
-@media only screen and (min-width:1025px) {
-
+@media only screen and (min-width: 1025px) {
 }
 /* hi-res laptops and desktops */
-@media only screen and (min-width:1281px) {
-
+@media only screen and (min-width: 1281px) {
 }

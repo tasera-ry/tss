@@ -1,17 +1,18 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import {
-  waitFor,
-  render,
-  screen,
-} from '@testing-library/react';
+import { waitFor, render, screen } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { act } from 'react-dom/test-utils';
 import * as utils from '../utils/Utils';
 import Weekview from './Weekview';
 import testUtils from '../_TestUtils/TestUtils';
+import * as axios from 'axios';
 
+jest.mock('axios');
+axios.get.mockResolvedValue({
+  data: [{ id: 1, message: 'ok', start: '', end: '' }],
+});
 const { date, week, schedule } = testUtils;
 
 describe('testing weekview', () => {
@@ -41,8 +42,9 @@ describe('testing weekview', () => {
         </Router>,
       );
     });
-    await waitFor(() => expect(screen.getByText('Range officer present'))
-      .toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText('Range officer present')).toBeInTheDocument(),
+    );
   });
 
   // it('should render correct week', async () => {

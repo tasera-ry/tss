@@ -1,0 +1,101 @@
+@import '../shared.module.scss';
+
+.available {
+  background-color: $COLOR_GREEN;
+}
+.closed {
+  background-color: $COLOR_RED_LIGHT;
+}
+.unavailable {
+  background-color: $COLOR_CREAM5;
+}
+.enRoute {
+  background-color: $COLOR_ORANGE;
+}
+.confirmed {
+  background-color: $COLOR_GREEN_LIGHT;
+}
+.notConfirmed {
+  background-color: $COLOR_TURQUOISE;
+}
+
+.wholeScreenDiv {
+  text-align: center;
+  align-items: center;
+}
+
+.trackNameAndType {
+  @extend .layout-row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  text-align: center;
+  padding: 8px;
+}
+
+.infoBox {
+  background-color: $COLOR_CREAM5;
+  outline: 2px solid $COLOR_BLACK;
+  color: $COLOR_BLACK;
+  width: 440px;
+  border: 1px;
+  height: 105px;
+  margin: 0 auto;
+  margin-bottom: 15px;
+  text-align: center;
+  align-items: center;
+  padding: 5px;
+  min-height: 48px;
+}
+
+.trackStyles {
+  color: $COLOR_BLACK;
+  padding: 12px;
+  text-align: center;
+  align-items: center;
+  width: 60vw;
+  margin-left: 19vw;
+  font-weight: bold;
+  font-size: larger;
+}
+
+.backLink > svg {
+  margin-bottom: -7px;
+  margin-right: 5px;
+  text-align: center;
+  align-items: center;
+  color: $COLOR_BLACK;
+}
+
+@media only screen and (max-width: 768px) {
+  .wholeScreenDiv {
+    text-align: center;
+    align-items: left;
+  }
+  .infoBox {
+    background-color: $COLOR_CREAM5;
+    outline: 2px solid $COLOR_BLACK;
+    color: $COLOR_BLACK;
+    width: 80%;
+    border: 1px;
+    height: 10%;
+    margin-bottom: 15px;
+    margin-right: 10%;
+  }
+  .trackNameAndType {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+    text-align: center;
+    padding: 8px;
+  }
+
+  .trackStyles {
+    color: $COLOR_BLACK;
+    padding: 12px;
+    width: 80vw;
+    margin-left: 8vw;
+  }
+}

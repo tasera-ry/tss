@@ -1,0 +1,33 @@
+@import '../shared.module.scss';
+
+.members {
+  @extend .layout-column;
+  align-items: center;
+  gap: 10px;
+  margin: 0 auto;
+  margin-bottom: 50px;
+}
+
+.tableHeader {
+  @extend .layout-row;
+  gap: 5px;
+  align-items: center;
+}
+
+.divider {
+  border: 0.5px solid lighten($COLOR_CREAM30, 15%);
+  width: 820px;
+  height: 0;
+}
+
+.raffleForm {
+  @extend .wideForm;
+  @extend .layout-column;
+  align-items: center;
+}
+
+.raffleResults {
+  @extend .layout-row;
+  gap: 20px;
+  align-items: flex-start;
+}

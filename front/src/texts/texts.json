@@ -11,10 +11,15 @@
     "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
     "SignOut": ["Kirjaudu ulos", "Sign Out"],
     "Statistics": ["Tilastot", "Statistics"],
-    "EmailSettings": ["Sähköpostiasetukset", "Email settings"]
+    "EmailSettings": ["Sähköpostiasetukset", "Email settings"],
+    "Raffle": ["Valvojien arvonta", "Supervisor raffle"],
+    "Info": ["Lisää infoviesti", "Add info message"]
   },
   "banner": {
-    "Notification": ["Sinulla on varmistamattomia päävalvojavuoroja!", "You have unconfirmed range officer reservations!"],
+    "Notification": [
+      "Sinulla on varmistamattomia päävalvojavuoroja!",
+      "You have unconfirmed range officer reservations!"
+    ],
     "Check": ["TARKISTA", "CHECK"]
   },
   "signin": {
@@ -26,24 +31,43 @@
     "Helper": ["Väärä käyttäjänimi tai salasana", "Wrong username or password"],
     "ForgotPassword": ["Unohtuiko salasana?", "Forgot password?"]
   },
-  "resetPW" : {
-    "ResetPassword": ["Syötä sähköpostiosoitteesi unohtuneen salasanan palauttamista varten", "Input your e-mail address in order to reset your password"],
+  "resetPW": {
+    "ResetPassword": [
+      "Syötä sähköpostiosoitteesi unohtuneen salasanan palauttamista varten",
+      "Input your e-mail address in order to reset your password"
+    ],
     "eMail": ["Sähköpostiosoite", "E-mail"],
     "ResetBtn": ["Palauta", "Reset"],
     "NullErr": ["Syötä sähköpostiosoite!", "E-mail address is required!"],
-    "InvErr": ["Annettua sähköpostiosoitetta ei löytynyt!", "Invalid e-mail address!"],
-    "Sent": ["Salasanan palautusviesti lähetetty onnistuneesti!", "Password reset e-mail succesfully sent!"]
+    "InvErr": [
+      "Annettua sähköpostiosoitetta ei löytynyt!",
+      "Invalid e-mail address!"
+    ],
+    "Sent": [
+      "Salasanan palautusviesti lähetetty onnistuneesti!",
+      "Password reset e-mail succesfully sent!"
+    ],
+    "Back": ["Takaisin", "Go back"]
   },
-  "renewPW" : {
-    "RenewPassword": ["Syötä uusi salasana","Input new password"],
+  "renewPW": {
+    "RenewPassword": ["Syötä uusi salasana", "Input new password"],
     "NewPassword": ["Uusi salasana", "New password"],
     "ConfirmNewPassword": ["Vahvista uusi salasana", "Confirm new password"],
-    "RenewBtn" : ["Lähetä","Submit"],
-    "Loading" : ["Ladataan käyttäjätietoja...", "Loading user data..."],
-    "Updated" : ["Salasana päivitetty onnistuneesti!", "Password updated succesfully!"],
-    "UpdatedDesc" : ["Sinut ohjataan sisäänkirjautumissivulle automaattisesti viiden sekunnin kuluttua.", "You will be redirected to the login page automatically in 5 seconds."],
-    "Error" : ["Ongelma tokenin varmennuksessa!", "Error verifying token!"],
-    "ErrorDesc" : ["Linkki ei kelpaa tai se on vanhentunut. Lähetä uusi salasananpalautuslinkki, kiitos!", "The link is incorrect or it has expired. Please send a new reset link!"],
+    "RenewBtn": ["Lähetä", "Submit"],
+    "Loading": ["Ladataan käyttäjätietoja...", "Loading user data..."],
+    "Updated": [
+      "Salasana päivitetty onnistuneesti!",
+      "Password updated succesfully!"
+    ],
+    "UpdatedDesc": [
+      "Sinut ohjataan sisäänkirjautumissivulle automaattisesti viiden sekunnin kuluttua.",
+      "You will be redirected to the login page automatically in 5 seconds."
+    ],
+    "Error": ["Ongelma tokenin varmennuksessa!", "Error verifying token!"],
+    "ErrorDesc": [
+      "Linkki ei kelpaa tai se on vanhentunut. Lähetä uusi salasananpalautuslinkki, kiitos!",
+      "The link is incorrect or it has expired. Please send a new reset link!"
+    ],
     "ForgotPassword": ["Unohtuiko salasana?", "Forgot password?"],
     "Mismatch": ["Salasanat eivät täsmää!", "Passwords don't match!"]
   },
@@ -80,7 +104,10 @@
     "Week": ["Viikko", "Week"],
     "Green": ["Päävalvoja paikalla", "Range officer present"],
     "Lightgreen": ["Päävalvoja varmistettu", "Range officer confirmed"],
-    "Blue": ["Päävalvoja määritetty, mutta ei varmistettu", "Range officer predefined, not confirmed"],
+    "Blue": [
+      "Päävalvoja määritetty, mutta ei varmistettu",
+      "Range officer predefined, not confirmed"
+    ],
     "Red": ["Keskus suljettu", "Range closed"],
     "Orange": ["Päävalvoja matkalla", "Range officer on the way"],
     "White": ["Päävalvojaa ei asetettu", "Range officer undefined"],
@@ -106,7 +133,10 @@
     "Amount": ["Toistojen määrä", "End repeat after"],
     "Save": ["Tallenna muutokset", "Save changes"],
     "Success": ["Päivitys onnistui", "Update successful"],
-    "Warning": ["Päävalvoja aktiivinen ilman valvojaa", "Range officer active with no selection"],
+    "Warning": [
+      "Päävalvoja aktiivinen ilman valvojaa",
+      "Range officer active with no selection"
+    ],
     "Error": ["Päivitys epäonnistui", "Something went wrong"]
   },
   "manage": {
@@ -117,21 +147,33 @@
     "Users": ["Käyttäjät", "User profiles"],
     "Username": ["Käyttäjänimi", "Username"],
     "RemoveUser": ["Poista käyttäjä", "Delete profile"],
-    "Helper": ["Vaihtaaksesi salasanasi sinun tulee antaa nykyinen salasanasi sekä uusi joksi haluat sen vaihtaa", "Give your current and new password"],
+    "Helper": [
+      "Vaihtaaksesi salasanasi sinun tulee antaa nykyinen salasanasi sekä uusi joksi haluat sen vaihtaa",
+      "Give your current and new password"
+    ],
     "OldPass": ["Nykyinen salasana", "Current password"],
     "OldEmail": ["Nykyinen sähköpostiosoite", "Current email address"],
     "NewPass": ["Uusi salasana", "New password"],
-    "NewEmail":[ "Lisää sähköposti","Add Email"],
-    "EmailHelper":["Anna uusi sähköpostiosoite", "Please give your new email address"],
-    "Email":[ "Sähköposti","Email"],
-    "EmailForUser":[ "Vaihda sähköposti käyttäjälle:","Change Email for user:"],
+    "NewEmail": ["Lisää sähköposti", "Add Email"],
+    "EmailHelper": [
+      "Anna uusi sähköpostiosoite",
+      "Please give your new email address"
+    ],
+    "Email": ["Sähköposti", "Email"],
+    "EmailForUser": [
+      "Vaihda sähköposti käyttäjälle:",
+      "Change Email for user:"
+    ],
     "Cancel": ["Peruuta", "Cancel"],
     "Confirm": ["Vahvista", "Save changes"],
     "ConfirmDelete": ["Vahvista", "Confirm"],
     "New": ["Luo uusi käyttäjä", "Create new user"],
     "Password": ["Salasana", "Password"],
     "Minimum": ["Vähintään", "Minimum"],
-    "MinimumLength": ["Salasanan minimipituus on 6 merkkiä", "Minimum length of password is 6 characters"],
+    "MinimumLength": [
+      "Salasanan minimipituus on 6 merkkiä",
+      "Minimum length of password is 6 characters"
+    ],
     "PasswordNumber": ["numero", "number"],
     "PasswordLowercase": ["pieni kirjain", "lowercase letter"],
     "PasswordUppercase": ["iso kirjain", "uppercase letter"],
@@ -140,10 +182,22 @@
     "Supervisor": ["Valvoja", "Range officer"],
     "ChangeFor": ["Vaihda salasana käyttäjälle", "Change password for"],
     "Ask": ["Haluatko varmasti jatkaa?", "Are you sure?"],
-    "AskDelete": ["Tämä poistaa pysyvästi käyttäjän", "This action will permanently remove user"],
-    "Error": ["Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki", "Something went wrong"],
-    "ErrorPassword": ["Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä", "Something went wrong, password has to be at least 6 characters long"],
-    "ErrorEmail": ["Jokin meni pieleen, Sähköpostia ei tallennettu", "Something went wrong, email not saved"],
+    "AskDelete": [
+      "Tämä poistaa pysyvästi käyttäjän",
+      "This action will permanently remove user"
+    ],
+    "Error": [
+      "Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki",
+      "Something went wrong"
+    ],
+    "ErrorPassword": [
+      "Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä",
+      "Something went wrong, password has to be at least 6 characters long"
+    ],
+    "ErrorEmail": [
+      "Jokin meni pieleen, Sähköpostia ei tallennettu",
+      "Something went wrong, email not saved"
+    ],
     "ErrorSmall": ["Jokin meni pieleen", "Something went wrong"]
   },
   "tablet": {
@@ -157,8 +211,14 @@
     "Orange": ["Tulossa", "On the way"],
     "Red": ["Suljettu", "Closed"],
     "White": ["Ei valvojaa", "No track officer"],
-    "HelperFirst": ["Valitse päävalvojan status napauttamalla väriä alta", "Define range officer status by choosing color"],
-    "HelperSecond": ["Vaihda ratavalvojien statuksia napauttamalla värejä alta. Muuta radan käviöiden määrää painikkeilla", "Change track officer status by choosing color. Change number of track users with buttons"],
+    "HelperFirst": [
+      "Valitse päävalvojan status napauttamalla väriä alta",
+      "Define range officer status by choosing color"
+    ],
+    "HelperSecond": [
+      "Vaihda ratavalvojien statuksia napauttamalla värejä alta. Muuta radan käviöiden määrää painikkeilla",
+      "Change track officer status by choosing color. Change number of track users with buttons"
+    ],
     "PickTime": ["Valitse aukioloaika", "Set opening hours"],
     "Start": ["Alku", "Start"],
     "End": ["Loppu", "End"],
@@ -192,7 +252,8 @@
     "RangeWhite": ["Ratavalvojaa ei asetettu", "No defined track officer"],
     "RangeRed": ["Rata suljettu", "Range closed"],
     "Info": ["Lisätietoja", "Info"],
-    "DayviewLink": ["Päivänäkymään", "Back to dayview"]
+    "DayviewLink": ["Päivänäkymään", "Back to dayview"],
+    "TrackNameError": ["Rataa ei löydy.", "Track cannot be found."]
   },
   "tracks": {
     "tableHeaderName": ["Nimi", "Name"],
@@ -210,10 +271,7 @@
     "labelRowsSelect": ["riviä", "rows"],
     "saveTooltip": ["Tallenna", "Save"],
     "cancelTooltip": ["Peruuta", "Cancel"],
-    "nextTooltip": ["Seuraava sivu", "Next page"],
-    "previousTooltip": ["Edellinen sivu", "Previous page"],
-    "firstTooltip": ["Ensimmäinen sivu", "First page"],
-    "lastTooltip": ["Viimeinen sivu", "Last page"]
+    "nextTooltip": ["Seuraava sivu", "Next page"], "previousTooltip": ["Edellinen sivu", "Previous page"], "firstTooltip": ["Ensimmäinen sivu", "First page"], "lastTooltip": ["Viimeinen sivu", "Last page"]
   },
   "month": {
     "0": ["Err", "Err"],
@@ -254,15 +312,24 @@
     "DayLabel": ["Päivä", "Day"],
     "DayChartHeader": ["Kävijämäärät radoittain", "Visitors per track"],
     "MonthChart1Header": ["Kävijämäärät päivittäin", "Visitors per day"],
-    "MonthChart2Header": ["Ratojen kävijämäärät kuukausittain", "Monthly visitors per track"],
+    "MonthChart2Header": [
+      "Ratojen kävijämäärät kuukausittain",
+      "Monthly visitors per track"
+    ],
     "OpenLogging": ["Kirjaa käyttäjätietoja", "Open user logging"]
   },
   "visitorLogging": {
-    "SuccessfullyUpdated": ["Käyttäjätiedot kirjattu", "Track visitors successfully upded"],
+    "SuccessfullyUpdated": [
+      "Käyttäjätiedot kirjattu",
+      "Track visitors successfully upded"
+    ],
     "DayChoose": ["Valitse päivä", "Choose date"],
     "Close": ["Sulje", "Close"],
     "Save": ["Tallenna", "Save changes"],
-    "NoSchedule": ["Ei varauksia tälle päivälle. Aseta ratavalvonta Aikataulut-sivulla", "No reservations found. Set reservation in Schedules page"]
+    "NoSchedule": [
+      "Ei varauksia tälle päivälle. Aseta ratavalvonta Aikataulut-sivulla",
+      "No reservations found. Set reservation in Schedules page"
+    ]
   },
   "emailSettings": {
     "success": ["Onnistuneesti päivitetty", "Successfully updated"],
@@ -282,40 +349,116 @@
     "collage": ["Kootut varausten muutokset", "Compiled shift changes"],
     "assigned": ["Vuoro annettu", "Shift assigned"],
     "update": ["Vuoro päivitetty", "Shift updated"],
-    "reminder": ["Varmistamattoman vuoron muistutus", "Unconfirmed shift reminder"],
+    "reminder": [
+      "Varmistamattoman vuoron muistutus",
+      "Unconfirmed shift reminder"
+    ],
     "decline": ["Vuorosta kieltäydytty", "Shift declined"],
     "feedback": ["Palautetta vastaanotettu", "Feedback received"],
     "resetpass": ["Salasanan uusimislinkki", "Password reset link"],
     "dynamicValues": ["Sallitut dynaamiset arvot", "Allowed dynamic values:"],
     "userDecline": ["Kieltäytynyt käyttäjä", "The user who declined"],
-    "userFeedback": ["Palautetta antanut käyttäjä", "The user who gave feedback"],
-    "declineDate": ["Kieltäytymisen päivämäärä", "The date of the user declining"],
-    "feedbackGiven": ["Käyttäjän antama palaute", "The feedback given by the user"],
-    "resetpassToken": ["Salasanan uusintalinkin tokeni.", "The password reset link token."],
+    "userFeedback": [
+      "Palautetta antanut käyttäjä",
+      "The user who gave feedback"
+    ],
+    "declineDate": [
+      "Kieltäytymisen päivämäärä",
+      "The date of the user declining"
+    ],
+    "feedbackGiven": [
+      "Käyttäjän antama palaute",
+      "The feedback given by the user"
+    ],
+    "resetpassToken": [
+      "Salasanan uusintalinkin tokeni.",
+      "The password reset link token."
+    ],
     "resetpassGuide": [
       "Linkki voidaan luoda näin: http://tss.tasera.fi/#/renew-password/{token}",
       "The link can be made like this: http://tss.tasera.fi/#/renew-password/{token}"
     ],
-    "updateCount": ["Muutettujen vuorojen määrä", "The number of updated shifts"],
-    "assignedCount": ["Annettujen vuorojen määrä", "The number of assigned shifts"],
-    "queueMessages": ["Lähetä viestit koosteena tiettyyn aikaan", "Send compiled messages at a certain time"],
+    "updateCount": [
+      "Muutettujen vuorojen määrä",
+      "The number of updated shifts"
+    ],
+    "assignedCount": [
+      "Annettujen vuorojen määrä",
+      "The number of assigned shifts"
+    ],
+    "queueMessages": [
+      "Lähetä viestit koosteena tiettyyn aikaan",
+      "Send compiled messages at a certain time"
+    ],
     "pendingTime": ["Viestien lähetysaika", "Time for sending emails"],
     "sendPending": ["Lähetä viestit", "Send messages"],
-    "sendPendingTip": ["Voit lähettää odottavat viestit heti tällä napilla.", "You can force all pending emails to be sent immediately with the button."]
-    },
-    "profileSettings": {
-      "navPassword": ["Vaihda salasana", "Change password"]
-    },
-    "passwordSettings": {
-      "title": ["Vaihda salasana", "Change password"],
-      "old": ["Vanha salasana", "Old password"],
-      "new": ["Uusi salasana", "New password"],
-      "confirmNew": ["Vahvista uusi salasana", "Confirm new password"],
-      "confirm": ["Vahvista", "Confirm"],
-      "alertFields": ["Täytä kaikki tekstikentät", "Fill all the text fields"],
-      "alertWrongPword": ["Nykyinen salasana virheellinen", "Old password isn't valid"],
-      "alertPwordMatch": ["Uusi salasana ja vahvistus eivät täsmää", "Confirmation doesn't match the new password"],
-      "alertSuccess": ["Vaihto onnistui", "Change successful"],
-      "alertFail": ["Vaihto epäonnistui", "Change failed"]
+    "sendPendingTip": [
+      "Voit lähettää odottavat viestit heti tällä napilla.",
+      "You can force all pending emails to be sent immediately with the button."
+    ]
+  },
+  "profileSettings": {
+    "navPassword": ["Vaihda salasana", "Change password"]
+  },
+  "passwordSettings": {
+    "title": ["Vaihda salasana", "Change password"],
+    "old": ["Vanha salasana", "Old password"],
+    "new": ["Uusi salasana", "New password"],
+    "confirmNew": ["Vahvista uusi salasana", "Confirm new password"],
+    "confirm": ["Vahvista", "Confirm"],
+    "alertFields": ["Täytä kaikki tekstikentät", "Fill all the text fields"],
+    "alertWrongPword": [
+      "Nykyinen salasana virheellinen",
+      "Old password isn't valid"
+    ],
+    "alertPwordMatch": [
+      "Uusi salasana ja vahvistus eivät täsmää",
+      "Confirmation doesn't match the new password"
+    ],
+    "alertSuccess": ["Salasanan vaihto onnistui", "Password change successful"],
+    "alertFail": ["Salasanan vaihto epäonnistui", "Password change failed"]
+  },
+  "raffleDatePicker": {
+    "weekdaysLong": {
+      "0": ["Sunnuntai", "Maanantai", "Tiistai", "Keskiviikko", "Torstai", "Perjantai", "Lauantai"],
+      "1": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]},
+    "weekdaysShort": {
+      "0": ["Su", "Ma", "Ti", "Ke", "To", "Pe", "La"],
+      "1": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]},
+    "months": {
+      "0": ["Tammikuu", "Helmikuu", "Maaliskuu", "Huhtikuu", "Toukokuu", "Kesäkuu",
+        "Heinäkuu", "Elokuu", "Syyskuu", "Lokakuu", "Marraskuu", "Joulukuu"],
+      "1": ["January", "February", "March", "April", "May", "June", "July", "August",
+        "September", "October", "November", "December"]}
+  },
+  "raffle": {
+    "tableTitle": ["Yhteisöt", "Organizations"],
+    "raffled": ["Arvonnassa", "In raffle"],
+    "user": ["Yhteisö", "Organization"],
+    "members": ["Ampujakortilliset", "Gun license owners"],
+    "supervisors": ["Valvojat", "Supervisors"],
+    "loadError": ["Yhteisöjen lataus epäonnistui", "Could not load organizations"],
+    "valueError": ["Arvot eivät saa olla negatiivisia", "Values cannot be negative"],
+    "updateError": ["Yhteisön päivitys epäonnistui", "Organization update failed"],
+    "updateSuccess": ["Yhteisö päivitetty", "Organization updated"],
+    "raffleUnavailable": ["Lisää yhteisöjä arpoaksesi valvojat", "Add organizations to raffle supervisors"],
+    "dates": ["Valitse arvottavat päivämäärät", "Choose dates for the raffle"],
+    "date": ["Päivämäärä", "Date"],
+    "amount": ["Vuorojen määrä", "Amount of supervisions"],
+    "raffle": ["Arvo valvojat", "Raffle supervisors"],
+    "raffleError": ["Arvonnan suoritus epäonnistui", "The execution of the raffle failed"],
+    "results": ["Arvonnan tulokset", "Raffle results"],
+    "save": ["Tallenna tulokset", "Save results"],
+    "saveSuccess": ["Tulokset tallennettu", "Results saved"],
+    "saveError": ["Tuloksien tallennus epäonnistui", "The saving of the results failed"]
+  },
+  "infoPage": {
+    "title": ["Lisää viesti", "Add info"],
+    "message": ["Viesti", "Message"],
+    "startDate": ["Alkamispäivämäärä", "Start date"],
+    "endDate": ["Loppumispäivämäärä", "End date"],
+    "repeatWeekly": ["Toista viikoittain", "Repeat weekly"],
+    "repeatMonthly": ["Toista kuukausittain", "Repeat monthly"],
+    "send": ["Lähetä", "Send"]
   }
 }

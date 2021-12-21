@@ -1,71 +1,41 @@
-import React from "react";
+import React from 'react';
+import classNames from 'classnames';
+import { HashRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+import { List, ListItem } from '@material-ui/core';
+import translations from '../texts/texts.json';
+import ChangePassword from './profilepages/changepassword';
+import css from './ProfileSettings.module.scss';
 
-import PasswordChange from "./profilepages/changepassword";
+const classes = classNames.bind(css);
 
-import { Link } from "react-router-dom";
-import { HashRouter as Router, Switch, Route } from "react-router-dom";
-import { useCookies } from "react-cookie";
+const fin = localStorage.getItem('language');
+const { profileSettings } = translations;
 
-import texts from "../texts/texts.json";
-import { List, ListItem } from "@material-ui/core";
-
-const fin = localStorage.getItem("language");
-const { profileSettings } = texts;
-
-// Styles for the Profile page: The whole page, sidebar and content.
-
-const ProfileStyle = {
-  display: "flex",
-};
-
-const SidebarStyle = {
-  background: "#d8c3a5",
-  flexDirection: "row",
-  display: "flex",
-  justifyContent: "left",
-  width: 250,
-  height: "100vh",
-};
-
-const ContentStyle = {
-  marginLeft: "35px",
-};
-
-const listStyle = {
-  padding: 10,
-};
-
-const elementStyle = {
-  color: "black",
-  textDecoration: "none",
-  fontWeight: "bold",
-};
-
-// Returns the profile component, which consists of sidebar and content.
-
-function Profile() {
-  const [cookies] = useCookies(["username"]);
+// Profile component consists of sidebar and content
+const Profile = () => {
+  const [cookies] = useCookies(['username']);
   return (
     <Router>
-      <div className="Profile" style={ProfileStyle}>
-        <div className="ProfileSidebar" style={SidebarStyle}>
-          <List style={listStyle}>
-            {/* When new profile features are added, change path*/}
-            <Link style={elementStyle} to="/profile">
+      <div className={classes(css.profile)}>
+        <div className={classes(css.sidebar)}>
+          <List className={classes(css.list)}>
+            {/* When new profile features are added, change path */}
+            <Link className={classes(css.link)} to="/profile">
               <ListItem button>{profileSettings.navPassword[fin]}</ListItem>
             </Link>
           </List>
         </div>
-        <div className="ProfileContent" style={ContentStyle}>
+        <div className={classes(css.content)}>
           <Switch>
             <Route path="/">
-              <PasswordChange username={cookies.username} />
+              <ChangePassword username={cookies.username} id={cookies.id} />
             </Route>
           </Switch>
         </div>
       </div>
     </Router>
   );
-}
+};
 
 export default Profile;

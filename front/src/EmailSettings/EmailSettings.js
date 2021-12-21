@@ -16,7 +16,10 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+} from '@material-ui/pickers';
 import './EmailSettings.css';
 import { emailSettings, nav } from '../texts/texts.json';
 
@@ -109,7 +112,8 @@ const EmailSettings = () => {
       .then((data) => {
         const filteredData = {};
         Object.keys(settings).forEach((key) => {
-          if (data[key] !== undefined && data[key] !== null) filteredData[key] = data[key];
+          if (data[key] !== undefined && data[key] !== null)
+            filteredData[key] = data[key];
           else filteredData[key] = settings[key];
         });
         setSettings(filteredData);
@@ -121,17 +125,17 @@ const EmailSettings = () => {
       setPendingSend(false);
     });
   };
-    /* Runs the above whenever the page loads */
+  /* Runs the above whenever the page loads */
   React.useEffect(fetchAndSetSettings, []);
 
   const handleChange = (e) => {
-      setSettings({ ...settings, [e.target.name]: e.target.value });
+    setSettings({ ...settings, [e.target.name]: e.target.value });
   };
   const handleDateChange = (date) => {
     const newDate = new Date();
     newDate.setHours(date.getHours(), date.getMinutes());
-    setSettings({ ...settings, "sendPendingTime": newDate });
-  }
+    setSettings({ ...settings, sendPendingTime: newDate });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -140,34 +144,36 @@ const EmailSettings = () => {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(settings),
-    }).then((res) => {
-      if (res.status !== 200) {
-        throw Error(res.statusText);
-      } else {
+    })
+      .then((res) => {
+        if (res.status !== 200) {
+          throw Error(res.statusText);
+        } else {
+          setPendingSave(false);
+          setResultCounter(resultCounter + 1);
+          setResultMessages((prevArr) => [
+            ...prevArr,
+            {
+              success: true,
+              msg: emailSettings.success[lang],
+              id: resultCounter,
+            },
+          ]);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
         setPendingSave(false);
         setResultCounter(resultCounter + 1);
         setResultMessages((prevArr) => [
           ...prevArr,
           {
-            success: true,
-            msg: emailSettings.success[lang],
+            success: false,
+            msg: err.message,
             id: resultCounter,
           },
         ]);
-      }
-    }).catch((err) => {
-      console.log(err);
-      setPendingSave(false);
-      setResultCounter(resultCounter + 1);
-      setResultMessages((prevArr) => [
-        ...prevArr,
-        {
-          success: false,
-          msg: err.message,
-          id: resultCounter,
-        },
-      ]);
-    });
+      });
   };
 
   return (
@@ -209,12 +215,22 @@ const EmailSettings = () => {
             value={settings.secure}
             onChange={handleChange}
           >
-            <FormControlLabel value="false" control={<Radio />} label={emailSettings.no[lang]} />
-            <FormControlLabel value="true" control={<Radio />} label={emailSettings.yes[lang]} />
+            <FormControlLabel
+              value="false"
+              control={<Radio />}
+              label={emailSettings.no[lang]}
+            />
+            <FormControlLabel
+              value="true"
+              control={<Radio />}
+              label={emailSettings.yes[lang]}
+            />
           </RadioGroup>
         </FormControl>
         <FormControl component="fieldset">
-          <FormLabel className="settings-label">{emailSettings.senderAddress[lang]}</FormLabel>
+          <FormLabel className="settings-label">
+            {emailSettings.senderAddress[lang]}
+          </FormLabel>
           <TextField
             name="sender"
             label={emailSettings.address[lang]}
@@ -223,19 +239,33 @@ const EmailSettings = () => {
           />
         </FormControl>
         <FormControl component="fieldset">
-          <FormLabel className="settings-label">{emailSettings.emailMessages[lang]}</FormLabel>
+          <FormLabel className="settings-label">
+            {emailSettings.emailMessages[lang]}
+          </FormLabel>
           <Select
             value={messageSelection}
             onChange={(e) => setMessageSelection(e.target.value)}
             label="Message type"
           >
-            <MenuItem value="collageMsg">{emailSettings.collage[lang]}</MenuItem>
-            <MenuItem value="assignedMsg">{emailSettings.assigned[lang]}</MenuItem>
+            <MenuItem value="collageMsg">
+              {emailSettings.collage[lang]}
+            </MenuItem>
+            <MenuItem value="assignedMsg">
+              {emailSettings.assigned[lang]}
+            </MenuItem>
             <MenuItem value="updateMsg">{emailSettings.update[lang]}</MenuItem>
-            <MenuItem value="reminderMsg">{emailSettings.reminder[lang]}</MenuItem>
-            <MenuItem value="declineMsg">{emailSettings.decline[lang]}</MenuItem>
-            <MenuItem value="feedbackMsg">{emailSettings.feedback[lang]}</MenuItem>
-            <MenuItem value="resetpassMsg">{emailSettings.resetpass[lang]}</MenuItem>
+            <MenuItem value="reminderMsg">
+              {emailSettings.reminder[lang]}
+            </MenuItem>
+            <MenuItem value="declineMsg">
+              {emailSettings.decline[lang]}
+            </MenuItem>
+            <MenuItem value="feedbackMsg">
+              {emailSettings.feedback[lang]}
+            </MenuItem>
+            <MenuItem value="resetpassMsg">
+              {emailSettings.resetpass[lang]}
+            </MenuItem>
           </Select>
           <TextField
             multiline
@@ -244,7 +274,9 @@ const EmailSettings = () => {
             value={settings[messageSelection]}
             onChange={handleChange}
           />
-          <FormHelperText display="inline" component="div">{HelperText(messageSelection)}</FormHelperText>
+          <FormHelperText display="inline" component="div">
+            {HelperText(messageSelection)}
+          </FormHelperText>
         </FormControl>
         <FormControl component="fieldset">
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -257,47 +289,86 @@ const EmailSettings = () => {
           </MuiPickersUtilsProvider>
         </FormControl>
         <FormControl component="fieldset">
-          <FormLabel className="settings-label">{emailSettings.queueMessages[lang]}</FormLabel>
+          <FormLabel className="settings-label">
+            {emailSettings.queueMessages[lang]}
+          </FormLabel>
           <RadioGroup
             name="shouldQueue"
             value={settings.shouldQueue}
             onChange={handleChange}
           >
-            <FormControlLabel value="true" control={<Radio />} label={emailSettings.yes[lang]} />
-            <FormControlLabel value="false" control={<Radio />} label={emailSettings.no[lang]} />
+            <FormControlLabel
+              value="true"
+              control={<Radio />}
+              label={emailSettings.yes[lang]}
+            />
+            <FormControlLabel
+              value="false"
+              control={<Radio />}
+              label={emailSettings.no[lang]}
+            />
           </RadioGroup>
           <Button
-            variant="contained" color="primary" id="send-pending-button" onClick={sendPendingRequest}
+            variant="contained"
+            color="primary"
+            id="send-pending-button"
+            onClick={sendPendingRequest}
           >
-            {pendingSend ? <CircularProgress /> : emailSettings.sendPending[lang]}
+            {pendingSend ? (
+              <CircularProgress />
+            ) : (
+              emailSettings.sendPending[lang]
+            )}
           </Button>
-          <FormHelperText display="inline">{emailSettings.sendPendingTip[lang]}</FormHelperText>
+          <FormHelperText display="inline">
+            {emailSettings.sendPendingTip[lang]}
+          </FormHelperText>
         </FormControl>
         <FormControl component="fieldset">
-          <FormLabel className="settings-label">{emailSettings.sendAutomatically[lang]}</FormLabel>
+          <FormLabel className="settings-label">
+            {emailSettings.sendAutomatically[lang]}
+          </FormLabel>
           <RadioGroup
             name="shouldSend"
             value={settings.shouldSend}
             onChange={handleChange}
           >
-            <FormControlLabel value="true" control={<Radio />} label={emailSettings.yes[lang]} />
-            <FormControlLabel value="false" control={<Radio />} label={emailSettings.no[lang]} />
+            <FormControlLabel
+              value="true"
+              control={<Radio />}
+              label={emailSettings.yes[lang]}
+            />
+            <FormControlLabel
+              value="false"
+              control={<Radio />}
+              label={emailSettings.no[lang]}
+            />
           </RadioGroup>
         </FormControl>
         <Button type="submit" variant="contained" color="primary">
-          {pendingSave ? <CircularProgress /> : emailSettings.saveSettings[lang]}
+          {pendingSave ? (
+            <CircularProgress />
+          ) : (
+            emailSettings.saveSettings[lang]
+          )}
         </Button>
       </form>
       <div className="results-div">
         {resultMessages.map((result, index) => (
           <Card className="result-card" key={result.id}>
-            <CardContent className={result.success ? 'result-success' : 'result-failure'}>
+            <CardContent
+              className={result.success ? 'result-success' : 'result-failure'}
+            >
               {result.msg}
             </CardContent>
             <CardActions>
               <Button
                 size="small"
-                onClick={() => setResultMessages(resultMessages.filter((val, i) => i !== index))}
+                onClick={() =>
+                  setResultMessages(
+                    resultMessages.filter((val, i) => i !== index),
+                  )
+                }
               >
                 {emailSettings.close[lang]}
               </Button>

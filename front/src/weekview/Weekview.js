@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-
-import '../App.css';
-import './Weekview.css';
+import classNames from 'classnames';
 
 // Material UI components
 import { Link } from 'react-router-dom';
@@ -10,24 +8,25 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Moment for date management
 import moment from 'moment';
+import api from '../api/api';
 import {
-  getSchedulingWeek, getSchedulingDate, viewChanger, jumpToCurrent,
+  getSchedulingWeek,
+  viewChanger,
+  jumpToCurrent,
+  getLanguage,
 } from '../utils/Utils';
 import exclamation from '../logo/Info.png';
 import Infoboxes from '../infoboxes/Infoboxes';
-
+import InfoBox from '../infoBox/InfoBox';
 // Translation
 import texts from '../texts/texts.json';
+import css from './Weekview.module.scss';
 
-let lang = 'fi'; // fallback
-if (localStorage.getItem('language') === '0') {
-  lang = 'fi';
-} else if (localStorage.getItem('language') === '1') {
-  lang = 'en';
-}
+const classes = classNames.bind(css);
 
 const { weekdayShorthand, week } = texts;
 const fin = localStorage.getItem('language');
+const lang = getLanguage();
 
 class Weekview extends Component {
   constructor(props) {
@@ -52,14 +51,18 @@ class Weekview extends Component {
   }
 
   // Re-renders the component and fetches new data when the logo to frontpage is clicked on weekview
-  UNSAFE_componentWillReceiveProps() { // eslint-disable-line
-    this.setState({
-      state: 'loading',
-    }, () => {
-      this.getWeek();
-      this.getYear();
-      this.update();
-    });
+  /* eslint-disable-next-line */
+  UNSAFE_componentWillReceiveProps() {
+    this.setState(
+      {
+        state: 'loading',
+      },
+      () => {
+        this.getWeek();
+        this.getYear();
+        this.update();
+      },
+    );
   }
 
   // Changes week number state to previous one
@@ -81,7 +84,10 @@ class Weekview extends Component {
       const paramMonth = urlParamDateSplit[1];
       const paramDay = urlParamDateSplit[2];
 
-      const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYYMMDD');
+      const paramDateCorrect = moment(
+        paramYear + paramMonth + paramDay,
+        'YYYYMMDD',
+      );
 
       uusPaiva = moment(paramDateCorrect, 'YYYYMMDD');
     } catch {
@@ -93,15 +99,21 @@ class Weekview extends Component {
     const uusViikko = uusPaiva.week();
 
     try {
-      const oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() - 7));
-      this.props.history.replace(`/weekview/${moment(uusPaiva, 'YYYYMMDD').add(1, 'day').toISOString().substring(0, 10)}`);
+      const oikeePaiva = new Date(
+        this.state.date.setDate(this.state.date.getDate() - 7),
+      );
+      this.props.history.replace(
+        `/weekview/${moment(uusPaiva, 'YYYYMMDD')
+          .add(1, 'day')
+          .toISOString()
+          .substring(0, 10)}`,
+      );
 
       const viikkoNumero = moment(this.state.dayNro, 'YYYYMMDD').week();
 
       // Week logic cuz you can't go negative
-      const uusVuosi = viikkoNumero === 1
-        ? this.state.yearNro - 1
-        : this.state.yearNro;
+      const uusVuosi =
+        viikkoNumero === 1 ? this.state.yearNro - 1 : this.state.yearNro;
 
       this.setState(
         {
@@ -117,7 +129,7 @@ class Weekview extends Component {
     } catch (error) {
       // console.log(error)
     }
-  }
+  };
 
   // Changes week number state to next one
   nextWeekClick = (e) => {
@@ -139,7 +151,10 @@ class Weekview extends Component {
       const paramMonth = urlParamDateSplit[1];
       const paramDay = urlParamDateSplit[2];
 
-      const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYYMMDD');
+      const paramDateCorrect = moment(
+        paramYear + paramMonth + paramDay,
+        'YYYYMMDD',
+      );
 
       uusPaiva = moment(paramDateCorrect, 'YYYYMMDD');
     } catch {
@@ -150,13 +165,19 @@ class Weekview extends Component {
     const uusViikko = uusPaiva.week();
 
     try {
-      const oikeePaiva = new Date(this.state.date.setDate(this.state.date.getDate() + 7));
-      this.props.history.replace(`/weekview/${moment(uusPaiva, 'YYYYMMDD').add(1, 'day').toISOString().substring(0, 10)}`);
+      const oikeePaiva = new Date(
+        this.state.date.setDate(this.state.date.getDate() + 7),
+      );
+      this.props.history.replace(
+        `/weekview/${moment(uusPaiva, 'YYYYMMDD')
+          .add(1, 'day')
+          .toISOString()
+          .substring(0, 10)}`,
+      );
 
       // Week logic cuz there's no 53 weeks
-      const uusVuosi = uusViikko === 1
-        ? this.state.yearNro + 1
-        : this.state.yearNro;
+      const uusVuosi =
+        uusViikko === 1 ? this.state.yearNro + 1 : this.state.yearNro;
 
       this.setState(
         {
@@ -172,16 +193,22 @@ class Weekview extends Component {
     } catch (error) {
       // console.log(error)
     }
-  }
+  };
 
   // Function for parsing current week number
   getWeek = () => {
     const date1 = new Date();
     date1.setHours(0, 0, 0, 0);
-    date1.setDate(date1.getDate() + 3 - (date1.getDay() + 6) % 7); // eslint-disable-line
+    date1.setDate(date1.getDate() + 3 - ((date1.getDay() + 6) % 7)); // eslint-disable-line
     const week1 = new Date(date1.getFullYear(), 0, 4);
-    const current = 1 + Math.round(((date1.getTime() - week1.getTime()) / 86400000
-      - 3 + (week1.getDay() + 6) % 7) / 7); // eslint-disable-line
+    const current =
+      1 +
+      Math.round(
+        ((date1.getTime() - week1.getTime()) / 86400000 -
+          3 +
+          ((week1.getDay() + 6) % 7)) /
+          7,
+      ); // eslint-disable-line
 
     // Count correct weeknumber from URL
     try {
@@ -195,9 +222,13 @@ class Weekview extends Component {
       const paramMonth = urlParamDateSplit[1];
       const paramYear = urlParamDateSplit[0];
 
-      const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYY-MM-DD');
+      const paramDateCorrect = moment(
+        paramYear + paramMonth + paramDay,
+        'YYYY-MM-DD',
+      );
 
-      if (isNaN(weeknumber)) { // eslint-disable-line
+      if (Number.isNaN(weeknumber)) {
+        // eslint-disable-line
         this.setState({ weekNro: current });
         this.props.history.replace('/weekview/');
       } else {
@@ -209,7 +240,7 @@ class Weekview extends Component {
     }
 
     return current;
-  }
+  };
 
   // Creates 7 columns for days
   createWeekDay = () => {
@@ -240,7 +271,7 @@ class Weekview extends Component {
     }
 
     return table; // eslint-disable-line
-  }
+  };
 
   // Creates 7 columns for days
   createDate = () => {
@@ -263,15 +294,13 @@ class Weekview extends Component {
       linkki = `/dayview/${oikeePaiva}`;
       table.push(
         <Link key={j} className="link" to={linkki}>
-          <p style={{ fontSize: 'medium' }}>
-            {newDate}
-          </p>
+          <p style={{ fontSize: 'medium' }}>{newDate}</p>
         </Link>,
       );
     }
 
     return table; // eslint-disable-line
-  }
+  };
 
   // Creates 7 columns for päävalvoja info, colored boxes
   createColorInfo = () => {
@@ -318,36 +347,47 @@ class Weekview extends Component {
       }
       linkki = `/dayview/${oikeePaiva}`;
       table.push(
-        <Link key={j} style={{ backgroundColor: `${colorFromBackEnd}` }} className="link" to={linkki}>
+        <Link
+          key={j}
+          style={{ backgroundColor: `${colorFromBackEnd}` }}
+          className="link"
+          to={linkki}
+        >
           <p>
-            {info
-              ? <img className="exclamation-2" src={exclamation} alt={week.Notice[fin]} />
-              : <br />}
-
+            {info ? (
+              <img
+                className={classes(css.exclamation2)}
+                src={exclamation}
+                alt={week.Notice[fin]}
+              />
+            ) : (
+              <br />
+            )}
           </p>
         </Link>,
       );
     }
     return table; // eslint-disable-line
-  }
+  };
 
   getYear = () => {
     const today = new Date();
     const yyyy = today.getFullYear();
     this.setState({ yearNro: yyyy });
     return yyyy;
-  }
+  };
 
   update() {
     const { date } = this.state;
     const requestSchedulingDate = async () => {
-      const response = await getSchedulingDate(date);
-
-      if (response) {
+      try {
+        const data = await api.getSchedulingDate(date);
         this.setState({
-          date: new Date(response.date),
+          date: new Date(data.date),
         });
-      } else console.error('getting info failed');
+      } catch (err) {
+        console.error('getting info failed');
+      }
     };
 
     requestSchedulingDate();
@@ -376,10 +416,16 @@ class Weekview extends Component {
 
     const date2 = new Date();
     date2.setHours(0, 0, 0, 0);
-    date2.setDate(date2.getDate() + 3 - (date2.getDay() + 6) % 7); // eslint-disable-line
+    date2.setDate(date2.getDate() + 3 - ((date2.getDay() + 6) % 7)); // eslint-disable-line
     const week1 = new Date(date2.getFullYear(), 0, 4);
-    const current = 1 + Math.round(((date2.getTime() - week1.getTime()) / 86400000
-      - 3 + (week1.getDay() + 6) % 7) / 7); // eslint-disable-line
+    const current =
+      1 +
+      Math.round(
+        ((date2.getTime() - week1.getTime()) / 86400000 -
+          3 +
+          ((week1.getDay() + 6) % 7)) /
+          7,
+      ); // eslint-disable-line
 
     // Count correct weeknumber from URL
     try {
@@ -394,14 +440,20 @@ class Weekview extends Component {
       const paramMonth = urlParamDateSplit[1];
       const paramYear = urlParamDateSplit[0];
 
-      const paramDateCorrect = moment(paramYear + paramMonth + paramDay, 'YYYYMMDD').toDate();
-      if (isNaN(weeknumber)) { // eslint-disable-line
+      const paramDateCorrect = moment(
+        paramYear + paramMonth + paramDay,
+        'YYYYMMDD',
+      ).toDate();
+      if (Number.isNaN(weeknumber)) {
+        // eslint-disable-line
         this.setState({ weekNro: current });
         const now = moment().format();
         this.props.history.replace(`/weekview/${now.substring(0, 10)}`);
       } else {
-        this.setState({ weekNro: weeknumber, date: paramDateCorrect, yearNro: paramYear }, () => {
-        });
+        this.setState(
+          { weekNro: weeknumber, date: paramDateCorrect, yearNro: paramYear },
+          () => {},
+        );
 
         date1 = paramDateCorrect;
       }
@@ -429,56 +481,53 @@ class Weekview extends Component {
     const { week } = texts; // eslint-disable-line
     return (
       <div>
-        <div className="container">
-          <Grid className="date-header">
+        <InfoBox />
+        <div className={classes(css.container)}>
+          <Grid className={classes(css.dateHeader)}>
             <div
-              className="hoverHand arrow-left"
+              className={classes(css.hoverHand, css.arrowLeft)}
               onClick={this.previousWeekClick}
             />
-            <h1 className="dateHeader-text">
+            <h1 className={classes(css.dateHeaderText)}>
               {' '}
               {`${week.Week[fin]} ${this.state.weekNro}, ${this.state.yearNro}`}
             </h1>
             {/* Month if needed: {monthToString(date.getMonth())} */}
             <div
-              className="hoverHand arrow-right"
+              className={classes(css.hoverHand, css.arrowRight)}
               onClick={this.nextWeekClick}
             />
           </Grid>
-          <div className="big-container">
-            <div className="viewChanger">
-              <div className="viewChanger-current">
+          <div className={classes(css.bigContainer)}>
+            <div className={classes(css.viewChanger)}>
+              <div className={classes(css.viewChangerCurrent)}>
                 {jumpToCurrent()}
               </div>
-              <div className="viewChanger-container">
+              <div className={classes(css.viewChangerContainer)}>
                 {viewChanger()}
               </div>
             </div>
 
             {/* Date boxes */}
-            <Grid className="flex-container2">
+            <Grid className={classes(css.flexContainer2)}>
               {this.createWeekDay()}
             </Grid>
 
             {/* Date boxes */}
-            <Grid className="flex-container2">
-              {this.state.state !== 'ready'
-                ? ''
-                : this.createDate()}
+            <Grid className={classes(css.flexContainer2)}>
+              {this.state.state !== 'ready' ? '' : this.createDate()}
             </Grid>
 
             {/* Colored boxes for dates */}
-            {this.state.state !== 'ready'
-              ? (
-                <div className="progress">
-                  <CircularProgress disableShrink />
-                </div>
-              )
-              : (
-                <Grid className="flex-container">
-                  {this.createColorInfo()}
-                </Grid>
-              )}
+            {this.state.state !== 'ready' ? (
+              <div className={classes(css.progress)}>
+                <CircularProgress disableShrink />
+              </div>
+            ) : (
+              <Grid className={classes(css.flexContainer)}>
+                {this.createColorInfo()}
+              </Grid>
+            )}
           </div>
         </div>
 

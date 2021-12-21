@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import './rangeofficer.css';
-
 // Material UI components
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -25,103 +23,26 @@ import axios from 'axios';
 
 // Login validation
 import socketIOClient from 'socket.io-client';
-import { validateLogin, rangeSupervision } from '../utils/Utils';
+import { validateLogin, updateRangeSupervision } from '../utils/Utils';
 
 import data from '../texts/texts.json';
 
 // Submitting track usage statistics
 import { TrackStatistics } from '../TrackStatistics/TrackStatistics';
 
-/*
-  Styles not in the rangeofficer.js file
-*/
-const colors = {
-  green: '#658f60',
-  red: '#c97b7b',
-  white: '#f2f0eb',
-  orange: '#f2c66d',
-  lightgreen: '#b2d9ad',
-  blue: '#95d5db',
-};
-const rowStyle = {
-  flexDirection: 'row',
-  display: 'flex',
-  justifyContent: 'center',
-};
-const trackRowStyle = {
-  flexDirection: 'row',
-  display: 'flex',
-  justifyContent: 'center',
-  flexWrap: 'wrap',
-};
-const greenButtonStyle = {
-  fontSize: 17,
-  backgroundColor: colors.green,
-  borderRadius: 50,
-  width: 250,
-  height: 100,
-  margin: 8,
-};
-const orangeButtonStyle = {
-  fontSize: 17,
-  backgroundColor: colors.orange,
-  borderRadius: 50,
-  width: 250,
-  height: 100,
-  margin: 8,
-};
-const redButtonStyle = {
-  fontSize: 17,
-  backgroundColor: colors.red,
-  borderRadius: 50,
-  width: 250,
-  height: 100,
-  margin: 8,
-};
-const saveButtonStyle = {
-  backgroundColor: '#5f77a1',
-};
-const cancelButtonStyle = {
-  backgroundColor: '#ede9e1',
-};
-const simpleButton = {
-  padding: '2px 10px',
-  borderRadius: 15,
-  fontSize: '1.2rem',
-};
-const rangeStyle = {
-  textAlign: 'center',
-  margin: 10,
-  marginTop: 0,
-};
-const dialogStyle = {
-  backgroundColor: '#f2f0eb',
-};
-const rangediv = {
-  width: 300,
-};
+import classNames from 'classnames';
+import colors from '../colors.module.scss';
+import css from './rangeofficer.module.scss';
+
+const classes = classNames.bind(css);
 
 // shooting track rows
-const TrackRows = ({
-  tracks,
-  setTracks,
-  scheduleId,
-  tablet,
-  fin,
-  socket,
-}) => (
+const TrackRows = ({ tracks, setTracks, scheduleId, tablet, fin, socket }) =>
   tracks.map((track) => (
-    <div key={track.id} style={rangediv}>
-      <div style={rangeStyle}>
-        <Typography
-          variant="h6"
-          align="center"
-        >
-          {track.name}
-          {' '}
-          —
-          {' '}
-          {track.short_description}
+    <div key={track.id} className={classes(css.rangediv)}>
+      <div className={classes(css.rangeStyle)}>
+        <Typography variant="h6" align="center">
+          {track.name} — {track.short_description}
         </Typography>
 
         <TrackButtons
@@ -135,31 +56,20 @@ const TrackRows = ({
         />
       </div>
     </div>
-  ))
-);
+  ));
 
-const TrackButtons = ({
-  track, scheduleId, tablet, fin, socket,
-}) => {
-  // get this somewhere else
-  const buttonStyle = {
-    backgroundColor: `${track.color}`,
-    borderRadius: 30,
-    width: 230,
-  };
-  let text = tablet.Green[fin];
+const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
+
   const [buttonColor, setButtonColor] = useState(track.color);
-  const [textState, setTextState] = useState(tablet.Green[fin]);
-  const [supervision, setSupervision] = useState(text);
-  useEffect(() => {
-    if (track.trackSupervision === 'absent') {
-      text = tablet.White[fin];
-      setTextState(tablet.White[fin]);
-    } else if (track.trackSupervision === 'closed') {
-      text = tablet.Red[fin];
-      setTextState(tablet.Red[fin]);
-    }
-  }, []);
+
+  const supervisorState = track.scheduled.track_supervisor;
+  let supervisorStateTablet;
+  if (supervisorState === 'present') supervisorStateTablet = 'Green';
+  else if (supervisorState === 'closed') supervisorStateTablet = 'Red';
+  else supervisorStateTablet = 'White';
+
+  const [textState, setTextState] = useState(tablet[supervisorStateTablet][fin]);
+  const [supervision, setSupervision] = useState(supervisorState);
 
   socket.on('trackUpdate', (msg) => {
     if (msg.id === track.id) {
@@ -170,12 +80,12 @@ const TrackButtons = ({
         setSupervision('absent');
       } else if (msg.super === 'closed') {
         track.trackSupervision = 'present'; // eslint-disable-line
-        setButtonColor(colors.red);
+        setButtonColor(colors.redLight);
         setTextState(tablet.Red[fin]);
         setSupervision('present');
       } else if (msg.super === 'absent') {
         track.trackSupervision = 'closed'; // eslint-disable-line
-        setButtonColor(colors.white);
+        setButtonColor(colors.cream5);
         setTextState(tablet.White[fin]);
         setSupervision('closed');
       }
@@ -184,13 +94,13 @@ const TrackButtons = ({
   const HandleClick = () => {
     let newSupervision = 'absent';
     setSupervision('absent');
-    track.color = colors.white; // eslint-disable-line
+    track.color = colors.cream5; // eslint-disable-line
     setTextState(tablet.White[fin]);
 
     if (track.trackSupervision === 'absent') {
       newSupervision = 'closed';
       setSupervision('closed');
-      track.color = colors.red; // eslint-disable-line
+      track.color = colors.redLight; // eslint-disable-line
       setTextState(tablet.Red[fin]);
     } else if (track.trackSupervision === 'closed') {
       newSupervision = 'present';
@@ -212,21 +122,21 @@ const TrackButtons = ({
 
     // if scheduled track supervision exists -> put otherwise -> post
     if (track.scheduled) {
-      axios.put(
-        `/api/track-supervision/${scheduleId}/${track.id}`,
-        params,
-      ).catch((error) => {
-        console.log(error);
-      }).then((res) => {
-        if (res) {
-          track.trackSupervision = newSupervision; // eslint-disable-line
-          socket.emit('trackUpdate', {
-            super: track.trackSupervision,
-            id: track.id,
-          });
-          setButtonColor(track.color);
-        }
-      });
+      axios
+        .put(`/api/track-supervision/${scheduleId}/${track.id}`, params)
+        .catch((error) => {
+          console.log(error);
+        })
+        .then((res) => {
+          if (res) {
+            track.trackSupervision = newSupervision; // eslint-disable-line
+            socket.emit('trackUpdate', {
+              super: track.trackSupervision,
+              id: track.id,
+            });
+            setButtonColor(track.color);
+          }
+        });
     } else {
       params = {
         ...params,
@@ -234,28 +144,29 @@ const TrackButtons = ({
         track_id: track.id,
       };
 
-      axios.post(
-        '/api/track-supervision',
-        params,
-      ).catch((error) => {
-        console.log(error);
-      }).then((res) => {
-        if (res) {
-          track.scheduled = res.data[0]; // eslint-disable-line
-          track.trackSupervision = newSupervision; // eslint-disable-line
-          socket.emit('trackUpdate', {
-            super: track.trackSupervision,
-            id: track.id,
-          });
-          setButtonColor(track.color);
-        }
-      });
+      axios
+        .post('/api/track-supervision', params)
+        .catch((error) => {
+          console.log(error);
+        })
+        .then((res) => {
+          if (res) {
+            track.scheduled = res.data[0]; // eslint-disable-line
+            track.trackSupervision = newSupervision; // eslint-disable-line
+            socket.emit('trackUpdate', {
+              super: track.trackSupervision,
+              id: track.id,
+            });
+            setButtonColor(track.color);
+          }
+        });
     }
   };
   return (
     <div>
       <Button
-        style={{ ...buttonStyle, backgroundColor: buttonColor }}
+        className = {classes(css.buttonStyle)}
+        style={{backgroundColor: buttonColor}}
         size="large"
         variant="contained"
         onClick={HandleClick}
@@ -273,7 +184,15 @@ async function getColors(tracks, setTracks) {
 
   for (let i = 0; i < copy.length; i += 1) {
     const obj = copy[i];
-    if (copy[i].trackSupervision === 'present') { obj.color = colors.green; } else if (copy[i].trackSupervision === 'closed') { obj.color = colors.red; } else if (copy[i].trackSupervision === 'absent') { obj.color = colors.white; } else if (copy[i].trackSupervision === 'en route') { obj.color = colors.orange; }
+    if (copy[i].trackSupervision === 'present') {
+      obj.color = colors.green;
+    } else if (copy[i].trackSupervision === 'closed') {
+      obj.color = colors.redLight;
+    } else if (copy[i].trackSupervision === 'absent') {
+      obj.color = colors.cream5;
+    } else if (copy[i].trackSupervision === 'en route') {
+      obj.color = colors.orange;
+    }
   }
   setTracks(copy);
 }
@@ -311,30 +230,40 @@ async function getData(
         setStatusColor(colors.orange);
       } else if (response.rangeSupervision === 'absent') {
         setStatusText(tablet.SuperWhite[fin]);
-        setStatusColor(colors.white);
+        setStatusColor(colors.cream5);
       } else if (response.rangeSupervision === 'closed') {
         setStatusText(tablet.Red[fin]);
-        setStatusColor(colors.red);
+        setStatusColor(colors.redLight);
       } else if (response.rangeSupervision === 'confirmed') {
         setStatusText(tablet.SuperLightGreen[fin]);
-        setStatusColor(colors.lightgreen);
+        setStatusColor(colors.greenLight);
       } else if (response.rangeSupervision === 'not confirmed') {
         setStatusText(tablet.SuperBlue[fin]);
-        setStatusColor(colors.blue);
+        setStatusColor(colors.turquoise);
       } else {
         setStatusText(tablet.SuperWhite[fin]);
-        setStatusColor(colors.white);
+        setStatusColor(colors.cream5);
       }
       getColors(response.tracks, setTracks);
     });
 }
 
 const TimePick = ({
-  tablet, fin, scheduleId, hours, setHours, dialogOpen, setDialogOpen,
+  tablet,
+  fin,
+  scheduleId,
+  hours,
+  setHours,
+  dialogOpen,
+  setDialogOpen,
 }) => {
   const [errorMessage, setErrorMessage] = useState();
-  const [startDate, setStartDate] = useState(new Date(0, 0, 0, hours.start.split(':')[0], hours.start.split(':')[1], 0));
-  const [endDate, setEndDate] = useState(new Date(0, 0, 0, hours.end.split(':')[0], hours.end.split(':')[1], 0));
+  const [startDate, setStartDate] = useState(
+    new Date(0, 0, 0, hours.start.split(':')[0], hours.start.split(':')[1], 0),
+  );
+  const [endDate, setEndDate] = useState(
+    new Date(0, 0, 0, hours.end.split(':')[0], hours.end.split(':')[1], 0),
+  );
 
   async function handleTimeChange() {
     if (startDate === null || endDate === null) {
@@ -348,8 +277,8 @@ const TimePick = ({
 
     const query = `/api/schedule/${scheduleId}`;
 
-    await axios.put(query,
-      {
+    await axios
+      .put(query, {
         open: start,
         close: end,
       })
@@ -367,16 +296,13 @@ const TimePick = ({
 
   return (
     <div>
-      <Dialog
-        open={dialogOpen}
-        aria-labelledby="title"
-      >
-        <DialogTitle id="title" style={dialogStyle}>{tablet.PickTime[fin]}</DialogTitle>
-        <DialogContent style={dialogStyle}>
-
-          <div style={rowStyle}>
+      <Dialog open={dialogOpen} aria-labelledby="title">
+        <DialogTitle id="title" className={classes(css.dialogStyle)}>
+          {tablet.PickTime[fin]}
+        </DialogTitle>
+        <DialogContent className={classes(css.dialogStyle)}>
+          <div className={classes(css.rowStyle)}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
-
               <KeyboardTimePicker
                 margin="normal"
                 id="starttime"
@@ -396,29 +322,24 @@ const TimePick = ({
                 onChange={(date) => setEndDate(date)}
                 minutesStep={5}
               />
-
             </MuiPickersUtilsProvider>
           </div>
 
           <br />
-          {errorMessage
-            ? (
-              <Typography
-                align="center"
-                style={{ color: '#c23a3a' }}
-              >
-                {errorMessage}
-              </Typography>
-            )
-            : ''}
-
+          {errorMessage ? (
+            <Typography align="center" style={{ color: colors.redLight }}>
+              {errorMessage}
+            </Typography>
+          ) : (
+            ''
+          )}
         </DialogContent>
 
-        <DialogActions style={dialogStyle}>
+        <DialogActions className={classes(css.dialogStyle)}>
           <Button
             variant="contained"
             onClick={() => setDialogOpen(false)}
-            style={cancelButtonStyle}
+            className={classes(css.cancelButtonStyle)}
           >
             {tablet.Cancel[fin]}
           </Button>
@@ -426,12 +347,11 @@ const TimePick = ({
           <Button
             variant="contained"
             onClick={() => handleTimeChange()}
-            style={saveButtonStyle}
+            className={classes(css.saveButtonStyle)}
           >
             {tablet.Save[fin]}
           </Button>
         </DialogActions>
-
       </Dialog>
     </div>
   );
@@ -451,15 +371,6 @@ const Tabletview = () => {
   const { tablet } = data;
   const today = moment().format('DD.MM.YYYY');
 
-  const statusStyle = {
-    color: 'black',
-    backgroundColor: statusColor,
-    borderRadius: 3,
-    width: 400,
-    margin: 4,
-    marginBottom: 0,
-  };
-
   /*
     Basically the functional component version of componentdidmount
   */
@@ -469,35 +380,39 @@ const Tabletview = () => {
   }
 
   useEffect(() => {
-    validateLogin()
-      .then((logInSuccess) => {
-        if (logInSuccess) {
-          getData(tablet,
-            fin,
-            setHours,
-            tracks,
-            setTracks,
-            setStatusText,
-            setStatusColor,
-            setScheduleId,
-            setReservationId,
-            setRangeSupervisionScheduled);
-        } else { // Login failed, redirect to weekview
-          RedirectToWeekview();
-        }
-      });
+    validateLogin().then((logInSuccess) => {
+      if (logInSuccess) {
+        getData(
+          tablet,
+          fin,
+          setHours,
+          tracks,
+          setTracks,
+          setStatusText,
+          setStatusColor,
+          setScheduleId,
+          setReservationId,
+          setRangeSupervisionScheduled,
+        );
+      } else {
+        // Login failed, redirect to weekview
+        RedirectToWeekview();
+      }
+    });
 
-    setSocket(socketIOClient()
-      .on('rangeUpdate', (msg) => {
-        setStatusColor(msg.color);
-        setStatusText(msg.text);
-        if (rangeSupervisionScheduled === false) {
-          setRangeSupervisionScheduled(true);
-        }
-      })
-      .on('refresh', () => {
-        window.location.reload();
-      }));
+    setSocket(
+      socketIOClient()
+        .on('rangeUpdate', (msg) => {
+          setStatusColor(msg.color);
+          setStatusText(msg.text);
+          if (rangeSupervisionScheduled === false) {
+            setRangeSupervisionScheduled(true);
+          }
+        })
+        .on('refresh', () => {
+          window.location.reload();
+        }),
+    );
 
     setTimeout(() => {
       window.location.reload();
@@ -505,11 +420,13 @@ const Tabletview = () => {
   }, []); // eslint-disable-line
 
   async function updateSupervisor(status, color, text) {
-    const res = await rangeSupervision(reservationId,
+    const res = await updateRangeSupervision(
+      reservationId,
       scheduleId,
       status,
       rangeSupervisionScheduled,
-      null);
+      null,
+    );
 
     if (res === true) {
       setStatusColor(color);
@@ -542,55 +459,45 @@ const Tabletview = () => {
   const HandleClosedClick = () => {
     socket.emit('rangeUpdate', {
       status: 'closed',
-      color: colors.red,
+      color: colors.redLight,
       text: tablet.Red[fin],
     });
-    updateSupervisor('closed', colors.red, tablet.Red[fin]);
+    updateSupervisor('closed', colors.redLight, tablet.Red[fin]);
   };
   return (
     <div>
-      <div className="Text">
-        {today}
-      </div>
+      <div className={classes(css.Text)}>{today}</div>
 
-      <Typography
-        variant="h5"
-        align="center"
-      >
-        {tablet.Open[fin]}
-        :
-        &nbsp;
-
+      <Typography variant="h5" align="center">
+        {tablet.Open[fin]}: &nbsp;
         <Button
           size="medium"
           variant="outlined"
-          style={simpleButton}
+          className={classes(css.simpleButton)}
           onClick={() => setDialogOpen(true)}
         >
-          {hours.start}
-          -
-          {hours.end}
+          {hours.start}-{hours.end}
         </Button>
-
       </Typography>
 
-      {dialogOpen
-        ? (
-          <TimePick
-            tablet={tablet}
-            fin={fin}
-            scheduleId={scheduleId}
-            hours={hours}
-            setHours={setHours}
-            dialogOpen={dialogOpen}
-            setDialogOpen={setDialogOpen}
-          />
-        )
-        : ''}
+      {dialogOpen ? (
+        <TimePick
+          tablet={tablet}
+          fin={fin}
+          scheduleId={scheduleId}
+          hours={hours}
+          setHours={setHours}
+          dialogOpen={dialogOpen}
+          setDialogOpen={setDialogOpen}
+        />
+      ) : (
+        ''
+      )}
 
-      <div className="Status" style={rowStyle}>
+      <div className={classes(css.Status, css.rowStyle)}>
         <Button
-          style={statusStyle}
+          className = {classes(css.statusStyle)}
+          style={{color: colors.black, backgroundColor: statusColor}}
           size="large"
           variant="outlined"
           disabled
@@ -600,13 +507,11 @@ const Tabletview = () => {
         </Button>
       </div>
 
-      <div className="Text">
-        {tablet.HelperFirst[fin]}
-      </div>
+      <div className={classes(css.Text)}>{tablet.HelperFirst[fin]}</div>
 
-      <div style={rowStyle}>
+      <div className={classes(css.rowStyle)}>
         <Button
-          style={greenButtonStyle}
+          className={classes(css.greenButtonStyle)}
           size="large"
           variant="contained"
           onClick={HandlePresentClick}
@@ -615,7 +520,7 @@ const Tabletview = () => {
           {tablet.Green[fin]}
         </Button>
         <Button
-          style={orangeButtonStyle}
+          className={classes(css.orangeButtonStyle)}
           size="large"
           variant="contained"
           onClick={HandleEnRouteClick}
@@ -624,7 +529,7 @@ const Tabletview = () => {
           {tablet.Orange[fin]}
         </Button>
         <Button
-          style={redButtonStyle}
+          className={classes(css.redButtonStyle)}
           size="large"
           variant="contained"
           onClick={HandleClosedClick}
@@ -634,11 +539,9 @@ const Tabletview = () => {
         </Button>
       </div>
 
-      <div className="Text">
-        {tablet.HelperSecond[fin]}
-      </div>
+      <div className={classes(css.Text)}>{tablet.HelperSecond[fin]}</div>
 
-      <div style={trackRowStyle}>
+      <div className={classes(css.trackRowStyle)}>
         <TrackRows
           tracks={tracks}
           setTracks={setTracks}

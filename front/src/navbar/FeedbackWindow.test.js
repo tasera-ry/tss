@@ -1,11 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import {
-  waitFor,
-  render,
-  screen,
-  fireEvent,
-} from '@testing-library/react';
+import { waitFor, render, screen, fireEvent } from '@testing-library/react';
 import axios from 'axios';
 import FeedbackWindow from './FeedbackWindow';
 
@@ -16,18 +11,32 @@ describe('testing FeedbackWindow', () => {
   it('should render FeedbackWindow', async () => {
     localStorage.setItem('language', '1');
     const dialogOpen = true;
-    const setDialogOpen = () => {};
 
-    render(<FeedbackWindow user="dummyUser" dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} />);
-    await waitFor(() => expect(screen.getByText('Give feedback')).toBeInTheDocument());
+    render(
+      <FeedbackWindow
+        user="dummyUser"
+        dialogOpen={dialogOpen}
+        onCloseDialog={() => {}}
+      />,
+    );
+    await waitFor(() =>
+      expect(screen.getByText('Give feedback')).toBeInTheDocument(),
+    );
   });
   it('should send feedback', async () => {
     localStorage.setItem('language', '1');
     const dialogOpen = true;
-    const setDialogOpen = () => {};
 
-    render(<FeedbackWindow user="dummyUser" dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} />);
-    await waitFor(() => expect(screen.getByTestId('feedback-field')).toBeInTheDocument());
+    render(
+      <FeedbackWindow
+        user="dummyUser"
+        dialogOpen={dialogOpen}
+        onCloseDialog={() => {}}
+      />,
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId('feedback-field')).toBeInTheDocument(),
+    );
     fireEvent.change(screen.getByTestId('feedback-field'), {
       target: {
         value: 'dummy feedback',

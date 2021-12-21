@@ -1,0 +1,39 @@
+name: Backend Unit Test Run
+
+on:
+  push:
+    branches: [develop, master]
+  pull_request:
+    branches: [develop, master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./back
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: actions/cache@v2
+        id: back-modules-cache
+        if: github.ref != 'refs/head/master'
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-be-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Install deps
+        if: steps.back-modules-cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - run: npm test -- --coverage
+      - name: Coverage
+        uses: codecov/codecov-action@v2
+        if: matrix.node-version == '14.x'
+        with:
+          flags: back-end
+          files: ./back/coverage/lcov.info

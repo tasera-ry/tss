@@ -1,10 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import {
-  waitFor,
-  render,
-  screen,
-} from '@testing-library/react';
+import { waitFor, render, screen } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
 import { act } from 'react-dom/test-utils';
 import SupervisorNotification from './SupervisorNotification';
@@ -22,7 +18,10 @@ describe('testing SupervisorNotification', () => {
         </Router>,
       );
     });
-    await waitFor(() => expect(screen.getByText('You have unconfirmed range officer reservations!'))
-      .toBeInTheDocument());
+    await waitFor(() =>
+      expect(
+        screen.getByText('You have unconfirmed range officer reservations!'),
+      ).toBeInTheDocument(),
+    );
   });
 });

@@ -1,0 +1,13 @@
+@import '../shared.module.scss';
+
+.paper {
+  @extend .layout-column;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.arrowBackIcon {
+  margin-right: 3px;
+  align-self: center;
+  cursor: pointer;
+}

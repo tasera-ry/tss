@@ -73,6 +73,23 @@ const model = {
   },
 
   /**
+   * Get the users matching case insensitive name.
+   *
+   * @param {string} name - Identifying user name
+   * @param {object} fields - Attributes about the user to select { id?, name?, digest?, role? , phone? }
+   * @return {Promise<object[]>} Users that matched the key
+   *
+   * @example
+   * model.read('Mark', ['role'])
+   */
+  readCaseInsensitive: async function readUserCaseInsensitive(name, fields) {
+    return knex('user')
+      .leftJoin('supervisor', 'supervisor.user_id', 'user.id')
+      .where('name', 'ILIKE', name)
+      .select(fields);
+  },
+
+  /**
    * Update a users' info.
    *
    * @param {object} current - The current identifying info of the user.
