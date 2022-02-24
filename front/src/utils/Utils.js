@@ -81,7 +81,7 @@ export const checkColor = (paivat, paiva) => {
 
 export const viewChanger = () => {
   const { viewChanger } = texts; // eslint-disable-line
-  const fin = localStorage.getItem('language');
+  const lang = localStorage.getItem('language');
   const table = [];
 
   try {
@@ -104,17 +104,17 @@ export const viewChanger = () => {
 
     table.push(
       <Link key="month" className="link" to={`/monthview/${time}`}>
-        <div>{viewChanger.Month[fin]}</div>
+        <div>{viewChanger.Month[lang]}</div>
       </Link>,
     );
     table.push(
       <Link key="week" className="link" to={`/weekview/${time}`}>
-        <div>{viewChanger.Week[fin]}</div>
+        <div>{viewChanger.Week[lang]}</div>
       </Link>,
     );
     table.push(
       <Link key="day" className="link" to={`/dayview/${time}`}>
-        <div>{viewChanger.Day[fin]}</div>
+        <div>{viewChanger.Day[lang]}</div>
       </Link>,
     );
     return table;
@@ -131,7 +131,7 @@ export const viewChanger = () => {
         key="1"
         to={`/monthview/${time.format('YYYY-MM-DD')}`}
       >
-        <div>{viewChanger.Month[fin]}</div>
+        <div>{viewChanger.Month[lang]}</div>
       </Link>,
     );
     table.push(
@@ -140,7 +140,7 @@ export const viewChanger = () => {
         key="2"
         to={`/weekview/${time.format('YYYY-MM-DD')}`}
       >
-        <div>{viewChanger.Week[fin]}</div>
+        <div>{viewChanger.Week[lang]}</div>
       </Link>,
     );
     table.push(
@@ -149,7 +149,7 @@ export const viewChanger = () => {
         key="3"
         to={`/dayview/${time.format('YYYY-MM-DD')}`}
       >
-        <div>{viewChanger.Day[fin]}</div>
+        <div>{viewChanger.Day[lang]}</div>
       </Link>,
     );
     return table;
@@ -158,7 +158,7 @@ export const viewChanger = () => {
 
 export const jumpToCurrent = () => {
   const { viewChanger } = texts; // eslint-disable-line
-  const fin = localStorage.getItem('language');
+  const lang = localStorage.getItem('language');
 
   try {
     const fullUrl = window.location.href.split('/');
@@ -172,7 +172,7 @@ export const jumpToCurrent = () => {
           .toISOString()
           .substring(0, 10)}`}
       >
-        <div>{viewChanger.JumpToCurrent[fin]}</div>
+        <div>{viewChanger.JumpToCurrent[lang]}</div>
       </Link>
     );
   } catch (err) {
@@ -184,6 +184,7 @@ export const jumpToCurrent = () => {
 // currently only english and finnish are supported
 export const getLanguage = () => {
   if (localStorage.getItem('language') === '1') return 'en';
+  else if (localStorage.getItem('language') === '2') return 'swe';
   return 'fi';
 };
 
@@ -191,7 +192,7 @@ export const dayToString = (i) => {
   const lang = getLanguage();
   moment.locale(lang);
   // en/fi have different numbers for start date
-  if (lang === 'fi') i -= 1; // eslint-disable-line
+  if (lang === 'fi' || lang === 'swe') i -= 1; // eslint-disable-line
   const dayString = moment().weekday(i).format('dddd');
   // first letter only to uppercase
   return dayString.charAt(0).toUpperCase() + dayString.slice(1);
