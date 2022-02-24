@@ -1,117 +1,126 @@
 {
   "nav": {
-    "SignIn": ["Kirjaudu sisään", "Sign In"],
-    "Menu": ["Valikko", "Menu"],
-    "Schedule": ["Aikataulut", "Schedules"],
-    "UserManagement": ["Käyttäjienhallinta", "User management"],
-    "Supervision": ["Valvonnat", "Supervisions"],
-    "Profile": ["Omat Tiedot", "Profile"],
-    "Tablet": ["Tablettinäkymä", "Tablet view"],
-    "Feedback": ["Palaute", "Feedback"],
-    "trackCRUD": ["Ratojen päivitys", "Edit tracks"],
-    "SignOut": ["Kirjaudu ulos", "Sign Out"],
-    "Statistics": ["Tilastot", "Statistics"],
-    "EmailSettings": ["Sähköpostiasetukset", "Email settings"],
-    "Raffle": ["Valvojien arvonta", "Supervisor raffle"],
-    "Info": ["Lisää infoviesti", "Add info message"]
+    "SignIn": ["Kirjaudu sisään", "Sign In", "Logga in"],
+    "Menu": ["Valikko", "Menu", "Meny"],
+    "Schedule": ["Aikataulut", "Schedules", "Schema"],
+    "UserManagement": ["Käyttäjienhallinta", "User management", "Användarhantering"],
+    "Supervision": ["Valvonnat", "Supervisions", "Övervakninger"],
+    "Profile": ["Omat Tiedot", "Profile", "Profil"],
+    "Tablet": ["Tablettinäkymä", "Tablet view", "Surfplattavy"],
+    "Feedback": ["Palaute", "Feedback", "Respons"],
+    "trackCRUD": ["Ratojen päivitys", "Edit tracks", "Uppdatera banor"],
+    "SignOut": ["Kirjaudu ulos", "Sign Out", "Logga ut"],
+    "Statistics": ["Tilastot", "Statistics", "Statistik"],
+    "EmailSettings": ["Sähköpostiasetukset", "Email settings", "E-postinställningar"],
+    "Raffle": ["Valvojien arvonta", "Supervisor raffle", "Handledare tombola"],
+    "Info": ["Lisää infoviesti", "Add info message", "Tillägga info meddelande"]
   },
   "banner": {
     "Notification": [
       "Sinulla on varmistamattomia päävalvojavuoroja!",
-      "You have unconfirmed range officer reservations!"
+      "You have unconfirmed range officer reservations!",
+	  "Du har obekräftad banofficer turer!"
     ],
-    "Check": ["TARKISTA", "CHECK"]
+    "Check": ["TARKISTA", "CHECK", "KONTROLLERA"]
   },
   "signin": {
-    "SignIn": ["Kirjaudu sisään", "Sign In"],
-    "Name": ["Käyttäjänimi", "Username"],
-    "Password": ["Salasana", "Password"],
-    "LogIn": ["Kirjaudu", "Log in"],
-    "Back": ["Takaisin", "Go back"],
-    "Helper": ["Väärä käyttäjänimi tai salasana", "Wrong username or password"],
-    "ForgotPassword": ["Unohtuiko salasana?", "Forgot password?"]
+    "SignIn": ["Kirjaudu sisään", "Sign In", "Logga in"],
+    "Name": ["Käyttäjänimi", "Username", "Användarnamn"],
+    "Password": ["Salasana", "Password", "Lösenord"],
+    "LogIn": ["Kirjaudu", "Log in", "Logga in"],
+    "Back": ["Takaisin", "Go back", "Tillbaka"],
+    "Helper": ["Väärä käyttäjänimi tai salasana", "Wrong username or password", "Fel användarnamn eller lösenord"],
+    "ForgotPassword": ["Unohtuiko salasana?", "Forgot password?", "Glömt lösenord?"]
   },
   "resetPW": {
     "ResetPassword": [
       "Syötä sähköpostiosoitteesi unohtuneen salasanan palauttamista varten",
-      "Input your e-mail address in order to reset your password"
+      "Input your e-mail address in order to reset your password",
+	  "Ange din e-postadress för att återställa ett glömt lösenord"
     ],
-    "eMail": ["Sähköpostiosoite", "E-mail"],
-    "ResetBtn": ["Palauta", "Reset"],
-    "NullErr": ["Syötä sähköpostiosoite!", "E-mail address is required!"],
+    "eMail": ["Sähköpostiosoite", "E-mail", "E-postadress"],
+    "ResetBtn": ["Palauta", "Reset", "Återställa"],
+    "NullErr": ["Syötä sähköpostiosoite!", "E-mail address is required!", "Ange en e-postadress!"],
     "InvErr": [
       "Annettua sähköpostiosoitetta ei löytynyt!",
-      "Invalid e-mail address!"
+      "Invalid e-mail address!",
+	  "Ogiltig e-postadress!"
     ],
     "Sent": [
       "Salasanan palautusviesti lähetetty onnistuneesti!",
-      "Password reset e-mail succesfully sent!"
+      "Password reset e-mail succesfully sent!",
+	  "E-postmeddelande om lösenordåterställning har skickats!"
     ],
-    "Back": ["Takaisin", "Go back"]
+    "Back": ["Takaisin", "Go back", "Tillbaka"]
   },
   "renewPW": {
-    "RenewPassword": ["Syötä uusi salasana", "Input new password"],
-    "NewPassword": ["Uusi salasana", "New password"],
-    "ConfirmNewPassword": ["Vahvista uusi salasana", "Confirm new password"],
-    "RenewBtn": ["Lähetä", "Submit"],
-    "Loading": ["Ladataan käyttäjätietoja...", "Loading user data..."],
+    "RenewPassword": ["Syötä uusi salasana", "Input new password", "Ange ett nytt lösenord"],
+    "NewPassword": ["Uusi salasana", "New password", "Ett nytt lösenord"],
+    "ConfirmNewPassword": ["Vahvista uusi salasana", "Confirm new password", "Bekräfta nytt lösenord"],
+    "RenewBtn": ["Lähetä", "Submit", "Skicka in"],
+    "Loading": ["Ladataan käyttäjätietoja...", "Loading user data...", "Laddar användarinformation..."],
     "Updated": [
       "Salasana päivitetty onnistuneesti!",
-      "Password updated succesfully!"
+      "Password updated succesfully!",
+	  "Lösenord har uppdaterats!"
     ],
     "UpdatedDesc": [
       "Sinut ohjataan sisäänkirjautumissivulle automaattisesti viiden sekunnin kuluttua.",
-      "You will be redirected to the login page automatically in 5 seconds."
+      "You will be redirected to the login page automatically in 5 seconds.",
+	  "Du kommer automatiskt att omdirigeras till inloggningsidan inom 5 sekunder."
     ],
-    "Error": ["Ongelma tokenin varmennuksessa!", "Error verifying token!"],
+    "Error": ["Ongelma tokenin varmennuksessa!", "Error verifying token!", "Fel vid verifiering av token!"],
     "ErrorDesc": [
       "Linkki ei kelpaa tai se on vanhentunut. Lähetä uusi salasananpalautuslinkki, kiitos!",
-      "The link is incorrect or it has expired. Please send a new reset link!"
+      "The link is incorrect or it has expired. Please send a new reset link!",
+	  "Länken är felaktig eller så har den gått ut. Skicka en ny återställningslänk, tack!"
     ],
-    "ForgotPassword": ["Unohtuiko salasana?", "Forgot password?"],
-    "Mismatch": ["Salasanat eivät täsmää!", "Passwords don't match!"]
+    "ForgotPassword": ["Unohtuiko salasana?", "Forgot password?", "Glömt lösenord?"],
+    "Mismatch": ["Salasanat eivät täsmää!", "Passwords don't match!", "Lösenord matchar inte!"]
   },
   "weekdayShorthand": {
-    "0": ["Ma", "Mon"],
-    "1": ["Ti", "Tue"],
-    "2": ["Ke", "Wed"],
-    "3": ["To", "Thu"],
-    "4": ["Pe", "Fri"],
-    "5": ["La", "Sat"],
-    "6": ["Su", "Sun"]
+    "0": ["Ma", "Mon", "Mån"],
+    "1": ["Ti", "Tue", "Tis"],
+    "2": ["Ke", "Wed", "Ons"],
+    "3": ["To", "Thu", "Tor"],
+    "4": ["Pe", "Fri", "Fre"],
+    "5": ["La", "Sat", "Lör"],
+    "6": ["Su", "Sun", "Sön"]
   },
   "sv": {
-    "Header": ["Vahvistettavat valvonnat", "Confirm supervisions"],
-    "No": ["Sinulla ei ole vahvistettavia vuoroja", "Nothing to confirm"],
-    "Wait": ["Haetaan vuoroja...", "Retrieving information..."],
-    "Confirmed": ["Saavun paikalle", "Confirmed"],
-    "Present": ["Vahvista saapuminen", "Confirm date"],
-    "Absent": ["En pääse paikalle", "Absent"],
-    "EnRoute": ["Matkalla", "En route"],
-    "Cancel": ["Sulje", "Cancel"],
-    "Save": ["Tallenna", "Save"]
+    "Header": ["Vahvistettavat valvonnat", "Confirm supervisions", "Bekräfta övervakninger"],
+    "No": ["Sinulla ei ole vahvistettavia vuoroja", "Nothing to confirm", "Inget att bekräfta"],
+    "Wait": ["Haetaan vuoroja...", "Retrieving information...", "Hämta information..."],
+    "Confirmed": ["Saavun paikalle", "Confirmed", "Bekräftad"],
+    "Present": ["Vahvista saapuminen", "Confirm date", "Bekräfta datum"],
+    "Absent": ["En pääse paikalle", "Absent", "Frånvarande"],
+    "EnRoute": ["Matkalla", "En route", "På väg"],
+    "Cancel": ["Sulje", "Cancel", "Avboka"],
+    "Save": ["Tallenna", "Save", "Spara"]
   },
   "feedback": {
-    "Title": ["Anna palautetta", "Give feedback"],
+    "Title": ["Anna palautetta", "Give feedback", "Ge feedback"],
     "Note": [
       "Kirjoita allaolevaan kenttään radoilta saamastasi palautteesta. Muista kirjoittaa viestiin radan nimi, jos palaute koskee tiettyä rataa. Palaute lähetetään suoraan pääkäyttäjille.",
-      "Write in the textbox below the feedback you received from the range. Remember to identify the track if the feedback is for a certain track. The feedback will be sent to the superusers."
+      "Write in the textbox below the feedback you received from the range. Remember to identify the track if the feedback is for a certain track. The feedback will be sent to the superusers.",
+	  "Skriv i textrutan under den feedback du fått från skjutbanor. Kom ihåg att skriva namn av den skjutbanan i meddelandet om feedbacken är av visst bana. Feedbacken kommer att skickas till superanvändare."
     ],
-    "Send": ["Lähetä", "Send"],
-    "Cancel": ["Peru", "Cancel"]
+    "Send": ["Lähetä", "Send", "Skicka"],
+    "Cancel": ["Peru", "Cancel", "Avboka"]
   },
   "week": {
-    "Week": ["Viikko", "Week"],
-    "Green": ["Päävalvoja paikalla", "Range officer present"],
-    "Lightgreen": ["Päävalvoja varmistettu", "Range officer confirmed"],
+    "Week": ["Viikko", "Week", "Vecka"],
+    "Green": ["Päävalvoja paikalla", "Range officer present", "Banofficer närvarande"],
+    "Lightgreen": ["Päävalvoja varmistettu", "Range officer confirmed", "Banofficer bekräftat"],
     "Blue": [
       "Päävalvoja määritetty, mutta ei varmistettu",
-      "Range officer predefined, not confirmed"
+      "Range officer predefined, not confirmed",
+	  "Banofficer fördefinierad, men inte bekräftat"
     ],
-    "Red": ["Keskus suljettu", "Range closed"],
-    "Orange": ["Päävalvoja matkalla", "Range officer on the way"],
-    "White": ["Päävalvojaa ei asetettu", "Range officer undefined"],
-    "Notice": ["Radalla Lisätietoja", "Track has additional information"]
+    "Red": ["Keskus suljettu", "Range closed", "Skjutbana stängd"],
+    "Orange": ["Päävalvoja matkalla", "Range officer on the way", "Banofficer på väg"],
+    "White": ["Päävalvojaa ei asetettu", "Range officer undefined", "Banofficer inte fördefinierad"],
+    "Notice": ["Radalla lisätietoja", "Track has additional information", "Bana har ytterligare information"]
   },
   "sched": {
     "Day": ["Valitse päivä", "Choose date"],
