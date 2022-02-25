@@ -162,7 +162,7 @@
       "Give your current and new password",
 	  "Ge ditt nuvarande och nya lösenord"
     ],
-    "OldPass": ["Nykyinen salasana", "Current password" "Nuvarande lösenord"],
+    "OldPass": ["Nykyinen salasana", "Current password", "Nuvarande lösenord"],
     "OldEmail": ["Nykyinen sähköpostiosoite", "Current email address", "Nuvarande e-postadress"],
     "NewPass": ["Uusi salasana", "New password", "Nytt lösenord"],
     "NewEmail": ["Lisää sähköposti", "Add Email", "Lägg till e-postadress"],
@@ -298,190 +298,209 @@
   },
   "month": {
     "0": ["Err", "Err", "Err"],
-    "01": ["Tammikuu", "January"],
-    "02": ["Helmikuu", "February"],
-    "03": ["Maaliskuu", "March"],
-    "04": ["Huhtikuu", "April"],
-    "05": ["Toukokuu", "May"],
-    "06": ["Kesäkuu", "June"],
-    "07": ["Heinäkuu", "July"],
-    "08": ["Elokuu", "August"],
-    "09": ["Syyskuu", "September"],
-    "10": ["Lokakuu", "October"],
-    "11": ["Marraskuu", "November"],
-    "12": ["Joulukuu", "December"],
-    "weekNumber": ["Vko", "Wk"],
-    "Notice": ["Radalla Lisätietoja", "Track has additional information"]
+    "01": ["Tammikuu", "January", "Januari"],
+    "02": ["Helmikuu", "February", "Februari"],
+    "03": ["Maaliskuu", "March", "Mars"],
+    "04": ["Huhtikuu", "April", "April"],
+    "05": ["Toukokuu", "May", "Maj"],
+    "06": ["Kesäkuu", "June", "Juni"],
+    "07": ["Heinäkuu", "July", "Juli"],
+    "08": ["Elokuu", "August", "Augusti"],
+    "09": ["Syyskuu", "September", "September"],
+    "10": ["Lokakuu", "October", "Oktober"],
+    "11": ["Marraskuu", "November", "November"],
+    "12": ["Joulukuu", "December", "December"],
+    "weekNumber": ["Vko", "Wk", "V"],
+    "Notice": ["Radalla lisätietoja", "Track has additional information", "Ytterligare information på banan"]
   },
   "viewChanger": {
-    "Month": ["Kuukausi", "Month"],
-    "Week": ["Viikko", "Week"],
-    "Day": ["Päivä", "Day"],
-    "JumpToCurrent": ["Tänään", "Today"]
+    "Month": ["Kuukausi", "Month", "Månad"],
+    "Week": ["Viikko", "Week", "Vecka"],
+    "Day": ["Päivä", "Day", "Dag"],
+    "JumpToCurrent": ["Tänään", "Today", "Idag"]
   },
   "trackStatistics": {
-    "addVisitorsButton": ["Lisää kävijätietoja", "Add visitor statistics"],
-    "addVisitorsTitle": ["Lisää kävijöiden määrä", "Add number of visitors"],
-    "backButton": ["Takaisin", "Back"],
-    "sendButton": ["Lähetä tiedot", "Send statistics"]
+    "addVisitorsButton": ["Lisää kävijätietoja", "Add visitor statistics", "Lägg till besöksstatistik"],
+    "addVisitorsTitle": ["Lisää kävijöiden määrä", "Add number of visitors", "Lägga till antal besökare"],
+    "backButton": ["Takaisin", "Back", "Tillbaka"],
+    "sendButton": ["Lähetä tiedot", "Send statistics", "Skicka statistik"]
   },
   "statistics": {
-    "Day": ["Päivä", "Day"],
-    "Month": ["Kuukausi", "Month"],
-    "Total": ["Kävijöitä yhteensä", "Visitors in total"],
-    "DayChoose": ["Valitse päivä", "Choose date"],
-    "TrackLabel": ["Rata", "Track"],
-    "VisitorLabel": ["Kävijämäärä", "Number of visitors"],
-    "DayLabel": ["Päivä", "Day"],
-    "DayChartHeader": ["Kävijämäärät radoittain", "Visitors per track"],
-    "MonthChart1Header": ["Kävijämäärät päivittäin", "Visitors per day"],
+    "Day": ["Päivä", "Day", "Dag"],
+    "Month": ["Kuukausi", "Month", "Månad"],
+    "Total": ["Kävijöitä yhteensä", "Visitors in total", "Besökare totalt"],
+    "DayChoose": ["Valitse päivä", "Choose date", "Välj datum"],
+    "TrackLabel": ["Rata", "Track", "Banan"],
+    "VisitorLabel": ["Kävijämäärä", "Number of visitors", "Antal besökare"],
+    "DayLabel": ["Päivä", "Day", "Dag"],
+    "DayChartHeader": ["Kävijämäärät radoittain", "Visitors per track", "Besökare per bana"],
+    "MonthChart1Header": ["Kävijämäärät päivittäin", "Visitors per day", "Besökare per dag"],
     "MonthChart2Header": [
       "Ratojen kävijämäärät kuukausittain",
-      "Monthly visitors per track"
+      "Monthly visitors per track",
+	  "Månatliga besökare per bana"
     ],
-    "OpenLogging": ["Kirjaa käyttäjätietoja", "Open user logging"]
+    "OpenLogging": ["Kirjaa käyttäjätietoja", "Open user logging", "Registrerar användarinformation"]
   },
   "visitorLogging": {
     "SuccessfullyUpdated": [
       "Käyttäjätiedot kirjattu",
-      "Track visitors successfully upded"
+      "Track visitors successfully upded",
+	  "Användarinformationen har loggats"
     ],
-    "DayChoose": ["Valitse päivä", "Choose date"],
-    "Close": ["Sulje", "Close"],
-    "Save": ["Tallenna", "Save changes"],
+    "DayChoose": ["Valitse päivä", "Choose date", "Välj datum"],
+    "Close": ["Sulje", "Close", "Stänga"],
+    "Save": ["Tallenna", "Save changes", "Spara"],
     "NoSchedule": [
       "Ei varauksia tälle päivälle. Aseta ratavalvonta Aikataulut-sivulla",
-      "No reservations found. Set reservation in Schedules page"
+      "No reservations found. Set reservation in Schedules page",
+	  "Inga reservationer hittades. Ställ in reservation på Schemasidan"
     ]
   },
   "emailSettings": {
-    "success": ["Onnistuneesti päivitetty", "Successfully updated"],
-    "smtpSettings": ["SMTP-asetukset", "SMTP-settings"],
-    "user": ["Käyttäjä", "User"],
-    "pass": ["Salasana", "Password"],
-    "ssl": ["Käytä SSL", "Use SSL"],
-    "yes": ["Kyllä", "Yes"],
-    "no": ["Ei", "No"],
-    "senderAddress": ["Sähköpostin lähettäjän osoite", "Sender email address"],
-    "sendAutomatically": ["Lähetä sähköpostia", "Send email"],
-    "saveSettings": ["Tallenna asetukset", "Save settings"],
-    "address": ["Osoite", "Address"],
-    "close": ["Sulje", "Close"],
-    "emailMessages": ["Sähköpostiviestit", "Email messages"],
-    "emailContent": ["Viestin sisältö", "Message content"],
-    "collage": ["Kootut varausten muutokset", "Compiled shift changes"],
-    "assigned": ["Vuoro annettu", "Shift assigned"],
-    "update": ["Vuoro päivitetty", "Shift updated"],
+    "success": ["Onnistuneesti päivitetty", "Successfully updated", "Uppdatering lyckades"],
+    "smtpSettings": ["SMTP-asetukset", "SMTP-settings", "SMTP-inställningar"],
+    "user": ["Käyttäjä", "User", "Användare"],
+    "pass": ["Salasana", "Password", "Lösenord"],
+    "ssl": ["Käytä SSL", "Use SSL", "Använd SSL"],
+    "yes": ["Kyllä", "Yes", "Ja"],
+    "no": ["Ei", "No", "Nej"],
+    "senderAddress": ["Sähköpostin lähettäjän osoite", "Sender email address", "Avsändarens e-postadress"],
+    "sendAutomatically": ["Lähetä sähköpostia", "Send email", "Skicka e-post"],
+    "saveSettings": ["Tallenna asetukset", "Save settings", "Spara inställningar"],
+    "address": ["Osoite", "Address", "Adress"],
+    "close": ["Sulje", "Close", "Stänga"],
+    "emailMessages": ["Sähköpostiviestit", "Email messages", "E-postmeddelanden"],
+    "emailContent": ["Viestin sisältö", "Message content", "Meddelandeinnehåll"],
+    "collage": ["Kootut varausten muutokset", "Compiled shift changes", "Sammanställt skiftbyten"],
+    "assigned": ["Vuoro annettu", "Shift assigned", "Skift tilldelad"],
+    "update": ["Vuoro päivitetty", "Shift updated", "Skift uppdaterats"],
     "reminder": [
       "Varmistamattoman vuoron muistutus",
-      "Unconfirmed shift reminder"
+      "Unconfirmed shift reminder",
+	  "Påminnelse för obekräftat skifte"
     ],
-    "decline": ["Vuorosta kieltäydytty", "Shift declined"],
-    "feedback": ["Palautetta vastaanotettu", "Feedback received"],
-    "resetpass": ["Salasanan uusimislinkki", "Password reset link"],
-    "dynamicValues": ["Sallitut dynaamiset arvot", "Allowed dynamic values:"],
-    "userDecline": ["Kieltäytynyt käyttäjä", "The user who declined"],
+    "decline": ["Vuorosta kieltäydytty", "Shift declined", "Skiftet avböjt"],
+    "feedback": ["Palautetta vastaanotettu", "Feedback received", "Feedback mottagen"],
+    "resetpass": ["Salasanan uusimislinkki", "Password reset link", "Lösenord återställningslänk"],
+    "dynamicValues": ["Sallitut dynaamiset arvot", "Allowed dynamic values:", "Tillåtna dynamiska värden:"],
+    "userDecline": ["Kieltäytynyt käyttäjä", "The user who declined", "Användare som tackat nej"],
     "userFeedback": [
       "Palautetta antanut käyttäjä",
-      "The user who gave feedback"
+      "The user who gave feedback",
+	  "Användare som gav feedback"
     ],
     "declineDate": [
       "Kieltäytymisen päivämäärä",
-      "The date of the user declining"
+      "The date of the user declining",
+	  "Datum då användaren tackat nej"
     ],
     "feedbackGiven": [
       "Käyttäjän antama palaute",
-      "The feedback given by the user"
+      "The feedback given by the user",
+	  "Feedback från användaren"
     ],
     "resetpassToken": [
       "Salasanan uusintalinkin tokeni.",
-      "The password reset link token."
+      "The password reset link token.",
+	  "Token för återställningslänk av lösenord"
     ],
     "resetpassGuide": [
       "Linkki voidaan luoda näin: http://tss.tasera.fi/#/renew-password/{token}",
-      "The link can be made like this: http://tss.tasera.fi/#/renew-password/{token}"
+      "The link can be made like this: http://tss.tasera.fi/#/renew-password/{token}",
+	  "Länken kan göras så här: http://tss.tasera.fi/#/renew-password/{token}"
     ],
     "updateCount": [
       "Muutettujen vuorojen määrä",
-      "The number of updated shifts"
+      "The number of updated shifts",
+	  "Antalet uppdaterade skift"
     ],
     "assignedCount": [
       "Annettujen vuorojen määrä",
-      "The number of assigned shifts"
+      "The number of assigned shifts",
+	  "Antalet tilldelade skift"
     ],
     "queueMessages": [
       "Lähetä viestit koosteena tiettyyn aikaan",
-      "Send compiled messages at a certain time"
+      "Send compiled messages at a certain time",
+	  "Skicka sammanställda meddelanden vid en viss tidpunkt"
     ],
-    "pendingTime": ["Viestien lähetysaika", "Time for sending emails"],
-    "sendPending": ["Lähetä viestit", "Send messages"],
+    "pendingTime": ["Viestien lähetysaika", "Time for sending emails", "Dags att skicka e-post"],
+    "sendPending": ["Lähetä viestit", "Send messages", "Skicka meddelanden"],
     "sendPendingTip": [
       "Voit lähettää odottavat viestit heti tällä napilla.",
-      "You can force all pending emails to be sent immediately with the button."
+      "You can force all pending emails to be sent immediately with the button.",
+	  "Du kan tvinga alla väntande e-postmeddelanden att skickas omedelbart med den här knappen."
     ]
   },
   "profileSettings": {
-    "navPassword": ["Vaihda salasana", "Change password"]
+    "navPassword": ["Vaihda salasana", "Change password", "Ändra lösenord"]
   },
   "passwordSettings": {
-    "title": ["Vaihda salasana", "Change password"],
-    "old": ["Vanha salasana", "Old password"],
-    "new": ["Uusi salasana", "New password"],
-    "confirmNew": ["Vahvista uusi salasana", "Confirm new password"],
-    "confirm": ["Vahvista", "Confirm"],
-    "alertFields": ["Täytä kaikki tekstikentät", "Fill all the text fields"],
+    "title": ["Vaihda salasana", "Change password", "Ändra lösenord"],
+    "old": ["Vanha salasana", "Old password", "Gammalt lösenord"],
+    "new": ["Uusi salasana", "New password", "Nytt lösenord"],
+    "confirmNew": ["Vahvista uusi salasana", "Confirm new password", "Bekräfta nytt lösenord"],
+    "confirm": ["Vahvista", "Confirm", "Bekräfta"],
+    "alertFields": ["Täytä kaikki tekstikentät", "Fill all the text fields", "Fyll i alla textfält"],
     "alertWrongPword": [
       "Nykyinen salasana virheellinen",
-      "Old password isn't valid"
+      "Old password isn't valid",
+	  "Det gamla lösenordet är inte giltigt"
     ],
     "alertPwordMatch": [
       "Uusi salasana ja vahvistus eivät täsmää",
-      "Confirmation doesn't match the new password"
+      "Confirmation doesn't match the new password",
+	  "Bekräftelsen matchar inte det nya lösenordet"
     ],
-    "alertSuccess": ["Salasanan vaihto onnistui", "Password change successful"],
-    "alertFail": ["Salasanan vaihto epäonnistui", "Password change failed"]
+    "alertSuccess": ["Salasanan vaihto onnistui", "Password change successful", "Lösenordsändringen lyckades"],
+    "alertFail": ["Salasanan vaihto epäonnistui", "Password change failed", "Lösenordsändringen misslyckades"]
   },
   "raffleDatePicker": {
     "weekdaysLong": {
       "0": ["Sunnuntai", "Maanantai", "Tiistai", "Keskiviikko", "Torstai", "Perjantai", "Lauantai"],
-      "1": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]},
+      "1": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+	  "2": ["Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag"]},
     "weekdaysShort": {
       "0": ["Su", "Ma", "Ti", "Ke", "To", "Pe", "La"],
-      "1": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]},
+      "1": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+	  "2": ["Sö", "Må", "Ti", "On", "To", "Fr", "Lö"]},
     "months": {
       "0": ["Tammikuu", "Helmikuu", "Maaliskuu", "Huhtikuu", "Toukokuu", "Kesäkuu",
         "Heinäkuu", "Elokuu", "Syyskuu", "Lokakuu", "Marraskuu", "Joulukuu"],
       "1": ["January", "February", "March", "April", "May", "June", "July", "August",
-        "September", "October", "November", "December"]}
+        "September", "October", "November", "December"],
+	  "2":["Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "Augusti",
+		"September", "Oktober", "November", "December"]}
   },
   "raffle": {
-    "tableTitle": ["Yhteisöt", "Organizations"],
-    "raffled": ["Arvonnassa", "In raffle"],
-    "user": ["Yhteisö", "Organization"],
-    "members": ["Ampujakortilliset", "Gun license owners"],
-    "supervisors": ["Valvojat", "Supervisors"],
-    "loadError": ["Yhteisöjen lataus epäonnistui", "Could not load organizations"],
-    "valueError": ["Arvot eivät saa olla negatiivisia", "Values cannot be negative"],
-    "updateError": ["Yhteisön päivitys epäonnistui", "Organization update failed"],
-    "updateSuccess": ["Yhteisö päivitetty", "Organization updated"],
-    "raffleUnavailable": ["Lisää yhteisöjä arpoaksesi valvojat", "Add organizations to raffle supervisors"],
-    "dates": ["Valitse arvottavat päivämäärät", "Choose dates for the raffle"],
-    "date": ["Päivämäärä", "Date"],
-    "amount": ["Vuorojen määrä", "Amount of supervisions"],
-    "raffle": ["Arvo valvojat", "Raffle supervisors"],
-    "raffleError": ["Arvonnan suoritus epäonnistui", "The execution of the raffle failed"],
-    "results": ["Arvonnan tulokset", "Raffle results"],
-    "save": ["Tallenna tulokset", "Save results"],
-    "saveSuccess": ["Tulokset tallennettu", "Results saved"],
-    "saveError": ["Tuloksien tallennus epäonnistui", "The saving of the results failed"]
+    "tableTitle": ["Yhteisöt", "Organizations", "Organisationer"],
+    "raffled": ["Arvonnassa", "In raffle", "På tombola"],
+    "user": ["Yhteisö", "Organization", "Organisation"],
+    "members": ["Ampujakortilliset", "Gun license owners", "Vapenlicensägare"],
+    "supervisors": ["Valvojat", "Supervisors", "Handledare"],
+    "loadError": ["Yhteisöjen lataus epäonnistui", "Could not load organizations", "Kunde inte ladda organisationer"],
+    "valueError": ["Arvot eivät saa olla negatiivisia", "Values cannot be negative", "Värden kan inte vara negativa"],
+    "updateError": ["Yhteisön päivitys epäonnistui", "Organization update failed", "Organisation uppdatering misslyckades"],
+    "updateSuccess": ["Yhteisö päivitetty", "Organization updated", "Organisation uppdaterats"],
+    "raffleUnavailable": ["Lisää yhteisöjä arpoaksesi valvojat", "Add organizations to raffle supervisors", "Lägg till organisationer i tombola av handledare"],
+    "dates": ["Valitse arvottavat päivämäärät", "Choose dates for the raffle", "Välj datum för tombola"],
+    "date": ["Päivämäärä", "Date", "Datum"],
+    "amount": ["Vuorojen määrä", "Amount of supervisions", "Antalet av handledare skift"],
+    "raffle": ["Arvo valvojat", "Raffle supervisors", "Värdera handledare"],
+    "raffleError": ["Arvonnan suoritus epäonnistui", "The execution of the raffle failed", "Genomförandet av tombola misslyckades"],
+    "results": ["Arvonnan tulokset", "Raffle results", "Tombola resultat"],
+    "save": ["Tallenna tulokset", "Save results", "Spara resultat"],
+    "saveSuccess": ["Tulokset tallennettu", "Results saved", "Resultat sparats"],
+    "saveError": ["Tuloksien tallennus epäonnistui", "The saving of the results failed", "Misslyckats att spara resultat"]
   },
   "infoPage": {
-    "title": ["Lisää viesti", "Add info"],
-    "message": ["Viesti", "Message"],
-    "startDate": ["Alkamispäivämäärä", "Start date"],
-    "endDate": ["Loppumispäivämäärä", "End date"],
-    "repeatWeekly": ["Toista viikoittain", "Repeat weekly"],
-    "repeatMonthly": ["Toista kuukausittain", "Repeat monthly"],
-    "send": ["Lähetä", "Send"]
+    "title": ["Lisää viesti", "Add info", "Lägg till ett meddelande"],
+    "message": ["Viesti", "Message", "Meddelande"],
+    "startDate": ["Alkamispäivämäärä", "Start date", "Start datum"],
+    "endDate": ["Loppumispäivämäärä", "End date", "Slutdatum"],
+    "repeatWeekly": ["Toista viikoittain", "Repeat weekly", "Upprepa varje vecka"],
+    "repeatMonthly": ["Toista kuukausittain", "Repeat monthly", "Upprepa varje månad"],
+    "send": ["Lähetä", "Send", "Skicka"]
   }
 }
