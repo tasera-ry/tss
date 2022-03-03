@@ -58,10 +58,10 @@ export const getSchedulingFreeform = async (date) => {
   }
 };
 
-export const checkColor = (paivat, paiva) => {
-  const { rangeSupervision: rataStatus } = paivat[paiva];
+export const checkColor = (days, oneDay) => {
+  const { rangeSupervision: trackStatus } = days[oneDay];
 
-  switch (rataStatus) {
+  switch (trackStatus) {
     case 'present':
       return colors.green;
     case 'confirmed':
@@ -181,7 +181,7 @@ export const jumpToCurrent = () => {
   }
 };
 
-// currently only english and finnish are supported
+// english, swedish and finnish are supported
 export const getLanguage = () => {
   if (localStorage.getItem('language') === '1') return 'en';
   else if (localStorage.getItem('language') === '2') return 'swe';
@@ -191,7 +191,7 @@ export const getLanguage = () => {
 export const dayToString = (i) => {
   const lang = getLanguage();
   moment.locale(lang);
-  // en/fi have different numbers for start date
+  // en has different number for start date compared to fi and swe
   if (lang === 'fi' || lang === 'swe') i -= 1; // eslint-disable-line
   const dayString = moment().weekday(i).format('dddd');
   // first letter only to uppercase
