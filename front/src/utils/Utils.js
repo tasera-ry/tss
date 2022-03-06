@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import 'moment/locale/sv';
 import { Link } from 'react-router-dom';
 import api from '../api/api';
 import texts from '../texts/texts.json';
@@ -184,16 +185,18 @@ export const jumpToCurrent = () => {
 // english, swedish and finnish are supported
 export const getLanguage = () => {
   if (localStorage.getItem('language') === '1') return 'en';
-  else if (localStorage.getItem('language') === '2') return 'swe';
+  else if (localStorage.getItem('language') === '2') return 'sv';
   return 'fi';
 };
 
 export const dayToString = (i) => {
   const lang = getLanguage();
+  console.log(lang)
   moment.locale(lang);
   // en has different number for start date compared to fi and swe
-  if (lang === 'fi' || lang === 'swe') i -= 1; // eslint-disable-line
+  if (lang !== 'en') i -= 1; // eslint-disable-line
   const dayString = moment().weekday(i).format('dddd');
+  console.log(dayString)
   // first letter only to uppercase
   return dayString.charAt(0).toUpperCase() + dayString.slice(1);
 };
