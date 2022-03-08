@@ -33,11 +33,12 @@ router.route('/signout')
 router.route('/user')
   .all(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', 'superuser'))
+    middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes))
   .get(
     middlewares.user.readFilter,
     controllers.user.readFilter)
   .post(
+    middlewares.user.hasProperty('role', 'superuser'),
     middlewares.user.create,
     controllers.user.create);
 
