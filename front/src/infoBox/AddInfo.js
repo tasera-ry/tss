@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { validateLogin } from '../utils/Utils';
+import { dateToString, validateLogin } from '../utils/Utils';
 import translations from '../texts/texts.json';
 import api from '../api/api';
 import css from './AddInfo.module.scss';
@@ -19,11 +19,10 @@ const { infoPage } = translations;
     IMPORTANT: Current implementation is MVP, needs to be fixed to fulfil actual customer needs
 */
 
-const InfoText = ({ message }) => {
+const InfoText = ({ message, onDelete }) => {
   const deleteMessage = async () => {
     await api.deleteInfoMessage(message);
-    // TO DO: Currently updating the list requires reload -> change the list to be SPA-like
-    window.location.reload(false);
+    onDelete();
   };
 
   return (
@@ -37,7 +36,9 @@ const InfoText = ({ message }) => {
 // TO DO: Fix calendars.
 const AddInfo = () => {
   const lang = localStorage.getItem('language');
+
   const [info, setInfo] = useState([]);
+  const [infoLength, setInfoLength] = useState(0);
   const [message, setMessage] = useState('');
   const [start, setStart] = useState(new Date()); // Defaults to today
   const [end, setEnd] = useState(new Date(new Date().getTime() + 86400000)); // Defaults to tomorrow
@@ -45,33 +46,25 @@ const AddInfo = () => {
   const [monthly, setMonthly] = useState(false);
   const [isLoading, setisLoading] = useState(true);
 
-  useEffect(() => {
-    const getMessage = async () => {
-      const logInSuccess = await validateLogin();
-      if (!logInSuccess) window.location.href = '/';
+  const getMessage = async () => {
+    const logInSuccess = await validateLogin();
+    if (!logInSuccess) window.location.href = '/';
 
-      try {
-        const res = await api.getInfoMessage();
-        if (res) setInfo(res);
-      } finally {
-        setisLoading(false);
-      }
-    };
+    try {
+      const res = await api.getInfoMessage();
+      if (res) setInfo(res);
+    } finally {
+      setisLoading(false);
+    }
+  };
+
+  useEffect(() => {
     getMessage();
-  }, []);
+  }, [infoLength]);
 
   const handleClick = async (e) => {
     e.preventDefault();
 
-    // TO DO: Actual alert/error for this
-    if (!message || !start || !end) {
-      alert('Puutteelliset tiedot');
-      return;
-    }
-
-    // TO DO: Add check that end date is not before start date
-    // TO DO: Add check that end date is not today, nor in history
-    // TO DO: Add check that start date is not in history
     const infoRequest = {
       message,
       start,
@@ -82,6 +75,7 @@ const AddInfo = () => {
 
     try {
       await api.postInfoMessage(infoRequest);
+      setInfoLength(infoLength + 1);
     } catch (err) {
       console.log(err);
     }
@@ -92,8 +86,6 @@ const AddInfo = () => {
     setWeekly(false);
     setMonthly(false);
 
-    // TO DO: Currently updating the list requires reload -> change the list to be SPA-like
-    window.location.reload(false);
   };
 
   if (isLoading) return null;
@@ -114,18 +106,20 @@ const AddInfo = () => {
       </div>
       <div>
         <TextField
-          type="date"
+          type="date" required
           label={infoPage.startDate[lang]}
           defaultValue={new Date().toISOString().slice(0, 10)}
           onChange={(e) => setStart(e.target.value)}
+          inputProps={{ min: new Date().toISOString().slice(0, 10) }}
         />
       </div>
       <div>
         <TextField
-          type="date"
+          type="date" required
           label={infoPage.endDate[lang]}
           defaultValue={new Date(new Date().getTime() + 86400000).toISOString().slice(0, 10)}
           onChange={(e) => setEnd(e.target.value)}
+          inputProps={{ min: new Date(new Date(start).getTime() + 86400000).toISOString().slice(0,10) }}
         />
       </div>
       <div>
@@ -136,7 +130,7 @@ const AddInfo = () => {
               onChange={() => setWeekly(!weekly)}
               color="default"
             />
-        }
+          }
           label={infoPage.repeatWeekly[lang]}
         />
       </div>
@@ -153,10 +147,18 @@ const AddInfo = () => {
         />
       </div>
       <div>
-        <Button type="button" variant="contained" onClick={handleClick}>{infoPage.send[lang]}</Button>
+        <Button 
+        type="button" 
+        variant="contained" 
+        onClick={handleClick} 
+        disabled={
+          message === '' || new Date(end).setHours(0,0,0,0) <= new Date(start).setHours(0,0,0,0)
+          }>
+            {infoPage.send[lang]}
+            </Button>
       </div>
       <hr />
-      {info && <> {info.map((infos) => <InfoText message={infos} />)} </> }
+      {info && <> {info.map((infos) => <InfoText message={infos} onDelete={()=>setInfoLength(infoLength - 1)} />)} </>}
     </div>
   );
 };
