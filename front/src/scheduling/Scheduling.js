@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import '../App.css';
-import './Scheduling.css';
+import './Scheduling.scss';
 
 // Date management
 import MomentUtils from '@date-io/moment';
