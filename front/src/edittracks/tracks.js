@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef } from 'react';
 
-import './tracks.css';
+import './tracks.scss';
 
 // Material UI components
 import ScopedCssBaseline from '@material-ui/core/ScopedCssBaseline';
