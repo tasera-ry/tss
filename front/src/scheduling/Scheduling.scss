@@ -1,0 +1,123 @@
+.schedulingRoot {
+  padding: 1vmin 5vmin 1vmin 5vmin;
+
+  .MuiButton-contained {
+    margin: 1vmin 1vmin 1vmin 0vmin;
+  }
+}
+
+hr {
+  margin: 10px 0px 10px 0px;
+}
+
+.schedulingRoot {
+  .firstSection {
+    form {
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+    }
+
+    .continue .MuiButtonBase-root {
+      margin: 15px 0 0 10px;
+    }
+  }
+
+  .secondSection {
+    .text {
+      display: inline-block;
+      width: 100px;
+    }
+
+    .topRow {
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      padding: 10px 20px 15px 0;
+    }
+
+    .middleRow {
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      padding: 0px 20px 20px 0;
+
+      .officerSwitch {
+        margin-right: 10px;
+      }
+
+      .roSwitch {
+        padding-top: 15px;
+      }
+
+      .MuiFormControl-root:nth-child(2) {
+        min-width: 150px;
+
+        /*background:red;*/
+      }
+    }
+
+    .bottomRow {
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      padding: 0px 20px 10px 0;
+
+      .text {
+        margin-right: 15px;
+      }
+
+      .MuiFormControl-root {
+        width: 100px;
+        margin-top: -5px;
+      }
+
+      .dash {
+        padding: 0px 20px 0 20px;
+      }
+    }
+  }
+
+  .thirdSection {
+    .leftSide {
+      padding-top: 15px;
+      display: flex;
+      flex-flow: row wrap;
+      align-items: flex-start;
+    }
+
+    .MuiFormControl-root {
+      padding: 0px 30px 30px 0px;
+    }
+  }
+
+  .fourthSection .repeatCount {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+
+    .MuiFormControl-root {
+      padding-left: 10px;
+      width: 50px;
+    }
+
+    padding-bottom: 10px;
+  }
+
+  .arrow-right {
+    padding: 0;
+    margin: 0;
+    margin-left: 5px;
+    width: 0;
+    height: 0;
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left: 20px solid black;
+    display: flex;
+    align-items: center;
+  }
+
+  .hoverHand:hover {
+    cursor: pointer;
+  }
+}
