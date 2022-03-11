@@ -20,7 +20,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
 } from '@material-ui/pickers';
-import './EmailSettings.css';
+import './EmailSettings.scss';
 import { emailSettings, nav } from '../texts/texts.json';
 
 const lang = localStorage.getItem('language');
