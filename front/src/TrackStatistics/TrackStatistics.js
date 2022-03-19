@@ -41,6 +41,10 @@ export const TrackStatistics = ({ track, supervision }) => {
       console.log(err);
     }
   };
+  
+  const displayWarningAlert = () => {
+    alert("Users should not be reduced");
+  }
 
   return (
     <StylesProvider injectFirst>
@@ -48,7 +52,7 @@ export const TrackStatistics = ({ track, supervision }) => {
         <Button
           variant="contained"
           className={classes(css.button)}
-          onClick={() => changeVisitors(visitors - 1)}
+          onClick={() => {changeVisitors(visitors - 1); displayWarningAlert();}}
         >
           -
         </Button>
