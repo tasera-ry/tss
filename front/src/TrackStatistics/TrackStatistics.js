@@ -41,6 +41,21 @@ export const TrackStatistics = ({ track, supervision }) => {
       console.log(err);
     }
   };
+  
+  const displayWarningAlert = () => {
+    const lang = localStorage.getItem('language');
+    let message = "";
+    if(lang === "0"){
+      message = "Käyttäjiä ei tule vähentää. Haluatko todella vähentää käyttäjien määrää?";
+    } else if(lang === "1"){
+      message = "Users should not be reduced, Do you really want to reduce the number of users?";
+    } else if(lang === "2"){
+      message = "Användare ska inte minskas. Vill du verkligen minska antalet användare?"; 
+    }
+    if (window.confirm(message)) {
+      changeVisitors(visitors - 1);
+    }
+  }
 
   return (
     <StylesProvider injectFirst>
@@ -48,7 +63,7 @@ export const TrackStatistics = ({ track, supervision }) => {
         <Button
           variant="contained"
           className={classes(css.button)}
-          onClick={() => changeVisitors(visitors - 1)}
+          onClick={() => displayWarningAlert()}
         >
           -
         </Button>
