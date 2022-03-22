@@ -43,7 +43,9 @@ export const TrackStatistics = ({ track, supervision }) => {
   };
   
   const displayWarningAlert = () => {
-    alert("Users should not be reduced");
+    if (window.confirm("Users should not be reduced, Do you really want to reduce the number of users?")) {
+      changeVisitors(visitors - 1);
+    }
   }
 
   return (
@@ -52,7 +54,7 @@ export const TrackStatistics = ({ track, supervision }) => {
         <Button
           variant="contained"
           className={classes(css.button)}
-          onClick={() => {changeVisitors(visitors - 1); displayWarningAlert();}}
+          onClick={() => displayWarningAlert()}
         >
           -
         </Button>
