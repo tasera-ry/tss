@@ -52,7 +52,7 @@ code {
 }
 
 .acceptButton {
-  background-color: $COLOR_CREAM40 !important;
+  background-color: $COLOR_BLACK_TINT_40 !important;
   &:disabled {
     background-color: lighten($COLOR_GREY, 40%) !important;
   }
@@ -65,7 +65,7 @@ code {
 }
 
 .cancel-button {
-  background-color: $COLOR_CREAM10 !important;
+  background-color: $COLOR_BLACK_TINT_10 !important;
 }
 
 .wideForm {
@@ -73,7 +73,7 @@ code {
   margin-top: 8px;
 
   .text {
-    background-color: $COLOR_CREAM0;
+    background-color: $COLOR_WHITE;
     border-radius: 4px;
   }
   .submitButton,
