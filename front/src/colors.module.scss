@@ -23,6 +23,7 @@ $COLOR_BLACK_TINT_50: #808080;
 $COLOR_BLACK_TINT_40: #999999;
 $COLOR_BLACK_TINT_30: #b3b3b3;
 $COLOR_BLACK_TINT_20: #cccccc;
+$COLOR_BLACK_TINT_10: #e9e9e9;
 
 :export {
   green: $COLOR_GREEN;
@@ -44,5 +45,13 @@ $COLOR_BLACK_TINT_20: #cccccc;
   grey: $COLOR_GREY;
   lightGrey: $COLOR_LIGHT_GREY;
   black: $COLOR_BLACK;
+  blackTint80: $COLOR_BLACK_TINT_80;
+  blackTint70: $COLOR_BLACK_TINT_70;
+  blackTint60: $COLOR_BLACK_TINT_60;
+  blackTint50: $COLOR_BLACK_TINT_50;
+  blackTint40: $COLOR_BLACK_TINT_40;
+  blackTint30: $COLOR_BLACK_TINT_30;
+  blackTint20: $COLOR_BLACK_TINT_20;
+  blackTint10: $COLOR_BLACK_TINT_10;
   white: $COLOR_WHITE;
 }
