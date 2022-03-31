@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  container-job:
+  postgres-job:
     runs-on: ubuntu-latest
     container: node:10.18-jessie
 
@@ -23,6 +23,7 @@ jobs:
           --health-retries 5
 
   build-and-test:
+    needs: postgres-job
     runs-on: ubuntu-latest
 
     steps:
