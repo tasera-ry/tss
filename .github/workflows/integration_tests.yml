@@ -14,8 +14,9 @@ jobs:
 
       - name: Start Application
         run: docker-compose -f docker-compose.dev.yaml up
-  build:
-    test:
+
+  test:
+    steps:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
