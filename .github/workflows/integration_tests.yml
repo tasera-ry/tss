@@ -18,6 +18,9 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    depends_on:
+      build:
+        condition: service_healthy
     steps:
       - name: Cypress run
         uses: cypress-io/github-action@v2
