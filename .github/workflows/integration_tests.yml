@@ -7,16 +7,17 @@ on:
     branches: [master]
 
 jobs:
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+  build:
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Start Application
-      run: docker-compose -f docker-compose.dev.yaml up
-    # Install NPM dependencies, cache them correctly
-    # and run all Cypress tests
-    - name: Cypress run
-      uses: cypress-io/github-action@v2
-      with:
-        build: npm run build
-        start: npm start
+      - name: Start Application
+        run: docker-compose -f docker-compose.dev.yaml up
+  build:
+    test:
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          build: npm run build
+          start: npm start
