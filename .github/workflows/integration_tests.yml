@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -15,13 +15,6 @@ jobs:
 
       - name: Start Application
         run: docker-compose -f docker-compose.dev.yaml up
-
-  test:
-    runs-on: ubuntu-latest
-    depends_on:
-      build:
-        condition: service_healthy
-    steps:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
