@@ -7,14 +7,46 @@ on:
     branches: [master]
 
 jobs:
+  container-job:
+    runs-on: ubuntu-latest
+    container: node:10.18-jessie
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
   build-and-test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Start Application
-        run: docker-compose -f docker-compose.dev.yaml up
+      - name: Install dependencies
+        run: cd back && npm install && cd ../front && npm install && cd ..
+
+      - name: Run Migrations
+        run: |
+          sh env DB_USER=postgres \
+          DB_PASSWORD=postgres \
+          DB=postgres \
+          bash -c 'cd back && npx knex migrate:latest && npx knex seed:run && cd ..'
+
+      - name: Run App
+        run: |
+          sh env DB_USER=postgres \
+          DB_PASSWORD=postgres \
+          DB=postgres \
+          SENDER_EMAIL=noreply@tasera.fi \
+          bash -c 'cd back && npm run dev:withFront'
+
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
