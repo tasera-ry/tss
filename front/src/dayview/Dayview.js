@@ -220,7 +220,7 @@ class Dayview extends Component {
 
     return (
       <div>
-        <InfoBox />
+        <InfoBox tabletMode={true} />
         <div className={classes(css.dayviewContainer)}>
           {/* Date header */}
           <Grid

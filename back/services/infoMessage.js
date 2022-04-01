@@ -11,7 +11,6 @@ module.exports = {
   },
   read: async (obj) => {
     const trx = await model.read(obj);
-    console.log(trx);
     return trx;
   },
   update: async (obj) => {

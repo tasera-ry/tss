@@ -35,20 +35,30 @@ const InfoComp = ({ message }) => {
 };
 
 // TO DO: Take weekly and monthly values into account
-const InfoBox = () => {
+const InfoBox = ({tabletMode = false}) => {
   const [info, setInfo] = useState([]);
 
   useEffect(() => {
-    const getMessage = async () => {
-      const res = await api.getInfoMessage();
+    const getPublicMessages = async () => {
+      const res = await api.getPublicInfoMessages();
       if (res) setInfo(res);
     };
-    getMessage();
+    const getPersonalInfoMessages = async () => {
+      const res = await api.getPersonalInfoMessages();
+      if (res) setInfo(res);
+    }
+
+    if(tabletMode)
+    {
+      getPersonalInfoMessages();
+    } else {
+      getPublicMessages();
+    } 
   }, []);
 
   return (
     <>
-      {info && <> {info.map((infos) => <InfoComp message={infos} />)} </> }
+      {info && <> {info.map((infos) => <InfoComp message={infos}/>)} </> }
     </>
   );
 };

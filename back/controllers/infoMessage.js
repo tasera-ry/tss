@@ -20,7 +20,33 @@ const controller = {
       return res.status(400).json({errors: validationErrors.array()});
     }
     const obj = await service.read(data);
-    res.json(obj);
+    const publicMessages = obj.filter( message =>  message.recipients === 'all' );
+
+    res.json(publicMessages);
+  },
+  readPersonal: async (req,res) => {
+    const validationErrors = validationResult(req);
+    const data = matchedData(req);
+    if(!validationErrors.isEmpty()) {
+      return res.status(400).json({errors: validationErrors.array()});
+    }
+    const obj = await service.read(data);
+
+    const messagesToCurrentUser = obj.filter( message => message.recipients === req.cookies.id );
+
+    res.json(messagesToCurrentUser);
+  },
+  readAll: async (req,res) => {
+    const validationErrors = validationResult(req);
+    const data = matchedData(req);
+    if(!validationErrors.isEmpty()) {
+      return res.status(400).json({errors: validationErrors.array()});
+    }
+    const obj = await service.read(data);
+
+    const messagesSentByAndToCurrentUser = obj.filter( message => message.recipients === req.cookies.id || message.sender === req.cookies.id || message.recipients === 'all' );
+
+    res.json(messagesSentByAndToCurrentUser);
   },
   update: async (req, res) => {
     const validationErrors = validationResult(req);
@@ -36,7 +62,11 @@ const controller = {
     res.json(ret);
   },
   delete: async (req, res) => {
+    //console.log('controllerdeletes', req.body);
     const validationErrors = validationResult(req);
+
+    //console.log('controllerdeletes', validationErrors);
+
     const data = matchedData(req);
     if(!validationErrors.isEmpty()) {
       return res.status(400).json({errors: validationErrors.array()});

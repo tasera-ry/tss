@@ -71,7 +71,7 @@ router.route('/track-supervision')
     controllers.trackSupervision.readFilter)
   .post(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
     middlewares.trackSupervision.create,
     controllers.trackSupervision.create);
 
@@ -81,7 +81,7 @@ router.route('/track-supervision/:scheduled_range_supervision_id/:track_id')
     controllers.trackSupervision.read)
   .put(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
     middlewares.trackSupervision.update,
     controllers.trackSupervision.update)
   .delete(
@@ -97,14 +97,14 @@ router.route('/range-supervision')
     controllers.rangeSupervision.readFilter)
   .post(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
     middlewares.rangeSupervision.create,
     controllers.rangeSupervision.create);
 
 router.route('/range-supervision/feedback')
   .put(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
     validators.rangeSupervision.feedback,
     middlewares.rangeSupervision.feedback,
     controllers.rangeSupervision.feedback);
@@ -120,7 +120,7 @@ router.route('/range-supervision/:scheduled_range_supervision_id')
     controllers.rangeSupervision.read)
   .put(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
     middlewares.rangeSupervision.update,
     controllers.rangeSupervision.update)
   .delete(
@@ -141,7 +141,7 @@ router.route('/reservation/:id')
   .get(controllers.reservation.readStrict)
   .put(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
     controllers.reservation.update)
   .delete(
     middlewares.jwt.read,
@@ -229,65 +229,73 @@ router.route('/send-pending')
     middlewares.user.hasProperty('role', 'superuser'))
   .get(controllers.emailSettings.sendPendingEmails);
 
-router.route('/infomessage')
-  /*
-  Parameters as query parameters
-  start?: Date (YYYY-MM-DD)
-  end?: Date (YYYY-MM-DD)
-  show_weekly?: Boolean
-  show_monthly?: Boolean
-  */
+
+router.route('/infomessage/tablet')
   .get(
     validators.infoMessage.read,
-    controllers.infoMessage.read
+    controllers.infoMessage.readPersonal,
+  );
+router.route('/infomessage/all')
+  .get(
+    validators.infoMessage.read,
+    controllers.infoMessage.readAll
+  );
+
+router.route('/infomessage')
+
+  .get(
+    validators.infoMessage.read,
+    controllers.infoMessage.read,
   )
-  /*
-  Parameters as json body
-  message: String
-  start: Date (YYYY-MM-DD)
-  end: Date (YYYY-MM-DD)
-  show_weekly: Boolean => defaults to false if omitted
-  show_monthly: Boolean => defaults to false if omitted
-  level: "info" | "warn" | "error" => defaults to "info" if omitted
-  sticky: Boolean => defaults to false if omitted
-  */
+
   .post(
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', 'superuser'),
     validators.infoMessage.create,
     controllers.infoMessage.create
   );
-
 router.route('/infomessage/:id')
-/*
-  Parameters as route parameters
-  id: Number
-  Parameters as json body
-  message?: String
-  start?: Date (YYYY-MM-DD)
-  end?: Date (YYYY-MM-DD)
-  show_weekly?: Boolean
-  show_monthly?: Boolean
-  level?: "info" | "warn" | "error"
-  sticky?: Boolean
-*/
   .put(
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', 'superuser'),
     validators.infoMessage.update,
     controllers.infoMessage.update
   )
-  /*
-  Parameters as route parameters
-  id: Number
-  */
+
   .delete(
     middlewares.jwt.read,
     middlewares.user.hasProperty('role', 'superuser'),
     validators.infoMessage.delete,
     controllers.infoMessage.delete
   );
- 
+
+
+
+//Lisää middlewareihin, vai validators ja controllers? tarkistus .gettiin, ja .postiin superuser  
+// router.route('/personal/:recipient_id')
+
+//   .get(
+//     middlewares.user.logger,
+//     validators.infoMessage.read,
+//     controllers.infoMessage.read,
+//   )
+
+//   .post(
+//     // middlewares.jwt.read,
+//     // middlewares.user.hasProperty('role', 'superuser'),
+//     // validators.infoMessage.create,
+//     // controllers.infoMessage.create
+//     middlewares.jwt.read,
+//     middlewares.user.hasProperty('role', 'superuser'),
+//     validators.infoMessage.create,
+//     controllers.infoMessage.create
+//   )
+
+//   .delete(
+//     //.current id = recipient id)
+//   );
+
+
 router.route('/members')
   .all(
     middlewares.jwt.read,

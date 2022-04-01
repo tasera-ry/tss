@@ -30,6 +30,9 @@ import data from '../texts/texts.json';
 // Submitting track usage statistics
 import { TrackStatistics } from '../TrackStatistics/TrackStatistics';
 
+//Receiving possible info messages
+import InfoBox from '../infoBox/InfoBox';
+
 import classNames from 'classnames';
 import colors from '../colors.module.scss';
 import css from './rangeofficer.module.scss';
@@ -466,6 +469,7 @@ const Tabletview = () => {
   };
   return (
     <div>
+      <InfoBox tabletMode={true} />
       <div className={classes(css.Text)}>{today}</div>
 
       <Typography variant="h5" align="center">
