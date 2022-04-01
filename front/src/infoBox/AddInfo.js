@@ -153,7 +153,14 @@ const AddInfo = () => {
         />
       </div>
       <div>
-        <Button type="button" variant="contained" onClick={handleClick}>{infoPage.send[lang]}</Button>
+        <Button 
+        type="button" 
+        className={classes(css.sandButton)} 
+        variant="contained" 
+        onClick={handleClick}
+        >
+        {infoPage.send[lang]}
+        </Button>
       </div>
       <hr />
       {info && <> {info.map((infos) => <InfoText message={infos} />)} </> }
