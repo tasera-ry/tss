@@ -1,7 +1,7 @@
 @import '../shared.module.scss';
 
 .dialogStyle {
-  background-color: $COLOR_CREAM5;
+  background-color: $COLOR_WHITE;
 }
 
 .errorText {
@@ -15,8 +15,20 @@
   justify-content: center;
   flex-wrap: wrap;
 
-  .blueButton {
-    background-color: $COLOR_BLUE;
+  .turquoiseButton {
+    background-color: $COLOR_TURQUOISE;
+    margin: 15px;
+    text-align: center;
+  }
+
+  .sandButton {
+    background-color: $COLOR_SAND;
+    margin: 15px;
+    text-align: center;
+  }
+
+  .lightgreenButton {
+    background-color: $COLOR_GREEN_LIGHT;
     margin: 15px;
     text-align: center;
   }
@@ -31,7 +43,7 @@
   table-layout: auto;
 
   .table {
-    background-color: $COLOR_CREAM5;
+    background-color: $COLOR_BLACK_TINT_20;
   }
 }
 

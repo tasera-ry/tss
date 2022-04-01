@@ -424,7 +424,7 @@ class UserManagementView extends Component {
         data-testid={`pw-${id}`}
         id={id}
         size="small"
-        className={classes(css.acceptButton)}
+        className={classes(css.turquoiseButton)}
         variant="contained"
         onClick={this.onChangePassClick}
       >
@@ -438,6 +438,7 @@ class UserManagementView extends Component {
       <Button
         id={id}
         size="small"
+        className={classes(css.sandButton)}
         variant="contained"
         onClick={this.onaddEmailClick}
       >
@@ -1147,7 +1148,7 @@ class UserManagementView extends Component {
           <Button
             onClick={this.handleOpenOwnPassChangeDialog}
             variant="contained"
-            className={classes(css.blueButton)}
+            className={classes(css.turquoiseButton)}
           >
             {manage.ChangePass[fin]}
           </Button>
@@ -1158,7 +1159,7 @@ class UserManagementView extends Component {
           <Button
             onClick={this.handleOpenOwnEmailChangeDialog}
             variant="contained"
-            className={css.blueButton}
+            className={css.sandButton}
           >
             {manage.ChangeEmail[fin]}
           </Button>
@@ -1169,7 +1170,7 @@ class UserManagementView extends Component {
           <Button
             onClick={this.handleAddUserOpenDialog}
             variant="contained"
-            className={css.blueButton}
+            className={css.lightgreenButton}
           >
             {manage.CreateUser[fin]}
           </Button>
