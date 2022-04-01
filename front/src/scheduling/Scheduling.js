@@ -454,7 +454,7 @@ class Scheduling extends Component {
               rowsMax={3}
               onChange={this.handleNotice}
               value={tracks[key].notice !== null ? tracks[key].notice : ''}
-              style={{ backgroundColor: '#f2f0eb' }}
+              style={{ backgroundColor: '#e9e9e9' }}
             />
           </FormControl>
         </React.Fragment>,
