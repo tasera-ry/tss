@@ -63,10 +63,10 @@ const tableIcons = {
 };
 
 const tableStyle = {
-  backgroundColor: '#f2f0eb',
+  backgroundColor: '#cccccc',
 };
 const headerStyle = {
-  backgroundColor: '#ebe7df',
+  backgroundColor: '#e9e9e9', //colorcream10
 };
 
 /* Get first element of an array */
@@ -111,7 +111,7 @@ const TrackTable = ({
       },
       header: {
         actions: l10n.tableHeaderActions[lang],
-        cellStyle: { backgroundColor: '#f2f0eb' },
+        cellStyle: { backgroundColor: '#cccccc' },
       },
       toolbar: {
         searchPlaceholder: l10n.searchPlaceholder[lang],
