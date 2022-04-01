@@ -33,7 +33,7 @@ const RenewPassword = (props) => {
   const [tokenOK, setTokenOK] = useState(false);
   const [tokenExpires, setTokenExpires] = useState('');
 
-  document.body.style = `background: ${colors.cream10};`;
+  document.body.style = `background: ${colors.blackTint10};`;
 
   useEffect(() => {
     (async () => {
