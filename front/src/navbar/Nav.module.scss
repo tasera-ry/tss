@@ -10,6 +10,8 @@ nav {
 
   .loginLink {
     text-decoration: none;
+    border: 1px solid black;
+    border-radius: 5%;
   }
   .langButtons {
     @extend .layout-row;
@@ -20,7 +22,7 @@ nav {
 }
 
 .paper {
-  background: $COLOR_CREAM5;
+  background: $COLOR_BLACK_TINT_10;
 }
 
 .logo {

@@ -86,7 +86,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
   return (
     <div className={classes(css.pc)}>
       {cookies.hasOwnProperty('username') && (
-        <Button className={classes(css.clickable)} onClick={toggleDrawer(true)}>
+        <Button variant="outlined" className={classes(css.clickable)} onClick={toggleDrawer(true)}>
           {nav.Menu[lang]}
         </Button>
       )}
@@ -147,7 +147,7 @@ const Nav = () => {
 
   const langButtons = [
     { name: 'SWE', num: 2 },
-    { name: 'EN', num: 1 },
+    { name: 'ENG', num: 1 },
     { name: 'FIN', num: 0 },
   ];
 
@@ -182,6 +182,7 @@ const Nav = () => {
                 window.location.reload();
               }}
               key={name}
+              variant="outlined"
             >
               {name}
             </Button>
