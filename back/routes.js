@@ -229,13 +229,22 @@ router.route('/send-pending')
     middlewares.user.hasProperty('role', 'superuser'))
   .get(controllers.emailSettings.sendPendingEmails);
 
-
+//Info message
 router.route('/infomessage/tablet')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
+  )
   .get(
     validators.infoMessage.read,
     controllers.infoMessage.readPersonal,
   );
+  
 router.route('/infomessage/all')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
+  )
   .get(
     validators.infoMessage.read,
     controllers.infoMessage.readAll
@@ -254,6 +263,7 @@ router.route('/infomessage')
     validators.infoMessage.create,
     controllers.infoMessage.create
   );
+
 router.route('/infomessage/:id')
   .put(
     middlewares.jwt.read,
@@ -268,33 +278,6 @@ router.route('/infomessage/:id')
     validators.infoMessage.delete,
     controllers.infoMessage.delete
   );
-
-
-
-//Lisää middlewareihin, vai validators ja controllers? tarkistus .gettiin, ja .postiin superuser  
-// router.route('/personal/:recipient_id')
-
-//   .get(
-//     middlewares.user.logger,
-//     validators.infoMessage.read,
-//     controllers.infoMessage.read,
-//   )
-
-//   .post(
-//     // middlewares.jwt.read,
-//     // middlewares.user.hasProperty('role', 'superuser'),
-//     // validators.infoMessage.create,
-//     // controllers.infoMessage.create
-//     middlewares.jwt.read,
-//     middlewares.user.hasProperty('role', 'superuser'),
-//     validators.infoMessage.create,
-//     controllers.infoMessage.create
-//   )
-
-//   .delete(
-//     //.current id = recipient id)
-//   );
-
 
 router.route('/members')
   .all(
@@ -342,5 +325,6 @@ router.route('/raffle')
     middlewares.raffle.create,
     controllers.raffle.create
   );
+
 
 module.exports = router;

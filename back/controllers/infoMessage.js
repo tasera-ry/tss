@@ -62,11 +62,7 @@ const controller = {
     res.json(ret);
   },
   delete: async (req, res) => {
-    //console.log('controllerdeletes', req.body);
     const validationErrors = validationResult(req);
-
-    //console.log('controllerdeletes', validationErrors);
-
     const data = matchedData(req);
     if(!validationErrors.isEmpty()) {
       return res.status(400).json({errors: validationErrors.array()});
