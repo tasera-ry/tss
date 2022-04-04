@@ -73,7 +73,7 @@ class Weekview extends Component {
 
     e.preventDefault();
 
-    let uusPaiva;
+    let newDay;
 
     try {
       const fullUrl = window.location.href.split('/');
@@ -89,38 +89,38 @@ class Weekview extends Component {
         'YYYYMMDD',
       );
 
-      uusPaiva = moment(paramDateCorrect, 'YYYYMMDD');
+      newDay = moment(paramDateCorrect, 'YYYYMMDD');
     } catch {
-      uusPaiva = moment(this.state.dayNro, 'YYYYMMDD');
+      newDay = moment(this.state.dayNro, 'YYYYMMDD');
     }
 
-    uusPaiva.subtract(1, 'week');
+    newDay.subtract(1, 'week');
 
-    const uusViikko = uusPaiva.week();
+    const newWeek = newDay.week();
 
     try {
-      const oikeePaiva = new Date(
+      const correctDay = new Date(
         this.state.date.setDate(this.state.date.getDate() - 7),
       );
       this.props.history.replace(
-        `/weekview/${moment(uusPaiva, 'YYYYMMDD')
+        `/weekview/${moment(newDay, 'YYYYMMDD')
           .add(1, 'day')
           .toISOString()
           .substring(0, 10)}`,
       );
 
-      const viikkoNumero = moment(this.state.dayNro, 'YYYYMMDD').week();
+      const weekNumber = moment(this.state.dayNro, 'YYYYMMDD').week();
 
       // Week logic cuz you can't go negative
-      const uusVuosi =
-        viikkoNumero === 1 ? this.state.yearNro - 1 : this.state.yearNro;
+      const newYear =
+        weekNumber === 1 ? this.state.yearNro - 1 : this.state.yearNro;
 
       this.setState(
         {
-          date: oikeePaiva,
-          dayNro: uusPaiva,
-          weekNro: uusViikko,
-          yearNro: uusVuosi,
+          date: correctDay,
+          dayNro: newDay,
+          weekNro: newWeek,
+          yearNro: newYear,
         },
         function () {
           this.update();
@@ -139,7 +139,7 @@ class Weekview extends Component {
 
     e.preventDefault();
 
-    let uusPaiva;
+    let newDay;
 
     try {
       const fullUrl = window.location.href.split('/');
@@ -156,35 +156,35 @@ class Weekview extends Component {
         'YYYYMMDD',
       );
 
-      uusPaiva = moment(paramDateCorrect, 'YYYYMMDD');
+      newDay = moment(paramDateCorrect, 'YYYYMMDD');
     } catch {
-      uusPaiva = moment(this.state.dayNro, 'YYYYMMDD');
+      newDay = moment(this.state.dayNro, 'YYYYMMDD');
     }
 
-    uusPaiva.add(1, 'week');
-    const uusViikko = uusPaiva.week();
+    newDay.add(1, 'week');
+    const newWeek = newDay.week();
 
     try {
-      const oikeePaiva = new Date(
+      const correctDay = new Date(
         this.state.date.setDate(this.state.date.getDate() + 7),
       );
       this.props.history.replace(
-        `/weekview/${moment(uusPaiva, 'YYYYMMDD')
+        `/weekview/${moment(newDay, 'YYYYMMDD')
           .add(1, 'day')
           .toISOString()
           .substring(0, 10)}`,
       );
 
       // Week logic cuz there's no 53 weeks
-      const uusVuosi =
-        uusViikko === 1 ? this.state.yearNro + 1 : this.state.yearNro;
+      const newYear =
+        newWeek === 1 ? this.state.yearNro + 1 : this.state.yearNro;
 
       this.setState(
         {
-          date: oikeePaiva,
-          dayNro: uusPaiva,
-          weekNro: uusViikko,
-          yearNro: uusVuosi,
+          date: correctDay,
+          dayNro: newDay,
+          weekNro: newWeek,
+          yearNro: newYear,
         },
         function () {
           this.update();
@@ -245,7 +245,7 @@ class Weekview extends Component {
   // Creates 7 columns for days
   createWeekDay = () => {
     const table = [];
-    let oikeePaiva;
+    let correctDay;
     let linkki;
     let dayNumber;
 
@@ -254,8 +254,8 @@ class Weekview extends Component {
     }
 
     for (let j = 0; j < 7; j += 1) {
-      oikeePaiva = this.state.paivat[j].date;
-      linkki = `/dayview/${oikeePaiva}`;
+      correctDay = this.state.paivat[j].date;
+      linkki = `/dayview/${correctDay}`;
 
       dayNumber = j.toString();
 
@@ -264,6 +264,8 @@ class Weekview extends Component {
           <p id="weekDay">
             {lang === 'en'
               ? weekdayShorthand[dayNumber][1]
+              : lang === 'swe' 
+              ? weekdayShorthand[dayNumber][2]
               : weekdayShorthand[dayNumber][0]}
           </p>
         </Link>,
@@ -289,7 +291,7 @@ class Weekview extends Component {
     for (let j = 0; j < 7; j += 1) {
       oikeePaiva = this.state.paivat[j].date;
       fixed = oikeePaiva.split('-');
-      newDate = `${fixed[2]}.${fixed[1]}`;
+      newDate = `${fixed[2]}.${fixed[1]}.`;
 
       linkki = `/dayview/${oikeePaiva}`;
       table.push(

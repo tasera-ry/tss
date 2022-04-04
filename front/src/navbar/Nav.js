@@ -146,6 +146,7 @@ const Nav = () => {
   const { nav } = translations;
 
   const langButtons = [
+    { name: 'SWE', num: 2 },
     { name: 'EN', num: 1 },
     { name: 'FIN', num: 0 },
   ];
