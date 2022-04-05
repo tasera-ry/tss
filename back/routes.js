@@ -229,7 +229,13 @@ router.route('/send-pending')
     middlewares.user.hasProperty('role', 'superuser'))
   .get(controllers.emailSettings.sendPendingEmails);
 
-//Info message
+//Infopage
+router.route('/info')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser')
+  );
+//Infomessages
 router.route('/infomessage/tablet')
   .all(
     middlewares.jwt.read,
@@ -239,7 +245,7 @@ router.route('/infomessage/tablet')
     validators.infoMessage.read,
     controllers.infoMessage.readPersonal,
   );
-  
+
 router.route('/infomessage/all')
   .all(
     middlewares.jwt.read,

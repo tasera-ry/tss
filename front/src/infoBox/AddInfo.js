@@ -6,7 +6,7 @@ import DeleteOutlined from '@material-ui/icons/DeleteOutlined';
 import {
   Button,
   TextField,
-  FormControlLabel,
+  FormControlLabel, 
   Checkbox,
   Select,
   MenuItem,
@@ -22,8 +22,7 @@ const classes = classNames.bind(css);
 const { infoPage } = translations;
 
 
-/*  IMPORTANT: ONLY SUPER USER SHOULD BE ALLOWED ON THIS PAGE
-      - Add user type checks before allowing access
+/* 
     IMPORTANT: Current implementation is MVP, needs to be fixed to fulfil actual customer needs
 */
 
@@ -48,17 +47,16 @@ const AddInfo = () => {
   const [numOfInfoMessages, setNumOfInfoMessages] = useState(0);
   const [userOption, setUserOptions] = useState([]);
   const [isLoading, setisLoading] = useState(true);
-  const [cookies] = useCookies(['id']);
-
+  const [cookies] = useCookies(['username']);
   const [infoRequest, setInfoRequest] = useState({
     message: '',
     start: new Date(), //Defaults to today
     end: new Date(new Date().getTime() + 86400000), //Defaults to tomorrow
     recipients: 'all',
-    sender: cookies.id.toString(),
+    sender: cookies.username,
     show_weekly: false,
     show_monthly: false,
-});
+  });
 
   const getMessage = async () => {
     const logInSuccess = await validateLogin();
@@ -104,10 +102,10 @@ const AddInfo = () => {
       start: new Date(), //Defaults to today
       end: new Date(new Date().getTime() + 86400000), //Defaults to tomorrow
       recipients: 'all',
-      sender: cookies.id.toString(),
+      sender: cookies.username,
       show_weekly: false,
       show_monthly: false,
-  });
+    });
 
   };
 
@@ -121,7 +119,7 @@ const AddInfo = () => {
           id="outlined-multiline-static"
           label={infoPage.message[lang]}
           multiline
-          onChange={(e) => setInfoRequest({...infoRequest, message: e.target.value})}
+          onChange={(e) => setInfoRequest({ ...infoRequest, message: e.target.value })}
           value={infoRequest.message}
           variant="standard"
           style={{ marginBottom: '10px', width: '300px' }}
@@ -132,7 +130,7 @@ const AddInfo = () => {
           type="date" required
           label={infoPage.startDate[lang]}
           defaultValue={new Date().toISOString().slice(0, 10)}
-          onChange={(e) => setInfoRequest({...infoRequest, start: e.target.value})}
+          onChange={(e) => setInfoRequest({ ...infoRequest, start: e.target.value })}
           inputProps={{ min: new Date().toISOString().slice(0, 10) }}
         />
       </div>
@@ -141,45 +139,53 @@ const AddInfo = () => {
           type="date" required
           label={infoPage.endDate[lang]}
           defaultValue={new Date(new Date().getTime() + 86400000).toISOString().slice(0, 10)}
-          onChange={(e) => setInfoRequest({...infoRequest, end: e.target.value})}
+          onChange={(e) => setInfoRequest({ ...infoRequest, end: e.target.value })}
           inputProps={{ min: new Date(new Date(infoRequest.start).getTime() + 86400000).toISOString().slice(0, 10) }}
         />
       </div>
-      <div>
+
+
+    {/* TO-DO: Implement functionality */}
+
+      {/* <div>
         <FormControlLabel
           control={
             <Checkbox
               checked={infoRequest.show_weekly}
-              onChange={(e) => setInfoRequest({...infoRequest, show_weekly: e.target.value})}
+              onChange={(e) => setInfoRequest({ ...infoRequest, show_weekly: e.target.value })}       
               color="default"
+              disabled
             />
           }
           label={infoPage.repeatWeekly[lang]}
         />
-      </div>
-      <div>
+      </div> */}
+      {/* <div>
         <FormControlLabel
           control={
             <Checkbox
               checked={infoRequest.show_monthly}
-              onChange={(e) => setInfoRequest({...infoRequest, show_monthly: e.target.value})}
+              onChange={(e) => setInfoRequest({ ...infoRequest, show_monthly: e.target.value })}
               color="default"
+              disabled
             />
           }
           label={infoPage.repeatMonthly[lang]}
         />
-      </div>
+      </div> */}
+
+
       <div>
-        <Select 
-        value={infoRequest.recipients}
-        onChange={(e) => setInfoRequest({...infoRequest, recipients: e.target.value.toString()})}
-        MenuProps={{ style: { maxHeight: 400 } }}
-         
-         >
-          <MenuItem value={'all'}>{'Send to all users'}</MenuItem>
+        <Select
+          value={infoRequest.recipients}
+          onChange={(e) => setInfoRequest({ ...infoRequest, recipients: e.target.value.toString() })}
+          MenuProps={{ style: { maxHeight: 400 } }}
+
+        >
+          <MenuItem value={'all'}>{infoPage.sendPublicMessage[lang]}</MenuItem>
           {userOption.map((user) => <MenuItem
             key={user.id}
-            value={user.id}
+            value={user.name}
           >
             {user.name}
           </MenuItem>)}

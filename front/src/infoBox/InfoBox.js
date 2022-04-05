@@ -58,7 +58,7 @@ const InfoBox = ({tabletMode = false}) => {
 
   return (
     <>
-      {info && <> {info.map((infos) => <InfoComp message={infos}/>)} </> }
+      {info && <> {info.map((infos) => <InfoComp key={infos.id} message={infos}/>)} </> }
     </>
   );
 };
