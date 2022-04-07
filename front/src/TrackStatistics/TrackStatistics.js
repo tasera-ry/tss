@@ -7,13 +7,16 @@ import { StylesProvider } from '@material-ui/core/styles';
 import css from './TrackStatistics.module.scss';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
+import translations from '../texts/texts.json';
+const { trackStatisticsModal } = translations;
+
 
 const classes = classNames.bind(css);
 
 export const TrackStatistics = ({ track, supervision }) => {
   const { scheduled, id } = track;
   const { scheduled_range_supervision_id } = scheduled;
-
+  const lang = localStorage.getItem('language');
   const [visitors, setVisitors] = useState(
     scheduled && scheduled.visitors ? scheduled.visitors : 0,
   );
@@ -43,35 +46,6 @@ export const TrackStatistics = ({ track, supervision }) => {
       console.log(err);
     }
   };
-  
-  const displayWarningAlert = () => {
-    const lang = localStorage.getItem('language');
-    let message = "";
-    let messageTitle = "";
-    let messageYes = "";
-    let messageNo = "";
-    if(lang === "0"){
-      message = "Käyttäjiä ei tule vähentää. Haluatko todella vähentää käyttäjien määrää?";
-      messageTitle = "Varoitus!"
-      messageYes = "Joo";
-      messageNo = "Ei";
-    } else if(lang === "1"){
-      message = "Users should not be reduced, Do you really want to reduce the number of users?";
-      messageTitle = "Warning!";
-      messageYes = "Yes";
-      messageNo = "No";
-    } else if(lang === "2"){
-      message = "Användare ska inte minskas. Vill du verkligen minska antalet användare?"; 
-      messageTitle = "Varning!";
-      messageYes = "Ja";
-      messageNo = "Nej";
-    }
-    setMessage(message);
-    setMessageTitle(messageTitle);
-    setMessageYes(messageYes);
-    setMessageNo(messageNo);
-    handleOpen();
-  }
 
   function rand() {
     return Math.round(Math.random() * 20) - 10;
@@ -102,10 +76,6 @@ export const TrackStatistics = ({ track, supervision }) => {
   const classesStyles = useStyles();
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState("Käyttäjiä ei tule vähentää. Haluatko todella vähentää käyttäjien määrää?");
-  const [messageTitle, setMessageTitle] = useState("Varoitus");
-  const [messageYes, setMessageYes] = useState("Joo");
-  const [messageNo, setMessageNo] = useState("Ei");
 
   const handleOpen = () => {
     setOpen(true);
@@ -117,9 +87,9 @@ export const TrackStatistics = ({ track, supervision }) => {
 
   const body = (
     <div style={modalStyle} className={classesStyles.paper}>
-      <h2 id="simple-modal-title">{messageTitle}</h2>
+      <h2 id="simple-modal-title">{trackStatisticsModal.messageTitle[lang]}</h2>
       <p id="simple-modal-description">
-        {message}
+        {trackStatisticsModal.message[lang]}
       </p>
       <div className={classes(css.trackContainer)}>
       <Button
@@ -127,13 +97,13 @@ export const TrackStatistics = ({ track, supervision }) => {
         style={{ color: 'red' }}
         onClick={() => {changeVisitors(visitors - 1); handleClose();}}
         >
-          {messageYes}
+        {trackStatisticsModal.messageYes[lang]}
       </Button>
       <Button
         variant="contained"
         style={{ color: 'green' }}
         onClick={() => handleClose()}>
-          {messageNo}
+        {trackStatisticsModal.messageNo[lang]}
       </Button>
       </div>
     </div>
@@ -145,7 +115,7 @@ export const TrackStatistics = ({ track, supervision }) => {
         <Button
           variant="contained"
           className={classes(css.button)}
-          onClick={() => displayWarningAlert()}
+          onClick={() => handleOpen()}
         >
           -
         </Button>
