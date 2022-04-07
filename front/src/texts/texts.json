@@ -459,7 +459,7 @@
     "endDate": ["Loppumispäivämäärä", "End date"],
     "repeatWeekly": ["Toista viikoittain", "Repeat weekly"],
     "repeatMonthly": ["Toista kuukausittain", "Repeat monthly"],
-    "sendPublicMessage": ["Lähetä julkinen viesti", "Send public message"],
+    "sendPublicMessage": ["Lähetä julkinen viesti", "Send public message", "Skicka offentligt meddelande"],
     "send": ["Lähetä", "Send"]
   }
 }
