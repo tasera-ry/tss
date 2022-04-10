@@ -36,25 +36,23 @@ jobs:
       working-directory: ./back
 
     - name: Run Migrations
-      run: |
-        sh env DB_USER=postgres \
-        DB_PASSWORD=postgres \
-        DB=postgres \
-        bash -c 'cd back && npx knex migrate:latest && npx knex seed:run && cd ..'
+      run: npx knex migrate:latest && npx knex seed:run
       working-directory: ./back
       env:
+        DB_USER: postgres
+        DB_PASSWORD: postgres
+        DB: postgres
         POSTGRES_HOST: postgres
         POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
 
     - name: Run App
-      run: |
-        sh env DB_USER=postgres \
-        DB_PASSWORD=postgres \
-        DB=postgres \
-        SENDER_EMAIL=noreply@tasera.fi \
-        bash -c 'cd back && npm run dev:withFront'
+      run: npm run dev:withFront
       working-directory: ./back
       env:
+        DB_USER: postgres
+        DB_PASSWORD: postgres
+        DB: postgres
+        SENDER_EMAIL: noreply@tasera.fi
         POSTGRES_HOST: postgres
         POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
 
