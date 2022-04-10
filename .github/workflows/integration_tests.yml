@@ -30,7 +30,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - run: npm ci
+      working-directory: ./back
     - run: node client.js
+      working-directory: ./back
       env:
         POSTGRES_HOST: postgres
         POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
