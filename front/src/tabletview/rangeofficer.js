@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
+  KeyboardDatePicker,
   KeyboardTimePicker,
 } from '@material-ui/pickers';
 import Dialog from '@material-ui/core/Dialog';
@@ -97,12 +98,12 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
     track.color = colors.cream5; // eslint-disable-line
     setTextState(tablet.White[fin]);
 
-    if (track.trackSupervision === 'absent') {
+    if (track.trackSupervision === 'present') {
       newSupervision = 'closed';
       setSupervision('closed');
       track.color = colors.redLight; // eslint-disable-line
       setTextState(tablet.Red[fin]);
-    } else if (track.trackSupervision === 'closed') {
+    } else if (track.trackSupervision === 'absent') {
       newSupervision = 'present';
       setSupervision('present');
       track.color = colors.green; // eslint-disable-line
@@ -180,24 +181,29 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
 };
 
 async function getColors(tracks, setTracks) {
-  const copy = [...tracks];
+  if (tracks && tracks.length > 0) {
+    const copy = [...tracks];
 
-  for (let i = 0; i < copy.length; i += 1) {
-    const obj = copy[i];
-    if (copy[i].trackSupervision === 'present') {
-      obj.color = colors.green;
-    } else if (copy[i].trackSupervision === 'closed') {
-      obj.color = colors.redLight;
-    } else if (copy[i].trackSupervision === 'absent') {
-      obj.color = colors.cream5;
-    } else if (copy[i].trackSupervision === 'en route') {
-      obj.color = colors.orange;
+    for (let i = 0; i < copy.length; i += 1) {
+      const obj = copy[i];
+      if (copy[i].trackSupervision === 'present') {
+        obj.color = colors.green;
+      } else if (copy[i].trackSupervision === 'closed') {
+        obj.color = colors.redLight;
+      } else if (copy[i].trackSupervision === 'absent') {
+        obj.color = colors.cream5;
+      } else if (copy[i].trackSupervision === 'en route') {
+        obj.color = colors.orange;
+      }
     }
+    setTracks(copy);
+  } else {
+    setTracks([]);
   }
-  setTracks(copy);
 }
 
 async function getData(
+  date,
   tablet,
   fin,
   setHours,
@@ -209,8 +215,6 @@ async function getData(
   setReservationId,
   setRangeSupervisionScheduled,
 ) {
-  const date = moment(Date.now()).format('YYYY-MM-DD');
-
   await fetch(`/api/datesupreme/${date}`)
     .then((res) => res.json())
     .then((response) => {
@@ -360,6 +364,7 @@ const TimePick = ({
 const Tabletview = () => {
   const [statusColor, setStatusColor] = useState();
   const [statusText, setStatusText] = useState();
+  const [date, setDate] = useState(moment(Date.now()).format('YYYY-MM-DD'));
   const [hours, setHours] = useState({});
   const [tracks, setTracks] = useState([]);
   const [scheduleId, setScheduleId] = useState();
@@ -369,7 +374,7 @@ const Tabletview = () => {
   const [socket, setSocket] = useState();
   const fin = localStorage.getItem('language');
   const { tablet } = data;
-  const today = moment().format('DD.MM.YYYY');
+  //const today = moment().format('DD.MM.YYYY');
 
   /*
     Basically the functional component version of componentdidmount
@@ -383,6 +388,7 @@ const Tabletview = () => {
     validateLogin().then((logInSuccess) => {
       if (logInSuccess) {
         getData(
+          date,
           tablet,
           fin,
           setHours,
@@ -417,7 +423,7 @@ const Tabletview = () => {
     setTimeout(() => {
       window.location.reload();
     }, 3 * 60 * 60 * 1000); // 3 hours
-  }, []); // eslint-disable-line
+  }, [date]); // eslint-disable-line
 
   async function updateSupervisor(status, color, text) {
     const res = await updateRangeSupervision(
@@ -466,7 +472,23 @@ const Tabletview = () => {
   };
   return (
     <div>
-      <div className={classes(css.Text)}>{today}</div>
+      <div className={classes(css.Text)}>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker
+            onChange={(newDate) =>
+              setDate(moment(newDate).format('YYYY-MM-DD'))
+            }
+            value={date}
+            margin="normal"
+            id="schedule-date"
+            label="Date"
+            format="dd.MM.yyyy"
+            variant="inline"
+            inputVariant="outlined"
+            disableFuture
+          />
+        </MuiPickersUtilsProvider>
+      </div>
 
       <Typography variant="h5" align="center">
         {tablet.Open[fin]}: &nbsp;

@@ -205,14 +205,14 @@ exports.getScheduleDate = async (req, res) => {
     };
 
     // shouldn't we return earlier? saves processing time & power
-    if(tracks && reservation && schedule){
+    if(tracks && reservation.length > 0 && schedule.length > 0){
       res.status(200).json(result);
     }
     else{
-      res.status(400).json();
+      res.status(400).json({});
     }
   }
   else{
-    res.status(400).json();
+    res.status(400).json({});
   }
 };
