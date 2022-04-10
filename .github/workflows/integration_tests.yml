@@ -34,7 +34,7 @@ jobs:
       working-directory: ./postgres
       env:
         POSTGRES_HOST: postgres
-        POSTGRES_PORT: ${{ postgres-job.services.postgres.ports[5432] }}
+        POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
 
   build-and-test:
     needs: postgres-job
