@@ -28,14 +28,37 @@ jobs:
           --health-retries 5
 
     steps:
-    - uses: actions/checkout@v1
-    - run: npm ci
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: npm install && cd ../front && npm install && cd ..
       working-directory: ./back
-    - run: node server.js
+
+    - name: Run Migrations
+      run: |
+        sh env DB_USER=postgres \
+        DB_PASSWORD=postgres \
+        DB=postgres \
+        bash -c 'cd back && npx knex migrate:latest && npx knex seed:run && cd ..'
       working-directory: ./back
       env:
         POSTGRES_HOST: postgres
         POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
+
+    - name: Run App
+      run: |
+        sh env DB_USER=postgres \
+        DB_PASSWORD=postgres \
+        DB=postgres \
+        SENDER_EMAIL=noreply@tasera.fi \
+        bash -c 'cd back && npm run dev:withFront'
+      working-directory: ./back
+      env:
+        POSTGRES_HOST: postgres
+        POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
+
+
 
   build-and-test:
     needs: postgres-job
