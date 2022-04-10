@@ -9,7 +9,8 @@ on:
 jobs:
   postgres-job:
     runs-on: ubuntu-latest
-    container: node:10.18-jessie
+    container:
+      image: node:10.18-jessie
 
     services:
       postgres:
@@ -29,9 +30,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - run: npm ci
-      working-directory: ./postgres
     - run: node client.js
-      working-directory: ./postgres
       env:
         POSTGRES_HOST: postgres
         POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
