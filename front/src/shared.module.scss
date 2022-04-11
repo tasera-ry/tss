@@ -97,6 +97,7 @@ code {
   width: 30vw;
   height: 38px;
   justify-content: left;
+  padding-left: 10px;
 }
 
 .box {
@@ -105,7 +106,7 @@ code {
   height: 20px;
   width: 20px;
   margin-right: 8px;
-  //border: 1px solid $COLOR_BLACK;
+  border: 1px solid $COLOR_BLACK;
   clear: both;
   min-height: 20px;
   min-width: 20px;
