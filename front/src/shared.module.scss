@@ -52,7 +52,7 @@ code {
 }
 
 .acceptButton {
-  background-color: $COLOR_BLACK_TINT_40 !important;
+  background-color: $COLOR_SAND !important;
   &:disabled {
     background-color: lighten($COLOR_GREY, 40%) !important;
   }

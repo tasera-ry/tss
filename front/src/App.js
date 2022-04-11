@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
-import './App.scss';
+//import './App.scss';
+import './shared.module.scss';
 
 import axios from 'axios';
 
@@ -37,7 +38,7 @@ import { validateLogin } from './utils/Utils';
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#555555',
+      main: 'grey',
     },
   },
 });

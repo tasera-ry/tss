@@ -85,7 +85,7 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
         setSupervision('present');
       } else if (msg.super === 'absent') {
         track.trackSupervision = 'closed'; // eslint-disable-line
-        setButtonColor(colors.cream5);
+        setButtonColor(colors.white);
         setTextState(tablet.White[fin]);
         setSupervision('closed');
       }
@@ -94,7 +94,7 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
   const HandleClick = () => {
     let newSupervision = 'absent';
     setSupervision('absent');
-    track.color = colors.cream5; // eslint-disable-line
+    track.color = colors.white; // eslint-disable-line
     setTextState(tablet.White[fin]);
 
     if (track.trackSupervision === 'absent') {
@@ -189,7 +189,7 @@ async function getColors(tracks, setTracks) {
     } else if (copy[i].trackSupervision === 'closed') {
       obj.color = colors.redLight;
     } else if (copy[i].trackSupervision === 'absent') {
-      obj.color = colors.cream5;
+      obj.color = colors.white;
     } else if (copy[i].trackSupervision === 'en route') {
       obj.color = colors.orange;
     }
@@ -230,7 +230,7 @@ async function getData(
         setStatusColor(colors.orange);
       } else if (response.rangeSupervision === 'absent') {
         setStatusText(tablet.SuperWhite[fin]);
-        setStatusColor(colors.cream5);
+        setStatusColor(colors.white);
       } else if (response.rangeSupervision === 'closed') {
         setStatusText(tablet.Red[fin]);
         setStatusColor(colors.redLight);
@@ -242,7 +242,7 @@ async function getData(
         setStatusColor(colors.turquoise);
       } else {
         setStatusText(tablet.SuperWhite[fin]);
-        setStatusColor(colors.cream5);
+        setStatusColor(colors.white);
       }
       getColors(response.tracks, setTracks);
     });
