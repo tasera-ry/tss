@@ -71,10 +71,12 @@ const addRangeSupervision = (
     supervisor,
   });
 
-const patchRangeSupervision = (id, rangeSupervisor) =>
-  axios.put(`api/range-supervision/${id}`, {
-    range_supervisor: rangeSupervisor,
+const patchRangeSupervision = (id, rangeSupervisor) => {
+  return axios.put(`api/range-supervision/${id}`, {
+    range_supervisor: rangeSupervisor.range_supervisor,
   });
+}
+
 
 const sendFeedback = (feedback, user) =>
   axios.put('api/range-supervision/feedback', { feedback, user });
