@@ -12,6 +12,7 @@
   width: 100%;
   text-align: center;
   margin: 0;
+  
 }
 
 .overflowHidden {
@@ -85,6 +86,10 @@ h2.headerText {
   display: flex;
   margin-bottom: 16px;
   justify-content: center;
+  border: 2px solid $COLOR_BLACK_TINT_70;
+  background-color: $COLOR_BLACK_TINT_70;
+  border-radius: 5px;
+  margin-top: -5px;
 }
 
 .dayviewContainer .dateHeader .titleContainer {
@@ -103,12 +108,14 @@ h2.headerText {
 
 .dayviewContainer .sevenGrid > div {
   max-width: 100%;
+  margin: 3px;
+  border-radius: 5px;
 }
 
 .dayviewContainer .track {
   position: relative;
-  background: $COLOR_CREAM30;
-  border: solid 1px $COLOR_BLACK;
+  //background: $COLOR_CREAM30;
+  //border: solid 1px $COLOR_BLACK;
   box-sizing: border-box;
   min-height: 100px;
 }

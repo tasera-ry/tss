@@ -39,7 +39,7 @@ import { validateLogin } from './utils/Utils';
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#555555',
+      main: '#4D4D4D',
     },
   },
 });

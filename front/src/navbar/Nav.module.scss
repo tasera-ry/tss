@@ -10,7 +10,7 @@ nav {
 
   .loginLink {
     text-decoration: none;
-    border: 1px solid black;
+    //border: 1px solid black;
     border-radius: 5%;
   }
   .langButtons {
@@ -71,6 +71,7 @@ nav {
   }
 
   .clickable {
+    font-family: Lato, sans-serif;
     display: flex;
     min-height: 10vh;
     justify-content: center;

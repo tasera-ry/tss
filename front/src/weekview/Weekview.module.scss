@@ -21,9 +21,11 @@
   flex-wrap: nowrap;
   justify-content: center;
   background-color: $COLOR_BLACK_TINT_70;
-  //border: 1px solid red;
   border-right: 0px;
   border-radius: 5px;
+  padding-left: 2px;
+  padding-bottom: 2px;
+  padding-right: 2px;
 }
 
 .flexContainer2 {
@@ -33,14 +35,11 @@
   text-align: center;
   max-height: 50px;
   background-color: $COLOR_BLACK_TINT_70;
-  border: 2px solid $COLOR_BLACK_TINT_70;
+  border: 3px solid $COLOR_BLACK_TINT_70;
   border-radius: 5px 5px 0 0;
   margin-top: -5px;
   margin-bottom: -5px;
-  //border: 1px solid red;
-  //border-right: 1px solid;
-  //border-left: 1px solid;
-  //border-top: 1px solid;
+  
 }
 
 .flexContainer2 ~ .flexContainer2 {
