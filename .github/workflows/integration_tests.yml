@@ -59,3 +59,4 @@ jobs:
       with:
         start: node ./back/server.js &
         env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=postgres, SENDER_EMAIL=noreply@tasera.fi
+        working-directory: back
