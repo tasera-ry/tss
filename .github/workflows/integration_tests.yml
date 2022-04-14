@@ -41,7 +41,7 @@ jobs:
       env:
         DB_USER: postgres
         DB_PASSWORD: postgres
-        DB: postgres
+        DB_HOST: postgres
         POSTGRES_HOST: postgres
         POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
 
