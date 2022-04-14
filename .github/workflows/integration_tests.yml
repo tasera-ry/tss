@@ -46,7 +46,7 @@ jobs:
         POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
 
     - name: Run Backend
-      run: npm start
+      run: node server.js &
       working-directory: ./back
       env:
         DB_USER: postgres
