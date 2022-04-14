@@ -30,29 +30,6 @@ module.exports = {
     }
   },
 
-  e2e_tests: {
-    client: 'pg',
-    connection: {
-      // name of github actions postgres service container
-      host: process.env.DB_HOST || 'postgres',
-      user: process.env.DB_USER || 'tssuser',
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB || process.env.USER || process.env.USERNAME,
-      charset: 'utf8'
-    },
-
-    // why is true in string format?
-    debug: process.env.DB_DEBUG === 'true' || false,
-
-    migrations: {
-      directory: path.join(__dirname, 'knex', 'e2e_tests', 'migrations')
-    },
-
-    seeds: {
-      directory: path.join(__dirname, 'knex', 'e2e_tests', 'seeds')
-    }
-  },
-
   // Current production environment.
   stable: {
     client: 'pg',
