@@ -60,36 +60,3 @@ jobs:
         build: npm run build
         start: npm start
 
-
-
-  build-and-test:
-    needs: postgres-job
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Install dependencies
-        run: cd back && npm install && cd ../front && npm install && cd ..
-
-      - name: Run Migrations
-        run: |
-          sh env DB_USER=postgres \
-          DB_PASSWORD=postgres \
-          DB=postgres \
-          bash -c 'cd back && npx knex migrate:latest && npx knex seed:run && cd ..'
-
-      - name: Run App
-        run: |
-          sh env DB_USER=postgres \
-          DB_PASSWORD=postgres \
-          DB=postgres \
-          SENDER_EMAIL=noreply@tasera.fi \
-          bash -c 'cd back && npm run dev:withFront'
-
-      - name: Cypress run
-        uses: cypress-io/github-action@v2
-        with:
-          build: npm run build
-          start: npm start
