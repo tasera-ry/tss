@@ -11,7 +11,7 @@ module.exports = {
   development: {
     client: 'pg',
     connection: {
-      host: process.env.DB_HOST || '0.0.0.0',
+      host: process.env.DB_HOST || 'postgres',
       user: process.env.DB_USER || 'tssuser',
       password: process.env.DB_PASSWORD,
       database: process.env.DB || process.env.USER || process.env.USERNAME,
