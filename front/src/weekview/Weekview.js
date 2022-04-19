@@ -334,7 +334,7 @@ class Weekview extends Component {
       } else if (rataStatus === 'closed') {
         colorFromBackEnd = '#c97b7b';
       } else if (rataStatus === 'absent') {
-        colorFromBackEnd = '#f2f0eb';
+        colorFromBackEnd = '#f2f2f2';
       }
 
       oikeePaiva = this.state.paivat[j].date;
