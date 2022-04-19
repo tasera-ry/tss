@@ -114,8 +114,6 @@ h2.headerText {
 
 .dayviewContainer .track {
   position: relative;
-  //background: $COLOR_CREAM30;
-  //border: solid 1px $COLOR_BLACK;
   box-sizing: border-box;
   min-height: 100px;
 }
@@ -197,7 +195,7 @@ h2.headerText {
   width: 96%;
   height: 100%;
   text-decoration: none;
-  color: $COLOR_BLACK;
+  color: $COLOR_BLACK_TINT_80;
   padding-left: 2%;
   padding-right: 2%;
 }
