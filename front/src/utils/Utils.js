@@ -73,7 +73,7 @@ export const checkColor = (paivat, paiva) => {
     case 'closed':
       return colors.redLight;
     case 'absent':
-      return colors.cream5;
+      return colors.blackTint05;
     default:
       return 'blue';
   }
