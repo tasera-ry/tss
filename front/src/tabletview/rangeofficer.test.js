@@ -127,7 +127,7 @@ describe('testing rangeofficer', () => {
     render(<Tabletview />);
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveStyle(
-        'backgroundColor: colors.cream5',
+        'backgroundColor: colors.blackTint05',
       ),
     );
   });
@@ -192,7 +192,7 @@ describe('testing rangeofficer', () => {
     render(<Tabletview />);
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveStyle(
-        'backgroundColor: colors.cream5',
+        'backgroundColor: colors.blackTint05',
       ),
     );
   });

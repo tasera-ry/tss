@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-//import '../App.scss';
+// Style and colors
 import './Scheduling.scss';
 import '../shared.module.scss';
 
@@ -428,21 +428,21 @@ class Scheduling extends Component {
               <FormControlLabel
                 value="present"
                 control={
-                  <Radio style={{ fontColor: 'black', color: 'blue' }} />
+                  <Radio style={{ fontColor: 'black', color: '#658f60' }} />
                 }
                 label={sched.OfficerPresent[fin]}
               />
               <FormControlLabel
                 value="absent"
                 control={
-                  <Radio style={{ fontColor: 'black', color: 'blue' }} />
+                  <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
                 }
                 label={sched.OfficerAbsent[fin]}
               />
               <FormControlLabel
                 value="closed"
                 control={
-                  <Radio style={{ fontColor: 'black', color: 'blue' }} />
+                  <Radio style={{ fontColor: 'black', color: '#c97b76' }} />
                 }
                 label={sched.Closed[fin]}
               />
@@ -854,7 +854,7 @@ class Scheduling extends Component {
               <Button
                 type="submit"
                 variant="contained"
-                style={{ backgroundColor: 'sand' }}
+                style={{ backgroundColor: '#d1ccc2' }}
                 data-testid="dateButton"
               >
                 {sched.Day[fin]}
@@ -875,7 +875,7 @@ class Scheduling extends Component {
               onChange={this.handleSwitchChange}
               name="available"
               color="primary"
-              style={{ color: 'blue' }}
+              style={{ color: '#5f77a1' }}
               data-testid="available"
             />
           </div>
@@ -888,7 +888,7 @@ class Scheduling extends Component {
                 onChange={this.handleSwitchChange}
                 name="rangeSupervisorSwitch"
                 color="primary"
-                style={{ color: 'blue' }}
+                style={{ color: '#5f77a1' }}
                 data-testid="rangeSupervisorSwitch"
               />
             </div>
@@ -936,7 +936,7 @@ class Scheduling extends Component {
               variant="contained"
               color="primary"
               onClick={this.openAllTracks}
-              style={{ color: 'black', backgroundColor: 'blue' }}
+              style={{ color: 'black', backgroundColor: '#658f60' }}
               data-testid="openAll"
             >
               {sched.OpenAll[fin]}
@@ -944,7 +944,7 @@ class Scheduling extends Component {
             <Button
               variant="contained"
               onClick={this.emptyAllTracks}
-              style={{ backgroundColor: 'sand' }}
+              style={{ backgroundColor: '#5f77a1' }}
               data-testid="emptyAll"
             >
               {sched.ClearAll[fin]}
@@ -953,7 +953,7 @@ class Scheduling extends Component {
               variant="contained"
               color="secondary"
               onClick={this.closeAllTracks}
-              style={{ color: 'black', backgroundColor: 'redLight' }}
+              style={{ color: 'black', backgroundColor: '#c97b76' }}
               data-testid="closeAll"
             >
               {sched.CloseAll[fin]}
@@ -970,7 +970,7 @@ class Scheduling extends Component {
                 onChange={this.handleRepeatChange}
                 id="daily"
                 color="primary"
-                style={{ color: 'blue' }}
+                style={{ color: '#5f77a1' }}
                 data-testid="dailyRepeat"
               />
             </div>
@@ -981,7 +981,7 @@ class Scheduling extends Component {
                 onChange={this.handleRepeatChange}
                 id="weekly"
                 color="primary"
-                style={{ color: 'blue' }}
+                style={{ color: '#5f77a1' }}
                 data-testid="weeklyRepeat"
               />
             </div>
@@ -992,7 +992,7 @@ class Scheduling extends Component {
                 onChange={this.handleRepeatChange}
                 id="monthly"
                 color="primary"
-                style={{ color: 'blue' }}
+                style={{ color: '#5f77a1' }}
                 data-testid="monthlyRepeat"
               />
             </div>
@@ -1011,7 +1011,7 @@ class Scheduling extends Component {
             <Button
               variant="contained"
               onClick={this.saveChanges}
-              style={{ backgroundColor: 'sand' }}
+              style={{ backgroundColor: '#d1ccc2' }}
             >
               {sched.Save[fin]}
             </Button>

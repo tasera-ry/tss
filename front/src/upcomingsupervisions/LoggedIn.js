@@ -28,7 +28,7 @@ import data from '../texts/texts.json';
 
 // Styles
 const dialogStyle = {
-  backgroundColor: '#f2f0eb',
+  backgroundColor: '#f2f2f2',
 };
 /* eslint-disable-next-line */
 const discardChanges = {
@@ -59,7 +59,7 @@ const DropDowns = (props) => {
   const id = props.d;
   const obj = props.changes.find((o) => o.date === id);
   let text = props.sv.Present[fin];
-  let color = '#f2f0eb';
+  let color = '#f2f2f2';
   if (
     obj.range_supervisor === 'confirmed' ||
     obj.range_supervisor === 'en route'
@@ -82,7 +82,7 @@ const DropDowns = (props) => {
   };
   /* eslint-disable-next-line */
   const discardChanges = {
-    color: '#b0aca0',
+    color: '#b3b3b3',
   };
 
   const handleClick = (event) => {
@@ -95,7 +95,7 @@ const DropDowns = (props) => {
 
     if (event.currentTarget.dataset.info === '') {
       setButtonText(props.sv.Present[fin]);
-      setButtonColor('#f2f0eb');
+      setButtonColor('#f2f2f2');
       setDisable(true);
       obj.range_supervisor = 'not confirmed';
     }
@@ -483,7 +483,7 @@ const Logic = ({
               setOpen(false);
               onCancel();
             }}
-            style={{ backgroundColor: '#ede9e1' }}
+            style={{ backgroundColor: '#e5e5e5' }}
           >
             {sv.Cancel[fin]}
           </Button>

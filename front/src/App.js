@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-//import './App.scss';
+// Style and colors
 import './shared.module.scss';
 
 import axios from 'axios';
@@ -35,6 +35,7 @@ import { Raffle } from './raffle/raffle';
 import { validateLogin } from './utils/Utils';
 
 // TO DO: Move this to scss if possible.
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -77,7 +78,7 @@ class App extends Component {
     return (
       <CookiesProvider>
         <Router>
-          <ThemeProvider theme={theme}>
+          <ThemeProvider theme={theme}>      
             <div className="App">
               <header className="App-header">
                 <Nav />
@@ -108,7 +109,7 @@ class App extends Component {
                 </Switch>
               </header>
             </div>
-          </ThemeProvider>
+          </ThemeProvider>          
         </Router>
       </CookiesProvider>
     );
