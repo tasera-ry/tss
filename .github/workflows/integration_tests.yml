@@ -36,7 +36,7 @@ jobs:
       working-directory: ./back
 
     - name: Install Cypress dependencies
-      run: sudo apt-get install -y libglib2.0-dev libglib2.0-0=2.48.0-1ubuntu4 libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+      run: apt-get install -y libglib2.0-dev libglib2.0-0=2.48.0-1ubuntu4 libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
     - name: Run Migrations
       run: npx knex migrate:latest && npx knex seed:run
