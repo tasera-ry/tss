@@ -61,16 +61,16 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - name: Run Migrations
-        run: npx knex migrate:latest && npx knex seed:run
-        working-directory: ./back
-        env:
-          DB_USER: postgres
-          DB_PASSWORD: postgres
-          DB_HOST: postgres
-          POSTGRES_HOST: postgres
-          POSTGRES_PORT: 5432
-          # POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
+      # - name: Run Migrations
+      #   run: npx knex migrate:latest && npx knex seed:run
+      #   working-directory: ./back
+      #   env:
+      #     DB_USER: postgres
+      #     DB_PASSWORD: postgres
+      #     DB_HOST: postgres
+      #     POSTGRES_HOST: postgres
+      #     POSTGRES_PORT: 5432
+      #     # POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
 
       - name: Run Cypress Tests
         uses: cypress-io/github-action@v2
