@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: DB connection
-      - uses: harmon758/postgresql-action@v1
+        uses: harmon758/postgresql-action@v1
         with:
           postgresql version: '12'
           postgresql db: postgres
