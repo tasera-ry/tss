@@ -1,0 +1,8 @@
+{
+    "env": {
+        "DB_USER": "postgres",
+        "DB_PASSWORD": "postgres",
+        "DB_HOST": "postgres",
+        "SENDER_EMAIL": "noreply@tasera.fi"
+    }
+}
