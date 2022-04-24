@@ -1,3 +1,4 @@
-"cypress-plugin-snapshots": {
-    "serverPort": 3000
-    }
+{
+    "baseUrl":"http://localhost/",
+    "port":2121 
+}
