@@ -2,7 +2,7 @@ const app = require('./app.js');
 const os = require('os');
 
 require('dotenv').config();
-const port = process.env.ALT_PORT || process.env.PORT || 8000; //azure gives port as an environment variable
+const port = process.env.ALT_PORT || process.env.PORT || 7000; //azure gives port as an environment variable
 
 const server = app.listen(port, () => {
   console.error('Server on ' + port);
