@@ -32,7 +32,7 @@ jobs:
           postgresql password: postgres
 
       - name: run backend
-        run: npm start &
+        run: npm start & wait-on http://localhost:8000
         working-directory: ./back
 
       - name: run frontend
