@@ -20,17 +20,17 @@ jobs:
           postgresql db: postgres
           postgresql user: postgres
           postgresql password: postgres
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
-        ports:
-        - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+        # env:
+        #   POSTGRES_USER: postgres
+        #   POSTGRES_PASSWORD: postgres
+        #   POSTGRES_DB: postgres
+        # ports:
+        # - 5432:5432
+        # options: >-
+        #   --health-cmd pg_isready
+        #   --health-interval 10s
+        #   --health-timeout 5s
+        #   --health-retries 5
       - uses: cypress-io/github-action@v2
         with:
           install: false
