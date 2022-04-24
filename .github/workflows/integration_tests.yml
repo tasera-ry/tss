@@ -11,31 +11,31 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Install app dependencies
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
         run: npm install && cd ../front && npm install
-        winth:
+        with:
           working-directory: ./back
 
       - name: Install Cypress dependencies
-      - uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v2
         with:
           runTests: false
           working-directory: back
 
       - name: Run postgres DB
-      - uses: harmon758/postgresql-action@v1
+        uses: harmon758/postgresql-action@v1
         with:
           postgresql version: '12'
           postgresql db: postgres
           postgresql user: postgres
           postgresql password: postgres
-          
+
       # - uses: actions/checkout@v2
       # - name: Start frontend
       #   run: npm start &
       #   working-directory: ./front
       - name: Run Integration Tests
-      - uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v2
         with:
           install: false
           start: node ./server.js &
