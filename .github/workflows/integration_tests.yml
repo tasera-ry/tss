@@ -45,8 +45,8 @@ jobs:
         run: npm install && cd ../front && npm install
         working-directory: ./back
 
-      - name: Install Cypress dependencies
-        run: sudo apt-get install -y libgdk-pixbuf2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+      # - name: Install Cypress dependencies
+      #   run: sudo apt-get install -y libgdk-pixbuf2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
       - name: Cache node modules
         uses: actions/cache@v3
