@@ -38,7 +38,7 @@ jobs:
           install: false
           start: node ./server.js &
           env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=postgres, SENDER_EMAIL=noreply@tasera.fi
-          wait-on: 'npx wait-on --timeout 5000 http://localhost:8000'
+          # wait-on: 'npx wait-on --timeout 5000 http://localhost:8000'
           working-directory: back
 
 
