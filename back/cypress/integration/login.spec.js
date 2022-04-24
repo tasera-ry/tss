@@ -7,7 +7,7 @@ describe('Login to app', function ()
     password: "0Marilou36",
     email: "Waldo.McDermott@Filomena.com"
   }
-  
+
   const superuser = {
     name: "Grover_Huel",
     role: "superuser",
@@ -47,7 +47,7 @@ describe('Login to app', function ()
     //   cy.get('#username').type(user.username)
     //   cy.get('#password').type(user.password)
     //   cy.get('#login-button').click()
-    // })
+    })
 
     it('User can log out', function() {
       

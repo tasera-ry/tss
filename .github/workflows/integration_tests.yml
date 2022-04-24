@@ -42,7 +42,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install app dependencies
-        run: npm install && cd ../front && npm install && cd ..
+        run: npm install && cd ../front && npm install
         working-directory: ./back
 
       - name: Install Cypress dependencies
@@ -75,6 +75,6 @@ jobs:
       - name: Run Cypress Tests
         uses: cypress-io/github-action@v2
         with:
-          start: node ./back/server.js &
+          start: node ./server.js &
           env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=postgres, SENDER_EMAIL=noreply@tasera.fi
           working-directory: back
