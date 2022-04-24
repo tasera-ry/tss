@@ -31,9 +31,9 @@ jobs:
           postgresql user: postgres
           postgresql password: postgres
 
-      - name: Run backend
-        run: node ./server.js &
-        working-directory: ./back
+      # - name: Run backend
+      #   run: node ./server.js &
+      #   working-directory: ./back
 
       - name: Run Integration Tests
         uses: cypress-io/github-action@v2
