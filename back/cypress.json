@@ -1,1 +1,3 @@
-{}
+"cypress-plugin-snapshots": {
+    "serverPort": 3000
+    }
