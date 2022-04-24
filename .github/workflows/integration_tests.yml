@@ -10,8 +10,10 @@ jobs:
   cypress-run:
     runs-on: ubuntu-20.04
     steps:
-      - name: Install app dependencies
+      - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Install app dependencies
         run: npm install && cd ../front && npm install
         with:
           working-directory: ./back
