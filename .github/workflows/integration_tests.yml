@@ -36,7 +36,7 @@ jobs:
         env: 
           DB_USER: postgres
           DB_PASSWORD: postgres
-          DB_HOST: postgres
+          DB_HOST: localhost
           SENDER_EMAIL: noreply@tasera.fi
           SERVER_HOST: http://localhost:3000
           PROXY_HOSTNAME: localhost
@@ -48,7 +48,7 @@ jobs:
         env: 
           DB_USER: postgres
           DB_PASSWORD: postgres
-          DB_HOST: postgres
+          DB_HOST: localhost
           SENDER_EMAIL: noreply@tasera.fi
           SERVER_HOST: http://localhost:3000
           PROXY_HOSTNAME: localhost
@@ -68,7 +68,7 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           install: false
-          env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=postgres, SENDER_EMAIL=noreply@tasera.fi, SERVER_HOST=http://localhost:3000, PROXY_HOSTNAME=localhost, PROXY_PORT=8000
+          env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=localhost, SENDER_EMAIL=noreply@tasera.fi, SERVER_HOST=http://localhost:3000, PROXY_HOSTNAME=localhost, PROXY_PORT=8000
           browser: chrome
           headless: true
           working-directory: back
