@@ -41,8 +41,7 @@
     "react-moment": "^0.9.7",
     "react-router-dom": "^5.2.0",
     "socket.io": "^2.4.1",
-    "validate.js": "^0.13.1",
-    "wait-on": "^6.0.1"
+    "validate.js": "^0.13.1"
   },
   "devDependencies": {
     "cypress": "^9.5.4",
