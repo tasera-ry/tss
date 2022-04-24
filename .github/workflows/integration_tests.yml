@@ -36,14 +36,14 @@ jobs:
 
       - uses: cypress-io/github-action@v2
       - name: Run Integration Tests
-          with:
-            install: false
-            start: node ./server.js &
-            env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=postgres, SENDER_EMAIL=noreply@tasera.fi
-            # wait-on: 'npx wait-on --timeout 5000 http://localhost:8000'
-            browser: chrome
-            headless: true
-            working-directory: back
+        with:
+          install: false
+          start: node ./server.js &
+          env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=postgres, SENDER_EMAIL=noreply@tasera.fi
+          # wait-on: 'npx wait-on --timeout 5000 http://localhost:8000'
+          browser: chrome
+          headless: true
+          working-directory: back
 
 
 # jobs:
