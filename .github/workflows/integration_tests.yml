@@ -31,9 +31,13 @@ jobs:
           postgresql user: postgres
           postgresql password: postgres
 
+      # - name: Run frontend
+      #   run: npm start &
+      #   working-directory: ./back
+
       - name: Run frontend
         run: npm start &
-        working-directory: ./back
+        working-directory: ./front
 
       - name: Run Integration Tests
         uses: cypress-io/github-action@v2
