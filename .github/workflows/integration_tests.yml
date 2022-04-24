@@ -10,11 +10,11 @@ jobs:
   cypress-run:
     runs-on: ubuntu-20.04
     steps:
-
       - name: Install app dependencies
       - uses: actions/checkout@v2
         run: npm install && cd ../front && npm install
-        working-directory: ./back
+        winth:
+          working-directory: ./back
 
       - name: Install Cypress dependencies
       - uses: cypress-io/github-action@v2
@@ -29,12 +29,11 @@ jobs:
           postgresql db: postgres
           postgresql user: postgres
           postgresql password: postgres
-
+          
       # - uses: actions/checkout@v2
       # - name: Start frontend
       #   run: npm start &
       #   working-directory: ./front
-
       - name: Run Integration Tests
       - uses: cypress-io/github-action@v2
         with:
@@ -45,7 +44,6 @@ jobs:
           browser: chrome
           headless: true
           working-directory: back
-
 
 # jobs:
 #   setup:
