@@ -7,43 +7,58 @@ on:
     branches: [master]
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    # container:
-    #   image: node:10.18-jessie
-
+  cypress-run:
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-
-      - name: DB connection
-        uses: harmon758/postgresql-action@v1
+      - uses: cypress-io/github-action@v2
+        with:
+          runTests: false
+      - uses: harmon758/postgresql-action@v1
         with:
           postgresql version: '12'
           postgresql db: postgres
           postgresql user: postgres
           postgresql password: postgres
-      # env:
-      #   POSTGRES_USER: postgres
-      #   POSTGRES_PASSWORD: postgres
-      #   POSTGRES_DB: postgres
-      # ports:
-      # - 5432:5432
-      # options: >-
-      #   --health-cmd pg_isready
-      #   --health-interval 10s
-      #   --health-timeout 5s
-      #   --health-retries 5
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+        - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      - uses: cypress-io/github-action@v2
+        with:
+          install: false
+          start: node ./server.js &
+          env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=postgres, SENDER_EMAIL=noreply@tasera.fi
+          wait-on: 'npx wait-on --timeout 5000 http://localhost:3000'
+          working-directory: back
 
-  e2e-tests:
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
 
-      - name: Install app dependencies
-        run: npm install && cd ../front && npm install
-        working-directory: ./back
+# jobs:
+#   setup:
+#     runs-on: ubuntu-latest
+    # container:
+    #   image: node:10.18-jessie
+
+  #   steps:
+
+
+  # e2e-tests:
+  #   runs-on: ubuntu-latest
+  #   needs: setup
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+
+  #     - name: Install app dependencies
+  #       run: npm install && cd ../front && npm install
+  #       working-directory: ./back
 
       # - name: Install Cypress dependencies
       #   run: sudo apt-get install -y libgdk-pixbuf2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
@@ -72,11 +87,11 @@ jobs:
       #     POSTGRES_PORT: 5432
       #     # POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
 
-  integration-tests:
-    image: cypress-io/github-action@v2
-    needs: setup
-    script:
-      - node ./server.js &
-      - npx cypress run --browser firefox
+  # integration-tests:
+  #   image: cypress-io/github-action@v2
+  #   needs: setup
+  #   script:
+  #     - node ./server.js &
+      # - npx cypress run --browser firefox
       # env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=postgres, SENDER_EMAIL=noreply@tasera.fi
       # working-directory: back
