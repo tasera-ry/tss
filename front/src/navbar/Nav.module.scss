@@ -10,7 +10,6 @@ nav {
 
   .loginLink {
     text-decoration: none;
-    //border: 1px solid black;
     border-radius: 5%;
   }
   .langButtons {
@@ -19,6 +18,20 @@ nav {
   .text {
     font-size: 1.2rem;
   }
+}
+
+.clickable {
+  font-family: 'Lato', sans-serif;
+  color: white;
+  font-weight: bold;
+  background-color: $COLOR_BLACK_TINT_70;
+  margin: 2px;
+}
+
+.loginbutton {
+  font-family: 'Lato', sans-serif;
+  color: white;
+  font-weight: bold;
 }
 
 .paper {
@@ -71,7 +84,6 @@ nav {
   }
 
   .clickable {
-    font-family: Lato, sans-serif;
     display: flex;
     min-height: 10vh;
     justify-content: center;
