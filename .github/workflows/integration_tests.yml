@@ -14,12 +14,14 @@ jobs:
       - uses: cypress-io/github-action@v2
         with:
           runTests: false
+          working-directory: back
       - uses: harmon758/postgresql-action@v1
         with:
           postgresql version: '12'
           postgresql db: postgres
           postgresql user: postgres
           postgresql password: postgres
+          working-directory: back
         # env:
         #   POSTGRES_USER: postgres
         #   POSTGRES_PASSWORD: postgres
