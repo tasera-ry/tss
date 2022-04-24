@@ -48,18 +48,18 @@ jobs:
       # - name: Install Cypress dependencies
       #   run: sudo apt-get install -y libgdk-pixbuf2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
-      - name: Cache node modules
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
-        with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+      # - name: Cache node modules
+      #   uses: actions/cache@v3
+      #   env:
+      #     cache-name: cache-node-modules
+      #   with:
+      #     # npm cache files are stored in `~/.npm` on Linux/macOS
+      #     path: ~/.npm
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+      #       ${{ runner.os }}-build-
+      #       ${{ runner.os }}-
 
       # - name: Run Migrations
       #   run: npx knex migrate:latest && npx knex seed:run
@@ -72,9 +72,11 @@ jobs:
       #     POSTGRES_PORT: 5432
       #     # POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
 
-      - name: Run Cypress Tests
-        uses: cypress-io/github-action@v2
-        with:
-          start: node ./server.js &
-          env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=postgres, SENDER_EMAIL=noreply@tasera.fi
-          working-directory: back
+  integration-tests:
+    image: cypress-io/github-action@v2
+    needs: setup
+    script:
+      - node ./server.js &
+      - npx cypress run --browser firefox
+      # env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=postgres, SENDER_EMAIL=noreply@tasera.fi
+      # working-directory: back
