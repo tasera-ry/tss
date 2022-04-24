@@ -39,6 +39,10 @@ jobs:
         run: npm start & wait-on http://localhost:3000
         working-directory: ./front
 
+      - name: Sleep for 0 seconds
+        run: sleep 30s
+        shell: bash
+
       # running cypress starts the backend automatically
       - name: Run Integration Tests
         uses: cypress-io/github-action@v2
