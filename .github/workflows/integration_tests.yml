@@ -10,10 +10,10 @@ jobs:
   cypress-run:
     runs-on: ubuntu-20.04
     steps:
-    
-      - name: Install app dependencies and run frontend
+
+      - name: Install app dependencies
       - uses: actions/checkout@v2
-        run: npm install && cd ../front && npm install && npm start &
+        run: npm install && cd ../front && npm install
         working-directory: ./back
 
       - name: Install Cypress dependencies
@@ -32,7 +32,7 @@ jobs:
 
       # - uses: actions/checkout@v2
       # - name: Start frontend
-      #   run:  
+      #   run: npm start &
       #   working-directory: ./front
 
       - name: Run Integration Tests
