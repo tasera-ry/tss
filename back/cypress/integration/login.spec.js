@@ -17,7 +17,7 @@ describe('Login to app', function ()
 
   beforeEach(function ()
   {
-    cy.visit('http://localhost:3000')
+    cy.visit('/')
   })
 
   it('Login form is shown', function() {
