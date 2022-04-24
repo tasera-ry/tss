@@ -15,8 +15,7 @@ jobs:
 
       - name: Install app dependencies
         run: npm install && cd ../front && npm install
-        with:
-          working-directory: ./back
+        working-directory: ./back
 
       - name: Install Cypress dependencies
         uses: cypress-io/github-action@v2
