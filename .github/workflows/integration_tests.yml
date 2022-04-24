@@ -42,7 +42,6 @@ jobs:
           start: npm start &
           env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=postgres, SENDER_EMAIL=noreply@tasera.fi
           browser: chrome
-          wait-on: 'http://localhost:3000'
           headless: true
           working-directory: back
 

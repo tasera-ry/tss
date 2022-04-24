@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const config = {
   server: {
     host: process.env.SERVER_HOST || 'http://localhost:3000',
-    port: 7000
+    port: 8000
   },
   jwt: {
     secret: process.env.JWT_SECRET || crypto.randomBytes(2 ** 8).toString('hex')
