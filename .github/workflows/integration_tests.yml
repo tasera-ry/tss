@@ -26,7 +26,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install app dependencies
-        run: npm install && npx knex migrate:latest && npx knex seed:run && cd ../front && npm install
+        run: npm install && cd ../front && npm install
+        working-directory: ./back
+
+      - name: Run DB Migrations
+        run: npx knex migrate:latest && npx knex seed:run
         env: 
           DB_USER: postgres
           DB_PASSWORD: postgres
@@ -52,18 +56,6 @@ jobs:
       #     postgresql user: postgres
       #     postgresql password: postgres
 
-      # - name: Run DB Migrations
-      #   run: npx knex migrate:latest && npx knex seed:run
-      #   env: 
-      #     DB_USER: postgres
-      #     DB_PASSWORD: postgres
-      #     DB_HOST: localhost
-      #     SENDER_EMAIL: noreply@tasera.fi
-      #     SERVER_HOST: http://localhost:3000
-      #     PROXY_HOSTNAME: localhost
-      #     PROXY_PORT: 8000
-      #   working-directory: ./back
-
       - name: run backend
         run: npm start &
         env: 
@@ -81,11 +73,6 @@ jobs:
         run: npm start &
         working-directory: ./front
 
-      - name: Sleep for 0 seconds
-        run: sleep 30s
-        shell: bash
-
-      # running cypress starts the backend automatically
       - name: Run Integration Tests
         uses: cypress-io/github-action@v2
         with:
