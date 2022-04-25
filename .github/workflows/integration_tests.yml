@@ -1,5 +1,16 @@
 name: Integration Tests
 
+env: 
+  DB: postgres
+  DB_USER: postgres
+  DB_PASSWORD: postgres
+  DB_HOST: localhost
+  SENDER_EMAIL: noreply@tasera.fi
+  SERVER_HOST: http://localhost:3000
+  PROXY_HOSTNAME: localhost
+  PROXY_PORT: 8000
+  DB_PORT: 5432
+
 on:
   push:
     branches: [e2e-testing]
@@ -32,16 +43,6 @@ jobs:
 
       - name: Run DB Migrations
         run: npx knex migrate:latest && npx knex seed:run
-        env: 
-          DB: postgres
-          DB_USER: postgres
-          DB_PASSWORD: postgres
-          DB_HOST: localhost
-          SENDER_EMAIL: noreply@tasera.fi
-          SERVER_HOST: http://localhost:3000
-          PROXY_HOSTNAME: localhost
-          PROXY_PORT: 8000
-          DB_PORT: 5432
         working-directory: ./back
 
       - name: Install Cypress dependencies
@@ -60,30 +61,10 @@ jobs:
 
       - name: run backend
         run: npm start &
-        env: 
-          DB: postgres
-          DB_USER: postgres
-          DB_PASSWORD: postgres
-          DB_HOST: localhost
-          SENDER_EMAIL: noreply@tasera.fi
-          SERVER_HOST: http://localhost:3000
-          PROXY_HOSTNAME: localhost
-          PROXY_PORT: 8000
-          DB_PORT: 5432
         working-directory: ./back
 
       - name: run frontend
         run: npm start &
-        env: 
-          DB: postgres
-          DB_USER: postgres
-          DB_PASSWORD: postgres
-          DB_HOST: localhost
-          SENDER_EMAIL: noreply@tasera.fi
-          SERVER_HOST: http://localhost:3000
-          PROXY_HOSTNAME: localhost
-          PROXY_PORT: 8000
-          DB_PORT: 5432
         working-directory: ./front
 
       - name: Sleep for 30 seconds
@@ -95,16 +76,6 @@ jobs:
         with:
           install: false
           # env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=localhost, SENDER_EMAIL=noreply@tasera.fi, SERVER_HOST=http://localhost:3000, PROXY_HOSTNAME=localhost, PROXY_PORT=8000, DB_PORT=5432, DB=postgres
-          env: 
-            DB: postgres
-            DB_USER: postgres
-            DB_PASSWORD: postgres
-            DB_HOST: localhost
-            SENDER_EMAIL: noreply@tasera.fi
-            SERVER_HOST: http://localhost:3000
-            PROXY_HOSTNAME: localhost
-            PROXY_PORT: 8000
-            DB_PORT: 5432
           browser: chrome
           headless: true
           working-directory: back
