@@ -64,7 +64,7 @@ jobs:
         working-directory: ./back
 
       - name: run frontend
-        run: npm start &
+        run: npm run build
         working-directory: ./front
 
       - name: Sleep for 30 seconds
