@@ -57,6 +57,11 @@ const getUser = async (id) => {
   return response.data;
 };
 
+const getUsers = async () => {
+  const response = await axios.get(`api/user`);
+  return response.data;
+}
+
 const patchReservation = (reservationId, data) =>
   axios.put(`/api/reservation/${reservationId}`, data);
 
@@ -84,7 +89,7 @@ const sendFeedback = (feedback, user) =>
 const patchScheduledSupervisionTrack = (scheduleId, trackId, data) =>
   axios.put(`/api/track-supervision/${scheduleId}/${trackId}`, data);
 
-  
+
 const getMembers = async () => {
   const response = await axios.get(`/api/members`);
   return response.data;
@@ -101,13 +106,23 @@ const raffleSupervisors = async (dates) => {
 const saveRaffledSupervisors = async (results) =>
   axios.post("api/set-raffled-supervisors", { results });
 
-const getInfoMessage = async () => {
-  const response = await axios.get('api/infomessage');
+const getPublicInfoMessages = async () => {
+  const response = await axios.get(`api/infomessage`);
   return response.data;
 };
 
+const getPersonalInfoMessages = async () => {
+  const response = await axios.get(`api/infomessage/tablet`);
+  return response.data;
+}
+
+const getAllInfoMessages = async () => {
+  const response = await axios.get('api/infomessage/all');
+  return response.data;
+}
+
 const postInfoMessage = async (infoRequest) => {
-  await axios.post('api/infomessage', { message: infoRequest.message, start: infoRequest.start, end: infoRequest.end, show_weekly: infoRequest.show_weekly, show_monthly: infoRequest.show_monthly });
+  await axios.post(`api/infomessage`, infoRequest);
 };
 
 const deleteInfoMessage = async (info) => {
@@ -126,6 +141,7 @@ export default {
   resetPassword,
   renewPassword,
   getUser,
+  getUsers,
   patchReservation,
   addRangeSupervision,
   patchRangeSupervision,
@@ -135,7 +151,9 @@ export default {
   patchMembers,
   raffleSupervisors,
   saveRaffledSupervisors,
-  getInfoMessage,
+  getPublicInfoMessages,
+  getPersonalInfoMessages,
+  getAllInfoMessages,
   postInfoMessage,
   deleteInfoMessage,
 };

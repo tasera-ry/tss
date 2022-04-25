@@ -501,6 +501,7 @@
     "endDate": ["Loppumispäivämäärä", "End date", "Slutdatum"],
     "repeatWeekly": ["Toista viikoittain", "Repeat weekly", "Upprepa varje vecka"],
     "repeatMonthly": ["Toista kuukausittain", "Repeat monthly", "Upprepa varje månad"],
+    "sendPublicMessage": ["Lähetä julkinen viesti", "Send public message", "Skicka offentligt meddelande"],
     "send": ["Lähetä", "Send", "Skicka"]
   }
 }
