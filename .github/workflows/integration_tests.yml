@@ -13,6 +13,7 @@ jobs:
       postgres:
         image: postgres:12
         env:
+          DB: postgres
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
@@ -32,6 +33,7 @@ jobs:
       - name: Run DB Migrations
         run: npx knex migrate:latest && npx knex seed:run
         env: 
+          DB: postgres
           DB_USER: postgres
           DB_PASSWORD: postgres
           DB_HOST: localhost
@@ -59,6 +61,7 @@ jobs:
       - name: run backend
         run: npm start &
         env: 
+          DB: postgres
           DB_USER: postgres
           DB_PASSWORD: postgres
           DB_HOST: localhost
@@ -77,9 +80,10 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           install: false
-          env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=localhost, SENDER_EMAIL=noreply@tasera.fi, SERVER_HOST=http://localhost:3000, PROXY_HOSTNAME=localhost, PROXY_PORT=8000, DB_PORT= 5432
+          env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=localhost, SENDER_EMAIL=noreply@tasera.fi, SERVER_HOST=http://localhost:3000, PROXY_HOSTNAME=localhost, PROXY_PORT=8000, DB_PORT=5432, DB=postgres
           # env: 
           #   DB_USER: postgres
+          #   DB: postgres
           #   DB_PASSWORD: postgres
           #   DB_HOST: localhost
           #   SENDER_EMAIL: noreply@tasera.fi
