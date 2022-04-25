@@ -200,7 +200,8 @@ class Monthview extends Component {
 
     while (
       firstMon.format('ddd') !== 'Mon' &&
-      firstMon.format('ddd') !== 'ma'
+      firstMon.format('ddd') !== 'ma' &&
+      firstMon.format('ddd') !== 'Mån'
     ) {
       firstMon = firstMon.subtract(1, 'days');
       if (safetyLoop > 7) {
@@ -234,7 +235,8 @@ class Monthview extends Component {
     // add days until we get to end of week
     while (
       firstMon.format('ddd') !== 'Mon' &&
-      firstMon.format('ddd') !== 'ma'
+      firstMon.format('ddd') !== 'ma' &&
+      firstMon.format('ddd') !== 'Mån'
     ) {
       addDate(firstMon, 'link notCurMonth');
     }

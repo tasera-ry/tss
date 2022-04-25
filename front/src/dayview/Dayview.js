@@ -121,7 +121,7 @@ class Dayview extends Component {
   }
 
   render() {
-    const fin = localStorage.getItem('language');
+    const lang = localStorage.getItem('language');
     const { dayview } = translations;
 
     function OfficerBanner(props) {
@@ -129,22 +129,22 @@ class Dayview extends Component {
       let color;
 
       if (props.rangeSupervision === 'present') {
-        text = dayview.Green[fin];
+        text = dayview.Green[lang];
         color = css.greenB;
       } else if (props.rangeSupervision === 'absent') {
-        text = dayview.White[fin];
+        text = dayview.White[lang];
         color = css.whiteB;
       } else if (props.rangeSupervision === 'confirmed') {
-        text = dayview.Lightgreen[fin];
+        text = dayview.Lightgreen[lang];
         color = css.lightGreenB;
       } else if (props.rangeSupervision === 'not confirmed') {
-        text = dayview.Blue[fin];
+        text = dayview.Blue[lang];
         color = css.blueB;
       } else if (props.rangeSupervision === 'en route') {
-        text = dayview.Orange[fin];
+        text = dayview.Orange[lang];
         color = css.yellowB;
       } else if (props.rangeSupervision === 'closed') {
-        text = dayview.Red[fin];
+        text = dayview.Red[lang];
         color = css.redB;
       }
 
@@ -209,7 +209,7 @@ class Dayview extends Component {
                 <img
                   className={classes(css.infoImg2)}
                   src={info}
-                  alt={dayview.Notice[fin]}
+                  alt={dayview.Notice[lang]}
                 />
               </div>
             )}
@@ -261,7 +261,7 @@ class Dayview extends Component {
 
           {/* open and close hours */}
           <h2 className={classes(css.headerText)}>
-            {dayview.OpenHours[fin]}:{this.state.opens}-{this.state.closes}
+            {dayview.OpenHours[lang]}:{this.state.opens}-{this.state.closes}
           </h2>
           {/* Whole view */}
           <div className={classes(css.dayviewBigContainer)}>
@@ -291,7 +291,7 @@ class Dayview extends Component {
             to={`/weekview/${this.state.date.toISOString().substring(0, 10)}`}
           >
             <ArrowBackIcon />
-            {dayview.WeekviewLink[fin]}
+            {dayview.WeekviewLink[lang]}
           </Link>
 
           <hr />
@@ -306,27 +306,27 @@ class Dayview extends Component {
             {/* color info boxes */}
             <div className={classes(css.infoItem)}>
               <p className={classes(css.box, css.greenB)} />
-              {/* Open */} <p>{dayview.Open[fin]}</p>
+              {/* Open */} <p>{dayview.Open[lang]}</p>
             </div>
             <div className={classes(css.infoItem)}>
               <p className={classes(css.box, css.redB)} />
-              {/* Closed */} <p>{dayview.Closed[fin]}</p>
+              {/* Closed */} <p>{dayview.Closed[lang]}</p>
             </div>
             <div className={classes(css.infoItem)}>
               <p className={classes(css.box, css.whiteB)} />
-              {/* No supervisor */} <p>{dayview.NotAvailable[fin]}</p>
+              {/* No supervisor */} <p>{dayview.NotAvailable[lang]}</p>
             </div>
             <div className={classes(css.infoItemImg)}>
               <p className={classes(css.noFlex)}>
                 <img
                   className={classes(css.infoImg, css.noFlex)}
                   src={info}
-                  alt={dayview.Notice[fin]}
+                  alt={dayview.Notice[lang]}
                 />
               </p>
               {/* Extra info on track */}{' '}
               <p className={classes(css.infoText, css.relativeText)}>
-                {dayview.Notice[fin]}
+                {dayview.Notice[lang]}
               </p>
             </div>
           </Grid>
