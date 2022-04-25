@@ -51,14 +51,6 @@ jobs:
           runTests: false
           working-directory: back
 
-      # - name: Run postgres DB
-      #   uses: harmon758/postgresql-action@v1
-      #   with:
-      #     postgresql version: '12'
-      #     postgresql db: postgres
-      #     postgresql user: postgres
-      #     postgresql password: postgres
-
       - name: run backend
         run: npm start &
         working-directory: ./back
@@ -67,15 +59,11 @@ jobs:
         run: npx serve &
         working-directory: ./front
 
-      - name: Sleep for 30 seconds
-        run: sleep 30s
-        shell: bash
 
       - name: Run Integration Tests
         uses: cypress-io/github-action@v2
         with:
           install: false
-          # env: DB_USER=postgres, DB_PASSWORD=postgres, DB_HOST=localhost, SENDER_EMAIL=noreply@tasera.fi, SERVER_HOST=http://localhost:3000, PROXY_HOSTNAME=localhost, PROXY_PORT=8000, DB_PORT=5432, DB=postgres
           browser: chrome
           headless: true
           working-directory: back
