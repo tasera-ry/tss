@@ -86,6 +86,10 @@ jobs:
           DB_PORT: 5432
         working-directory: ./front
 
+      - name: Sleep for 30 seconds
+        run: sleep 30s
+        shell: bash
+
       - name: Run Integration Tests
         uses: cypress-io/github-action@v2
         with:
