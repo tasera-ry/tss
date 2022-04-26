@@ -6,7 +6,6 @@ import Button from '@material-ui/core/Button';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
-  KeyboardDatePicker,
   KeyboardTimePicker,
 } from '@material-ui/pickers';
 import Dialog from '@material-ui/core/Dialog';
@@ -30,7 +29,7 @@ import data from '../texts/texts.json';
 
 // Submitting track usage statistics
 import { TrackStatistics } from '../TrackStatistics/TrackStatistics';
-
+import InfoBox from '../infoBox/InfoBox';
 import classNames from 'classnames';
 import colors from '../colors.module.scss';
 import css from './rangeofficer.module.scss';
@@ -364,6 +363,7 @@ const TimePick = ({
 const Tabletview = () => {
   const [statusColor, setStatusColor] = useState();
   const [statusText, setStatusText] = useState();
+  //const [date, setDate] = useState('2021-04-27');
   const [date, setDate] = useState(moment(Date.now()).format('YYYY-MM-DD'));
   const [hours, setHours] = useState({});
   const [tracks, setTracks] = useState([]);
@@ -472,23 +472,8 @@ const Tabletview = () => {
   };
   return (
     <div>
-      <div className={classes(css.Text)}>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            onChange={(newDate) =>
-              setDate(moment(newDate).format('YYYY-MM-DD'))
-            }
-            value={date}
-            margin="normal"
-            id="schedule-date"
-            label="Date"
-            format="dd.MM.yyyy"
-            variant="inline"
-            inputVariant="outlined"
-            disableFuture
-          />
-        </MuiPickersUtilsProvider>
-      </div>
+      <InfoBox tabletMode={true} />
+      <div className={classes(css.Text)}>{date}</div>
 
       <Typography variant="h5" align="center">
         {tablet.Open[fin]}: &nbsp;
