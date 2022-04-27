@@ -100,12 +100,12 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
     track.color = colors.cream5; // eslint-disable-line
     setTextState(tablet.White[fin]);
 
-    if (track.trackSupervision === 'absent') {
+    if (track.trackSupervision === 'present') {
       newSupervision = 'closed';
       setSupervision('closed');
       track.color = colors.redLight; // eslint-disable-line
       setTextState(tablet.Red[fin]);
-    } else if (track.trackSupervision === 'closed') {
+    } else if (track.trackSupervision === 'absent') {
       newSupervision = 'present';
       setSupervision('present');
       track.color = colors.green; // eslint-disable-line
@@ -217,7 +217,6 @@ async function getData(
   await fetch(`/api/datesupreme/${date}`)
     .then((res) => res.json())
     .then((response) => {
-      // console.log(response);
       setScheduleId(response.scheduleId);
       setReservationId(response.reservationId);
       setRangeSupervisionScheduled(response.rangeSupervisionScheduled);
@@ -372,6 +371,7 @@ const Tabletview = () => {
   const [socket, setSocket] = useState();
   const fin = localStorage.getItem('language');
   const { tablet } = data;
+  const date = moment(Date.now()).format('YYYY-MM-DD');
   const today = moment().format('DD.MM.YYYY');
 
   /*
@@ -386,6 +386,7 @@ const Tabletview = () => {
     validateLogin().then((logInSuccess) => {
       if (logInSuccess) {
         getData(
+          //data,
           tablet,
           fin,
           setHours,
@@ -420,7 +421,7 @@ const Tabletview = () => {
     setTimeout(() => {
       window.location.reload();
     }, 3 * 60 * 60 * 1000); // 3 hours
-  }, []); // eslint-disable-line
+  }, [date]); // eslint-disable-line
 
   async function updateSupervisor(status, color, text) {
     const res = await updateRangeSupervision(
