@@ -212,13 +212,11 @@ async function getData(
   setReservationId,
   setRangeSupervisionScheduled,
 ) {
-  //const date = "2021-04-27"
   const date = moment(Date.now()).format('YYYY-MM-DD');
 
   await fetch(`/api/datesupreme/${date}`)
     .then((res) => res.json())
     .then((response) => {
-      // console.log(response);
       setScheduleId(response.scheduleId);
       setReservationId(response.reservationId);
       setRangeSupervisionScheduled(response.rangeSupervisionScheduled);
@@ -364,7 +362,6 @@ const TimePick = ({
 const Tabletview = () => {
   const [statusColor, setStatusColor] = useState();
   const [statusText, setStatusText] = useState();
-  const [date, setDate] = useState(moment(Date.now()).format('YYYY-MM-DD'));
   const [hours, setHours] = useState({});
   const [tracks, setTracks] = useState([]);
   const [scheduleId, setScheduleId] = useState();
