@@ -9,6 +9,7 @@ import css from './TrackStatistics.module.scss';
 const classes = classNames.bind(css);
 
 export const TrackStatistics = ({ track, supervision }) => {
+  const isDisabled = Boolean(track.trackSupervision === 'absent')
   const { scheduled, id } = track;
   const { scheduled_range_supervision_id } = scheduled;
 
@@ -46,6 +47,7 @@ export const TrackStatistics = ({ track, supervision }) => {
     <StylesProvider injectFirst>
       <div className={classes(css.trackContainer)}>
         <Button
+          disabled={isDisabled}
           variant="contained"
           className={classes(css.button)}
           onClick={() => changeVisitors(visitors - 1)}
@@ -54,6 +56,7 @@ export const TrackStatistics = ({ track, supervision }) => {
         </Button>
         <div className={classes(css.visitorAmount)}>{visitors}</div>
         <Button
+          disabled={isDisabled}
           variant="contained"
           className={classes(css.button)}
           onClick={() => changeVisitors(visitors + 1)}
