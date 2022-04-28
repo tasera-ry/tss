@@ -40,6 +40,9 @@ jobs:
       - name: Run DB Migrations
         run: npx knex migrate:latest && npx knex seed:run
         working-directory: ./back
+        env:
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
 
       - name: Install Cypress dependencies
         uses: cypress-io/github-action@v2
