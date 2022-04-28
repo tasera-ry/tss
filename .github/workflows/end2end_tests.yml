@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install app dependencies
-        run: npm install && cd ../front && npm install
+        run: npm install && cd ../front && yarn
         working-directory: ./back
 
       - name: Run DB Migrations
