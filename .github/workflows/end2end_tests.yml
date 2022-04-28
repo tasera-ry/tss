@@ -4,10 +4,10 @@ env:
   DB: postgres
   DB_USER: postgres
   DB_PASSWORD: postgres
-  DB_HOST: localhost
+  DB_HOST: 127.0.0.1
   SENDER_EMAIL: noreply@tasera.fi
-  SERVER_HOST: http://localhost:3000
-  PROXY_HOSTNAME: localhost
+  SERVER_HOST: http://127.0.0.1:3000
+  PROXY_HOSTNAME: 127.0.0.1
   PROXY_PORT: 8000
   DB_PORT: 5432
 
@@ -61,7 +61,7 @@ jobs:
         run: |
           yarn run start &
           sleep 10 &&
-          curl http://localhost:3000
+          curl http://127.0.0.1:3000
         working-directory: ./front
 
 
