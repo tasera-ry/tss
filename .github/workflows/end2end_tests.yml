@@ -1,4 +1,4 @@
-name: Integration Tests
+name: End-to-end Tests
 
 env: 
   DB: postgres
@@ -13,7 +13,7 @@ env:
 
 on:
   push:
-    branches: [e2e-testing]
+    branches: [master]
   pull_request:
     branches: [master]
 

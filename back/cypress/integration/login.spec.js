@@ -49,15 +49,17 @@ describe('Basic user management test suite', () => {
       cy.get('input[name=password]').type(superuser.password)
       cy.contains('Log in').click()
       cy.contains(superuser.name)  // When logged in, your username is shown in the nav bar
-  
     })
 
-    it('Superuser can delete a user from the User Management menu', () => {
+    it('Superuser can delete an user from the User Management menu', () => {
       cy.contains('Menu').click()
       cy.contains('User management').click()
-    //   cy.contains('tr', supervisor.name)  // gives you the cell of the table row that contains the name
-    //   cy.siblings().contains('Delete profile').click()
-    //   cy.contains('Confirm').click()
+      cy.contains('th', supervisor.name)      // gives you the cell in the table row
+        .parent()                             // selects the row
+        .contains('Delete profile').click()   // uses the delete button in the selected row
+
+      cy.contains(`This action will permanently remove user ${supervisor.name}`)
+      cy.contains('Confirm').click()
     })
   
     it('Superuser can log out', () => {
@@ -66,16 +68,16 @@ describe('Basic user management test suite', () => {
       cy.contains('Sign In')  // The sign in option is shown when logged out
     })
   })
-
-  // describe('After supervisor user has been deleted', () => {
-  //   it('Deleted user can not log in', () => {
-  //     cy.visit('/')
-  //     cy.contains('EN').click()
-  //     cy.contains('Sign In').click()
-  //     cy.get('input[name=username]').type(supervisor.name)
-  //     cy.get('input[name=password]').type(supervisor.password)
-  //     cy.contains('Log in').click()
-  //     cy.contains('Wrong username or password')
-  //   })
-  // })
+  
+  describe('Login test with deleted user', () => {
+    it('Deleted user can not log in', () => {
+      cy.visit('/')
+      cy.contains('EN').click()
+      cy.contains('Sign In').click()
+      cy.get('input[name=username]').type(supervisor.name)
+      cy.get('input[name=password]').type(supervisor.password)
+      cy.contains('Log in').click()
+      cy.contains('Wrong username or password')
+    })
+  })
 })
