@@ -6,3 +6,7 @@
 
 # Node modules
 node_modules
+
+# Cypress generated videos and screenshots
+cypress/videos
+cypress/screenshots
