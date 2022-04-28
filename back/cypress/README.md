@@ -4,7 +4,7 @@ The application uses Cypress in the GitHub Actions pipeline to test complicated 
 require backend, frontend and database functionality.
 
 ## How to run the end-to-end tests in GitHub Actions
-1. create a pull request to master or push to master (pushing to master is not adviced)
+1. create a pull request to master or push to master
 
 For testing purposes you can change the branch identifier in .github/workflows/end2end_tests.yml to your own branch and run tests by pushing to that
 
