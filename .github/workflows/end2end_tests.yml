@@ -1,7 +1,10 @@
 name: End-to-end Tests
 
 env: 
-  POSTGRES_PASSWORD: postgres
+  DB: postgres
+  DB_USER: postgres
+  DB_PASSWORD: postgres
+  DB_HOST: 127.0.0.1
   SENDER_EMAIL: noreply@tasera.fi
   SERVER_HOST: http://127.0.0.1:3000
   PROXY_HOSTNAME: 127.0.0.1
@@ -17,17 +20,18 @@ on:
 jobs:
   cypress-run:
     runs-on: ubuntu-20.04
-    container: node:14
     services:
       postgres:
         image: postgres:12
         env:
+          DB: postgres
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          POSTGRES_DB: postgres
+          POSTGRES_PORT: 5432
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - name: Checkout
@@ -40,9 +44,6 @@ jobs:
       - name: Run DB Migrations
         run: npx knex migrate:latest && npx knex seed:run
         working-directory: ./back
-        env:
-          POSTGRES_HOST: postgres
-          POSTGRES_PORT: 5432
 
       - name: Install Cypress dependencies
         uses: cypress-io/github-action@v2
