@@ -54,7 +54,7 @@ jobs:
       - name: run backend
         run: |
           npm run start &
-          npx wait-on http://127.0.0.1:8000
+          sleep 20s
         working-directory: ./back
 
       - name: run frontend
