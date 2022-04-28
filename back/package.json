@@ -4,8 +4,8 @@
   "description": "Scheduling software for managing shooting ranges",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "jest --testPathPattern=back/__tests__",
+    "test:watch": "jest --watch --testPathPattern=back/__tests__",
     "dev": "docker-compose -f ../docker-compose.dev.yaml up",
     "dev:withFront": "concurrently \"nodemon server\" \"cd ../front && npm start\"",
     "start": "node server.js",
