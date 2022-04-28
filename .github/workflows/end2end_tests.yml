@@ -54,14 +54,13 @@ jobs:
       - name: run backend
         run: |
           npm run start &
-          sleep 10
+          npx wait-on http://127.0.0.1:8000
         working-directory: ./back
 
       - name: run frontend
         run: |
           yarn run start &
-          sleep 10 &&
-          curl http://127.0.0.1:3000
+          npx wait-on http://127.0.0.1:3000
         working-directory: ./front
 
 
