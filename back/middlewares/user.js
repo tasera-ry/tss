@@ -8,7 +8,7 @@ const _ = require('lodash');
 or that the user has admin role. */
 const userUpdateCheck = function canUpdatePassword(request, response, next) {
   const session = response.locals.user;
-  
+
   if (session.role === 'superuser') {
     return next();
   }
@@ -26,13 +26,13 @@ const canRead = function canReadUserData(request, response, next) {
   const session = response.locals.user;
   const query = response.locals.query;
 
-  if(session.role === 'superuser') {
+  if (session.role === 'superuser') {
     return next();
   }
 
   // Make sure the user being queried has the same id and/or name as the active
   // session
-  if(_.isMatch(_.pick(session, 'name', 'id'), _.pick(query, 'name', 'id'))) {
+  if (_.isMatch(_.pick(session, 'name', 'id'), _.pick(query, 'name', 'id'))) {
     return next();
   }
   return response.status(403).send({
@@ -47,8 +47,8 @@ exports.hasProperty = function userHasProperty(propertyName, value, equalityFn) 
       : equalityFn(value, obj[propertyName]);
   }
 
-  return function(request, response, next) {
-    if(propertyEquals(response.locals.user)) {
+  return function (request, response, next) {
+    if (propertyEquals(response.locals.user)) {
       return next();
     }
     return response.status(403).send({
@@ -64,7 +64,7 @@ const serviceCalls = {
     try {
       response.locals.user = await services.user.authenticate(credentials);
     }
-    catch(e) {
+    catch (e) {
       /*
        * Something went wrong in the database call, possibly user doesn't
        * exist, password was incorrect, or some connection error
@@ -72,7 +72,7 @@ const serviceCalls = {
 
       // handle known errors unknown user and incorrect password with a
       // response
-      if(e.name === 'Invalid credentials') {
+      if (e.name === 'Invalid credentials') {
         return response
           .status(401)
           .send({
@@ -94,7 +94,7 @@ const serviceCalls = {
     try {
       response.locals.queryResult = await services.user.read(query, []);
     }
-    catch(e) {
+    catch (e) {
       // Connection and other unexpected errors
       return next(e);
     }
@@ -108,7 +108,7 @@ const serviceCalls = {
     try {
       response.locals.queryResult = await services.user.read(query, []);
     }
-    catch(e) {
+    catch (e) {
       return next(e);
     }
 
@@ -122,14 +122,14 @@ const serviceCalls = {
     try {
       id = await services.user.create(query);
     }
-    catch(e) {
+    catch (e) {
       return next(e);
     }
 
     try {
-      response.locals.queryResult = await services.user.read({id: id});
+      response.locals.queryResult = await services.user.read({ id: id });
     }
-    catch(e) {
+    catch (e) {
       return next(e);
     }
 
@@ -143,8 +143,8 @@ const serviceCalls = {
 
     try {
       response.locals.queryResult = await services.user.update(id, updates);
-    } catch(e) {
-      if(e.name === 'Unknown user') {
+    } catch (e) {
+      if (e.name === 'Unknown user') {
         return response
           .status(404)
           .send({
@@ -163,7 +163,7 @@ const serviceCalls = {
 
     try {
       response.locals.queryResult = await services.user.delete(query);
-    } catch(e) {
+    } catch (e) {
       return next(e);
     }
 

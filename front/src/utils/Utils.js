@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import 'moment/locale/sv';
 import { Link } from 'react-router-dom';
 import api from '../api/api';
 import texts from '../texts/texts.json';
@@ -58,10 +59,10 @@ export const getSchedulingFreeform = async (date) => {
   }
 };
 
-export const checkColor = (paivat, paiva) => {
-  const { rangeSupervision: rataStatus } = paivat[paiva];
+export const checkColor = (days, oneDay) => {
+  const { rangeSupervision: trackStatus } = days[oneDay];
 
-  switch (rataStatus) {
+  switch (trackStatus) {
     case 'present':
       return colors.green;
     case 'confirmed':
@@ -81,7 +82,7 @@ export const checkColor = (paivat, paiva) => {
 
 export const viewChanger = () => {
   const { viewChanger } = texts; // eslint-disable-line
-  const fin = localStorage.getItem('language');
+  const lang = localStorage.getItem('language');
   const table = [];
 
   try {
@@ -104,17 +105,17 @@ export const viewChanger = () => {
 
     table.push(
       <Link key="month" className="link" to={`/monthview/${time}`}>
-        <div>{viewChanger.Month[fin]}</div>
+        <div>{viewChanger.Month[lang]}</div>
       </Link>,
     );
     table.push(
       <Link key="week" className="link" to={`/weekview/${time}`}>
-        <div>{viewChanger.Week[fin]}</div>
+        <div>{viewChanger.Week[lang]}</div>
       </Link>,
     );
     table.push(
       <Link key="day" className="link" to={`/dayview/${time}`}>
-        <div>{viewChanger.Day[fin]}</div>
+        <div>{viewChanger.Day[lang]}</div>
       </Link>,
     );
     return table;
@@ -131,7 +132,7 @@ export const viewChanger = () => {
         key="1"
         to={`/monthview/${time.format('YYYY-MM-DD')}`}
       >
-        <div>{viewChanger.Month[fin]}</div>
+        <div>{viewChanger.Month[lang]}</div>
       </Link>,
     );
     table.push(
@@ -140,7 +141,7 @@ export const viewChanger = () => {
         key="2"
         to={`/weekview/${time.format('YYYY-MM-DD')}`}
       >
-        <div>{viewChanger.Week[fin]}</div>
+        <div>{viewChanger.Week[lang]}</div>
       </Link>,
     );
     table.push(
@@ -149,7 +150,7 @@ export const viewChanger = () => {
         key="3"
         to={`/dayview/${time.format('YYYY-MM-DD')}`}
       >
-        <div>{viewChanger.Day[fin]}</div>
+        <div>{viewChanger.Day[lang]}</div>
       </Link>,
     );
     return table;
@@ -158,7 +159,7 @@ export const viewChanger = () => {
 
 export const jumpToCurrent = () => {
   const { viewChanger } = texts; // eslint-disable-line
-  const fin = localStorage.getItem('language');
+  const lang = localStorage.getItem('language');
 
   try {
     const fullUrl = window.location.href.split('/');
@@ -172,7 +173,7 @@ export const jumpToCurrent = () => {
           .toISOString()
           .substring(0, 10)}`}
       >
-        <div>{viewChanger.JumpToCurrent[fin]}</div>
+        <div>{viewChanger.JumpToCurrent[lang]}</div>
       </Link>
     );
   } catch (err) {
@@ -181,18 +182,21 @@ export const jumpToCurrent = () => {
   }
 };
 
-// currently only english and finnish are supported
+// english, swedish and finnish are supported
 export const getLanguage = () => {
   if (localStorage.getItem('language') === '1') return 'en';
+  else if (localStorage.getItem('language') === '2') return 'sv';
   return 'fi';
 };
 
 export const dayToString = (i) => {
   const lang = getLanguage();
+  console.log(lang)
   moment.locale(lang);
-  // en/fi have different numbers for start date
-  if (lang === 'fi') i -= 1; // eslint-disable-line
+  // en has different number for start date compared to fi and swe
+  if (lang !== 'en') i -= 1; // eslint-disable-line
   const dayString = moment().weekday(i).format('dddd');
+  console.log(dayString)
   // first letter only to uppercase
   return dayString.charAt(0).toUpperCase() + dayString.slice(1);
 };
