@@ -68,7 +68,7 @@ describe('Basic user management test suite', () => {
       cy.contains('Sign In')  // The sign in option is shown when logged out
     })
   })
-  
+
   describe('Login test with deleted user', () => {
     it('Deleted user can not log in', () => {
       cy.visit('/')
