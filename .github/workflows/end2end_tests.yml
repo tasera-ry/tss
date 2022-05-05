@@ -68,6 +68,4 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           install: false
-          browser: chrome
-          headless: true
           working-directory: back
