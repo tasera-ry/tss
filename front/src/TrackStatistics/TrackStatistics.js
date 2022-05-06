@@ -118,6 +118,7 @@ export const TrackStatistics = ({ track, supervision }) => {
           variant="contained"
           className={classes(css.button)}
           onClick={() => handleOpen()}
+          style= {{backgroundColor: '#d1ccc2'}}
         >
           -
         </Button>
@@ -127,6 +128,7 @@ export const TrackStatistics = ({ track, supervision }) => {
           variant="contained"
           className={classes(css.button)}
           onClick={() => changeVisitors(visitors + 1)}
+          style= {{backgroundColor: '#d1ccc2'}}
         >
           +
         </Button>

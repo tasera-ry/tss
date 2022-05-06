@@ -147,7 +147,7 @@ const Nav = () => {
 
   const langButtons = [
     { name: 'SWE', num: 2 },
-    { name: 'EN', num: 1 },
+    { name: 'ENG', num: 1 },
     { name: 'FIN', num: 0 },
   ];
 
@@ -170,7 +170,7 @@ const Nav = () => {
             className={classes(css.loginLink, css.pc, css.clickable)}
             to="/signin"
           >
-            <Button>{nav.SignIn[lang]}</Button>
+            <Button className={classes(css.loginbutton)}>{nav.SignIn[lang]}</Button>
           </Link>
         )}
         <div className={classes(css.langButtons, css.pc)}>
@@ -182,6 +182,7 @@ const Nav = () => {
                 window.location.reload();
               }}
               key={name}
+              
             >
               {name}
             </Button>

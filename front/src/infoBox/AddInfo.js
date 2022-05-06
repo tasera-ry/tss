@@ -194,6 +194,7 @@ const AddInfo = () => {
       <div>
         <Button
           type="button"
+          className={classes(css.sandButton)} 
           variant="contained"
           onClick={handleClick}
           disabled={

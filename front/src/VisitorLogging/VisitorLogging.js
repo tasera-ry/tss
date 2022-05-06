@@ -126,12 +126,14 @@ const VisitorLogging = ({
         )}
         <div className={classes(css.modalButtonContainer)}>
           <div className={classes(css.modalButton)}>
-            <Button onClick={handleClose} variant="contained" color="secondary">
+            <Button onClick={handleClose} variant="contained" color="secondary" 
+            style={{color: 'black', backgroundColor:'#808080'}}>
               {texts.Close[lang]}
             </Button>
           </div>
           <div className={classes(css.modalButton)}>
-            <Button onClick={sendStats} variant="contained" color="primary">
+            <Button onClick={sendStats} variant="contained" color="primary" 
+            style={{color: 'black', backgroundColor:'#d1ccc2'}}>
               {texts.Save[lang]}
             </Button>
           </div>
