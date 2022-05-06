@@ -201,7 +201,7 @@ class Monthview extends Component {
     while (
       firstMon.format('ddd') !== 'Mon' &&
       firstMon.format('ddd') !== 'ma' &&
-      firstMon.format('ddd') !== 'Mån'
+      firstMon.format('ddd') !== 'mån'
     ) {
       firstMon = firstMon.subtract(1, 'days');
       if (safetyLoop > 7) {
@@ -236,8 +236,9 @@ class Monthview extends Component {
     while (
       firstMon.format('ddd') !== 'Mon' &&
       firstMon.format('ddd') !== 'ma' &&
-      firstMon.format('ddd') !== 'Mån'
+      firstMon.format('ddd') !== 'mån'
     ) {
+      console.log(firstMon.format('ddd'))
       addDate(firstMon, 'link notCurMonth');
     }
 
