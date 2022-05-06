@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import 'moment/locale/sv';
 import { Link } from 'react-router-dom';
 import api from '../api/api';
 import texts from '../texts/texts.json';
@@ -58,10 +59,10 @@ export const getSchedulingFreeform = async (date) => {
   }
 };
 
-export const checkColor = (paivat, paiva) => {
-  const { rangeSupervision: rataStatus } = paivat[paiva];
+export const checkColor = (days, oneDay) => {
+  const { rangeSupervision: trackStatus } = days[oneDay];
 
-  switch (rataStatus) {
+  switch (trackStatus) {
     case 'present':
       return colors.green;
     case 'confirmed':
@@ -181,19 +182,21 @@ export const jumpToCurrent = () => {
   }
 };
 
-// currently only english and finnish are supported
+// english, swedish and finnish are supported
 export const getLanguage = () => {
   if (localStorage.getItem('language') === '1') return 'en';
-  else if (localStorage.getItem('language') === '2') return 'swe';
+  else if (localStorage.getItem('language') === '2') return 'sv';
   return 'fi';
 };
 
 export const dayToString = (i) => {
   const lang = getLanguage();
+  console.log(lang)
   moment.locale(lang);
-  // en/fi have different numbers for start date
-  if (lang === 'fi' || lang === 'swe') i -= 1; // eslint-disable-line
+  // en has different number for start date compared to fi and swe
+  if (lang !== 'en') i -= 1; // eslint-disable-line
   const dayString = moment().weekday(i).format('dddd');
+  console.log(dayString)
   // first letter only to uppercase
   return dayString.charAt(0).toUpperCase() + dayString.slice(1);
 };

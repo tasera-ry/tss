@@ -14,7 +14,6 @@ const model = {
     });
   },
   read: async (message) => {
-    console.log(message);
     return await knex.transaction(trx => {
       if(message.start)
         trx = trx.whereRaw('start >= ? OR end <= ?', [message.start,message.start]);

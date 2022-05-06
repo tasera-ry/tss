@@ -228,11 +228,16 @@ async function getId(username) {
   if (!username) return;
 
   const query = `api/user?name=${username}`;
-  const response = await axios.get(query);
+  try{
+    const response = await axios.get(query);
 
-  const userID = response.data[0].id;
-
-  return userID; // eslint-disable-line
+    const userID = response.data[0].id;
+  
+    return userID; // eslint-disable-line
+  }
+  catch(error){
+    return error;
+  }
 }
 
 // obtain date info

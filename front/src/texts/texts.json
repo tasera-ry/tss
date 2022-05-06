@@ -501,6 +501,13 @@
     "endDate": ["Loppumispäivämäärä", "End date", "Slutdatum"],
     "repeatWeekly": ["Toista viikoittain", "Repeat weekly", "Upprepa varje vecka"],
     "repeatMonthly": ["Toista kuukausittain", "Repeat monthly", "Upprepa varje månad"],
+    "sendPublicMessage": ["Lähetä julkinen viesti", "Send public message", "Skicka offentligt meddelande"],
     "send": ["Lähetä", "Send", "Skicka"]
+  },
+  "trackStatisticsModal": {
+    "message": ["Käyttäjiä ei tule vähentää. Haluatko todella vähentää käyttäjien määrää?", "Users should not be reduced, Do you really want to reduce the number of users?", "Användare ska inte minskas. Vill du verkligen minska antalet användare?"],
+    "messageTitle": ["Varoitus!", "Warning!", "Varning!"],
+    "messageYes": ["Joo", "Yes", "Ja"],
+    "messageNo": ["Ei", "No", "Nej"]
   }
 }
