@@ -1,6 +1,6 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-const proxyHost = process.env.PROXY_HOSTNAME || "127.0.0.1"
+const proxyHost = process.env.PROXY_HOSTNAME || "localhost"
 const proxyPort = process.env.PROXY_PORT || "8000"
 
 module.exports = function (app) {

@@ -11,7 +11,7 @@ module.exports = {
   development: {
     client: 'pg',
     connection: {
-      host: process.env.DB_HOST || 'localhost',
+      host: process.env.DB_HOST || '127.0.0.1',
       user: process.env.DB_USER || 'tssuser',
       password: process.env.DB_PASSWORD,
       database: process.env.DB || process.env.USER || process.env.USERNAME,
@@ -34,7 +34,7 @@ module.exports = {
   stable: {
     client: 'pg',
     connection: {
-      host: process.env.DB_HOST || 'localhost',
+      host: process.env.DB_HOST || '127.0.0.1',
       user: process.env.DB_USER || 'tssuser',
       password: process.env.DB_PASSWORD,
       database: process.env.DB || 'stable',

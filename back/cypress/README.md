@@ -1,7 +1,13 @@
 # End-to-end testing framework Cypress
 
+Testing complicated use cases in the application can be tedious to do by hand and Cypress offers a natural language-ish
+solution to the problem. If you don't have a lot of experiaence with testing, this caould be a good way to write some
+cases for your application. Sample test case is in ./back/cypress/integration/login.spec.js
+
+Cypress only runs cases from this folder unless told otherwise. Jest has been configured to skip this folder.
+
 The application uses Cypress in the GitHub Actions pipeline to test complicated use cases that
-require backend, frontend and database functionality.
+require backend, frontend and database functionality. (pipeline disabled 05/22)
 
 ## How to run the end-to-end tests in GitHub Actions
 1. create a pull request to master or push to master
