@@ -34,22 +34,19 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
-    "test:coverage": "npm test -- --coverage --watchAll=false",
+    "test": "react-scripts test --env=jest-environment-jsdom-sixteen --testPathPattern=/src",
+    "test:coverage": "npm test -- --coverage --watchAll=false --testPathPattern=/src",
     "eject": "react-scripts eject",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
   "eslintConfig": {
     "extends": [
-      "react-app"
+      "react-app",
+      "react-scripts"
     ]
   },
-  "resolutions": {
-    "webpack-dev-server": "3.10.1"
-  },
   "devDependencies": {
-    "eslint": "^6.6.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.22.1",
