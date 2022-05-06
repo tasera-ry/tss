@@ -187,7 +187,7 @@ class Monthview extends Component {
               />
             </div>
           ) : (
-            <div>{target.date()}</div>
+            <div className={classes(css.monthviewDayText)}>{target.date()}</div>
           )}
         </Link>,
       );
@@ -455,13 +455,17 @@ class Monthview extends Component {
                   {viewChanger()}
                 </div>
               </div>
+              
               <div className={classes(css.weekdays)}>
                 {this.createWeekDay()}
               </div>
+              
               <div className={classes(css.weekNumber)}>
                 {this.createWeekNumber()}
               </div>
+              
               <div className={classes(css.monthDays)}>{monthTable}</div>
+            
             </div>
             <Infoboxes />
           </div>

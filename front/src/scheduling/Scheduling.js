@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 
-import '../App.css';
-import './Scheduling.css';
+// Style and colors
+import './Scheduling.scss';
+import '../shared.module.scss';
 
 // Date management
 import MomentUtils from '@date-io/moment';
@@ -427,7 +428,7 @@ class Scheduling extends Component {
               <FormControlLabel
                 value="present"
                 control={
-                  <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
+                  <Radio style={{ fontColor: 'black', color: '#658f60' }} />
                 }
                 label={sched.OfficerPresent[fin]}
               />
@@ -441,7 +442,7 @@ class Scheduling extends Component {
               <FormControlLabel
                 value="closed"
                 control={
-                  <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
+                  <Radio style={{ fontColor: 'black', color: '#c97b76' }} />
                 }
                 label={sched.Closed[fin]}
               />
@@ -454,7 +455,7 @@ class Scheduling extends Component {
               rowsMax={3}
               onChange={this.handleNotice}
               value={tracks[key].notice !== null ? tracks[key].notice : ''}
-              style={{ backgroundColor: '#f2f0eb' }}
+              style={{ backgroundColor: 'blackTint10' }}
             />
           </FormControl>
         </React.Fragment>,
@@ -935,7 +936,7 @@ class Scheduling extends Component {
               variant="contained"
               color="primary"
               onClick={this.openAllTracks}
-              style={{ color: 'black', backgroundColor: '#5f77a1' }}
+              style={{ color: 'black', backgroundColor: '#658f60' }}
               data-testid="openAll"
             >
               {sched.OpenAll[fin]}
@@ -943,7 +944,7 @@ class Scheduling extends Component {
             <Button
               variant="contained"
               onClick={this.emptyAllTracks}
-              style={{ backgroundColor: '#d1ccc2' }}
+              style={{ backgroundColor: '#5f77a1' }}
               data-testid="emptyAll"
             >
               {sched.ClearAll[fin]}
@@ -952,7 +953,7 @@ class Scheduling extends Component {
               variant="contained"
               color="secondary"
               onClick={this.closeAllTracks}
-              style={{ color: 'black', backgroundColor: '#c97b7b' }}
+              style={{ color: 'black', backgroundColor: '#c97b76' }}
               data-testid="closeAll"
             >
               {sched.CloseAll[fin]}
