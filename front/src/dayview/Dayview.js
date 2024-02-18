@@ -3,9 +3,9 @@ import classNames from 'classnames';
 
 // Material UI components
 import { Link } from 'react-router-dom';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import Grid from '@material-ui/core/Grid';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Grid from '@mui/material/Grid';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // Moment for date handling
 import moment from 'moment';
@@ -226,7 +226,7 @@ class Dayview extends Component {
           <Grid
             container
             direction="row"
-            justify="space-around"
+            justifyContent="space-around"
             alignItems="center"
             className={classes(css.dateHeader)}
           >
@@ -249,7 +249,7 @@ class Dayview extends Component {
             />
           </Grid>
           {/* Range officer info */}
-          <Grid container direction="row" justify="center" alignItems="center">
+          <Grid container direction="row" justifyContent="center" alignItems="center">
             <Grid item xs={12}>
               {this.state.state !== 'ready' ? (
                 <br />
@@ -299,7 +299,7 @@ class Dayview extends Component {
           <Grid
             container
             direction="row"
-            justify="flex-start"
+            justifyContent="flex-start"
             alignItems="flex-start"
             className="otherInfo"
           >

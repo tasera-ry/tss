@@ -9,11 +9,11 @@ import moment from 'moment';
 import 'moment/locale/fi';
 
 // Material UI components
-import Grid from '@material-ui/core/Grid';
-import Modal from '@material-ui/core/Modal';
-import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
+import Grid from '@mui/material/Grid';
+import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,

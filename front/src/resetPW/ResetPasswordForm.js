@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 
 // Material UI components
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 import { useHistory } from 'react-router-dom';
 import translations from '../texts/texts.json';

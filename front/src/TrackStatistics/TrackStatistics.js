@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import api from '../api/api';
-import Button from '@material-ui/core/Button';
-// enables overriding material-ui component styles in scss
-import { StylesProvider } from '@material-ui/core/styles';
+import Button from '@mui/material/Button';
+import StylesProvider from '@mui/styles/StylesProvider';
 import css from './TrackStatistics.module.scss';
-import { makeStyles } from '@material-ui/core/styles';
-import Modal from '@material-ui/core/Modal';
+import makeStyles from '@mui/styles/makeStyles';
+import Modal from '@mui/material/Modal';
 import translations from '../texts/texts.json';
 const { trackStatisticsModal } = translations;
 

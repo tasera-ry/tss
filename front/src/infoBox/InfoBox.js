@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import Close from '@material-ui/icons/Close';
-import Alert from '@material-ui/lab/Alert';
+import Close from '@mui/icons-material/Close';
+import Alert from '@mui/material/Alert';
 import api from '../api/api';
 import css from './InfoBox.module.scss';
 

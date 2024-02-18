@@ -22,7 +22,7 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
 import NiceInputPassword from 'react-nice-input-password';
 import 'react-nice-input-password/dist/react-nice-input-password.css';
 

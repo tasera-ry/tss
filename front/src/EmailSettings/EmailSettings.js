@@ -14,7 +14,7 @@ import {
   CardContent,
   Select,
   MenuItem,
-} from '@material-ui/core';
+} from '@mui/material';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,

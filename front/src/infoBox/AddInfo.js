@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import classNames from 'classnames';
-import DeleteOutlined from '@material-ui/icons/DeleteOutlined';
+import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 
 import {
   Button,
@@ -10,7 +10,7 @@ import {
   Checkbox,
   Select,
   MenuItem,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import { validateLogin } from '../utils/Utils';
 import translations from '../texts/texts.json';

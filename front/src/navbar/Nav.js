@@ -5,19 +5,18 @@ import { useCookies } from 'react-cookie';
 
 // Material UI elements
 import { Link } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
-import Drawer from '@material-ui/core/Drawer';
-import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
+import Button from '@mui/material/Button';
+import Drawer from '@mui/material/Drawer';
+import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
 
 import logo from '../logo/Logo.png';
 import SupervisorNotification from './SupervisorNotification';
 import FeedbackWindow from './FeedbackWindow';
 import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
 import translations from '../texts/texts.json';
-// enables overriding material-ui component styles in scss
-import { StylesProvider } from '@material-ui/core/styles';
+import StylesProvider from '@mui/styles/StylesProvider';
 import css from './Nav.module.scss';
 
 const classes = classNames.bind(css);
