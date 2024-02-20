@@ -1025,6 +1025,7 @@ class Scheduling extends Component {
             />
             <div className="toast">
               <Snackbar
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 open={this.state.toast}
                 autoHideDuration={5000}
                 onClose={this.handleSnackbarClose}

@@ -182,6 +182,7 @@ const Statistics = () => {
   return (
     <div className={classes(css.container)}>
       <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         open={toastOpen}
         autoHideDuration={5000}
         onClose={(_, reason) => handleSnackbarClose(reason)}

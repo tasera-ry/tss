@@ -76,7 +76,11 @@ const RequestStatusAlert = ({ statusSetter, requestStatus, text }) => {
     return <></>;
   }
   return (
-    <Snackbar open={requestStatus !== null} onClose={() => statusSetter(null)}>
+    <Snackbar 
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      open={requestStatus !== null} 
+      onClose={() => statusSetter(null)}
+    >
       <Alert severity={requestStatus}>{text}</Alert>
     </Snackbar>
   );

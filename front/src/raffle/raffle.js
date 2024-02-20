@@ -238,6 +238,7 @@ export const Raffle = () => {
           </>
         )}
         <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={toast.open}
           autoHideDuration={5000}
           onClose={handleSnackbarClose}
