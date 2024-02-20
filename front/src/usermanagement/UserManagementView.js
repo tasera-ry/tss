@@ -747,7 +747,7 @@ class UserManagementView extends Component {
           <DialogContent className={classes(css.dialogStyle)}>
             <TextField
               value={this.state.newUserName}
-              margin="dense"
+              size="small"
               id="name"
               label={manage.Username[fin]}
               onChange={this.handleNewuserNameChange}
@@ -762,7 +762,7 @@ class UserManagementView extends Component {
               InputComponent={TextField}
               className={classes(css.dialogStyle)}
               value={this.state.newUserPass}
-              margin="dense"
+              size="small"
               label={manage.Password[fin]}
               name="passwordField"
               fullWidth
@@ -794,7 +794,7 @@ class UserManagementView extends Component {
 
             <TextField
               value={this.state.email}
-              margin="dense"
+              size="small"
               id="sposti"
               label={manage.Email[fin]}
               onChange={this.handleNewEmailChange}
@@ -900,7 +900,7 @@ class UserManagementView extends Component {
             <TextField
               type="password"
               value={this.state.oldpassword}
-              margin="dense"
+              size="small"
               id="oldpassword"
               label={manage.OldPass[fin]}
               onChange={this.handleOldpassStringChange}
@@ -916,7 +916,7 @@ class UserManagementView extends Component {
               InputComponent={TextField}
               className={classes(css.dialogStyle)}
               value={this.state.newPassword}
-              margin="dense"
+              size="small"
               label={manage.NewPass[fin]}
               name="passwordField"
               fullWidth
@@ -988,7 +988,7 @@ class UserManagementView extends Component {
             <TextField
               type="text"
               value={this.state.newemail}
-              margin="dense"
+              size="small"
               id="newemail"
               label={manage.ChangeEmail[fin]}
               onChange={this.handleNewEmailChange}
@@ -1035,7 +1035,7 @@ class UserManagementView extends Component {
               InputComponent={TextField}
               className={classes(css.dialogStyle)}
               value={this.state.password}
-              margin="dense"
+              size="small"
               label={manage.NewPass[fin]}
               name="passwordField"
               fullWidth
@@ -1107,7 +1107,7 @@ class UserManagementView extends Component {
             <TextField
               type="text"
               value={this.state.email}
-              margin="dense"
+              size="small"
               id="name"
               label={manage.ChangeEmail[fin]}
               onChange={(e) => {
