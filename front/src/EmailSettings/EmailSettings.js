@@ -21,9 +21,11 @@ import {
   LocalizationProvider
 } from '@mui/lab';
 import './EmailSettings.scss';
-import { emailSettings, nav } from '../texts/texts.json';
+import texts from '../texts/texts.json';
 
 const lang = localStorage.getItem('language');
+const emailSettings = texts.emailSettings
+const nav = texts.nav
 
 const HelperText = (messageSelection) => {
   switch (messageSelection) {
