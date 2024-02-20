@@ -1,6 +1,6 @@
 import React from "react";
 import { DayPicker } from "react-day-picker";
-import { isSameDay, isBefore, isAfter } from "date-fns";
+import { isSameDay, isBefore } from "date-fns";
 import "react-day-picker/dist/style.css";
 import "./RaffleDatePicker.scss";
 import translations from "../texts/texts.json";
@@ -29,7 +29,6 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
     return disabledDays.some((modifier) => {
       if (modifier.daysOfWeek && modifier.daysOfWeek.includes(day.getDay())) return true;
       if (modifier.before && isBefore(day, modifier.before)) return true;
-      if (modifier.after && isAfter(day, modifier.after)) return true;
       return false; 
     });
   };
