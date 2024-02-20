@@ -16,7 +16,7 @@ import SupervisorNotification from './SupervisorNotification';
 import FeedbackWindow from './FeedbackWindow';
 import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
 import translations from '../texts/texts.json';
-import StylesProvider from '@mui/styles/StylesProvider';
+import ThemeProvider from '@mui/material/styles'
 import css from './Nav.module.scss';
 
 const classes = classNames.bind(css);
@@ -151,7 +151,7 @@ const Nav = () => {
   ];
 
   return (
-    <StylesProvider injectFirst>
+    <ThemeProvider>
       <nav>
         <Link
           className={classes(css.logo)}
@@ -200,7 +200,7 @@ const Nav = () => {
         checkSupervisions={checkSupervisions}
         setCheckSupervisions={setCheckSupervisions}
       />
-    </StylesProvider>
+    </ThemeProvider>
   );
 };
 export default Nav;

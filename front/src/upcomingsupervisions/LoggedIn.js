@@ -12,7 +12,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import CircularProgress from '@mui/material/CircularProgress';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { useCookies } from 'react-cookie';
 
@@ -42,7 +42,7 @@ const styleA = {
   textAlign: 'center',
 };
 /* eslint-disable-next-line */
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     position: 'relative',
     marginLeft: '50%',
@@ -420,7 +420,7 @@ const Logic = ({
   sv,
   onCancel,
 }) => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [open, setOpen] = useState(true);
   const [wait, setWait] = useState(false);
   const fin = localStorage.getItem('language');

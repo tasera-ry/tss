@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import api from '../api/api';
 import Button from '@mui/material/Button';
-import StylesProvider from '@mui/styles/StylesProvider';
+import ThemeProvider  from '@mui/material/styles';
 import css from './TrackStatistics.module.scss';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import Modal from '@mui/material/Modal';
 import translations from '../texts/texts.json';
 const { trackStatisticsModal } = translations;
@@ -62,7 +62,8 @@ export const TrackStatistics = ({ track, supervision }) => {
     };
   }
 
-  const useStyles = makeStyles((theme) => ({
+  // TODO jss-to-tss-react codemod: usages of this hook outside of this file will not be converted.
+  const useStyles = makeStyles()((theme) => ({
     paper: {
       position: 'absolute',
       width: 400,
@@ -73,7 +74,7 @@ export const TrackStatistics = ({ track, supervision }) => {
     },
   }));
 
-  const classesStyles = useStyles();
+  const { classes: classesStyles } = useStyles();
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
 
@@ -110,7 +111,7 @@ export const TrackStatistics = ({ track, supervision }) => {
   );
 
   return (
-    <StylesProvider injectFirst>
+    <ThemeProvider>
       <div className={classes(css.trackContainer)}>
         <Button
           disabled={isDisabled}
@@ -140,6 +141,6 @@ export const TrackStatistics = ({ track, supervision }) => {
           {body}
       </Modal>
       </div>
-    </StylesProvider>
+    </ThemeProvider>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import api from '../api/api';
 
-import StylesProvider from '@mui/styles/StylesProvider';
+import ThemeProvider from '@mui/material/styles';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import Button from '@mui/material/Button';
@@ -169,7 +169,7 @@ export const Raffle = () => {
 
   if (isLoading.page) return null;
   return (
-    <StylesProvider injectFirst>
+    <ThemeProvider>
       <div className={classes(css.members)}>
         <h1>{nav.Raffle[lang]}</h1>
         <div className={classes(css.tableHeader)}>
@@ -253,6 +253,6 @@ export const Raffle = () => {
           </MuiAlert>
         </Snackbar>
       </div>
-    </StylesProvider>
+    </ThemeProvider>
   );
 };
