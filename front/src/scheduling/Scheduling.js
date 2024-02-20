@@ -10,11 +10,11 @@ import moment from 'moment';
 import 'moment/locale/fi';
 
 // Material UI components
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import { 
+  TimePicker,
+  DatePicker,
+  LocalizationProvider
+} from '@mui/lab';
 import Switch from '@mui/material/Switch';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -832,12 +832,12 @@ class Scheduling extends Component {
         <div className="firstSection">
           <form onSubmit={this.continueWithDate}>
             {/* Datepicker */}
-            <MuiPickersUtilsProvider
+            <LocalizationProvider
               utils={MomentUtils}
               locale={lang}
               key={this.state.datePickerKey}
             >
-              <KeyboardDatePicker
+              <DatePicker
                 autoOk
                 margin="normal"
                 name="date"
@@ -845,11 +845,11 @@ class Scheduling extends Component {
                 value={this.state.date}
                 onChange={(date) => this.handleDateChange(date)}
                 onAccept={this.handleDatePickChange}
-                format="DD.MM.YYYY"
+                inputFormat="DD.MM.YYYY"
                 showTodayButton
                 data-testid="datePicker"
               />
-            </MuiPickersUtilsProvider>
+            </LocalizationProvider>
             <div className="continue">
               <Button
                 type="submit"
@@ -896,8 +896,8 @@ class Scheduling extends Component {
           </div>
           <div className="bottomRow">
             <div className="text">{sched.OpenHours[fin]}</div>
-            <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
-              <KeyboardTimePicker
+            <LocalizationProvider utils={MomentUtils} locale="fi">
+              <TimePicker
                 autoOk
                 ampm={false}
                 margin="normal"
@@ -908,10 +908,10 @@ class Scheduling extends Component {
                 minutesStep={5}
                 showTodayButton
               />
-            </MuiPickersUtilsProvider>
+            </LocalizationProvider>
             <div className="dash">-</div>
-            <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
-              <KeyboardTimePicker
+            <LocalizationProvider utils={MomentUtils} locale="fi">
+              <TimePicker
                 autoOk
                 ampm={false}
                 margin="normal"
@@ -922,7 +922,7 @@ class Scheduling extends Component {
                 minutesStep={5}
                 showTodayButton
               />
-            </MuiPickersUtilsProvider>
+            </LocalizationProvider>
           </div>
         </div>
 

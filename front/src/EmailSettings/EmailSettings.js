@@ -15,11 +15,11 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-} from '@material-ui/pickers';
+import { 
+  TimePicker,
+  AdapterDateFns,
+  LocalizationProvider
+} from '@mui/lab';
 import './EmailSettings.scss';
 import { emailSettings, nav } from '../texts/texts.json';
 
@@ -279,14 +279,14 @@ const EmailSettings = () => {
           </FormHelperText>
         </FormControl>
         <FormControl component="fieldset">
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardTimePicker
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <TimePicker
               margin="normal"
               label={emailSettings.pendingTime[lang]}
               value={settings.sendPendingTime}
               onChange={handleDateChange}
             />
-          </MuiPickersUtilsProvider>
+          </LocalizationProvider>
         </FormControl>
         <FormControl component="fieldset">
           <FormLabel className="settings-label">

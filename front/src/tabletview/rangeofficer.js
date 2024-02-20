@@ -4,10 +4,11 @@ import React, { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-} from '@material-ui/pickers';
+import { 
+  TimePicker,
+  AdapterDateFns,
+  LocalizationProvider
+} from '@mui/lab';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -304,8 +305,8 @@ const TimePick = ({
         </DialogTitle>
         <DialogContent className={classes(css.dialogStyle)}>
           <div className={classes(css.rowStyle)}>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <KeyboardTimePicker
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <TimePicker
                 margin="normal"
                 id="starttime"
                 label={tablet.Start[fin]}
@@ -315,7 +316,7 @@ const TimePick = ({
                 minutesStep={5}
               />
               &nbsp;
-              <KeyboardTimePicker
+              <TimePicker
                 margin="normal"
                 id="endtime"
                 label={tablet.End[fin]}
@@ -324,7 +325,7 @@ const TimePick = ({
                 onChange={(date) => setEndDate(date)}
                 minutesStep={5}
               />
-            </MuiPickersUtilsProvider>
+            </LocalizationProvider>
           </div>
 
           <br />

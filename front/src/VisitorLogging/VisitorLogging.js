@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import MomentUtils from '@date-io/moment';
 
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import { 
+  DatePicker,
+  LocalizationProvider
+} from '@mui/lab';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
@@ -93,19 +93,19 @@ const VisitorLogging = ({
   return (
     <div className={classes(css.loggingContainer)}>
       <div>
-        <MuiPickersUtilsProvider locale={getLanguage()} utils={MomentUtils}>
-          <KeyboardDatePicker
+        <LocalizationProvider locale={getLanguage()} utils={MomentUtils}>
+          <DatePicker
             autoOk
             margin="normal"
             name="date"
             label={texts.DayChoose[lang]}
             value={date}
             onChange={(newDate) => setDate(newDate)}
-            format="DD.MM.YYYY"
+            inputFormat="DD.MM.YYYY"
             showTodayButton
             data-testid="datePicker"
           />
-        </MuiPickersUtilsProvider>
+        </LocalizationProvider>
         {tracks[0] && tracks[0].id ? (
           <div className={classes(css.inputContainer)}>
             {tracks.map(({ id, short_description, scheduled }) => (

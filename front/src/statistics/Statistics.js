@@ -14,10 +14,10 @@ import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import { 
+  DatePicker,
+  LocalizationProvider
+} from '@mui/lab';
 
 import { getLanguage, incrementOrDecrementDate } from '../utils/Utils';
 import api from '../api/api';
@@ -200,8 +200,8 @@ const Statistics = () => {
       <div className={classes(css.firstSection)}>
         <form onSubmit={continueWithDate}>
           {/* Datepicker */}
-          <MuiPickersUtilsProvider utils={MomentUtils} locale={lang}>
-            <KeyboardDatePicker
+          <LocalizationProvider utils={MomentUtils} locale={lang}>
+            <DatePicker
               autoOk
               margin="normal"
               name="date"
@@ -212,10 +212,10 @@ const Statistics = () => {
                 setDate(new Date(newDate));
                 continueWithDate();
               }}
-              format="DD.MM.YYYY"
+              inputFormat="DD.MM.YYYY"
               showTodayButton
             />
-          </MuiPickersUtilsProvider>
+          </LocalizationProvider>
         </form>
       </div>
       <hr />
