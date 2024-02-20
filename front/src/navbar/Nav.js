@@ -16,7 +16,7 @@ import SupervisorNotification from './SupervisorNotification';
 import FeedbackWindow from './FeedbackWindow';
 import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
 import translations from '../texts/texts.json';
-import ThemeProvider from '@mui/material/styles'
+import { ThemeProvider } from '@mui/material/styles'
 import css from './Nav.module.scss';
 
 const classes = classNames.bind(css);

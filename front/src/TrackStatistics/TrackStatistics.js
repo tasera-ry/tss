@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import api from '../api/api';
 import Button from '@mui/material/Button';
-import ThemeProvider  from '@mui/material/styles';
+import { ThemeProvider }  from '@mui/material/styles';
 import css from './TrackStatistics.module.scss';
 import { makeStyles } from 'tss-react/mui';
 import Modal from '@mui/material/Modal';

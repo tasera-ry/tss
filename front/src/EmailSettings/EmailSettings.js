@@ -15,11 +15,9 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import { 
-  TimePicker,
-  AdapterDateFns,
-  LocalizationProvider
-} from '@mui/lab';
+import TimePicker from '@mui/lab/TimePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import './EmailSettings.scss';
 import texts from '../texts/texts.json';
 

@@ -3,12 +3,9 @@ import React, { useState, useEffect } from 'react';
 // Material UI components
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import DateFnsUtils from '@date-io/date-fns';
-import { 
-  TimePicker,
-  AdapterDateFns,
-  LocalizationProvider
-} from '@mui/lab';
+import TimePicker from '@mui/lab/TimePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';

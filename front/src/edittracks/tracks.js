@@ -33,7 +33,7 @@ import Remove from '@mui/icons-material/Remove';
 import SaveAlt from '@mui/icons-material/SaveAlt';
 import Search from '@mui/icons-material/Search';
 import ViewColumn from '@mui/icons-material/ViewColumn';
-import * as l10nLines from '../texts/texts.json';
+import l10nLines from '../texts/texts.json';
 
 // Token validation
 import { validateLogin } from '../utils/Utils';
