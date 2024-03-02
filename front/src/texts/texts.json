@@ -13,7 +13,7 @@
     "Statistics": ["Tilastot", "Statistics", "Statistik"],
     "EmailSettings": ["Sähköpostiasetukset", "Email settings", "E-postinställningar"],
     "Raffle": ["Valvojien arvonta", "Supervisor raffle", "Handledare tombola"],
-    "Info": ["Lisää infoviesti", "Add info message", "Tillägga info meddelande"]
+    "Info": ["Lisää infoviesti", "Add info message", "Tillägga info meddelande"]    
   },
   "banner": {
     "Notification": [
