@@ -15,6 +15,7 @@
     "Raffle": ["Valvojien arvonta", "Supervisor raffle", "Handledare tombola"],
     "Info": ["Lisää infoviesti", "Add info message", "Tillägga info meddelande"]    
   },
+  
   "banner": {
     "Notification": [
       "Sinulla on varmistamattomia päävalvojavuoroja!",
