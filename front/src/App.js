@@ -8,10 +8,7 @@ import axios from 'axios';
 // Custom components
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { CookiesProvider, withCookies } from 'react-cookie';
-import {
-  createMuiTheme,
-  ThemeProvider,
-} from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import SignIn from './signin/SignIn';
 import ResetPassword from './resetPW/ResetPassword';
 import RenewPassword from './renewPW/RenewPassword';
@@ -33,6 +30,7 @@ import { Raffle } from './raffle/raffle';
 // React router. Hashrouter, because normal router won't work in apache
 
 import { validateLogin } from './utils/Utils';
+import Reservations from './Reservations/reservations';
 
 // TO DO: Move this to scss if possible.
 
@@ -78,7 +76,7 @@ class App extends Component {
     return (
       <CookiesProvider>
         <Router>
-          <ThemeProvider theme={theme}>      
+          <ThemeProvider theme={theme}>
             <div className="App">
               <header className="App-header">
                 <Nav />
@@ -96,20 +94,27 @@ class App extends Component {
                   <Route path="/dayview/:date?" component={Dayview} />
                   <Route path="/weekview" component={Weekview} />
                   <Route path="/monthview" component={Monthview} />
-                  <Route path="/trackview/:date?/:track?" component={Trackview} />
+                  <Route
+                    path="/trackview/:date?/:track?"
+                    component={Trackview}
+                  />
                   <Route path="/scheduling/:date?" component={Scheduling} />
                   <Route path="/tablet" component={RangeOfficerView} />
                   <Route path="/profile" component={Profile} />
-                  <Route path="/usermanagement" component={UserManagementView} />
+                  <Route
+                    path="/usermanagement"
+                    component={UserManagementView}
+                  />
                   <Route path="/supervisor-raffle" component={Raffle} />
                   <Route path="/tracks" component={TrackCRUD} />
                   <Route path="/email-settings" component={EmailSettings} />
                   <Route path="/statistics" component={Statistics} />
                   <Route path="/info" component={AddInfo} />
+                  <Route path="/reservations" component={Reservations} />
                 </Switch>
               </header>
             </div>
-          </ThemeProvider>          
+          </ThemeProvider>
         </Router>
       </CookiesProvider>
     );
