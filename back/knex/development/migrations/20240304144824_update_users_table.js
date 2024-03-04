@@ -3,15 +3,15 @@ exports.up = function (knex) {
 	return (
 		knex.schema
 			// Add new role types
-			.raw('ALTER TYPE role ADD VALUE \'associate\'')
+			.raw('ALTER TYPE role ADD VALUE \'association\'')
 			.raw('ALTER TYPE role ADD VALUE \'rangeofficer\'')
 
-			// Update old "supervisor" role to match "associate"
+			// Update old "supervisor" role to match "association"
 			.alterTable('user', (table) => {
 				table
 					.string('role')
 					.where('role', '=', 'supervisor')
-					.update('role', 'associate')
+					.update('role', 'association')
 					.alter();
 			})
 
@@ -29,11 +29,11 @@ exports.down = function (knex) {
 			.alterTable('user', (table) => {
 				table
 					.string('role')
-					.where('role', '=', 'associate')
+					.where('role', '=', 'association')
 					.update('role', 'supervisor')
 					.alter();
 			})
-			.raw('ALTER TYPE role DROP VALUE \'associate\'')
+			.raw('ALTER TYPE role DROP VALUE \'association\'')
 			.raw('ALTER TYPE role DROP VALUE \'rangeofficer\'')
 	);
 };
