@@ -13,6 +13,9 @@ exports.up = function (knex) {
 			.inTable('association')
 			// on delete set null from older alter migration
 			.onDelete('SET NULL');
+
+		// Add a new column for the rangeofficer id
+		table.integer('rangeofficer_id').references('id').inTable('users');
 	});
 };
 
@@ -22,5 +25,6 @@ exports.down = function (knex) {
 		table.renameColumn('association_id', 'supervisor_id');
 		table.dropForeign(['association_id']);
 		table.integer('supervisor_id').references('user_id').inTable('supervisor');
+		table.dropColumn('rangeofficer_id');
 	});
 };
