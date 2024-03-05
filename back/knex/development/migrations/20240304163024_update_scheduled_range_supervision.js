@@ -15,7 +15,7 @@ exports.up = function (knex) {
 			.onDelete('SET NULL');
 
 		// Add a new column for the rangeofficer id
-		table.integer('rangeofficer_id').references('id').inTable('users');
+		table.integer('rangeofficer_id').references('id').inTable('user');
 	});
 };
 
