@@ -111,7 +111,7 @@
   "week": {
     "Week": ["Viikko", "Week", "Vecka"],
     "Green": ["Päävalvoja paikalla", "Range officer present", "Banofficer närvarande"],
-    "Lightgreen": ["Päävalvoja varmistettu", "Range officer confirmed", "Banofficer bekräftat"],
+    "Lightgreen": ["Päävalvoja varmistettu, arvioitu saapumisaika", "Range officer confirmed, estimated time of arrival", "Banofficer bekräftat, beräknad ankomsttid"],
     "Blue": [
       "Päävalvoja määritetty, mutta ei varmistettu",
       "Range officer predefined, not confirmed",
