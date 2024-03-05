@@ -96,7 +96,8 @@
     "Absent": ["En pääse paikalle", "Absent", "Frånvarande"],
     "EnRoute": ["Matkalla", "En route", "På väg"],
     "Cancel": ["Sulje", "Cancel", "Avboka"],
-    "Save": ["Tallenna", "Save", "Spara"]
+    "Save": ["Tallenna", "Save", "Spara"],
+    "ProvideTime": ["Arvioitu saapumisaikasi:", "Your estimated time of arrival:", "Din bäraknad ankomsttid:"]
   },
   "feedback": {
     "Title": ["Anna palautetta", "Give feedback", "Ge feedback"],

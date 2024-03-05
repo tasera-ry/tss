@@ -75,6 +75,7 @@ const DropDowns = (props) => {
   const [buttonColor, setButtonColor] = useState(color);
   const [anchorEl, setAnchorEl] = useState(null);
   const [disable, setDisable] = useState(buttonColor !== '#658f60');
+  const [provideTime, setProvideTimeText] = useState('');
 
   const buttonStyle = {
     width: 180,
@@ -98,18 +99,25 @@ const DropDowns = (props) => {
       setButtonColor('#f2f2f2');
       setDisable(true);
       obj.range_supervisor = 'not confirmed';
+      setProvideTimeText('');
     }
     if (event.currentTarget.dataset.info === 'y') {
       setButtonText(props.sv.Confirmed[fin]);
       setButtonColor('#658f60');
       setDisable(false);
       obj.range_supervisor = 'confirmed';
+
+      setProvideTimeText(props.sv.ProvideTime[fin]);
+
+
+
     }
     if (event.currentTarget.dataset.info === 'n') {
       setButtonText(props.sv.Absent[fin]);
       setButtonColor('#c97b7b');
       setDisable(true);
       obj.range_supervisor = 'absent';
+      setProvideTimeText('');
     }
     props.changes.map((o) => (o.date === id ? obj : o));
     // console.log(props.changes.find(o => o.date===id));
@@ -144,6 +152,7 @@ const DropDowns = (props) => {
           {props.sv.Absent[fin]}
         </MenuItem>
       </Menu>
+      <p>{provideTime}</p>
       &nbsp;
       {props.today === props.d ? (
         <Check
