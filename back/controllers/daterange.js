@@ -25,7 +25,7 @@ const controller = {
       });
 
       if (index === -1) {
-        fieldModifiedQR.push(_.pick(instance, 'available', 'close', 'date', 'open', 'range_supervisor', 'supervisor_id', 'range_reservation_id', 'scheduled_range_supervision_id'));
+        fieldModifiedQR.push(_.pick(instance, 'available', 'close', 'date', 'open', 'range_supervisor', 'association_id', 'range_reservation_id', 'scheduled_range_supervision_id'));
         fieldModifiedQR[fieldModifiedQR.length - 1]['tracks'] = [{
           description: instance['description'],
           id: instance['track_id'],
@@ -74,7 +74,7 @@ const controller = {
         rangeId: config.development.range_id,
         rangeSupervision: !day['available'] ? 'closed' : (!day['range_supervisor'] ? 'absent' : day['range_supervisor']),
         rangeSupervisionScheduled: !!day['range_supervisor'],
-        rangeSupervisorId: day['supervisor_id'],
+        rangeSupervisorId: day['association_id'],
         reservationId: day['range_reservation_id'],
         scheduleId: day['scheduled_range_supervision_id'],
         tracks: day['tracks']

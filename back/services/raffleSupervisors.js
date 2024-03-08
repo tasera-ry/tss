@@ -26,8 +26,8 @@ async function setSupervisors(raffleResults) {
   
   const range_id = await getRangeId(); 
   await Promise.all(raffleResults.map(async result => {
-    const { supervisor_id, date  } = result;
-    await setSingleSupervisor(range_id, supervisor_id, date);
+    const { association_id, date  } = result;
+    await setSingleSupervisor(range_id, association_id, date);
   })
   );
 }
@@ -104,7 +104,7 @@ const updateOrCreateScheduledRangeSupervision = async (
 
   const scheduledRangeSupervision = {
     ...openingHours,
-    supervisor_id: supervisorId,
+    association_id: supervisorId,
     range_reservation_id: rangeReservationId
   };
 
