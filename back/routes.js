@@ -33,7 +33,7 @@ router.route('/signout')
 router.route('/user')
   .all(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser','supervisor'], _.includes))
+    middlewares.user.hasProperty('role', ['superuser','association', 'rangeofficer'], _.includes))
   .get(
     middlewares.user.readFilter,
     controllers.user.readFilter)
@@ -72,7 +72,7 @@ router.route('/track-supervision')
     controllers.trackSupervision.readFilter)
   .post(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer'], _.includes),
     middlewares.trackSupervision.create,
     controllers.trackSupervision.create);
 
@@ -82,7 +82,7 @@ router.route('/track-supervision/:scheduled_range_supervision_id/:track_id')
     controllers.trackSupervision.read)
   .put(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer'], _.includes),
     middlewares.trackSupervision.update,
     controllers.trackSupervision.update)
   .delete(
@@ -98,14 +98,14 @@ router.route('/range-supervision')
     controllers.rangeSupervision.readFilter)
   .post(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer'], _.includes),
     middlewares.rangeSupervision.create,
     controllers.rangeSupervision.create);
 
 router.route('/range-supervision/feedback')
   .put(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer'], _.includes),
     validators.rangeSupervision.feedback,
     middlewares.rangeSupervision.feedback,
     controllers.rangeSupervision.feedback);
@@ -121,7 +121,7 @@ router.route('/range-supervision/:scheduled_range_supervision_id')
     controllers.rangeSupervision.read)
   .put(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer'], _.includes),
     middlewares.rangeSupervision.update,
     controllers.rangeSupervision.update)
   .delete(
@@ -142,7 +142,7 @@ router.route('/reservation/:id')
   .get(controllers.reservation.readStrict)
   .put(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer'], _.includes),
     controllers.reservation.update)
   .delete(
     middlewares.jwt.read,
@@ -160,7 +160,7 @@ router.route('/schedule/:id')
   .get(controllers.schedule.readStrict)
   .put(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer'], _.includes),
     controllers.schedule.update)
   .delete(
     middlewares.jwt.read,
@@ -240,7 +240,7 @@ router.route('/info')
 router.route('/infomessage/tablet')
   .all(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer'], _.includes),
   )
   .get(
     validators.infoMessage.read,
@@ -250,7 +250,7 @@ router.route('/infomessage/tablet')
 router.route('/infomessage/all')
   .all(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'supervisor'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer'], _.includes),
   )
   .get(
     validators.infoMessage.read,

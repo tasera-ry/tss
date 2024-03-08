@@ -27,12 +27,12 @@ const model = {
       email: {}
     };
 
-    const supervisorConstraints = {
+    const associationConstraints = {
       phone: {}
     };
 
     const general = validate.cleanAttributes(user, userConstraints);
-    const supervisor = validate.cleanAttributes(user, supervisorConstraints);
+    const association = validate.cleanAttributes(user, associationConstraints);
 
     return await knex.transaction(trx => {
       return trx
@@ -41,13 +41,13 @@ const model = {
         .into('user')
         .then(ids => {
           const id = ids[0];
-          if(user.role === 'supervisor') {
+          if(user.role === 'association') {
             return trx
               .returning('user_id')
               .insert({
                 user_id: id
-                , phone: supervisor.phone
-              }).into('supervisor');
+                , phone: association.phone
+              }).into('association');
           }
           return ids;
         }).then(trx.commit)
@@ -67,7 +67,7 @@ const model = {
    */
   read: async function readUser(key, fields) {
     return knex('user')
-      .leftJoin('supervisor', 'supervisor.user_id', 'user.id')
+      .leftJoin('association', 'association.user_id', 'user.id')
       .where(key)
       .select(fields);
   },
@@ -84,7 +84,7 @@ const model = {
    */
   readCaseInsensitive: async function readUserCaseInsensitive(name, fields) {
     return knex('user')
-      .leftJoin('supervisor', 'supervisor.user_id', 'user.id')
+      .leftJoin('association', 'association.user_id', 'user.id')
       .where('name', 'ILIKE', name)
       .select(fields);
   },
@@ -102,7 +102,7 @@ const model = {
    */
   update: async function updateUser(current, update) {
     const user = _.pick(update, 'name', 'digest', 'email', 'reset_token', 'reset_token_expire');
-    const supervisor = _.pick(update, 'phone');
+    const association = _.pick(update, 'phone');
 
     const id = await model
       .read(current, ['id'])
@@ -119,10 +119,10 @@ const model = {
         .where(id)
         .update(user)
         .then((updates) => {
-          if(_.isEmpty(supervisor) === false) {
-            return trx('supervisor')
+          if(_.isEmpty(association) === false) {
+            return trx('association')
               .where(id)
-              .update(supervisor);
+              .update(association);
           }
           return updates;
         }).then(trx.commit)

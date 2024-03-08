@@ -63,8 +63,8 @@ const fields = {
     const validator = requestObject('role')
       .isString()
       .withMessage('must be a string')
-      .isIn(['superuser', 'supervisor'])
-      .withMessage('must be a superuser or supervisor');
+      .isIn(['superuser', 'association', 'rangeofficer'])
+      .withMessage('must be a valid role: superuser, association or rangeofficer');
     return validatorAdditions(validator, opts);
   },
   email: function emailValidation(requestObject, ...opts) {
@@ -130,8 +130,8 @@ module.exports = {
     fields.role(body, 'exists'),
     fields.email(body, 'optional'),
     fields.phone(body, 'optional')
-      .custom((value, {request}) => request.body.role === 'supervisor')
-      .withMessage('may only be assigned to a supervisor'),
+      .custom((value, {request}) => request.body.role === 'association')
+      .withMessage('may only be assigned to a association users'),
     handleValidationErrors,
     function storeCreationRequest(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['body'] });
