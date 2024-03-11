@@ -13,8 +13,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
-
 import { useCookies } from 'react-cookie';
+import TextField from '@material-ui/core/TextField';
 
 // Axios for call-handling to backend
 import axios from 'axios';
@@ -76,6 +76,8 @@ const DropDowns = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [disable, setDisable] = useState(buttonColor !== '#658f60');
   const [provideTime, setProvideTimeText] = useState('');
+  const [arrivalTime, setArrivalTime] = useState('');
+
 
   const buttonStyle = {
     width: 180,
@@ -86,6 +88,9 @@ const DropDowns = (props) => {
     color: '#b3b3b3',
   };
 
+  const handleTimeChange = (event) => {
+    setArrivalTime (event.target.value);
+  }
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -109,8 +114,6 @@ const DropDowns = (props) => {
 
       setProvideTimeText(props.sv.ProvideTime[fin]);
 
-
-
     }
     if (event.currentTarget.dataset.info === 'n') {
       setButtonText(props.sv.Absent[fin]);
@@ -124,6 +127,8 @@ const DropDowns = (props) => {
 
     setAnchorEl(null);
   };
+
+
 
   return (
     <span>
@@ -147,12 +152,23 @@ const DropDowns = (props) => {
         </MenuItem>
         <MenuItem onClick={HandleClose} data-info="y">
           {props.sv.Confirmed[fin]}
+
         </MenuItem>
         <MenuItem onClick={HandleClose} data-info="n">
           {props.sv.Absent[fin]}
         </MenuItem>
       </Menu>
-      <p>{provideTime}</p>
+      <div>
+        <p>{provideTime}</p>
+        {buttonText === props.sv.Confirmed[fin] && (
+        <TextField
+            id="time"
+            type="time"
+            value={arrivalTime}
+            onChange={handleTimeChange}
+          />
+        )}
+      </div>
       &nbsp;
       {props.today === props.d ? (
         <Check
