@@ -165,7 +165,7 @@ const oneSchedule = [
   {
     id: 39,
     range_reservation_id: 300,
-    supervisor_id: 50,
+    association_id: 50,
     open: '16:00:00',
     close: '21:00:00',
   },

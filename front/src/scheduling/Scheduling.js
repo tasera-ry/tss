@@ -594,14 +594,14 @@ class Scheduling extends Component {
         range_reservation_id: rsId,
         open: moment(this.state.open).format('HH:mm'),
         close: moment(this.state.close).format('HH:mm'),
-        supervisor_id: null,
+        association_id: null,
       };
 
       if (this.state.rangeSupervisorSwitch) {
         if (this.state.rangeSupervisorId !== null) {
           params = {
             ...params,
-            supervisor_id: this.state.rangeSupervisorId,
+            association_id: this.state.rangeSupervisorId,
           };
         } else return reject(new Error('Range officer enabled but no id'));
       }

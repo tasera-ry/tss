@@ -27,8 +27,8 @@ const { raffle } = translations;
 
 const supervisionAmounts = (raffleResults, supervisors) => {
   const userMap = new Map();
-  supervisors.forEach(({ name, raffle }) => {
-    if (raffle) userMap.set(name, 0);
+  supervisors.forEach(({ name, raffleItem }) => {
+    if (raffleItem) userMap.set(name, 0);
   });
 
   return raffleResults.reduce((acc, result) => {
@@ -37,7 +37,7 @@ const supervisionAmounts = (raffleResults, supervisors) => {
   }, userMap);
 };
 
-export const Raffle = () => {
+export default function Raffle() {
   const [supervisorsOpen, setSupervisorsOpen] = useState(true);
   const [supervisors, setSupervisors] = useState([]);
   const [selectedDays, setSelectedDays] = useState([]);
@@ -135,9 +135,9 @@ export const Raffle = () => {
 
   const handleSubmitResults = async () => {
     setIsLoading({ ...isLoading, save: true });
-    // only supervisor_id (= user_id), range_id and date are needed
+    // only association id (= user_id), range_id and date are needed
     const results = raffleResults.map(({ user_id, range_id, date }) => ({
-      supervisor_id: user_id,
+      association_id: user_id,
       range_id,
       date,
     }));
@@ -254,4 +254,4 @@ export const Raffle = () => {
       </div>
     </StylesProvider>
   );
-};
+}
