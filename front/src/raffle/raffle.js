@@ -13,10 +13,10 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 import translations from '../texts/texts.json';
 import RaffleDatePicker from './RaffleDatePicker';
-import { SupervisorsTable } from './SupervisorsTable';
+import SupervisorsTable from './SupervisorsTable';
 import { dateToString, validateLogin } from '../utils/Utils';
-import { SupervisionResultsTable } from './SupervisionResultsTable';
-import { SupervisionAmountsTable } from './SupervisionAmountsTable';
+import SupervisionResultsTable from './SupervisionResultsTable';
+import SupervisionAmountsTable from './SupervisionAmountsTable';
 import css from './raffle.module.scss';
 
 const classes = classNames.bind(css);
@@ -27,8 +27,9 @@ const { raffle } = translations;
 
 const supervisionAmounts = (raffleResults, supervisors) => {
   const userMap = new Map();
-  supervisors.forEach(({ name, raffleItem }) => {
-    if (raffleItem) userMap.set(name, 0);
+
+  supervisors.forEach(({ name, raffle }) => {
+    if (raffle) userMap.set(name, 0);
   });
 
   return raffleResults.reduce((acc, result) => {
@@ -180,7 +181,7 @@ export default function Raffle() {
         </div>
         {supervisorsOpen ? (
           <SupervisorsTable
-            supervisors={supervisors}
+            associations={supervisors}
             onSubmitUser={handleSubmitUser}
             isLoading={isLoading.table}
           />
