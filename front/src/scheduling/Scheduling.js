@@ -48,7 +48,7 @@ moment.locale(lang);
 
 async function getRangeSupervisors() {
   try {
-    const response = await fetch('/api/user?role=supervisor', {
+    const response = await fetch('/api/user?role=association', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -531,7 +531,7 @@ class Scheduling extends Component {
       let params = {
         range_id: this.state.rangeId,
         available: this.state.available,
-        supervisor: this.state.rangeSupervisorId,
+        association: this.state.rangeSupervisorId,
       };
 
       if (reservationMethod === 'POST') {
@@ -706,7 +706,7 @@ class Scheduling extends Component {
             let params = {
               track_supervisor: supervisorStatus,
               notice,
-              supervisor: this.state.rangeSupervisorId,
+              association: this.state.rangeSupervisorId,
             };
 
             let srsp = '';

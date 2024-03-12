@@ -43,7 +43,7 @@ global.fetch = jest.fn((url) => {
   }
   if (url.includes('/api/user')) {
     return Promise.resolve({
-      json: () => Promise.resolve(testUtils.supervisor),
+      json: () => Promise.resolve(testUtils.association),
     });
   }
   if (url.includes('/api/reservation')) {
@@ -62,7 +62,7 @@ global.fetch = jest.fn((url) => {
 
 const state = {
   rangeSupervisorId: '50',
-  rangeSupervisors: [testUtils.supervisor],
+  rangeSupervisors: [testUtils.association],
   date: testUtils.date,
   repeatCount: 1,
 };

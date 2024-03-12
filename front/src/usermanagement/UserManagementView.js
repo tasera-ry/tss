@@ -179,7 +179,7 @@ class UserManagementView extends Component {
       selectedROWID: 1,
       newUserName: '',
       newUserPass: '',
-      newUserRole: 'supervisor',
+      newUserRole: 'association',
       newUserPhone: '', // eslint-disable-line
       password: '',
       oldPassword: '',
@@ -514,7 +514,7 @@ class UserManagementView extends Component {
       requestErrors: false,
       newUserName: '',
       newUserPass: '',
-      newUserRole: 'supervisor',
+      newUserRole: 'association',
       openAddNewUserDialog: false,
     });
   }
@@ -810,7 +810,7 @@ class UserManagementView extends Component {
                 onChange={this.handleChangeNewUserRole}
                 id="role"
               >
-                <option aria-label={manage.Supervisor[fin]} value="supervisor">
+                <option aria-label={manage.Supervisor[fin]} value="association">
                   {manage.Supervisor[fin]}
                 </option>
                 <option value="superuser">{manage.Superuser[fin]}</option>

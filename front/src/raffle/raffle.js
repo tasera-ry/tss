@@ -84,7 +84,7 @@ export default function Raffle() {
   }, [raffleResults, supervisors]);
 
   const handleSubmitUser = async (user_id, data) => {
-    if (data.members < 0 || data.supervisors < 0) {
+    if (data.members < 0 || data.associations < 0) {
       setToast({ open: true, msg: raffle.valueError[lang], severity: 'error' });
       return;
     }

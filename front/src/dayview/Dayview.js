@@ -314,7 +314,8 @@ class Dayview extends Component {
             </div>
             <div className={classes(css.infoItem)}>
               <p className={classes(css.box, css.whiteB)} />
-              {/* No supervisor */} <p>{dayview.NotAvailable[lang]}</p>
+              {/* No supervissing association */}
+              <p>{dayview.NotAvailable[lang]}</p>
             </div>
             <div className={classes(css.infoItemImg)}>
               <p className={classes(css.noFlex)}>
