@@ -881,7 +881,7 @@ class Scheduling extends Component {
           </div>
           <div className="middleRow">
             <div className="roSwitch">
-              <div className="text">{sched.Supervisor[fin]}</div>
+              <div className="text">{sched.Rangeofficer[fin]}</div>
               <Switch
                 className="officerSwitch"
                 checked={this.state.rangeSupervisorSwitch}
