@@ -731,7 +731,18 @@
     ]
   },
   "profileSettings": {
-    "navPassword": ["Vaihda salasana", "Change password", "Ändra lösenord"]
+    "navPassword": ["Vaihda salasana", "Change password", "Ändra lösenord"],
+    "navRangeofficers": ["Lisää valvoja", "Add new range officer", "Banofficer"]
+  },
+  "rangeofficerSettings": {
+    "title": [
+      "Lisää uusi valvoja",
+      "Add new range officer",
+      "Lägg till ny banofficer"
+    ],
+    "username": ["Käyttäjänimi", "Username", "Användarnamn"],
+    "password": ["Salasana", "Password", "Lösenord"],
+    "confirm": ["Lisää valvoja", "Add range officer", "Lägg till banofficer"]
   },
   "passwordSettings": {
     "title": ["Vaihda salasana", "Change password", "Ändra lösenord"],

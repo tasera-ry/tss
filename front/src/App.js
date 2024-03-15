@@ -30,6 +30,7 @@ import Raffle from './raffle/raffle';
 // React router. Hashrouter, because normal router won't work in apache
 
 import { validateLogin } from './utils/Utils';
+import RangeOfficers from './profile/profilepages/rangeofficers';
 
 // TO DO: Move this to scss if possible.
 
