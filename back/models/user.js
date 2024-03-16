@@ -19,8 +19,6 @@ const model = {
    * model.create({ name: 'Mark', digest:'password_digest', role:'superuser'})
    */
   create: async function createUser(user) {
-    console.log('called create model');
-
     const userConstraints = {
       id: {},
       name: {},
@@ -33,8 +31,13 @@ const model = {
       phone: {},
     };
 
+    const officerConstraints = {
+      associationId: {},
+    };
+
     const general = validate.cleanAttributes(user, userConstraints);
     const association = validate.cleanAttributes(user, associationConstraints);
+    const officer = validate.cleanAttributes(user, officerConstraints);
 
     return await knex.transaction((trx) => {
       return trx
@@ -51,6 +54,16 @@ const model = {
                 phone: association.phone,
               })
               .into('association');
+          }
+
+          if (user.role === 'rangeofficer') {
+            return trx
+              .returning('rangeofficer_id')
+              .insert({
+                rangeofficer_id: id,
+                association_id: officer.associationId,
+              })
+              .into('association_rangeofficers');
           }
           return ids;
         })

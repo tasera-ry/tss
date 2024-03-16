@@ -38,8 +38,6 @@ const controller = {
   },
 
   create: async function createUser(request, response) {
-    console.log('called create controller');
-
     return response.status(201).send(response.locals.queryResult);
   },
 

@@ -114,8 +114,6 @@ const serviceCalls = {
   },
 
   create: async function createUser(request, response, next) {
-    console.log('called the kalle here');
-
     const query = response.locals.query;
     let id;
 
