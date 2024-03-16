@@ -12,16 +12,27 @@ const classes = classNames.bind(css);
 const lang = localStorage.getItem('language');
 const { rangeofficerSettings } = translations;
 
-export default function RangeOfficers() {
+export default function RangeOfficers({ id }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (event) => {
+  // TODO: add api call where range officer user is created
+  // add the range officer to the association table
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('added rangeofficer', username, password);
 
-    // TODO: add api call where range officer user is created
-    // add the range officer to the association table
+    const newUser = {
+      name: event.target.username.value,
+      role: 'rangeofficer',
+      password: event.target.password.value,
+      associationId: id,
+    };
+
+    try {
+      await api.createUser(newUser);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

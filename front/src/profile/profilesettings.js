@@ -39,7 +39,7 @@ const Profile = () => {
               <ChangePassword username={cookies.username} id={cookies.id} />
             </Route>
             <Route path="/profile/rangeofficers">
-              <RangeOfficers />
+              <RangeOfficers id={cookies.id} />
             </Route>
           </Switch>
         </div>

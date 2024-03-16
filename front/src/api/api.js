@@ -52,6 +52,11 @@ const renewPassword = (username, newPassword, resetToken, resetTokenExpire) =>
     reset_token_expire: resetTokenExpire,
   });
 
+const createUser = async (newUser) => {
+  const response = await axios.post('/api/user', newUser);
+  return response.data;
+};
+
 const getUser = async (id) => {
   const response = await axios.get(`api/user/${id}`);
   return response.data;
@@ -145,6 +150,7 @@ export default {
   sendResetPasswordToken,
   resetPassword,
   renewPassword,
+  createUser,
   getUser,
   getUsers,
   patchReservation,

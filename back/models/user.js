@@ -19,38 +19,42 @@ const model = {
    * model.create({ name: 'Mark', digest:'password_digest', role:'superuser'})
    */
   create: async function createUser(user) {
+    console.log('called create model');
+
     const userConstraints = {
       id: {},
       name: {},
       digest: {},
       role: {},
-      email: {}
+      email: {},
     };
 
     const associationConstraints = {
-      phone: {}
+      phone: {},
     };
 
     const general = validate.cleanAttributes(user, userConstraints);
     const association = validate.cleanAttributes(user, associationConstraints);
 
-    return await knex.transaction(trx => {
+    return await knex.transaction((trx) => {
       return trx
         .returning('id')
         .insert(general)
         .into('user')
-        .then(ids => {
+        .then((ids) => {
           const id = ids[0];
-          if(user.role === 'association') {
+          if (user.role === 'association') {
             return trx
               .returning('user_id')
               .insert({
-                user_id: id
-                , phone: association.phone
-              }).into('association');
+                user_id: id,
+                phone: association.phone,
+              })
+              .into('association');
           }
           return ids;
-        }).then(trx.commit)
+        })
+        .then(trx.commit)
         .catch(trx.rollback);
     });
   },
@@ -101,31 +105,35 @@ const model = {
    * exports.update({ name: 'Mark }, { digest: 'new_password_digest' })
    */
   update: async function updateUser(current, update) {
-    const user = _.pick(update, 'name', 'digest', 'email', 'reset_token', 'reset_token_expire');
+    const user = _.pick(
+      update,
+      'name',
+      'digest',
+      'email',
+      'reset_token',
+      'reset_token_expire'
+    );
     const association = _.pick(update, 'phone');
 
-    const id = await model
-      .read(current, ['id'])
-      .then(rows => rows[0]);
+    const id = await model.read(current, ['id']).then((rows) => rows[0]);
 
-    if(!id) {
-      const err = Error('Didn\'t identify user(s) to update');
+    if (!id) {
+      const err = Error("Didn't identify user(s) to update");
       err.name = 'Unknown user';
       throw err;
     }
 
-    return await knex.transaction(trx => {
+    return await knex.transaction((trx) => {
       return trx('user')
         .where(id)
         .update(user)
         .then((updates) => {
-          if(_.isEmpty(association) === false) {
-            return trx('association')
-              .where(id)
-              .update(association);
+          if (_.isEmpty(association) === false) {
+            return trx('association').where(id).update(association);
           }
           return updates;
-        }).then(trx.commit)
+        })
+        .then(trx.commit)
         .catch(trx.rollback);
     });
   },
@@ -140,12 +148,8 @@ const model = {
    * exports.del({ name: 'Mark })
    */
   delete: async function deleteUser(user) {
-    return await knex.transaction(trx => {
-      return trx('user')
-        .where(user)
-        .del()
-        .then(trx.commit)
-        .catch(trx.rollback);
+    return await knex.transaction((trx) => {
+      return trx('user').where(user).del().then(trx.commit).catch(trx.rollback);
     });
   },
   /**
@@ -154,22 +158,15 @@ const model = {
    * @return {Promise<json>} - Email address of the user
    */
   getEmail: async function getUserEmail(key) {
-    return await knex
-      .from('user')
-      .select('email')
-      .where({ 'id': key })
-      .first();
+    return await knex.from('user').select('email').where({ id: key }).first();
   },
   /**
    * Get superuser ids
    * @return {Promise<object>} - Keys of superusers
    */
   getSuperusers: async function getSuperusers() {
-    return await knex
-      .from('user')
-      .pluck('id')
-      .where({ role: 'superuser' });
-  }
+    return await knex.from('user').pluck('id').where({ role: 'superuser' });
+  },
 };
 
 module.exports = model;
