@@ -16,6 +16,11 @@ const { profileSettings } = translations;
 const Profile = () => {
   const [cookies] = useCookies(['username']);
 
+  // If user is not logged in, redirect to homepage
+  if (!cookies.role) {
+    window.location.href = '/';
+  }
+
   const renderSidebar = () => (
     <div className={classes(css.sidebar)}>
       <List className={classes(css.list)}>

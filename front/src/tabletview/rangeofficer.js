@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useCookies } from 'react-cookie';
 
 // Material UI components
 import Typography from '@material-ui/core/Typography';
@@ -62,7 +63,6 @@ const TrackRows = ({ tracks, setTracks, scheduleId, tablet, fin, socket }) =>
   ));
 
 const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
-
   const [buttonColor, setButtonColor] = useState(track.color);
 
   const supervisorState = track.scheduled.track_supervisor;
@@ -71,7 +71,9 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
   else if (supervisorState === 'closed') supervisorStateTablet = 'Red';
   else supervisorStateTablet = 'White';
 
-  const [textState, setTextState] = useState(tablet[supervisorStateTablet][fin]);
+  const [textState, setTextState] = useState(
+    tablet[supervisorStateTablet][fin],
+  );
   const [supervision, setSupervision] = useState(supervisorState);
 
   socket.on('trackUpdate', (msg) => {
@@ -168,8 +170,8 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
   return (
     <div>
       <Button
-        className = {classes(css.buttonStyle)}
-        style={{backgroundColor: buttonColor}}
+        className={classes(css.buttonStyle)}
+        style={{ backgroundColor: buttonColor }}
         size="large"
         variant="contained"
         onClick={HandleClick}
@@ -369,6 +371,8 @@ const Tabletview = () => {
   const [rangeSupervisionScheduled, setRangeSupervisionScheduled] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [socket, setSocket] = useState();
+  const [cookies] = useCookies(['username']);
+
   const fin = localStorage.getItem('language');
   const { tablet } = data;
   const date = moment(Date.now()).format('YYYY-MM-DD');
@@ -384,7 +388,10 @@ const Tabletview = () => {
 
   useEffect(() => {
     validateLogin().then((logInSuccess) => {
-      if (logInSuccess) {
+      if (
+        logInSuccess &&
+        (cookies.role === 'rangeofficer' || cookies.role === 'superuser')
+      ) {
         getData(
           //data,
           tablet,
@@ -501,8 +508,8 @@ const Tabletview = () => {
 
       <div className={classes(css.Status, css.rowStyle)}>
         <Button
-          className = {classes(css.statusStyle)}
-          style={{color: colors.black, backgroundColor: statusColor}}
+          className={classes(css.statusStyle)}
+          style={{ color: colors.black, backgroundColor: statusColor }}
           size="large"
           variant="outlined"
           disabled
