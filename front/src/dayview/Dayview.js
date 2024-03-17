@@ -256,7 +256,7 @@ function Dayview(props) {
         </Link>
 
         <hr />
-
+        
         <Grid
           container
           direction="row"

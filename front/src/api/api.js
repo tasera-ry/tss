@@ -52,6 +52,11 @@ const renewPassword = (username, newPassword, resetToken, resetTokenExpire) =>
     reset_token_expire: resetTokenExpire,
   });
 
+const createUser = async (newUser) => {
+  const response = await axios.post('/api/user', newUser);
+  return response.data;
+};
+
 const getUser = async (id) => {
   const response = await axios.get(`api/user/${id}`);
   return response.data;
@@ -60,7 +65,7 @@ const getUser = async (id) => {
 const getUsers = async () => {
   const response = await axios.get(`api/user`);
   return response.data;
-}
+};
 
 const patchReservation = (reservationId, data) =>
   axios.put(`/api/reservation/${reservationId}`, data);
@@ -68,36 +73,32 @@ const patchReservation = (reservationId, data) =>
 const addRangeSupervision = (
   scheduledRangeSupervisionId,
   rangeSupervisor,
-  supervisor,
+  association,
 ) =>
   axios.post('/api/range-supervision', {
     scheduled_range_supervision_id: scheduledRangeSupervisionId,
     range_supervisor: rangeSupervisor,
-    supervisor,
+    association,
   });
 
-  const patchRangeSupervision = (id, rangeSupervisor) => {
-    if(rangeSupervisor.supervisor){
-      return axios.put(`api/range-supervision/${id}`, {
-        range_supervisor: rangeSupervisor.range_supervisor,
-        supervisor: rangeSupervisor.supervisor
-      });
-    }
-    else{
-      return axios.put(`api/range-supervision/${id}`, {
-        range_supervisor: rangeSupervisor.range_supervisor
-      }); 
-    }
-  
+const patchRangeSupervision = (id, rangeSupervisor) => {
+  if (rangeSupervisor.association) {
+    return axios.put(`api/range-supervision/${id}`, {
+      range_supervisor: rangeSupervisor.range_supervisor,
+      association: rangeSupervisor.association,
+    });
   }
 
+  return axios.put(`api/range-supervision/${id}`, {
+    range_supervisor: rangeSupervisor.range_supervisor,
+  });
+};
 
 const sendFeedback = (feedback, user) =>
   axios.put('api/range-supervision/feedback', { feedback, user });
 
 const patchScheduledSupervisionTrack = (scheduleId, trackId, data) =>
   axios.put(`/api/track-supervision/${scheduleId}/${trackId}`, data);
-
 
 const getMembers = async () => {
   const response = await axios.get(`/api/members`);
@@ -108,12 +109,12 @@ const patchMembers = async (user_id, data) =>
   axios.put(`/api/members/${user_id}`, data);
 
 const raffleSupervisors = async (dates) => {
-  const response = await axios.post("api/raffle", { dates });
+  const response = await axios.post('api/raffle', { dates });
   return response.data;
 };
 
 const saveRaffledSupervisors = async (results) =>
-  axios.post("api/set-raffled-supervisors", { results });
+  axios.post('api/set-raffled-supervisors', { results });
 
 const getPublicInfoMessages = async () => {
   const response = await axios.get(`api/infomessage`);
@@ -123,12 +124,12 @@ const getPublicInfoMessages = async () => {
 const getPersonalInfoMessages = async () => {
   const response = await axios.get(`api/infomessage/tablet`);
   return response.data;
-}
+};
 
 const getAllInfoMessages = async () => {
   const response = await axios.get('api/infomessage/all');
   return response.data;
-}
+};
 
 const postInfoMessage = async (infoRequest) => {
   await axios.post(`api/infomessage`, infoRequest);
@@ -149,6 +150,7 @@ export default {
   sendResetPasswordToken,
   resetPassword,
   renewPassword,
+  createUser,
   getUser,
   getUsers,
   patchReservation,

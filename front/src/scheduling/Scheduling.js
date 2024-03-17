@@ -48,7 +48,7 @@ moment.locale(lang);
 
 async function getRangeSupervisors() {
   try {
-    const response = await fetch('/api/user?role=supervisor', {
+    const response = await fetch('/api/user?role=association', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -531,7 +531,7 @@ class Scheduling extends Component {
       let params = {
         range_id: this.state.rangeId,
         available: this.state.available,
-        supervisor: this.state.rangeSupervisorId,
+        association: this.state.rangeSupervisorId,
       };
 
       if (reservationMethod === 'POST') {
@@ -594,14 +594,14 @@ class Scheduling extends Component {
         range_reservation_id: rsId,
         open: moment(this.state.open).format('HH:mm'),
         close: moment(this.state.close).format('HH:mm'),
-        supervisor_id: null,
+        association_id: null,
       };
 
       if (this.state.rangeSupervisorSwitch) {
         if (this.state.rangeSupervisorId !== null) {
           params = {
             ...params,
-            supervisor_id: this.state.rangeSupervisorId,
+            association_id: this.state.rangeSupervisorId,
           };
         } else return reject(new Error('Range officer enabled but no id'));
       }
@@ -706,7 +706,7 @@ class Scheduling extends Component {
             let params = {
               track_supervisor: supervisorStatus,
               notice,
-              supervisor: this.state.rangeSupervisorId,
+              association: this.state.rangeSupervisorId,
             };
 
             let srsp = '';
@@ -881,7 +881,7 @@ class Scheduling extends Component {
           </div>
           <div className="middleRow">
             <div className="roSwitch">
-              <div className="text">{sched.Supervisor[fin]}</div>
+              <div className="text">{sched.Rangeofficer[fin]}</div>
               <Switch
                 className="officerSwitch"
                 checked={this.state.rangeSupervisorSwitch}
