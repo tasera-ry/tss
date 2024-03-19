@@ -742,7 +742,32 @@
     ],
     "username": ["Käyttäjänimi", "Username", "Användarnamn"],
     "password": ["Salasana", "Password", "Lösenord"],
-    "confirm": ["Lisää valvoja", "Add range officer", "Lägg till banofficer"]
+    "passwordConfirm": [
+      "Vahvista salasana",
+      "Confirm password",
+      "Bekräfta lösenord"
+    ],
+    "confirm": ["Lisää valvoja", "Add range officer", "Lägg till banofficer"],
+    "sucess": [
+      "Valvojan lisäys onnistui",
+      "Range officer added successfully",
+      "Banofficer tillagd"
+    ],
+    "passwordMatch": [
+      "Salasanat eivät täsmää",
+      "Passwords don't match",
+      "Lösenorden matchar inte"
+    ],
+    "empty": [
+      "Täytä kaikki tekstikentät",
+      "Fill all the text fields",
+      "Fyll i alla textfält"
+    ],
+    "error": [
+      "Valvojan lisäys epäonnistui",
+      "Range officer addition failed",
+      "Banofficer tillägg misslyckades"
+    ]
   },
   "passwordSettings": {
     "title": ["Vaihda salasana", "Change password", "Ändra lösenord"],
