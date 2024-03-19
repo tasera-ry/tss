@@ -373,6 +373,7 @@ const Tabletview = () => {
   const { tablet } = data;
   const date = moment(Date.now()).format('YYYY-MM-DD');
   const today = moment().format('DD.MM.YYYY');
+  
 
   /*
     Basically the functional component version of componentdidmount
@@ -468,6 +469,9 @@ const Tabletview = () => {
     });
     updateSupervisor('closed', colors.redLight, tablet.Red[fin]);
   };
+
+
+
   return (
     <div>
       <InfoBox tabletMode={true} />
@@ -511,6 +515,7 @@ const Tabletview = () => {
           {statusText}
         </Button>
       </div>
+      
 
       <div className={classes(css.Text)}>{tablet.HelperFirst[fin]}</div>
 

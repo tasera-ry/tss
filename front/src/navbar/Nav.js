@@ -65,12 +65,15 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
     { to: '/statistics', name: nav.Statistics[lang] },
     { to: '/supervisor-raffle', name: nav.Raffle[lang] },
     { to: '/info', name: nav.Info[lang] },
-    { to: '/reservations', name: nav.Reservations[lang] },
-  ];
+    { to: '/devices', name: nav.Devices[lang] },
+    
 
+  
+  ];
   const supervisorList = [
     { to: '/tablet', name: nav.Tablet[lang] },
     { to: '/profile', name: nav.Profile[lang] },
+    
   ];
 
   const navList = (list) => (
@@ -172,9 +175,7 @@ const Nav = () => {
             className={classes(css.loginLink, css.pc, css.clickable)}
             to="/signin"
           >
-            <Button className={classes(css.loginbutton)}>
-              {nav.SignIn[lang]}
-            </Button>
+            <Button className={classes(css.loginbutton)}>{nav.SignIn[lang]}</Button>
           </Link>
         )}
         <div className={classes(css.langButtons, css.pc)}>
@@ -186,6 +187,7 @@ const Nav = () => {
                 window.location.reload();
               }}
               key={name}
+              
             >
               {name}
             </Button>

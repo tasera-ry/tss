@@ -14,7 +14,7 @@
     "EmailSettings": ["Sähköpostiasetukset", "Email settings", "E-postinställningar"],
     "Raffle": ["Valvojien arvonta", "Supervisor raffle", "Handledare tombola"],
     "Info": ["Lisää infoviesti", "Add info message", "Tillägga info meddelande"], 
-    "Reservations":["Ratojen varaus", "Track book", "Tillägga info meddelande"]   
+    "Devices":["Ratojen varaus", "Track book", "Tillägga info meddelande"]   
   },
 
   "banner": {

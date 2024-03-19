@@ -30,7 +30,8 @@ import { Raffle } from './raffle/raffle';
 // React router. Hashrouter, because normal router won't work in apache
 
 import { validateLogin } from './utils/Utils';
-import Reservations from './Reservations/reservations';
+
+import Devices from './Devices/devices';
 
 // TO DO: Move this to scss if possible.
 
@@ -110,7 +111,7 @@ class App extends Component {
                   <Route path="/email-settings" component={EmailSettings} />
                   <Route path="/statistics" component={Statistics} />
                   <Route path="/info" component={AddInfo} />
-                  <Route path="/reservations" component={Reservations} />
+                  <Route path="/devices" component={Devices} />
                 </Switch>
               </header>
             </div>

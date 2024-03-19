@@ -1,0 +1,23 @@
+.devicesContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Laitetaan laitteet ja napit sivun oikeaan reunaan */
+  
+}
+
+.device {
+  margin-bottom: 1px; /* Pienennetään laitteiden välisiä välejä */
+}
+
+.button {
+  width: 180px; /* Napin leveys */
+  height: 50px; /* Napin korkeus */
+  border-radius: 5px; /* Pyöristetään napin kulmat */
+  font-size: 13px; /* Tekstin koko */
+  font-weight: bold; /* Tekstin boldaus */
+  background-color: #f0f0f0; /* Vaihda napin väri vaaleaksi */
+}
+.device h3 {
+  margin-top: 0; /* Poistetaan laitteen nimen ylämarginaali */
+  text-align: center; /* Keskitetään laitteen nimi */
+}
