@@ -6,23 +6,23 @@ const _ = require('lodash');
 /**
  * Create a new schedule item.
  *
- * @param {object} details - The schedule's details { range_reservation_id, supervisor_id?, open, close }.
+ * @param {object} details - The schedule's details { range_reservation_id, association_id?, open, close }.
  *
  * @return {Promise<object[]>} The added reservations details.
  *
  * @example
- * createSchedule({ range_reservation_id: 10, supervisor_id: 3, open:'18:00', close:'21:00' })
+ * createSchedule({ range_reservation_id: 10, association_id: 3, open:'18:00', close:'21:00' })
  */
 async function createSchedule(details) {
-  details = _.pick(details, 'range_reservation_id', 'supervisor_id', 'open', 'close');
+  details = _.pick(details, 'range_reservation_id', 'association_id', 'open', 'close');
   return (await models.schedule.create(details)).pop();
 }
 
 /**
  * Get the schedule items matching a key.
  *
- * @param {object} key - Identifying key, { id?, range_reservation_id?, supervisor_id?, open?, close? }
- * @param {object} fields - Attributes about the schedule to select { id?, range_reservation_id?, supervisor_id?, open?, close? }
+ * @param {object} key - Identifying key, { id?, range_reservation_id?, association_id?, open?, close? }
+ * @param {object} fields - Attributes about the schedule to select { id?, range_reservation_id?, association_id?, open?, close? }
  * @return {Promise<object[]>} Schedule items that matched the key
  *
  * @example
@@ -44,7 +44,7 @@ async function readSchedule(key, fields) {
  * updateSchedule({ time: '17:00:00' }, { open: '18:00:00' })
  */
 async function updateSchedule(current, updates) {
-  updates = _.pick(updates, 'range_reservation_id', 'supervisor_id', 'open', 'close');
+  updates = _.pick(updates, 'range_reservation_id', 'association_id', 'open', 'close');
   return models.schedule.update(current, updates);
 }
 

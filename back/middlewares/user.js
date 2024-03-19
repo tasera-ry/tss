@@ -18,7 +18,7 @@ const userUpdateCheck = function canUpdatePassword(request, response, next) {
   }
 
   return response.status(403).send({
-    error: 'User doesn\'t have privileges to this resource',
+    error: "User doesn't have privileges to this resource",
   });
 };
 
@@ -36,11 +36,15 @@ const canRead = function canReadUserData(request, response, next) {
     return next();
   }
   return response.status(403).send({
-    error: 'User doesn\'t have privileges to this resource'
+    error: "User doesn't have privileges to this resource",
   });
 };
 
-exports.hasProperty = function userHasProperty(propertyName, value, equalityFn) {
+exports.hasProperty = function userHasProperty(
+  propertyName,
+  value,
+  equalityFn
+) {
   function propertyEquals(obj) {
     return equalityFn === undefined
       ? obj[propertyName] === value
@@ -52,7 +56,7 @@ exports.hasProperty = function userHasProperty(propertyName, value, equalityFn) 
       return next();
     }
     return response.status(403).send({
-      error: 'User doesn\'t have privileges to this resource'
+      error: "User doesn't have privileges to this resource",
     });
   };
 };
@@ -63,8 +67,7 @@ const serviceCalls = {
 
     try {
       response.locals.user = await services.user.authenticate(credentials);
-    }
-    catch (e) {
+    } catch (e) {
       /*
        * Something went wrong in the database call, possibly user doesn't
        * exist, password was incorrect, or some connection error
@@ -73,13 +76,10 @@ const serviceCalls = {
       // handle known errors unknown user and incorrect password with a
       // response
       if (e.name === 'Invalid credentials') {
-        return response
-          .status(401)
-          .send({
-            error: e.message
-          });
-      }
-      else {
+        return response.status(401).send({
+          error: e.message,
+        });
+      } else {
         // Rest should be moved to an error handler (respond with 500?)
         return next(e);
       }
@@ -93,8 +93,7 @@ const serviceCalls = {
 
     try {
       response.locals.queryResult = await services.user.read(query, []);
-    }
-    catch (e) {
+    } catch (e) {
       // Connection and other unexpected errors
       return next(e);
     }
@@ -107,8 +106,7 @@ const serviceCalls = {
 
     try {
       response.locals.queryResult = await services.user.read(query, []);
-    }
-    catch (e) {
+    } catch (e) {
       return next(e);
     }
 
@@ -121,15 +119,13 @@ const serviceCalls = {
 
     try {
       id = await services.user.create(query);
-    }
-    catch (e) {
+    } catch (e) {
       return next(e);
     }
 
     try {
       response.locals.queryResult = await services.user.read({ id: id });
-    }
-    catch (e) {
+    } catch (e) {
       return next(e);
     }
 
@@ -145,11 +141,9 @@ const serviceCalls = {
       response.locals.queryResult = await services.user.update(id, updates);
     } catch (e) {
       if (e.name === 'Unknown user') {
-        return response
-          .status(404)
-          .send({
-            error: e.name
-          });
+        return response.status(404).send({
+          error: e.name,
+        });
       }
 
       return next(e);
@@ -168,39 +162,24 @@ const serviceCalls = {
     }
 
     return next();
-  }
+  },
 };
 
-exports.sign = [
-  validators.user.sign,
-  serviceCalls.sign
-];
+exports.sign = [validators.user.sign, serviceCalls.sign];
 
 exports.readFilter = [
   validators.user.readFilter,
   canRead,
-  serviceCalls.readFilter
+  serviceCalls.readFilter,
 ];
 
-exports.read = [
-  validators.user.read,
-  serviceCalls.read
-];
+exports.read = [validators.user.read, serviceCalls.read];
 
-exports.create = [
-  validators.user.create,
-  serviceCalls.create
-];
+exports.create = [validators.user.create, serviceCalls.create];
 
-exports.update = [
-  validators.user.update,
-  serviceCalls.update
-];
+exports.update = [validators.user.update, serviceCalls.update];
 
-exports.delete = [
-  validators.user.delete,
-  serviceCalls.delete
-];
+exports.delete = [validators.user.delete, serviceCalls.delete];
 
 exports.updateOwnPasswordFilter = [
   validators.user.updatePassword,

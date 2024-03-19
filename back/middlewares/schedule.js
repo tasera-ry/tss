@@ -32,7 +32,7 @@ async function updateSchedule(request, response, next) {
   const updates = _.pick(
     response.locals.matched,
     'range_reservation_id',
-    'supervisor_id',
+    'association_id',
     'open',
     'close'
   );

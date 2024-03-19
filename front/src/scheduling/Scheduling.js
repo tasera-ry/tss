@@ -48,7 +48,7 @@ moment.locale(lang);
 
 async function getRangeSupervisors() {
   try {
-    const response = await fetch('/api/user?role=supervisor', {
+    const response = await fetch('/api/user?role=association', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -543,7 +543,7 @@ function Scheduling(props) {
         if (rangeSupervisorId !== null) {
           params = {
             ...params,
-            supervisor_id: rangeSupervisorId,
+            association_id: rangeSupervisorId,
           };
         } else return reject(new Error('Range officer enabled but no id'));
       }
@@ -648,7 +648,7 @@ function Scheduling(props) {
             let params = {
               track_supervisor: supervisorStatus,
               notice,
-              supervisor: rangeSupervisorId,
+              association: rangeSupervisorId,
             };
 
             let srsp = '';

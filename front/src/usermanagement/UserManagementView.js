@@ -179,7 +179,7 @@ class UserManagementView extends Component {
       selectedROWID: 1,
       newUserName: '',
       newUserPass: '',
-      newUserRole: 'supervisor',
+      newUserRole: 'association',
       newUserPhone: '', // eslint-disable-line
       password: '',
       oldPassword: '',
@@ -456,7 +456,14 @@ class UserManagementView extends Component {
     ButtonToaddEmail,
   ) {
     const roleToPrint =
-      role === 'superuser' ? manage.Superuser[fin] : manage.Supervisor[fin];
+      role === 'superuser'
+        ? manage.Superuser[fin]
+        : role === 'association'
+        ? manage.Association[fin]
+        : role === 'rangeofficer'
+        ? manage.Rangeofficer[fin]
+        : null;
+
     return {
       name,
       roleToPrint,
@@ -514,7 +521,7 @@ class UserManagementView extends Component {
       requestErrors: false,
       newUserName: '',
       newUserPass: '',
-      newUserRole: 'supervisor',
+      newUserRole: 'association',
       openAddNewUserDialog: false,
     });
   }
@@ -810,9 +817,13 @@ class UserManagementView extends Component {
                 onChange={this.handleChangeNewUserRole}
                 id="role"
               >
-                <option aria-label={manage.Supervisor[fin]} value="supervisor">
-                  {manage.Supervisor[fin]}
+                <option
+                  aria-label={manage.Rangeofficer[fin]}
+                  value="rangeofficer"
+                >
+                  {manage.Rangeofficer[fin]}
                 </option>
+                <option value="association">{manage.Association[fin]}</option>
                 <option value="superuser">{manage.Superuser[fin]}</option>
               </Select>
             </FormControl>

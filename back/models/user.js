@@ -24,33 +24,50 @@ const model = {
       name: {},
       digest: {},
       role: {},
-      email: {}
+      email: {},
     };
 
-    const supervisorConstraints = {
-      phone: {}
+    const associationConstraints = {
+      phone: {},
+    };
+
+    const officerConstraints = {
+      associationId: {},
     };
 
     const general = validate.cleanAttributes(user, userConstraints);
-    const supervisor = validate.cleanAttributes(user, supervisorConstraints);
+    const association = validate.cleanAttributes(user, associationConstraints);
+    const officer = validate.cleanAttributes(user, officerConstraints);
 
-    return await knex.transaction(trx => {
+    return await knex.transaction((trx) => {
       return trx
         .returning('id')
         .insert(general)
         .into('user')
-        .then(ids => {
+        .then((ids) => {
           const id = ids[0];
-          if(user.role === 'supervisor') {
+          if (user.role === 'association') {
             return trx
               .returning('user_id')
               .insert({
-                user_id: id
-                , phone: supervisor.phone
-              }).into('supervisor');
+                user_id: id,
+                phone: association.phone,
+              })
+              .into('association');
+          }
+
+          if (user.role === 'rangeofficer') {
+            return trx
+              .returning('rangeofficer_id')
+              .insert({
+                rangeofficer_id: id,
+                association_id: officer.associationId,
+              })
+              .into('association_rangeofficers');
           }
           return ids;
-        }).then(trx.commit)
+        })
+        .then(trx.commit)
         .catch(trx.rollback);
     });
   },
@@ -67,7 +84,7 @@ const model = {
    */
   read: async function readUser(key, fields) {
     return knex('user')
-      .leftJoin('supervisor', 'supervisor.user_id', 'user.id')
+      .leftJoin('association', 'association.user_id', 'user.id')
       .where(key)
       .select(fields);
   },
@@ -84,7 +101,7 @@ const model = {
    */
   readCaseInsensitive: async function readUserCaseInsensitive(name, fields) {
     return knex('user')
-      .leftJoin('supervisor', 'supervisor.user_id', 'user.id')
+      .leftJoin('association', 'association.user_id', 'user.id')
       .where('name', 'ILIKE', name)
       .select(fields);
   },
@@ -101,31 +118,35 @@ const model = {
    * exports.update({ name: 'Mark }, { digest: 'new_password_digest' })
    */
   update: async function updateUser(current, update) {
-    const user = _.pick(update, 'name', 'digest', 'email', 'reset_token', 'reset_token_expire');
-    const supervisor = _.pick(update, 'phone');
+    const user = _.pick(
+      update,
+      'name',
+      'digest',
+      'email',
+      'reset_token',
+      'reset_token_expire'
+    );
+    const association = _.pick(update, 'phone');
 
-    const id = await model
-      .read(current, ['id'])
-      .then(rows => rows[0]);
+    const id = await model.read(current, ['id']).then((rows) => rows[0]);
 
-    if(!id) {
-      const err = Error('Didn\'t identify user(s) to update');
+    if (!id) {
+      const err = Error("Didn't identify user(s) to update");
       err.name = 'Unknown user';
       throw err;
     }
 
-    return await knex.transaction(trx => {
+    return await knex.transaction((trx) => {
       return trx('user')
         .where(id)
         .update(user)
         .then((updates) => {
-          if(_.isEmpty(supervisor) === false) {
-            return trx('supervisor')
-              .where(id)
-              .update(supervisor);
+          if (_.isEmpty(association) === false) {
+            return trx('association').where(id).update(association);
           }
           return updates;
-        }).then(trx.commit)
+        })
+        .then(trx.commit)
         .catch(trx.rollback);
     });
   },
@@ -140,12 +161,8 @@ const model = {
    * exports.del({ name: 'Mark })
    */
   delete: async function deleteUser(user) {
-    return await knex.transaction(trx => {
-      return trx('user')
-        .where(user)
-        .del()
-        .then(trx.commit)
-        .catch(trx.rollback);
+    return await knex.transaction((trx) => {
+      return trx('user').where(user).del().then(trx.commit).catch(trx.rollback);
     });
   },
   /**
@@ -154,22 +171,15 @@ const model = {
    * @return {Promise<json>} - Email address of the user
    */
   getEmail: async function getUserEmail(key) {
-    return await knex
-      .from('user')
-      .select('email')
-      .where({ 'id': key })
-      .first();
+    return await knex.from('user').select('email').where({ id: key }).first();
   },
   /**
    * Get superuser ids
    * @return {Promise<object>} - Keys of superusers
    */
   getSuperusers: async function getSuperusers() {
-    return await knex
-      .from('user')
-      .pluck('id')
-      .where({ role: 'superuser' });
-  }
+    return await knex.from('user').pluck('id').where({ role: 'superuser' });
+  },
 };
 
 module.exports = model;
