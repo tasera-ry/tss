@@ -32,10 +32,12 @@ import { TrackStatistics } from '../TrackStatistics/TrackStatistics';
 
 //Receiving possible info messages
 import InfoBox from '../infoBox/InfoBox';
+import Devices from '../Devices/devices';
 
 import classNames from 'classnames';
 import colors from '../colors.module.scss';
 import css from './rangeofficer.module.scss';
+
 
 const classes = classNames.bind(css);
 
@@ -477,7 +479,8 @@ const Tabletview = () => {
       <InfoBox tabletMode={true} />
       <div className={classes(css.Text)}>{today}</div>
 
-      <Typography variant="h5" align="center">
+
+      <Typography variant="h5" align="left">
         {tablet.Open[fin]}: &nbsp;
         <Button
           size="medium"
@@ -498,12 +501,14 @@ const Tabletview = () => {
           setHours={setHours}
           dialogOpen={dialogOpen}
           setDialogOpen={setDialogOpen}
+          
         />
       ) : (
         ''
       )}
+      
+      <div className={classes( css.rowStyle)}>
 
-      <div className={classes(css.Status, css.rowStyle)}>
         <Button
           className = {classes(css.statusStyle)}
           style={{color: colors.black, backgroundColor: statusColor}}
@@ -515,8 +520,7 @@ const Tabletview = () => {
           {statusText}
         </Button>
       </div>
-      
-
+     
       <div className={classes(css.Text)}>{tablet.HelperFirst[fin]}</div>
 
       <div className={classes(css.rowStyle)}>
@@ -549,9 +553,11 @@ const Tabletview = () => {
         </Button>
       </div>
 
+
       <div className={classes(css.Text)}>{tablet.HelperSecond[fin]}</div>
 
       <div className={classes(css.trackRowStyle)}>
+        
         <TrackRows
           tracks={tracks}
           setTracks={setTracks}
@@ -559,8 +565,14 @@ const Tabletview = () => {
           tablet={tablet}
           fin={fin}
           socket={socket}
+          
         />
+      
       </div>
+      {}
+      <Devices/>
+      
+      
     </div>
   );
 };

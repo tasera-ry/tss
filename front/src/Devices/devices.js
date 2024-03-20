@@ -5,10 +5,10 @@ import classes from './devices.module.scss'; // Tuo CSS-moduuli
 const Devices = () => {
   // Laitteiden nimet ja alkuvärit
   const initialDevices = [
-    { name: 'Timer 1', status: 'Vapaa', color: 'green' },
-    { name: 'Timer 2', status: 'Vapaa', color: 'green' },
-    { name: 'Labradar', status: 'Vapaa', color: 'green' },
-
+    { name: 'Labradar', status: 'Vapaa', color: '#5FA052' },
+    { name: 'Timer 1', status: 'Vapaa', color: '#5FA052' },
+    { name: 'Timer 2', status: 'Vapaa', color: '#5FA052' },
+    
   ];
 
   // Tilamuuttuja napin värin ja nimen seuraamiseksi
@@ -19,9 +19,9 @@ const Devices = () => {
     // Kopioidaan laitelistaa
     const updatedDevices = [...devices];
     // Vaihdetaan napin väri
-    updatedDevices[index].color = updatedDevices[index].color === 'green' ? 'red' : 'green';
+    updatedDevices[index].color = updatedDevices[index].color === '#5FA052' ? '#FF7F7F' : '#5FA052';
     // Päivitetään napin tila
-    updatedDevices[index].status = updatedDevices[index].color === 'green' ? 'Vapaa' : 'Lainassa';
+    updatedDevices[index].status = updatedDevices[index].color === '#5FA052' ? 'Vapaa' : 'Lainassa';
     // Päivitetään tila
     setDevices(updatedDevices);
   };
@@ -46,3 +46,4 @@ const Devices = () => {
 };
 
 export default Devices;
+

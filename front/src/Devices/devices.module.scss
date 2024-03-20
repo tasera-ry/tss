@@ -6,18 +6,22 @@
 }
 
 .device {
-  margin-bottom: 1px; /* Pienennetään laitteiden välisiä välejä */
+  margin-bottom: 6px;
+  margin-bottom: 6px;
 }
 
 .button {
-  width: 180px; /* Napin leveys */
-  height: 50px; /* Napin korkeus */
-  border-radius: 5px; /* Pyöristetään napin kulmat */
-  font-size: 13px; /* Tekstin koko */
-  font-weight: bold; /* Tekstin boldaus */
-  background-color: #f0f0f0; /* Vaihda napin väri vaaleaksi */
+  width: 170px;
+  height: 54px;
+  border-radius: 5px;
+  font-size: 13px;
+
+  background-color: #ffffff;
 }
+
 .device h3 {
   margin-top: 0; /* Poistetaan laitteen nimen ylämarginaali */
+  margin-bottom: 0;
   text-align: center; /* Keskitetään laitteen nimi */
+  font-weight: 500;
 }
