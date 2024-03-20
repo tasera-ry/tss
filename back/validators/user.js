@@ -3,19 +3,18 @@ const {
   query,
   param,
   validationResult,
-  matchedData
+  matchedData,
 } = require('express-validator');
 
 function validatorAdditions(validator, opts) {
-  if(opts.includes('exists')) {
+  if (opts.includes('exists')) {
     validator = validator
       .exists({ checkNull: true, checkFalsy: true })
       .withMessage('must be included');
   }
 
-  if(opts.includes('optional')) {
-    validator = validator
-      .optional();
+  if (opts.includes('optional')) {
+    validator = validator.optional();
   }
 
   return validator;
@@ -63,8 +62,10 @@ const fields = {
     const validator = requestObject('role')
       .isString()
       .withMessage('must be a string')
-      .isIn(['superuser', 'supervisor'])
-      .withMessage('must be a superuser or supervisor');
+      .isIn(['superuser', 'association', 'rangeofficer'])
+      .withMessage(
+        'must be a valid role: superuser, association or rangeofficer'
+      );
     return validatorAdditions(validator, opts);
   },
   email: function emailValidation(requestObject, ...opts) {
@@ -76,16 +77,27 @@ const fields = {
 
   phone: function phoneValidation(requestObject, ...opts) {
     const validator = requestObject('phone')
-      .isString().withMessage('must be a string')
-      .isMobilePhone().withMessage('has to be a mobile number');
+      .isString()
+      .withMessage('must be a string')
+      .isMobilePhone()
+      .withMessage('has to be a mobile number');
     return validatorAdditions(validator, opts);
-  }
+  },
+
+  associationId: function associationIdValidation(requestObject, ...opts) {
+    const validator = requestObject('associationId')
+      .isInt()
+      .withMessage('must be an integer')
+      .toInt();
+
+    return validatorAdditions(validator, opts);
+  },
 };
 
 function handleValidationErrors(request, response, next) {
   const validationErrors = validationResult(request);
 
-  if(validationErrors.isEmpty() === false) {
+  if (validationErrors.isEmpty() === false) {
     return response.status(400).send(validationErrors);
   }
 
@@ -99,10 +111,11 @@ module.exports = {
     fields.secure(body, 'exists'),
     handleValidationErrors,
     function storeCredentials(request, response, next) {
-      response.locals.credentials = (
-        matchedData(request, { locations: ['body']}));
+      response.locals.credentials = matchedData(request, {
+        locations: ['body'],
+      });
       return next();
-    }
+    },
   ],
   readFilter: [
     fields.id(query, 'optional'),
@@ -114,7 +127,7 @@ module.exports = {
     function storeQuery(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['query'] });
       return next();
-    }
+    },
   ],
   read: [
     fields.id(param, 'exists'),
@@ -122,21 +135,23 @@ module.exports = {
     function storeID(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['params'] });
       return next();
-    }
+    },
   ],
   create: [
     fields.name(body, 'exists'),
     fields.password(body, 'exists'),
     fields.role(body, 'exists'),
     fields.email(body, 'optional'),
-    fields.phone(body, 'optional')
-      .custom((value, {request}) => request.body.role === 'supervisor')
-      .withMessage('may only be assigned to a supervisor'),
+    fields
+      .phone(body, 'optional')
+      .custom((value, { request }) => request.body.role === 'association')
+      .withMessage('may only be assigned to a association users'),
+    fields.associationId(body, 'optional'),
     handleValidationErrors,
     function storeCreationRequest(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['body'] });
       return next();
-    }
+    },
   ],
   updatePassword: [
     fields.password(body, 'exists'),
@@ -158,7 +173,7 @@ module.exports = {
       response.locals.id = matchedData(request, { locations: ['params'] });
       response.locals.updates = matchedData(request, { locations: ['body'] });
       return next();
-    }
+    },
   ],
   delete: [
     fields.id(param, 'exists'),
@@ -166,6 +181,6 @@ module.exports = {
     function storeDeleteRequest(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['params'] });
       return next();
-    }
-  ]
+    },
+  ],
 };

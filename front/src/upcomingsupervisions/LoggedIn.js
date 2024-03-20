@@ -253,14 +253,13 @@ async function getId(username) {
   if (!username) return;
 
   const query = `api/user?name=${username}`;
-  try{
+  try {
     const response = await axios.get(query);
 
     const userID = response.data[0].id;
-  
+
     return userID; // eslint-disable-line
-  }
-  catch(error){
+  } catch (error) {
     return error;
   }
 }
@@ -328,7 +327,7 @@ async function getSchedule(
   let res = [];
   let temp = [];
 
-  const query = `api/schedule?supervisor_id=${userID}`;
+  const query = `api/schedule?association_id=${userID}`;
   /* eslint-disable-next-line */
   const response = await axios
     .get(query)

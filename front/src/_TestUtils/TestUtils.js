@@ -152,12 +152,12 @@ const reservation = [
   },
 ];
 
-const supervisor = [
+const association = [
   {
     id: 50,
     name: 'test_user',
     digest: 'password_digest',
-    role: 'supervisor',
+    role: 'association',
   },
 ];
 
@@ -165,7 +165,7 @@ const oneSchedule = [
   {
     id: 39,
     range_reservation_id: 300,
-    supervisor_id: 50,
+    association_id: 50,
     open: '16:00:00',
     close: '21:00:00',
   },
@@ -175,13 +175,13 @@ const users = [
   {
     id: 1,
     name: 'Ruthie_Leuschke',
-    role: 'supervisor',
+    role: 'association',
     phone: '446-488-2743',
   },
   {
     id: 2,
     name: 'Kenyon.Howell',
-    role: 'supervisor',
+    role: 'association',
     phone: '617-780-8378',
   },
 ];
@@ -191,7 +191,7 @@ export default {
   week,
   schedule,
   reservation,
-  supervisor,
+  association,
   oneSchedule,
   users,
 };

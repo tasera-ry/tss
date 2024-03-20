@@ -75,8 +75,8 @@ const model = {
     const currentDate = new Date();
     return await knex
       .from('user')
-      .leftJoin('supervisor', 'user.id', 'supervisor.user_id')
-      .leftJoin('scheduled_range_supervision', 'supervisor.user_id', 'scheduled_range_supervision.supervisor_id')
+      .leftJoin('association', 'user.id', 'association.user_id')
+      .leftJoin('scheduled_range_supervision', 'association.user_id', 'scheduled_range_supervision.association_id')
       .leftJoin('range_supervision', 'scheduled_range_supervision.id', 'range_supervision.scheduled_range_supervision_id')
       .leftJoin('range_reservation', 'scheduled_range_supervision.range_reservation_id', 'range_reservation.id')
       .where({ 'user.id': key['id'] })

@@ -39,8 +39,8 @@ const fields = {
     return validatorAdditions(validator, opts);
   },
 
-  supervisor: function supervisorValidation(requestObject, ...opts) {
-    const validator = requestObject('supervisor')
+  association: function supervisorValidation(requestObject, ...opts) {
+    const validator = requestObject('association')
       .isInt()
       .withMessage('must be an integer')
       .toInt();
@@ -141,7 +141,7 @@ module.exports = {
   update: [
     fields.scheduled_range_supervision_id(param, 'exists'),
     fields.range_supervisor(body, 'optional'),
-    fields.supervisor(body, 'optional'),
+    fields.association(body, 'optional'),
     fields.notice(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
