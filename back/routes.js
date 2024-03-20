@@ -51,6 +51,34 @@ router
   .put(middlewares.user.update, controllers.user.update)
   .delete(middlewares.user.delete, controllers.user.delete);
 
+/**
+ * router
+  .route('/members/:user_id')
+  .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'))
+  .get(
+    validators.members.read,
+    middlewares.members.read,
+    controllers.members.read
+  )
+
+ */
+
+router
+  .route('/rangeofficers/:association_id')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty(
+      'role',
+      ['superuser', 'association', 'rangeofficer'],
+      _.includes
+    )
+  )
+  .get(
+    validators.user.getRangeOfficers,
+    middlewares.user.getRangeOfficers,
+    controllers.user.getRangeOfficers
+  );
+
 router
   .route('/changeownpassword/:id')
   .put(

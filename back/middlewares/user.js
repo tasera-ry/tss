@@ -163,6 +163,21 @@ const serviceCalls = {
 
     return next();
   },
+
+  getRangeOfficers: async function readRangeOfficers(request, response, next) {
+    const query = response.locals.query;
+
+    console.log('query', query);
+    console.log('id', request.params.id);
+
+    try {
+      response.locals.queryResult = await services.user.getRangeOfficers(query);
+    } catch (e) {
+      return next(e);
+    }
+
+    return next();
+  },
 };
 
 exports.sign = [validators.user.sign, serviceCalls.sign];
@@ -187,3 +202,5 @@ exports.updateOwnPasswordFilter = [
 ];
 
 exports.userUpdateCheck = userUpdateCheck;
+
+exports.getRangeOfficers = [serviceCalls.getRangeOfficers];

@@ -53,6 +53,15 @@ const controller = {
     }
     return response.status(204).send();
   },
+
+  getRangeOfficers: async function getRangeOfficers(request, response) {
+    if (response.locals.queryResult.length === 0) {
+      return response.status(404).send({
+        error: 'Association has no range officers',
+      });
+    }
+    return response.status(200).send(response.locals.queryResult);
+  },
 };
 
 module.exports = controller;

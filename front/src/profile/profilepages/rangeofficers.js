@@ -75,6 +75,16 @@ export default function RangeOfficers({ id }) {
     }
   };
 
+  const getRangeOfficers = async () => {
+    const associationId = id;
+    try {
+      const rangeOfficers = await api.getRangeOfficerIds(associationId);
+      console.log(rangeOfficers);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className={classes(css.title)}>
       <Typography component="h1" variant="h5">
@@ -138,6 +148,7 @@ export default function RangeOfficers({ id }) {
           <Alert severity={notification.type}>{notification.message}</Alert>
         )}
       </form>
+      <Button onClick={getRangeOfficers}>Get range officers</Button>
     </div>
   );
 }
