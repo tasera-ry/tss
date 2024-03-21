@@ -42,6 +42,20 @@ exports.seed = async function (knex) {
 	);
 	ora.promise(insertUsers, 'Inserting users');
 	await insertUsers;
+
+   // Generate a single user with "rangemaster" role
+		const rangemasterUser = await casual._user();
+
+		rangemasterUser.role = 'rangemaster';
+		const rangemasterInsert = await knex('user').insert(_.pick(rangemasterUser, ['name', 'role', 'digest', 'email']));
+	
+		ora.promise(
+			Promise.resolve(rangemasterInsert),
+			'Inserting rangemaster user'
+		);
+
+		const selectedFields = _.pick(rangemasterUser, ['name', 'role', 'password', 'email']);
+		console.log(`Rangemaster user:\n${JSON.stringify(selectedFields, null, 2)}`);
 };
 
 casual.define('user', async function () {

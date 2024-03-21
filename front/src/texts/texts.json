@@ -307,6 +307,7 @@
     "Superuser": ["Superuser", "Superuser", "Superuser"],
     "Rangeofficer": ["Valvoja", "Range officer", "Banofficer"],
     "Association": ["Yhdistys", "Association", "Förening"],
+    "Rangemaster": ["Päävalvoja", "Range master", "Banmästare"],
     "ChangeFor": [
       "Vaihda salasana käyttäjälle",
       "Change password for",
