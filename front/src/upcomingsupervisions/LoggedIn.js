@@ -13,8 +13,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
-
 import { useCookies } from 'react-cookie';
+import TextField from '@material-ui/core/TextField';
 
 // Axios for call-handling to backend
 import axios from 'axios';
@@ -75,6 +75,9 @@ const DropDowns = (props) => {
   const [buttonColor, setButtonColor] = useState(color);
   const [anchorEl, setAnchorEl] = useState(null);
   const [disable, setDisable] = useState(buttonColor !== '#658f60');
+  const [provideTime, setProvideTimeText] = useState('');
+  const [arrivalTime, setArrivalTime] = useState('');
+
 
   const buttonStyle = {
     width: 180,
@@ -85,6 +88,9 @@ const DropDowns = (props) => {
     color: '#b3b3b3',
   };
 
+  const handleTimeChange = (event) => {
+    setArrivalTime (event.target.value);
+  }
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -98,24 +104,31 @@ const DropDowns = (props) => {
       setButtonColor('#f2f2f2');
       setDisable(true);
       obj.range_supervisor = 'not confirmed';
+      setProvideTimeText('');
     }
     if (event.currentTarget.dataset.info === 'y') {
       setButtonText(props.sv.Confirmed[fin]);
       setButtonColor('#658f60');
       setDisable(false);
       obj.range_supervisor = 'confirmed';
+
+      setProvideTimeText(props.sv.ProvideTime[fin]);
+
     }
     if (event.currentTarget.dataset.info === 'n') {
       setButtonText(props.sv.Absent[fin]);
       setButtonColor('#c97b7b');
       setDisable(true);
       obj.range_supervisor = 'absent';
+      setProvideTimeText('');
     }
     props.changes.map((o) => (o.date === id ? obj : o));
     // console.log(props.changes.find(o => o.date===id));
 
     setAnchorEl(null);
   };
+
+
 
   return (
     <span>
@@ -139,11 +152,23 @@ const DropDowns = (props) => {
         </MenuItem>
         <MenuItem onClick={HandleClose} data-info="y">
           {props.sv.Confirmed[fin]}
+
         </MenuItem>
         <MenuItem onClick={HandleClose} data-info="n">
           {props.sv.Absent[fin]}
         </MenuItem>
       </Menu>
+      <div>
+        <p>{provideTime}</p>
+        {buttonText === props.sv.Confirmed[fin] && (
+        <TextField
+            id="time"
+            type="time"
+            value={arrivalTime}
+            onChange={handleTimeChange}
+          />
+        )}
+      </div>
       &nbsp;
       {props.today === props.d ? (
         <Check
