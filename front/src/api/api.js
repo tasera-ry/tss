@@ -68,11 +68,7 @@ const getUsers = async () => {
 };
 
 const getRangeOfficerIds = async (associationId) => {
-  console.log('calling getRangeOfficerIds', associationId);
-
   const response = await axios.get(`api/rangeofficers/${associationId}`);
-
-  console.log('response:', response);
   return response.data;
 };
 

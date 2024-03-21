@@ -182,15 +182,19 @@ const model = {
   },
 
   /**
-   * Get rangeofficer ids that match the association id
+   * Get rangeofficer users that match the association id
    * @param {number} associationId - The association id
    * @return {Promise<number[]>} - Keys of rangeofficers
    */
-  getRangeOfficerIds: async function getRangeOfficerIds(associationId) {
+  getRangeOfficers: async function getRangeOfficers(associationId) {
     return await knex
-      .from('association_rangeofficers')
-      .pluck('rangeofficer_id')
-      .where({ association_id: associationId });
+      .from('user')
+      .leftJoin(
+        'association_rangeofficers',
+        'user.id',
+        'association_rangeofficers.rangeofficer_id'
+      )
+      .where({ 'association_rangeofficers.association_id': associationId });
   },
 };
 

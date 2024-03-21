@@ -187,8 +187,6 @@ module.exports = {
     fields.associationId(param, 'exists'),
     handleValidationErrors,
     function storeID(request, response, next) {
-      console.log('reqest.params', request.params);
-
       response.locals.query = matchedData(request, { locations: ['params'] });
       return next();
     },

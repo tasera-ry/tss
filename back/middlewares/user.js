@@ -167,11 +167,10 @@ const serviceCalls = {
   getRangeOfficers: async function readRangeOfficers(request, response, next) {
     const query = response.locals.query;
 
-    console.log('query', query);
-    console.log('id', request.params.id);
-
     try {
-      response.locals.queryResult = await services.user.getRangeOfficers(query);
+      response.locals.queryResult = await services.user.getRangeOfficers(
+        query.associationId
+      );
     } catch (e) {
       return next(e);
     }

@@ -143,8 +143,8 @@ const service = {
    * @returns {Promise<number[]>} - Keys of rangeofficers
    */
 
-  getRangeOfficers: async function getRangeOfficerIds(associationId) {
-    return models.user.getRangeOfficerIds(associationId);
+  getRangeOfficers: async function getRangeOfficers(associationId) {
+    return models.user.getRangeOfficers(associationId);
   },
 };
 

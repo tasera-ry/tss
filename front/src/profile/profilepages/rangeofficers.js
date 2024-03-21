@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -21,10 +21,17 @@ const { rangeofficerSettings } = translations;
  */
 
 export default function RangeOfficers({ id }) {
+  const [rangeOfficers, setRangeOfficers] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [notification, setNotification] = useState(null);
+
+  useEffect(async () => {
+    const response = await api.getRangeOfficerIds(id);
+    setRangeOfficers(response);
+    console.log(response);
+  }, []);
 
   // Function for creating notifications. Clears after 3 seconds
   const createNotification = (type, message) => {
@@ -72,16 +79,6 @@ export default function RangeOfficers({ id }) {
       // log error and send notification
       console.log(err);
       createNotification('error', rangeofficerSettings.error[lang]);
-    }
-  };
-
-  const getRangeOfficers = async () => {
-    const associationId = id;
-    try {
-      const rangeOfficers = await api.getRangeOfficerIds(associationId);
-      console.log(rangeOfficers);
-    } catch (err) {
-      console.log(err);
     }
   };
 
@@ -148,7 +145,15 @@ export default function RangeOfficers({ id }) {
           <Alert severity={notification.type}>{notification.message}</Alert>
         )}
       </form>
-      <Button onClick={getRangeOfficers}>Get range officers</Button>
+
+      <div>
+        <h2>Range officers</h2>
+        {rangeOfficers.map((officer) => (
+          <p key={officer.id}>
+            {officer.id} {officer.name} {officer.role}
+          </p>
+        ))}
+      </div>
     </div>
   );
 }
