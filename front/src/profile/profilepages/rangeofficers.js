@@ -4,6 +4,13 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { Alert } from '@material-ui/lab';
+import {
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+} from '@material-ui/core';
 
 import classNames from 'classnames';
 import translations from '../../texts/texts.json';
@@ -14,6 +21,36 @@ const classes = classNames.bind(css);
 
 const lang = localStorage.getItem('language');
 const { rangeofficerSettings } = translations;
+
+function OfficerTable({ rangeOfficers }) {
+  return (
+    <div>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Rangeofficer</TableCell>
+            <TableCell>Options</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rangeOfficers.map((officer) => (
+            <TableRow key={officer.id}>
+              <TableCell>
+                {officer.name}
+                <br />
+                {officer.role}
+              </TableCell>
+              <TableCell>
+                <Button variant="contained">Delete</Button>
+                <Button variant="contained">Change password</Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
 
 /**
  * Component for creating new range officers
@@ -30,7 +67,6 @@ export default function RangeOfficers({ id }) {
   useEffect(async () => {
     const response = await api.getRangeOfficerIds(id);
     setRangeOfficers(response);
-    console.log(response);
   }, []);
 
   // Function for creating notifications. Clears after 3 seconds
@@ -44,7 +80,7 @@ export default function RangeOfficers({ id }) {
 
   // Function for creating an user when form is submitted
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.prevenTableCellefault();
 
     // check if all fields are filled
     if (!username || !password || !passwordConfirm) {
@@ -75,6 +111,10 @@ export default function RangeOfficers({ id }) {
       setUsername('');
       setPassword('');
       setPasswordConfirm('');
+
+      // Refetch range officers
+      const updatedResponse = await api.getRangeOfficerIds(id);
+      setRangeOfficers(updatedResponse);
     } catch (err) {
       // log error and send notification
       console.log(err);
@@ -146,14 +186,7 @@ export default function RangeOfficers({ id }) {
         )}
       </form>
 
-      <div>
-        <h2>Range officers</h2>
-        {rangeOfficers.map((officer) => (
-          <p key={officer.id}>
-            {officer.id} {officer.name} {officer.role}
-          </p>
-        ))}
-      </div>
+      <OfficerTable rangeOfficers={rangeOfficers} />
     </div>
   );
 }
