@@ -64,7 +64,7 @@ async function getRangeSupervisors() {
   }
 }
 
-// A custom switch to display green color
+// A custom switch to display green color for all sliders
 const CustomSwitch = withStyles({
   switchBase: {
     // grey
@@ -74,7 +74,6 @@ const CustomSwitch = withStyles({
       color: '#658f60',
     },
     '&$checked + $track': {
-      // green
       backgroundColor: '#658f60',
     },
   },
@@ -487,20 +486,30 @@ class Scheduling extends Component {
 
   // builds range officer select
   createSupervisorSelect = () => {
-    const items = [];
+    let items = [];
     let disabled = false;
     const { sched } = data;
     const fin = localStorage.getItem('language');
-    for (const key in this.state.rangeSupervisors) {
-      items.push(
-        <MenuItem key={key} value={this.state.rangeSupervisors[key].id}>
-          {this.state.rangeSupervisors[key].name}
-        </MenuItem>,
+
+    // make sure that this.state.rangeSupervisors is not null
+    if (this.state.rangeSupervisors){
+      // sort supervisors in alphabetical order
+      const sortedSupervisors = this.state.rangeSupervisors.sort((a,b) => {
+        return a.name.localeCompare(b.name);
+    });
+      for (const supervisor of sortedSupervisors) {
+        items.push(
+          <MenuItem key={supervisor.id} value={supervisor.id}>
+            {supervisor.name}
+          </MenuItem>,
       );
     }
+  }
+
     if (this.state.rangeSupervisorSwitch === false) {
       disabled = true;
     }
+
     return (
       <FormControl>
         <InputLabel id="chooserangeSupervisorLabel">
