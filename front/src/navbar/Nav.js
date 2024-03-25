@@ -69,7 +69,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
 
   const associationList = [{ to: '/profile', name: nav.Profile[lang] }];
 
-  const rangeofficerList = [{ to: '/tablet', name: nav.Tablet[lang] }];
+  const rangeMasterList = [{ to: '/tablet', name: nav.Tablet[lang] }];
 
   const navList = (list) => (
     <>
@@ -107,7 +107,7 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
           )}
           {superuser && navList(superuserList)}
           {cookies.role === 'association' && navList(associationList)}
-          {cookies.role === 'rangeofficer' && navList(rangeofficerList)}
+          {cookies.role === 'rangemaster' && navList(rangeMasterList)}
           {!superuser && (
             <ListItem
               button

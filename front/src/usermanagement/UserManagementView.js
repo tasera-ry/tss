@@ -462,6 +462,8 @@ class UserManagementView extends Component {
         ? manage.Association[fin]
         : role === 'rangeofficer'
         ? manage.Rangeofficer[fin]
+        : role === 'rangemaster'
+        ? manage.Rangemaster[fin]
         : null;
 
     return {

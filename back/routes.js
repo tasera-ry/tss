@@ -71,7 +71,7 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     ),
     middlewares.trackSupervision.create,
@@ -109,7 +109,7 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     ),
     middlewares.rangeSupervision.create,
@@ -122,7 +122,7 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     ),
     validators.rangeSupervision.feedback,
@@ -144,7 +144,7 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     ),
     middlewares.rangeSupervision.update,
@@ -173,7 +173,7 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     ),
     controllers.reservation.update
@@ -200,7 +200,7 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     ),
     controllers.schedule.update
@@ -274,7 +274,7 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     )
   )
@@ -286,7 +286,7 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     )
   )

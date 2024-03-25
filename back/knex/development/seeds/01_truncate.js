@@ -13,6 +13,7 @@ exports.seed = async function (knex) {
 	await truncate('range_reservation');
 	await truncate('track');
 	await truncate('range');
+	await truncate('association_rangeofficers');
 	await truncate('association');
 	await truncate('user');
 };
