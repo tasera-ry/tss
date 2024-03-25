@@ -32,6 +32,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import { withStyles } from '@material-ui/core/styles';
+
 
 import socketIOClient from 'socket.io-client';
 import {
@@ -61,6 +63,23 @@ async function getRangeSupervisors() {
     return false;
   }
 }
+
+// A custom switch to display green color for all sliders
+const CustomSwitch = withStyles({
+  switchBase: {
+    // grey
+    color: '#cccccc',
+    '&$checked': {
+      // green
+      color: '#658f60',
+    },
+    '&$checked + $track': {
+      backgroundColor: '#658f60',
+    },
+  },
+  checked: {},
+  track: {},
+})(Switch);
 
 function Scheduling(props) {
 
@@ -410,16 +429,25 @@ function Scheduling(props) {
     let disabled = false;
     const { sched } = data;
     const fin = localStorage.getItem('language');
-    for (const key in rangeSupervisors) {
+    
+    if(rangeSupervisors){
+      // sort supervisors in alphabetical order
+      const sortedSupervisors = rangeSupervisors.sort((a,b) => {
+        return a.name.localeCompare(b.name);
+      });
+    }
+    
+    for (const supervisor in sortedSupervisors) {
       items.push(
-        <MenuItem key={key} value={rangeSupervisors[key].id}>
-          {rangeSupervisors[key].name}
+        <MenuItem key={supervisor.id} value={supervisor.id}>
+          {supervisor.name}
         </MenuItem>,
       );
     }
     if (rangeSupervisorSwitch === false) {
       disabled = true;
     }
+
     return (
       <FormControl>
         <InputLabel id="chooserangeSupervisorLabel">
@@ -802,25 +830,21 @@ function Scheduling(props) {
         <div className="topRow">
           <div className="text">{sched.Open[fin]}</div>
 
-          <Switch
+          <CustomSwitch
             checked={available}
             onChange={handleSwitchChange}
             name="available"
-            color="primary"
-            style={{ color: '#5f77a1' }}
             data-testid="available"
           />
         </div>
         <div className="middleRow">
           <div className="roSwitch">
             <div className="text">{sched.Supervisor[fin]}</div>
-            <Switch
+            <CustomSwitch
               className="officerSwitch"
               checked={rangeSupervisorSwitch}
               onChange={handleSwitchChange}
               name="rangeSupervisorSwitch"
-              color="primary"
-              style={{ color: '#5f77a1' }}
               data-testid="rangeSupervisorSwitch"
             />
           </div>
@@ -897,34 +921,28 @@ function Scheduling(props) {
         <div className="repetition">
           <div className="daily">
             {sched.RepeatDaily[fin]}
-            <Switch
+            <CustomSwitch
               checked={daily}
               onChange={handleRepeatChange}
               id="daily"
-              color="primary"
-              style={{ color: '#5f77a1' }}
               data-testid="dailyRepeat"
             />
           </div>
           <div className="weekly">
             {sched.RepeatWeekly[fin]}
-            <Switch
+            <CustomSwitch
               checked={weekly}
               onChange={handleRepeatChange}
               id="weekly"
-              color="primary"
-              style={{ color: '#5f77a1' }}
               data-testid="weeklyRepeat"
             />
           </div>
           <div className="monthly">
             {sched.RepeatMonthly[fin]}
-            <Switch
+            <CustomSwitch
               checked={monthly}
               onChange={handleRepeatChange}
               id="monthly"
-              color="primary"
-              style={{ color: '#5f77a1' }}
               data-testid="monthlyRepeat"
             />
           </div>
