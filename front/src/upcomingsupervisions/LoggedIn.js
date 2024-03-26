@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 
 // Material UI components
 import Button from '@material-ui/core/Button';
@@ -49,6 +49,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Context for arrival time. Instead of prop drilling the value,
+// we can use this context to pass the value between the components.
+// useState hook is used to update the value in DialogWindow component.
+const ArrivalTimeContext = createContext({
+  arrivalTime: '',
+  setArrivalTime: () => {},
+});
 /*
   LoggedIn.js is the component for accepting and denying upcoming supervision turns
 */
@@ -76,8 +83,7 @@ const DropDowns = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [disable, setDisable] = useState(buttonColor !== '#658f60');
   const [provideTime, setProvideTimeText] = useState('');
-  const [arrivalTime, setArrivalTime] = useState('');
-
+  const { arrivalTime, setArrivalTime } = useContext(ArrivalTimeContext);
 
   const buttonStyle = {
     width: 180,
@@ -89,8 +95,13 @@ const DropDowns = (props) => {
   };
 
   const handleTimeChange = (event) => {
-    setArrivalTime (event.target.value);
-  }
+    // TODO: Better error handling, atm no error messages are shown
+    const parsedTime = moment(event.target.value, 'HH:mm', true);
+
+    if (parsedTime.isValid()) {
+      setArrivalTime(event.target.value);
+    }
+  };
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -113,7 +124,6 @@ const DropDowns = (props) => {
       obj.range_supervisor = 'confirmed';
 
       setProvideTimeText(props.sv.ProvideTime[fin]);
-
     }
     if (event.currentTarget.dataset.info === 'n') {
       setButtonText(props.sv.Absent[fin]);
@@ -127,8 +137,6 @@ const DropDowns = (props) => {
 
     setAnchorEl(null);
   };
-
-
 
   return (
     <span>
@@ -152,7 +160,6 @@ const DropDowns = (props) => {
         </MenuItem>
         <MenuItem onClick={HandleClose} data-info="y">
           {props.sv.Confirmed[fin]}
-
         </MenuItem>
         <MenuItem onClick={HandleClose} data-info="n">
           {props.sv.Absent[fin]}
@@ -161,7 +168,7 @@ const DropDowns = (props) => {
       <div>
         <p>{provideTime}</p>
         {buttonText === props.sv.Confirmed[fin] && (
-        <TextField
+          <TextField
             id="time"
             type="time"
             value={arrivalTime}
@@ -387,6 +394,7 @@ const DialogWindow = ({ onCancel }) => {
   const [done, setDone] = useState(false);
   const [checked, setChecked] = useState(false);
   const [cookies] = useCookies(['username']);
+  const [arrivalTime, setArrivalTime] = useState('');
   const { sv } = data;
 
   if (onCancel === undefined) {
@@ -406,17 +414,19 @@ const DialogWindow = ({ onCancel }) => {
 
   return (
     <div>
-      <Logic
-        schedules={schedules}
-        setSchedules={setSchedules}
-        noSchedule={noSchedule}
-        checked={checked}
-        setChecked={setChecked}
-        done={done}
-        setDone={setDone}
-        sv={sv}
-        onCancel={onCancel}
-      />
+      <ArrivalTimeContext.Provider value={{ arrivalTime, setArrivalTime }}>
+        <Logic
+          schedules={schedules}
+          setSchedules={setSchedules}
+          noSchedule={noSchedule}
+          checked={checked}
+          setChecked={setChecked}
+          done={done}
+          setDone={setDone}
+          sv={sv}
+          onCancel={onCancel}
+        />
+      </ArrivalTimeContext.Provider>
     </div>
   );
 };
@@ -426,10 +436,13 @@ async function putSchedules(changes) {
   for (let i = 0; i < changes.length; i += 1) {
     const { id } = changes[i];
     const query = `api/range-supervision/${id}`;
-    const s = changes[i].range_supervisor;
-    await axios.put(query, {
-      range_supervisor: s,
-    });
+
+    const request = {
+      range_supervisor: changes[i].range_supervisor,
+      arriving_at: changes[i].arriving_at,
+    };
+
+    await axios.put(query, request);
   }
 }
 
@@ -450,6 +463,8 @@ const Logic = ({
   const fin = localStorage.getItem('language');
   const changes = [...schedules];
 
+  const { arrivalTime } = useContext(ArrivalTimeContext);
+
   /* eslint-disable-next-line */
   const HandleChange = (event) => {
     setChecked(!checked);
@@ -462,17 +477,23 @@ const Logic = ({
       obj.range_supervisor = 'en route';
       changes.map((o) => (o.date === today ? obj : o));
     }
+
     if (!checked && changes[0].range_supervisor === 'en route') {
       changes[0].range_supervisor = 'confirmed';
     }
 
+    if (arrivalTime) {
+      changes[0].arriving_at = arrivalTime;
+    }
+
+    // Send updates to backend
     if (changes.length > 0) {
       setWait(true);
       await putSchedules(changes);
     }
 
     setOpen(false);
-    window.location.reload();
+    // window.location.reload();
   }
 
   return (

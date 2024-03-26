@@ -8,8 +8,7 @@ const serviceCalls = {
     const query = response.locals.query;
     try {
       response.locals.queryResult = await services.rangeSupervision.read(query);
-    }
-    catch(e) {
+    } catch (e) {
       // Connection and other unexpected errors
       return next(e);
     }
@@ -22,22 +21,25 @@ const serviceCalls = {
 
     try {
       response.locals.queryResult = await services.rangeSupervision.read(query);
-    }
-    catch(e) {
+    } catch (e) {
       return next(e);
     }
 
     return next();
   },
 
-  userSupervisions: async function getUserSupervisions(request, response, next) {
+  userSupervisions: async function getUserSupervisions(
+    request,
+    response,
+    next
+  ) {
     const query = response.locals.query;
 
     try {
       // TODO: try testing the fields in (key, fields) of the function
-      response.locals.queryResult = await services.rangeSupervision.userSupervisions(query);
-    }
-    catch(e) {
+      response.locals.queryResult =
+        await services.rangeSupervision.userSupervisions(query);
+    } catch (e) {
       return next(e);
     }
 
@@ -50,25 +52,23 @@ const serviceCalls = {
 
     try {
       id = await services.rangeSupervision.create(query);
-    }
-    catch(e) {
+    } catch (e) {
       // could be a constant?
-      if(e.name === 'Supervision exists') {
-        return response
-          .status(400)
-          .send({
-            error: e.name
-          });
+      if (e.name === 'Supervision exists') {
+        return response.status(400).send({
+          error: e.name,
+        });
       }
 
       return next(e);
     }
 
     try {
-      response.locals.queryResult = await services.rangeSupervision.read({scheduled_range_supervision_id:id});
+      response.locals.queryResult = await services.rangeSupervision.read({
+        scheduled_range_supervision_id: id,
+      });
       response.locals.id = id;
-    }
-    catch(e) {
+    } catch (e) {
       return next(e);
     }
 
@@ -76,28 +76,29 @@ const serviceCalls = {
     return next();
   },
 
-
   update: async function updateSupervision(request, response, next) {
     const id = response.locals.id;
     const updates = response.locals.updates;
 
+    console.log('supervision update', updates);
+
     try {
-      response.locals.queryResult = await services.rangeSupervision.update(id, updates);
-    } catch(e) {
-      if(e.name === 'Unknown supervision') {
-        return response
-          .status(404)
-          .send({
-            error: e.name
-          });
+      response.locals.queryResult = await services.rangeSupervision.update(
+        id,
+        updates
+      );
+    } catch (e) {
+      if (e.name === 'Unknown supervision') {
+        return response.status(404).send({
+          error: e.name,
+        });
       }
 
       return next(e);
     }
     try {
       response.locals.superusers = await services.user.getSuperusers();
-    }
-    catch (e) {
+    } catch (e) {
       return next(e);
     }
 
@@ -108,8 +109,9 @@ const serviceCalls = {
     const query = response.locals.query;
 
     try {
-      response.locals.queryResult = await services.rangeSupervision.delete(query);
-    } catch(e) {
+      response.locals.queryResult =
+        await services.rangeSupervision.delete(query);
+    } catch (e) {
       return next(e);
     }
 
@@ -119,44 +121,29 @@ const serviceCalls = {
   feedback: async function feedback(request, response, next) {
     try {
       response.locals.superusers = await services.user.getSuperusers();
-    }
-    catch (e) {
+    } catch (e) {
       return next(e);
     }
     return next();
-  }
+  },
 };
 
 exports.readFilter = [
   validators.rangeSupervision.readFilter,
-  serviceCalls.readFilter
+  serviceCalls.readFilter,
 ];
 
-exports.read = [
-  validators.rangeSupervision.read,
-  serviceCalls.read
-];
+exports.read = [validators.rangeSupervision.read, serviceCalls.read];
 
 exports.userSupervisions = [
   validators.rangeSupervision.userSupervisions,
-  serviceCalls.userSupervisions
+  serviceCalls.userSupervisions,
 ];
 
-exports.create = [
-  validators.rangeSupervision.create,
-  serviceCalls.create
-];
+exports.create = [validators.rangeSupervision.create, serviceCalls.create];
 
-exports.update = [
-  validators.rangeSupervision.update,
-  serviceCalls.update
-];
+exports.update = [validators.rangeSupervision.update, serviceCalls.update];
 
-exports.delete = [
-  validators.rangeSupervision.delete,
-  serviceCalls.delete
-];
+exports.delete = [validators.rangeSupervision.delete, serviceCalls.delete];
 
-exports.feedback = [
-  serviceCalls.feedback
-];
+exports.feedback = [serviceCalls.feedback];
