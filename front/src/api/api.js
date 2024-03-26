@@ -67,7 +67,14 @@ const getUsers = async () => {
   return response.data;
 };
 
-const getRangeOfficerIds = async (associationId) => {
+const deleteUser = async (id) => {
+  const response = await axios.delete(`api/user/${id}`);
+  console.log(response.data);
+
+  return response.data;
+};
+
+const getRangeOfficers = async (associationId) => {
   const response = await axios.get(`api/rangeofficers/${associationId}`);
   return response.data;
 };
@@ -158,7 +165,8 @@ export default {
   createUser,
   getUser,
   getUsers,
-  getRangeOfficerIds,
+  deleteUser,
+  getRangeOfficers,
   patchReservation,
   addRangeSupervision,
   patchRangeSupervision,

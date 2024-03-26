@@ -9,7 +9,7 @@ or that the user has admin role. */
 const userUpdateCheck = function canUpdatePassword(request, response, next) {
   const session = response.locals.user;
 
-  if (session.role === 'superuser') {
+  if (session.role === 'superuser' || session.role === 'association') {
     return next();
   }
 

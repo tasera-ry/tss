@@ -732,13 +732,22 @@
   },
   "profileSettings": {
     "navPassword": ["Vaihda salasana", "Change password", "Ändra lösenord"],
-    "navRangeofficers": ["Lisää valvoja", "Add new range officer", "Banofficer"]
+    "navRangeofficers": [
+      "Valvojien hallinta",
+      "Range officer management",
+      "Banofficerhantering"
+    ]
   },
   "rangeofficerSettings": {
     "title": [
       "Lisää uusi valvoja",
       "Add new range officer",
       "Lägg till ny banofficer"
+    ],
+    "deleteTitle": [
+      "Poista valvoja",
+      "Delete range officer",
+      "Ta bort banofficer"
     ],
     "username": ["Käyttäjänimi", "Username", "Användarnamn"],
     "password": ["Salasana", "Password", "Lösenord"],
@@ -748,7 +757,7 @@
       "Bekräfta lösenord"
     ],
     "confirm": ["Lisää valvoja", "Add range officer", "Lägg till banofficer"],
-    "sucess": [
+    "success": [
       "Valvojan lisäys onnistui",
       "Range officer added successfully",
       "Banofficer tillagd"
@@ -767,7 +776,21 @@
       "Valvojan lisäys epäonnistui",
       "Range officer addition failed",
       "Banofficer tillägg misslyckades"
-    ]
+    ],
+    "delete": ["Poista", "Delete", "Ta bort"],
+    "cancel": ["Peruuta", "Cancel", "Avboka"],
+    "deleteSuccess": [
+      "Valvojan poisto onnistui",
+      "Range officer deleted successfully",
+      "Banofficer borttagen"
+    ],
+    "deleteError": [
+      "Valvojan poisto epäonnistui",
+      "Range officer deletion failed",
+      "Banofficer borttagning misslyckades"
+    ],
+    "officersRow": ["Valvojat", "Range officers", "Banofficer"],
+    "actionsRow": ["Toiminnot", "Actions", "Funktioner"]
   },
   "passwordSettings": {
     "title": ["Vaihda salasana", "Change password", "Ändra lösenord"],
