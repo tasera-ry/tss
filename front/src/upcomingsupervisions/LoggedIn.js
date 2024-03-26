@@ -99,9 +99,10 @@ const DropDowns = (props) => {
     const parsedTime = moment(event.target.value, 'HH:mm', true);
 
     if (parsedTime.isValid()) {
-      setArrivalTime(event.target.value);
+      setArrivalTime(parsedTime.format('HH:mm'));
     }
   };
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };

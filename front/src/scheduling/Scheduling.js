@@ -430,14 +430,16 @@ function Scheduling(props) {
     const fin = localStorage.getItem('language');
 
     let sortedSupervisors = [];
-    const disabled = false;
+    let disabled = false;
 
     if (rangeSupervisors) {
       // sort supervisors in alphabetical order
-      sortedSupervisors = rangeSupervisors.sort((a, b) => {
-        return a.name.localeCompare(b.name);
-      });
+      sortedSupervisors = rangeSupervisors.sort((a, b) =>
+        a.name.localeCompare(b.name),
+      );
     }
+
+    if (rangeSupervisorSwitch === false) disabled = true;
 
     return (
       <FormControl>
