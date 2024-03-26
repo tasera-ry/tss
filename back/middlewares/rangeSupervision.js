@@ -80,8 +80,6 @@ const serviceCalls = {
     const id = response.locals.id;
     const updates = response.locals.updates;
 
-    console.log('supervision update', updates);
-
     try {
       response.locals.queryResult = await services.rangeSupervision.update(
         id,
