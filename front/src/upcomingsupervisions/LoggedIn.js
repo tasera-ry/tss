@@ -493,7 +493,7 @@ const Logic = ({
     }
 
     setOpen(false);
-    // window.location.reload();
+    window.location.reload();
   }
 
   return (
