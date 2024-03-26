@@ -18,15 +18,15 @@ const model = {
     const supervisionConstraints = {
       scheduled_range_supervision_id: {},
       range_supervisor: {},
-      notice: {}
+      notice: {},
     };
 
     //check if already exists
     const id = await model
       .read(supVis, ['scheduled_range_supervision_id'])
-      .then(rows => rows[0]);
+      .then((rows) => rows[0]);
 
-    if(id) {
+    if (id) {
       const err = Error('Supervision event already exists');
       err.name = 'Supervision exists';
       throw err;
@@ -34,7 +34,7 @@ const model = {
 
     const general = validate.cleanAttributes(supVis, supervisionConstraints);
 
-    return await knex.transaction(trx => {
+    return await knex.transaction((trx) => {
       return trx
         .returning('scheduled_range_supervision_id')
         .insert(general)
@@ -54,9 +54,7 @@ const model = {
    * model.read({ scheduled_range_supervision_id:1 }, ['range_supervisor'])
    */
   read: async function readSupervision(key, fields) {
-    return knex('range_supervision')
-      .where(key)
-      .select(fields);
+    return knex('range_supervision').where(key).select(fields);
   },
 
   // might need optimization? select should be at the top
@@ -76,9 +74,21 @@ const model = {
     return await knex
       .from('user')
       .leftJoin('association', 'user.id', 'association.user_id')
-      .leftJoin('scheduled_range_supervision', 'association.user_id', 'scheduled_range_supervision.association_id')
-      .leftJoin('range_supervision', 'scheduled_range_supervision.id', 'range_supervision.scheduled_range_supervision_id')
-      .leftJoin('range_reservation', 'scheduled_range_supervision.range_reservation_id', 'range_reservation.id')
+      .leftJoin(
+        'scheduled_range_supervision',
+        'association.user_id',
+        'scheduled_range_supervision.association_id'
+      )
+      .leftJoin(
+        'range_supervision',
+        'scheduled_range_supervision.id',
+        'range_supervision.scheduled_range_supervision_id'
+      )
+      .leftJoin(
+        'range_reservation',
+        'scheduled_range_supervision.range_reservation_id',
+        'range_reservation.id'
+      )
       .where({ 'user.id': key['id'] })
       .where('range_reservation.date', '>=', currentDate)
       .select(fields);
@@ -96,19 +106,19 @@ const model = {
    * model.update({ scheduled_range_supervision_id:1 }, { range_supervisor: 'absent' })
    */
   update: async function updateSupervision(current, update) {
-    const supVis = _.pick(update, 'range_supervisor', 'notice');
+    const supVis = _.pick(update, 'range_supervisor', 'notice', 'arriving_at');
 
     const id = await model
       .read(current, ['scheduled_range_supervision_id'])
-      .then(rows => rows[0]);
+      .then((rows) => rows[0]);
 
-    if(!id) {
-      const err = Error('Didn\'t identify supervision(s) to update');
+    if (!id) {
+      const err = Error("Didn't identify supervision(s) to update");
       err.name = 'Unknown supervision';
       throw err;
     }
 
-    return await knex.transaction(trx => {
+    return await knex.transaction((trx) => {
       return trx('range_supervision')
         .where(id)
         .update(supVis)
@@ -126,14 +136,14 @@ const model = {
    * model.delete({ scheduled_range_supervision_id:1 })
    */
   delete: async function deleteSupervision(supVis) {
-    return await knex.transaction(trx => {
+    return await knex.transaction((trx) => {
       return trx('range_supervision')
         .where(supVis)
         .del()
         .then(trx.commit)
         .catch(trx.rollback);
     });
-  }
+  },
 };
 
 module.exports = model;
