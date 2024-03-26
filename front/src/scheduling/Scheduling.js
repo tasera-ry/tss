@@ -426,27 +426,17 @@ function Scheduling(props) {
 
   // builds range officer select
   const createSupervisorSelect = () => {
-    const items = [];
-    let disabled = false;
     const { sched } = data;
     const fin = localStorage.getItem('language');
 
+    let sortedSupervisors = [];
+    const disabled = false;
+
     if (rangeSupervisors) {
       // sort supervisors in alphabetical order
-      const sortedSupervisors = rangeSupervisors.sort((a, b) => {
+      sortedSupervisors = rangeSupervisors.sort((a, b) => {
         return a.name.localeCompare(b.name);
       });
-    }
-
-    for (const supervisor in sortedSupervisors) {
-      items.push(
-        <MenuItem key={supervisor.id} value={supervisor.id}>
-          {supervisor.name}
-        </MenuItem>,
-      );
-    }
-    if (rangeSupervisorSwitch === false) {
-      disabled = true;
     }
 
     return (
@@ -462,7 +452,11 @@ function Scheduling(props) {
           onChange={handleValueChange}
           data-testid="rangeSupervisorSelect"
         >
-          {items}
+          {sortedSupervisors.map((supervisor) => (
+            <MenuItem key={supervisor.id} value={supervisor.id}>
+              {supervisor.name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     );
