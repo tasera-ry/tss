@@ -480,7 +480,7 @@ const Tabletview = () => {
       <div className={classes(css.Text)}>{today}</div>
 
 
-      <Typography variant="h5" align="left">
+      <Typography variant="h5" align="center">
         {tablet.Open[fin]}: &nbsp;
         <Button
           size="medium"

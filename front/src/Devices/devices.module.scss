@@ -1,27 +1,16 @@
-.devicesContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end; /* Laitetaan laitteet ja napit sivun oikeaan reunaan */
-  
+.container {
+  /* Tyyli container-elementille */
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-.device {
-  margin-bottom: 6px;
-  margin-bottom: 6px;
+.material-table {
+  /* Tyyli material-table-elementille */
+  margin-top: 20px;
 }
 
-.button {
-  width: 170px;
-  height: 54px;
-  border-radius: 5px;
-  font-size: 13px;
-
-  background-color: #ffffff;
-}
-
-.device h3 {
-  margin-top: 0; /* Poistetaan laitteen nimen ylämarginaali */
-  margin-bottom: 0;
-  text-align: center; /* Keskitetään laitteen nimi */
-  font-weight: 500;
+.switch {
+  /* Tyyli switch-elementille */
+  margin-left: 10px;
 }

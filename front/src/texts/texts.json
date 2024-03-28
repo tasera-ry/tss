@@ -14,7 +14,7 @@
     "EmailSettings": ["Sähköpostiasetukset", "Email settings", "E-postinställningar"],
     "Raffle": ["Valvojien arvonta", "Supervisor raffle", "Handledare tombola"],
     "Info": ["Lisää infoviesti", "Add info message", "Tillägga info meddelande"], 
-    "Devices":["Ratojen varaus", "Track book", "Tillägga info meddelande"]   
+    "Devices":["Ratojen varaus", "Track book", "Bokning av spår"]   
   },
 
   "banner": {
@@ -25,6 +25,16 @@
     ],
     "Check": ["TARKISTA", "CHECK", "KONTROLLERA"]
   },
+  
+  "devices": {
+    "DeviceList": ["Device List", "Device List Translation", "Device List Translation"],
+    "Name": ["Name", "Name Translation", "Name Translation"],
+    "Status": ["Status", "Status Translation", "Status Translation"]
+   
+  },
+
+
+
   "signin": {
     "SignIn": ["Kirjaudu sisään", "Sign In", "Logga in"],
     "Name": ["Käyttäjänimi", "Username", "Användarnamn"],
@@ -298,6 +308,8 @@
 	"firstTooltip": ["Ensimmäinen sivu", "First page", "Första sidan"], 
 	"lastTooltip": ["Viimeinen sivu", "Last page", "Sista sidan"]
   },
+
+
   "month": {
     "0": ["Err", "Err", "Err"],
     "01": ["Tammikuu", "January", "Januari"],
