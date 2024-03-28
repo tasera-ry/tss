@@ -1,12 +1,6 @@
 const _ = require('lodash');
 
-const {
-  body,
-  query,
-  param,
-  validationResult,
-  matchedData,
-} = require('express-validator');
+const { body, query, param, validationResult, matchedData } = require('express-validator');
 
 function validatorAdditions(validator, opts) {
   if (opts.includes('exists')) {
@@ -24,10 +18,7 @@ function validatorAdditions(validator, opts) {
 
 const fields = {
   id: function idValidation(requestObject, ...opts) {
-    const validator = requestObject('id')
-      .isInt()
-      .withMessage('must be an integer')
-      .toInt();
+    const validator = requestObject('id').isInt().withMessage('must be an integer').toInt();
 
     return validatorAdditions(validator, opts);
   },

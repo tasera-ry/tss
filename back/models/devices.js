@@ -25,7 +25,7 @@ const model = {
       return trx
         .returning('id')
         .insert(device)
-        .into('device')
+        .into('devices')
         .then((ids) => {
           return ids;
         })
@@ -44,10 +44,7 @@ const model = {
    * model.read({ 'device.id': 8 }, ['status'])
    */
   read: async function readDevice(key, fields) {
-    return knex('device')
-      .where({ id: key })
-      .select(fields)
-      .orderBy('device_name');
+    return knex('devices').where(key).select(fields);
   },
 
   /**
@@ -67,7 +64,7 @@ const model = {
 
     const device = validate.cleanAttributes(update, deviceConstraints);
 
-    const id = await model.read(current, ['device.id']).then((rows) => rows[0]);
+    const id = await model.read(current, ['id']).then((rows) => rows[0]);
 
     if (!id) {
       const error = new Error('Didnt find device to update');
@@ -76,7 +73,7 @@ const model = {
     }
 
     return await knex.transaction((trx) => {
-      return trx('device').where(id).update(device);
+      return trx('devices').where(id).update(device);
     });
   },
   /**
@@ -89,11 +86,7 @@ const model = {
    */
   delete: async function deleteDevice(key) {
     return knex.transaction((trx) => {
-      return trx('device')
-        .where({ id: key })
-        .del()
-        .then(trx.commit)
-        .catch(trx.rollback);
+      return trx('devices').where({ id: key }).del().then(trx.commit).catch(trx.rollback);
     });
   },
 };

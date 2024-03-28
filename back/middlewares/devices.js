@@ -15,7 +15,7 @@ const serviceCalls = {
 
     try {
       response.locals.queryResult = await services.devices.read({
-        'device.id': id,
+        id: id,
       });
     } catch (e) {
       return next(e);

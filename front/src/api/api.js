@@ -60,7 +60,7 @@ const getUser = async (id) => {
 const getUsers = async () => {
   const response = await axios.get(`api/user`);
   return response.data;
-}
+};
 
 const patchReservation = (reservationId, data) =>
   axios.put(`/api/reservation/${reservationId}`, data);
@@ -76,28 +76,24 @@ const addRangeSupervision = (
     supervisor,
   });
 
-  const patchRangeSupervision = (id, rangeSupervisor) => {
-    if(rangeSupervisor.supervisor){
-      return axios.put(`api/range-supervision/${id}`, {
-        range_supervisor: rangeSupervisor.range_supervisor,
-        supervisor: rangeSupervisor.supervisor
-      });
-    }
-    else{
-      return axios.put(`api/range-supervision/${id}`, {
-        range_supervisor: rangeSupervisor.range_supervisor
-      }); 
-    }
-  
+const patchRangeSupervision = (id, rangeSupervisor) => {
+  if (rangeSupervisor.supervisor) {
+    return axios.put(`api/range-supervision/${id}`, {
+      range_supervisor: rangeSupervisor.range_supervisor,
+      supervisor: rangeSupervisor.supervisor,
+    });
+  } else {
+    return axios.put(`api/range-supervision/${id}`, {
+      range_supervisor: rangeSupervisor.range_supervisor,
+    });
   }
-
+};
 
 const sendFeedback = (feedback, user) =>
   axios.put('api/range-supervision/feedback', { feedback, user });
 
 const patchScheduledSupervisionTrack = (scheduleId, trackId, data) =>
   axios.put(`/api/track-supervision/${scheduleId}/${trackId}`, data);
-
 
 const getMembers = async () => {
   const response = await axios.get(`/api/members`);
@@ -108,12 +104,12 @@ const patchMembers = async (user_id, data) =>
   axios.put(`/api/members/${user_id}`, data);
 
 const raffleSupervisors = async (dates) => {
-  const response = await axios.post("api/raffle", { dates });
+  const response = await axios.post('api/raffle', { dates });
   return response.data;
 };
 
 const saveRaffledSupervisors = async (results) =>
-  axios.post("api/set-raffled-supervisors", { results });
+  axios.post('api/set-raffled-supervisors', { results });
 
 const getPublicInfoMessages = async () => {
   const response = await axios.get(`api/infomessage`);
@@ -123,12 +119,12 @@ const getPublicInfoMessages = async () => {
 const getPersonalInfoMessages = async () => {
   const response = await axios.get(`api/infomessage/tablet`);
   return response.data;
-}
+};
 
 const getAllInfoMessages = async () => {
   const response = await axios.get('api/infomessage/all');
   return response.data;
-}
+};
 
 const postInfoMessage = async (infoRequest) => {
   await axios.post(`api/infomessage`, infoRequest);
@@ -136,6 +132,28 @@ const postInfoMessage = async (infoRequest) => {
 
 const deleteInfoMessage = async (info) => {
   await axios.delete(`api/infomessage/${info.id}`);
+};
+
+/**
+ * Device api functions
+ */
+
+const getAllDevices = async () => {
+  const response = await axios.get('api/devices');
+  return response.data;
+};
+
+const patchDevice = async (id, updatedDevice) => {
+  await axios.put(`api/devices/${id}`, updatedDevice);
+};
+
+const createDevice = async (newDevice) => {
+  const response = await axios.post('api/devices', newDevice);
+  return response.data;
+};
+
+const deleteDevice = async (id) => {
+  await axios.delete(`api/devices/${id}`);
 };
 
 export default {
@@ -165,4 +183,8 @@ export default {
   getAllInfoMessages,
   postInfoMessage,
   deleteInfoMessage,
+  getAllDevices,
+  patchDevice,
+  createDevice,
+  deleteDevice,
 };

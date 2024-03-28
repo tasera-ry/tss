@@ -1,7 +1,7 @@
 const ora = require('ora');
 
-exports.seed = async function(knex) {
-  const truncate =  async(table) => {
+exports.seed = async function (knex) {
+  const truncate = async (table) => {
     const promise = knex(table).del();
     ora.promise(promise, `Truncate ${table}`);
     return await promise;
@@ -15,4 +15,5 @@ exports.seed = async function(knex) {
   await truncate('range');
   await truncate('supervisor');
   await truncate('user');
+  await truncate('devices');
 };

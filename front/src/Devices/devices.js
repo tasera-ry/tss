@@ -20,24 +20,35 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-
+import api from '../api/api';
 
 const Devices = () => {
-  const [devices, setDevices] = useState([
-    { id: 1, name: 'Labradar', status: 'free' },
-    { id: 2, name: 'Timer 1', status: 'free' },
-    { id: 3, name: 'Timer 2', status: 'free' }
-  ]);
+  const [devices, setDevices] = useState(null);
 
-  const handleStatusChange = (rowData) => {
+  useState(async () => {
+    const fetchData = async () => {
+      try {
+        const response = await api.getAllDevices();
+        setDevices(response);
+      } catch (error) {
+        console.error('Error fetching devices:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleStatusChange = async (rowData) => {
     const data = [...devices];
     const index = data.findIndex((item) => item.id === rowData.id);
     data[index].status = rowData.status === 'free' ? 'reserved' : 'free';
+
+    await api.patchDevice(rowData.id, data[index]);
     setDevices(data);
   };
 
   const columns = [
-    { title: 'Name', field: 'name' },
+    { title: 'Name', field: 'device_name' },
     {
       title: 'Status (free/reserved)',
       field: 'status',
@@ -49,71 +60,75 @@ const Devices = () => {
           name="status-switch"
           inputProps={{ 'aria-label': 'status-switch' }}
         />
-      )
-    }
+      ),
+    },
   ];
 
   return (
-    <ScopedCssBaseline>
-      <Container style={{ maxWidth: '900px', padding: '10px'  }}> 
-        <MaterialTable
-          title="Device List"
-          columns={columns}
-          data={devices}
-          icons={{
-            Add: AddBox,
-            Check: Check,
-            Clear: Clear,
-            Delete: DeleteOutline,
-            DetailPanel: ChevronRight,
-            Edit: Edit,
-            Export: SaveAlt,
-            Filter: FilterList,
-            FirstPage: FirstPage,
-            LastPage: LastPage,
-            NextPage: ChevronRight,
-            PreviousPage: ChevronLeft,
-            ResetSearch: Clear,
-            Search: Search,
-            SortArrow: ArrowDownward,
-            ThirdStateCheck: Remove,
-            ViewColumn: ViewColumn
-          }}
-          editable={{
-            onRowAdd: newData =>
-              new Promise((resolve, reject) => {
-                setTimeout(() => {
-                  setDevices([...devices, { ...newData, status: 'free' }]);
-                  resolve();
-                }, 600);
-              }),
-            onRowUpdate: (newData, oldData) =>
-              new Promise((resolve, reject) => {
-                setTimeout(() => {
-                  const data = [...devices];
-                  data[data.indexOf(oldData)] = newData;
-                  setDevices(data);
-                  resolve();
-                }, 600);
-              }),
-            onRowDelete: oldData =>
-              new Promise((resolve, reject) => {
-                setTimeout(() => {
-                  const data = [...devices];
-                  data.splice(data.indexOf(oldData), 1);
-                  setDevices(data);
-                  resolve();
-                }, 600);
-              })
-          }}
-          options={{
-            search: true,
-            paging: false,
-            sorting: false
-          }}
-        />
-      </Container>
-    </ScopedCssBaseline>
+    <div>
+      {devices ? (
+        <ScopedCssBaseline>
+          <Container style={{ maxWidth: '900px', padding: '10px' }}>
+            <MaterialTable
+              title="Device List"
+              columns={columns}
+              data={devices}
+              icons={{
+                Add: AddBox,
+                Check: Check,
+                Clear: Clear,
+                Delete: DeleteOutline,
+                DetailPanel: ChevronRight,
+                Edit: Edit,
+                Export: SaveAlt,
+                Filter: FilterList,
+                FirstPage: FirstPage,
+                LastPage: LastPage,
+                NextPage: ChevronRight,
+                PreviousPage: ChevronLeft,
+                ResetSearch: Clear,
+                Search: Search,
+                SortArrow: ArrowDownward,
+                ThirdStateCheck: Remove,
+                ViewColumn: ViewColumn,
+              }}
+              editable={{
+                onRowAdd: (newData) =>
+                  new Promise((resolve, reject) => {
+                    api.createDevice(newData).then(() => {
+                      setDevices([...devices, newData]);
+                      resolve();
+                    });
+                  }),
+                onRowUpdate: (newData, oldData) =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      const data = [...devices];
+                      data[data.indexOf(oldData)] = newData;
+                      setDevices(data);
+                      resolve();
+                    }, 600);
+                  }),
+                onRowDelete: (oldData) =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      const data = [...devices];
+                      data.splice(data.indexOf(oldData), 1);
+                      setDevices(data);
+                      resolve();
+                    }, 600);
+                  }),
+              }}
+              options={{
+                search: true,
+                paging: false,
+                sorting: false,
+              }}
+            />
+          </Container>
+        </ScopedCssBaseline>
+      ) : null}
+    </div>
   );
 };
 
