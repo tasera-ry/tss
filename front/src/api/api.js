@@ -69,8 +69,6 @@ const getUsers = async () => {
 
 const deleteUser = async (id) => {
   const response = await axios.delete(`api/user/${id}`);
-  console.log(response.data);
-
   return response.data;
 };
 

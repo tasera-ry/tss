@@ -51,13 +51,6 @@ router
   .put(middlewares.user.update, controllers.user.update)
   .delete(middlewares.user.delete, controllers.user.delete);
 
-//.delete(
-//   middlewares.jwt.read,
-//   middlewares.user.hasProperty('role', 'superuser'),
-//   middlewares.trackSupervision.delete,
-//   controllers.trackSupervision.delete
-// );
-
 router
   .route('/rangeofficers/:associationId')
   .all(
