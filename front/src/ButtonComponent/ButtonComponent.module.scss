@@ -1,0 +1,16 @@
+@import '../shared.module.scss';
+
+.singularGrid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+.customButton {
+    background-color: whitesmoke;
+    border-radius: 50px;
+    width: 150px;
+    height: 45px;
+    margin: 3px;
+    // Add more styles
+  }
