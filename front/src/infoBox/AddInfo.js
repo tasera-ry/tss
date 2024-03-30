@@ -183,6 +183,7 @@ const AddInfo = () => {
 
         >
           <MenuItem value={'all'}>{infoPage.sendPublicMessage[lang]}</MenuItem>
+          <MenuItem value={'rangemaster'}>{infoPage.sendRangeMasterMessage[lang]}</MenuItem>
           {userOption.map((user) => <MenuItem
             key={user.id}
             value={user.name}
