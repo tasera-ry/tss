@@ -278,7 +278,7 @@ router
       _.includes
     )
   )
-  .get(validators.infoMessage.read, controllers.infoMessage.readPersonal);
+  .get(validators.infoMessage.read, controllers.infoMessage.readRangeMaster);
 
 router
   .route('/infomessage/all')
