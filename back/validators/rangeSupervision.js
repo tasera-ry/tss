@@ -3,29 +3,26 @@ const {
   query,
   param,
   validationResult,
-  matchedData,
+  matchedData
 } = require('express-validator');
-const moment = require('moment');
 
 function validatorAdditions(validator, opts) {
-  if (opts.includes('exists')) {
+  if(opts.includes('exists')) {
     validator = validator
       .exists({ checkNull: true, checkFalsy: true })
       .withMessage('must be included');
   }
 
-  if (opts.includes('optional')) {
-    validator = validator.optional();
+  if(opts.includes('optional')) {
+    validator = validator
+      .optional();
   }
 
   return validator;
 }
 
 const fields = {
-  scheduled_range_supervision_id: function idValidation(
-    requestObject,
-    ...opts
-  ) {
+  scheduled_range_supervision_id: function idValidation(requestObject, ...opts) {
     const validator = requestObject('scheduled_range_supervision_id')
       .isInt()
       .withMessage('must be an integer')
@@ -81,24 +78,13 @@ const fields = {
       .isString()
       .withMessage('must be a string');
     return validatorAdditions(validator, opts);
-  },
-
-  arriving_at: function timeValidator(requestObject, ...opts) {
-    const validator = requestObject('arriving_at').custom((value) => {
-      if (moment(value, 'HH:mm', true /* strict parsing */).isValid()) {
-        return true;
-      }
-      throw Error('Time is not in a valid format (HH:mm)');
-    });
-
-    return validatorAdditions(validator, opts);
-  },
+  }
 };
 
 function handleValidationErrors(request, response, next) {
   const validationErrors = validationResult(request);
 
-  if (validationErrors.isEmpty() === false) {
+  if(validationErrors.isEmpty() === false) {
     return response.status(400).send(validationErrors);
   }
 
@@ -115,7 +101,7 @@ module.exports = {
     function storeQuery(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['query'] });
       return next();
-    },
+    }
   ],
   read: [
     fields.scheduled_range_supervision_id(param, 'exists'),
@@ -123,7 +109,7 @@ module.exports = {
     function storeID(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['params'] });
       return next();
-    },
+    }
   ],
   userSupervisions: [
     fields.user_id(param, 'exists'),
@@ -131,7 +117,7 @@ module.exports = {
     function storeUserID(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['params'] });
       return next();
-    },
+    }
   ],
   feedback: [
     fields.feedback(body, 'exists'),
@@ -140,7 +126,7 @@ module.exports = {
     function storeFeedback(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['body'] });
       return next();
-    },
+    }
   ],
   create: [
     fields.scheduled_range_supervision_id(body, 'exists'),
@@ -150,20 +136,19 @@ module.exports = {
     function storeCreationRequest(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['body'] });
       return next();
-    },
+    }
   ],
   update: [
     fields.scheduled_range_supervision_id(param, 'exists'),
     fields.range_supervisor(body, 'optional'),
     fields.association(body, 'optional'),
     fields.notice(body, 'optional'),
-    fields.arriving_at(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
       response.locals.id = matchedData(request, { locations: ['params'] });
       response.locals.updates = matchedData(request, { locations: ['body'] });
       return next();
-    },
+    }
   ],
   delete: [
     fields.scheduled_range_supervision_id(param, 'exists'),
@@ -171,6 +156,6 @@ module.exports = {
     function storeDeleteRequest(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['params'] });
       return next();
-    },
-  ],
+    }
+  ]
 };
