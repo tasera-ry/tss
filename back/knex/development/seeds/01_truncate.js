@@ -1,19 +1,19 @@
 const ora = require('ora');
 
 exports.seed = async function (knex) {
-  const truncate = async (table) => {
-    const promise = knex(table).del();
-    ora.promise(promise, `Truncate ${table}`);
-    return await promise;
-  };
-  await truncate('track_supervision_history');
-  await truncate('track_supervision');
-  await truncate('range_supervision');
-  await truncate('scheduled_range_supervision');
-  await truncate('range_reservation');
-  await truncate('track');
-  await truncate('range');
-  await truncate('association_rangeofficers');
-  await truncate('association');
-  await truncate('user');
+	const truncate = async (table) => {
+		const promise = knex(table).del();
+		ora.promise(promise, `Truncate ${table}`);
+		return await promise;
+	};
+	await truncate('track_supervision_history');
+	await truncate('track_supervision');
+	await truncate('range_supervision');
+	await truncate('scheduled_range_supervision');
+	await truncate('range_reservation');
+	await truncate('track');
+	await truncate('range');
+	await truncate('association_rangeofficers');
+	await truncate('association');
+	await truncate('user');
 };

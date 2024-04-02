@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Style and colors
 import './Scheduling.scss';
@@ -32,6 +32,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import { withStyles } from '@material-ui/core/styles';
 
 import socketIOClient from 'socket.io-client';
 import {
@@ -62,115 +63,125 @@ async function getRangeSupervisors() {
   }
 }
 
-class Scheduling extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      state: 'loading', // loading, ready
-      toast: false,
-      toastMessage: 'Nope',
-      toastSeverity: 'success',
-      date: new Date(),
-      rangeId: '',
-      reservationId: '',
-      scheduleId: '',
-      open: new Date(),
-      close: new Date(),
-      available: false,
-      rangeSupervisorSwitch: false,
-      rangeSupervisorId: '',
-      rangeSupervisorOriginal: '',
-      rangeSupervisionScheduled: false,
-      daily: false,
-      weekly: false,
-      monthly: false,
-      repeatCount: 1,
-      datePickerKey: 1,
-    };
-  }
+// A custom switch to display green color for all sliders
+const CustomSwitch = withStyles({
+  switchBase: {
+    // grey
+    color: '#cccccc',
+    '&$checked': {
+      // green
+      color: '#658f60',
+    },
+    '&$checked + $track': {
+      backgroundColor: '#658f60',
+    },
+  },
+  checked: {},
+  track: {},
+})(Switch);
 
-  componentDidMount() {
-    this.setState(
-      {
-        datePickerKey: Math.random(), // force datepicker to re-render when language changed
-      },
-      function () {
-        validateLogin().then((logInSuccess) => {
-          if (!logInSuccess) {
-            this.props.history.push('/');
-          } else {
-            getRangeSupervisors()
-              .then((response) => {
-                if (response !== false) {
-                  this.setState({
-                    rangeSupervisors: response,
-                  });
-                  this.update();
-                  this.setState({
-                    state: 'loading',
-                  });
-                }
-              })
-              .catch((error) => {
-                console.error('init failed', error);
-              });
-          }
-        });
-      },
-    );
-    this.socket = socketIOClient();
-  }
+function Scheduling(props) {
+  const [state, setState] = useState('loading');
+  const [toast, setToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('Nope');
+  const [toastSeverity, setToastSeverity] = useState('success');
+  const [date, setDate] = useState(new Date());
+  const [rangeId, setRangeId] = useState('');
+  const [reservationId, setReservationId] = useState('');
+  const [scheduleId, setScheduleId] = useState('');
+  const [open, setOpen] = useState(new Date());
+  const [close, setClose] = useState(new Date());
+  const [available, setAvailable] = useState(false);
+  const [rangeSupervisors, setRangeSupervisors] = useState();
+  const [rangeSupervisorSwitch, setRangeSupervisorSwitch] = useState(false);
+  const [rangeSupervisorId, setRangeSupervisorId] = useState('');
+  const [rangeSupervisorOriginal, setRangeSupervisorOriginal] = useState('');
+  const [rangeSupervisionScheduled, setRangeSupervisionScheduled] =
+    useState(false);
+  const [daily, setDaily] = useState(false);
+  const [weekly, setWeekly] = useState(false);
+  const [monthly, setMonthly] = useState(false);
+  const [repeatCount, setRepeatCount] = useState(1);
+  const [datePickerKey, setDatePickerKey] = useState(1);
+  const [socket, setSocket] = useState(null);
+  const [tracks, setTracks] = useState(null);
+  const [trackStates, setTrackStates] = useState({});
+  const [events, setEvents] = useState({});
+  const [callUpdate, setCallUpdate] = useState(false);
+
+  useEffect(() => {
+    setDatePickerKey(Math.random()); // force datepicker to re-render when language changed
+    validateLogin().then((logInSuccess) => {
+      if (!logInSuccess) {
+        props.history.push('/');
+      } else {
+        getRangeSupervisors()
+          .then((response) => {
+            if (response !== false) {
+              setRangeSupervisors(response);
+              update();
+              setState('loading');
+            }
+          })
+          .catch((error) => {
+            console.error('init failed', error);
+          });
+      }
+    });
+
+    setSocket(socketIOClient());
+  }, []);
+
+  // runs after date changed with datePicker
+  useEffect(() => {
+    if (callUpdate) {
+      continueWithDate();
+      setCallUpdate(false);
+    }
+  }, [callUpdate]);
 
   // if these all tracks can work with track changes only changed updates could be sent
   // there's a bug somewhere that makes state handling here a pain
-  openAllTracks = () => {
-    if (this.state.tracks) {
-      this.state.tracks.forEach((track) => {
-        this.setState({
-          [track.id]: 'present',
-        });
+  const openAllTracks = () => {
+    if (tracks) {
+      let ts = trackStates;
+      tracks.forEach((track) => {
+        ts = { ...ts, [track.id]: 'present' };
       });
+      setTrackStates(ts);
     }
   };
 
-  emptyAllTracks = () => {
-    if (this.state.tracks) {
-      this.state.tracks.forEach((track) => {
-        this.setState({
-          [track.id]: 'absent',
-        });
+  const emptyAllTracks = () => {
+    if (tracks) {
+      let ts = trackStates;
+      tracks.forEach((track) => {
+        ts = { ...ts, [track.id]: 'absent' };
       });
+      setTrackStates(ts);
     }
   };
 
-  closeAllTracks = () => {
-    if (this.state.tracks) {
-      this.state.tracks.forEach((track) => {
-        this.setState({
-          [track.id]: 'closed',
-        });
+  const closeAllTracks = () => {
+    if (tracks) {
+      let ts = trackStates;
+      tracks.forEach((track) => {
+        ts = { ...ts, [track.id]: 'closed' };
       });
+      setTrackStates(ts);
     }
   };
 
-  handleDateChange = (date) => {
-    this.setState({
-      date,
-    });
+  const handleDateChange = (newDate) => {
+    setDate(newDate);
   };
 
-  handleDatePickChange = (date) => {
-    this.setState(
-      {
-        date,
-      },
-      function () {
-        this.continueWithDate();
-      },
-    );
+  const handleDatePickChange = (newDate) => {
+    setDate(newDate);
+    setCallUpdate(true);
   };
 
-  continueWithDate = (event) => {
+  const continueWithDate = (event) => {
     if (
       event !== undefined &&
       event.type !== undefined &&
@@ -178,117 +189,91 @@ class Scheduling extends Component {
     ) {
       event.preventDefault();
     }
-    this.setState(
-      {
-        state: 'loading',
-      },
-      function () {
-        // console.log("TIME IS",this.state.date);
-        this.update();
-      },
-    );
+    setState('loading');
+    update();
   };
 
-  handleTimeStartChange = (date) => {
-    this.setState({
-      open: date,
-    });
+  const handleTimeStartChange = (date) => {
+    setOpen(date);
   };
 
-  handleTimeEndChange = (date) => {
-    this.setState({
-      close: date,
-    });
+  const handleTimeEndChange = (date) => {
+    setClose(date);
   };
 
-  handleSwitchChange = (event) => {
-    // console.log("Switch",event.target.name, event.target.checked)
-    this.setState({
-      [event.target.name]: event.target.checked,
-    });
+  const handleSwitchChange = (event) => {
+    //console.log("Switch",event.target.name, event.target.checked);
+
+    if (event.target.name == 'available') setAvailable(event.target.checked);
+    if (event.target.name == 'rangeSupervisorSwitch')
+      setRangeSupervisorSwitch(event.target.checked);
+
+    setEvents({ ...events, [event.target.name]: event.target.checked });
   };
 
-  handleRepeatChange = (event) => {
+  const handleRepeatChange = (event) => {
     // console.log("Repeat",event.target.id, event.target.checked)
 
-    let daily = false;
-    let weekly = false;
-    let monthly = false;
-
     if (event.target.id === 'daily') {
-      daily = !this.state.daily;
+      setDaily(!daily);
     } else if (event.target.id === 'weekly') {
-      weekly = !this.state.weekly;
+      setWeekly(!weekly);
     } else if (event.target.id === 'monthly') {
-      monthly = !this.state.monthly;
+      setMonthly(!monthly);
     }
-
-    this.setState({
-      daily,
-      weekly,
-      monthly,
-    });
   };
 
-  handleSnackbarClose = (event, reason) => {
+  const handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
 
-    this.setState({
-      toast: false,
-    });
+    setToast(false);
   };
 
-  handleRadioChange = (event) => {
-    // console.log("Radio",event.target.name, event.target)
+  const handleRadioChange = (event) => {
+    //console.log("Radio",event.target.name, event.target);
     // having the name be a int causes
     // Failed prop type: Invalid prop `name` of type `number`
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
+
+    setTrackStates({ ...trackStates, [event.target.name]: event.target.value });
+
+    setEvents({ ...events, [event.target.name]: event.target.value });
   };
 
-  handleValueChange = (event) => {
-    // console.log("Value change",event.target.name, event.target.value)
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
+  const handleValueChange = (event) => {
+    //console.log("Value change",event.target.name, event.target.value);
+
+    if (event.target.name == 'rangeSupervisorId')
+      setRangeSupervisorId(event.target.value);
+    if (event.target.name == 'repeatCount') setRepeatCount(event.target.value);
+
+    setEvents({ ...events, [event.target.name]: event.target.value });
   };
 
-  handleBackdropClick = (event) => {
+  const handleBackdropClick = (event) => {
     // console.log("Backdrop clicked",event);
     event.preventDefault();
   };
 
-  handleNotice = (event) => {
+  const handleNotice = (event) => {
     // console.log("handle notice",event.target.id,event.target.value,this.state.tracks)
-    const idx = this.state.tracks.findIndex(
+    const idx = tracks.findIndex(
       (findItem) => findItem.id === parseInt(event.target.id),
     );
-    const { tracks } = this.state;
-    tracks[idx].notice = event.target.value;
-
-    this.setState(
-      {
-        tracks,
-      },
-      function () {
-        console.debug(this.state);
-      },
-    );
+    let newTracks = tracks;
+    newTracks[idx].notice = event.target.value;
+    setTracks(newTracks);
   };
 
-  saveChanges = async () => {
+  const saveChanges = async () => {
     const { sched } = data;
     const fin = localStorage.getItem('language');
 
-    this.setState({
-      state: 'loading',
-    });
+    setState('loading');
 
     // update call/error handling
-    const update = async (
+    const updateSC = async (
       date,
       rsId,
       srsId,
@@ -296,7 +281,7 @@ class Scheduling extends Component {
       tracks,
       isRepeat,
     ) => {
-      await this.updateCall(
+      await updateCall(
         date,
         rsId,
         srsId,
@@ -305,26 +290,20 @@ class Scheduling extends Component {
         isRepeat,
       ).then(
         () => {
-          this.setState({
-            toast: true,
-            toastMessage: sched.Success[fin],
-            toastSeverity: 'success',
-          });
+          setToast(true);
+          setToastMessage(sched.Success[fin]);
+          setToastSeverity('success');
         },
         (error) => {
           console.error(`Update rejection called: ${error.message}`);
           if (error.message === 'Range officer enabled but no id') {
-            this.setState({
-              toastMessage: sched.Warning[fin],
-              toastSeverity: 'warning',
-              toast: true,
-            });
+            setToast(true);
+            setToastMessage(sched.Warning[fin]);
+            setToastSeverity('warning');
           } else {
-            this.setState({
-              toastMessage: sched.Error[fin],
-              toastSeverity: 'error',
-              toast: true,
-            });
+            setToast(true);
+            setToastMessage(sched.Error[fin]);
+            setToastSeverity('error');
           }
         },
       );
@@ -334,31 +313,31 @@ class Scheduling extends Component {
     // this approach causes lag
     // this needs to be fixed
     const repeat = async () => {
-      let date = moment(this.state.date).format('YYYY-MM-DD');
-      await update(
-        date,
-        this.state.reservationId,
-        this.state.scheduleId,
-        this.state.rangeSupervisionScheduled,
-        this.state.tracks,
+      let newDate = moment(date).format('YYYY-MM-DD');
+      await updateSC(
+        newDate,
+        reservationId,
+        scheduleId,
+        rangeSupervisionScheduled,
+        tracks,
         false,
       );
-      if (this.state.daily || this.state.weekly || this.state.monthly) {
-        for (let i = 0; i < this.state.repeatCount; i += 1) {
-          if (this.state.daily) {
-            date = moment(date).add(1, 'days');
-          } else if (this.state.weekly) {
-            date = moment(date).add(1, 'weeks');
-          } else if (this.state.monthly) {
-            date = moment(date).add(1, 'months');
+      if (daily || weekly || monthly) {
+        for (let i = 0; i < repeatCount; i += 1) {
+          if (daily) {
+            newDate = moment(newDate).add(1, 'days');
+          } else if (weekly) {
+            newDate = moment(newDate).add(1, 'weeks');
+          } else if (monthly) {
+            newDate = moment(newDate).add(1, 'months');
           }
 
           try {
             // fetch new requirements for the next day
             const response = await api.getSchedulingDate(
-              moment(date).format('YYYY-MM-DD'),
+              moment(newDate).format('YYYY-MM-DD'),
             );
-            await update(
+            await updateSC(
               date,
               response.reservationId,
               response.scheduleId,
@@ -377,28 +356,10 @@ class Scheduling extends Component {
     // update here not necessarily needed but fixes
     // when saved to a new date with post and then immediately after
     // saving again without updating ids.
-    this.update();
-    this.setState({
-      state: 'ready',
-    });
-    this.socket.emit('refresh');
+    update();
+    setState('ready');
+    socket.emit('refresh');
   };
-
-  /*
-   * requires:
-   * date,
-   * reservationId,
-   * scheduleId,
-   *
-   * from state:
-   * this.state.rangeId
-   * this.state.rangeSupervisorSwitch
-   * this.state.open
-   * this.state.close
-   * this.state.rangeSupervisorId
-   * this.state.tracks
-   * supervisorStatus = this.state[this.state.tracks[key].id]
-   */
 
   /*
    *   Components
@@ -408,11 +369,10 @@ class Scheduling extends Component {
    */
 
   // builds tracklist
-  createTrackList = () => {
+  const createTrackList = () => {
     const { sched } = data;
     const fin = localStorage.getItem('language');
     const items = [];
-    const { tracks } = this.state;
     for (const key in tracks) {
       items.push(
         <React.Fragment key={key}>
@@ -421,8 +381,8 @@ class Scheduling extends Component {
             <RadioGroup
               defaultValue="absent"
               name={tracks[key].id.toString()}
-              onChange={this.handleRadioChange}
-              value={this.state[tracks[key].id] || 'absent'}
+              onChange={handleRadioChange}
+              value={trackStates[tracks[key].id] || 'absent'}
               data-testid={`track-${tracks[key].id.toString()}`}
             >
               <FormControlLabel
@@ -453,7 +413,7 @@ class Scheduling extends Component {
               aria-label="Ilmoitus"
               rowsMin={1}
               rowsMax={3}
-              onChange={this.handleNotice}
+              onChange={handleNotice}
               value={tracks[key].notice !== null ? tracks[key].notice : ''}
               style={{ backgroundColor: 'blackTint10' }}
             />
@@ -465,21 +425,22 @@ class Scheduling extends Component {
   };
 
   // builds range officer select
-  createSupervisorSelect = () => {
-    const items = [];
-    let disabled = false;
+  const createSupervisorSelect = () => {
     const { sched } = data;
     const fin = localStorage.getItem('language');
-    for (const key in this.state.rangeSupervisors) {
-      items.push(
-        <MenuItem key={key} value={this.state.rangeSupervisors[key].id}>
-          {this.state.rangeSupervisors[key].name}
-        </MenuItem>,
+
+    let sortedSupervisors = [];
+    let disabled = false;
+
+    if (rangeSupervisors) {
+      // sort supervisors in alphabetical order
+      sortedSupervisors = rangeSupervisors.sort((a, b) =>
+        a.name.localeCompare(b.name),
       );
     }
-    if (this.state.rangeSupervisorSwitch === false) {
-      disabled = true;
-    }
+
+    if (rangeSupervisorSwitch === false) disabled = true;
+
     return (
       <FormControl>
         <InputLabel id="chooserangeSupervisorLabel">
@@ -489,24 +450,28 @@ class Scheduling extends Component {
           {...(disabled && { disabled: true })}
           labelId="chooserangeSupervisorLabel"
           name="rangeSupervisorId"
-          value={this.state.rangeSupervisorId || ''}
-          onChange={this.handleValueChange}
+          value={rangeSupervisorId || ''}
+          onChange={handleValueChange}
           data-testid="rangeSupervisorSelect"
         >
-          {items}
+          {sortedSupervisors.map((supervisor) => (
+            <MenuItem key={supervisor.id} value={supervisor.id}>
+              {supervisor.name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     );
   };
 
-  async updateCall(
+  const updateCall = async (
     date,
     rsId,
     srsId,
     rangeSupervisionScheduled,
-    tracks,
+    paramTracks,
     isRepeat,
-  ) {
+  ) => {
     /* eslint-disable-next-line */
     return new Promise(async (resolve, reject) => {
       let reservationMethod;
@@ -518,20 +483,22 @@ class Scheduling extends Component {
       // reservationId: '',
       // scheduledRangeSupervisionId: '',
       // trackSupervisionId: '',
+      console.log('rsId: ', rsId);
       if (rsId !== null) {
         reservationMethod = 'PUT';
         reservationPath = `/${rsId}`;
       } else reservationMethod = 'POST';
 
+      console.log('srsId: ', srsId);
       if (srsId !== null) {
         scheduledRangeSupervisionMethod = 'PUT';
         scheduledRangeSupervisionPath = `/${srsId}`;
       } else scheduledRangeSupervisionMethod = 'POST';
 
       let params = {
-        range_id: this.state.rangeId,
-        available: this.state.available,
-        association: this.state.rangeSupervisorId,
+        range_id: rangeId,
+        available: available,
+        supervisor: rangeSupervisorId,
       };
 
       if (reservationMethod === 'POST') {
@@ -592,16 +559,16 @@ class Scheduling extends Component {
 
       params = {
         range_reservation_id: rsId,
-        open: moment(this.state.open).format('HH:mm'),
-        close: moment(this.state.close).format('HH:mm'),
-        association_id: null,
+        open: moment(open).format('HH:mm'),
+        close: moment(close).format('HH:mm'),
+        supervisor_id: null,
       };
 
-      if (this.state.rangeSupervisorSwitch) {
-        if (this.state.rangeSupervisorId !== null) {
+      if (rangeSupervisorSwitch) {
+        if (rangeSupervisorId !== null) {
           params = {
             ...params,
-            association_id: this.state.rangeSupervisorId,
+            association_id: rangeSupervisorId,
           };
         } else return reject(new Error('Range officer enabled but no id'));
       }
@@ -662,13 +629,13 @@ class Scheduling extends Component {
 
       let rangeStatus = null;
 
-      if (!this.state.available) {
+      if (!available) {
         rangeStatus = 'closed';
-      } else if (!this.state.rangeSupervisorSwitch) {
+      } else if (!rangeSupervisorSwitch) {
         rangeStatus = 'absent';
       } else if (
-        this.state.rangeSupervisorId !== null &&
-        this.state.rangeSupervisorOriginal !== this.state.rangeSupervisorId
+        rangeSupervisorId !== null &&
+        rangeSupervisorOriginal !== rangeSupervisorId
       ) {
         rangeStatus = 'not confirmed';
       }
@@ -679,7 +646,7 @@ class Scheduling extends Component {
           srsId,
           rangeStatus,
           rangeSupervisionScheduled,
-          this.state.rangeSupervisorId,
+          rangeSupervisorId,
         );
         if (rangeSupervisionRes !== true) {
           return reject(new Error(rangeSupervisionRes));
@@ -690,13 +657,13 @@ class Scheduling extends Component {
       const trackSupervision = async (srsId, key) => {
         try {
           // update only ones changed in state
-          if (this.state[this.state.tracks[key].id] !== undefined || isRepeat) {
-            const statusInState = this.state[this.state.tracks[key].id];
+          if (trackStates[tracks[key].id] !== undefined || isRepeat) {
+            const statusInState = trackStates[tracks[key].id];
             // if coming from repeat and status was cleared
             const supervisorStatus =
               statusInState !== undefined ? statusInState : 'absent';
 
-            let { notice } = this.state.tracks[key];
+            let { notice } = tracks[key];
             if (notice === null) {
               // undefined gets removed in object
               notice = undefined;
@@ -706,21 +673,21 @@ class Scheduling extends Component {
             let params = {
               track_supervisor: supervisorStatus,
               notice,
-              association: this.state.rangeSupervisorId,
+              association: rangeSupervisorId,
             };
 
             let srsp = '';
             let trackSupervisionMethod = '';
-            // if scheduled track supervision exists -> put otherwise -> post
-            if (tracks[key].scheduled) {
+            // if scheduled track supervision exists -> put, otherwise -> post
+            if (paramTracks[key].scheduled) {
               trackSupervisionMethod = 'PUT';
-              srsp = `/${srsId}/${this.state.tracks[key].id}`;
+              srsp = `/${srsId}/${tracks[key].id}`;
             } else {
               trackSupervisionMethod = 'POST';
               params = {
                 ...params,
                 scheduled_range_supervision_id: srsId,
-                track_id: this.state.tracks[key].id,
+                track_id: tracks[key].id,
               };
             }
             return await fetch(`/api/track-supervision${srsp}`, {
@@ -747,7 +714,7 @@ class Scheduling extends Component {
           return reject(new Error('general track supervision failure'));
         }
       };
-      for (const key in this.state.tracks) {
+      for (const key in tracks) {
         try {
           await trackSupervision(srsId, key);
         } catch (error) {
@@ -757,291 +724,270 @@ class Scheduling extends Component {
 
       return resolve('update success');
     });
-  }
+  };
 
-  update() {
-    const request = async () => {
-      try {
-        const response = await api.getSchedulingDate(this.state.date);
-        this.setState({
-          date: moment(response.date),
-          rangeId: response.rangeId,
-          reservationId: response.reservationId,
-          scheduleId: response.scheduleId,
-          open:
-            response.open !== null
-              ? moment(response.open, 'h:mm:ss').format()
-              : moment(response.date).hour(17).minute(0).second(0),
-          close:
-            response.close !== null
-              ? moment(response.close, 'h:mm:ss').format()
-              : moment(response.date).hour(20).minute(0).second(0),
-          available: response.available !== null ? response.available : false,
-          rangeSupervisorSwitch: response.rangeSupervisorId !== null,
-          rangeSupervisorId: response.rangeSupervisorId,
-          rangeSupervisorOriginal: response.rangeSupervisorId,
-          rangeSupervisionScheduled: response.rangeSupervisionScheduled,
-          tracks: response.tracks,
-          state: 'ready',
-        });
-        // set current track state for scheduled
-        for (const key in response.tracks) {
-          // eslint-disable-line
-          if (response.tracks[key].scheduled) {
-            this.setState({
-              [this.state.tracks[key].id]:
-                this.state.tracks[key].trackSupervision,
-            });
-          } else {
-            // clears track states between date changes
-            this.setState({
-              [this.state.tracks[key].id]: undefined,
-            });
-          }
+  const update = async () => {
+    try {
+      const response = await api.getSchedulingDate(date);
+
+      setDate(moment(response.date));
+      setRangeId(response.rangeId);
+      setReservationId(response.reservationId);
+      setScheduleId(response.scheduleId);
+      setOpen(
+        response.open !== null
+          ? moment(response.open, 'h:mm:ss').format()
+          : moment(response.date).hour(17).minute(0).second(0),
+      );
+      setClose(
+        response.close !== null
+          ? moment(response.close, 'h:mm:ss').format()
+          : moment(response.date).hour(20).minute(0).second(0),
+      );
+      setAvailable(response.available !== null ? response.available : false);
+      setRangeSupervisorSwitch(response.rangeSupervisorId !== null);
+      setRangeSupervisorId(response.rangeSupervisorId);
+      setRangeSupervisorOriginal(response.rangeSupervisorId);
+      setRangeSupervisionScheduled(response.rangeSupervisionScheduled);
+      setTracks(response.tracks);
+      setState('ready');
+
+      let ts = trackStates;
+
+      // set current track state for scheduled
+      for (const key in response.tracks) {
+        // eslint-disable-line
+        if (response.tracks[key].scheduled) {
+          ts = {
+            ...ts,
+            [response.tracks[key].id]: response.tracks[key].trackSupervision,
+          };
+        } else {
+          // clears track states between date changes
+          ts = { ...ts, [response.tracks[key].id]: undefined };
         }
-      } catch (err) {
-        console.error('getting info failed');
       }
-    };
-    request();
+      setTrackStates(ts);
+    } catch (err) {
+      console.error('getting info failed', err);
+    }
+  };
+
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
   }
 
-  render() {
-    function Alert(props) {
-      return <MuiAlert elevation={6} variant="filled" {...props} />;
-    }
+  const { sched } = data;
+  const fin = localStorage.getItem('language');
 
-    const { sched } = data;
-    const fin = localStorage.getItem('language');
+  return (
+    <div className="schedulingRoot">
+      <Modal open={state !== 'ready'} onClick={handleBackdropClick}>
+        <Backdrop open={state !== 'ready'} onClick={handleBackdropClick}>
+          <CircularProgress disableShrink />
+        </Backdrop>
+      </Modal>
 
-    return (
-      <div className="schedulingRoot">
-        <Modal
-          open={this.state.state !== 'ready'}
-          onClick={this.handleBackdropClick}
-        >
-          <Backdrop
-            open={this.state.state !== 'ready'}
-            onClick={this.handleBackdropClick}
+      {/* Section for selecting date */}
+      <div className="firstSection">
+        <form onSubmit={continueWithDate}>
+          {/* Datepicker */}
+          <MuiPickersUtilsProvider
+            utils={MomentUtils}
+            locale={lang}
+            key={datePickerKey}
           >
-            <CircularProgress disableShrink />
-          </Backdrop>
-        </Modal>
-
-        {/* Section for selecting date */}
-        <div className="firstSection">
-          <form onSubmit={this.continueWithDate}>
-            {/* Datepicker */}
-            <MuiPickersUtilsProvider
-              utils={MomentUtils}
-              locale={lang}
-              key={this.state.datePickerKey}
-            >
-              <KeyboardDatePicker
-                autoOk
-                margin="normal"
-                name="date"
-                label={sched.Day[fin]}
-                value={this.state.date}
-                onChange={(date) => this.handleDateChange(date)}
-                onAccept={this.handleDatePickChange}
-                format="DD.MM.YYYY"
-                showTodayButton
-                data-testid="datePicker"
-              />
-            </MuiPickersUtilsProvider>
-            <div className="continue">
-              <Button
-                type="submit"
-                variant="contained"
-                style={{ backgroundColor: '#d1ccc2' }}
-                data-testid="dateButton"
-              >
-                {sched.Day[fin]}
-              </Button>
-            </div>
-          </form>
-        </div>
-
-        <hr />
-
-        {/* Section for setting range officer status and open/close times of the tracks */}
-        <div className="secondSection">
-          <div className="topRow">
-            <div className="text">{sched.Open[fin]}</div>
-
-            <Switch
-              checked={this.state.available}
-              onChange={this.handleSwitchChange}
-              name="available"
-              color="primary"
-              style={{ color: '#5f77a1' }}
-              data-testid="available"
+            <KeyboardDatePicker
+              autoOk
+              margin="normal"
+              name="date"
+              label={sched.Day[fin]}
+              value={date}
+              onChange={(newDate) => handleDateChange(newDate)}
+              onAccept={(newDate) => handleDatePickChange(newDate)}
+              format="DD.MM.YYYY"
+              showTodayButton
+              data-testid="datePicker"
             />
-          </div>
-          <div className="middleRow">
-            <div className="roSwitch">
-              <div className="text">{sched.Rangeofficer[fin]}</div>
-              <Switch
-                className="officerSwitch"
-                checked={this.state.rangeSupervisorSwitch}
-                onChange={this.handleSwitchChange}
-                name="rangeSupervisorSwitch"
-                color="primary"
-                style={{ color: '#5f77a1' }}
-                data-testid="rangeSupervisorSwitch"
-              />
-            </div>
-            {this.createSupervisorSelect()}
-          </div>
-          <div className="bottomRow">
-            <div className="text">{sched.OpenHours[fin]}</div>
-            <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
-              <KeyboardTimePicker
-                autoOk
-                ampm={false}
-                margin="normal"
-                name="start"
-                label={sched.Start[fin]}
-                value={this.state.open}
-                onChange={this.handleTimeStartChange}
-                minutesStep={5}
-                showTodayButton
-              />
-            </MuiPickersUtilsProvider>
-            <div className="dash">-</div>
-            <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
-              <KeyboardTimePicker
-                autoOk
-                ampm={false}
-                margin="normal"
-                name="end"
-                label={sched.Stop[fin]}
-                value={this.state.close}
-                onChange={this.handleTimeEndChange}
-                minutesStep={5}
-                showTodayButton
-              />
-            </MuiPickersUtilsProvider>
-          </div>
-        </div>
-
-        <hr />
-
-        {/* Section for setting track-specific open/close/absent statuses */}
-        <div className="thirdSection">
-          <div className="leftSide">{this.createTrackList()}</div>
-          <div className="rightSide">
+          </MuiPickersUtilsProvider>
+          <div className="continue">
             <Button
+              type="submit"
               variant="contained"
-              color="primary"
-              onClick={this.openAllTracks}
-              style={{ color: 'black', backgroundColor: '#658f60' }}
-              data-testid="openAll"
-            >
-              {sched.OpenAll[fin]}
-            </Button>
-            <Button
-              variant="contained"
-              onClick={this.emptyAllTracks}
-              style={{ backgroundColor: '#5f77a1' }}
-              data-testid="emptyAll"
-            >
-              {sched.ClearAll[fin]}
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={this.closeAllTracks}
-              style={{ color: 'black', backgroundColor: '#c97b76' }}
-              data-testid="closeAll"
-            >
-              {sched.CloseAll[fin]}
-            </Button>
-          </div>
-        </div>
-        <hr />
-        <div className="fourthSection">
-          <div className="repetition">
-            <div className="daily">
-              {sched.RepeatDaily[fin]}
-              <Switch
-                checked={this.state.daily}
-                onChange={this.handleRepeatChange}
-                id="daily"
-                color="primary"
-                style={{ color: '#5f77a1' }}
-                data-testid="dailyRepeat"
-              />
-            </div>
-            <div className="weekly">
-              {sched.RepeatWeekly[fin]}
-              <Switch
-                checked={this.state.weekly}
-                onChange={this.handleRepeatChange}
-                id="weekly"
-                color="primary"
-                style={{ color: '#5f77a1' }}
-                data-testid="weeklyRepeat"
-              />
-            </div>
-            <div className="monthly">
-              {sched.RepeatMonthly[fin]}
-              <Switch
-                checked={this.state.monthly}
-                onChange={this.handleRepeatChange}
-                id="monthly"
-                color="primary"
-                style={{ color: '#5f77a1' }}
-                data-testid="monthlyRepeat"
-              />
-            </div>
-            <div className="repeatCount">
-              {sched.Amount[fin]}
-              <TextField
-                name="repeatCount"
-                type="number"
-                value={this.state.repeatCount}
-                onChange={this.handleValueChange}
-                InputProps={{ inputProps: { min: 1, max: 100 } }}
-              />
-            </div>
-          </div>
-          <div className="save">
-            <Button
-              variant="contained"
-              onClick={this.saveChanges}
               style={{ backgroundColor: '#d1ccc2' }}
+              data-testid="dateButton"
             >
-              {sched.Save[fin]}
+              {sched.Day[fin]}
             </Button>
-            <div
-              className="hoverHand arrow-right"
-              onClick={() =>
-                this.handleDatePickChange(
-                  moment(this.state.date).add(1, 'days').format('YYYY-MM-DD'),
-                )
-              }
+          </div>
+        </form>
+      </div>
+
+      <hr />
+
+      {/* Section for setting range officer status and open/close times of the tracks */}
+      <div className="secondSection">
+        <div className="topRow">
+          <div className="text">{sched.Open[fin]}</div>
+
+          <CustomSwitch
+            checked={available}
+            onChange={handleSwitchChange}
+            name="available"
+            data-testid="available"
+          />
+        </div>
+        <div className="middleRow">
+          <div className="roSwitch">
+            <div className="text">{sched.Rangeofficer[fin]}</div>
+            <CustomSwitch
+              className="officerSwitch"
+              checked={rangeSupervisorSwitch}
+              onChange={handleSwitchChange}
+              name="rangeSupervisorSwitch"
+              data-testid="rangeSupervisorSwitch"
             />
-            <div className="toast">
-              <Snackbar
-                open={this.state.toast}
-                autoHideDuration={5000}
-                onClose={this.handleSnackbarClose}
-              >
-                <Alert
-                  onClose={this.handleSnackbarClose}
-                  severity={this.state.toastSeverity}
-                >
-                  {this.state.toastMessage}!
-                </Alert>
-              </Snackbar>
-            </div>
+          </div>
+          {createSupervisorSelect()}
+        </div>
+        <div className="bottomRow">
+          <div className="text">{sched.OpenHours[fin]}</div>
+          <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
+            <KeyboardTimePicker
+              autoOk
+              ampm={false}
+              margin="normal"
+              name="start"
+              label={sched.Start[fin]}
+              value={open}
+              onChange={handleTimeStartChange}
+              minutesStep={5}
+              showTodayButton
+            />
+          </MuiPickersUtilsProvider>
+          <div className="dash">-</div>
+          <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
+            <KeyboardTimePicker
+              autoOk
+              ampm={false}
+              margin="normal"
+              name="end"
+              label={sched.Stop[fin]}
+              value={close}
+              onChange={handleTimeEndChange}
+              minutesStep={5}
+              showTodayButton
+            />
+          </MuiPickersUtilsProvider>
+        </div>
+      </div>
+
+      <hr />
+
+      {/* Section for setting track-specific open/close/absent statuses */}
+      <div className="thirdSection">
+        <div className="leftSide">{createTrackList()}</div>
+        <div className="rightSide">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={openAllTracks}
+            style={{ color: 'black', backgroundColor: '#658f60' }}
+            data-testid="openAll"
+          >
+            {sched.OpenAll[fin]}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={emptyAllTracks}
+            style={{ backgroundColor: '#5f77a1' }}
+            data-testid="emptyAll"
+          >
+            {sched.ClearAll[fin]}
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={closeAllTracks}
+            style={{ color: 'black', backgroundColor: '#c97b76' }}
+            data-testid="closeAll"
+          >
+            {sched.CloseAll[fin]}
+          </Button>
+        </div>
+      </div>
+      <hr />
+      <div className="fourthSection">
+        <div className="repetition">
+          <div className="daily">
+            {sched.RepeatDaily[fin]}
+            <CustomSwitch
+              checked={daily}
+              onChange={handleRepeatChange}
+              id="daily"
+              data-testid="dailyRepeat"
+            />
+          </div>
+          <div className="weekly">
+            {sched.RepeatWeekly[fin]}
+            <CustomSwitch
+              checked={weekly}
+              onChange={handleRepeatChange}
+              id="weekly"
+              data-testid="weeklyRepeat"
+            />
+          </div>
+          <div className="monthly">
+            {sched.RepeatMonthly[fin]}
+            <CustomSwitch
+              checked={monthly}
+              onChange={handleRepeatChange}
+              id="monthly"
+              data-testid="monthlyRepeat"
+            />
+          </div>
+          <div className="repeatCount">
+            {sched.Amount[fin]}
+            <TextField
+              name="repeatCount"
+              type="number"
+              value={repeatCount}
+              onChange={handleValueChange}
+              InputProps={{ inputProps: { min: 1, max: 100 } }}
+            />
+          </div>
+        </div>
+        <div className="save">
+          <Button
+            variant="contained"
+            onClick={saveChanges}
+            style={{ backgroundColor: '#d1ccc2' }}
+          >
+            {sched.Save[fin]}
+          </Button>
+          <div
+            className="hoverHand arrow-right"
+            onClick={() =>
+              handleDatePickChange(
+                moment(date).add(1, 'days').format('YYYY-MM-DD'),
+              )
+            }
+          />
+          <div className="toast">
+            <Snackbar
+              open={toast}
+              autoHideDuration={5000}
+              onClose={handleSnackbarClose}
+            >
+              <Alert onClose={handleSnackbarClose} severity={toastSeverity}>
+                {toastMessage}!
+              </Alert>
+            </Snackbar>
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default Scheduling;

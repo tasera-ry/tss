@@ -390,7 +390,7 @@ const Tabletview = () => {
     validateLogin().then((logInSuccess) => {
       if (
         logInSuccess &&
-        (cookies.role === 'rangeofficer' || cookies.role === 'superuser')
+        (cookies.role === 'rangemaster' || cookies.role === 'superuser')
       ) {
         getData(
           //data,

@@ -87,7 +87,7 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     ),
     middlewares.trackSupervision.create,
@@ -125,7 +125,7 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     ),
     middlewares.rangeSupervision.create,
@@ -138,7 +138,7 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     ),
     validators.rangeSupervision.feedback,
@@ -160,7 +160,7 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     ),
     middlewares.rangeSupervision.update,
@@ -189,7 +189,7 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     ),
     controllers.reservation.update
@@ -216,7 +216,7 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     ),
     controllers.schedule.update
@@ -290,11 +290,11 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     )
   )
-  .get(validators.infoMessage.read, controllers.infoMessage.readPersonal);
+  .get(validators.infoMessage.read, controllers.infoMessage.readRangeMaster);
 
 router
   .route('/infomessage/all')
@@ -302,7 +302,7 @@ router
     middlewares.jwt.read,
     middlewares.user.hasProperty(
       'role',
-      ['superuser', 'association', 'rangeofficer'],
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
       _.includes
     )
   )

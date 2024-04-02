@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 
 // Material UI components
@@ -157,113 +157,67 @@ async function addUser(namen, rolen, passwordn, emailn) {
   }
 }
 
-/**
- ** THE CLASS
- */
-class UserManagementView extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      userList: {},
-      rows: [],
-      openPassWarning: false, // eslint-disable-line
-      openRemoveWarning: false,
-      changeOwnPassDialogOpen: false,
-      changeOwnEmailDialogOpen: false,
-      openAddNewUserDialog: false,
-      changePassDialogOpen: false,
-      changeOwnPassFailed: false,
-      changeOwnEmailFailed: false,
-      requestErrors: false,
-      deleteErrors: false,
-      selectedROWID: 1,
-      newUserName: '',
-      newUserPass: '',
-      newUserRole: 'association',
-      newUserPhone: '', // eslint-disable-line
-      password: '',
-      oldPassword: '',
-      newPassword: '',
-      username: props.cookies.cookies.username,
-      selectedUserName: '',
-      email: '',
-      myStorage: window.localStorage, // eslint-disable-line
-    };
 
-    // need to bind these functions so they get access to the state
-    this.onRemoveClick = this.onRemoveClick.bind(this);
-    this.handlePassWarningClose = this.handlePassWarningClose.bind(this);
-    this.handleRemoveWarningClose = this.handleRemoveWarningClose.bind(this);
-    this.onChangePassClick = this.onChangePassClick.bind(this);
-    this.onaddEmailClick = this.onaddEmailClick.bind(this);
-    this.handleRemoveWarningCloseAgree =
-      this.handleRemoveWarningCloseAgree.bind(this);
-    this.handleAddUserOpenDialog = this.handleAddUserOpenDialog.bind(this);
-    this.handleOpenOwnPassChangeDialog =
-      this.handleOpenOwnPassChangeDialog.bind(this);
-    this.handleOpenOwnEmailChangeDialog =
-      this.handleOpenOwnEmailChangeDialog.bind(this);
-    this.handleChangeOwnPassDialogClose =
-      this.handleChangeOwnPassDialogClose.bind(this);
-    this.handleChangeOwnEmailDialogClose =
-      this.handleChangeOwnEmailDialogClose.bind(this);
-    this.handleChangeOwnPassDialogCloseAgree =
-      this.handleChangeOwnPassDialogCloseAgree.bind(this);
-    this.handleChangeOwnEmailDialogCloseAgree =
-      this.handleChangeOwnEmailDialogCloseAgree.bind(this); //eslint-disable-line
-    this.handleNewuserNameChange = this.handleNewuserNameChange.bind(this);
-    this.handleNewuserPassChange = this.handleNewuserPassChange.bind(this);
+function UserManagementView(props)  {
 
-    this.handleNewuserSecurePassChange =
-      this.handleNewuserSecurePassChange.bind(this);
+  const[state, setState] = useState({
+    userList: [],
+    rows: [],
+    openPassWarning: false, // eslint-disable-line
+    openRemoveWarning: false,
+    changeOwnPassDialogOpen: false,
+    changeOwnEmailDialogOpen: false,
+    openAddNewUserDialog: false,
+    changePassDialogOpen: false,
+    changeOwnPassFailed: false,
+    changeOwnEmailFailed: false,
+    requestErrors: false,
+    deleteErrors: false,
+    selectedROWID: 1,
+    newUserName: '',
+    newUserPass: '',
+    newUserRole: 'association',
+    newUserPhone: '', // eslint-disable-line
+    password: '',
+    oldPassword: '',
+    newPassword: '',
+    username: props.cookies.cookies.username,
+    selectedUserName: '',
+    email: '',
+    myStorage: window.localStorage, // eslint-disable-line
+    addEmailDialogOpen: false,
+    refresh: false,
+  });
 
-    this.handleNewEmailChange = this.handleNewEmailChange.bind(this);
-    this.handleAddNewUserDialogClose =
-      this.handleAddNewUserDialogClose.bind(this);
-    this.handleAddNewUserDialogCloseConfirmed =
-      this.handleAddNewUserDialogCloseConfirmed.bind(this); // eslint-disable-line
-    this.handleChangePassCloseConfirm =
-      this.handleChangePassCloseConfirm.bind(this);
-    this.handleaddEmailCloseConfirm =
-      this.handleaddEmailCloseConfirm.bind(this);
-    this.handleChangePassClose = this.handleChangePassClose.bind(this);
-    this.handleaddEmailClose = this.handleaddEmailClose.bind(this);
-    this.handleChangeNewUserRole = this.handleChangeNewUserRole.bind(this);
-    this.handleOldpassStringChange = this.handleOldpassStringChange.bind(this);
-    this.handleNewpassStringChange = this.handleNewpassStringChange.bind(this);
-
-    this.handleNewSecurePassStringChange =
-      this.handleNewSecurePassStringChange.bind(this);
-
-    this.handleaddEmailDialog = this.handleaddEmailDialog.bind(this);
-  }
-
-  componentDidMount() {
-    this.setState(function () {
-      validateLogin().then((logInSuccess) => {
-        if (!logInSuccess) {
-          this.props.history.push('/');
-        } else {
-          getUsers()
-            .then((response) => {
-              if (response !== false) {
-                this.setState(
-                  {
-                    userList: response,
-                  },
-                  () => {
-                    this.update();
-                  },
-                );
-              }
-            })
-            .catch((error) => {
-              console.error('init failed', error);
-            });
-        }
-      });
+  // is ran when component mounts
+  useEffect(() => {
+    validateLogin().then((logInSuccess) => {
+      if(!logInSuccess){
+        props.history.push('/');
+      }
+      else{
+        getUsers().then((res) => {
+          if(res !== false){
+            setState({...state, userList: res});
+          }
+        }).catch((err) => {
+          console.error('init failed', err);
+        });
+      }
     });
-  }
+  }, []);
+
+  // run update after fetched user data from back-end
+  useEffect(() => {
+    update();
+  }, [state.userList]);
+
+  // run if changes to users
+  useEffect(() => {
+    if(state.refresh){
+      makeDataFreshAgain();
+    }
+  }, [state.refresh]);
 
   /**
    **  HANDLE DIALOGS
@@ -271,137 +225,128 @@ class UserManagementView extends Component {
    */
 
   // handles changing own password
-  async handleChangeOwnPassDialogCloseAgree() {
+  const handleChangeOwnPassDialogCloseAgree = async() => {
     const secure = window.location.protocol === 'https:';
-    this.setState({
-      changeOwnPassFailed: false,
-    });
+    setState({...state, changeOwnPassFailed: false});
     let success = true;
     let response = await axios
       .post('api/sign', {
-        name: this.state.username,
-        password: this.state.oldPassword,
-        secure,
+        name: state.username,
+        password: state.oldPassword,
+        secure: secure,
       })
       .catch(() => {
         success = false;
       });
     if (success) {
-      response = await changePassword(this.findOwnID(), this.state.newPassword);
+      response = await changePassword(findOwnID(), state.newPassword);
       if (response) {
-        this.handleChangeOwnPassDialogClose();
+        handleChangeOwnPassDialogClose();
       } else {
-        this.setState({
-          changeOwnPassFailed: true,
-        });
+        setState({...state, changeOwnPassFailed: true});
       }
     } else {
-      this.setState({
-        changeOwnPassFailed: true,
-      });
+      setState({...state, changeOwnPassFailed: true});
     }
   }
 
   // handles changing own email address
-  async handleChangeOwnEmailDialogCloseAgree() {
-    this.setState({
-      changeOwnEmailFailed: false,
-    });
-    const response = await changeEmail(this.findOwnID(), this.state.email);
+  const handleChangeOwnEmailDialogCloseAgree = async() => {
+    setState({...state, changeOwnEmailFailed: false});
+    const response = await changeEmail(findOwnID(), state.email);
     if (response) {
-      this.handleChangeOwnEmailDialogClose();
-    } else {
-      this.setState({
-        changeOwnEmailFailed: true,
+      setState({...state, 
+        changeOwnEmailFailed: false,
+        changeOwnEmailDialogOpen: false,
+        refresh: true,
       });
+    } else {
+      setState({...state, changeOwnEmailFailed: true, refresh: true});
     }
-    this.makeDataFreshAgain();
   }
 
   // Handles adding new users
-  async handleAddNewUserDialogCloseConfirmed() {
-    this.setState({
-      requestErrors: false,
-    });
+  const handleAddNewUserDialogCloseConfirmed = async() => {
+    setState({...state, requestErrors: false});
     const req = await addUser(
-      this.state.newUserName,
-      this.state.newUserRole,
-      this.state.newUserPass,
-      this.state.email,
+      state.newUserName,
+      state.newUserRole,
+      state.newUserPass,
+      state.email,
     );
     if (req.errors !== undefined) {
-      this.setState({
-        requestErrors: true,
-      });
+      setState({...state, requestErrors: true});
     } else {
-      this.handleAddNewUserDialogClose();
-      this.makeDataFreshAgain();
+      setState({...state, 
+        requestErrors: false,
+        newUserName: '',
+        newUserPass: '',
+        newUserRole: 'association',
+        openAddNewUserDialog: false,
+        refresh: true,
+      });
     }
   }
 
   // Removes the user
-  async handleRemoveWarningCloseAgree() {
-    const response = await deleteUser(this.findUserId());
+  const handleRemoveWarningCloseAgree = async() => {
+    setState({...state, deleteErrors: false});
+    const response = await deleteUser(findUserId());
     if (response?.errors !== undefined) {
-      this.setState({
-        deleteErrors: true,
-      });
+      setState({...state, deleteErrors: true});
     } else {
-      this.setState({
-        openRemoveWarning: false,
-      });
-      this.handleRemoveWarningClose();
-      this.makeDataFreshAgain();
+      setState({...state, 
+        openRemoveWarning: false, 
+        deleteErrors: false,
+        refresh: true});
     }
   }
 
   // Closes dialog for changing password for some1 else
-  handleChangePassClose(e) {
+  const handleChangePassClose = (e) => {
     // eslint-disable-line
-    this.setState({
-      password: '',
-      changePassDialogOpen: false,
-    });
+    setState({...state, password: '', changePassDialogOpen: false});
   }
 
   // Changes password for some1 else by their ID
-  async handleChangePassCloseConfirm() {
+  const handleChangePassCloseConfirm = async() => {
+    setState({...state, changeErrors: false});
     const response = await changePassword(
-      this.findUserId(),
-      this.state.password,
+      findUserId(),
+      state.password,
     );
     if (!response) {
-      this.setState({
-        changeErrors: true,
-      });
+      setState({...state, changeErrors: true});
     } else {
-      this.handleChangePassClose();
+      setState({...state, 
+        password: '', 
+        changePassDialogOpen: false, 
+        changeErrors: false});
     }
   }
 
   // Closes dialog for adding email for some1 else
-  handleaddEmailClose(e) {
+  const handleaddEmailClose = (e) => {
     // eslint-disable-line
-    this.setState({
-      email: '',
-      addEmailDialogOpen: false,
-    });
+    setState({...state, email: '', addEmailDialogOpen: false});
   }
 
   // Adds email for some1 else by their ID
-  async handleaddEmailCloseConfirm() {
-    const response = await addEmail(this.findUserId(), this.state.email);
+  const handleaddEmailCloseConfirm = async() => {
+    setState({...state, changeErrors: false});
+    const response = await addEmail(findUserId(), state.email);
     if (!response) {
-      this.setState({
-        changeErrors: true,
-      });
+      setState({...state, changeErrors: true});
     } else {
-      this.handleaddEmailClose();
-      this.makeDataFreshAgain();
+      setState({...state, 
+        email: '', 
+        addEmailDialogOpen: false, 
+        refresh: true,
+        changeErrors: false});
     }
   }
 
-  returnRemoveButton(id, manage, fin) {
+  const returnRemoveButton = (id, manage, fin) => {
     // eslint-disable-line
     return (
       <Button
@@ -410,14 +355,14 @@ class UserManagementView extends Component {
         size="small"
         className={classes(css.removeButton)}
         variant="contained"
-        onClick={this.onRemoveClick}
+        onClick={onRemoveClick}
       >
         {manage.RemoveUser[fin]}
       </Button>
     );
   }
 
-  returnPassButton(id, manage, fin) {
+  const returnPassButton = (id, manage, fin) => {
     // eslint-disable-line
     return (
       <Button
@@ -426,13 +371,13 @@ class UserManagementView extends Component {
         size="small"
         className={classes(css.turquoiseButton)}
         variant="contained"
-        onClick={this.onChangePassClick}
+        onClick={onChangePassClick}
       >
         {manage.ChangePass[fin]}
       </Button>
     );
   }
-  returnaddEmailButton(id, manage, fin) {
+  const returnaddEmailButton = (id, manage, fin) => {
     // eslint-disable-line
     return (
       <Button
@@ -440,21 +385,19 @@ class UserManagementView extends Component {
         size="small"
         className={classes(css.sandButton)}
         variant="contained"
-        onClick={this.onaddEmailClick}
+        onClick={onaddEmailClick}
       >
         {manage.ChangeEmail[fin]}
       </Button>
     );
   }
 
-  createData(
+  const createData = (
     name,
     role,
     email,
-    ButtonToChangePassword,
-    ButtonToRemoveUser,
-    ButtonToaddEmail,
-  ) {
+    id,
+  ) => {
     const roleToPrint =
       role === 'superuser'
         ? manage.Superuser[fin]
@@ -462,31 +405,28 @@ class UserManagementView extends Component {
         ? manage.Association[fin]
         : role === 'rangeofficer'
         ? manage.Rangeofficer[fin]
+        : role === 'rangemaster'
+        ? manage.Rangemaster[fin]
         : null;
 
     return {
       name,
       roleToPrint,
       email,
-      ButtonToChangePassword,
-      ButtonToRemoveUser,
-      ButtonToaddEmail,
+      id,
     };
   }
 
-  async makeDataFreshAgain() {
+  const makeDataFreshAgain = async() => {
     try {
       const response = await getUsers();
       if (response !== false) {
-        this.setState({
-          userList: response,
-        });
-        this.update();
+        setState({...state, userList: response, refresh: false});
       } else {
         console.error(
           'getting users failed, most likely sign in token invalid -> kicking to root',
         );
-        this.props.history.push('/');
+        props.history.push('/');
       }
     } catch (error) {
       console.error('init failed', error);
@@ -494,30 +434,23 @@ class UserManagementView extends Component {
   }
 
   // Close dialog for changing password
-  handlePassWarningClose() {
-    this.setState({
-      openPassWarning: false, // eslint-disable-line
-    });
+  const handlePassWarningClose = () => {
+    setState({...state, openPassWarning: false});
   }
 
   // Close dialog for removing user
-  handleRemoveWarningClose() {
-    this.setState({
-      openRemoveWarning: false,
-      deleteErrors: false,
-    });
+  const handleRemoveWarningClose = () => {
+    setState({...state, openRemoveWarning: false, deleteErrors: false});
   }
 
   // Open dialog for adding new users
-  handleAddUserOpenDialog() {
-    this.setState({
-      openAddNewUserDialog: true,
-    });
+  const handleAddUserOpenDialog = () => {
+    setState({...state, openAddNewUserDialog: true});
   }
 
   // closes dialog for adding users
-  handleAddNewUserDialogClose() {
-    this.setState({
+  const handleAddNewUserDialogClose = () => {
+    setState({...state, 
       requestErrors: false,
       newUserName: '',
       newUserPass: '',
@@ -527,44 +460,36 @@ class UserManagementView extends Component {
   }
 
   // opens dialog for changing logged in users password
-  handleOpenOwnPassChangeDialog() {
-    this.setState({
-      changeOwnPassDialogOpen: true,
-    });
+  const handleOpenOwnPassChangeDialog = () => {
+    setState({...state, changeOwnPassDialogOpen: true});
   }
 
   // opens dialog for changing logged in users email
-  handleOpenOwnEmailChangeDialog() {
-    this.setState({
-      changeOwnEmailDialogOpen: true,
-    });
+  const handleOpenOwnEmailChangeDialog = () => {
+    setState({...state, changeOwnEmailDialogOpen: true});
   }
 
   // opens dialog for adding email
-  handleaddEmailDialog() {
-    this.setState({
-      addEmailDialogOpen: true,
-    });
+  const handleaddEmailDialog = () => {
+    setState({...state, addEmailDialogOpen: true});
   }
 
   // Closes dialog for adding email
-  handleaddEmailDialogClose() {
-    this.setState({
-      addEmailDialogOpen: false,
-    });
+  const handleaddEmailDialogClose = () => {
+    setState({...state, addEmailDialogOpen: false});
   }
 
   // closes dialog for changing own password
-  handleChangeOwnPassDialogClose() {
-    this.setState({
-      changeOwnPassFailed: false,
+  const handleChangeOwnPassDialogClose = () => {
+    setState({...state,
+      changeOwnPassFailed: false, 
       changeOwnPassDialogOpen: false,
     });
   }
 
   // closes dialog for changing own email
-  handleChangeOwnEmailDialogClose() {
-    this.setState({
+  const handleChangeOwnEmailDialogClose = () => {
+    setState({...state, 
       changeOwnEmailFailed: false,
       changeOwnEmailDialogOpen: false,
     });
@@ -575,669 +500,632 @@ class UserManagementView extends Component {
    */
 
   // handles state change for oldpassword
-  handleOldpassStringChange(e) {
-    this.setState({
-      oldPassword: e.target.value,
-    });
+  const handleOldpassStringChange = (e) => {
+    setState({...state, oldPassword: e.target.value});
   }
 
   // handles state change for newpassword
-  handleNewpassStringChange(e) {
-    this.setState({
-      newPassword: e.target.value,
-    });
+  const handleNewpassStringChange = (e) => {
+    setState({...state, newPassword: e.target.value});
   }
 
   // handles state change for newpassword securely
-  handleNewSecurePassStringChange(data) {
+  const handleNewSecurePassStringChange = (data) => {
     console.log('Password:', data.value);
-    this.setState({
-      newPassword: data.value,
-    });
+    setState({...state, newPassword: data.value});
   }
 
   // handle state email change
-  handleNewEmailChange(e) {
-    this.setState({
-      email: e.target.value,
-    });
+  const handleNewEmailChange = (e) => {
+    setState({...state, email: e.target.value});
   }
 
   // handles state change for new users name
-  handleNewuserNameChange(e) {
-    this.setState({
-      newUserName: e.target.value,
-    });
+  const handleNewuserNameChange = (e) => {
+    setState({...state, newUserName: e.target.value});
   }
 
   // handles state change for new users role
-  handleChangeNewUserRole(e) {
-    this.setState({
-      newUserRole: e.target.value,
-    });
+  const handleChangeNewUserRole = (e) => {
+    setState({...state, newUserRole: e.target.value});
   }
 
   // handles state change for new users password
-  handleNewuserPassChange(e) {
-    this.setState({
-      newUserPass: e.target.value,
-    });
+  const handleNewuserPassChange = (e) => {
+    setState({...state, newUserPass: e.target.value});
   }
 
   // handles state change for new users password securely
-  handleNewuserSecurePassChange(data) {
-    console.log('Password:', data.value);
-    this.setState({
-      newUserPass: data.value,
-    });
+  const handleNewuserSecurePassChange = (data) => {
+    //console.log('Password:', data.value);
+    setState({...state, newUserPass: data.value});
   }
 
   /**
    **  FUNCTIONS
    */
 
+  // changes selectedUserName after selectedROWID changes
+  useEffect(() => {
+    const name = findUserName();
+    setState({...state, selectedUserName: name});
+  }, [state.selectedROWID]);
+
   // Opens warning for removing user
-  async onRemoveClick(e) {
-    await this.setState({
-      selectedROWID: e.currentTarget.id,
-    });
-    const name = this.findUserName();
-    this.setState({
-      selectedUserName: name,
-      openRemoveWarning: true,
-    });
+  const onRemoveClick = (e) => {
+    setState({...state, selectedROWID: e.currentTarget.id, openRemoveWarning: true});
   }
 
   // Opens dialog for changing password for some1 else
-  async onChangePassClick(e) {
-    await this.setState({
-      selectedROWID: e.currentTarget.id,
-    });
-    const name = this.findUserName();
-    this.setState({
-      selectedUserName: name,
-      changePassDialogOpen: true,
-    });
+  const onChangePassClick = (e) => {
+    setState({...state, selectedROWID: e.currentTarget.id, changePassDialogOpen: true});
   }
 
   // Opens dialog for adding or changing email for someone else
-  async onaddEmailClick(e) {
-    await this.setState({
-      selectedROWID: e.currentTarget.id,
-    });
-    const name = this.findUserName();
-    this.setState({
-      selectedUserName: name,
-      addEmailDialogOpen: true,
-    });
+  const onaddEmailClick = (e) => {
+    setState({...state, selectedROWID: e.currentTarget.id, addEmailDialogOpen: true});
   }
 
   /**
    **ALGORITHMS
    */
 
-  findUserName() {
-    for (const i in this.state.userList) {
-      if (this.state.userList[i].id === parseInt(this.state.selectedROWID)) {
-        return this.state.userList[i].name;
+  const findUserName = () => {
+    for (const i in state.userList) {
+      if (state.userList[i].id === parseInt(state.selectedROWID)) {
+        return state.userList[i].name;
       }
     }
     return 'Username not found';
   }
 
-  findUserId() {
-    for (const i in this.state.userList) {
-      if (this.state.userList[i].id === parseInt(this.state.selectedROWID)) {
-        return this.state.userList[i].id;
+  const findUserId = () => {
+    for (const i in state.userList) {
+      if (state.userList[i].id === parseInt(state.selectedROWID)) {
+        return state.userList[i].id;
       }
     }
     return undefined;
   }
 
-  findOwnID() {
-    for (const i in this.state.userList) {
-      if (this.state.username === this.state.userList[i].name) {
-        return this.state.userList[i].id;
+  const findOwnID = () => {
+    for (const i in state.userList) {
+      if (state.username === state.userList[i].name) {
+        return state.userList[i].id;
       }
     }
     return null;
   }
 
-  findOwnEmail() {
-    for (const i in this.state.userList) {
-      if (this.state.username === this.state.userList[i].name) {
-        return this.state.userList[i].email;
+  const findOwnEmail = () => {
+    for (const i in state.userList) {
+      if (state.username === state.userList[i].name) {
+        return state.userList[i].email;
       }
     }
     return null;
   }
 
-  update() {
+  const update = () => {
     const tempRows = [];
-    for (const i in this.state.userList) {
-      if (this.state.username !== this.state.userList[i].name) {
-        const row = this.createData(
-          this.state.userList[i].name,
-          this.state.userList[i].role,
-          this.state.userList[i].email,
-          this.returnPassButton(this.state.userList[i].id, manage, fin),
-          this.returnRemoveButton(this.state.userList[i].id, manage, fin),
-          this.returnaddEmailButton(this.state.userList[i].id, manage, fin),
+    for (const i in state.userList) {
+      if (state.username !== state.userList[i].name) {
+        const row = createData(
+          state.userList[i].name,
+          state.userList[i].role,
+          state.userList[i].email,
+          state.userList[i].id,
         );
         tempRows.push(row);
       }
     }
-    this.setState({
-      rows: tempRows,
-    });
+    setState({...state, rows: tempRows});
   }
 
   /**
    **  ACTUAL PAGE RENDERING
    */
-  render() {
-    const fin = localStorage.getItem('language'); // eslint-disable-line
-    return (
-      <div>
-        {/* Dialog to add new user */}
-        <Dialog
-          open={this.state.openAddNewUserDialog}
-          keepMounted
-          onClose={this.handleAddNewUserDialogClose}
+  const fin = localStorage.getItem('language'); // eslint-disable-line
+  return (
+    <div>
+      {/* Dialog to add new user */}
+      <Dialog
+        open={state.openAddNewUserDialog}
+        keepMounted
+        onClose={handleAddNewUserDialogClose}
+      >
+        <DialogTitle
+          id="dialog-add-user-title"
+          className={classes(css.dialogStyle)}
         >
-          <DialogTitle
-            id="dialog-add-user-title"
+          {manage.New[fin]}
+        </DialogTitle>
+        <DialogContent className={classes(css.dialogStyle)}>
+          <TextField
+            value={state.newUserName}
+            margin="dense"
+            id="name"
+            label={manage.Username[fin]}
+            onChange={handleNewuserNameChange}
+            fullWidth
+          />
+
+          <br></br>
+          <br></br>
+
+          <NiceInputPassword
+            LabelComponent={InputLabel}
+            InputComponent={TextField}
             className={classes(css.dialogStyle)}
-          >
-            {manage.New[fin]}
-          </DialogTitle>
-          <DialogContent className={classes(css.dialogStyle)}>
-            <TextField
-              value={this.state.newUserName}
-              margin="dense"
-              id="name"
-              label={manage.Username[fin]}
-              onChange={this.handleNewuserNameChange}
-              fullWidth
-            />
+            value={state.newUserPass}
+            margin="dense"
+            label={manage.Password[fin]}
+            name="passwordField"
+            fullWidth
+            securityLevels={[
+              {
+                descriptionLabel:
+                  manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
+                validator: /.*[0-9].*/,
+              },
+              {
+                descriptionLabel:
+                  manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
+                validator: /.*[a-z].*/,
+              },
+              {
+                descriptionLabel:
+                  manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
+                validator: /.*[A-Z].*/,
+              },
+              {
+                descriptionLabel: manage.MinimumLength[fin],
+                validator: /^.{6,}$/,
+              },
+            ]}
+            showSecurityLevelBar
+            showSecurityLevelDescription
+            onChange={handleNewuserSecurePassChange}
+          />
 
-            <br></br>
-            <br></br>
+          <TextField
+            value={state.email}
+            margin="dense"
+            id="sposti"
+            label={manage.Email[fin]}
+            onChange={handleNewEmailChange}
+            fullWidth
+          />
 
-            <NiceInputPassword
-              LabelComponent={InputLabel}
-              InputComponent={TextField}
-              className={classes(css.dialogStyle)}
-              value={this.state.newUserPass}
-              margin="dense"
-              label={manage.Password[fin]}
-              name="passwordField"
-              fullWidth
-              securityLevels={[
-                {
-                  descriptionLabel:
-                    manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
-                  validator: /.*[0-9].*/,
-                },
-                {
-                  descriptionLabel:
-                    manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
-                  validator: /.*[a-z].*/,
-                },
-                {
-                  descriptionLabel:
-                    manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
-                  validator: /.*[A-Z].*/,
-                },
-                {
-                  descriptionLabel: manage.MinimumLength[fin],
-                  validator: /^.{6,}$/,
-                },
-              ]}
-              showSecurityLevelBar
-              showSecurityLevelDescription
-              onChange={this.handleNewuserSecurePassChange}
-            />
-
-            <TextField
-              value={this.state.email}
-              margin="dense"
-              id="sposti"
-              label={manage.Email[fin]}
-              onChange={this.handleNewEmailChange}
-              fullWidth
-            />
-
-            <FormControl>
-              <InputLabel>{manage.Role[fin]}</InputLabel>
-              <Select
-                className={classes(css.select)}
-                native
-                value={this.state.newUserRole}
-                onChange={this.handleChangeNewUserRole}
-                id="role"
+          <FormControl>
+            <InputLabel>{manage.Role[fin]}</InputLabel>
+            <Select
+              className={classes(css.select)}
+              native
+              value={state.newUserRole}
+              onChange={handleChangeNewUserRole}
+              id="role"
+            >
+              <option
+                aria-label={manage.Rangeofficer[fin]}
+                value="rangeofficer"
               >
-                <option
-                  aria-label={manage.Rangeofficer[fin]}
-                  value="rangeofficer"
-                >
-                  {manage.Rangeofficer[fin]}
-                </option>
-                <option value="association">{manage.Association[fin]}</option>
-                <option value="superuser">{manage.Superuser[fin]}</option>
-              </Select>
-            </FormControl>
+                {manage.Rangeofficer[fin]}
+              </option>
+              <option value="association">{manage.Association[fin]}</option>
+              <option value="superuser">{manage.Superuser[fin]}</option>
+            </Select>
+          </FormControl>
 
-            {this.state.requestErrors ? (
-              <p className={classes(css.errorText)}>{manage.Error[fin]} </p>
-            ) : (
-              <p />
-            )}
-          </DialogContent>
-          <DialogActions className={classes(css.dialogStyle)}>
-            <Button
-              onClick={this.handleAddNewUserDialogClose}
-              className={classes(css.removeButton)}
-            >
-              {manage.Cancel[fin]}
-            </Button>
-            <Button
-              onClick={this.handleAddNewUserDialogCloseConfirmed}
-              className={classes(css.acceptButton)}
-            >
-              {manage.Confirm[fin]}
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* Dialog to remove user */}
-        <Dialog
-          open={this.state.openRemoveWarning}
-          keepMounted
-          onClose={this.handleRemoveWarningClose}
-        >
-          <DialogTitle
-            id="dialog-remove-user-title"
-            className={classes(css.dialogStyle)}
-          >
-            {manage.Ask[fin]}
-          </DialogTitle>
-          <DialogContent
-            id="dialog-remove-user-contet"
-            className={classes(css.dialogStyle)}
-          >
-            <DialogContentText id="dialog-remove-user-text">
-              {manage.AskDelete[fin]} {this.state.selectedUserName}
-            </DialogContentText>
-
-            {this.state.deleteErrors ? (
-              <p className={classes(css.errorText)}>
-                {manage.ErrorSmall[fin]}{' '}
-              </p>
-            ) : (
-              <p />
-            )}
-          </DialogContent>
-          <DialogActions className={classes(css.dialogStyle)}>
-            <Button
-              onClick={this.handleRemoveWarningClose}
-              className={classes(css.removeButton)}
-            >
-              {manage.Cancel[fin]}
-            </Button>
-            <Button
-              onClick={this.handleRemoveWarningCloseAgree}
-              className={classes(css.acceptButton)}
-            >
-              {manage.ConfirmDelete[fin]}
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* Dialog to change password of own user */}
-        <Dialog
-          open={this.state.changeOwnPassDialogOpen}
-          onClose={this.handleChangeOwnPassDialogClose}
-        >
-          <DialogTitle
-            id="dialog-change-own-pass-title"
-            className={classes(css.dialogStyle)}
-          >
-            {manage.ChangePass[fin]}
-          </DialogTitle>
-          <DialogContent className={classes(css.dialogStyle)}>
-            <DialogContentText>{manage.Helper[fin]}</DialogContentText>
-
-            <TextField
-              type="password"
-              value={this.state.oldpassword}
-              margin="dense"
-              id="oldpassword"
-              label={manage.OldPass[fin]}
-              onChange={this.handleOldpassStringChange}
-              fullWidth
-            />
-
-            <br></br>
-            <br></br>
-
-            <NiceInputPassword
-              type="password"
-              LabelComponent={InputLabel}
-              InputComponent={TextField}
-              className={classes(css.dialogStyle)}
-              value={this.state.newPassword}
-              margin="dense"
-              label={manage.NewPass[fin]}
-              name="passwordField"
-              fullWidth
-              securityLevels={[
-                {
-                  descriptionLabel:
-                    manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
-                  validator: /.*[0-9].*/,
-                },
-                {
-                  descriptionLabel:
-                    manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
-                  validator: /.*[a-z].*/,
-                },
-                {
-                  descriptionLabel:
-                    manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
-                  validator: /.*[A-Z].*/,
-                },
-                {
-                  descriptionLabel: manage.MinimumLength[fin],
-                  validator: /^.{6,}$/,
-                },
-              ]}
-              showSecurityLevelBar
-              showSecurityLevelDescription
-              onChange={this.handleNewSecurePassStringChange}
-            />
-
-            {this.state.changeOwnPassFailed ? (
-              <p className={classes(css.errorText)}>
-                {manage.ErrorPassword[fin]}{' '}
-              </p>
-            ) : (
-              <p />
-            )}
-          </DialogContent>
-          <DialogActions className={classes(css.dialogStyle)}>
-            <Button
-              onClick={this.handleChangeOwnPassDialogClose}
-              className={classes(css.removeButton)}
-            >
-              {manage.Cancel[fin]}
-            </Button>
-            <Button
-              onClick={this.handleChangeOwnPassDialogCloseAgree}
-              className={classes(css.acceptButton)}
-            >
-              {manage.Confirm[fin]}
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* Dialog to change email of own user */}
-        <Dialog
-          open={this.state.changeOwnEmailDialogOpen}
-          onClose={this.handleChangeOwnEmailDialogClose}
-        >
-          <DialogTitle
-            id="dialog-change-own-email-title"
-            className={classes(css.dialogStyle)}
-          >
-            {manage.ChangeEmail[fin]}
-          </DialogTitle>
-          <DialogContent className={classes(css.dialogStyle)}>
-            <DialogContentText>{manage.EmailHelper[fin]}</DialogContentText>
-
-            <div>{`${manage.OldEmail[fin]}: ${this.findOwnEmail()}`}</div>
-            <TextField
-              type="text"
-              value={this.state.newemail}
-              margin="dense"
-              id="newemail"
-              label={manage.ChangeEmail[fin]}
-              onChange={this.handleNewEmailChange}
-              fullWidth
-            />
-
-            {this.state.changeOwnEmailFailed ? (
-              <p className={classes(css.errorText)}>{manage.Error[fin]} </p>
-            ) : (
-              <p />
-            )}
-          </DialogContent>
-          <DialogActions className={classes(css.dialogStyle)}>
-            <Button
-              onClick={this.handleChangeOwnEmailDialogClose}
-              className={classes(css.removeButton)}
-            >
-              {manage.Cancel[fin]}
-            </Button>
-            <Button
-              onClick={this.handleChangeOwnEmailDialogCloseAgree}
-              className={classes(css.accceptButton)}
-            >
-              {manage.Confirm[fin]}
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* Dialog to change password of other users */}
-        <Dialog
-          open={this.state.changePassDialogOpen}
-          onClose={this.handleChangePassClose}
-        >
-          <DialogTitle
-            id="dialog-change-pass-title"
-            className={classes(css.dialogStyle)}
-          >
-            {manage.ChangeFor[fin]} {this.state.selectedUserName}
-          </DialogTitle>
-          <DialogContent className={classes(css.dialogStyle)}>
-            <NiceInputPassword
-              type="text"
-              LabelComponent={InputLabel}
-              InputComponent={TextField}
-              className={classes(css.dialogStyle)}
-              value={this.state.password}
-              margin="dense"
-              label={manage.NewPass[fin]}
-              name="passwordField"
-              fullWidth
-              securityLevels={[
-                {
-                  descriptionLabel:
-                    manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
-                  validator: /.*[0-9].*/,
-                },
-                {
-                  descriptionLabel:
-                    manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
-                  validator: /.*[a-z].*/,
-                },
-                {
-                  descriptionLabel:
-                    manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
-                  validator: /.*[A-Z].*/,
-                },
-                {
-                  descriptionLabel: manage.MinimumLength[fin],
-                  validator: /^.{6,}$/,
-                },
-              ]}
-              showSecurityLevelBar
-              showSecurityLevelDescription
-              onChange={(e) => {
-                console.log('password: ' + e.value);
-                this.setState({ password: e.value });
-              }}
-            />
-
-            {this.state.changeErrors ? (
-              <p className={classes(css.errorText)}>
-                {manage.ErrorPassword[fin]}{' '}
-              </p>
-            ) : (
-              <p />
-            )}
-          </DialogContent>
-          <DialogActions className={classes(css.dialogStyle)}>
-            <Button
-              onClick={this.handleChangePassClose}
-              className={classes(css.removeButton)}
-            >
-              {manage.Cancel[fin]}
-            </Button>
-            <Button
-              onClick={this.handleChangePassCloseConfirm}
-              className={classes(css.acceptButton)}
-            >
-              {manage.Confirm[fin]}
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* Dialog to Add Email for users */}
-        <Dialog
-          open={this.state.addEmailDialogOpen}
-          onClose={this.handleaddEmailClose}
-        >
-          <DialogTitle
-            id="dialog-add-email-title"
-            className={classes(css.dialogStyle)}
-          >
-            {manage.EmailForUser[fin]} {this.state.selectedUserName}
-          </DialogTitle>
-          <DialogContent className={classes(css.dialogStyle)}>
-            <TextField
-              type="text"
-              value={this.state.email}
-              margin="dense"
-              id="name"
-              label={manage.ChangeEmail[fin]}
-              onChange={(e) => {
-                this.setState({ email: e.target.value });
-              }}
-              fullWidth
-            />
-            {this.state.changeErrors ? (
-              <p className={classes(css.errorText)}>
-                {manage.ErrorEmail[fin]}{' '}
-              </p>
-            ) : (
-              <p />
-            )}
-          </DialogContent>
-          <DialogActions className={classes(css.dialogStyle)}>
-            <Button
-              onClick={this.handleaddEmailClose}
-              className={classes(css.removeButton)}
-            >
-              {manage.Cancel[fin]}
-            </Button>
-            <Button
-              onClick={this.handleaddEmailCloseConfirm}
-              className={classes(css.acceptButton)}
-            >
-              {manage.Confirm[fin]}
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* THE ACTUAL PAGE */}
-
-        <h1 className={classes(css.header)}>{manage.UserManage[fin]}</h1>
-        <Divider />
-        <Box className={classes(css.userbox)}>
-          <h3 className={classes(css.header)}>{manage.ChangePass[fin]}:</h3>
+          {state.requestErrors ? (
+            <p className={classes(css.errorText)}>{manage.Error[fin]} </p>
+          ) : (
+            <p />
+          )}
+        </DialogContent>
+        <DialogActions className={classes(css.dialogStyle)}>
           <Button
-            onClick={this.handleOpenOwnPassChangeDialog}
-            variant="contained"
-            className={classes(css.turquoiseButton)}
+            onClick={handleAddNewUserDialogClose}
+            className={classes(css.removeButton)}
           >
-            {manage.ChangePass[fin]}
+            {manage.Cancel[fin]}
           </Button>
-        </Box>
-        <Divider />
-        <Box className={classes(css.userbox)}>
-          <h3 className={classes(css.header)}>{manage.ChangeEmail[fin]}:</h3>
           <Button
-            onClick={this.handleOpenOwnEmailChangeDialog}
-            variant="contained"
-            className={css.sandButton}
+            onClick={handleAddNewUserDialogCloseConfirmed}
+            className={classes(css.acceptButton)}
           >
-            {manage.ChangeEmail[fin]}
+            {manage.Confirm[fin]}
           </Button>
-        </Box>
-        <Divider />
-        <Box className={classes(css.userbox)}>
-          <h3 className={classes(css.header)}>{manage.CreateUser[fin]}:</h3>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog to remove user */}
+      <Dialog
+        open={state.openRemoveWarning}
+        keepMounted
+        onClose={handleRemoveWarningClose}
+      >
+        <DialogTitle
+          id="dialog-remove-user-title"
+          className={classes(css.dialogStyle)}
+        >
+          {manage.Ask[fin]}
+        </DialogTitle>
+        <DialogContent
+          id="dialog-remove-user-contet"
+          className={classes(css.dialogStyle)}
+        >
+          <DialogContentText id="dialog-remove-user-text">
+            {manage.AskDelete[fin]} {state.selectedUserName}
+          </DialogContentText>
+
+          {state.deleteErrors ? (
+            <p className={classes(css.errorText)}>
+              {manage.ErrorSmall[fin]}{' '}
+            </p>
+          ) : (
+            <p />
+          )}
+        </DialogContent>
+        <DialogActions className={classes(css.dialogStyle)}>
           <Button
-            onClick={this.handleAddUserOpenDialog}
-            variant="contained"
-            className={css.lightgreenButton}
+            onClick={handleRemoveWarningClose}
+            className={classes(css.removeButton)}
           >
-            {manage.CreateUser[fin]}
+            {manage.Cancel[fin]}
           </Button>
-        </Box>
-        <Divider />
-
-        {/* USER PROFILES TABLE */}
-
-        <h3 className={classes(css.header)}>{`${manage.Users[fin]}:`}</h3>
-        <Box className={classes(css.userbox)}>
-          <TableContainer
-            component={Paper}
-            className={classes(css.tableContainer)}
+          <Button
+            onClick={handleRemoveWarningCloseAgree}
+            className={classes(css.acceptButton)}
           >
-            <Table aria-label="table of users" className={classes(css.table)}>
-              <TableHead>
-                <TableRow>
-                  <TableCell align="justify">{manage.Username[fin]}</TableCell>
-                  <TableCell align="justify">
-                    {manage.ChangePass[fin]}
+            {manage.ConfirmDelete[fin]}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog to change password of own user */}
+      <Dialog
+        open={state.changeOwnPassDialogOpen}
+        onClose={handleChangeOwnPassDialogClose}
+      >
+        <DialogTitle
+          id="dialog-change-own-pass-title"
+          className={classes(css.dialogStyle)}
+        >
+          {manage.ChangePass[fin]}
+        </DialogTitle>
+        <DialogContent className={classes(css.dialogStyle)}>
+          <DialogContentText>{manage.Helper[fin]}</DialogContentText>
+
+          <TextField
+            type="password"
+            value={state.oldPassword}
+            margin="dense"
+            id="oldpassword"
+            label={manage.OldPass[fin]}
+            onChange={handleOldpassStringChange}
+            fullWidth
+          />
+
+          <br></br>
+          <br></br>
+
+          <NiceInputPassword
+            type="password"
+            LabelComponent={InputLabel}
+            InputComponent={TextField}
+            className={classes(css.dialogStyle)}
+            value={state.newPassword}
+            margin="dense"
+            label={manage.NewPass[fin]}
+            name="passwordField"
+            fullWidth
+            securityLevels={[
+              {
+                descriptionLabel:
+                  manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
+                validator: /.*[0-9].*/,
+              },
+              {
+                descriptionLabel:
+                  manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
+                validator: /.*[a-z].*/,
+              },
+              {
+                descriptionLabel:
+                  manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
+                validator: /.*[A-Z].*/,
+              },
+              {
+                descriptionLabel: manage.MinimumLength[fin],
+                validator: /^.{6,}$/,
+              },
+            ]}
+            showSecurityLevelBar
+            showSecurityLevelDescription
+            onChange={handleNewSecurePassStringChange}
+          />
+
+          {state.changeOwnPassFailed ? (
+            <p className={classes(css.errorText)}>
+              {manage.ErrorPassword[fin]}{' '}
+            </p>
+          ) : (
+            <p />
+          )}
+        </DialogContent>
+        <DialogActions className={classes(css.dialogStyle)}>
+          <Button
+            onClick={handleChangeOwnPassDialogClose}
+            className={classes(css.removeButton)}
+          >
+            {manage.Cancel[fin]}
+          </Button>
+          <Button
+            onClick={handleChangeOwnPassDialogCloseAgree}
+            className={classes(css.acceptButton)}
+          >
+            {manage.Confirm[fin]}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog to change email of own user */}
+      <Dialog
+        open={state.changeOwnEmailDialogOpen}
+        onClose={handleChangeOwnEmailDialogClose}
+      >
+        <DialogTitle
+          id="dialog-change-own-email-title"
+          className={classes(css.dialogStyle)}
+        >
+          {manage.ChangeEmail[fin]}
+        </DialogTitle>
+        <DialogContent className={classes(css.dialogStyle)}>
+          <DialogContentText>{manage.EmailHelper[fin]}</DialogContentText>
+
+          <div>{`${manage.OldEmail[fin]}: ${findOwnEmail()}`}</div>
+          <TextField
+            type="text"
+            value={state.newemail}
+            margin="dense"
+            id="newemail"
+            label={manage.ChangeEmail[fin]}
+            onChange={handleNewEmailChange}
+            fullWidth
+          />
+
+          {state.changeOwnEmailFailed ? (
+            <p className={classes(css.errorText)}>{manage.Error[fin]} </p>
+          ) : (
+            <p />
+          )}
+        </DialogContent>
+        <DialogActions className={classes(css.dialogStyle)}>
+          <Button
+            onClick={handleChangeOwnEmailDialogClose}
+            className={classes(css.removeButton)}
+          >
+            {manage.Cancel[fin]}
+          </Button>
+          <Button
+            onClick={handleChangeOwnEmailDialogCloseAgree}
+            className={classes(css.accceptButton)}
+          >
+            {manage.Confirm[fin]}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog to change password of other users */}
+      <Dialog
+        open={state.changePassDialogOpen}
+        onClose={handleChangePassClose}
+      >
+        <DialogTitle
+          id="dialog-change-pass-title"
+          className={classes(css.dialogStyle)}
+        >
+          {manage.ChangeFor[fin]} {state.selectedUserName}
+        </DialogTitle>
+        <DialogContent className={classes(css.dialogStyle)}>
+          <NiceInputPassword
+            type="text"
+            LabelComponent={InputLabel}
+            InputComponent={TextField}
+            className={classes(css.dialogStyle)}
+            value={state.password}
+            margin="dense"
+            label={manage.NewPass[fin]}
+            name="passwordField"
+            fullWidth
+            securityLevels={[
+              {
+                descriptionLabel:
+                  manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
+                validator: /.*[0-9].*/,
+              },
+              {
+                descriptionLabel:
+                  manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
+                validator: /.*[a-z].*/,
+              },
+              {
+                descriptionLabel:
+                  manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
+                validator: /.*[A-Z].*/,
+              },
+              {
+                descriptionLabel: manage.MinimumLength[fin],
+                validator: /^.{6,}$/,
+              },
+            ]}
+            showSecurityLevelBar
+            showSecurityLevelDescription
+            onChange={(e) => {
+              console.log('password: ' + e.value);
+              setState({...state, password: e.value });
+            }}
+          />
+
+          {state.changeErrors ? (
+            <p className={classes(css.errorText)}>
+              {manage.ErrorPassword[fin]}{' '}
+            </p>
+          ) : (
+            <p />
+          )}
+        </DialogContent>
+        <DialogActions className={classes(css.dialogStyle)}>
+          <Button
+            onClick={handleChangePassClose}
+            className={classes(css.removeButton)}
+          >
+            {manage.Cancel[fin]}
+          </Button>
+          <Button
+            onClick={handleChangePassCloseConfirm}
+            className={classes(css.acceptButton)}
+          >
+            {manage.Confirm[fin]}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog to Add Email for users */}
+      <Dialog
+        open={state.addEmailDialogOpen}
+        onClose={handleaddEmailClose}
+      >
+        <DialogTitle
+          id="dialog-add-email-title"
+          className={classes(css.dialogStyle)}
+        >
+          {manage.EmailForUser[fin]} {state.selectedUserName}
+        </DialogTitle>
+        <DialogContent className={classes(css.dialogStyle)}>
+          <TextField
+            type="text"
+            value={state.email}
+            margin="dense"
+            id="name"
+            label={manage.ChangeEmail[fin]}
+            onChange={(e) => {
+              setState({...state, email: e.target.value });
+            }}
+            fullWidth
+          />
+          {state.changeErrors ? (
+            <p className={classes(css.errorText)}>
+              {manage.ErrorEmail[fin]}{' '}
+            </p>
+          ) : (
+            <p />
+          )}
+        </DialogContent>
+        <DialogActions className={classes(css.dialogStyle)}>
+          <Button
+            onClick={handleaddEmailClose}
+            className={classes(css.removeButton)}
+          >
+            {manage.Cancel[fin]}
+          </Button>
+          <Button
+            onClick={handleaddEmailCloseConfirm}
+            className={classes(css.acceptButton)}
+          >
+            {manage.Confirm[fin]}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* THE ACTUAL PAGE */}
+
+      <h1 className={classes(css.header)}>{manage.UserManage[fin]}</h1>
+      <Divider />
+      <Box className={classes(css.userbox)}>
+        <h3 className={classes(css.header)}>{manage.ChangePass[fin]}:</h3>
+        <Button
+          onClick={handleOpenOwnPassChangeDialog}
+          variant="contained"
+          className={classes(css.turquoiseButton)}
+        >
+          {manage.ChangePass[fin]}
+        </Button>
+      </Box>
+      <Divider />
+      <Box className={classes(css.userbox)}>
+        <h3 className={classes(css.header)}>{manage.ChangeEmail[fin]}:</h3>
+        <Button
+          onClick={handleOpenOwnEmailChangeDialog}
+          variant="contained"
+          className={css.sandButton}
+        >
+          {manage.ChangeEmail[fin]}
+        </Button>
+      </Box>
+      <Divider />
+      <Box className={classes(css.userbox)}>
+        <h3 className={classes(css.header)}>{manage.CreateUser[fin]}:</h3>
+        <Button
+          onClick={handleAddUserOpenDialog}
+          variant="contained"
+          className={css.lightgreenButton}
+        >
+          {manage.CreateUser[fin]}
+        </Button>
+      </Box>
+      <Divider />
+
+      {/* USER PROFILES TABLE */}
+
+      <h3 className={classes(css.header)}>{`${manage.Users[fin]}:`}</h3>
+      <Box className={classes(css.userbox)}>
+        <TableContainer
+          component={Paper}
+          className={classes(css.tableContainer)}
+        >
+          <Table aria-label="table of users" className={classes(css.table)}>
+            <TableHead>
+              <TableRow>
+                <TableCell align="justify">{manage.Username[fin]}</TableCell>
+                <TableCell align="justify">
+                  {manage.ChangePass[fin]}
+                </TableCell>
+                <TableCell align="justify">
+                  {manage.RemoveUser[fin]}
+                </TableCell>
+                <TableCell align="justify">
+                  {manage.ChangeEmail[fin]}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {state.rows.map((row) => 
+                <TableRow key={row.name} hover>
+                  <TableCell align="justify" component="th" scope="row">
+                    {row.name} <br />
+                    {row.roleToPrint}
+                    <br />
+                    {row.email}
                   </TableCell>
                   <TableCell align="justify">
-                    {manage.RemoveUser[fin]}
+                    {returnPassButton(row.id, manage, fin)}
                   </TableCell>
                   <TableCell align="justify">
-                    {manage.ChangeEmail[fin]}
+                    {returnRemoveButton(row.id, manage, fin)}
+                  </TableCell>
+                  <TableCell align="justify">
+                    {returnaddEmailButton(row.id, manage, fin)}
                   </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {this.state.rows.map((row) => (
-                  <TableRow key={row.name} hover>
-                    <TableCell align="justify" component="th" scope="row">
-                      {row.name} <br />
-                      {row.roleToPrint}
-                      <br />
-                      {row.email}
-                    </TableCell>
-                    <TableCell align="justify">
-                      {row.ButtonToChangePassword}
-                    </TableCell>
-                    <TableCell align="justify">
-                      {row.ButtonToRemoveUser}
-                    </TableCell>
-                    <TableCell align="justify">
-                      {row.ButtonToaddEmail}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-      </div>
-    );
-  }
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+    </div>
+  );
 }
 
 export default withCookies(UserManagementView);
