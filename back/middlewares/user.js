@@ -9,7 +9,7 @@ or that the user has admin role. */
 const userUpdateCheck = function canUpdatePassword(request, response, next) {
   const session = response.locals.user;
 
-  if (session.role === 'superuser') {
+  if (session.role === 'superuser' || session.role === 'association') {
     return next();
   }
 
@@ -163,6 +163,20 @@ const serviceCalls = {
 
     return next();
   },
+
+  getRangeOfficers: async function readRangeOfficers(request, response, next) {
+    const query = response.locals.query;
+
+    try {
+      response.locals.queryResult = await services.user.getRangeOfficers(
+        query.associationId
+      );
+    } catch (e) {
+      return next(e);
+    }
+
+    return next();
+  },
 };
 
 exports.sign = [validators.user.sign, serviceCalls.sign];
@@ -187,3 +201,5 @@ exports.updateOwnPasswordFilter = [
 ];
 
 exports.userUpdateCheck = userUpdateCheck;
+
+exports.getRangeOfficers = [serviceCalls.getRangeOfficers];

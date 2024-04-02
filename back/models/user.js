@@ -180,6 +180,22 @@ const model = {
   getSuperusers: async function getSuperusers() {
     return await knex.from('user').pluck('id').where({ role: 'superuser' });
   },
+
+  /**
+   * Get rangeofficer users that match the association id
+   * @param {number} associationId - The association id
+   * @return {Promise<number[]>} - Keys of rangeofficers
+   */
+  getRangeOfficers: async function getRangeOfficers(associationId) {
+    return await knex
+      .from('user')
+      .leftJoin(
+        'association_rangeofficers',
+        'user.id',
+        'association_rangeofficers.rangeofficer_id'
+      )
+      .where({ 'association_rangeofficers.association_id': associationId });
+  },
 };
 
 module.exports = model;
