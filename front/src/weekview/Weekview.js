@@ -398,13 +398,7 @@ const Weekview = (props) => {
       }
     };
 
-    try {
-      console.log(date);
-      const data = await api.getSchedulingDate(date);
-      setDate(new Date(data.date));
-    } catch (err) {
-      console.error('getting info failed');
-    }
+    requestSchedulingDate();
 
     let testi2;
     if (dayNro === 0) {
@@ -416,7 +410,6 @@ const Weekview = (props) => {
       today = `${yyyy}-${mm}-${dd}`;
 
       const testi = moment(yyyy + mm + dd, 'YYYYMMDD');
-      //console.log("Testi: ", testi);
 
       setDayNro(testi);
 
@@ -426,7 +419,6 @@ const Weekview = (props) => {
     }
 
     let date1 = testi2;
-    console.log("Created date1: ", date1);
 
     const date2 = new Date();
     date2.setHours(0, 0, 0, 0);
@@ -476,15 +468,15 @@ const Weekview = (props) => {
         setYearNro(paramYear);
 
         date1 = paramDateCorrect;
-        console.log("Date1 changed: ", date1);
       }
     } catch {
       setWeekNro(current);
       props.history.replace('/weekview/');
     }
 
-    //console.log(date1);
-    const response = await getSchedulingWeek(date1);
+    
+    const requestSchedulingWeek = async() => {
+      const response = await getSchedulingWeek(date1);
 
       if (response) {
         setPaivat(response.week);
@@ -492,10 +484,12 @@ const Weekview = (props) => {
       } else console.error('getting info failed');
     };
 
+    requestSchedulingWeek();
   }
+    
 
-  const fin = localStorage.getItem('language'); // eslint-disable-line
-  const { week } = texts; // eslint-disable-line
+  //const fin = localStorage.getItem('language'); // eslint-disable-line
+  //const { week } = texts; // eslint-disable-line
 
   return (
     <div>

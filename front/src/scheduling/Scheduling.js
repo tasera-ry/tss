@@ -429,7 +429,8 @@ function Scheduling(props) {
     const { sched } = data;
     const fin = localStorage.getItem('language');
 
-    let sortedSupervisors = [];
+    const items = [];
+    let sortedSupervisors;
     let disabled = false;
     
     if(rangeSupervisors){
@@ -466,11 +467,7 @@ function Scheduling(props) {
           onChange={handleValueChange}
           data-testid="rangeSupervisorSelect"
         >
-          {sortedSupervisors.map((supervisor) => (
-            <MenuItem key={supervisor.id} value={supervisor.id}>
-              {supervisor.name}
-            </MenuItem>
-          ))}
+          {items}
         </Select>
       </FormControl>
     );
