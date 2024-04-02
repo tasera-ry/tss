@@ -431,15 +431,27 @@ function Scheduling(props) {
 
     let sortedSupervisors = [];
     let disabled = false;
-
-    if (rangeSupervisors) {
+    
+    if(rangeSupervisors){
       // sort supervisors in alphabetical order
-      sortedSupervisors = rangeSupervisors.sort((a, b) =>
-        a.name.localeCompare(b.name),
-      );
+       sortedSupervisors = rangeSupervisors.sort((a,b) => {
+        return a.name.localeCompare(b.name);
+      });
     }
 
-    if (rangeSupervisorSwitch === false) disabled = true;
+    if(rangeSupervisors){
+      sortedSupervisors.forEach((supervisor) => {
+        items.push(
+          <MenuItem key={supervisor.id} value={supervisor.id}>
+            {supervisor.name}
+          </MenuItem>,
+        );
+      });
+    }
+
+    if (rangeSupervisorSwitch === false) {
+      disabled = true;
+    }
 
     return (
       <FormControl>

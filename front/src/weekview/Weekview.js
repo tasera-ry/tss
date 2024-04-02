@@ -30,13 +30,14 @@ const lang = getLanguage();
 
 const Weekview = (props) => {
 
-  const [status, setStatus] = useState('loading');
+  const [state, setState] = useState('loading');
   const [date, setDate] = useState(new Date(Date.now()));
   const [weekNro, setWeekNro] = useState(0);
   const [dayNro, setDayNro] = useState(0);
   const [yearNro, setYearNro] = useState(0);
   const [paivat, setPaivat] = useState(undefined);
   const [refresh, setRefresh] = useState(false);
+  const [path, setPath] = useState("/");
 
   // Updates week to current when page loads
   useEffect(() => {
@@ -47,10 +48,21 @@ const Weekview = (props) => {
 
   // Re-renders the component and fetches new data when the logo to frontpage is clicked on weekview
   /* eslint-disable-next-line */
-
   useEffect(() => {
+    if(props.history.location.pathname == "/" || props.history.location.pathname == "/weekview/"){
+      if(props.history.location.pathname != path){
+        setState('loading');
+        getWeek();
+        getYear();
+        setRefresh(true);
+        setPath(props.history.location.pathname);
+      }
+    }
+  }, [props]);
+
+  // fetch data and refresh view
+  useEffect(() =>  {
     if(refresh){
-      setStatus('loading');
       update();
       setRefresh(false);
     }
@@ -58,7 +70,9 @@ const Weekview = (props) => {
 
   // Changes week number state to previous one
   const previousWeekClick = (e) => {
-    setStatus('loading');
+
+    setState('loading');
+    setPath(props.history.location.pathname);
 
     e.preventDefault();
 
@@ -69,9 +83,16 @@ const Weekview = (props) => {
       const urlParamDate = fullUrl[5];
       const urlParamDateSplit = urlParamDate.split('-');
 
-      const paramYear = urlParamDateSplit[0];
-      const paramMonth = urlParamDateSplit[1];
-      const paramDay = urlParamDateSplit[2];
+      let paramYear = urlParamDateSplit[0];
+      let paramMonth = urlParamDateSplit[1];
+      let paramDay = urlParamDateSplit[2];
+
+       // if day between 1 and 9, adds zero to front for formatting purposes
+       paramDay = paramDay.length == 1 ? "0" + paramDay : paramDay;
+
+       // if month between 1 and 9, adds zero to front for formatting purposes
+       paramMonth = paramMonth.length == 1 ? "0" + paramMonth : paramMonth;
+ 
 
       const paramDateCorrect = moment(
         paramYear + paramMonth + paramDay,
@@ -88,9 +109,7 @@ const Weekview = (props) => {
     const newWeek = newDay.week();
 
     try {
-      const correctDay = new Date(
-        date.setDate(date.getDate() - 7),
-      );
+      const correctDay = new Date( date.getDate() - 7 );
       props.history.replace(
         `/weekview/${moment(newDay, 'YYYYMMDD')
           .add(1, 'day')
@@ -109,15 +128,16 @@ const Weekview = (props) => {
       setWeekNro(newWeek);
       setYearNro(newYear);
       setRefresh(true);
-
     } catch (error) {
-      console.log(error);
+       console.log(error)
     }
   };
 
   // Changes week number state to next one
   const nextWeekClick = (e) => {
-    setStatus('loading');
+
+    setState('loading');
+    setPath(props.history.location.pathname);
 
     e.preventDefault();
 
@@ -129,9 +149,16 @@ const Weekview = (props) => {
 
       const urlParamDateSplit = urlParamDate.split('-');
 
-      const paramYear = urlParamDateSplit[0];
-      const paramMonth = urlParamDateSplit[1];
-      const paramDay = urlParamDateSplit[2];
+      let paramYear = urlParamDateSplit[0];
+      let paramMonth = urlParamDateSplit[1];
+      let paramDay = urlParamDateSplit[2];
+
+       // if day between 1 and 9, adds zero to front for formatting purposes
+       paramDay = paramDay.length == 1 ? "0" + paramDay : paramDay;
+
+       // if month between 1 and 9, adds zero to front for formatting purposes
+       paramMonth = paramMonth.length == 1 ? "0" + paramMonth : paramMonth;
+ 
 
       const paramDateCorrect = moment(
         paramYear + paramMonth + paramDay,
@@ -147,9 +174,7 @@ const Weekview = (props) => {
     const newWeek = newDay.week();
 
     try {
-      const correctDay = new Date(
-        date.setDate(date.getDate() + 7),
-      );
+      const correctDay = new Date( date.getDate() + 7 );
       props.history.replace(
         `/weekview/${moment(newDay, 'YYYYMMDD')
           .add(1, 'day')
@@ -166,9 +191,8 @@ const Weekview = (props) => {
       setWeekNro(newWeek);
       setYearNro(newYear);
       setRefresh(true);
-      
     } catch (error) {
-      // console.log(error)
+       console.log(error)
     }
   };
 
@@ -195,9 +219,16 @@ const Weekview = (props) => {
       const urlParamDateSplit = urlParamDate.split('-');
       const weeknumber = moment(urlParamDate, 'YYYYMMDD').week();
 
-      const paramDay = urlParamDateSplit[2].split('T')[0];
-      const paramMonth = urlParamDateSplit[1];
-      const paramYear = urlParamDateSplit[0];
+      let paramDay = urlParamDateSplit[2].split('T')[0];
+      let paramMonth = urlParamDateSplit[1];
+      let paramYear = urlParamDateSplit[0];
+
+       // if day between 1 and 9, adds zero to front for formatting purposes
+       paramDay = paramDay.length == 1 ? "0" + paramDay : paramDay;
+
+       // if month between 1 and 9, adds zero to front for formatting purposes
+       paramMonth = paramMonth.length == 1 ? "0" + paramMonth : paramMonth;
+ 
 
       const paramDateCorrect = moment(
         paramYear + paramMonth + paramDay,
@@ -357,7 +388,15 @@ const Weekview = (props) => {
     return yyyy;
   };
 
-  const update = async() => {
+  const update = () => {
+    const requestSchedulingDate = async () => {
+      try {
+        const data = await api.getSchedulingDate(date);
+        setDate(new Date(data.date));
+      } catch (err) {
+        console.error('getting info failed');
+      }
+    };
 
     try {
       console.log(date);
@@ -377,6 +416,7 @@ const Weekview = (props) => {
       today = `${yyyy}-${mm}-${dd}`;
 
       const testi = moment(yyyy + mm + dd, 'YYYYMMDD');
+      //console.log("Testi: ", testi);
 
       setDayNro(testi);
 
@@ -410,14 +450,21 @@ const Weekview = (props) => {
 
       const weeknumber = moment(urlParamDate, 'YYYYMMDD').week();
 
-      const paramDay = urlParamDateSplit[2];
-      const paramMonth = urlParamDateSplit[1];
-      const paramYear = urlParamDateSplit[0];
+      let paramDay = urlParamDateSplit[2];
+      let paramMonth = urlParamDateSplit[1];
+      let paramYear = urlParamDateSplit[0];
+
+      // if day between 1 and 9, adds zero to front for formatting purposes
+      paramDay = paramDay.length == 1 ? "0" + paramDay : paramDay;
+
+      // if month between 1 and 9, adds zero to front for formatting purposes
+      paramMonth = paramMonth.length == 1 ? "0" + paramMonth : paramMonth;
 
       const paramDateCorrect = moment(
         paramYear + paramMonth + paramDay,
         'YYYYMMDD',
       ).toDate();
+
       if (Number.isNaN(weeknumber)) {
         // eslint-disable-line
         setWeekNro(current);
@@ -439,72 +486,73 @@ const Weekview = (props) => {
     //console.log(date1);
     const response = await getSchedulingWeek(date1);
 
-    if (response) {
-      setPaivat(response.week);
-      setStatus('ready');
-    } else console.error('getting info failed');
+      if (response) {
+        setPaivat(response.week);
+        setState('ready');
+      } else console.error('getting info failed');
+    };
 
   }
 
-    const fin = localStorage.getItem('language'); // eslint-disable-line
-    const { week } = texts; // eslint-disable-line
+  const fin = localStorage.getItem('language'); // eslint-disable-line
+  const { week } = texts; // eslint-disable-line
 
-    return (
-      <div>
-        <InfoBox />
-        <div className={classes(css.container)}>
-          <Grid className={classes(css.dateHeader)}>
-            <div
-              className={classes(css.hoverHand, css.arrowLeft)}
-              onClick={previousWeekClick}
-            />
-            <h1 className={classes(css.dateHeaderText)}>
-              {' '}
-              {`${week.Week[fin]} ${weekNro}, ${yearNro}`}
-            </h1>
-            {/* Month if needed: {monthToString(date.getMonth())} */}
-            <div
-              className={classes(css.hoverHand, css.arrowRight)}
-              onClick={nextWeekClick}
-            />
-          </Grid>
-          <div className={classes(css.bigContainer)}>
-            <div className={classes(css.viewChanger)}>
-              <div className={classes(css.viewChangerCurrent)}>
-                {jumpToCurrent()}
-              </div>
-              <div className={classes(css.viewChangerContainer)}>
-                {viewChanger()}
-              </div>
+  return (
+    <div>
+      <InfoBox />
+      <div className={classes(css.container)}>
+        <Grid className={classes(css.dateHeader)}>
+          <div
+            className={classes(css.hoverHand, css.arrowLeft)}
+            onClick={previousWeekClick}
+          />
+          <h1 className={classes(css.dateHeaderText)}>
+            {' '}
+            {`${week.Week[fin]} ${weekNro}, ${yearNro}`}
+          </h1>
+          {/* Month if needed: {monthToString(date.getMonth())} */}
+          <div
+            className={classes(css.hoverHand, css.arrowRight)}
+            onClick={nextWeekClick}
+          />
+        </Grid>
+        <div className={classes(css.bigContainer)}>
+          <div className={classes(css.viewChanger)}>
+            <div className={classes(css.viewChangerCurrent)}>
+              {jumpToCurrent()}
             </div>
-
-            {/* Date boxes */}
-            <Grid className={classes(css.flexContainer2)}>
-              {createWeekDay()}
-            </Grid>
-
-            {/* Date boxes */}
-            <Grid className={classes(css.flexContainer2)}>
-              {status !== 'ready' ? '' : createDate()}
-            </Grid>
-
-            {/* Colored boxes for dates */}
-            {status !== 'ready' ? (
-              <div className={classes(css.progress)}>
-                <CircularProgress disableShrink />
-              </div>
-            ) : (
-              <Grid className={classes(css.flexContainer)}>
-                {createColorInfo()}
-              </Grid>
-            )}
+            <div className={classes(css.viewChangerContainer)}>
+              {viewChanger()}
+            </div>
           </div>
-        </div>
 
-        {/* Infoboxes */}
-        <Infoboxes />
+          {/* Date boxes */}
+          <Grid className={classes(css.flexContainer2)}>
+            {createWeekDay()}
+          </Grid>
+
+          {/* Date boxes */}
+          <Grid className={classes(css.flexContainer2)}>
+            {state !== 'ready' ? '' : createDate()}
+          </Grid>
+
+          {/* Colored boxes for dates */}
+          {state !== 'ready' ? (
+            <div className={classes(css.progress)}>
+              <CircularProgress disableShrink />
+            </div>
+          ) : (
+            <Grid className={classes(css.flexContainer)}>
+              {createColorInfo()}
+            </Grid>
+          )}
+        </div>
       </div>
-    );
-  }
+
+      {/* Infoboxes */}
+      <Infoboxes />
+    </div>
+  );
+}
 
 export default Weekview;
