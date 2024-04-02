@@ -429,21 +429,26 @@ function Scheduling(props) {
     let disabled = false;
     const { sched } = data;
     const fin = localStorage.getItem('language');
+
+    let sortedSupervisors;
     
     if(rangeSupervisors){
       // sort supervisors in alphabetical order
-      const sortedSupervisors = rangeSupervisors.sort((a,b) => {
+       sortedSupervisors = rangeSupervisors.sort((a,b) => {
         return a.name.localeCompare(b.name);
       });
     }
-    
-    for (const supervisor in sortedSupervisors) {
-      items.push(
-        <MenuItem key={supervisor.id} value={supervisor.id}>
-          {supervisor.name}
-        </MenuItem>,
-      );
+
+    if(rangeSupervisors){
+      sortedSupervisors.forEach((supervisor) => {
+        items.push(
+          <MenuItem key={supervisor.id} value={supervisor.id}>
+            {supervisor.name}
+          </MenuItem>,
+        );
+      });
     }
+
     if (rangeSupervisorSwitch === false) {
       disabled = true;
     }
@@ -839,7 +844,7 @@ function Scheduling(props) {
         </div>
         <div className="middleRow">
           <div className="roSwitch">
-            <div className="text">{sched.Supervisor[fin]}</div>
+            <div className="text">{sched.Rangeofficer[fin]}</div>
             <CustomSwitch
               className="officerSwitch"
               checked={rangeSupervisorSwitch}
