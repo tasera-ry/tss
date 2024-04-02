@@ -121,7 +121,7 @@ const getPublicInfoMessages = async () => {
   return response.data;
 };
 
-const getPersonalInfoMessages = async () => {
+const getRangeMasterInfoMessages = async () => {
   const response = await axios.get(`api/infomessage/tablet`);
   return response.data;
 };
@@ -163,7 +163,7 @@ export default {
   raffleSupervisors,
   saveRaffledSupervisors,
   getPublicInfoMessages,
-  getPersonalInfoMessages,
+  getRangeMasterInfoMessages,
   getAllInfoMessages,
   postInfoMessage,
   deleteInfoMessage,

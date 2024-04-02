@@ -43,14 +43,14 @@ const InfoBox = ({tabletMode = false}) => {
       const res = await api.getPublicInfoMessages();
       if (res) setInfo(res);
     };
-    const getPersonalInfoMessages = async () => {
-      const res = await api.getPersonalInfoMessages();
+    const getRangeMasterInfoMessages = async () => {
+      const res = await api.getRangeMasterInfoMessages();
       if (res) setInfo(res);
     }
 
     if(tabletMode)
     {
-      getPersonalInfoMessages();
+      getRangeMasterInfoMessages();
     } else {
       getPublicMessages();
     } 

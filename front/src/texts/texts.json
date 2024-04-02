@@ -935,6 +935,11 @@
       "Send public message",
       "Skicka offentligt meddelande"
     ],
+    "sendRangeMasterMessage": [
+      "Päävalvoja",
+      "Rangemaster",
+      "Banmästare"
+    ],
     "send": ["Lähetä", "Send", "Skicka"]
   },
   "trackStatisticsModal": {
