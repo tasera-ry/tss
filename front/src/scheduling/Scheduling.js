@@ -34,7 +34,6 @@ import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { withStyles } from '@material-ui/core/styles';
 
-
 import socketIOClient from 'socket.io-client';
 import {
   updateRangeSupervision,
@@ -82,7 +81,6 @@ const CustomSwitch = withStyles({
 })(Switch);
 
 function Scheduling(props) {
-
   const [state, setState] = useState('loading');
   const [toast, setToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('Nope');
@@ -98,7 +96,8 @@ function Scheduling(props) {
   const [rangeSupervisorSwitch, setRangeSupervisorSwitch] = useState(false);
   const [rangeSupervisorId, setRangeSupervisorId] = useState('');
   const [rangeSupervisorOriginal, setRangeSupervisorOriginal] = useState('');
-  const [rangeSupervisionScheduled, setRangeSupervisionScheduled] = useState(false);
+  const [rangeSupervisionScheduled, setRangeSupervisionScheduled] =
+    useState(false);
   const [daily, setDaily] = useState(false);
   const [weekly, setWeekly] = useState(false);
   const [monthly, setMonthly] = useState(false);
@@ -110,32 +109,32 @@ function Scheduling(props) {
   const [events, setEvents] = useState({});
   const [callUpdate, setCallUpdate] = useState(false);
 
-
   useEffect(() => {
     setDatePickerKey(Math.random()); // force datepicker to re-render when language changed
     validateLogin().then((logInSuccess) => {
-      if(!logInSuccess){
+      if (!logInSuccess) {
         props.history.push('/');
-      }
-      else{
-        getRangeSupervisors().then((response) => {
-          if(response !== false){
-            setRangeSupervisors(response);
-            update();
-            setState('loading');
-          }
-        }).catch((error) => {
-          console.error('init failed', error);
-        });
+      } else {
+        getRangeSupervisors()
+          .then((response) => {
+            if (response !== false) {
+              setRangeSupervisors(response);
+              update();
+              setState('loading');
+            }
+          })
+          .catch((error) => {
+            console.error('init failed', error);
+          });
       }
     });
-    
+
     setSocket(socketIOClient());
   }, []);
 
   // runs after date changed with datePicker
   useEffect(() => {
-    if(callUpdate){
+    if (callUpdate) {
       continueWithDate();
       setCallUpdate(false);
     }
@@ -147,7 +146,7 @@ function Scheduling(props) {
     if (tracks) {
       let ts = trackStates;
       tracks.forEach((track) => {
-        ts = {...ts, [track.id]: 'present'};
+        ts = { ...ts, [track.id]: 'present' };
       });
       setTrackStates(ts);
     }
@@ -157,7 +156,7 @@ function Scheduling(props) {
     if (tracks) {
       let ts = trackStates;
       tracks.forEach((track) => {
-        ts = {...ts, [track.id]: 'absent'};
+        ts = { ...ts, [track.id]: 'absent' };
       });
       setTrackStates(ts);
     }
@@ -167,7 +166,7 @@ function Scheduling(props) {
     if (tracks) {
       let ts = trackStates;
       tracks.forEach((track) => {
-        ts = {...ts, [track.id]: 'closed'};
+        ts = { ...ts, [track.id]: 'closed' };
       });
       setTrackStates(ts);
     }
@@ -205,10 +204,11 @@ function Scheduling(props) {
   const handleSwitchChange = (event) => {
     //console.log("Switch",event.target.name, event.target.checked);
 
-    if(event.target.name == "available") setAvailable(event.target.checked);
-    if(event.target.name == "rangeSupervisorSwitch") setRangeSupervisorSwitch(event.target.checked);
+    if (event.target.name == 'available') setAvailable(event.target.checked);
+    if (event.target.name == 'rangeSupervisorSwitch')
+      setRangeSupervisorSwitch(event.target.checked);
 
-    setEvents({...events, [event.target.name]: event.target.checked});
+    setEvents({ ...events, [event.target.name]: event.target.checked });
   };
 
   const handleRepeatChange = (event) => {
@@ -236,18 +236,19 @@ function Scheduling(props) {
     // having the name be a int causes
     // Failed prop type: Invalid prop `name` of type `number`
 
-    setTrackStates({...trackStates, [event.target.name]: event.target.value});
+    setTrackStates({ ...trackStates, [event.target.name]: event.target.value });
 
-    setEvents({...events, [event.target.name]: event.target.value});
+    setEvents({ ...events, [event.target.name]: event.target.value });
   };
 
   const handleValueChange = (event) => {
     //console.log("Value change",event.target.name, event.target.value);
 
-    if(event.target.name == "rangeSupervisorId") setRangeSupervisorId(event.target.value);
-    if(event.target.name == "repeatCount") setRepeatCount(event.target.value);
+    if (event.target.name == 'rangeSupervisorId')
+      setRangeSupervisorId(event.target.value);
+    if (event.target.name == 'repeatCount') setRepeatCount(event.target.value);
 
-    setEvents({...events, [event.target.name]: event.target.value});
+    setEvents({ ...events, [event.target.name]: event.target.value });
   };
 
   const handleBackdropClick = (event) => {
@@ -425,12 +426,11 @@ function Scheduling(props) {
 
   // builds range officer select
   const createSupervisorSelect = () => {
-    const items = [];
-    let disabled = false;
     const { sched } = data;
     const fin = localStorage.getItem('language');
 
-    let sortedSupervisors;
+    let sortedSupervisors = [];
+    let disabled = false;
     
     if(rangeSupervisors){
       // sort supervisors in alphabetical order
@@ -466,13 +466,17 @@ function Scheduling(props) {
           onChange={handleValueChange}
           data-testid="rangeSupervisorSelect"
         >
-          {items}
+          {sortedSupervisors.map((supervisor) => (
+            <MenuItem key={supervisor.id} value={supervisor.id}>
+              {supervisor.name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     );
   };
 
-  const updateCall = async(
+  const updateCall = async (
     date,
     rsId,
     srsId,
@@ -491,13 +495,13 @@ function Scheduling(props) {
       // reservationId: '',
       // scheduledRangeSupervisionId: '',
       // trackSupervisionId: '',
-      console.log("rsId: ", rsId);
+      console.log('rsId: ', rsId);
       if (rsId !== null) {
         reservationMethod = 'PUT';
         reservationPath = `/${rsId}`;
       } else reservationMethod = 'POST';
 
-      console.log("srsId: ", srsId);
+      console.log('srsId: ', srsId);
       if (srsId !== null) {
         scheduledRangeSupervisionMethod = 'PUT';
         scheduledRangeSupervisionPath = `/${srsId}`;
@@ -732,7 +736,7 @@ function Scheduling(props) {
 
       return resolve('update success');
     });
-  }
+  };
 
   const update = async () => {
     try {
@@ -742,10 +746,16 @@ function Scheduling(props) {
       setRangeId(response.rangeId);
       setReservationId(response.reservationId);
       setScheduleId(response.scheduleId);
-      setOpen(response.open !== null ? moment(response.open, 'h:mm:ss').format() 
-                                      : moment(response.date).hour(17).minute(0).second(0));
-      setClose(response.close !== null ? moment(response.close, 'h:mm:ss').format() 
-                                      : moment(response.date).hour(20).minute(0).second(0));
+      setOpen(
+        response.open !== null
+          ? moment(response.open, 'h:mm:ss').format()
+          : moment(response.date).hour(17).minute(0).second(0),
+      );
+      setClose(
+        response.close !== null
+          ? moment(response.close, 'h:mm:ss').format()
+          : moment(response.date).hour(20).minute(0).second(0),
+      );
       setAvailable(response.available !== null ? response.available : false);
       setRangeSupervisorSwitch(response.rangeSupervisorId !== null);
       setRangeSupervisorId(response.rangeSupervisorId);
@@ -760,17 +770,20 @@ function Scheduling(props) {
       for (const key in response.tracks) {
         // eslint-disable-line
         if (response.tracks[key].scheduled) {
-          ts = {...ts, [response.tracks[key].id]: response.tracks[key].trackSupervision};
+          ts = {
+            ...ts,
+            [response.tracks[key].id]: response.tracks[key].trackSupervision,
+          };
         } else {
           // clears track states between date changes
-          ts = {...ts, [response.tracks[key].id]: undefined};
+          ts = { ...ts, [response.tracks[key].id]: undefined };
         }
       }
       setTrackStates(ts);
     } catch (err) {
       console.error('getting info failed', err);
     }
-  }
+  };
 
   function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -781,14 +794,8 @@ function Scheduling(props) {
 
   return (
     <div className="schedulingRoot">
-      <Modal
-        open={state !== 'ready'}
-        onClick={handleBackdropClick}
-      >
-        <Backdrop
-          open={state !== 'ready'}
-          onClick={handleBackdropClick}
-        >
+      <Modal open={state !== 'ready'} onClick={handleBackdropClick}>
+        <Backdrop open={state !== 'ready'} onClick={handleBackdropClick}>
           <CircularProgress disableShrink />
         </Backdrop>
       </Modal>
@@ -984,10 +991,7 @@ function Scheduling(props) {
               autoHideDuration={5000}
               onClose={handleSnackbarClose}
             >
-              <Alert
-                onClose={handleSnackbarClose}
-                severity={toastSeverity}
-              >
+              <Alert onClose={handleSnackbarClose} severity={toastSeverity}>
                 {toastMessage}!
               </Alert>
             </Snackbar>

@@ -67,6 +67,16 @@ const getUsers = async () => {
   return response.data;
 };
 
+const deleteUser = async (id) => {
+  const response = await axios.delete(`api/user/${id}`);
+  return response.data;
+};
+
+const getRangeOfficers = async (associationId) => {
+  const response = await axios.get(`api/rangeofficers/${associationId}`);
+  return response.data;
+};
+
 const patchReservation = (reservationId, data) =>
   axios.put(`/api/reservation/${reservationId}`, data);
 
@@ -121,7 +131,7 @@ const getPublicInfoMessages = async () => {
   return response.data;
 };
 
-const getPersonalInfoMessages = async () => {
+const getRangeMasterInfoMessages = async () => {
   const response = await axios.get(`api/infomessage/tablet`);
   return response.data;
 };
@@ -153,6 +163,8 @@ export default {
   createUser,
   getUser,
   getUsers,
+  deleteUser,
+  getRangeOfficers,
   patchReservation,
   addRangeSupervision,
   patchRangeSupervision,
@@ -163,7 +175,7 @@ export default {
   raffleSupervisors,
   saveRaffledSupervisors,
   getPublicInfoMessages,
-  getPersonalInfoMessages,
+  getRangeMasterInfoMessages,
   getAllInfoMessages,
   postInfoMessage,
   deleteInfoMessage,

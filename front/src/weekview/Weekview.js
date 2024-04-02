@@ -398,7 +398,13 @@ const Weekview = (props) => {
       }
     };
 
-    requestSchedulingDate();
+    try {
+      console.log(date);
+      const data = await api.getSchedulingDate(date);
+      setDate(new Date(data.date));
+    } catch (err) {
+      console.error('getting info failed');
+    }
 
     let testi2;
     if (dayNro === 0) {
@@ -420,6 +426,7 @@ const Weekview = (props) => {
     }
 
     let date1 = testi2;
+    console.log("Created date1: ", date1);
 
     const date2 = new Date();
     date2.setHours(0, 0, 0, 0);
@@ -434,7 +441,7 @@ const Weekview = (props) => {
           7,
       ); // eslint-disable-line
 
-    // Count correct weeknumber from URL
+      // Count correct weeknumber from URL
     try {
       const fullUrl = window.location.href.split('/');
       const urlParamDate = fullUrl[5];
@@ -469,14 +476,15 @@ const Weekview = (props) => {
         setYearNro(paramYear);
 
         date1 = paramDateCorrect;
+        console.log("Date1 changed: ", date1);
       }
     } catch {
       setWeekNro(current);
       props.history.replace('/weekview/');
     }
 
-    const requestSchedulingWeek = async () => {
-      const response = await getSchedulingWeek(date1);
+    //console.log(date1);
+    const response = await getSchedulingWeek(date1);
 
       if (response) {
         setPaivat(response.week);
@@ -484,7 +492,6 @@ const Weekview = (props) => {
       } else console.error('getting info failed');
     };
 
-    requestSchedulingWeek();
   }
 
   const fin = localStorage.getItem('language'); // eslint-disable-line
