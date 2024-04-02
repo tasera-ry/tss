@@ -183,4 +183,12 @@ module.exports = {
       return next();
     },
   ],
+  getRangeOfficers: [
+    fields.associationId(param, 'exists'),
+    handleValidationErrors,
+    function storeID(request, response, next) {
+      response.locals.query = matchedData(request, { locations: ['params'] });
+      return next();
+    },
+  ],
 };
