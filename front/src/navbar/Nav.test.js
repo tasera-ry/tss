@@ -28,7 +28,7 @@ describe('testing Nav', () => {
         </Router>,
       );
     });
-    await waitFor(() => expect(screen.getByText('EN')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('ENG')).toBeInTheDocument());
   });
 
   // broken due to authentication change from localhost to cookies
