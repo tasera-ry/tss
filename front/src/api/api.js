@@ -153,6 +153,8 @@ const createDevice = async (newDevice) => {
 };
 
 const deleteDevice = async (id) => {
+  console.log('api called delete', id);
+
   await axios.delete(`api/devices/${id}`);
 };
 
