@@ -151,9 +151,15 @@
     "Present": ["Vahvista saapuminen", "Confirm date", "Bekräfta datum"],
     "Absent": ["En pääse paikalle", "Absent", "Frånvarande"],
     "EnRoute": ["Matkalla", "En route", "På väg"],
+    "OfficerSelect": ["Valitse valvoja", "Select officer", "Välj övervakare"],
+    "NoOfficer": ["Ei valintaa", "No selection", "Inget val"],
     "Cancel": ["Sulje", "Cancel", "Avboka"],
     "Save": ["Tallenna", "Save", "Spara"],
-    "ProvideTime": ["Arvioitu saapumisaikasi:", "Your estimated time of arrival:", "Din bäraknad ankomsttid:"]
+    "ProvideTime": [
+      "Arvioitu saapumisaikasi:",
+      "Your estimated time of arrival:",
+      "Din bäraknad ankomsttid:"
+    ]
   },
   "feedback": {
     "Title": ["Anna palautetta", "Give feedback", "Ge feedback"],
@@ -167,8 +173,16 @@
   },
   "week": {
     "Week": ["Viikko", "Week", "Vecka"],
-    "Green": ["Päävalvoja paikalla", "Range officer present", "Banofficer närvarande"],
-    "Lightgreen": ["Päävalvoja varmistettu, arvioitu saapumisaika", "Range officer confirmed, estimated time of arrival", "Banofficer bekräftat, beräknad ankomsttid"],
+    "Green": [
+      "Päävalvoja paikalla",
+      "Range officer present",
+      "Banofficer närvarande"
+    ],
+    "Lightgreen": [
+      "Päävalvoja varmistettu, arvioitu saapumisaika",
+      "Range officer confirmed, estimated time of arrival",
+      "Banofficer bekräftat, beräknad ankomsttid"
+    ],
     "Blue": [
       "Päävalvoja määritetty, mutta ei varmistettu",
       "Range officer predefined, not confirmed",
@@ -983,11 +997,7 @@
       "Send public message",
       "Skicka offentligt meddelande"
     ],
-    "sendRangeMasterMessage": [
-      "Päävalvoja",
-      "Rangemaster",
-      "Banmästare"
-    ],
+    "sendRangeMasterMessage": ["Päävalvoja", "Rangemaster", "Banmästare"],
     "send": ["Lähetä", "Send", "Skicka"]
   },
   "trackStatisticsModal": {

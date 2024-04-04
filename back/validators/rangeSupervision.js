@@ -79,6 +79,14 @@ const fields = {
 
     return validatorAdditions(validator, opts);
   },
+
+  rangeofficer_id: function idValidation(requestObject, ...opts) {
+    const validator = requestObject('rangeofficer_id')
+      .isInt()
+      .withMessage('must be an integer')
+      .toInt();
+    return validatorAdditions(validator, opts);
+  },
 };
 
 function handleValidationErrors(request, response, next) {
@@ -144,6 +152,7 @@ module.exports = {
     fields.association(body, 'optional'),
     fields.notice(body, 'optional'),
     fields.arriving_at(body, 'optional'),
+    fields.rangeofficer_id(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
       response.locals.id = matchedData(request, { locations: ['params'] });
