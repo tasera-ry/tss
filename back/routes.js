@@ -68,6 +68,22 @@ router
   );
 
 router
+  .route('/officer-association/:id')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty(
+      'role',
+      ['superuser', 'association', 'rangeofficer'],
+      _.includes
+    )
+  )
+  .get(
+    validators.user.getAssociation,
+    middlewares.user.getAssociation,
+    controllers.user.getAssociation
+  );
+
+router
   .route('/changeownpassword/:id')
   .put(
     middlewares.jwt.read,

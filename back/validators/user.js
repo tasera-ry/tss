@@ -191,4 +191,12 @@ module.exports = {
       return next();
     },
   ],
+  getAssociation: [
+    fields.id(param, 'exists'),
+    handleValidationErrors,
+    function storeID(request, response, next) {
+      response.locals.query = matchedData(request, { locations: ['params'] });
+      return next();
+    },
+  ],
 };

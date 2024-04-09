@@ -62,6 +62,15 @@ const controller = {
     }
     return response.status(200).send(response.locals.queryResult);
   },
+
+  getAssociation: async function getAssociation(request, response) {
+    if (response.locals.queryResult.length === 0) {
+      return response.status(404).send({
+        error: 'No association found for user',
+      });
+    }
+    return response.status(200).send(response.locals.queryResult);
+  },
 };
 
 module.exports = controller;

@@ -1,4 +1,10 @@
-const { body, query, param, validationResult, matchedData } = require('express-validator');
+const {
+  body,
+  query,
+  param,
+  validationResult,
+  matchedData,
+} = require('express-validator');
 const moment = require('moment');
 
 function validatorAdditions(validator, opts) {
@@ -16,7 +22,10 @@ function validatorAdditions(validator, opts) {
 }
 
 const fields = {
-  scheduled_range_supervision_id: function idValidation(requestObject, ...opts) {
+  scheduled_range_supervision_id: function idValidation(
+    requestObject,
+    ...opts
+  ) {
     const validator = requestObject('scheduled_range_supervision_id')
       .isInt()
       .withMessage('must be an integer')
@@ -51,7 +60,10 @@ const fields = {
   },
 
   user_id: function idValidation(requestObject, ...opts) {
-    const validator = requestObject('id').isInt().withMessage('must be an integer').toInt();
+    const validator = requestObject('id')
+      .isInt()
+      .withMessage('must be an integer')
+      .toInt();
     return validatorAdditions(validator, opts);
   },
 
@@ -65,16 +77,18 @@ const fields = {
   },
 
   user: function userValidation(requestObject, ...opts) {
-    const validator = requestObject('user').isString().withMessage('must be a string');
+    const validator = requestObject('user')
+      .isString()
+      .withMessage('must be a string');
     return validatorAdditions(validator, opts);
   },
 
   arriving_at: function timeValidator(requestObject, ...opts) {
     const validator = requestObject('arriving_at').custom((value) => {
-      if (moment(value, 'HH:mm', true /* strict parsing */).isValid()) {
+      if (moment(value, 'HH:mm:ss', true /* strict parsing */).isValid()) {
         return true;
       }
-      throw Error('Time is not in a valid format (HH:mm)');
+      throw Error('Time is not in a valid format (HH:mm:ss)');
     });
 
     return validatorAdditions(validator, opts);
