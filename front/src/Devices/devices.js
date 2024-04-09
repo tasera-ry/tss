@@ -102,21 +102,21 @@ const Devices = () => {
                   }),
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve, reject) => {
-                    setTimeout(() => {
+                    api.patchDevice(oldData.id, newData).then(() => {
                       const data = [...devices];
                       data[data.indexOf(oldData)] = newData;
                       setDevices(data);
                       resolve();
-                    }, 600);
+                    });
                   }),
                 onRowDelete: (oldData) =>
                   new Promise((resolve, reject) => {
-                    setTimeout(() => {
+                    api.deleteDevice(oldData.id).then(() => {
                       const data = [...devices];
                       data.splice(data.indexOf(oldData), 1);
                       setDevices(data);
                       resolve();
-                    }, 600);
+                    });
                   }),
               }}
               options={{

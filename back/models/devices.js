@@ -86,7 +86,7 @@ const model = {
    */
   delete: async function deleteDevice(key) {
     return knex.transaction((trx) => {
-      return trx('devices').where({ id: key }).del().then(trx.commit).catch(trx.rollback);
+      return trx('devices').where(key).del().then(trx.commit).catch(trx.rollback);
     });
   },
 };
