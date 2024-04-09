@@ -6,11 +6,18 @@
     align-items: center;
   }
 
-.customButton {
-    background-color: whitesmoke;
+.freeButton {
+    background-color: $COLOR_GREEN;
     border-radius: 50px;
     width: 150px;
     height: 45px;
     margin: 3px;
-    // Add more styles
+  }
+
+.reservedButton {
+    background-color: $COLOR_RED_LIGHT;
+    border-radius: 50px;
+    width: 150px;
+    height: 45px;
+    margin: 3px;
   }

@@ -31,7 +31,7 @@ class ButtonComponent extends Component {
         });
 
         try {
-            // Assuming patchDevice returns the updated device, else just use devicesUpdated directly
+            // Returns the updated device
             await api.patchDevice(device.id, { status: device.status === 'free' ? 'reserved' : 'free' });
             this.setState({ devices: devicesUpdated });
         } catch (error) {
@@ -39,7 +39,17 @@ class ButtonComponent extends Component {
         }
     };
 
+    toggleText = (id) => {
+        // On click changes text on button showing if 'free' or 'reserved'
+        this.setState(prevState => ({
+            devices: prevState.devices.map(device => 
+                device.id === id ? { ...device, toggleText: !device.toggleText } : device
+            ),
+        }));
+    };
+
     render() {
+        //Updates loan devices on a grid in dayview.js
         const { devices } = this.state;
 
         if (devices.length > 0) {
@@ -47,8 +57,11 @@ class ButtonComponent extends Component {
                 <div className={styles.singularGrid}>
                     {devices.map((device) => (
                         <div key={device.id}>
-                            <Button className={styles.customButton}>
-                                {device.device_name}
+                            <Button 
+                            className={`${device.status === 'reserved' ? styles.reservedButton : styles.freeButton}`}
+                            onClick={() => this.toggleText(device.id)}
+                            >
+                                {device.toggleText ? (device.status === 'reserved' ? 'Reserved' : 'Free') : device.device_name}
                             </Button>
                         </div>
                     ))}
