@@ -27,11 +27,9 @@ const { sv } = translations;
 
 export default function Supervisions({ cookies }) {
   const [rangeofficerList, setRangeOfficerList] = useState('');
-  const [supervisions, setSupervisions] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
-  const [rangeOfficer, setRangeOfficer] = useState(null);
-  const [arrivalTime, setArrivalTime] = useState('');
   const [officerAnchorEl, setOfficerAnchorEl] = useState(null);
+  const [supervisions, setSupervisions] = useState([]);
 
   useEffect(() => {
     console.log('use effect ');
@@ -43,8 +41,18 @@ export default function Supervisions({ cookies }) {
           const officerResponse = await api.getRangeOfficers(cookies.id);
           const supervisionResponse = await api.getSupervisions(cookies.id);
 
+          const newSupervisions = supervisionResponse.map((supervision) => ({
+            id: supervision.id,
+            scheduled_range_supervision_id:
+              supervision.scheduled_range_supervision_id,
+            date: supervision.date,
+            range_supervisor: supervision.range_supervisor,
+            rangeofficer_id: supervision.rangeofficer_id,
+            arriving_at: supervision.arriving_at,
+          }));
+
           setRangeOfficerList(officerResponse);
-          setSupervisions(supervisionResponse);
+          setSupervisions(newSupervisions);
         } else if (cookies.role === 'rangeofficer') {
           // If the user is a rangeofficer, get the association they are associated with
           const associationId = await api.getAssociation(cookies.id);
@@ -60,31 +68,54 @@ export default function Supervisions({ cookies }) {
     fetchData();
   }, []);
 
-  const handleClick = (event) => {
+  const handleStatusClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (status) => {
+    const rowIndex = anchorEl.getAttribute('data-rowindex');
+
+    const updatedSupervisions = [...supervisions];
+    updatedSupervisions[rowIndex].range_supervisor = status;
+
+    setSupervisions(updatedSupervisions);
     setAnchorEl(null);
   };
 
   const handleOfficerClick = (event) => {
+    // Set the anchor element to the button that was clicked. Includes the row index value
     setOfficerAnchorEl(event.currentTarget);
   };
 
   // Handle range officer selection
   const handleOfficerSelect = (officer) => {
-    setRangeOfficer(officer);
+    // Get the row index from the anchor element
+    const rowIndex = officerAnchorEl.getAttribute('data-rowindex');
+
+    // Update the corresponding supervision object with the selected officer
+    const updatedSupervisions = [...supervisions];
+    updatedSupervisions[rowIndex].rangeofficer_id = officer.id;
+
+    // Set the updated supervision list and reset the anchor value
+    setSupervisions(updatedSupervisions);
     setOfficerAnchorEl(null);
   };
 
-  const handleTimeChange = (event) => {
+  const handleTimeChange = (event, rowIndex) => {
     // TODO: Better error handling, atm no error messages are shown
     const parsedTime = moment(event.target.value, 'HH:mm', true);
 
     if (parsedTime.isValid()) {
-      setArrivalTime(parsedTime.format('HH:mm'));
+      // Update the arriving_at value in the corresponding supervision object
+      const updatedSupervisions = [...supervisions];
+      updatedSupervisions[rowIndex].arriving_at = parsedTime.format('HH:mm');
+      setSupervisions(updatedSupervisions);
     }
+  };
+
+  const handleSubmit = (rowIndex) => {
+    console.log('submitting');
+    console.log(supervisions[rowIndex]);
   };
 
   return (
@@ -104,7 +135,7 @@ export default function Supervisions({ cookies }) {
         </TableHead>
         <TableBody>
           {supervisions &&
-            supervisions.map((supervision) => (
+            supervisions.map((supervision, rowIndex) => (
               <TableRow key={supervision.id}>
                 <TableCell>{supervision.date}</TableCell>
 
@@ -112,10 +143,11 @@ export default function Supervisions({ cookies }) {
                 <TableCell>
                   <Button
                     variant="outlined"
-                    size="medium"
-                    onClick={handleClick}
+                    size="small"
+                    onClick={(event) => handleStatusClick(event)}
+                    data-rowindex={rowIndex}
                   >
-                    {supervision.range_supervisor}
+                    {supervisions[rowIndex].range_supervisor}
                   </Button>
                   <Menu
                     open={Boolean(anchorEl)}
@@ -123,13 +155,15 @@ export default function Supervisions({ cookies }) {
                     anchorEl={anchorEl}
                     onClose={handleClose}
                   >
-                    <MenuItem onClick={handleClose}>
+                    <MenuItem onClick={() => handleClose('present')}>
                       {sv.Present[lang]}
                     </MenuItem>
-                    <MenuItem onClick={handleClose}>
+                    <MenuItem onClick={() => handleClose('confirmed')}>
                       {sv.Confirmed[lang]}
                     </MenuItem>
-                    <MenuItem onClick={handleClose}>{sv.Absent[lang]}</MenuItem>
+                    <MenuItem onClick={() => handleClose('absent')}>
+                      {sv.Absent[lang]}
+                    </MenuItem>
                   </Menu>
                 </TableCell>
 
@@ -137,11 +171,15 @@ export default function Supervisions({ cookies }) {
                 <TableCell>
                   <div>
                     <Button
-                      onClick={handleOfficerClick}
+                      onClick={(event) => handleOfficerClick(event)}
                       variant="outlined"
                       size="small"
+                      data-rowindex={rowIndex}
                     >
-                      Select rangeofficer
+                      {rangeofficerList.find(
+                        (officer) =>
+                          officer.id === supervisions[rowIndex].rangeofficer_id,
+                      )?.name || sv.OfficerSelect[lang]}
                     </Button>
                     <Menu
                       open={Boolean(officerAnchorEl)}
@@ -149,17 +187,13 @@ export default function Supervisions({ cookies }) {
                       onClose={handleOfficerSelect}
                       keepMounted
                     >
-                      <MenuItem
-                        onClick={() => handleOfficerSelect(null)}
-                        data-info=""
-                      >
+                      <MenuItem onClick={() => handleOfficerSelect(null)}>
                         {sv.NoOfficer[lang]}
                       </MenuItem>
                       {rangeofficerList.map((officer) => (
                         <MenuItem
                           key={officer.id}
                           onClick={() => handleOfficerSelect(officer)}
-                          data-info={officer.name}
                         >
                           {officer.name}
                         </MenuItem>
@@ -174,15 +208,20 @@ export default function Supervisions({ cookies }) {
                     <TextField
                       id="time"
                       type="time"
-                      value={arrivalTime}
-                      onChange={handleTimeChange}
+                      value={supervision.arriving_at || ''}
+                      onChange={(event) => handleTimeChange(event, rowIndex)}
                     />
                   </div>
                 </TableCell>
 
                 {/* Set button */}
                 <TableCell>
-                  <Button type="submit" fullWidth variant="contained">
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    onClick={() => handleSubmit(rowIndex)}
+                  >
                     Set
                   </Button>
                 </TableCell>
