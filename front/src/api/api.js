@@ -201,6 +201,16 @@ async function getSupervisions(associationId) {
   }
 }
 
+async function putSupervision(id, data) {
+  try {
+    const response = await axios.put(`api/range-supervision/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
 export default {
   getSchedulingDate,
   getSchedulingWeek,
@@ -233,4 +243,5 @@ export default {
   postInfoMessage,
   deleteInfoMessage,
   getSupervisions,
+  putSupervision,
 };

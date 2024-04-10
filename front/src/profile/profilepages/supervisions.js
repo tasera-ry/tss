@@ -12,6 +12,7 @@ import {
   TableBody,
   TextField,
 } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 
 import moment from 'moment';
 
@@ -30,6 +31,7 @@ export default function Supervisions({ cookies }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [officerAnchorEl, setOfficerAnchorEl] = useState(null);
   const [supervisions, setSupervisions] = useState([]);
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     console.log('use effect ');
@@ -68,6 +70,14 @@ export default function Supervisions({ cookies }) {
     fetchData();
   }, []);
 
+  const createNotification = (type, message) => {
+    setNotification({ type, message });
+
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  };
+
   const handleStatusClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -89,6 +99,16 @@ export default function Supervisions({ cookies }) {
 
   // Handle range officer selection
   const handleOfficerSelect = (officer) => {
+    if (officer === null) {
+      // If no officer is selected, set the rangeofficer_id to null
+      const rowIndex = officerAnchorEl.getAttribute('data-rowindex');
+      const updatedSupervisions = [...supervisions];
+      updatedSupervisions[rowIndex].rangeofficer_id = null;
+      setSupervisions(updatedSupervisions);
+      setOfficerAnchorEl(null);
+      return;
+    }
+
     // Get the row index from the anchor element
     const rowIndex = officerAnchorEl.getAttribute('data-rowindex');
 
@@ -108,14 +128,26 @@ export default function Supervisions({ cookies }) {
     if (parsedTime.isValid()) {
       // Update the arriving_at value in the corresponding supervision object
       const updatedSupervisions = [...supervisions];
-      updatedSupervisions[rowIndex].arriving_at = parsedTime.format('HH:mm');
+      updatedSupervisions[rowIndex].arriving_at = parsedTime.format('HH:mm:ss');
       setSupervisions(updatedSupervisions);
     }
   };
 
-  const handleSubmit = (rowIndex) => {
-    console.log('submitting');
-    console.log(supervisions[rowIndex]);
+  const handleSubmit = async (rowIndex) => {
+    const request = {
+      range_supervisor: supervisions[rowIndex].range_supervisor,
+      rangeofficer_id: supervisions[rowIndex].rangeofficer_id,
+      arriving_at: supervisions[rowIndex].arriving_at,
+    };
+
+    await api.putSupervision(supervisions[rowIndex].id, request);
+
+    console.log(request);
+
+    createNotification(
+      'success',
+      `Supervision updated for ${supervisions[rowIndex].date}`,
+    );
   };
 
   return (
@@ -123,6 +155,10 @@ export default function Supervisions({ cookies }) {
       <Typography component="h1" variant="h5">
         Upcoming supervisions
       </Typography>
+
+      {notification && (
+        <Alert severity={notification.type}>{notification.message}</Alert>
+      )}
 
       <Table>
         <TableHead>

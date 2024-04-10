@@ -15,7 +15,7 @@ function validatorAdditions(validator, opts) {
   }
 
   if (opts.includes('optional')) {
-    validator = validator.optional();
+    validator = validator.optional({ nullable: true });
   }
 
   return validator;
@@ -95,10 +95,11 @@ const fields = {
   },
 
   rangeofficer_id: function idValidation(requestObject, ...opts) {
-    const validator = requestObject('rangeofficer_id')
-      .isInt()
-      .withMessage('must be an integer')
-      .toInt();
+    const validator = requestObject('rangeofficer_id').optional({
+      nullable: true,
+    });
+    // .withMessage('must be an integer')
+    // .toInt();
     return validatorAdditions(validator, opts);
   },
 };
@@ -170,7 +171,10 @@ module.exports = {
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
       response.locals.id = matchedData(request, { locations: ['params'] });
-      response.locals.updates = matchedData(request, { locations: ['body'] });
+      response.locals.updates = matchedData(request, {
+        locations: ['body'],
+        includeOptionals: true,
+      });
       return next();
     },
   ],
