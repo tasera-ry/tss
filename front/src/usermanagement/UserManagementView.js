@@ -198,6 +198,11 @@ function UserManagementView(props)  {
       else{
         getUsers().then((res) => {
           if(res !== false){
+            res.sort((a, b) => {
+              if(a.name < b.name) return -1;
+              if(a.name > b.name) return 1;
+              return 0;
+            });
             setState({...state, userList: res});
           }
         }).catch((err) => {
@@ -421,6 +426,11 @@ function UserManagementView(props)  {
     try {
       const response = await getUsers();
       if (response !== false) {
+        response.sort((a, b) => {
+          if(a.name < b.name) return -1;
+          if(a.name > b.name) return 1;
+          return 0;
+        });
         setState({...state, userList: response, refresh: false});
       } else {
         console.error(
@@ -1104,7 +1114,8 @@ function UserManagementView(props)  {
               {state.rows.map((row) => 
                 <TableRow key={row.name} hover>
                   <TableCell align="justify" component="th" scope="row">
-                    {row.name} <br />
+                    {row.name}
+                    <br />
                     {row.roleToPrint}
                     <br />
                     {row.email}

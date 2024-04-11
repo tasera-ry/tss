@@ -49,14 +49,12 @@ const Weekview = (props) => {
   // Re-renders the component and fetches new data when the logo to frontpage is clicked on weekview
   /* eslint-disable-next-line */
   useEffect(() => {
-    if(props.history.location.pathname == "/" || props.history.location.pathname == "/weekview/"){
-      if(props.history.location.pathname != path){
-        setState('loading');
-        getWeek();
-        getYear();
-        setRefresh(true);
-        setPath(props.history.location.pathname);
-      }
+    if(props.history.location.pathname != path){
+      setState('loading');
+      getWeek();
+      getYear();
+      setRefresh(true);
+      setPath(props.history.location.pathname);
     }
   }, [props]);
 

@@ -62,6 +62,11 @@ export default function Raffle() {
       if (!logInSuccess) window.location.href = '/';
       try {
         const res = await api.getMembers();
+        res.sort((a, b) => {
+          if(a.name < b.name) return -1;
+          if(a.name > b.name) return 1;
+          return 0;
+        });
         setSupervisors(res);
       } catch (err) {
         setToast({
