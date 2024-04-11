@@ -194,7 +194,15 @@ async function getSupervisions(associationId) {
       (a, b) => new Date(a.date) - new Date(b.date),
     );
 
-    return supervisions;
+    return supervisions.map((supervision) => ({
+      id: supervision.id,
+      scheduled_range_supervision_id:
+        supervision.scheduled_range_supervision_id,
+      date: supervision.date,
+      range_supervisor: supervision.range_supervisor,
+      rangeofficer_id: supervision.rangeofficer_id,
+      arriving_at: supervision.arriving_at,
+    }));
   } catch (error) {
     console.error(error);
     return null;

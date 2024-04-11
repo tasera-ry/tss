@@ -43,18 +43,8 @@ export default function Supervisions({ cookies }) {
           const officerResponse = await api.getRangeOfficers(cookies.id);
           const supervisionResponse = await api.getSupervisions(cookies.id);
 
-          const newSupervisions = supervisionResponse.map((supervision) => ({
-            id: supervision.id,
-            scheduled_range_supervision_id:
-              supervision.scheduled_range_supervision_id,
-            date: supervision.date,
-            range_supervisor: supervision.range_supervisor,
-            rangeofficer_id: supervision.rangeofficer_id,
-            arriving_at: supervision.arriving_at,
-          }));
-
           setRangeOfficerList(officerResponse);
-          setSupervisions(newSupervisions);
+          setSupervisions(supervisionResponse);
         } else if (cookies.role === 'rangeofficer') {
           // If the user is a rangeofficer, get the association they are associated with
           const associationId = await api.getAssociation(cookies.id);
@@ -82,13 +72,22 @@ export default function Supervisions({ cookies }) {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = (status) => {
-    const rowIndex = anchorEl.getAttribute('data-rowindex');
+  const handleStatusSelect = (status) => {
+    // Make sure that the passed status is allowed
+    if (
+      status === 'not confirmed' ||
+      status === 'absent' ||
+      status === 'confirmed'
+    ) {
+      // Get the row index from the anchor element
+      const rowIndex = anchorEl.getAttribute('data-rowindex');
 
-    const updatedSupervisions = [...supervisions];
-    updatedSupervisions[rowIndex].range_supervisor = status;
+      // Update the corresponding supervision object with the selected status
+      const updatedSupervisions = [...supervisions];
+      updatedSupervisions[rowIndex].range_supervisor = status;
+      setSupervisions(updatedSupervisions);
+    }
 
-    setSupervisions(updatedSupervisions);
     setAnchorEl(null);
   };
 
@@ -98,26 +97,19 @@ export default function Supervisions({ cookies }) {
   };
 
   // Handle range officer selection
-  const handleOfficerSelect = (officer) => {
-    if (officer === null) {
-      // If no officer is selected, set the rangeofficer_id to null
+  const handleOfficerSelect = (officerId) => {
+    // Make sure that officer is either selected or set to null
+    if (typeof officerId === 'number' || officerId === null) {
+      // Get the row index from the anchor element
       const rowIndex = officerAnchorEl.getAttribute('data-rowindex');
+
+      // Update the corresponding supervision object with the selected officer
       const updatedSupervisions = [...supervisions];
-      updatedSupervisions[rowIndex].rangeofficer_id = null;
+      updatedSupervisions[rowIndex].rangeofficer_id = officerId;
+
+      // Set the updated supervision list and reset the anchor value
       setSupervisions(updatedSupervisions);
-      setOfficerAnchorEl(null);
-      return;
     }
-
-    // Get the row index from the anchor element
-    const rowIndex = officerAnchorEl.getAttribute('data-rowindex');
-
-    // Update the corresponding supervision object with the selected officer
-    const updatedSupervisions = [...supervisions];
-    updatedSupervisions[rowIndex].rangeofficer_id = officer.id;
-
-    // Set the updated supervision list and reset the anchor value
-    setSupervisions(updatedSupervisions);
     setOfficerAnchorEl(null);
   };
 
@@ -140,7 +132,7 @@ export default function Supervisions({ cookies }) {
       arriving_at: supervisions[rowIndex].arriving_at,
     };
 
-    await api.putSupervision(supervisions[rowIndex].id, request);
+    // await api.putSupervision(supervisions[rowIndex].id, request);
 
     console.log(request);
 
@@ -187,17 +179,20 @@ export default function Supervisions({ cookies }) {
                   </Button>
                   <Menu
                     open={Boolean(anchorEl)}
-                    keepMounted
                     anchorEl={anchorEl}
-                    onClose={handleClose}
+                    onClose={handleStatusSelect}
+                    keepMounted
                   >
-                    <MenuItem onClick={() => handleClose('present')}>
+                    <MenuItem
+                      onClick={() => handleStatusSelect('not confirmed')}
+                      style={{ color: '#b3b3b3' }}
+                    >
                       {sv.Present[lang]}
                     </MenuItem>
-                    <MenuItem onClick={() => handleClose('confirmed')}>
+                    <MenuItem onClick={() => handleStatusSelect('confirmed')}>
                       {sv.Confirmed[lang]}
                     </MenuItem>
-                    <MenuItem onClick={() => handleClose('absent')}>
+                    <MenuItem onClick={() => handleStatusSelect('absent')}>
                       {sv.Absent[lang]}
                     </MenuItem>
                   </Menu>
@@ -229,7 +224,7 @@ export default function Supervisions({ cookies }) {
                       {rangeofficerList.map((officer) => (
                         <MenuItem
                           key={officer.id}
-                          onClick={() => handleOfficerSelect(officer)}
+                          onClick={() => handleOfficerSelect(officer.id)}
                         >
                           {officer.name}
                         </MenuItem>
