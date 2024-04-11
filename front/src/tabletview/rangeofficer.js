@@ -190,13 +190,13 @@ async function getColors(tracks, setTracks) {
   for (let i = 0; i < copy.length; i += 1) {
     const obj = copy[i];
     if (copy[i].trackSupervision === 'present') {
-      obj.color = colors.green;
+      copy[i].color = colors.green;
     } else if (copy[i].trackSupervision === 'closed') {
-      obj.color = colors.redLight;
+      copy[i].color = colors.redLight;
     } else if (copy[i].trackSupervision === 'absent') {
-      obj.color = colors.white;
+      copy[i].color = colors.white;
     } else if (copy[i].trackSupervision === 'en route') {
-      obj.color = colors.orange;
+      copy[i].color = colors.orange;
     }
   }
   setTracks(copy);
