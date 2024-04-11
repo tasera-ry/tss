@@ -27,7 +27,7 @@ const lang = localStorage.getItem('language');
 const { sv } = translations;
 
 export default function Supervisions({ cookies }) {
-  const [rangeofficerList, setRangeOfficerList] = useState('');
+  const [rangeofficerList, setRangeOfficerList] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [officerAnchorEl, setOfficerAnchorEl] = useState(null);
   const [supervisions, setSupervisions] = useState([]);
@@ -47,10 +47,16 @@ export default function Supervisions({ cookies }) {
           setSupervisions(supervisionResponse);
         } else if (cookies.role === 'rangeofficer') {
           // If the user is a rangeofficer, get the association they are associated with
-          const associationId = await api.getAssociation(cookies.id);
+          const response = await api.getAssociation(cookies.id);
+          const associationId = response[0].association_id;
+
           const supervisionResponse = await api.getSupervisions(associationId);
 
-          setSupervisions(supervisionResponse);
+          const availableSupervisions = supervisionResponse.filter(
+            (supervision) => supervision.rangeofficer_id === Number(cookies.id),
+          );
+
+          setSupervisions(availableSupervisions);
         }
       } catch (error) {
         console.log(error);
@@ -132,7 +138,7 @@ export default function Supervisions({ cookies }) {
       arriving_at: supervisions[rowIndex].arriving_at,
     };
 
-    // await api.putSupervision(supervisions[rowIndex].id, request);
+    await api.putSupervision(supervisions[rowIndex].id, request);
 
     console.log(request);
 
@@ -157,7 +163,9 @@ export default function Supervisions({ cookies }) {
           <TableRow>
             <TableCell>Date</TableCell>
             <TableCell>Status</TableCell>
-            <TableCell>Assigned officer</TableCell>
+            {rangeofficerList !== null && (
+              <TableCell>Assigned officer</TableCell>
+            )}
             <TableCell>ETA</TableCell>
           </TableRow>
         </TableHead>
@@ -199,39 +207,42 @@ export default function Supervisions({ cookies }) {
                 </TableCell>
 
                 {/* Range officer selection menu */}
-                <TableCell>
-                  <div>
-                    <Button
-                      onClick={(event) => handleOfficerClick(event)}
-                      variant="outlined"
-                      size="small"
-                      data-rowindex={rowIndex}
-                    >
-                      {rangeofficerList.find(
-                        (officer) =>
-                          officer.id === supervisions[rowIndex].rangeofficer_id,
-                      )?.name || sv.OfficerSelect[lang]}
-                    </Button>
-                    <Menu
-                      open={Boolean(officerAnchorEl)}
-                      anchorEl={officerAnchorEl}
-                      onClose={handleOfficerSelect}
-                      keepMounted
-                    >
-                      <MenuItem onClick={() => handleOfficerSelect(null)}>
-                        {sv.NoOfficer[lang]}
-                      </MenuItem>
-                      {rangeofficerList.map((officer) => (
-                        <MenuItem
-                          key={officer.id}
-                          onClick={() => handleOfficerSelect(officer.id)}
-                        >
-                          {officer.name}
+                {rangeofficerList !== null && (
+                  <TableCell>
+                    <div>
+                      <Button
+                        onClick={(event) => handleOfficerClick(event)}
+                        variant="outlined"
+                        size="small"
+                        data-rowindex={rowIndex}
+                      >
+                        {rangeofficerList.find(
+                          (officer) =>
+                            officer.id ===
+                            supervisions[rowIndex].rangeofficer_id,
+                        )?.name || sv.OfficerSelect[lang]}
+                      </Button>
+                      <Menu
+                        open={Boolean(officerAnchorEl)}
+                        anchorEl={officerAnchorEl}
+                        onClose={handleOfficerSelect}
+                        keepMounted
+                      >
+                        <MenuItem onClick={() => handleOfficerSelect(null)}>
+                          {sv.NoOfficer[lang]}
                         </MenuItem>
-                      ))}
-                    </Menu>
-                  </div>
-                </TableCell>
+                        {rangeofficerList.map((officer) => (
+                          <MenuItem
+                            key={officer.id}
+                            onClick={() => handleOfficerSelect(officer.id)}
+                          >
+                            {officer.name}
+                          </MenuItem>
+                        ))}
+                      </Menu>
+                    </div>
+                  </TableCell>
+                )}
 
                 {/* Arrival time selection */}
                 <TableCell>

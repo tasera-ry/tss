@@ -106,7 +106,8 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
             </ListItem>
           )}
           {superuser && navList(superuserList)}
-          {cookies.role === 'association' && navList(associationList)}
+          {(cookies.role === 'association' || 'rangeofficer') &&
+            navList(associationList)}
           {cookies.role === 'rangemaster' && navList(rangeMasterList)}
           {!superuser && (
             <ListItem
