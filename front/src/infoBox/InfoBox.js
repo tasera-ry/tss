@@ -18,7 +18,7 @@ const InfoComp = ({ message }) => {
   if (message.start > new Date().toISOString()) return null;
 
   return (
-    <div className={classes(css.infoContainer)}>
+    <div className={classes(css.infoContainer)} id="infoboxContainer">
       <div className={classes(css.infoBox)}>
         <Close
           fontSize="small"

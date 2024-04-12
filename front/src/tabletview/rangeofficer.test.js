@@ -6,6 +6,7 @@ import { act } from 'react-dom/test-utils';
 import Tabletview from './rangeofficer';
 import * as utils from '../utils/Utils';
 import testUtils from '../_TestUtils/TestUtils';
+import InfoBox from '../infoBox/InfoBox';
 
 axios.put = jest.fn(() => Promise.resolve());
 axios.post = jest.fn((url, postable) => Promise.resolve(postable));
@@ -32,6 +33,16 @@ describe('testing rangeofficer', () => {
       expect(
         screen.getByText('Define range officer status by choosing color'),
       ).toBeInTheDocument(),
+    );
+  });
+
+  it('should render infobox', async () =>{
+    await act(async () => {
+      render(<InfoBox/>);
+    });
+    await waitFor(() =>
+      expect(
+        screen.getByTestId('infoboxContainer')).toBeInTheDocument()
     );
   });
 
