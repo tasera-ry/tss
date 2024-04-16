@@ -73,7 +73,14 @@ const AddInfo = () => {
   const getUsers = async () => {
     try {
       const res = await api.getUsers();
-      if (res) setUserOptions(res);
+      if (res) {
+        res.sort((a, b) => {
+          if(a.name < b.name) return -1;
+          if(a.name > b.name) return 1;
+          return 0;
+        });
+        setUserOptions(res);
+      }
     } finally {
       setisLoading(false);
     }

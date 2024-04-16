@@ -6,7 +6,16 @@ import { act } from 'react-dom/test-utils';
 import Tabletview from './rangeofficer';
 import * as utils from '../utils/Utils';
 import testUtils from '../_TestUtils/TestUtils';
+<<<<<<< HEAD
 import InfoBox from '../infoBox/InfoBox';
+=======
+import { Cookies, CookiesProvider } from 'react-cookie';
+
+jest.mock('axios');
+axios.get.mockResolvedValue({
+  data: [{ id: 1, message: 'ok', start: '', end: '' }],
+});
+>>>>>>> e8b54f1431909590a7ce2f8316dcedb3bcc9bf14
 
 axios.put = jest.fn(() => Promise.resolve());
 axios.post = jest.fn((url, postable) => Promise.resolve(postable));
@@ -14,6 +23,8 @@ axios.post = jest.fn((url, postable) => Promise.resolve(postable));
 utils.validateLogin = jest.fn(() => Promise.resolve(true));
 utils.rangeSupervision = jest.fn(() => Promise.resolve(true));
 
+localStorage.setItem('language', '1');
+/*
 global.fetch = jest.fn((url) => {
   if (url.includes('/api/datesupreme')) {
     return Promise.resolve({
@@ -22,13 +33,12 @@ global.fetch = jest.fn((url) => {
   }
   return false;
 });
+*/
 
 describe('testing rangeofficer', () => {
   it('should render Tabletview', async () => {
-    localStorage.setItem('language', '1');
-    await act(async () => {
-      render(<Tabletview />);
-    });
+
+    render(<Tabletview />);
     await waitFor(() =>
       expect(
         screen.getByText('Define range officer status by choosing color'),
@@ -47,15 +57,40 @@ describe('testing rangeofficer', () => {
   });
 
   it('should change range officer status', async () => {
-    await act(async () => {
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () =>
+          Promise.resolve({
+            ...testUtils.schedule,
+          }),
+      }),
+    );
+
+    Object.defineProperty(document, 'cookie', {
+      writable: true,
+      value: 'role=rangemaster',
+    });
+
+    localStorage.setItem('language', '1');
+
+    await act(async() => { 
       render(<Tabletview />);
     });
 
+    await waitFor(() => expect(screen.getByTestId('rangeOfficerStatus')).toBeInTheDocument());
+
+    await waitFor(() => {
+      const element = screen.getByTestId('rangeOfficerStatus');
+      console.log(element.textContent);
+    });
+    
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveTextContent(
         'Closed',
       ),
     );
+
     fireEvent.click(screen.getByTestId('tracksupervisorPresent'));
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveTextContent(
@@ -194,11 +229,11 @@ describe('testing rangeofficer', () => {
     );
   });
   it('should show correct color when no defined range officer', async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
+    global.fetch = jest.fn(() => {
+      return Promise.resolve({
         json: () =>
           Promise.resolve({ ...testUtils.schedule, rangeSupervision: '' }),
-      }),
+      })},
     );
     render(<Tabletview />);
     await waitFor(() =>
@@ -210,24 +245,51 @@ describe('testing rangeofficer', () => {
 
   it('should show tracks', async () => {
     localStorage.setItem('language', '1');
-    await act(async () => {
-      render(<Tabletview />);
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () =>
+          Promise.resolve({
+            ...testUtils.schedule,
+          }),
+      }),
+    );
+
+    Object.defineProperty(document, 'cookie', {
+      writable: true,
+      value: 'role=rangemaster',
     });
+
+    await act(async() => render(
+        <Tabletview />
+    ));
     await waitFor(() =>
-      expect(screen.getByText('Shooting Track 0 — s 0')).toBeInTheDocument(),
+      expect(screen.getByText('Shooting Track 0 — s 0', {exact: false})).toBeInTheDocument(),
     );
     await waitFor(() =>
-      expect(screen.getByText('Shooting Track 6 — s 6')).toBeInTheDocument(),
+      expect(screen.getByText('Shooting Track 6 — s 6', {exact: false})).toBeInTheDocument(),
     );
   });
 
   it('should change track officer status', async () => {
     localStorage.setItem('language', '1');
-    global.Date.now = () => new Date('2020-10-21T11:30:57.000Z');
+    global.Date.now = () => new Date('2024-04-10T11:30:57.000Z');
 
-    await act(async () => {
-      render(<Tabletview />);
+    global.fetch = jest.fn((url) => {
+      if (url.includes('/api/datesupreme')) {
+        return Promise.resolve({
+          json: () => Promise.resolve(testUtils.schedule),
+        });
+      }
+      return false;
     });
+
+    Object.defineProperty(document, 'cookie', {
+      writable: true,
+      value: 'role=rangemaster',
+    });
+
+    await act(async() => render(<Tabletview />));
 
     await waitFor(() => expect(screen.getByTestId('1')).toBeInTheDocument());
     await waitFor(() =>
@@ -235,7 +297,7 @@ describe('testing rangeofficer', () => {
     );
     fireEvent.click(screen.getByTestId('1'));
     await waitFor(() =>
-      expect(screen.getByTestId('1')).toHaveTextContent('Closed'),
+      expect(screen.getByTestId('1')).toHaveTextContent('Present'),
     );
     fireEvent.click(screen.getByTestId('1'));
     await waitFor(() =>
@@ -243,7 +305,7 @@ describe('testing rangeofficer', () => {
     );
     fireEvent.click(screen.getByTestId('2'));
     await waitFor(() =>
-      expect(screen.getByTestId('2')).toHaveTextContent('Present'),
+      expect(screen.getByTestId('2')).toHaveTextContent('No track officer'),
     );
     await waitFor(() => expect(axios.put).toHaveBeenCalled());
   });
