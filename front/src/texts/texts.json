@@ -29,7 +29,8 @@
   "devices": {
     "DeviceList": ["Device List", "Device List Translation", "Device List Translation"],
     "Name": ["Name", "Name Translation", "Name Translation"],
-    "Status": ["Status", "Status Translation", "Status Translation"]
+    "FreeStatus": ["Vapaa", "Free", "Fri"],
+    "ReservedStatus": ["Varattu", "Reserved", "Reserverad"]
    
   },
 
