@@ -28,11 +28,13 @@ const Profile = () => {
         <Link className={classes(css.link)} to="/profile/changepassword">
           <ListItem button>{profileSettings.navPassword[fin]}</ListItem>
         </Link>
-        <Link className={classes(css.link)} to="/profile/rangeofficers">
-          <ListItem button>{profileSettings.navRangeofficers[fin]}</ListItem>
-        </Link>
+        {cookies.role === 'association' && (
+          <Link className={classes(css.link)} to="/profile/rangeofficers">
+            <ListItem button>{profileSettings.navRangeofficers[fin]}</ListItem>
+          </Link>
+        )}
         <Link className={classes(css.link)} to="/profile/supervisions">
-          <ListItem button>Supervisions</ListItem>
+          <ListItem button>{profileSettings.navSupervisions[fin]}</ListItem>
         </Link>
       </List>
     </div>
