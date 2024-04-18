@@ -53,7 +53,7 @@ class ButtonComponent extends Component {
     render() {
         //Updates loan devices on a grid in dayview.js
         const lang = localStorage.getItem('language');
-        const { devices } = translations;
+        const { devicesList } = translations;
         const { items } = this.state;
 
         if (items.length > 0) {
@@ -65,7 +65,7 @@ class ButtonComponent extends Component {
                             className={`${device.status === 'reserved' ? styles.reservedButton : styles.freeButton}`}
                             onClick={() => this.toggleText(device.id)}
                             >
-                                {device.toggleText ? (device.status === 'reserved' ? devices.Updated.ReservedStatus[lang] : devices.FreeStatus[lang]) : device.device_name}
+                                {device.toggleText ? (device.status === 'reserved' ? devicesList.ReservedStatus[lang] : devicesList.FreeStatus[lang]) : device.device_name}
                             </Button>
                         </div>
                     ))}

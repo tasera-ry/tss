@@ -21,6 +21,7 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import api from '../api/api';
+import translations from '../texts/texts.json';
 
 const Devices = () => {
   const [devices, setDevices] = useState(null);
@@ -46,11 +47,13 @@ const Devices = () => {
     await api.patchDevice(rowData.id, data[index]);
     setDevices(data);
   };
-
+  
+  const lang = localStorage.getItem('language');
+  const { devicesList } = translations;
   const columns = [
-    { title: 'Name', field: 'device_name' },
+    { title: devicesList.DeviceName[lang], field: 'device_name' },
     {
-      title: 'Status (free/reserved)',
+      title: devicesList.DeviceStatus[lang],
       field: 'status',
       render: (rowData) => (
         <Switch
@@ -70,7 +73,7 @@ const Devices = () => {
         <ScopedCssBaseline>
           <Container style={{ maxWidth: '900px', padding: '10px' }}>
             <MaterialTable
-              title="Device List"
+              title={devicesList.DeviceList[lang]}
               columns={columns}
               data={devices}
               icons={{
@@ -92,6 +95,11 @@ const Devices = () => {
                 ThirdStateCheck: Remove,
                 ViewColumn: ViewColumn,
               }}
+              localization={{
+                header: {
+                  actions: devicesList.DeviceActions[lang]
+                }
+              }}
               editable={{
                 onRowAdd: (newData) =>
                   new Promise((resolve, reject) => {
@@ -107,7 +115,7 @@ const Devices = () => {
                       data[data.indexOf(oldData)] = newData;
                       setDevices(data);
                       resolve();
-                    });
+                    }, 600);
                   }),
                 onRowDelete: (oldData) =>
                   new Promise((resolve, reject) => {
@@ -116,7 +124,7 @@ const Devices = () => {
                       data.splice(data.indexOf(oldData), 1);
                       setDevices(data);
                       resolve();
-                    });
+                    }, 600);
                   }),
               }}
               options={{

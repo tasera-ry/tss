@@ -26,9 +26,11 @@
     "Check": ["TARKISTA", "CHECK", "KONTROLLERA"]
   },
   
-  "devices": {
-    "DeviceList": ["Device List", "Device List Translation", "Device List Translation"],
-    "Name": ["Name", "Name Translation", "Name Translation"],
+  "devicesList": {
+    "DeviceActions": ["Toiminnot", "Actions", "Verksamheter"],
+    "DeviceList": ["Laitteet", "Device List", "Enhetslista"],
+    "DeviceName": ["Nimi", "Name", "Namn"],
+    "DeviceStatus": ["Tila (vapaa/varattu)", "Status (free/reserved)", "Status (fri/reservad)"],
     "FreeStatus": ["Vapaa", "Free", "Fri"],
     "ReservedStatus": ["Varattu", "Reserved", "Reserverad"]
    
