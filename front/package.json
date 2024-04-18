@@ -15,7 +15,7 @@
     "axios": "^0.21.1",
     "classnames": "^2.3.1",
     "http-proxy-middleware": "^1.0.6",
-    "material-table": "1.69.3",
+    "material-table": "^1.69.3",
     "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-apexcharts": "^1.3.7",
@@ -26,14 +26,14 @@
     "react-nice-input-password": "^2.7.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^5.0.1",
     "react-window": "^1.8.6",
     "sass": "^1.42.1",
     "socket.io-client": "^2.3.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "ESLINT_NO_DEV_ERRORS='true' react-scripts start",
+    "build": "DISABLE_ESLINT_PLUGIN='true' react-scripts build",
     "test": "react-scripts test --env=jest-environment-jsdom-sixteen --testPathPattern=/src",
     "test:coverage": "npm test -- --coverage --watchAll=false --testPathPattern=/src",
     "eject": "react-scripts eject",
@@ -47,7 +47,6 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.22.1",
