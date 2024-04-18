@@ -5,7 +5,10 @@ module.exports = {
   },
   extends: ['airbnb'],
   plugins: ['react', 'jest', 'prettier'],
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
+  parserOptions: {
+    requireConfigFile: false,
+  },
   rules: {
     'react/jsx-filename-extension': [0],
     'jsx-a11y/alt-text': [0],
