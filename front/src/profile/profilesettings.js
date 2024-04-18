@@ -7,6 +7,7 @@ import translations from '../texts/texts.json';
 import ChangePassword from './profilepages/changepassword';
 import RangeOfficers from './profilepages/rangeofficers';
 import css from './ProfileSettings.module.scss';
+import Supervisions from './profilepages/supervisions';
 
 const classes = classNames.bind(css);
 
@@ -27,8 +28,13 @@ const Profile = () => {
         <Link className={classes(css.link)} to="/profile/changepassword">
           <ListItem button>{profileSettings.navPassword[fin]}</ListItem>
         </Link>
-        <Link className={classes(css.link)} to="/profile/rangeofficers">
-          <ListItem button>{profileSettings.navRangeofficers[fin]}</ListItem>
+        {cookies.role === 'association' && (
+          <Link className={classes(css.link)} to="/profile/rangeofficers">
+            <ListItem button>{profileSettings.navRangeofficers[fin]}</ListItem>
+          </Link>
+        )}
+        <Link className={classes(css.link)} to="/profile/supervisions">
+          <ListItem button>{profileSettings.navSupervisions[fin]}</ListItem>
         </Link>
       </List>
     </div>
@@ -45,6 +51,9 @@ const Profile = () => {
             </Route>
             <Route path="/profile/rangeofficers">
               <RangeOfficers id={cookies.id} />
+            </Route>
+            <Route path="/profile/supervisions">
+              <Supervisions cookies={cookies} />
             </Route>
           </Switch>
         </div>

@@ -146,6 +146,15 @@ const service = {
   getRangeOfficers: async function getRangeOfficers(associationId) {
     return models.user.getRangeOfficers(associationId);
   },
+
+  /**
+   * Get association by user key
+   * @param {number} id
+   * @return {Promise<number>} - rangeofficer id
+   */
+  getAssociation: async function getAssociation(id) {
+    return models.user.getAssociation(id);
+  },
 };
 
 module.exports = service;

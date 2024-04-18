@@ -104,7 +104,7 @@ const model = {
    * model.update({ scheduled_range_supervision_id:1 }, { range_supervisor: 'absent' })
    */
   update: async function updateSupervision(current, update) {
-    const supVis = _.pick(update, 'range_supervisor', 'notice', 'arriving_at');
+    const supVis = _.pick(update, 'range_supervisor', 'notice', 'arriving_at', 'rangeofficer_id');
 
     const id = await model
       .read(current, ['scheduled_range_supervision_id'])

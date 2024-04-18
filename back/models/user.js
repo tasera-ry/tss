@@ -196,6 +196,13 @@ const model = {
       )
       .where({ 'association_rangeofficers.association_id': associationId });
   },
+
+  getAssociation: async function getAssociation(id) {
+    return await knex
+      .from('association_rangeofficers')
+      .where({ rangeofficer_id: id })
+      .select('association_id');
+  },
 };
 
 module.exports = model;

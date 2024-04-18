@@ -77,6 +77,11 @@ const getRangeOfficers = async (associationId) => {
   return response.data;
 };
 
+const getAssociation = async (id) => {
+  const response = await axios.get(`api/officer-association/${id}`);
+  return response.data;
+};
+
 const patchReservation = (reservationId, data) =>
   axios.put(`/api/reservation/${reservationId}`, data);
 
@@ -149,6 +154,71 @@ const deleteInfoMessage = async (info) => {
   await axios.delete(`api/infomessage/${info.id}`);
 };
 
+async function getSupervisions(associationId) {
+  try {
+    const schedules = await axios.get(
+      `api/schedule?association_id=${associationId}`,
+    );
+
+    const rangeSupervisionPromises = schedules.data.map((schedule) =>
+      axios.get(`api/range-supervision/${schedule.id}`).then((rsResponse) => ({
+        ...schedule,
+        ...rsResponse.data[0],
+      })),
+    );
+
+    const schedulesWithSupervision = await Promise.all(
+      rangeSupervisionPromises,
+    );
+
+    const today = moment().format().split('T')[0];
+
+    const reservationPromises = schedulesWithSupervision.map((schedule) => {
+      const query = `api/reservation?available=true&id=${schedule.range_reservation_id}`;
+      return axios.get(query).then((response) => {
+        if (response.data.length > 0) {
+          const date = moment(response.data[0].date).format('YYYY-MM-DD');
+          return { ...schedule, date };
+        }
+        return schedule;
+      });
+    });
+
+    const updatedSchedules = await Promise.all(reservationPromises);
+
+    const filteredSchedules = updatedSchedules.filter(
+      (obj) => obj.date >= today,
+    );
+
+    const supervisions = filteredSchedules.sort(
+      (a, b) => new Date(a.date) - new Date(b.date),
+    );
+
+    return supervisions.map((supervision) => ({
+      id: supervision.id,
+      scheduled_range_supervision_id:
+        supervision.scheduled_range_supervision_id,
+      date: supervision.date,
+      range_supervisor: supervision.range_supervisor,
+      rangeofficer_id: supervision.rangeofficer_id,
+      arriving_at: supervision.arriving_at,
+    }));
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+async function putSupervision(id, data) {
+  try {
+    const response = await axios.put(`api/range-supervision/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
 export default {
   getSchedulingDate,
   getSchedulingWeek,
@@ -165,6 +235,7 @@ export default {
   getUsers,
   deleteUser,
   getRangeOfficers,
+  getAssociation,
   patchReservation,
   addRangeSupervision,
   patchRangeSupervision,
@@ -179,4 +250,6 @@ export default {
   getAllInfoMessages,
   postInfoMessage,
   deleteInfoMessage,
+  getSupervisions,
+  putSupervision,
 };
