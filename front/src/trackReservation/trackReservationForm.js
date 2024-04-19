@@ -41,6 +41,8 @@ const TrackReservationForm = ({onSubmit, lang}) => {
 
     const { trackReservations, manage, sched } = translations;
 
+    const locale = ["fi-FI", "en-EN", "swe"];
+
     useEffect(() => {
         const myFunc = async() => {
             const data = await api.getSchedulingDate(date);
@@ -65,7 +67,7 @@ const TrackReservationForm = ({onSubmit, lang}) => {
                 {trackReservations.confirmDialog[lang]}
             </DialogTitle>
             <DialogContent className={classes(css.dialogStyle)}>
-                {`${trackReservations.date[lang]}: ${date.toDateString()}\n`}
+                {`${trackReservations.date[lang]}: ${date.toLocaleDateString(locale[lang])}\n`}
                 <br></br>
                 {`${trackReservations.time[lang]}: ${moment(startTime).format('LT')} - ${moment(endTime).format('LT')}\n`}
                 <br></br>
@@ -159,31 +161,41 @@ const TrackReservationForm = ({onSubmit, lang}) => {
                     </Grid>
                     <Grid item xs={6}>
                         {/* TrackSelector */}
-                        <Select
-                        value={trackId || ''}
-                        label={trackReservations.track[lang]}
-                        onChange={(e) => setTrackId(e.target.value)}
-                        data-testid="trackSelector"
-                        >
-                            {tracks.map((track) => 
-                                <MenuItem key={track.id} value={track.id}>
-                                    {track.name}
-                                </MenuItem>
-                            )}
-                        </Select>
+                        <FormControlLabel
+                            control={
+                            <Select
+                                value={trackId || ''}
+                                label={trackReservations.track[lang]}
+                                onChange={(e) => setTrackId(e.target.value)}
+                                data-testid="trackSelector"
+                                >
+                                    {tracks.map((track) => 
+                                        <MenuItem key={track.id} value={track.id}>
+                                            {track.name}
+                                        </MenuItem>
+                                    )}
+                            </Select>}
+                            label={`${trackReservations.track[lang]}: `}
+                            labelPlacement='top'
+                        />
                     </Grid>
                     <Grid item xs={6}>
                         {/* Attendee Count */}
-                        <Input
-                        value={spotCount}
-                        size="small"
-                        onChange={(e) => setSpotCount(e.target.value)}
-                        inputProps={{
-                            step: 1,
-                            min: 1,
-                            max: 60, // change this to accurate later
-                            type: 'number'
-                        }}
+                        <FormControlLabel
+                            control={
+                            <Input
+                                value={spotCount}
+                                size="small"
+                                onChange={(e) => setSpotCount(e.target.value)}
+                                inputProps={{
+                                    step: 1,
+                                    min: 1,
+                                    max: 60, // change this to accurate later
+                                    type: 'number'
+                                }}
+                            />}
+                            label={`${trackReservations.attendees[lang]}: `}
+                            labelPlacement='top'
                         />
                     </Grid>
                     <Grid item xs={12}>
