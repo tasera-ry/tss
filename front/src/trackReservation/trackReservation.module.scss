@@ -1,0 +1,7 @@
+@import '../shared.module.scss';
+
+.paper {
+    @extend .layout-column;
+    align-items: center;
+    margin-top: 64px;
+}

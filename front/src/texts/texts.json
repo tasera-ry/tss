@@ -999,5 +999,40 @@
     "messageTitle": ["Varoitus!", "Warning!", "Varning!"],
     "messageYes": ["Joo", "Yes", "Ja"],
     "messageNo": ["Ei", "No", "Nej"]
+  },
+  "trackReservations": {
+    "confirmDialog": [
+      "Lähetä ratavaraus?", 
+      "Send track reservation?", 
+      "Skicka spårreservationen?"
+    ],
+    "formTitle": [
+      "Ratavaraus lomake", 
+      "Track reservation Form", 
+      "Spårreservationsformulär"
+    ],
+    "track": ["Rata", "Track", "Spår"],
+    "reason": ["Syy", "Reason", "Anledning"],
+    "date": ["Päivämäärä", "Date", "Datum"],
+    "time": ["Aika", "Time", "Tid"],
+    "attendees": ["Osallistujat", "Attendees", "Deltagare"],
+    "reasonText": [
+      "Kirjoita syy varaukselle",
+      "Enter the reason for the reservation",
+      "Ange anledningen till bokningen"
+    ],
+    "letOhersIn": [
+      "Päästä muita radalle?",
+      "Let others to the track?",
+      "Släpp andra på spårren?"
+    ],
+    "formSubmit": ["Lähetä", "Submit", "Skicka in"],
+    "sendSuccess": [
+      "Ratavaraus lähetetty!",
+      "Track reservation sent!",
+      "Spårreservation har skickats!"
+    ],
+    "messageYes": ["Kyllä", "Yes", "Ja"],
+    "messageNo": ["Ei",  "No", "Nej"]
   }
 }

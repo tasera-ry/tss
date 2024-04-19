@@ -26,6 +26,7 @@ import Monthview from './monthview/Monthview';
 import Statistics from './statistics/Statistics';
 import EmailSettings from './EmailSettings/EmailSettings';
 import Raffle from './raffle/raffle';
+import TrackReservation from './trackReservation/trackReservation';
 
 // React router. Hashrouter, because normal router won't work in apache
 
@@ -104,6 +105,7 @@ const App = (props) => {
                 <Route path="/email-settings" component={EmailSettings} />
                 <Route path="/statistics" component={Statistics} />
                 <Route path="/info" component={AddInfo} />
+                <Route path="/track-reservation" component={TrackReservation}/>
               </Switch>
             </header>
           </div>
