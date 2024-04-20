@@ -38,10 +38,12 @@ const TrackReservationForm = ({onSubmit, lang}) => {
     const [tracks, setTracks] = useState([]);
     const [letOthersIn, setLetOthersIn] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [trackCapacity, setTrackCapacity] = useState(0);
 
     const { trackReservations, manage, sched } = translations;
 
     const locale = ["fi-FI", "en-EN", "swe"];
+    const trackCapacities = [60, 40, 40, 20, 4, 60, 25];
 
     useEffect(() => {
         const myFunc = async() => {
@@ -51,6 +53,12 @@ const TrackReservationForm = ({onSubmit, lang}) => {
         }
         myFunc();
     }, [date]);
+
+    useEffect(() => {
+        const newCap = trackCapacities[tracks.findIndex((track) => track.id == trackId)];
+        setTrackCapacity(newCap);
+        if(newCap < spotCount) setSpotCount(newCap);
+    }, [trackId]);
 
     return (
         // Confirm Dialog
@@ -186,16 +194,16 @@ const TrackReservationForm = ({onSubmit, lang}) => {
                             <Input
                                 value={spotCount}
                                 size="small"
-                                onChange={(e) => setSpotCount(e.target.value)}
+                                onChange={(e) => setSpotCount(e.target.value > trackCapacity ? trackCapacity : e.target.value)}
                                 inputProps={{
                                     step: 1,
                                     min: 1,
-                                    max: 60, // change this to accurate later
+                                    max: trackCapacity, 
                                     type: 'number'
                                 }}
                             />}
-                            label={`${trackReservations.attendees[lang]}: `}
-                            labelPlacement='top'
+                            label={`${trackReservations.attendees[lang]}\n MAX(${trackCapacity}): `}
+                            labelPlacement='start'
                         />
                     </Grid>
                     <Grid item xs={12}>
