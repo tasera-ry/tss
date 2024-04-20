@@ -111,7 +111,6 @@ class App extends Component {
                   <Route path="/email-settings" component={EmailSettings} />
                   <Route path="/statistics" component={Statistics} />
                   <Route path="/info" component={AddInfo} />
-                  <Route path="/devices" component={Devices} />
                 </Switch>
               </header>
             </div>
