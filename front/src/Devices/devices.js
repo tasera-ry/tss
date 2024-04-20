@@ -115,11 +115,7 @@ const Devices = () => {
               editable={{
                 onRowAdd: (newData) =>
                   new Promise((resolve, reject) => {
-                    api.createDevice(newData).then(() => {
-                      setDevices([...devices, newData]);
-                      resolve();
-                    });
-                    /*if(!newData.device_name || newData.device_name.trim === "") {
+                    if(!newData.device_name || newData.device_name.trim === "") {
                       alert("Error: Device name cannot be empty.");
                       reject();
                       return;
@@ -133,7 +129,7 @@ const Devices = () => {
                         const updatedDevices = sortDevices([...devices, newData]);
                         setDevices(updatedDevices);
                         resolve();
-                      });*/
+                      });
                   }),
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve, reject) => {
