@@ -12,6 +12,9 @@
     width: 150px;
     height: 45px;
     margin: 3px;
+    &:hover {
+      background-color: $COLOR_GREEN;
+    }
   }
 
 .reservedButton {
@@ -20,4 +23,7 @@
     width: 150px;
     height: 45px;
     margin: 3px;
+    &:hover {
+      background-color: $COLOR_RED_LIGHT;
+    }
   }

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import './devices.module.scss';
 import ScopedCssBaseline from '@material-ui/core/ScopedCssBaseline';
 import Container from '@material-ui/core/Container';
 import MaterialTable from 'material-table';
 import Switch from '@material-ui/core/Switch';
+import Styles from './devices.module.scss';
 
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -26,11 +26,17 @@ import translations from '../texts/texts.json';
 const Devices = () => {
   const [devices, setDevices] = useState(null);
 
+  const sortDevices = (devices) => {
+    // Function for sorting devices alphabetically
+    return devices.sort((a, b) => a.device_name.localeCompare(b.device_name));
+  };
+
   useState(async () => {
     const fetchData = async () => {
       try {
         const response = await api.getAllDevices();
-        setDevices(response);
+        const sortedDevices = sortDevices(response);
+        setDevices(sortedDevices);
       } catch (error) {
         console.error('Error fetching devices:', error);
       }
@@ -45,7 +51,8 @@ const Devices = () => {
     data[index].status = rowData.status === 'free' ? 'reserved' : 'free';
 
     await api.patchDevice(rowData.id, data[index]);
-    setDevices(data);
+    const sortedData = sortDevices(data);
+    setDevices(sortedData);
   };
   
   const lang = localStorage.getItem('language');
@@ -57,11 +64,16 @@ const Devices = () => {
       field: 'status',
       render: (rowData) => (
         <Switch
+          key={rowData.status}
           checked={rowData.status === 'free' ? false : true}
           onChange={() => handleStatusChange(rowData)}
-          color="primary"
           name="status-switch"
           inputProps={{ 'aria-label': 'status-switch' }}
+          classes={{
+            root: rowData.status === 'free' ? Styles.freeSwitch : Styles.reservedSwitch,
+            track: Styles.track,
+            thumb: Styles.thumb,
+          }}
         />
       ),
     },
@@ -107,15 +119,32 @@ const Devices = () => {
                       setDevices([...devices, newData]);
                       resolve();
                     });
+                    /*if(!newData.device_name || newData.device_name.trim === "") {
+                      alert("Error: Device name cannot be empty.");
+                      reject();
+                      return;
+                    }
+                    if (newData.status !== 'free' && newData.status !== 'reserved') {
+                      alert("Error: Device status must be either 'free' or 'reserved'.");
+                      reject();
+                      return;
+                    }
+                      api.createDevice(newData).then(() => {
+                        const updatedDevices = sortDevices([...devices, newData]);
+                        setDevices(updatedDevices);
+                        resolve();
+                      });*/
                   }),
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve, reject) => {
                     api.patchDevice(oldData.id, newData).then(() => {
-                      const data = [...devices];
-                      data[data.indexOf(oldData)] = newData;
-                      setDevices(data);
+                      const updatedDevices = [...devices];
+                      const index = updatedDevices.findIndex(item => item.id === oldData.id);
+                      updatedDevices[index] = newData;
+                      const sortedUpdatedDevices = sortDevices(updatedDevices);
+                      setDevices(sortedUpdatedDevices);
                       resolve();
-                    }, 600);
+                    });
                   }),
                 onRowDelete: (oldData) =>
                   new Promise((resolve, reject) => {
@@ -124,7 +153,7 @@ const Devices = () => {
                       data.splice(data.indexOf(oldData), 1);
                       setDevices(data);
                       resolve();
-                    }, 600);
+                    });
                   }),
               }}
               options={{
