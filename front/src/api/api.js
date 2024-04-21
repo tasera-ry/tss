@@ -152,7 +152,7 @@ const createDevice = async (newDevice) => {
   return response.data;
 };
 
-const deleteDevice = async (id) => {
+const deleteDevice = async (id) => {  
   await axios.delete(`api/devices/${id}`);
 };
 

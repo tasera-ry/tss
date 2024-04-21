@@ -78,7 +78,7 @@ const Devices = () => {
       ),
     },
   ];
-
+  
   return (
     <div>
       {devices ? (
@@ -125,8 +125,9 @@ const Devices = () => {
                       reject();
                       return;
                     }
-                      api.createDevice(newData).then(() => {
-                        const updatedDevices = sortDevices([...devices, newData]);
+                      api.createDevice(newData).then((response) => {
+                        const newDevice = response[0]
+                        const updatedDevices = sortDevices([...devices, newDevice]);
                         setDevices(updatedDevices);
                         resolve();
                       });
