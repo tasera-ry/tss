@@ -6,6 +6,9 @@ import { act } from 'react-dom/test-utils';
 import Tabletview from './rangeofficer';
 import * as utils from '../utils/Utils';
 import testUtils from '../_TestUtils/TestUtils';
+
+import InfoBox from '../infoBox/InfoBox';
+
 import { Cookies, CookiesProvider } from 'react-cookie';
 
 jest.mock('axios');
@@ -40,6 +43,12 @@ describe('testing rangeofficer', () => {
         screen.getByText('Define range officer status by choosing color'),
       ).toBeInTheDocument(),
     );
+  });
+
+  it('should render infobox', async () =>{
+    render(<InfoBox/>);
+    const infobox = await screen.findByTestId('infoboxContainer');
+    expect(infobox).toBeInTheDocument();
   });
 
   it('should change range officer status', async () => {
