@@ -6,16 +6,15 @@ import { act } from 'react-dom/test-utils';
 import Tabletview from './rangeofficer';
 import * as utils from '../utils/Utils';
 import testUtils from '../_TestUtils/TestUtils';
-<<<<<<< HEAD
+
 import InfoBox from '../infoBox/InfoBox';
-=======
+
 import { Cookies, CookiesProvider } from 'react-cookie';
 
 jest.mock('axios');
 axios.get.mockResolvedValue({
   data: [{ id: 1, message: 'ok', start: '', end: '' }],
 });
->>>>>>> e8b54f1431909590a7ce2f8316dcedb3bcc9bf14
 
 axios.put = jest.fn(() => Promise.resolve());
 axios.post = jest.fn((url, postable) => Promise.resolve(postable));
@@ -47,13 +46,9 @@ describe('testing rangeofficer', () => {
   });
 
   it('should render infobox', async () =>{
-    await act(async () => {
-      render(<InfoBox/>);
-    });
-    await waitFor(() =>
-      expect(
-        screen.getByTestId('infoboxContainer')).toBeInTheDocument()
-    );
+    render(<InfoBox/>);
+    const infobox = await screen.findByTestId('infoboxContainer');
+    expect(infobox).toBeInTheDocument();
   });
 
   it('should change range officer status', async () => {
