@@ -15,6 +15,7 @@ import api from '../api/api';
 import InfoBox from '../infoBox/InfoBox';
 import translations from '../texts/texts.json';
 import css from './Dayview.module.scss';
+import ButtonComponent from '../ButtonComponent/ButtonComponent';
 
 const classes = classNames.bind(css);
 
@@ -245,6 +246,8 @@ function Dayview(props) {
             )}
 
             {/* Other info */}
+            <ButtonComponent />
+
           </div>
         </div>
         <Link

@@ -1,0 +1,29 @@
+@import '../shared.module.scss';
+
+.singularGrid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+.freeButton {
+    background-color: $COLOR_GREEN;
+    border-radius: 50px;
+    width: 150px;
+    height: 45px;
+    margin: 3px;
+    &:hover {
+      background-color: $COLOR_GREEN;
+    }
+  }
+
+.reservedButton {
+    background-color: $COLOR_RED_LIGHT;
+    border-radius: 50px;
+    width: 150px;
+    height: 45px;
+    margin: 3px;
+    &:hover {
+      background-color: $COLOR_RED_LIGHT;
+    }
+  }

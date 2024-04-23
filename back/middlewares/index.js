@@ -1,15 +1,16 @@
 const path = require('path');
 const root = path.join(__dirname, '..');
-const user =  require(path.join(root, 'middlewares', 'user'));
-const trackSupervision =  require(path.join(root, 'middlewares', 'trackSupervision'));
-const rangeSupervision =  require(path.join(root, 'middlewares', 'rangeSupervision'));
+const user = require(path.join(root, 'middlewares', 'user'));
+const trackSupervision = require(path.join(root, 'middlewares', 'trackSupervision'));
+const rangeSupervision = require(path.join(root, 'middlewares', 'rangeSupervision'));
 const jwt = require(path.join(root, 'middlewares', 'jwt'));
-const track =  require(path.join(root, 'middlewares', 'track'));
+const track = require(path.join(root, 'middlewares', 'track'));
 const reservation = require(path.join(root, 'middlewares', 'reservation'));
 const schedule = require(path.join(root, 'middlewares', 'schedule'));
 const daterange = require(path.join(root, 'middlewares', 'daterange'));
-const raffle =  require(path.join(root, 'middlewares', 'raffle'));
-const members =  require(path.join(root, 'middlewares', 'members'));
+const raffle = require(path.join(root, 'middlewares', 'raffle'));
+const members = require(path.join(root, 'middlewares', 'members'));
+const devices = require(path.join(root, 'middlewares', 'devices'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -21,3 +22,4 @@ exports.track = track;
 exports.daterange = daterange;
 exports.raffle = raffle;
 exports.members = members;
+exports.devices = devices;

@@ -154,6 +154,28 @@ const deleteInfoMessage = async (info) => {
   await axios.delete(`api/infomessage/${info.id}`);
 };
 
+/**
+ * Device api functions
+ */
+
+const getAllDevices = async () => {
+  const response = await axios.get('api/devices');
+  return response.data;
+};
+
+const patchDevice = async (id, updatedDevice) => {
+  await axios.put(`api/devices/${id}`, updatedDevice);
+};
+
+const createDevice = async (newDevice) => {
+  const response = await axios.post('api/devices', newDevice);
+  return response.data;
+};
+
+const deleteDevice = async (id) => {  
+  await axios.delete(`api/devices/${id}`);
+};
+
 async function getSupervisions(associationId) {
   try {
     const schedules = await axios.get(
@@ -250,6 +272,10 @@ export default {
   getAllInfoMessages,
   postInfoMessage,
   deleteInfoMessage,
+  getAllDevices,
+  patchDevice,
+  createDevice,
+  deleteDevice,
   getSupervisions,
   putSupervision,
 };
