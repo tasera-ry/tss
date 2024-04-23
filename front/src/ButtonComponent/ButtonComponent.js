@@ -49,7 +49,7 @@ class ButtonComponent extends Component {
 
     handleClick = (id) => {
         if (this.state.isMobile) {
-            this.toggleText(id); // Assuming toggleText changes the status as needed
+            this.toggleText(id);
         }
     };
 

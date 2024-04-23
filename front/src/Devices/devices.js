@@ -57,6 +57,15 @@ const Devices = () => {
   
   const lang = localStorage.getItem('language');
   const { devicesList } = translations;
+  const translateStatus = (status) => {
+    if(!status || status.trim() === ""){
+      return null;
+    }
+    const statusMap = {};
+    translations.devicesList.FreeStatus.forEach( s => statusMap[s.toLowerCase()] = 'free');
+    translations.devicesList.ReservedStatus.forEach( s => statusMap[s.toLowerCase()] = 'reserved');
+    return statusMap[status.toLowerCase()] || null;
+  }
   const columns = [
     { title: devicesList.DeviceName[lang], field: 'device_name' },
     {
@@ -116,12 +125,13 @@ const Devices = () => {
                 onRowAdd: (newData) =>
                   new Promise((resolve, reject) => {
                     if(!newData.device_name || newData.device_name.trim === "") {
-                      alert("Error: Device name cannot be empty.");
+                      alert(devicesList.AddError[lang]);
                       reject();
                       return;
                     }
-                    if (newData.status !== 'free' && newData.status !== 'reserved') {
-                      alert("Error: Device status must be either 'free' or 'reserved'.");
+                    newData.status = translateStatus(newData.status);
+                    if (!newData.status) {
+                      alert(devicesList.StatusError[lang]);
                       reject();
                       return;
                     }
