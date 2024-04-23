@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useCookies } from 'react-cookie';
 
 // Material UI components
 import Typography from '@material-ui/core/Typography';
@@ -64,7 +65,6 @@ const TrackRows = ({ tracks, setTracks, scheduleId, tablet, fin, socket }) =>
   ));
 
 const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
-
   const [buttonColor, setButtonColor] = useState(track.color);
 
   const supervisorState = track.scheduled.track_supervisor;
@@ -73,7 +73,9 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
   else if (supervisorState === 'closed') supervisorStateTablet = 'Red';
   else supervisorStateTablet = 'White';
 
-  const [textState, setTextState] = useState(tablet[supervisorStateTablet][fin]);
+  const [textState, setTextState] = useState(
+    tablet[supervisorStateTablet][fin],
+  );
   const [supervision, setSupervision] = useState(supervisorState);
 
   socket.on('trackUpdate', (msg) => {
@@ -170,8 +172,8 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
   return (
     <div>
       <Button
-        className = {classes(css.buttonStyle)}
-        style={{backgroundColor: buttonColor}}
+        className={classes(css.buttonStyle)}
+        style={{ backgroundColor: buttonColor }}
         size="large"
         variant="contained"
         onClick={HandleClick}
@@ -190,13 +192,13 @@ async function getColors(tracks, setTracks) {
   for (let i = 0; i < copy.length; i += 1) {
     const obj = copy[i];
     if (copy[i].trackSupervision === 'present') {
-      obj.color = colors.green;
+      copy[i].color = colors.green;
     } else if (copy[i].trackSupervision === 'closed') {
-      obj.color = colors.redLight;
+      copy[i].color = colors.redLight;
     } else if (copy[i].trackSupervision === 'absent') {
-      obj.color = colors.white;
+      copy[i].color = colors.white;
     } else if (copy[i].trackSupervision === 'en route') {
-      obj.color = colors.orange;
+      copy[i].color = colors.orange;
     }
   }
   setTracks(copy);
@@ -371,6 +373,8 @@ const Tabletview = () => {
   const [rangeSupervisionScheduled, setRangeSupervisionScheduled] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [socket, setSocket] = useState();
+  const [cookies] = useCookies(['username']);
+
   const fin = localStorage.getItem('language');
   const { tablet } = data;
   const date = moment(Date.now()).format('YYYY-MM-DD');
@@ -387,7 +391,10 @@ const Tabletview = () => {
 
   useEffect(() => {
     validateLogin().then((logInSuccess) => {
-      if (logInSuccess) {
+      if (
+        logInSuccess &&
+        (cookies.role === 'rangemaster' || cookies.role === 'superuser')
+      ) {
         getData(
           //data,
           tablet,
@@ -510,8 +517,8 @@ const Tabletview = () => {
       <div className={classes( css.rowStyle)}>
 
         <Button
-          className = {classes(css.statusStyle)}
-          style={{color: colors.black, backgroundColor: statusColor}}
+          className={classes(css.statusStyle)}
+          style={{ color: colors.black, backgroundColor: statusColor }}
           size="large"
           variant="outlined"
           disabled

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
+import { Link } from 'react-router-dom';
 
 import { withCookies } from 'react-cookie';
 // function for checking whether we should show banner
@@ -51,17 +52,18 @@ const SupervisorNotification = ({
           severity="warning"
           variant="filled"
           action={
-            <Button color="inherit" size="small">
-              {banner.Check[lang]}
-            </Button>
+            <Link to="/profile/supervisions">
+              <Button color="inherit" size="small">
+                <Link to="/profile/supervisions" style={{ color: 'white' }}>
+                  {banner.Check[lang]}
+                </Link>
+              </Button>
+            </Link>
           }
           onClick={() => setSupervisionsOpen(true)}
         >
           {banner.Notification[lang]}
         </Alert>
-      )}
-      {supervisionsOpen && (
-        <DialogWindow onCancel={() => setSupervisionsOpen(false)} />
       )}
     </div>
   );

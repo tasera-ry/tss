@@ -3,15 +3,32 @@
     "SignIn": ["Kirjaudu sisään", "Sign In", "Logga in"],
     "Menu": ["Valikko", "Menu", "Meny"],
     "Schedule": ["Aikataulut", "Schedules", "Schema"],
-    "UserManagement": ["Käyttäjienhallinta", "User management", "Användarhantering"],
+    "UserManagement": [
+      "Käyttäjienhallinta",
+      "User management",
+      "Användarhantering"
+    ],
     "Supervision": ["Valvonnat", "Supervisions", "Övervakninger"],
-    "Profile": ["Omat Tiedot", "Profile", "Profil"],
+    "AssociationProfile": [
+      "Yhdistyksen hallinta",
+      "Association dashboard",
+      "Föreningshantering"
+    ],
+    "RangeofficerProfile": [
+      "Tilin hallinta",
+      "Account dashboard",
+      "Kontohantering"
+    ],
     "Tablet": ["Tablettinäkymä", "Tablet view", "Surfplattavy"],
     "Feedback": ["Palaute", "Feedback", "Respons"],
     "trackCRUD": ["Ratojen päivitys", "Edit tracks", "Uppdatera banor"],
     "SignOut": ["Kirjaudu ulos", "Sign Out", "Logga ut"],
     "Statistics": ["Tilastot", "Statistics", "Statistik"],
-    "EmailSettings": ["Sähköpostiasetukset", "Email settings", "E-postinställningar"],
+    "EmailSettings": [
+      "Sähköpostiasetukset",
+      "Email settings",
+      "E-postinställningar"
+    ],
     "Raffle": ["Valvojien arvonta", "Supervisor raffle", "Handledare tombola"],
     "Info": ["Lisää infoviesti", "Add info message", "Tillägga info meddelande"], 
     "Devices":["Ratojen varaus", "Track book", "Bokning av spår"]   
@@ -21,7 +38,7 @@
     "Notification": [
       "Sinulla on varmistamattomia päävalvojavuoroja!",
       "You have unconfirmed range officer reservations!",
-	  "Du har obekräftad banofficer turer!"
+      "Du har obekräftad banofficer turer!"
     ],
     "Check": ["TARKISTA", "CHECK", "KONTROLLERA"]
   },
@@ -46,54 +63,90 @@
     "Password": ["Salasana", "Password", "Lösenord"],
     "LogIn": ["Kirjaudu", "Log in", "Logga in"],
     "Back": ["Takaisin", "Go back", "Tillbaka"],
-    "Helper": ["Väärä käyttäjänimi tai salasana", "Wrong username or password", "Fel användarnamn eller lösenord"],
-    "ForgotPassword": ["Unohtuiko salasana?", "Forgot password?", "Glömt lösenord?"]
+    "Helper": [
+      "Väärä käyttäjänimi tai salasana",
+      "Wrong username or password",
+      "Fel användarnamn eller lösenord"
+    ],
+    "ForgotPassword": [
+      "Unohtuiko salasana?",
+      "Forgot password?",
+      "Glömt lösenord?"
+    ]
   },
   "resetPW": {
     "ResetPassword": [
       "Syötä sähköpostiosoitteesi unohtuneen salasanan palauttamista varten",
       "Input your e-mail address in order to reset your password",
-	  "Ange din e-postadress för att återställa ett glömt lösenord"
+      "Ange din e-postadress för att återställa ett glömt lösenord"
     ],
     "eMail": ["Sähköpostiosoite", "E-mail", "E-postadress"],
     "ResetBtn": ["Palauta", "Reset", "Återställa"],
-    "NullErr": ["Syötä sähköpostiosoite!", "E-mail address is required!", "Ange en e-postadress!"],
+    "NullErr": [
+      "Syötä sähköpostiosoite!",
+      "E-mail address is required!",
+      "Ange en e-postadress!"
+    ],
     "InvErr": [
       "Annettua sähköpostiosoitetta ei löytynyt!",
       "Invalid e-mail address!",
-	  "Ogiltig e-postadress!"
+      "Ogiltig e-postadress!"
     ],
     "Sent": [
       "Salasanan palautusviesti lähetetty onnistuneesti!",
       "Password reset e-mail succesfully sent!",
-	  "E-postmeddelande om lösenordåterställning har skickats!"
+      "E-postmeddelande om lösenordåterställning har skickats!"
     ],
     "Back": ["Takaisin", "Go back", "Tillbaka"]
   },
   "renewPW": {
-    "RenewPassword": ["Syötä uusi salasana", "Input new password", "Ange ett nytt lösenord"],
+    "RenewPassword": [
+      "Syötä uusi salasana",
+      "Input new password",
+      "Ange ett nytt lösenord"
+    ],
     "NewPassword": ["Uusi salasana", "New password", "Ett nytt lösenord"],
-    "ConfirmNewPassword": ["Vahvista uusi salasana", "Confirm new password", "Bekräfta nytt lösenord"],
+    "ConfirmNewPassword": [
+      "Vahvista uusi salasana",
+      "Confirm new password",
+      "Bekräfta nytt lösenord"
+    ],
     "RenewBtn": ["Lähetä", "Submit", "Skicka in"],
-    "Loading": ["Ladataan käyttäjätietoja...", "Loading user data...", "Laddar användarinformation..."],
+    "Loading": [
+      "Ladataan käyttäjätietoja...",
+      "Loading user data...",
+      "Laddar användarinformation..."
+    ],
     "Updated": [
       "Salasana päivitetty onnistuneesti!",
       "Password updated succesfully!",
-	  "Lösenord har uppdaterats!"
+      "Lösenord har uppdaterats!"
     ],
     "UpdatedDesc": [
       "Sinut ohjataan sisäänkirjautumissivulle automaattisesti viiden sekunnin kuluttua.",
       "You will be redirected to the login page automatically in 5 seconds.",
-	  "Du kommer automatiskt att omdirigeras till inloggningsidan inom 5 sekunder."
+      "Du kommer automatiskt att omdirigeras till inloggningsidan inom 5 sekunder."
     ],
-    "Error": ["Ongelma tokenin varmennuksessa!", "Error verifying token!", "Fel vid verifiering av token!"],
+    "Error": [
+      "Ongelma tokenin varmennuksessa!",
+      "Error verifying token!",
+      "Fel vid verifiering av token!"
+    ],
     "ErrorDesc": [
       "Linkki ei kelpaa tai se on vanhentunut. Lähetä uusi salasananpalautuslinkki, kiitos!",
       "The link is incorrect or it has expired. Please send a new reset link!",
-	  "Länken är felaktig eller så har den gått ut. Skicka en ny återställningslänk, tack!"
+      "Länken är felaktig eller så har den gått ut. Skicka en ny återställningslänk, tack!"
     ],
-    "ForgotPassword": ["Unohtuiko salasana?", "Forgot password?", "Glömt lösenord?"],
-    "Mismatch": ["Salasanat eivät täsmää!", "Passwords don't match!", "Lösenord matchar inte!"]
+    "ForgotPassword": [
+      "Unohtuiko salasana?",
+      "Forgot password?",
+      "Glömt lösenord?"
+    ],
+    "Mismatch": [
+      "Salasanat eivät täsmää!",
+      "Passwords don't match!",
+      "Lösenord matchar inte!"
+    ]
   },
   "weekdayShorthand": {
     "0": ["Ma", "Mon", "Mån"],
@@ -105,71 +158,173 @@
     "6": ["Su", "Sun", "Sön"]
   },
   "sv": {
-    "Header": ["Vahvistettavat valvonnat", "Confirm supervisions", "Bekräfta övervakninger"],
-    "No": ["Sinulla ei ole vahvistettavia vuoroja", "Nothing to confirm", "Inget att bekräfta"],
-    "Wait": ["Haetaan vuoroja...", "Retrieving information...", "Hämta information..."],
+    "Header": [
+      "Vahvistettavat valvonnat",
+      "Confirm supervisions",
+      "Bekräfta övervakninger"
+    ],
+    "No": [
+      "Sinulla ei ole vahvistettavia vuoroja",
+      "Nothing to confirm",
+      "Inget att bekräfta"
+    ],
+    "Wait": [
+      "Haetaan vuoroja...",
+      "Retrieving information...",
+      "Hämta information..."
+    ],
     "Confirmed": ["Saavun paikalle", "Confirmed", "Bekräftat"],
     "Present": ["Vahvista saapuminen", "Confirm date", "Bekräfta datum"],
     "Absent": ["En pääse paikalle", "Absent", "Frånvarande"],
     "EnRoute": ["Matkalla", "En route", "På väg"],
+    "OfficerSelect": ["Valitse valvoja", "Select officer", "Välj övervakare"],
+    "NoOfficer": ["Ei valintaa", "No selection", "Inget val"],
     "Cancel": ["Sulje", "Cancel", "Avboka"],
-    "Save": ["Tallenna", "Save", "Spara"]
+    "Save": ["Tallenna", "Save", "Spara"],
+    "ProvideTime": [
+      "Arvioitu saapumisaikasi:",
+      "Your estimated time of arrival:",
+      "Din bäraknad ankomsttid:"
+    ],
+    "date": ["Päivämäärä", "Date", "Datum"],
+    "status": ["Tila", "Status", "Status"],
+    "actionsRow": ["Toiminnot", "Actions", "Funktioner"],
+    "setButton": ["Aseta", "Set", "Spara"],
+    "resetButton": ["Nollaa", "Reset", "Återställ"],
+    "Association": [
+      "Yhdistyksen tulevat valvonnat",
+      "Association's upcoming supervisions",
+      "Föreningens kommande övervakningar"
+    ],
+    "Rangeofficer": [
+      "Yhdistyksesi vapaat valvontavurot. Jos tila on vahvistettu, yhdistys on asettanut vuoron sinulle",
+      "Your association's free supervisions. If the status is confirmed, the association has set the shift for you",
+      "Din förenings lediga övervakningsturer. Om statusen är bekräftad, har föreningen ställt in skiftet för dig"
+    ],
+    "AssignedOfficer": [
+      "Asetettu valvoja",
+      "Assigned officer",
+      "Tilldelad övervakare"
+    ],
+    "clearNotification": [
+      "Valvonta tyhjennetty päivälle",
+      "Supervision cleared for",
+      "Övervakning rensad för"
+    ],
+    "updatedSupervision": [
+      "Valvonta päivitetty päivälle",
+      "Supervision updated for",
+      "Övervakning uppdaterad för"
+    ],
+    "error": ["Jokin meni pieleen", "Something went wrong", "Något gick fel"]
   },
   "feedback": {
     "Title": ["Anna palautetta", "Give feedback", "Ge feedback"],
     "Note": [
       "Kirjoita allaolevaan kenttään radoilta saamastasi palautteesta. Muista kirjoittaa viestiin radan nimi, jos palaute koskee tiettyä rataa. Palaute lähetetään suoraan pääkäyttäjille.",
       "Write in the textbox below the feedback you received from the range. Remember to identify the track if the feedback is for a certain track. The feedback will be sent to the superusers.",
-	  "Skriv i textrutan under den feedback du fått från skjutbanor. Kom ihåg att skriva namn av den skjutbanan i meddelandet om feedbacken är av visst bana. Feedbacken kommer att skickas till superanvändare."
+      "Skriv i textrutan under den feedback du fått från skjutbanor. Kom ihåg att skriva namn av den skjutbanan i meddelandet om feedbacken är av visst bana. Feedbacken kommer att skickas till superanvändare."
     ],
     "Send": ["Lähetä", "Send", "Skicka"],
     "Cancel": ["Peru", "Cancel", "Avboka"]
   },
   "week": {
     "Week": ["Viikko", "Week", "Vecka"],
-    "Green": ["Päävalvoja paikalla", "Range officer present", "Banofficer närvarande"],
-    "Lightgreen": ["Päävalvoja varmistettu", "Range officer confirmed", "Banofficer bekräftat"],
+    "Green": [
+      "Päävalvoja paikalla",
+      "Range officer present",
+      "Banofficer närvarande"
+    ],
+    "Lightgreen": [
+      "Päävalvoja varmistettu, arvioitu saapumisaika",
+      "Range officer confirmed, estimated time of arrival",
+      "Banofficer bekräftat, beräknad ankomsttid"
+    ],
     "Blue": [
       "Päävalvoja määritetty, mutta ei varmistettu",
       "Range officer predefined, not confirmed",
-	  "Banofficer fördefinierad, men inte bekräftat"
+      "Banofficer fördefinierad, men inte bekräftat"
     ],
     "Red": ["Keskus suljettu", "Range closed", "Skjutbana stängd"],
-    "Orange": ["Päävalvoja matkalla", "Range officer on the way", "Banofficer på väg"],
-    "White": ["Päävalvojaa ei asetettu", "Range officer undefined", "Banofficer inte fördefinierad"],
-    "Notice": ["Radalla lisätietoja", "Track has additional information", "Bana har ytterligare information"]
+    "Orange": [
+      "Päävalvoja matkalla",
+      "Range officer on the way",
+      "Banofficer på väg"
+    ],
+    "White": [
+      "Päävalvojaa ei asetettu",
+      "Range officer undefined",
+      "Banofficer inte fördefinierad"
+    ],
+    "Notice": [
+      "Radalla lisätietoja",
+      "Track has additional information",
+      "Bana har ytterligare information"
+    ]
   },
   "sched": {
     "Day": ["Valitse päivä", "Choose date", "Välja datum"],
     "Open": ["Keskus auki", "Open", "Öppna"],
-    "Supervisor": ["Päävalvoja", "Range officer", "Banofficer"],
+    "Rangeofficer": ["Päävalvoja", "Range officer", "Banofficer"],
     "Select": ["Valitse valvoja", "Select range officer", "Välja banofficer"],
     "OpenHours": ["Aukioloaika", "Opening hours", "Öppettider"],
     "Start": ["Alku", "Start", "Start"],
     "Stop": ["Loppu", "End", "Slut"],
-    "OfficerPresent": ["Valvoja paikalla", "Track officer present", "Banhandledare närvarande"],
-    "OfficerAbsent": ["Ei valvojaa", "Track officer absent", "Banhandledare frånvarande"],
+    "OfficerPresent": [
+      "Valvoja paikalla",
+      "Track officer present",
+      "Banhandledare närvarande"
+    ],
+    "OfficerAbsent": [
+      "Ei valvojaa",
+      "Track officer absent",
+      "Banhandledare frånvarande"
+    ],
     "Closed": ["Suljettu", "Closed", "Stängd"],
     "OpenAll": ["Avaa kaikki", "Open All", "Öppna alla"],
     "ClearAll": ["Tyhjennä kaikki", "Clear All", "Rensa alla"],
     "CloseAll": ["Sulje kaikki", "Close All", "Stäng alla"],
     "RepeatDaily": ["Toista päivittäin", "Repeat daily", "Upprepa dagligen"],
-    "RepeatWeekly": ["Toista viikottain", "Repeat weekly", "Upprepa varje vecka"],
-    "RepeatMonthly": ["Toista kuukausittain", "Repeat monthly", "Upprepa varje månad"],
+    "RepeatWeekly": [
+      "Toista viikottain",
+      "Repeat weekly",
+      "Upprepa varje vecka"
+    ],
+    "RepeatMonthly": [
+      "Toista kuukausittain",
+      "Repeat monthly",
+      "Upprepa varje månad"
+    ],
     "Amount": ["Toistojen määrä", "End repeat after", "Avsluta upprepa efter"],
     "Save": ["Tallenna muutokset", "Save changes", "Spara ändringar"],
-    "Success": ["Päivitys onnistui", "Update successful", "Uppdatering lyckades"],
+    "Success": [
+      "Päivitys onnistui",
+      "Update successful",
+      "Uppdatering lyckades"
+    ],
     "Warning": [
       "Päävalvoja aktiivinen ilman valvojaa",
       "Range officer active with no selection",
-	  "Banofficer aktiva utan urval"
+      "Banofficer aktiva utan urval"
     ],
-    "Error": ["Päivitys epäonnistui", "Something went wrong", "Uppdatering misslyckades"]
+    "Error": [
+      "Päivitys epäonnistui",
+      "Something went wrong",
+      "Uppdatering misslyckades"
+    ]
   },
   "manage": {
-    "UserManage": ["Käyttäjienhallinta", "User management", "Användarhantering"],
+    "UserManage": [
+      "Käyttäjienhallinta",
+      "User management",
+      "Användarhantering"
+    ],
     "ChangePass": ["Vaihda salasana", "Change password", "Ändra lösenord"],
-    "ChangeEmail": ["Vaihda sähköpostiosoite", "Change email address", "Ändra e-postadress"],
+    "ChangeEmail": [
+      "Vaihda sähköpostiosoite",
+      "Change email address",
+      "Ändra e-postadress"
+    ],
     "CreateUser": ["Lisää käyttäjä", "Create new user", "Skapa ny användare"],
     "Users": ["Käyttäjät", "User profiles", "Användarprofiler"],
     "Username": ["Käyttäjänimi", "Username", "Användarnamn"],
@@ -177,22 +332,26 @@
     "Helper": [
       "Vaihtaaksesi salasanasi sinun tulee antaa nykyinen salasanasi sekä uusi joksi haluat sen vaihtaa",
       "Give your current and new password",
-	  "Ge ditt nuvarande och nya lösenord"
+      "Ge ditt nuvarande och nya lösenord"
     ],
     "OldPass": ["Nykyinen salasana", "Current password", "Nuvarande lösenord"],
-    "OldEmail": ["Nykyinen sähköpostiosoite", "Current email address", "Nuvarande e-postadress"],
+    "OldEmail": [
+      "Nykyinen sähköpostiosoite",
+      "Current email address",
+      "Nuvarande e-postadress"
+    ],
     "NewPass": ["Uusi salasana", "New password", "Nytt lösenord"],
     "NewEmail": ["Lisää sähköposti", "Add Email", "Lägg till e-postadress"],
     "EmailHelper": [
       "Anna uusi sähköpostiosoite",
       "Please give your new email address",
-	  "Lägg till din nya e-postadress"
+      "Lägg till din nya e-postadress"
     ],
     "Email": ["Sähköposti", "Email", "E-postadress"],
     "EmailForUser": [
       "Vaihda sähköposti käyttäjälle:",
       "Change Email for user:",
-	  "Ändra e-postadress för användare"
+      "Ändra e-postadress för användare"
     ],
     "Cancel": ["Peruuta", "Cancel", "Avboka"],
     "Confirm": ["Vahvista", "Save changes", "Spara ändringar"],
@@ -203,45 +362,75 @@
     "MinimumLength": [
       "Salasanan minimipituus on 6 merkkiä",
       "Minimum length of password is 6 characters",
-	  "Lösenord måste vara minst 6 tecken långt"
+      "Lösenord måste vara minst 6 tecken långt"
     ],
     "PasswordNumber": ["numero", "number", "nummer"],
     "PasswordLowercase": ["pieni kirjain", "lowercase letter", "liten bokstav"],
     "PasswordUppercase": ["iso kirjain", "uppercase letter", "stor bokstav"],
     "Role": ["Rooli", "Role", "Roll"],
     "Superuser": ["Superuser", "Superuser", "Superuser"],
-    "Supervisor": ["Valvoja", "Range officer", "Banofficer"],
-    "ChangeFor": ["Vaihda salasana käyttäjälle", "Change password for", "Ändra lösenord för användare"],
+    "Rangeofficer": ["Valvoja", "Range officer", "Banofficer"],
+    "Association": ["Yhdistys", "Association", "Förening"],
+    "Rangemaster": ["Päävalvoja", "Range master", "Banmästare"],
+    "ChangeFor": [
+      "Vaihda salasana käyttäjälle",
+      "Change password for",
+      "Ändra lösenord för användare"
+    ],
     "Ask": ["Haluatko varmasti jatkaa?", "Are you sure?", "Är du säker?"],
     "AskDelete": [
       "Tämä poistaa pysyvästi käyttäjän",
       "This action will permanently remove user",
-	  "Denna åtgärd kommer att ta bort användaren permanent"
+      "Denna åtgärd kommer att ta bort användaren permanent"
     ],
     "Error": [
       "Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki",
       "Something went wrong, remember to have at least 6 characters long password and a unique name",
-	  "Något gick fel, kom ihåg att lösenord måste vara minst 6 tecken långt och ett unikt namn"
+      "Något gick fel, kom ihåg att lösenord måste vara minst 6 tecken långt och ett unikt namn"
     ],
     "ErrorPassword": [
       "Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä",
       "Something went wrong, password has to be at least 6 characters long",
-	  "Något gick fel, kom ihåg att lösenord måste vara minst 6 tecken långt"
+      "Något gick fel, kom ihåg att lösenord måste vara minst 6 tecken långt"
     ],
     "ErrorEmail": [
       "Jokin meni pieleen, Sähköpostia ei tallennettu",
       "Something went wrong, email not saved",
-	  "Något gick fel, e-postadress har inte sparats"
+      "Något gick fel, e-postadress har inte sparats"
     ],
-    "ErrorSmall": ["Jokin meni pieleen", "Something went wrong", "Något gick fel"]
+    "ErrorSmall": [
+      "Jokin meni pieleen",
+      "Something went wrong",
+      "Något gick fel"
+    ]
   },
   "tablet": {
     "Open": ["Aukiolo", "Open", "Öppettider"],
-    "SuperBlue": ["Päävalvoja ei varmistettu", "Range officer predefined", "Banofficer inte bekräftat"],
-    "SuperLightGreen": ["Päävalvoja varmistettu", "Range officer confirmed", "Banofficer bekräftat"],
-    "SuperGreen": ["Päävalvoja paikalla", "Range officer present", "Banofficer närvarande"],
-    "SuperOrange": ["Päävalvoja tulossa", "Range officer on the way", "Banofficer på väg"],
-    "SuperWhite": ["Päävalvoja ei asetettu", "Range officer undefined", "Banofficer odefinierad"],
+    "SuperBlue": [
+      "Päävalvoja ei varmistettu",
+      "Range officer predefined",
+      "Banofficer inte bekräftat"
+    ],
+    "SuperLightGreen": [
+      "Päävalvoja varmistettu",
+      "Range officer confirmed",
+      "Banofficer bekräftat"
+    ],
+    "SuperGreen": [
+      "Päävalvoja paikalla",
+      "Range officer present",
+      "Banofficer närvarande"
+    ],
+    "SuperOrange": [
+      "Päävalvoja tulossa",
+      "Range officer on the way",
+      "Banofficer på väg"
+    ],
+    "SuperWhite": [
+      "Päävalvoja ei asetettu",
+      "Range officer undefined",
+      "Banofficer odefinierad"
+    ],
     "Green": ["Paikalla", "Present", "Närvarande"],
     "Orange": ["Tulossa", "On the way", "På väg"],
     "Red": ["Suljettu", "Closed", "Stängd"],
@@ -249,69 +438,157 @@
     "HelperFirst": [
       "Valitse päävalvojan status napauttamalla väriä alta",
       "Define range officer status by choosing color",
-	  "Definiera status för banofficer genom att välja färg"
+      "Definiera status för banofficer genom att välja färg"
     ],
     "HelperSecond": [
       "Vaihda ratavalvojien statuksia napauttamalla värejä alta. Muuta radan käviöiden määrää painikkeilla",
       "Change track officer status by choosing color. Change number of track users with buttons",
-	  "Ändra banhandledare status genom att välja färg. Ändra antalet bana användare med knappar"
+      "Ändra banhandledare status genom att välja färg. Ändra antalet bana användare med knappar"
     ],
     "PickTime": ["Valitse aukioloaika", "Set opening hours", "Ange öppettider"],
     "Start": ["Alku", "Start", "Start"],
     "End": ["Loppu", "End", "Slut"],
     "Save": ["Tallenna", "Save", "Spara"],
     "Cancel": ["Peruuta", "Cancel", "Avboka"],
-    "Error": ["Päivitys epäonnistui", "Something went wrong", "Uppdatering misslyckades"]
+    "Error": [
+      "Päivitys epäonnistui",
+      "Something went wrong",
+      "Uppdatering misslyckades"
+    ]
   },
   "dayview": {
     "OpenHours": ["Aukioloaika", "Opening hours", "Öppettider"],
     "Open": ["Avoinna", "Open", "Öppna"],
     "Closed": ["Suljettu", "Closed", "Stängd"],
-    "NotAvailable": ["Ei valvojaa", "No track officer available", "Inte banhandledare tillgängliga"],
-    "WeekviewLink": ["Viikkonäkymään", "Back to weekview", "Tillbaka till veckovy"],
-    "Green": ["Päävalvoja paikalla", "Range officer present", "Banofficer närvarande"],
-    "Lightgreen": ["Päävalvoja varmistettu", "Range officer confirmed", "Banofficer bekräftat"],
-    "Blue": ["Päävalvoja ei varmistettu", "Range officer predefined", "Banofficer inte bekräftat"],
+    "NotAvailable": [
+      "Ei valvojaa",
+      "No track officer available",
+      "Inte banhandledare tillgängliga"
+    ],
+    "WeekviewLink": [
+      "Viikkonäkymään",
+      "Back to weekview",
+      "Tillbaka till veckovy"
+    ],
+    "Green": [
+      "Päävalvoja paikalla",
+      "Range officer present",
+      "Banofficer närvarande"
+    ],
+    "Lightgreen": [
+      "Päävalvoja varmistettu",
+      "Range officer confirmed",
+      "Banofficer bekräftat"
+    ],
+    "Blue": [
+      "Päävalvoja ei varmistettu",
+      "Range officer predefined",
+      "Banofficer inte bekräftat"
+    ],
     "Red": ["Ampumakeskus suljettu", "Range closed", "Skjutbana stängd"],
-    "Orange": ["Päävalvoja matkalla", "Range officer on the way", "Banofficer på väg"],
-    "White": ["Päävalvojaa ei asetettu", "Range officer undefined", "Banofficer odefinierad"],
-    "Notice": ["Radalla lisätietoja", "Track has additional information", "Ytterligare information på banan"]
+    "Orange": [
+      "Päävalvoja matkalla",
+      "Range officer on the way",
+      "Banofficer på väg"
+    ],
+    "White": [
+      "Päävalvojaa ei asetettu",
+      "Range officer undefined",
+      "Banofficer odefinierad"
+    ],
+    "Notice": [
+      "Radalla lisätietoja",
+      "Track has additional information",
+      "Ytterligare information på banan"
+    ]
   },
   "trackview": {
-    "SuperGreen": ["Päävalvoja paikalla", "Range officer present", "Banofficer närvarande"],
-    "SuperRed": ["Päävalvoja ei paikalla", "Range officer not present", "Banofficer inte närvarande"],
-    "SuperLightGreen": ["Päävalvoja varmistettu", "Range officer confirmed", "Banofficer bekräftat"],
-    "SuperBlue": ["Päävalvoja ei varmistettu", "Range officer predefined", "Banofficer inte bekräftat"],
-    "SuperOrange": ["Päävalvoja matkalla", "Range officer on the way", "Banofficer på väg"],
-    "SuperWhite": ["Päävalvojaa ei asetettu", "Range officer undefined", "Banofficer odefinierad"],
+    "SuperGreen": [
+      "Päävalvoja paikalla",
+      "Range officer present",
+      "Banofficer närvarande"
+    ],
+    "SuperRed": [
+      "Päävalvoja ei paikalla",
+      "Range officer not present",
+      "Banofficer inte närvarande"
+    ],
+    "SuperLightGreen": [
+      "Päävalvoja varmistettu",
+      "Range officer confirmed",
+      "Banofficer bekräftat"
+    ],
+    "SuperBlue": [
+      "Päävalvoja ei varmistettu",
+      "Range officer predefined",
+      "Banofficer inte bekräftat"
+    ],
+    "SuperOrange": [
+      "Päävalvoja matkalla",
+      "Range officer on the way",
+      "Banofficer på väg"
+    ],
+    "SuperWhite": [
+      "Päävalvojaa ei asetettu",
+      "Range officer undefined",
+      "Banofficer odefinierad"
+    ],
     "Red": ["Ampumakeskus suljettu", "Closed", "Skjutbana stängd"],
-    "RangeGreen": ["Ratavalvoja paikalla", "Track officer present", "Banhandledare närvarande"],
-    "RangeWhite": ["Ratavalvojaa ei asetettu", "No defined track officer", "Banhandledare odefinierad"],
+    "RangeGreen": [
+      "Ratavalvoja paikalla",
+      "Track officer present",
+      "Banhandledare närvarande"
+    ],
+    "RangeWhite": [
+      "Ratavalvojaa ei asetettu",
+      "No defined track officer",
+      "Banhandledare odefinierad"
+    ],
     "RangeRed": ["Rata suljettu", "Range closed", "Skjutbana stängd"],
     "Info": ["Lisätietoja", "Info", "Information"],
     "DayviewLink": ["Päivänäkymään", "Back to dayview", "Tillbaka till dagvy"],
-    "TrackNameError": ["Rataa ei löydy.", "Track cannot be found.", "Bana kan inte hittas"]
+    "TrackNameError": [
+      "Rataa ei löydy.",
+      "Track cannot be found.",
+      "Bana kan inte hittas"
+    ]
   },
   "tracks": {
     "tableHeaderName": ["Nimi", "Name", "Namn"],
     "tableHeaderDescription": ["Kuvaus", "Description", "Beskrivning"],
-    "tableHeaderShort": ["Lyhyt kuvaus", "Short description", "Kort beskrivning"],
+    "tableHeaderShort": [
+      "Lyhyt kuvaus",
+      "Short description",
+      "Kort beskrivning"
+    ],
     "tableHeaderActions": ["Toiminnot", "Actions", "Funktioner"],
     "tableTitle": ["Radat", "Tracks", "Banor"],
     "tableSearchHint": ["Hae", "Search", "Söka"],
-    "rowUpdateFail": ["Radan muokkaus epäonnistui", "Track update failed", "Bana uppdatering misslyckades"],
+    "rowUpdateFail": [
+      "Radan muokkaus epäonnistui",
+      "Track update failed",
+      "Bana uppdatering misslyckades"
+    ],
     "rowUpdateSuccess": ["Rataa muokattu", "Track updated", "Bana uppdaterats"],
-    "pagination": ["{from}-{to}/{count}", "{from}-{to} of {count}", "{from}-{to} av {count}"],
-    "emptyDataSourceMessage": ["Ei rivejä", "No rows to display", "Inga rader att visa"],
+    "pagination": [
+      "{from}-{to}/{count}",
+      "{from}-{to} of {count}",
+      "{from}-{to} av {count}"
+    ],
+    "emptyDataSourceMessage": [
+      "Ei rivejä",
+      "No rows to display",
+      "Inga rader att visa"
+    ],
     "editTooltip": ["Muokkaa", "Edit", "Redigera"],
     "searchPlaceholder": ["Hae", "Search", "Söka"],
     "labelRowsSelect": ["riviä", "rows", "rad"],
     "saveTooltip": ["Tallenna", "Save", "Spara"],
     "cancelTooltip": ["Peruuta", "Cancel", "Avboka"],
-    "nextTooltip": ["Seuraava sivu", "Next page", "Nästa sida"], 
-	"previousTooltip": ["Edellinen sivu", "Previous page", "Föregående sida"], 
-	"firstTooltip": ["Ensimmäinen sivu", "First page", "Första sidan"], 
-	"lastTooltip": ["Viimeinen sivu", "Last page", "Sista sidan"]
+    "nextTooltip": ["Seuraava sivu", "Next page", "Nästa sida"],
+    "previousTooltip": ["Edellinen sivu", "Previous page", "Föregående sida"],
+    "firstTooltip": ["Ensimmäinen sivu", "First page", "Första sidan"],
+    "lastTooltip": ["Viimeinen sivu", "Last page", "Sista sidan"]
   },
 
 
@@ -330,7 +607,11 @@
     "11": ["Marraskuu", "November", "November"],
     "12": ["Joulukuu", "December", "December"],
     "weekNumber": ["Vko", "Wk", "V"],
-    "Notice": ["Radalla lisätietoja", "Track has additional information", "Ytterligare information på banan"]
+    "Notice": [
+      "Radalla lisätietoja",
+      "Track has additional information",
+      "Ytterligare information på banan"
+    ]
   },
   "viewChanger": {
     "Month": ["Kuukausi", "Month", "Månad"],
@@ -339,8 +620,16 @@
     "JumpToCurrent": ["Tänään", "Today", "Idag"]
   },
   "trackStatistics": {
-    "addVisitorsButton": ["Lisää kävijätietoja", "Add visitor statistics", "Lägg till besöksstatistik"],
-    "addVisitorsTitle": ["Lisää kävijöiden määrä", "Add number of visitors", "Lägga till antal besökare"],
+    "addVisitorsButton": [
+      "Lisää kävijätietoja",
+      "Add visitor statistics",
+      "Lägg till besöksstatistik"
+    ],
+    "addVisitorsTitle": [
+      "Lisää kävijöiden määrä",
+      "Add number of visitors",
+      "Lägga till antal besökare"
+    ],
     "backButton": ["Takaisin", "Back", "Tillbaka"],
     "sendButton": ["Lähetä tiedot", "Send statistics", "Skicka statistik"]
   },
@@ -352,20 +641,32 @@
     "TrackLabel": ["Rata", "Track", "Banan"],
     "VisitorLabel": ["Kävijämäärä", "Number of visitors", "Antal besökare"],
     "DayLabel": ["Päivä", "Day", "Dag"],
-    "DayChartHeader": ["Kävijämäärät radoittain", "Visitors per track", "Besökare per bana"],
-    "MonthChart1Header": ["Kävijämäärät päivittäin", "Visitors per day", "Besökare per dag"],
+    "DayChartHeader": [
+      "Kävijämäärät radoittain",
+      "Visitors per track",
+      "Besökare per bana"
+    ],
+    "MonthChart1Header": [
+      "Kävijämäärät päivittäin",
+      "Visitors per day",
+      "Besökare per dag"
+    ],
     "MonthChart2Header": [
       "Ratojen kävijämäärät kuukausittain",
       "Monthly visitors per track",
-	  "Månatliga besökare per bana"
+      "Månatliga besökare per bana"
     ],
-    "OpenLogging": ["Kirjaa käyttäjätietoja", "Open user logging", "Registrerar användarinformation"]
+    "OpenLogging": [
+      "Kirjaa käyttäjätietoja",
+      "Open user logging",
+      "Registrerar användarinformation"
+    ]
   },
   "visitorLogging": {
     "SuccessfullyUpdated": [
       "Käyttäjätiedot kirjattu",
       "Track visitors successfully upded",
-	  "Användarinformationen har loggats"
+      "Användarinformationen har loggats"
     ],
     "DayChoose": ["Valitse päivä", "Choose date", "Välj datum"],
     "Close": ["Sulje", "Close", "Stänga"],
@@ -373,158 +674,398 @@
     "NoSchedule": [
       "Ei varauksia tälle päivälle. Aseta ratavalvonta Aikataulut-sivulla",
       "No reservations found. Set reservation in Schedules page",
-	  "Inga reservationer hittades. Ställ in reservation på Schemasidan"
+      "Inga reservationer hittades. Ställ in reservation på Schemasidan"
     ]
   },
   "emailSettings": {
-    "success": ["Onnistuneesti päivitetty", "Successfully updated", "Uppdatering lyckades"],
+    "success": [
+      "Onnistuneesti päivitetty",
+      "Successfully updated",
+      "Uppdatering lyckades"
+    ],
     "smtpSettings": ["SMTP-asetukset", "SMTP-settings", "SMTP-inställningar"],
     "user": ["Käyttäjä", "User", "Användare"],
     "pass": ["Salasana", "Password", "Lösenord"],
     "ssl": ["Käytä SSL", "Use SSL", "Använd SSL"],
     "yes": ["Kyllä", "Yes", "Ja"],
     "no": ["Ei", "No", "Nej"],
-    "senderAddress": ["Sähköpostin lähettäjän osoite", "Sender email address", "Avsändarens e-postadress"],
+    "senderAddress": [
+      "Sähköpostin lähettäjän osoite",
+      "Sender email address",
+      "Avsändarens e-postadress"
+    ],
     "sendAutomatically": ["Lähetä sähköpostia", "Send email", "Skicka e-post"],
-    "saveSettings": ["Tallenna asetukset", "Save settings", "Spara inställningar"],
+    "saveSettings": [
+      "Tallenna asetukset",
+      "Save settings",
+      "Spara inställningar"
+    ],
     "address": ["Osoite", "Address", "Adress"],
     "close": ["Sulje", "Close", "Stänga"],
-    "emailMessages": ["Sähköpostiviestit", "Email messages", "E-postmeddelanden"],
-    "emailContent": ["Viestin sisältö", "Message content", "Meddelandeinnehåll"],
-    "collage": ["Kootut varausten muutokset", "Compiled shift changes", "Sammanställt skiftbyten"],
+    "emailMessages": [
+      "Sähköpostiviestit",
+      "Email messages",
+      "E-postmeddelanden"
+    ],
+    "emailContent": [
+      "Viestin sisältö",
+      "Message content",
+      "Meddelandeinnehåll"
+    ],
+    "collage": [
+      "Kootut varausten muutokset",
+      "Compiled shift changes",
+      "Sammanställt skiftbyten"
+    ],
     "assigned": ["Vuoro annettu", "Shift assigned", "Skift tilldelad"],
     "update": ["Vuoro päivitetty", "Shift updated", "Skift uppdaterats"],
     "reminder": [
       "Varmistamattoman vuoron muistutus",
       "Unconfirmed shift reminder",
-	  "Påminnelse för obekräftat skifte"
+      "Påminnelse för obekräftat skifte"
     ],
     "decline": ["Vuorosta kieltäydytty", "Shift declined", "Skiftet avböjt"],
-    "feedback": ["Palautetta vastaanotettu", "Feedback received", "Feedback mottagen"],
-    "resetpass": ["Salasanan uusimislinkki", "Password reset link", "Lösenord återställningslänk"],
-    "dynamicValues": ["Sallitut dynaamiset arvot", "Allowed dynamic values:", "Tillåtna dynamiska värden:"],
-    "userDecline": ["Kieltäytynyt käyttäjä", "The user who declined", "Användare som tackat nej"],
+    "feedback": [
+      "Palautetta vastaanotettu",
+      "Feedback received",
+      "Feedback mottagen"
+    ],
+    "resetpass": [
+      "Salasanan uusimislinkki",
+      "Password reset link",
+      "Lösenord återställningslänk"
+    ],
+    "dynamicValues": [
+      "Sallitut dynaamiset arvot",
+      "Allowed dynamic values:",
+      "Tillåtna dynamiska värden:"
+    ],
+    "userDecline": [
+      "Kieltäytynyt käyttäjä",
+      "The user who declined",
+      "Användare som tackat nej"
+    ],
     "userFeedback": [
       "Palautetta antanut käyttäjä",
       "The user who gave feedback",
-	  "Användare som gav feedback"
+      "Användare som gav feedback"
     ],
     "declineDate": [
       "Kieltäytymisen päivämäärä",
       "The date of the user declining",
-	  "Datum då användaren tackat nej"
+      "Datum då användaren tackat nej"
     ],
     "feedbackGiven": [
       "Käyttäjän antama palaute",
       "The feedback given by the user",
-	  "Feedback från användaren"
+      "Feedback från användaren"
     ],
     "resetpassToken": [
       "Salasanan uusintalinkin tokeni.",
       "The password reset link token.",
-	  "Token för återställningslänk av lösenord"
+      "Token för återställningslänk av lösenord"
     ],
     "resetpassGuide": [
       "Linkki voidaan luoda näin: http://tss.tasera.fi/#/renew-password/{token}",
       "The link can be made like this: http://tss.tasera.fi/#/renew-password/{token}",
-	  "Länken kan göras så här: http://tss.tasera.fi/#/renew-password/{token}"
+      "Länken kan göras så här: http://tss.tasera.fi/#/renew-password/{token}"
     ],
     "updateCount": [
       "Muutettujen vuorojen määrä",
       "The number of updated shifts",
-	  "Antalet uppdaterade skift"
+      "Antalet uppdaterade skift"
     ],
     "assignedCount": [
       "Annettujen vuorojen määrä",
       "The number of assigned shifts",
-	  "Antalet tilldelade skift"
+      "Antalet tilldelade skift"
     ],
     "queueMessages": [
       "Lähetä viestit koosteena tiettyyn aikaan",
       "Send compiled messages at a certain time",
-	  "Skicka sammanställda meddelanden vid en viss tidpunkt"
+      "Skicka sammanställda meddelanden vid en viss tidpunkt"
     ],
-    "pendingTime": ["Viestien lähetysaika", "Time for sending emails", "Dags att skicka e-post"],
+    "pendingTime": [
+      "Viestien lähetysaika",
+      "Time for sending emails",
+      "Dags att skicka e-post"
+    ],
     "sendPending": ["Lähetä viestit", "Send messages", "Skicka meddelanden"],
     "sendPendingTip": [
       "Voit lähettää odottavat viestit heti tällä napilla.",
       "You can force all pending emails to be sent immediately with the button.",
-	  "Du kan tvinga alla väntande e-postmeddelanden att skickas omedelbart med den här knappen."
+      "Du kan tvinga alla väntande e-postmeddelanden att skickas omedelbart med den här knappen."
     ]
   },
   "profileSettings": {
-    "navPassword": ["Vaihda salasana", "Change password", "Ändra lösenord"]
+    "navPassword": ["Vaihda salasana", "Change password", "Ändra lösenord"],
+    "navRangeofficers": [
+      "Valvojien hallinta",
+      "Range officer management",
+      "Banofficerhantering"
+    ],
+    "navSupervisions": ["Valvonnat", "Supervisions", "Övervakningar"]
+  },
+  "rangeofficerSettings": {
+    "title": [
+      "Lisää uusi valvoja",
+      "Add new range officer",
+      "Lägg till ny banofficer"
+    ],
+    "deleteTitle": [
+      "Poista valvoja",
+      "Delete range officer",
+      "Ta bort banofficer"
+    ],
+    "username": ["Käyttäjänimi", "Username", "Användarnamn"],
+    "password": ["Salasana", "Password", "Lösenord"],
+    "passwordConfirm": [
+      "Vahvista salasana",
+      "Confirm password",
+      "Bekräfta lösenord"
+    ],
+    "confirm": ["Lisää valvoja", "Add range officer", "Lägg till banofficer"],
+    "success": [
+      "Valvojan lisäys onnistui",
+      "Range officer added successfully",
+      "Banofficer tillagd"
+    ],
+    "passwordMatch": [
+      "Salasanat eivät täsmää",
+      "Passwords don't match",
+      "Lösenorden matchar inte"
+    ],
+    "empty": [
+      "Täytä kaikki tekstikentät",
+      "Fill all the text fields",
+      "Fyll i alla textfält"
+    ],
+    "error": [
+      "Valvojan lisäys epäonnistui",
+      "Range officer addition failed",
+      "Banofficer tillägg misslyckades"
+    ],
+    "delete": ["Poista", "Delete", "Ta bort"],
+    "cancel": ["Peruuta", "Cancel", "Avboka"],
+    "deleteSuccess": [
+      "Valvojan poisto onnistui",
+      "Range officer deleted successfully",
+      "Banofficer borttagen"
+    ],
+    "deleteError": [
+      "Valvojan poisto epäonnistui",
+      "Range officer deletion failed",
+      "Banofficer borttagning misslyckades"
+    ],
+    "officersRow": ["Valvojat", "Range officers", "Banofficer"],
+    "actionsRow": ["Toiminnot", "Actions", "Funktioner"]
   },
   "passwordSettings": {
     "title": ["Vaihda salasana", "Change password", "Ändra lösenord"],
     "old": ["Vanha salasana", "Old password", "Gammalt lösenord"],
     "new": ["Uusi salasana", "New password", "Nytt lösenord"],
-    "confirmNew": ["Vahvista uusi salasana", "Confirm new password", "Bekräfta nytt lösenord"],
+    "confirmNew": [
+      "Vahvista uusi salasana",
+      "Confirm new password",
+      "Bekräfta nytt lösenord"
+    ],
     "confirm": ["Vahvista", "Confirm", "Bekräfta"],
-    "alertFields": ["Täytä kaikki tekstikentät", "Fill all the text fields", "Fyll i alla textfält"],
+    "alertFields": [
+      "Täytä kaikki tekstikentät",
+      "Fill all the text fields",
+      "Fyll i alla textfält"
+    ],
     "alertWrongPword": [
       "Nykyinen salasana virheellinen",
       "Old password isn't valid",
-	  "Det gamla lösenordet är inte giltigt"
+      "Det gamla lösenordet är inte giltigt"
     ],
     "alertPwordMatch": [
       "Uusi salasana ja vahvistus eivät täsmää",
       "Confirmation doesn't match the new password",
-	  "Bekräftelsen matchar inte det nya lösenordet"
+      "Bekräftelsen matchar inte det nya lösenordet"
     ],
-    "alertSuccess": ["Salasanan vaihto onnistui", "Password change successful", "Lösenordsändringen lyckades"],
-    "alertFail": ["Salasanan vaihto epäonnistui", "Password change failed", "Lösenordsändringen misslyckades"]
+    "alertSuccess": [
+      "Salasanan vaihto onnistui",
+      "Password change successful",
+      "Lösenordsändringen lyckades"
+    ],
+    "alertFail": [
+      "Salasanan vaihto epäonnistui",
+      "Password change failed",
+      "Lösenordsändringen misslyckades"
+    ]
   },
   "raffleDatePicker": {
     "weekdaysLong": {
-      "0": ["Sunnuntai", "Maanantai", "Tiistai", "Keskiviikko", "Torstai", "Perjantai", "Lauantai"],
-      "1": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-	  "2": ["Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag"]},
+      "0": [
+        "Sunnuntai",
+        "Maanantai",
+        "Tiistai",
+        "Keskiviikko",
+        "Torstai",
+        "Perjantai",
+        "Lauantai"
+      ],
+      "1": [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "2": [
+        "Söndag",
+        "Måndag",
+        "Tisdag",
+        "Onsdag",
+        "Torsdag",
+        "Fredag",
+        "Lördag"
+      ]
+    },
     "weekdaysShort": {
       "0": ["Su", "Ma", "Ti", "Ke", "To", "Pe", "La"],
       "1": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
-	  "2": ["Sö", "Må", "Ti", "On", "To", "Fr", "Lö"]},
+      "2": ["Sö", "Må", "Ti", "On", "To", "Fr", "Lö"]
+    },
     "months": {
-      "0": ["Tammikuu", "Helmikuu", "Maaliskuu", "Huhtikuu", "Toukokuu", "Kesäkuu",
-        "Heinäkuu", "Elokuu", "Syyskuu", "Lokakuu", "Marraskuu", "Joulukuu"],
-      "1": ["January", "February", "March", "April", "May", "June", "July", "August",
-        "September", "October", "November", "December"],
-	  "2":["Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "Augusti",
-		"September", "Oktober", "November", "December"]}
+      "0": [
+        "Tammikuu",
+        "Helmikuu",
+        "Maaliskuu",
+        "Huhtikuu",
+        "Toukokuu",
+        "Kesäkuu",
+        "Heinäkuu",
+        "Elokuu",
+        "Syyskuu",
+        "Lokakuu",
+        "Marraskuu",
+        "Joulukuu"
+      ],
+      "1": [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ],
+      "2": [
+        "Januari",
+        "Februari",
+        "Mars",
+        "April",
+        "Maj",
+        "Juni",
+        "Juli",
+        "Augusti",
+        "September",
+        "Oktober",
+        "November",
+        "December"
+      ]
+    }
   },
   "raffle": {
-    "tableTitle": ["Yhteisöt", "Organizations", "Organisationer"],
+    "tableTitle": ["Yhteisöt", "Associations", "Föreningar"],
     "raffled": ["Arvonnassa", "In raffle", "På tombola"],
-    "user": ["Yhteisö", "Organization", "Organisation"],
+    "user": ["Yhteisö", "Association", "Föreningsnamn"],
     "members": ["Ampujakortilliset", "Gun license owners", "Vapenlicensägare"],
-    "supervisors": ["Valvojat", "Supervisors", "Handledare"],
-    "loadError": ["Yhteisöjen lataus epäonnistui", "Could not load organizations", "Kunde inte ladda organisationer"],
-    "valueError": ["Arvot eivät saa olla negatiivisia", "Values cannot be negative", "Värden kan inte vara negativa"],
-    "updateError": ["Yhteisön päivitys epäonnistui", "Organization update failed", "Organisation uppdatering misslyckades"],
-    "updateSuccess": ["Yhteisö päivitetty", "Organization updated", "Organisation uppdaterats"],
-    "raffleUnavailable": ["Lisää yhteisöjä arpoaksesi valvojat", "Add organizations to raffle supervisors", "Lägg till organisationer i tombola av handledare"],
-    "dates": ["Valitse arvottavat päivämäärät", "Choose dates for the raffle", "Välj datum för tombola"],
+    "supervisors": ["Valvojat", "Rangeofficers", "Handledare"],
+    "loadError": [
+      "Yhteisöjen lataus epäonnistui",
+      "Could not load associations",
+      "Kunde inte ladda föreningar"
+    ],
+    "valueError": [
+      "Arvot eivät saa olla negatiivisia",
+      "Values cannot be negative",
+      "Värden kan inte vara negativa"
+    ],
+    "updateError": [
+      "Yhteisön päivitys epäonnistui",
+      "Association update failed",
+      "Föreningar uppdatering misslyckades"
+    ],
+    "updateSuccess": [
+      "Yhteisö päivitetty",
+      "Organization updated",
+      "Föreningar uppdaterats"
+    ],
+    "raffleUnavailable": [
+      "Lisää yhteisöjä arpoaksesi valvojat",
+      "Add associations to raffle supervisors",
+      "Lägg till föreningar i tombola av handledare"
+    ],
+    "dates": [
+      "Valitse arvottavat päivämäärät",
+      "Choose dates for the raffle",
+      "Välj datum för tombola"
+    ],
     "date": ["Päivämäärä", "Date", "Datum"],
-    "amount": ["Vuorojen määrä", "Amount of supervisions", "Antalet av handledare skift"],
+    "amount": [
+      "Vuorojen määrä",
+      "Amount of supervisions",
+      "Antalet av handledare skift"
+    ],
     "raffle": ["Arvo valvojat", "Raffle supervisors", "Värdera handledare"],
-    "raffleError": ["Arvonnan suoritus epäonnistui", "The execution of the raffle failed", "Genomförandet av tombola misslyckades"],
+    "raffleError": [
+      "Arvonnan suoritus epäonnistui",
+      "The execution of the raffle failed",
+      "Genomförandet av tombola misslyckades"
+    ],
     "results": ["Arvonnan tulokset", "Raffle results", "Tombola resultat"],
     "save": ["Tallenna tulokset", "Save results", "Spara resultat"],
-    "saveSuccess": ["Tulokset tallennettu", "Results saved", "Resultat sparats"],
-    "saveError": ["Tuloksien tallennus epäonnistui", "The saving of the results failed", "Misslyckats att spara resultat"]
+    "saveSuccess": [
+      "Tulokset tallennettu",
+      "Results saved",
+      "Resultat sparats"
+    ],
+    "saveError": [
+      "Tuloksien tallennus epäonnistui",
+      "The saving of the results failed",
+      "Misslyckats att spara resultat"
+    ]
   },
   "infoPage": {
     "title": ["Lisää viesti", "Add info", "Lägg till ett meddelande"],
     "message": ["Viesti", "Message", "Meddelande"],
     "startDate": ["Alkamispäivämäärä", "Start date", "Start datum"],
     "endDate": ["Loppumispäivämäärä", "End date", "Slutdatum"],
-    "repeatWeekly": ["Toista viikoittain", "Repeat weekly", "Upprepa varje vecka"],
-    "repeatMonthly": ["Toista kuukausittain", "Repeat monthly", "Upprepa varje månad"],
-    "sendPublicMessage": ["Lähetä julkinen viesti", "Send public message", "Skicka offentligt meddelande"],
+    "repeatWeekly": [
+      "Toista viikoittain",
+      "Repeat weekly",
+      "Upprepa varje vecka"
+    ],
+    "repeatMonthly": [
+      "Toista kuukausittain",
+      "Repeat monthly",
+      "Upprepa varje månad"
+    ],
+    "sendPublicMessage": [
+      "Lähetä julkinen viesti",
+      "Send public message",
+      "Skicka offentligt meddelande"
+    ],
+    "sendRangeMasterMessage": ["Päävalvoja", "Rangemaster", "Banmästare"],
     "send": ["Lähetä", "Send", "Skicka"]
   },
   "trackStatisticsModal": {
-    "message": ["Käyttäjiä ei tule vähentää. Haluatko todella vähentää käyttäjien määrää?", "Users should not be reduced, Do you really want to reduce the number of users?", "Användare ska inte minskas. Vill du verkligen minska antalet användare?"],
+    "message": [
+      "Käyttäjiä ei tule vähentää. Haluatko todella vähentää käyttäjien määrää?",
+      "Users should not be reduced, Do you really want to reduce the number of users?",
+      "Användare ska inte minskas. Vill du verkligen minska antalet användare?"
+    ],
     "messageTitle": ["Varoitus!", "Warning!", "Varning!"],
     "messageYes": ["Joo", "Yes", "Ja"],
     "messageNo": ["Ei", "No", "Nej"]

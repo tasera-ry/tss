@@ -247,6 +247,7 @@ function Dayview(props) {
 
             {/* Other info */}
             <ButtonComponent />
+
           </div>
         </div>
         <Link

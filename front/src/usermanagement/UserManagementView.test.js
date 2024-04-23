@@ -59,12 +59,12 @@ describe('testing UserManagementView', () => {
       );
     });
     await waitFor(() =>
-      expect(screen.getByText('Ruthie_Leuschke')).toBeInTheDocument(),
+      expect(screen.getByText(`${testUtils.users[0].name}`, {exact: false})).toBeInTheDocument(),
     );
     await waitFor(() =>
-      expect(screen.getByTestId('del-1')).toBeInTheDocument(),
+      expect(screen.getByTestId('del-2')).toBeInTheDocument(),
     );
-    fireEvent.click(screen.getByTestId('del-1'));
+    fireEvent.click(screen.getByTestId('del-2'));
     await waitFor(() =>
       expect(screen.getByText('Are you sure?')).toBeInTheDocument(),
     );
@@ -73,7 +73,7 @@ describe('testing UserManagementView', () => {
     );
     fireEvent.click(screen.getByText('Confirm'));
     await waitFor(() =>
-      expect(fetch).toHaveBeenCalledWith('/api/user/1', {
+      expect(fetch).toHaveBeenCalledWith('/api/user/2', {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
