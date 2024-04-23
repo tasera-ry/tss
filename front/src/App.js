@@ -31,6 +31,8 @@ import Raffle from './raffle/raffle';
 
 import { validateLogin } from './utils/Utils';
 
+import Devices from './Devices/devices';
+
 // TO DO: Move this to scss if possible.
 
 const theme = createMuiTheme({

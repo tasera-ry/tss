@@ -68,6 +68,22 @@ router
   );
 
 router
+  .route('/officer-association/:id')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty(
+      'role',
+      ['superuser', 'association', 'rangeofficer'],
+      _.includes
+    )
+  )
+  .get(
+    validators.user.getAssociation,
+    middlewares.user.getAssociation,
+    controllers.user.getAssociation
+  );
+
+router
   .route('/changeownpassword/:id')
   .put(
     middlewares.jwt.read,
@@ -283,6 +299,7 @@ router
 router
   .route('/info')
   .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'));
+
 //Infomessages
 router
   .route('/infomessage/tablet')
@@ -339,46 +356,41 @@ router
 router
   .route('/members')
   .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'))
-  .get(
-    validators.members.readAll,
-    middlewares.members.read,
-    controllers.members.read
-  )
-  .post(
-    validators.members.create,
-    middlewares.members.create,
-    controllers.members.create
-  );
+  .get(validators.members.readAll, middlewares.members.read, controllers.members.read)
+  .post(validators.members.create, middlewares.members.create, controllers.members.create);
 
 router
   .route('/members/:user_id')
   .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'))
-  .get(
-    validators.members.read,
-    middlewares.members.read,
-    controllers.members.read
-  )
-  .put(
-    validators.members.update,
-    middlewares.members.update,
-    controllers.members.update
-  );
+  .get(validators.members.read, middlewares.members.read, controllers.members.read)
+  .put(validators.members.update, middlewares.members.update, controllers.members.update);
 
 router
   .route('/set-raffled-supervisors')
   .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'))
-  .post(
-    validators.raffleSupervisors.checkRaffleResults,
-    controllers.raffleSupervisors.set
-  );
+  .post(validators.raffleSupervisors.checkRaffleResults, controllers.raffleSupervisors.set);
 
 router
   .route('/raffle')
   .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'))
+  .post(validators.raffle.create, middlewares.raffle.create, controllers.raffle.create);
+
+router
+  .route('/devices')
+  .get(validators.devices.readAll, middlewares.devices.read, controllers.devices.read)
   .post(
-    validators.raffle.create,
-    middlewares.raffle.create,
-    controllers.raffle.create
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'),
+    validators.devices.create,
+    middlewares.devices.create,
+    controllers.devices.create
   );
+
+router
+  .route('/devices/:id')
+  .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'))
+  .get(validators.devices.read, middlewares.devices.read, controllers.devices.read)
+  .put(validators.devices.update, middlewares.devices.update, controllers.devices.update)
+  .delete(validators.devices.delete, middlewares.devices.delete, controllers.devices.delete);
 
 module.exports = router;

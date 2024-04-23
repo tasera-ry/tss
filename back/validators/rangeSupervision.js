@@ -1,4 +1,10 @@
-const { body, query, param, validationResult, matchedData } = require('express-validator');
+const {
+  body,
+  query,
+  param,
+  validationResult,
+  matchedData,
+} = require('express-validator');
 const moment = require('moment');
 
 function validatorAdditions(validator, opts) {
@@ -9,14 +15,17 @@ function validatorAdditions(validator, opts) {
   }
 
   if (opts.includes('optional')) {
-    validator = validator.optional();
+    validator = validator.optional({ nullable: true });
   }
 
   return validator;
 }
 
 const fields = {
-  scheduled_range_supervision_id: function idValidation(requestObject, ...opts) {
+  scheduled_range_supervision_id: function idValidation(
+    requestObject,
+    ...opts
+  ) {
     const validator = requestObject('scheduled_range_supervision_id')
       .isInt()
       .withMessage('must be an integer')
@@ -51,7 +60,10 @@ const fields = {
   },
 
   user_id: function idValidation(requestObject, ...opts) {
-    const validator = requestObject('id').isInt().withMessage('must be an integer').toInt();
+    const validator = requestObject('id')
+      .isInt()
+      .withMessage('must be an integer')
+      .toInt();
     return validatorAdditions(validator, opts);
   },
 
@@ -65,18 +77,29 @@ const fields = {
   },
 
   user: function userValidation(requestObject, ...opts) {
-    const validator = requestObject('user').isString().withMessage('must be a string');
+    const validator = requestObject('user')
+      .isString()
+      .withMessage('must be a string');
     return validatorAdditions(validator, opts);
   },
 
   arriving_at: function timeValidator(requestObject, ...opts) {
     const validator = requestObject('arriving_at').custom((value) => {
-      if (moment(value, 'HH:mm', true /* strict parsing */).isValid()) {
+      if (moment(value, 'HH:mm:ss', true /* strict parsing */).isValid()) {
         return true;
       }
-      throw Error('Time is not in a valid format (HH:mm)');
+      throw Error('Time is not in a valid format (HH:mm:ss)');
     });
 
+    return validatorAdditions(validator, opts);
+  },
+
+  rangeofficer_id: function idValidation(requestObject, ...opts) {
+    const validator = requestObject('rangeofficer_id').optional({
+      nullable: true,
+    });
+    // .withMessage('must be an integer')
+    // .toInt();
     return validatorAdditions(validator, opts);
   },
 };
@@ -144,10 +167,14 @@ module.exports = {
     fields.association(body, 'optional'),
     fields.notice(body, 'optional'),
     fields.arriving_at(body, 'optional'),
+    fields.rangeofficer_id(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
       response.locals.id = matchedData(request, { locations: ['params'] });
-      response.locals.updates = matchedData(request, { locations: ['body'] });
+      response.locals.updates = matchedData(request, {
+        locations: ['body'],
+        includeOptionals: true,
+      });
       return next();
     },
   ],

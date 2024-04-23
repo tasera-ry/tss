@@ -9,7 +9,16 @@
       "Användarhantering"
     ],
     "Supervision": ["Valvonnat", "Supervisions", "Övervakninger"],
-    "Profile": ["Omat Tiedot", "Profile", "Profil"],
+    "AssociationProfile": [
+      "Yhdistyksen hallinta",
+      "Association dashboard",
+      "Föreningshantering"
+    ],
+    "RangeofficerProfile": [
+      "Tilin hallinta",
+      "Account dashboard",
+      "Kontohantering"
+    ],
     "Tablet": ["Tablettinäkymä", "Tablet view", "Surfplattavy"],
     "Feedback": ["Palaute", "Feedback", "Respons"],
     "trackCRUD": ["Ratojen päivitys", "Edit tracks", "Uppdatera banor"],
@@ -21,8 +30,10 @@
       "E-postinställningar"
     ],
     "Raffle": ["Valvojien arvonta", "Supervisor raffle", "Handledare tombola"],
-    "Info": ["Lisää infoviesti", "Add info message", "Tillägga info meddelande"]
+    "Info": ["Lisää infoviesti", "Add info message", "Tillägga info meddelande"], 
+    "Devices":["Ratojen varaus", "Track book", "Bokning av spår"]   
   },
+
   "banner": {
     "Notification": [
       "Sinulla on varmistamattomia päävalvojavuoroja!",
@@ -31,6 +42,21 @@
     ],
     "Check": ["TARKISTA", "CHECK", "KONTROLLERA"]
   },
+  
+  "devicesList": {
+    "DeviceActions": ["Toiminnot", "Actions", "Verksamheter"],
+    "DeviceList": ["Laitteet", "Device List", "Enhetslista"],
+    "DeviceName": ["Nimi", "Name", "Namn"],
+    "DeviceStatus": ["Tila (vapaa/varattu)", "Status (free/reserved)", "Status (fri/reserverad)"],
+    "FreeStatus": ["Vapaa", "Free", "Fri"],
+    "ReservedStatus": ["Varattu", "Reserved", "Reserverad"],
+    "AddError": ["Virhe: Laitteen nimi ei voi olla tyhjä.", "Error: Device name cannot be empty", "Fel: Enhetsnamnet får inte vara tomt."],
+    "StatusError": ["Virhe: Laitteen tilan on oltava joko 'vapaa' tai 'varattu'",
+     "Error: Device status must be either 'free' or 'reserved'", "Fel: Enhetsstatusen måste vara antigen 'fri' eller 'reserverad'"]
+  },
+
+
+
   "signin": {
     "SignIn": ["Kirjaudu sisään", "Sign In", "Logga in"],
     "Name": ["Käyttäjänimi", "Username", "Användarnamn"],
@@ -151,9 +177,46 @@
     "Present": ["Vahvista saapuminen", "Confirm date", "Bekräfta datum"],
     "Absent": ["En pääse paikalle", "Absent", "Frånvarande"],
     "EnRoute": ["Matkalla", "En route", "På väg"],
+    "OfficerSelect": ["Valitse valvoja", "Select officer", "Välj övervakare"],
+    "NoOfficer": ["Ei valintaa", "No selection", "Inget val"],
     "Cancel": ["Sulje", "Cancel", "Avboka"],
     "Save": ["Tallenna", "Save", "Spara"],
-    "ProvideTime": ["Arvioitu saapumisaikasi:", "Your estimated time of arrival:", "Din bäraknad ankomsttid:"]
+    "ProvideTime": [
+      "Arvioitu saapumisaikasi:",
+      "Your estimated time of arrival:",
+      "Din bäraknad ankomsttid:"
+    ],
+    "date": ["Päivämäärä", "Date", "Datum"],
+    "status": ["Tila", "Status", "Status"],
+    "actionsRow": ["Toiminnot", "Actions", "Funktioner"],
+    "setButton": ["Aseta", "Set", "Spara"],
+    "resetButton": ["Nollaa", "Reset", "Återställ"],
+    "Association": [
+      "Yhdistyksen tulevat valvonnat",
+      "Association's upcoming supervisions",
+      "Föreningens kommande övervakningar"
+    ],
+    "Rangeofficer": [
+      "Yhdistyksesi vapaat valvontavurot. Jos tila on vahvistettu, yhdistys on asettanut vuoron sinulle",
+      "Your association's free supervisions. If the status is confirmed, the association has set the shift for you",
+      "Din förenings lediga övervakningsturer. Om statusen är bekräftad, har föreningen ställt in skiftet för dig"
+    ],
+    "AssignedOfficer": [
+      "Asetettu valvoja",
+      "Assigned officer",
+      "Tilldelad övervakare"
+    ],
+    "clearNotification": [
+      "Valvonta tyhjennetty päivälle",
+      "Supervision cleared for",
+      "Övervakning rensad för"
+    ],
+    "updatedSupervision": [
+      "Valvonta päivitetty päivälle",
+      "Supervision updated for",
+      "Övervakning uppdaterad för"
+    ],
+    "error": ["Jokin meni pieleen", "Something went wrong", "Något gick fel"]
   },
   "feedback": {
     "Title": ["Anna palautetta", "Give feedback", "Ge feedback"],
@@ -167,8 +230,16 @@
   },
   "week": {
     "Week": ["Viikko", "Week", "Vecka"],
-    "Green": ["Päävalvoja paikalla", "Range officer present", "Banofficer närvarande"],
-    "Lightgreen": ["Päävalvoja varmistettu, arvioitu saapumisaika", "Range officer confirmed, estimated time of arrival", "Banofficer bekräftat, beräknad ankomsttid"],
+    "Green": [
+      "Päävalvoja paikalla",
+      "Range officer present",
+      "Banofficer närvarande"
+    ],
+    "Lightgreen": [
+      "Päävalvoja varmistettu, arvioitu saapumisaika",
+      "Range officer confirmed, estimated time of arrival",
+      "Banofficer bekräftat, beräknad ankomsttid"
+    ],
     "Blue": [
       "Päävalvoja määritetty, mutta ei varmistettu",
       "Range officer predefined, not confirmed",
@@ -519,6 +590,8 @@
     "firstTooltip": ["Ensimmäinen sivu", "First page", "Första sidan"],
     "lastTooltip": ["Viimeinen sivu", "Last page", "Sista sidan"]
   },
+
+
   "month": {
     "0": ["Err", "Err", "Err"],
     "01": ["Tammikuu", "January", "Januari"],
@@ -730,7 +803,8 @@
       "Valvojien hallinta",
       "Range officer management",
       "Banofficerhantering"
-    ]
+    ],
+    "navSupervisions": ["Valvonnat", "Supervisions", "Övervakningar"]
   },
   "rangeofficerSettings": {
     "title": [
@@ -983,11 +1057,7 @@
       "Send public message",
       "Skicka offentligt meddelande"
     ],
-    "sendRangeMasterMessage": [
-      "Päävalvoja",
-      "Rangemaster",
-      "Banmästare"
-    ],
+    "sendRangeMasterMessage": ["Päävalvoja", "Rangemaster", "Banmästare"],
     "send": ["Lähetä", "Send", "Skicka"]
   },
   "trackStatisticsModal": {

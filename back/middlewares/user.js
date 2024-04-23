@@ -177,6 +177,20 @@ const serviceCalls = {
 
     return next();
   },
+
+  getAssociation: async function readAssociation(request, response, next) {
+    const query = response.locals.query;
+
+    try {
+      response.locals.queryResult = await services.user.getAssociation(
+        query.id
+      );
+    } catch (e) {
+      return next(e);
+    }
+
+    return next();
+  },
 };
 
 exports.sign = [validators.user.sign, serviceCalls.sign];
@@ -203,3 +217,4 @@ exports.updateOwnPasswordFilter = [
 exports.userUpdateCheck = userUpdateCheck;
 
 exports.getRangeOfficers = [serviceCalls.getRangeOfficers];
+exports.getAssociation = [serviceCalls.getAssociation];

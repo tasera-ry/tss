@@ -23,6 +23,9 @@ import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/en-ca';
 
+// API for backend calls
+import api from '../api/api';
+
 // Translations
 import data from '../texts/texts.json';
 
@@ -55,6 +58,8 @@ const useStyles = makeStyles((theme) => ({
 const ArrivalTimeContext = createContext({
   arrivalTime: '',
   setArrivalTime: () => {},
+  rangeofficer: '',
+  setRangeOfficer: () => {},
 });
 /*
   LoggedIn.js is the component for accepting and denying upcoming supervision turns
@@ -65,6 +70,8 @@ const DropDowns = (props) => {
   const fin = localStorage.getItem('language');
   const id = props.d;
   const obj = props.changes.find((o) => o.date === id);
+  const { rangeofficerList } = props;
+
   let text = props.sv.Present[fin];
   let color = '#f2f2f2';
   if (
@@ -79,11 +86,16 @@ const DropDowns = (props) => {
     color = '#c97b7b';
   }
   const [buttonText, setButtonText] = useState(text);
+  const [officerButtonText, setOfficerButtonText] = useState(
+    props.sv.OfficerSelect[fin],
+  );
   const [buttonColor, setButtonColor] = useState(color);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [officerAnchorEl, setOfficerAnchorEl] = useState(null);
   const [disable, setDisable] = useState(buttonColor !== '#658f60');
   const [provideTime, setProvideTimeText] = useState('');
-  const { arrivalTime, setArrivalTime } = useContext(ArrivalTimeContext);
+  const { arrivalTime, setArrivalTime, rangeofficer, setRangeOfficer } =
+    useContext(ArrivalTimeContext);
 
   const buttonStyle = {
     width: 180,
@@ -105,6 +117,10 @@ const DropDowns = (props) => {
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleOfficerClick = (event) => {
+    setOfficerAnchorEl(event.currentTarget);
   };
 
   const HandleClose = (event) => {
@@ -139,6 +155,19 @@ const DropDowns = (props) => {
     setAnchorEl(null);
   };
 
+  const handleOfficerClose = (officer) => {
+    if (officer === null) {
+      setOfficerButtonText(props.sv.NoOfficer[fin]);
+      setRangeOfficer(null);
+      setOfficerAnchorEl(null);
+    } else {
+      console.log('selected officer:', officer);
+      setOfficerButtonText(officer.name);
+      setRangeOfficer(officer);
+      setOfficerAnchorEl(null);
+    }
+  };
+
   return (
     <span>
       <Button
@@ -166,6 +195,40 @@ const DropDowns = (props) => {
           {props.sv.Absent[fin]}
         </MenuItem>
       </Menu>
+      {/* Range officer selection menu */}
+      <div>
+        {buttonText === props.sv.Confirmed[fin] && (
+          <div>
+            <p>Select rangeofficer</p>
+            <Button
+              onClick={handleOfficerClick}
+              variant="outlined"
+              size="small"
+            >
+              {officerButtonText}
+            </Button>
+            <Menu
+              open={Boolean(officerAnchorEl)}
+              anchorEl={officerAnchorEl}
+              onClose={handleOfficerClose}
+              keepMounted
+            >
+              <MenuItem onClick={() => handleOfficerClose(null)} data-info="">
+                {props.sv.NoOfficer[fin]}
+              </MenuItem>
+              {rangeofficerList.map((officer) => (
+                <MenuItem
+                  key={officer.id}
+                  onClick={() => handleOfficerClose(officer)}
+                  data-info={officer.name}
+                >
+                  {officer.name}
+                </MenuItem>
+              ))}
+            </Menu>
+          </div>
+        )}
+      </div>
       <div>
         <p>{provideTime}</p>
         {buttonText === props.sv.Confirmed[fin] && (
@@ -215,7 +278,14 @@ const Check = ({ HandleChange, checked, sv, disable }) => {
 };
 
 // prints date info in rows
-const Rows = ({ HandleChange, changes, checked, setDone, sv }) => {
+const Rows = ({
+  HandleChange,
+  changes,
+  checked,
+  setDone,
+  sv,
+  rangeofficerList,
+}) => {
   const language = localStorage.getItem('language');
   let num = 2;
   if (language === '1') {
@@ -250,6 +320,7 @@ const Rows = ({ HandleChange, changes, checked, setDone, sv }) => {
         HandleChange={HandleChange}
         checked={checked}
         sv={sv}
+        rangeofficerList={rangeofficerList}
       />
     </div>
   ));
@@ -396,6 +467,8 @@ const DialogWindow = ({ onCancel }) => {
   const [checked, setChecked] = useState(false);
   const [cookies] = useCookies(['username']);
   const [arrivalTime, setArrivalTime] = useState('');
+  const [rangeofficer, setRangeOfficer] = useState('');
+  const [rangeofficerList, setRangeOfficerList] = useState('');
   const { sv } = data;
 
   if (onCancel === undefined) {
@@ -403,7 +476,7 @@ const DialogWindow = ({ onCancel }) => {
   }
 
   // starting point
-  useEffect(() => {
+  useEffect(async () => {
     getSchedule(
       setSchedules,
       setNoSchedule,
@@ -411,12 +484,18 @@ const DialogWindow = ({ onCancel }) => {
       setDone,
       cookies.username,
     );
+
+    const response = await api.getRangeOfficers(cookies.id);
+    setRangeOfficerList(response);
   }, []); // eslint-disable-line
 
   return (
     <div>
-      <ArrivalTimeContext.Provider value={{ arrivalTime, setArrivalTime }}>
+      <ArrivalTimeContext.Provider
+        value={{ arrivalTime, setArrivalTime, rangeofficer, setRangeOfficer }}
+      >
         <Logic
+          rangeofficerList={rangeofficerList}
           schedules={schedules}
           setSchedules={setSchedules}
           noSchedule={noSchedule}
@@ -440,8 +519,11 @@ async function putSchedules(changes) {
 
     const request = {
       range_supervisor: changes[i].range_supervisor,
+      rangeofficer_id: changes[i].rangeofficer_id,
       arriving_at: changes[i].arriving_at,
     };
+
+    console.log(id, request);
 
     await axios.put(query, request);
   }
@@ -449,6 +531,7 @@ async function putSchedules(changes) {
 
 // creates dialog-window
 const Logic = ({
+  rangeofficerList,
   schedules,
   noSchedule,
   checked,
@@ -464,7 +547,7 @@ const Logic = ({
   const fin = localStorage.getItem('language');
   const changes = [...schedules];
 
-  const { arrivalTime } = useContext(ArrivalTimeContext);
+  const { arrivalTime, rangeofficer } = useContext(ArrivalTimeContext);
 
   /* eslint-disable-next-line */
   const HandleChange = (event) => {
@@ -485,6 +568,10 @@ const Logic = ({
 
     if (arrivalTime) {
       changes[0].arriving_at = arrivalTime;
+    }
+
+    if (rangeofficer) {
+      changes[0].rangeofficer_id = rangeofficer.id;
     }
 
     // Send updates to backend
@@ -515,6 +602,7 @@ const Logic = ({
               checked={checked}
               setDone={setDone}
               sv={sv}
+              rangeofficerList={rangeofficerList}
             />
           ) : (
             ''

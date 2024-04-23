@@ -29,7 +29,6 @@ const fin = localStorage.getItem('language');
 const lang = getLanguage();
 
 const Weekview = (props) => {
-
   const [state, setState] = useState('loading');
   const [date, setDate] = useState(new Date(Date.now()));
   const [weekNro, setWeekNro] = useState(0);
@@ -37,7 +36,7 @@ const Weekview = (props) => {
   const [yearNro, setYearNro] = useState(0);
   const [paivat, setPaivat] = useState(undefined);
   const [refresh, setRefresh] = useState(false);
-  const [path, setPath] = useState("/");
+  const [path, setPath] = useState('/');
 
   // Updates week to current when page loads
   useEffect(() => {
@@ -49,7 +48,7 @@ const Weekview = (props) => {
   // Re-renders the component and fetches new data when the logo to frontpage is clicked on weekview
   /* eslint-disable-next-line */
   useEffect(() => {
-    if(props.history.location.pathname != path){
+    if (props.history.location.pathname != path) {
       setState('loading');
       getWeek();
       getYear();
@@ -59,8 +58,8 @@ const Weekview = (props) => {
   }, [props]);
 
   // fetch data and refresh view
-  useEffect(() =>  {
-    if(refresh){
+  useEffect(() => {
+    if (refresh) {
       update();
       setRefresh(false);
     }
@@ -68,7 +67,6 @@ const Weekview = (props) => {
 
   // Changes week number state to previous one
   const previousWeekClick = (e) => {
-
     setState('loading');
     setPath(props.history.location.pathname);
 
@@ -85,12 +83,11 @@ const Weekview = (props) => {
       let paramMonth = urlParamDateSplit[1];
       let paramDay = urlParamDateSplit[2];
 
-       // if day between 1 and 9, adds zero to front for formatting purposes
-       paramDay = paramDay.length == 1 ? "0" + paramDay : paramDay;
+      // if day between 1 and 9, adds zero to front for formatting purposes
+      paramDay = paramDay.length == 1 ? '0' + paramDay : paramDay;
 
-       // if month between 1 and 9, adds zero to front for formatting purposes
-       paramMonth = paramMonth.length == 1 ? "0" + paramMonth : paramMonth;
- 
+      // if month between 1 and 9, adds zero to front for formatting purposes
+      paramMonth = paramMonth.length == 1 ? '0' + paramMonth : paramMonth;
 
       const paramDateCorrect = moment(
         paramYear + paramMonth + paramDay,
@@ -107,7 +104,7 @@ const Weekview = (props) => {
     const newWeek = newDay.week();
 
     try {
-      const correctDay = new Date( date.getDate() - 7 );
+      const correctDay = new Date(date.getDate() - 7);
       props.history.replace(
         `/weekview/${moment(newDay, 'YYYYMMDD')
           .add(1, 'day')
@@ -118,8 +115,7 @@ const Weekview = (props) => {
       const weekNumber = moment(dayNro, 'YYYYMMDD').week();
 
       // Week logic cuz you can't go negative
-      const newYear =
-        weekNumber === 1 ? yearNro - 1 : yearNro;
+      const newYear = weekNumber === 1 ? yearNro - 1 : yearNro;
 
       setDate(correctDay);
       setDayNro(newDay);
@@ -127,13 +123,12 @@ const Weekview = (props) => {
       setYearNro(newYear);
       setRefresh(true);
     } catch (error) {
-       console.log(error)
+      console.log(error);
     }
   };
 
   // Changes week number state to next one
   const nextWeekClick = (e) => {
-
     setState('loading');
     setPath(props.history.location.pathname);
 
@@ -151,12 +146,11 @@ const Weekview = (props) => {
       let paramMonth = urlParamDateSplit[1];
       let paramDay = urlParamDateSplit[2];
 
-       // if day between 1 and 9, adds zero to front for formatting purposes
-       paramDay = paramDay.length == 1 ? "0" + paramDay : paramDay;
+      // if day between 1 and 9, adds zero to front for formatting purposes
+      paramDay = paramDay.length == 1 ? '0' + paramDay : paramDay;
 
-       // if month between 1 and 9, adds zero to front for formatting purposes
-       paramMonth = paramMonth.length == 1 ? "0" + paramMonth : paramMonth;
- 
+      // if month between 1 and 9, adds zero to front for formatting purposes
+      paramMonth = paramMonth.length == 1 ? '0' + paramMonth : paramMonth;
 
       const paramDateCorrect = moment(
         paramYear + paramMonth + paramDay,
@@ -172,7 +166,7 @@ const Weekview = (props) => {
     const newWeek = newDay.week();
 
     try {
-      const correctDay = new Date( date.getDate() + 7 );
+      const correctDay = new Date(date.getDate() + 7);
       props.history.replace(
         `/weekview/${moment(newDay, 'YYYYMMDD')
           .add(1, 'day')
@@ -181,8 +175,7 @@ const Weekview = (props) => {
       );
 
       // Week logic cuz there's no 53 weeks
-      const newYear =
-        newWeek === 1 ? yearNro + 1 : yearNro;
+      const newYear = newWeek === 1 ? yearNro + 1 : yearNro;
 
       setDate(correctDay);
       setDayNro(newDay);
@@ -190,7 +183,7 @@ const Weekview = (props) => {
       setYearNro(newYear);
       setRefresh(true);
     } catch (error) {
-       console.log(error)
+      console.log(error);
     }
   };
 
@@ -221,12 +214,11 @@ const Weekview = (props) => {
       let paramMonth = urlParamDateSplit[1];
       let paramYear = urlParamDateSplit[0];
 
-       // if day between 1 and 9, adds zero to front for formatting purposes
-       paramDay = paramDay.length == 1 ? "0" + paramDay : paramDay;
+      // if day between 1 and 9, adds zero to front for formatting purposes
+      paramDay = paramDay.length == 1 ? '0' + paramDay : paramDay;
 
-       // if month between 1 and 9, adds zero to front for formatting purposes
-       paramMonth = paramMonth.length == 1 ? "0" + paramMonth : paramMonth;
- 
+      // if month between 1 and 9, adds zero to front for formatting purposes
+      paramMonth = paramMonth.length == 1 ? '0' + paramMonth : paramMonth;
 
       const paramDateCorrect = moment(
         paramYear + paramMonth + paramDay,
@@ -271,7 +263,7 @@ const Weekview = (props) => {
           <p id="weekDay">
             {lang === 'en'
               ? weekdayShorthand[dayNumber][1]
-              : lang === 'swe' 
+              : lang === 'swe'
               ? weekdayShorthand[dayNumber][2]
               : weekdayShorthand[dayNumber][0]}
           </p>
@@ -325,6 +317,7 @@ const Weekview = (props) => {
     let oikeePaiva;
     let linkki;
     let info;
+    let arrivalTime;
 
     for (let j = 0; j < 7; j += 1) {
       // Set color
@@ -346,6 +339,8 @@ const Weekview = (props) => {
 
       oikeePaiva = paivat[j].date;
       info = false;
+      arrivalTime = null;
+
       if (paivat[j].tracks) {
         // eslint-disable-next-line
         paivat[j].tracks.forEach((track) => {
@@ -354,6 +349,12 @@ const Weekview = (props) => {
           }
         });
       }
+
+      if (paivat[j].arriving_at !== null) {
+        info = true;
+        arrivalTime = moment(paivat[j].arriving_at, 'HH:mm:ss').format('HH:mm');
+      }
+
       linkki = `/dayview/${oikeePaiva}`;
       table.push(
         <Link
@@ -362,7 +363,10 @@ const Weekview = (props) => {
           className="link"
           to={linkki}
         >
-          <p>
+          <p className={classes(css.infoBox)}>
+            {arrivalTime && (
+              <div className={classes(css.arrivalTime)}>ETA {arrivalTime}</div>
+            )}
             {info ? (
               <img
                 className={classes(css.exclamation2)}
@@ -431,7 +435,7 @@ const Weekview = (props) => {
           7,
       ); // eslint-disable-line
 
-      // Count correct weeknumber from URL
+    // Count correct weeknumber from URL
     try {
       const fullUrl = window.location.href.split('/');
       const urlParamDate = fullUrl[5];
@@ -445,10 +449,10 @@ const Weekview = (props) => {
       let paramYear = urlParamDateSplit[0];
 
       // if day between 1 and 9, adds zero to front for formatting purposes
-      paramDay = paramDay.length == 1 ? "0" + paramDay : paramDay;
+      paramDay = paramDay.length == 1 ? '0' + paramDay : paramDay;
 
       // if month between 1 and 9, adds zero to front for formatting purposes
-      paramMonth = paramMonth.length == 1 ? "0" + paramMonth : paramMonth;
+      paramMonth = paramMonth.length == 1 ? '0' + paramMonth : paramMonth;
 
       const paramDateCorrect = moment(
         paramYear + paramMonth + paramDay,
@@ -472,8 +476,7 @@ const Weekview = (props) => {
       props.history.replace('/weekview/');
     }
 
-    
-    const requestSchedulingWeek = async() => {
+    const requestSchedulingWeek = async () => {
       const response = await getSchedulingWeek(date1);
 
       if (response) {
@@ -483,8 +486,7 @@ const Weekview = (props) => {
     };
 
     requestSchedulingWeek();
-  }
-    
+  };
 
   //const fin = localStorage.getItem('language'); // eslint-disable-line
   //const { week } = texts; // eslint-disable-line
@@ -519,9 +521,7 @@ const Weekview = (props) => {
           </div>
 
           {/* Date boxes */}
-          <Grid className={classes(css.flexContainer2)}>
-            {createWeekDay()}
-          </Grid>
+          <Grid className={classes(css.flexContainer2)}>{createWeekDay()}</Grid>
 
           {/* Date boxes */}
           <Grid className={classes(css.flexContainer2)}>
@@ -545,6 +545,6 @@ const Weekview = (props) => {
       <Infoboxes />
     </div>
   );
-}
+};
 
 export default Weekview;
