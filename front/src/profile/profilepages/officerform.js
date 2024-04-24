@@ -48,7 +48,7 @@ function OfficerTable({ rangeOfficers, handleDelete }) {
   return (
     <div>
       {/* Table for displaying range officers */}
-      <Table>
+      <Table data-testid="officer-table">
         <TableHead>
           <TableRow>
             <TableCell>{rangeofficerSettings.officersRow[lang]}</TableCell>
@@ -107,7 +107,7 @@ function OfficerTable({ rangeOfficers, handleDelete }) {
  * @param {number} id - Logged in association id from cookies
  */
 
-export default function RangeOfficers({ id }) {
+export default function OfficerForm({ id }) {
   const [rangeOfficers, setRangeOfficers] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -154,9 +154,9 @@ export default function RangeOfficers({ id }) {
 
     // Create new user object with rangeoffice role
     const newUser = {
-      name: event.target.username.value,
+      name: username,
       role: 'rangeofficer',
-      password: event.target.password.value,
+      password: password,
       associationId: id,
     };
 
@@ -216,6 +216,9 @@ export default function RangeOfficers({ id }) {
           label={rangeofficerSettings.username[lang]}
           onChange={(e) => setUsername(e.target.value)}
           className={classes(css.textField)}
+          inputProps={{
+            'data-testid': 'username',
+          }}
         />
 
         <TextField
@@ -230,6 +233,9 @@ export default function RangeOfficers({ id }) {
           label={rangeofficerSettings.password[lang]}
           onChange={(e) => setPassword(e.target.value)}
           className={classes(css.textField)}
+          inputProps={{
+            'data-testid': 'password',
+          }}
         />
 
         <TextField
@@ -244,6 +250,9 @@ export default function RangeOfficers({ id }) {
           label={rangeofficerSettings.passwordConfirm[lang]}
           onChange={(e) => setPasswordConfirm(e.target.value)}
           className={classes(css.textField)}
+          inputProps={{
+            'data-testid': 'passwordConfirm',
+          }}
         />
 
         <Button
@@ -251,6 +260,7 @@ export default function RangeOfficers({ id }) {
           fullWidth
           variant="contained"
           className={classes(css.acceptButton)}
+          data-testid="submit-button"
         >
           {rangeofficerSettings.confirm[lang]}
         </Button>
@@ -259,7 +269,9 @@ export default function RangeOfficers({ id }) {
       <br />
 
       {notification && (
-        <Alert severity={notification.type}>{notification.message}</Alert>
+        <Alert severity={notification.type} data-testid="alert">
+          {notification.message}
+        </Alert>
       )}
 
       <hr />

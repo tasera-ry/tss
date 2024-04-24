@@ -5,7 +5,7 @@ import { useCookies } from 'react-cookie';
 import { List, ListItem } from '@material-ui/core';
 import translations from '../texts/texts.json';
 import ChangePassword from './profilepages/changepassword';
-import RangeOfficers from './profilepages/rangeofficers';
+import OfficerForm from './profilepages/officerform';
 import css from './ProfileSettings.module.scss';
 import Supervisions from './profilepages/supervisions';
 
@@ -29,7 +29,7 @@ const Profile = () => {
           <ListItem button>{profileSettings.navPassword[fin]}</ListItem>
         </Link>
         {cookies.role === 'association' && (
-          <Link className={classes(css.link)} to="/profile/rangeofficers">
+          <Link className={classes(css.link)} to="/profile/officerform">
             <ListItem button>{profileSettings.navRangeofficers[fin]}</ListItem>
           </Link>
         )}
@@ -49,8 +49,8 @@ const Profile = () => {
             <Route path="/profile/changepassword">
               <ChangePassword username={cookies.username} id={cookies.id} />
             </Route>
-            <Route path="/profile/rangeofficers">
-              <RangeOfficers id={cookies.id} />
+            <Route path="/profile/officerform">
+              <OfficerForm id={cookies.id} />
             </Route>
             <Route path="/profile/supervisions">
               <Supervisions cookies={cookies} />

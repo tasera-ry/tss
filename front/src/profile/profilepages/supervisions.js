@@ -190,7 +190,7 @@ export default function Supervisions({ cookies }) {
   const handleReset = async (rowIndex) => {
     // Clear the supervision object on the corresponding row
     const request = {
-      range_supervisor: 'absent',
+      range_supervisor: 'not confirmed',
       rangeofficer_id: null,
       arriving_at: null,
     };
@@ -200,7 +200,7 @@ export default function Supervisions({ cookies }) {
 
       // Update the supervision object with the new values
       const updatedSupervisions = [...supervisions];
-      updatedSupervisions[rowIndex].range_supervisor = 'absent';
+      updatedSupervisions[rowIndex].range_supervisor = 'not confirmed';
       updatedSupervisions[rowIndex].arriving_at = null;
       updatedSupervisions[rowIndex].rangeofficer_id = null;
       setSupervisions(updatedSupervisions);
