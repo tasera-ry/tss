@@ -43,7 +43,7 @@ const TrackReservationForm = ({onSubmit, lang}) => {
     const { trackReservations, manage, sched } = translations;
 
     const locale = ["fi-FI", "en-EN", "swe"];
-    const trackCapacities = [60, 40, 40, 20, 4, 60, 25];
+    const trackCapacities = [60, 40, 40, 20, 4, 60, 25]; // these values were taken from the official site, these might not be accurate...
 
     useEffect(() => {
         const myFunc = async() => {
@@ -211,7 +211,7 @@ const TrackReservationForm = ({onSubmit, lang}) => {
                         <TextField
                             variant="outlined"
                             margin="normal"
-                            required
+                            required={false}
                             fullWidth
                             id="reasonField"
                             label={trackReservations.reason[lang]}

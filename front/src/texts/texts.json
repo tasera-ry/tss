@@ -21,7 +21,8 @@
       "E-postinställningar"
     ],
     "Raffle": ["Valvojien arvonta", "Supervisor raffle", "Handledare tombola"],
-    "Info": ["Lisää infoviesti", "Add info message", "Tillägga info meddelande"]
+    "Info": ["Lisää infoviesti", "Add info message", "Tillägga info meddelande"],
+    "TrackReservation": ["Ratavaraus", "Track Reservation", "Spårreservation"]
   },
   "banner": {
     "Notification": [

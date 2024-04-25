@@ -65,9 +65,13 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
     { to: '/statistics', name: nav.Statistics[lang] },
     { to: '/supervisor-raffle', name: nav.Raffle[lang] },
     { to: '/info', name: nav.Info[lang] },
+    { to: '/track-reservation', name: nav.TrackReservation[lang]}
   ];
 
-  const associationList = [{ to: '/profile', name: nav.Profile[lang] }];
+  const associationList = [
+    { to: '/profile', name: nav.Profile[lang] },
+    { to: '/track-reservation', name: nav.TrackReservation[lang]}
+  ];
 
   const rangeMasterList = [{ to: '/tablet', name: nav.Tablet[lang] }];
 
