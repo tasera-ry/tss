@@ -34,7 +34,7 @@
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts --openssl-legacy-provider build",
-    "test": "react-scripts test --env=jest-environment-jsdom-sixteen --testPathPattern=/src/profile/tests",
+    "test": "react-scripts test --env=jest-environment-jsdom-sixteen --testPathPattern=/src/",
     "test:coverage": "npm test -- --coverage --watchAll=false --testPathPattern=/src",
     "eject": "react-scripts eject",
     "lint": "eslint .",

@@ -231,7 +231,7 @@ export default function Supervisions({ cookies }) {
         <Alert severity={notification.type}>{notification.message}</Alert>
       )}
 
-      <Table>
+      <Table data-testid="supervisions-table">
         <TableHead>
           <TableRow>
             <TableCell>{sv.date[lang]}</TableCell>
@@ -246,11 +246,11 @@ export default function Supervisions({ cookies }) {
         <TableBody>
           {supervisions &&
             supervisions.map((supervision, rowIndex) => (
-              <TableRow key={supervision.id}>
+              <TableRow key={supervision.id} data-testid="supervisions-row">
                 <TableCell>{supervision.date}</TableCell>
 
                 {/* Range supervisor status selection */}
-                <TableCell>
+                <TableCell data-testid="status-cell">
                   <Button
                     variant="outlined"
                     size="small"
@@ -282,7 +282,7 @@ export default function Supervisions({ cookies }) {
 
                 {/* Range officer selection menu. Only showed to association users */}
                 {rangeofficerList !== null && (
-                  <TableCell>
+                  <TableCell data-testid="officer-cell">
                     <div>
                       <Button
                         onClick={(event) => handleOfficerClick(event)}
@@ -319,7 +319,7 @@ export default function Supervisions({ cookies }) {
                 )}
 
                 {/* Arrival time selection */}
-                <TableCell>
+                <TableCell data-testid="time-cell">
                   <div>
                     <TextField
                       id="time"
@@ -331,13 +331,14 @@ export default function Supervisions({ cookies }) {
                 </TableCell>
 
                 {/* Submit button */}
-                <TableCell>
+                <TableCell data-testid="actions-cell">
                   <Button
                     type="submit"
                     fullWidth
                     variant="contained"
                     className={classes(css.acceptButton)}
                     onClick={() => handleSubmit(rowIndex)}
+                    data-testid="submit-button"
                   >
                     {sv.setButton[lang]}
                   </Button>
@@ -351,6 +352,7 @@ export default function Supervisions({ cookies }) {
                     variant="contained"
                     className={classes(css.removeButton)}
                     onClick={() => handleReset(rowIndex)}
+                    data-testid="reset-button"
                   >
                     {sv.resetButton[lang]}
                   </Button>
