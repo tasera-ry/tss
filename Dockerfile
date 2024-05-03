@@ -11,7 +11,7 @@ ENV NODE_ENV production
 WORKDIR /usr/src/app
 COPY --from=frontbuild /usr/src/app/build ./front/build
 COPY ./back ./back
-RUN cd back && npm update && npm install && npm audit fix
+RUN cd back && npm update && npm install
 COPY ./deploy/startup.sh ./
 EXPOSE 8093
 CMD ["/usr/src/app/startup.sh"]
