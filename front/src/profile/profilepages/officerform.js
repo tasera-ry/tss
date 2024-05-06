@@ -114,7 +114,7 @@ export default function OfficerForm({ id }) {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [notification, setNotification] = useState(null);
 
-  useEffect(async () => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await api.getRangeOfficers(id);

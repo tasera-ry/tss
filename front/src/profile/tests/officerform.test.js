@@ -17,13 +17,14 @@ jest.mock('axios');
 axios.post.mockResolvedValue();
 
 describe('OfficerForm', () => {
-  test('renders form inputs correctly', () => {
+  it('renders form inputs correctly', async() => {
+
     render(<OfficerForm id={1} />);
 
-    expect(screen.getByTestId('username')).toBeInTheDocument();
-    expect(screen.getByTestId('password')).toBeInTheDocument();
-    expect(screen.getByTestId('passwordConfirm')).toBeInTheDocument();
-    expect(screen.getByTestId('submit-button')).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByTestId('username')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId('password')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId('passwordConfirm')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId('submit-button')).toBeInTheDocument());
   });
 
   test('displays error notification when form is submitted with empty fields', async () => {

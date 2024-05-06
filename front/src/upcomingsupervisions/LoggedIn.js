@@ -476,17 +476,21 @@ const DialogWindow = ({ onCancel }) => {
   }
 
   // starting point
-  useEffect(async () => {
-    getSchedule(
-      setSchedules,
-      setNoSchedule,
-      setChecked,
-      setDone,
-      cookies.username,
-    );
+  useEffect(() => {
+    
+    const myFunc = async() => {
+      getSchedule(
+        setSchedules,
+        setNoSchedule,
+        setChecked,
+        setDone,
+        cookies.username,
+      );
 
-    const response = await api.getRangeOfficers(cookies.id);
-    setRangeOfficerList(response);
+      const response = await api.getRangeOfficers(cookies.id);
+      setRangeOfficerList(response);
+    };
+    myFunc();
   }, []); // eslint-disable-line
 
   return (
