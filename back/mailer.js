@@ -103,7 +103,7 @@ const sendEmail = async (text, emailAddress, emailSettings) => {
       name: 'tasera.fi',
       host: emailSettings.host,
       port: emailSettings.port,
-      secure: true,
+      secure: emailSettings.secure === 'true',
       auth: auth
     });
 
