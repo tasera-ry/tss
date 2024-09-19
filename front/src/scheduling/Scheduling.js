@@ -738,7 +738,7 @@ function Scheduling(props) {
   const update = async () => {
     try {
       const response = await api.getSchedulingDate(date);
-
+      // koodia koodia
       setDate(moment(response.date));
       setRangeId(response.rangeId);
       setReservationId(response.reservationId);
