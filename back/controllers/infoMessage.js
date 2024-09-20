@@ -28,13 +28,13 @@ const controller = {
       res.json(publicMessages);
     }
   },
-  readPersonal: async (req, res) => {
+  readRangeMaster: async (req, res) => {
 
     if (validateData) {
       const data = matchedData(req);
       const obj = await service.read(data);
-      const messagesToCurrentUser = obj.filter(message => message.recipients === req.cookies.username);
-      res.json(messagesToCurrentUser);
+      const messagesToRangeMaster = obj.filter(message => message.recipients === 'rangemaster');
+      res.json(messagesToRangeMaster);
     }
   },
   readAll: async (req, res) => {

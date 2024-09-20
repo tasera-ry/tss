@@ -1,27 +1,27 @@
-import React, { useState } from "react";
-import classNames from "classnames";
-import Table from "@material-ui/core/Table";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import EditSharpIcon from "@material-ui/icons/EditSharp";
-import CloseSharpIcon from "@material-ui/icons/CloseSharp";
-import CheckSharpIcon from "@material-ui/icons/CheckSharp";
-import IconButton from "@material-ui/core/IconButton";
-import translations from "../texts/texts.json";
-import { FixedSizeList as List } from "react-window";
-import css from "./table.module.scss";
+import React, { useState } from 'react';
+import classNames from 'classnames';
+import Table from '@material-ui/core/Table';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import EditSharpIcon from '@material-ui/icons/EditSharp';
+import CloseSharpIcon from '@material-ui/icons/CloseSharp';
+import CheckSharpIcon from '@material-ui/icons/CheckSharp';
+import IconButton from '@material-ui/core/IconButton';
+import translations from '../texts/texts.json';
+import { FixedSizeList as List } from 'react-window';
+import css from './table.module.scss';
 const classes = classNames.bind(css);
 
-const lang = localStorage.getItem("language");
+const lang = localStorage.getItem('language');
 const { raffle } = translations;
 
 const ResultsRow = ({
   result,
-  supervisors,
+  associations,
   hoveredRow,
   setHoveredRow,
   isEdited,
@@ -43,7 +43,7 @@ const ResultsRow = ({
       component="div"
     >
       <TableCell component="div" className={classes(css.flexCell)}>
-        {new Date(date).toLocaleDateString("fi-FI")}
+        {new Date(date).toLocaleDateString('fi-FI')}
       </TableCell>
       <TableCell component="div" className={classes(css.flexCell)}>
         {isEdited ? (
@@ -51,7 +51,7 @@ const ResultsRow = ({
             value={editUser}
             onChange={(e) => setEditUser(e.target.value)}
           >
-            {supervisors.map(({ name, user_id }) => (
+            {associations.map(({ name, user_id }) => (
               <option value={name} key={user_id}>
                 {name}
               </option>
@@ -101,17 +101,19 @@ const ResultsRow = ({
   );
 };
 
-export const SupervisionResultsTable = ({
+export default function SupervisionResultsTable({
   results,
   setResults,
-  supervisors,
-}) => {
+  associations,
+}) {
   const [hoveredRow, setHoveredRow] = useState(undefined);
   const [editOpen, setEditOpen] = useState(undefined);
   const [editUser, setEditUser] = useState(undefined);
 
   const editResults = (date) => {
-    const { name, user_id } = supervisors.find(({ name }) => name === editUser);
+    const { name, user_id } = associations.find(
+      ({ name }) => name === editUser,
+    );
     const editedResults = results.map((result) => {
       if (result.date !== date) return result;
       return { ...result, name, user_id };
@@ -153,7 +155,7 @@ export const SupervisionResultsTable = ({
                 style={style}
                 key={results[index].date}
                 result={results[index]}
-                supervisors={supervisors}
+                associations={associations}
                 isEdited={editOpen === results[index].date}
                 setEditOpen={setEditOpen}
                 hoveredRow={hoveredRow}
@@ -168,4 +170,4 @@ export const SupervisionResultsTable = ({
       </Table>
     </TableContainer>
   );
-};
+}

@@ -152,7 +152,7 @@ exports.getScheduleDate = async (req, res) => {
     const schedule = await getSchedule(reservationId);
     if(schedule && schedule.length > 0) {
       scheduleId = schedule[0].id;
-      rangeSupervisorId = schedule[0].supervisor_id;
+      rangeSupervisorId = schedule[0].association_id;
       open = schedule[0].open;
       close = schedule[0].close;
     } else scheduleId = null;
