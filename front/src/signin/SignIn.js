@@ -29,7 +29,7 @@ const SignIn = () => {
   const [cookies, setCookie] = useCookies(['username', 'role']); // eslint-disable-line
   const secure = window.location.protocol === 'https:';
 
-  document.body.style = `background: ${colors.cream10};`;
+  document.body.style = `background: ${colors.blackTint20};`;
 
   const setInfo = async (user) => {
     setCookie('username', user.name, { sameSite: true, secure });

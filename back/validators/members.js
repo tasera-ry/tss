@@ -42,8 +42,8 @@ const fields = {
     return validatorAdditions(validator, opts);
   },
 
-  supervisors: function idValidation(requestObject, ...opts) {
-    const validator = requestObject('supervisors')
+  associations: function idValidation(requestObject, ...opts) {
+    const validator = requestObject('associations')
       .isInt()
       .withMessage('must be an integer')
       .toInt();
@@ -75,7 +75,7 @@ module.exports = {
   create: [
     fields.user_id(query, 'exists'),
     fields.members(body, 'exists'),
-    fields.supervisors(body, 'exists'),
+    fields.associations(body, 'exists'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
       response.locals.user_id = matchedData(request, { locations: ['params'] });
@@ -102,7 +102,7 @@ module.exports = {
   update: [
     fields.user_id(param, 'exists'),
     fields.members(body, 'optional'),
-    fields.supervisors(body, 'optional'),
+    fields.associations(body, 'optional'),
     fields.raffle(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
