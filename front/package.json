@@ -26,7 +26,7 @@
     "react-nice-input-password": "^2.7.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.4",
+    "react-scripts": "^5.0.1",
     "react-window": "^1.8.6",
     "sass": "^1.42.1",
     "socket.io-client": "^2.3.1"
@@ -47,6 +47,14 @@
     ]
   },
   "devDependencies": {
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.1.0",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "prettier": "^2.4.1"
   },
