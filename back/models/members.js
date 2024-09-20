@@ -9,7 +9,7 @@ const model = {
     const membersConstraints = {
       user_id: {},
       members: {},
-      supervisors: {}
+      associations: {}
     };
 
     const members = validate.cleanAttributes(membersInfo, membersConstraints);
@@ -38,7 +38,7 @@ const model = {
     const membersConstraints = {
       user_id: {},
       members: {},
-      supervisors: {},
+      associations: {},
       raffle: {},
     };
 
