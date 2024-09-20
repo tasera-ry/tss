@@ -2,15 +2,15 @@
   padding: 1vmin 5vmin 1vmin 5vmin;
   margin: auto;
   max-width: 500px;
-}
 
-.email-settings legend {
-  font-size: 1.4rem;
-  padding-bottom: 15px;
-}
+  legend {
+    font-size: 1.4rem;
+    padding-bottom: 15px;
+  }
 
-.email-settings * {
-  display: grid;
+  * {
+    display: grid;
+  }
 }
 
 .settings-label {

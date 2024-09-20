@@ -1,5 +1,13 @@
 @import '../shared.module.scss';
 
+.infoBox {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 1em;
+}
+
 .exclamation2 {
   position: relative;
   top: 30px;
@@ -7,6 +15,13 @@
   width: 80%;
   max-height: 80%;
   max-width: 80%;
+}
+
+.arrivalTime {
+  margin: 0;
+  padding: 0;
+  font-size: 0.8em;
+  color: $COLOR_BLACK_TINT_70;
 }
 
 .bigContainer {
@@ -19,8 +34,12 @@
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
-  border: 1px solid;
+  background-color: $COLOR_BLACK_TINT_70;
   border-right: 0px;
+  border-radius: 5px;
+  padding-left: 2px;
+  padding-bottom: 2px;
+  padding-right: 2px;
 }
 
 .flexContainer2 {
@@ -28,9 +47,12 @@
   flex-wrap: nowrap;
   justify-content: center;
   text-align: center;
-  border-right: 1px solid;
-  border-left: 1px solid;
-  border-top: 1px solid;
+  max-height: 50px;
+  background-color: $COLOR_BLACK_TINT_70;
+  border: 3px solid $COLOR_BLACK_TINT_70;
+  border-radius: 5px 5px 0 0;
+  margin-top: -5px;
+  margin-bottom: -5px;
 }
 
 .flexContainer2 ~ .flexContainer2 {
@@ -46,25 +68,26 @@
 }
 
 .flexContainer2 > a {
-  outline: 0px $COLOR_BLACK;
-  background-color: $COLOR_CREAM10;
+  //outline: 0px $COLOR_BLACK;
+  background-color: $COLOR_BLACK_TINT_70;
   width: calc(100% / 7);
-  margin: 0px;
   text-align: center;
   line-height: 30px;
   font-size: 20px;
   text-decoration: none;
-  color: $COLOR_BLACK;
+  color: $COLOR_WHITE;
 }
 
 .flexContainer > a {
-  border-right: 1px solid;
+  //border-right: 1px solid;
+
   width: calc(100% / 7);
-  margin: 0px;
+  margin: 3px;
   text-align: center;
   height: 125px;
   text-decoration: none;
-  color: $COLOR_BLACK;
+  color: $COLOR_WHITE;
+  border-radius: 5px;
 }
 
 .mainGrid {
