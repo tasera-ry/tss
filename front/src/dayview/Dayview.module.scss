@@ -12,6 +12,7 @@
   width: 100%;
   text-align: center;
   margin: 0;
+  
 }
 
 .overflowHidden {
@@ -85,6 +86,10 @@ h2.headerText {
   display: flex;
   margin-bottom: 16px;
   justify-content: center;
+  border: 2px solid $COLOR_BLACK_TINT_70;
+  background-color: $COLOR_BLACK_TINT_70;
+  border-radius: 5px;
+  margin-top: -5px;
 }
 
 .dayviewContainer .dateHeader .titleContainer {
@@ -103,12 +108,12 @@ h2.headerText {
 
 .dayviewContainer .sevenGrid > div {
   max-width: 100%;
+  margin: 3px;
+  border-radius: 5px;
 }
 
 .dayviewContainer .track {
   position: relative;
-  background: $COLOR_CREAM30;
-  border: solid 1px $COLOR_BLACK;
   box-sizing: border-box;
   min-height: 100px;
 }
@@ -145,11 +150,11 @@ h2.headerText {
 }
 
 .dayviewContainer .whiteB {
-  background: $COLOR_CREAM5;
+  background: $COLOR_BLACK_TINT_05;
 }
 
 .infoItem .whiteB {
-  background: $COLOR_CREAM5;
+  background: $COLOR_BLACK_TINT_05;
 }
 
 .dayviewContainer .yellowB {
@@ -190,7 +195,7 @@ h2.headerText {
   width: 96%;
   height: 100%;
   text-decoration: none;
-  color: $COLOR_BLACK;
+  color: $COLOR_BLACK_TINT_80;
   padding-left: 2%;
   padding-right: 2%;
 }

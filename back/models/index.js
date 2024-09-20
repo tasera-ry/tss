@@ -12,6 +12,7 @@ const emailSettings = require(path.join(models, 'emailSettings'));
 const pendingEmails = require(path.join(models, 'pendingEmails'));
 const members = require(path.join(models, 'members'));
 const range = require(path.join(models, 'range'));
+const devices = require(path.join(models, 'devices'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -24,3 +25,4 @@ exports.emailSettings = emailSettings;
 exports.pendingEmails = pendingEmails;
 exports.members = members;
 exports.range = range;
+exports.devices = devices;

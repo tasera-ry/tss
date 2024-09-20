@@ -25,7 +25,7 @@ const ResetPassword = () => {
   const [isWaiting, setIsWaiting] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 
-  document.body.style = `background: ${colors.cream10};`;
+  document.body.style = `background: ${colors.blackTint10};`;
 
   const reset = async (email) => {
     setIsWaiting(true);
