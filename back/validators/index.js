@@ -13,6 +13,7 @@ const infoMessage = require(path.join(root, 'validators', 'infoMessage'));
 const members = require(path.join(root, 'validators', 'members'));
 const raffle = require(path.join(root, 'validators', 'raffle'));
 const raffleSupervisors = require(path.join(root, 'validators', 'raffleSupervisors'));
+const devices = require(path.join(root, 'validators', 'devices'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -27,3 +28,4 @@ exports.members = members;
 exports.raffle = raffle;
 exports.raffleSupervisors = raffleSupervisors;
 exports.raffle = raffle;
+exports.devices = devices;

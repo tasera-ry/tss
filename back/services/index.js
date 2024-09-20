@@ -13,6 +13,7 @@ const pendingEmails = require(path.join(root, 'services', 'pendingEmails'));
 const raffle = require(path.join(root, 'services', 'raffle'));
 const raffleSupervisors = require(path.join(root, 'services', 'raffleSupervisors'));
 const members = require(path.join(root, 'services', 'members'));
+const devices = require(path.join(root, 'services', 'devices'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -26,3 +27,4 @@ exports.pendingEmails = pendingEmails;
 exports.raffle = raffle;
 exports.members = members;
 exports.raffleSupervisors = raffleSupervisors;
+exports.devices = devices;
