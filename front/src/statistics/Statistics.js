@@ -222,6 +222,7 @@ const Statistics = () => {
         <Button
           className={classes(css.openModal)}
           onClick={() => setModalOpen(true)}
+          style={{backgroundColor: '#d1ccc2'}}
           variant="contained"
         >
           {statistics.OpenLogging[fin]}

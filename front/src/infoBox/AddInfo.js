@@ -73,7 +73,14 @@ const AddInfo = () => {
   const getUsers = async () => {
     try {
       const res = await api.getUsers();
-      if (res) setUserOptions(res);
+      if (res) {
+        res.sort((a, b) => {
+          if(a.name < b.name) return -1;
+          if(a.name > b.name) return 1;
+          return 0;
+        });
+        setUserOptions(res);
+      }
     } finally {
       setisLoading(false);
     }
@@ -183,6 +190,7 @@ const AddInfo = () => {
 
         >
           <MenuItem value={'all'}>{infoPage.sendPublicMessage[lang]}</MenuItem>
+          <MenuItem value={'rangemaster'}>{infoPage.sendRangeMasterMessage[lang]}</MenuItem>
           {userOption.map((user) => <MenuItem
             key={user.id}
             value={user.name}
@@ -194,6 +202,7 @@ const AddInfo = () => {
       <div>
         <Button
           type="button"
+          className={classes(css.sandButton)} 
           variant="contained"
           onClick={handleClick}
           disabled={
