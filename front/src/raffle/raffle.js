@@ -13,10 +13,10 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 import translations from '../texts/texts.json';
 import RaffleDatePicker from './RaffleDatePicker';
-import { SupervisorsTable } from './SupervisorsTable';
+import SupervisorsTable from './SupervisorsTable';
 import { dateToString, validateLogin } from '../utils/Utils';
-import { SupervisionResultsTable } from './SupervisionResultsTable';
-import { SupervisionAmountsTable } from './SupervisionAmountsTable';
+import SupervisionResultsTable from './SupervisionResultsTable';
+import SupervisionAmountsTable from './SupervisionAmountsTable';
 import css from './raffle.module.scss';
 
 const classes = classNames.bind(css);
@@ -27,6 +27,7 @@ const { raffle } = translations;
 
 const supervisionAmounts = (raffleResults, supervisors) => {
   const userMap = new Map();
+
   supervisors.forEach(({ name, raffle }) => {
     if (raffle) userMap.set(name, 0);
   });
@@ -37,7 +38,7 @@ const supervisionAmounts = (raffleResults, supervisors) => {
   }, userMap);
 };
 
-export const Raffle = () => {
+export default function Raffle() {
   const [supervisorsOpen, setSupervisorsOpen] = useState(true);
   const [supervisors, setSupervisors] = useState([]);
   const [selectedDays, setSelectedDays] = useState([]);
@@ -61,6 +62,11 @@ export const Raffle = () => {
       if (!logInSuccess) window.location.href = '/';
       try {
         const res = await api.getMembers();
+        res.sort((a, b) => {
+          if(a.name < b.name) return -1;
+          if(a.name > b.name) return 1;
+          return 0;
+        });
         setSupervisors(res);
       } catch (err) {
         setToast({
@@ -84,7 +90,7 @@ export const Raffle = () => {
   }, [raffleResults, supervisors]);
 
   const handleSubmitUser = async (user_id, data) => {
-    if (data.members < 0 || data.supervisors < 0) {
+    if (data.members < 0 || data.associations < 0) {
       setToast({ open: true, msg: raffle.valueError[lang], severity: 'error' });
       return;
     }
@@ -135,9 +141,9 @@ export const Raffle = () => {
 
   const handleSubmitResults = async () => {
     setIsLoading({ ...isLoading, save: true });
-    // only supervisor_id (= user_id), range_id and date are needed
+    // only association id (= user_id), range_id and date are needed
     const results = raffleResults.map(({ user_id, range_id, date }) => ({
-      supervisor_id: user_id,
+      association_id: user_id,
       range_id,
       date,
     }));
@@ -180,7 +186,7 @@ export const Raffle = () => {
         </div>
         {supervisorsOpen ? (
           <SupervisorsTable
-            supervisors={supervisors}
+            associations={supervisors}
             onSubmitUser={handleSubmitUser}
             isLoading={isLoading.table}
           />
@@ -254,4 +260,4 @@ export const Raffle = () => {
       </div>
     </StylesProvider>
   );
-};
+}
