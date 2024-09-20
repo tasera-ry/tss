@@ -9,9 +9,11 @@ import colors from '../colors.module.scss';
 export const dateToString = (d) => {
   const month = d.getMonth() + 1;
   const date = d.getDate();
-  
-  return `${d.getFullYear()}-${month < 10 ? '0' : ''}${month}-${date < 10 ? '0' : ''}${date}`;
-}
+
+  return `${d.getFullYear()}-${month < 10 ? '0' : ''}${month}-${
+    date < 10 ? '0' : ''
+  }${date}`;
+};
 /**
  * Increments or decrements the date by the param amount
  * @param {Date} date The date to be incemented or decremented
@@ -191,12 +193,12 @@ export const getLanguage = () => {
 
 export const dayToString = (i) => {
   const lang = getLanguage();
-  console.log(lang)
+  console.log(lang);
   moment.locale(lang);
   // en has different number for start date compared to fi and swe
   if (lang !== 'en') i -= 1; // eslint-disable-line
   const dayString = moment().weekday(i).format('dddd');
-  console.log(dayString)
+  console.log(dayString);
   // first letter only to uppercase
   return dayString.charAt(0).toUpperCase() + dayString.slice(1);
 };
@@ -229,7 +231,7 @@ export const updateRangeSupervision = async (
   srsId,
   rangeStatus,
   rsScheduled,
-  supervisor,
+  association,
 ) => {
   const failureText = 'general range supervision failure: Error: ';
   if (rsId === null || srsId === null)
@@ -254,7 +256,7 @@ export const updateRangeSupervision = async (
     }
 
     try {
-      await api.addRangeSupervision(srsId, rangeStatus, supervisor);
+      await api.addRangeSupervision(srsId, rangeStatus, association);
       return true;
     } catch (err) {
       return failureText + 'not scheduled superv fail';
@@ -271,8 +273,8 @@ export const updateRangeSupervision = async (
   try {
     await api.patchRangeSupervision(
       srsId,
-      supervisor
-        ? { range_supervisor: rangeStatus, supervisor }
+      association
+        ? { range_supervisor: rangeStatus, association }
         : { range_supervisor: rangeStatus },
     );
     return true;

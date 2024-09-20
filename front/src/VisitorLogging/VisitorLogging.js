@@ -11,10 +11,11 @@ import TextField from '@material-ui/core/TextField';
 
 import api from '../api/api';
 import { getLanguage } from '../utils/Utils';
-import { visitorLogging as texts } from '../texts/texts.json';
+import texts from '../texts/texts.json';
 import css from './VisitorLogging.module.scss';
 
 const classes = classNames.bind(css);
+const textLogs = texts.visitorLogging;
 
 const VisitorLogging = ({
   handleClose,
@@ -64,7 +65,7 @@ const VisitorLogging = ({
 
       setToastOpen(true);
       setToastSeverity('success');
-      setToastMessage(texts.SuccessfullyUpdated[lang]);
+      setToastMessage(textLogs.SuccessfullyUpdated[lang]);
       handleClose();
     } catch (error) {
       setToastSeverity('error');
@@ -98,7 +99,7 @@ const VisitorLogging = ({
             autoOk
             margin="normal"
             name="date"
-            label={texts.DayChoose[lang]}
+            label={textLogs.DayChoose[lang]}
             value={date}
             onChange={(newDate) => setDate(newDate)}
             format="DD.MM.YYYY"
@@ -122,19 +123,27 @@ const VisitorLogging = ({
             ))}
           </div>
         ) : (
-          <div>{texts.NoSchedule[lang]}</div>
+          <div>{textLogs.NoSchedule[lang]}</div>
         )}
         <div className={classes(css.modalButtonContainer)}>
           <div className={classes(css.modalButton)}>
-            <Button onClick={handleClose} variant="contained" color="secondary" 
-            style={{color: 'black', backgroundColor:'#808080'}}>
-              {texts.Close[lang]}
+            <Button
+              onClick={handleClose}
+              variant="contained"
+              color="secondary"
+              style={{ color: 'black', backgroundColor: '#808080' }}
+            >
+              {textLogs.Close[lang]}
             </Button>
           </div>
           <div className={classes(css.modalButton)}>
-            <Button onClick={sendStats} variant="contained" color="primary" 
-            style={{color: 'black', backgroundColor:'#d1ccc2'}}>
-              {texts.Save[lang]}
+            <Button
+              onClick={sendStats}
+              variant="contained"
+              color="primary"
+              style={{ color: 'black', backgroundColor: '#d1ccc2' }}
+            >
+              {textLogs.Save[lang]}
             </Button>
           </div>
         </div>
