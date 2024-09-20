@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 
 // Material UI components
 import Button from '@material-ui/core/Button';
@@ -13,8 +13,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
-
 import { useCookies } from 'react-cookie';
+import TextField from '@material-ui/core/TextField';
 
 // Axios for call-handling to backend
 import axios from 'axios';
@@ -22,6 +22,9 @@ import axios from 'axios';
 // Moment for date handling
 import moment from 'moment';
 import 'moment/locale/en-ca';
+
+// API for backend calls
+import api from '../api/api';
 
 // Translations
 import data from '../texts/texts.json';
@@ -49,6 +52,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Context for arrival time. Instead of prop drilling the value,
+// we can use this context to pass the value between the components.
+// useState hook is used to update the value in DialogWindow component.
+const ArrivalTimeContext = createContext({
+  arrivalTime: '',
+  setArrivalTime: () => {},
+  rangeofficer: '',
+  setRangeOfficer: () => {},
+});
 /*
   LoggedIn.js is the component for accepting and denying upcoming supervision turns
 */
@@ -58,6 +70,8 @@ const DropDowns = (props) => {
   const fin = localStorage.getItem('language');
   const id = props.d;
   const obj = props.changes.find((o) => o.date === id);
+  const { rangeofficerList } = props;
+
   let text = props.sv.Present[fin];
   let color = '#f2f2f2';
   if (
@@ -72,9 +86,16 @@ const DropDowns = (props) => {
     color = '#c97b7b';
   }
   const [buttonText, setButtonText] = useState(text);
+  const [officerButtonText, setOfficerButtonText] = useState(
+    props.sv.OfficerSelect[fin],
+  );
   const [buttonColor, setButtonColor] = useState(color);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [officerAnchorEl, setOfficerAnchorEl] = useState(null);
   const [disable, setDisable] = useState(buttonColor !== '#658f60');
+  const [provideTime, setProvideTimeText] = useState('');
+  const { arrivalTime, setArrivalTime, rangeofficer, setRangeOfficer } =
+    useContext(ArrivalTimeContext);
 
   const buttonStyle = {
     width: 180,
@@ -85,8 +106,21 @@ const DropDowns = (props) => {
     color: '#b3b3b3',
   };
 
+  const handleTimeChange = (event) => {
+    // TODO: Better error handling, atm no error messages are shown
+    const parsedTime = moment(event.target.value, 'HH:mm', true);
+
+    if (parsedTime.isValid()) {
+      setArrivalTime(parsedTime.format('HH:mm'));
+    }
+  };
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleOfficerClick = (event) => {
+    setOfficerAnchorEl(event.currentTarget);
   };
 
   const HandleClose = (event) => {
@@ -98,23 +132,40 @@ const DropDowns = (props) => {
       setButtonColor('#f2f2f2');
       setDisable(true);
       obj.range_supervisor = 'not confirmed';
+      setProvideTimeText('');
     }
     if (event.currentTarget.dataset.info === 'y') {
       setButtonText(props.sv.Confirmed[fin]);
       setButtonColor('#658f60');
       setDisable(false);
       obj.range_supervisor = 'confirmed';
+
+      setProvideTimeText(props.sv.ProvideTime[fin]);
     }
     if (event.currentTarget.dataset.info === 'n') {
       setButtonText(props.sv.Absent[fin]);
       setButtonColor('#c97b7b');
       setDisable(true);
       obj.range_supervisor = 'absent';
+      setProvideTimeText('');
     }
     props.changes.map((o) => (o.date === id ? obj : o));
     // console.log(props.changes.find(o => o.date===id));
 
     setAnchorEl(null);
+  };
+
+  const handleOfficerClose = (officer) => {
+    if (officer === null) {
+      setOfficerButtonText(props.sv.NoOfficer[fin]);
+      setRangeOfficer(null);
+      setOfficerAnchorEl(null);
+    } else {
+      console.log('selected officer:', officer);
+      setOfficerButtonText(officer.name);
+      setRangeOfficer(officer);
+      setOfficerAnchorEl(null);
+    }
   };
 
   return (
@@ -144,6 +195,51 @@ const DropDowns = (props) => {
           {props.sv.Absent[fin]}
         </MenuItem>
       </Menu>
+      {/* Range officer selection menu */}
+      <div>
+        {buttonText === props.sv.Confirmed[fin] && (
+          <div>
+            <p>Select rangeofficer</p>
+            <Button
+              onClick={handleOfficerClick}
+              variant="outlined"
+              size="small"
+            >
+              {officerButtonText}
+            </Button>
+            <Menu
+              open={Boolean(officerAnchorEl)}
+              anchorEl={officerAnchorEl}
+              onClose={handleOfficerClose}
+              keepMounted
+            >
+              <MenuItem onClick={() => handleOfficerClose(null)} data-info="">
+                {props.sv.NoOfficer[fin]}
+              </MenuItem>
+              {rangeofficerList.map((officer) => (
+                <MenuItem
+                  key={officer.id}
+                  onClick={() => handleOfficerClose(officer)}
+                  data-info={officer.name}
+                >
+                  {officer.name}
+                </MenuItem>
+              ))}
+            </Menu>
+          </div>
+        )}
+      </div>
+      <div>
+        <p>{provideTime}</p>
+        {buttonText === props.sv.Confirmed[fin] && (
+          <TextField
+            id="time"
+            type="time"
+            value={arrivalTime}
+            onChange={handleTimeChange}
+          />
+        )}
+      </div>
       &nbsp;
       {props.today === props.d ? (
         <Check
@@ -182,7 +278,14 @@ const Check = ({ HandleChange, checked, sv, disable }) => {
 };
 
 // prints date info in rows
-const Rows = ({ HandleChange, changes, checked, setDone, sv }) => {
+const Rows = ({
+  HandleChange,
+  changes,
+  checked,
+  setDone,
+  sv,
+  rangeofficerList,
+}) => {
   const language = localStorage.getItem('language');
   let num = 2;
   if (language === '1') {
@@ -217,6 +320,7 @@ const Rows = ({ HandleChange, changes, checked, setDone, sv }) => {
         HandleChange={HandleChange}
         checked={checked}
         sv={sv}
+        rangeofficerList={rangeofficerList}
       />
     </div>
   ));
@@ -228,14 +332,13 @@ async function getId(username) {
   if (!username) return;
 
   const query = `api/user?name=${username}`;
-  try{
+  try {
     const response = await axios.get(query);
 
     const userID = response.data[0].id;
-  
+
     return userID; // eslint-disable-line
-  }
-  catch(error){
+  } catch (error) {
     return error;
   }
 }
@@ -303,7 +406,7 @@ async function getSchedule(
   let res = [];
   let temp = [];
 
-  const query = `api/schedule?supervisor_id=${userID}`;
+  const query = `api/schedule?association_id=${userID}`;
   /* eslint-disable-next-line */
   const response = await axios
     .get(query)
@@ -363,6 +466,9 @@ const DialogWindow = ({ onCancel }) => {
   const [done, setDone] = useState(false);
   const [checked, setChecked] = useState(false);
   const [cookies] = useCookies(['username']);
+  const [arrivalTime, setArrivalTime] = useState('');
+  const [rangeofficer, setRangeOfficer] = useState('');
+  const [rangeofficerList, setRangeOfficerList] = useState('');
   const { sv } = data;
 
   if (onCancel === undefined) {
@@ -371,28 +477,40 @@ const DialogWindow = ({ onCancel }) => {
 
   // starting point
   useEffect(() => {
-    getSchedule(
-      setSchedules,
-      setNoSchedule,
-      setChecked,
-      setDone,
-      cookies.username,
-    );
+    
+    const myFunc = async() => {
+      getSchedule(
+        setSchedules,
+        setNoSchedule,
+        setChecked,
+        setDone,
+        cookies.username,
+      );
+
+      const response = await api.getRangeOfficers(cookies.id);
+      setRangeOfficerList(response);
+    };
+    myFunc();
   }, []); // eslint-disable-line
 
   return (
     <div>
-      <Logic
-        schedules={schedules}
-        setSchedules={setSchedules}
-        noSchedule={noSchedule}
-        checked={checked}
-        setChecked={setChecked}
-        done={done}
-        setDone={setDone}
-        sv={sv}
-        onCancel={onCancel}
-      />
+      <ArrivalTimeContext.Provider
+        value={{ arrivalTime, setArrivalTime, rangeofficer, setRangeOfficer }}
+      >
+        <Logic
+          rangeofficerList={rangeofficerList}
+          schedules={schedules}
+          setSchedules={setSchedules}
+          noSchedule={noSchedule}
+          checked={checked}
+          setChecked={setChecked}
+          done={done}
+          setDone={setDone}
+          sv={sv}
+          onCancel={onCancel}
+        />
+      </ArrivalTimeContext.Provider>
     </div>
   );
 };
@@ -402,15 +520,22 @@ async function putSchedules(changes) {
   for (let i = 0; i < changes.length; i += 1) {
     const { id } = changes[i];
     const query = `api/range-supervision/${id}`;
-    const s = changes[i].range_supervisor;
-    await axios.put(query, {
-      range_supervisor: s,
-    });
+
+    const request = {
+      range_supervisor: changes[i].range_supervisor,
+      rangeofficer_id: changes[i].rangeofficer_id,
+      arriving_at: changes[i].arriving_at,
+    };
+
+    console.log(id, request);
+
+    await axios.put(query, request);
   }
 }
 
 // creates dialog-window
 const Logic = ({
+  rangeofficerList,
   schedules,
   noSchedule,
   checked,
@@ -426,6 +551,8 @@ const Logic = ({
   const fin = localStorage.getItem('language');
   const changes = [...schedules];
 
+  const { arrivalTime, rangeofficer } = useContext(ArrivalTimeContext);
+
   /* eslint-disable-next-line */
   const HandleChange = (event) => {
     setChecked(!checked);
@@ -438,10 +565,20 @@ const Logic = ({
       obj.range_supervisor = 'en route';
       changes.map((o) => (o.date === today ? obj : o));
     }
+
     if (!checked && changes[0].range_supervisor === 'en route') {
       changes[0].range_supervisor = 'confirmed';
     }
 
+    if (arrivalTime) {
+      changes[0].arriving_at = arrivalTime;
+    }
+
+    if (rangeofficer) {
+      changes[0].rangeofficer_id = rangeofficer.id;
+    }
+
+    // Send updates to backend
     if (changes.length > 0) {
       setWait(true);
       await putSchedules(changes);
@@ -469,6 +606,7 @@ const Logic = ({
               checked={checked}
               setDone={setDone}
               sv={sv}
+              rangeofficerList={rangeofficerList}
             />
           ) : (
             ''
