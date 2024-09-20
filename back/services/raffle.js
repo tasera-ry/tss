@@ -13,12 +13,12 @@ const shuffleArray = array => {
 };
 
 // this compare function ranks clubs by the thier currently raffled supervisions
-// if supervisions are equal the one with more supervisors gets more supervisions
+// if supervisions are equal the one with more associations gets more supervisions
 function compare( a, b ) {
   if ( a.ratio < b.ratio ) { return -1; }
   if ( a.ratio > b.ratio ) { return 1; }
-  if ( a.members + a.supervisors < b.members + b.supervisors ) { return -1; }
-  if ( a.members + a.supervisors > b.members + b.supervisors ) { return 1; }
+  if ( a.members + a.associations < b.members + b.associations ) { return -1; }
+  if ( a.members + a.associations > b.members + b.associations ) { return 1; }
   if ( a.members < b.members ) { return -1; }
   if ( a.members > b.members ) { return 1; }
   return 0;
@@ -26,8 +26,8 @@ function compare( a, b ) {
 
 // compare function for debugging
 function compare_size( a, b ) {
-  if ( a.members + a.supervisors < b.members + b.supervisors ) { return -1; }
-  if ( a.members + a.supervisors > b.members + b.supervisors ) { return 1; }
+  if ( a.members + a.associations < b.members + b.associations ) { return -1; }
+  if ( a.members + a.associations > b.members + b.associations ) { return 1; }
   return 0;
 }
 
@@ -35,7 +35,7 @@ function compare_size( a, b ) {
 function calculate_ratio( m ) {
   // weekend to weekday weighting
   const weekendratio = 2;  
-  return (m.weekendsupervisions * weekendratio + m.weekdaysupervisions)/(m.members + m.supervisors);
+  return (m.weekendsupervisions * weekendratio + m.weekdaysupervisions)/(m.members + m.associations);
 }
 
 const service = {
@@ -60,14 +60,14 @@ const service = {
       }
     }
 
-    let members = await models.members.read({ raffle: true }, ['user_id', 'name', 'members', 'supervisors', 'raffle']);
+    let members = await models.members.read({ raffle: true }, ['user_id', 'name', 'members', 'associations', 'raffle']);
 
     const n_weekendsupervisions = weekends.length;
     const n_weekdaysupervisions = weekdays.length;
-    // Count the number of supervisors and set supervisions to 0
+    // Count the number of associations and set supervisions to 0
     let n_total = 0;
     members.forEach(function(m) {
-      n_total += (m.members + m.supervisors);
+      n_total += (m.members + m.associations);
       m.weekendsupervisions = 0;
       m.weekdaysupervisions = 0;
     });
@@ -77,11 +77,11 @@ const service = {
     let current_weekdaysupervisions = 0;
     members.forEach(function(m) {
       // weekend
-      const weekendsupervisions = Math.round((m.members + m.supervisors) / n_total * n_weekendsupervisions);
+      const weekendsupervisions = Math.round((m.members + m.associations) / n_total * n_weekendsupervisions);
       current_weekendsupervisions += weekendsupervisions;
       m.weekendsupervisions += weekendsupervisions;
       // weekday
-      const weekdaysupervisions = Math.round((m.members + m.supervisors) / n_total * n_weekdaysupervisions);
+      const weekdaysupervisions = Math.round((m.members + m.associations) / n_total * n_weekdaysupervisions);
       // if the club is so small that they didnt get any weekday supervisions assign at least one to them
       if ( weekdaysupervisions == 0 ) {
         current_weekdaysupervisions += 1;
@@ -189,7 +189,7 @@ const service = {
     members.sort(compare_size);
     console.log('members, ratio, weekdaysupervisions, weekendsupervisions, user_id');
     members.forEach(function(m) {
-      console.log(m.supervisors + m.members, Number(m.ratio).toFixed(2), m.weekdaysupervisions, m.weekendsupervisions, m.name, m.user_id);
+      console.log(m.associations + m.members, Number(m.ratio).toFixed(2), m.weekdaysupervisions, m.weekendsupervisions, m.name, m.user_id);
     });
     console.log(raffle.length, supervisions.length);
     */
