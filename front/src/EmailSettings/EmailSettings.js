@@ -20,9 +20,10 @@ import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
 } from '@material-ui/pickers';
-import './EmailSettings.css';
-import { emailSettings, nav } from '../texts/texts.json';
+import './EmailSettings.scss';
+import textData from '../texts/texts.json';
 
+const { emailSettings, nav } = textData;
 const lang = localStorage.getItem('language');
 
 const HelperText = (messageSelection) => {
@@ -310,7 +311,7 @@ const EmailSettings = () => {
           </RadioGroup>
           <Button
             variant="contained"
-            color="primary"
+            style={{ color: 'black', backgroundColor: '#d1ccc2' }}
             id="send-pending-button"
             onClick={sendPendingRequest}
           >
@@ -345,7 +346,11 @@ const EmailSettings = () => {
             />
           </RadioGroup>
         </FormControl>
-        <Button type="submit" variant="contained" color="primary">
+        <Button
+          type="submit"
+          variant="contained"
+          style={{ color: 'black', backgroundColor: '#d1ccc2' }}
+        >
           {pendingSave ? (
             <CircularProgress />
           ) : (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef } from 'react';
 
-import './tracks.css';
+import './tracks.scss';
 
 // Material UI components
 import ScopedCssBaseline from '@material-ui/core/ScopedCssBaseline';
@@ -33,7 +33,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import * as l10nLines from '../texts/texts.json';
+import l10nLines from '../texts/texts.json';
 
 // Token validation
 import { validateLogin } from '../utils/Utils';
@@ -63,10 +63,10 @@ const tableIcons = {
 };
 
 const tableStyle = {
-  backgroundColor: '#f2f0eb',
+  backgroundColor: '#cccccc',
 };
 const headerStyle = {
-  backgroundColor: '#ebe7df',
+  backgroundColor: '#e9e9e9', //colorcream10
 };
 
 /* Get first element of an array */
@@ -111,7 +111,7 @@ const TrackTable = ({
       },
       header: {
         actions: l10n.tableHeaderActions[lang],
-        cellStyle: { backgroundColor: '#f2f0eb' },
+        cellStyle: { backgroundColor: '#cccccc' },
       },
       toolbar: {
         searchPlaceholder: l10n.searchPlaceholder[lang],

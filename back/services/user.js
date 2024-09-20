@@ -22,12 +22,14 @@ const service = {
    * service.authenticate({ name: 'Mark', password: 'mark_password' })
    */
   authenticate: async function authenticateUser(credentials) {
-    const users = await models.user.readCaseInsensitive(
-      credentials.name, 
-      ['id', 'name', 'role', 'digest']
-    );
+    const users = await models.user.readCaseInsensitive(credentials.name, [
+      'id',
+      'name',
+      'role',
+      'digest',
+    ]);
 
-    if(users.length === 0) {
+    if (users.length === 0) {
       const err = Error('Invalid credentials');
       err.name = 'Invalid credentials';
       throw err;
@@ -35,10 +37,12 @@ const service = {
 
     const user = users.pop();
 
-    const passwordMatches = await bcrypt
-      .compare(credentials.password, user.digest.toString());
+    const passwordMatches = await bcrypt.compare(
+      credentials.password,
+      user.digest.toString()
+    );
 
-    if(passwordMatches === false) {
+    if (passwordMatches === false) {
       const err = Error('Invalid credentials');
       err.name = 'Invalid credentials';
       throw err;
@@ -74,8 +78,11 @@ const service = {
    * exports.read({ role: 'supervisor' }) - Find all supervisors
    */
   read: async function readUser(key) {
-    return (await models.user.read(_.pick(key, 'id', 'name', 'role', 'phone', 'email')))
-      .map(_.partialRight(_.omit, 'digest', 'user_id'));
+    return (
+      await models.user.read(
+        _.pick(key, 'id', 'name', 'role', 'phone', 'email')
+      )
+    ).map(_.partialRight(_.omit, 'digest', 'user_id'));
   },
 
   /**
@@ -90,7 +97,7 @@ const service = {
    * exports.update({ name: 'mark' }, { name:'mark shuttleworth' })
    */
   update: async function updateUser(key, updates) {
-    if('password' in updates) {
+    if ('password' in updates) {
       const digest = await hash(updates.password);
       delete updates.password;
       updates.digest = digest;
@@ -112,6 +119,7 @@ const service = {
   delete: async function deleteUser(key) {
     return models.user.delete(key);
   },
+
   /**
    * Get email by user key
    * @param {object} key - Users' identifying info.
@@ -120,13 +128,33 @@ const service = {
   getEmail: async function getUserEmail(key) {
     return (await models.user.getEmail(key)).email;
   },
+
   /**
    * Get superuser ids
    * @return {Promise<object>} - Keys of superusers
    */
   getSuperusers: async function getSuperusers() {
     return models.user.getSuperusers();
-  }
+  },
+
+  /**
+   *
+   * @param {number} associationId
+   * @returns {Promise<number[]>} - Keys of rangeofficers
+   */
+
+  getRangeOfficers: async function getRangeOfficers(associationId) {
+    return models.user.getRangeOfficers(associationId);
+  },
+
+  /**
+   * Get association by user key
+   * @param {number} id
+   * @return {Promise<number>} - rangeofficer id
+   */
+  getAssociation: async function getAssociation(id) {
+    return models.user.getAssociation(id);
+  },
 };
 
 module.exports = service;

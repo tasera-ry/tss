@@ -1,10 +1,8 @@
 const _ = require('lodash');
 
-exports.seed = function(knex) {
-
+exports.seed = function (knex) {
   function truncate(table) {
-    return knex(table)
-      .del();
+    return knex(table).del();
   }
 
   const truncateTrackHistory = _.partial(truncate, 'track_supervision_history');
@@ -15,8 +13,9 @@ exports.seed = function(knex) {
   const truncateRangeReservation = _.partial(truncate, 'range_reservation');
   const truncateTrack = _.partial(truncate, 'track');
   const truncateRange = _.partial(truncate, 'range');
-  const truncateSupervisor = _.partial(truncate, 'supervisor');
+  const truncateSupervisor = _.partial(truncate, 'association');
   const truncateUser = _.partial(truncate, 'user');
+  const trunucateDevices = _.partial(truncate, 'devices');
 
   return truncateTrackHistory()
     .then(truncateRangeHistory)
@@ -27,5 +26,6 @@ exports.seed = function(knex) {
     .then(truncateTrack)
     .then(truncateRange)
     .then(truncateSupervisor)
-    .then(truncateUser);
+    .then(truncateUser)
+    .then(trunucateDevices);
 };
