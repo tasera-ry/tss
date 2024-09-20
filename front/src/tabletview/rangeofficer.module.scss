@@ -8,17 +8,16 @@
   border-radius: 10px;
   background-color: $COLOR_GREEN;
   padding: 10px;
-  margin: 0px 50% 10px 10px;
+  margin: 0px auto 10px auto; /* Centered */
   text-align: center;
 }
 
 :global(.MuiButton-label) {
-  font-size: 1.2em;
+  font-size: 1em; /* Smaller font size */
 }
 
 .Status {
   display: flex;
-  max-width: 80%;
   width: 400px;
   margin: auto;
 }
@@ -27,72 +26,76 @@
   display: flex;
   justify-content: center;
   text-align: center;
-  margin: 4px;
-  font-size: 2rem;
+  font-size: 1.2rem; /* Smaller font size */
+  margin: 6px;
 }
 
 .rowStyle {
-  flex-Direction: row;
+  flex-direction: row;
   display: flex;
-  justify-Content: center;
+  justify-content: center; /* Centered */
+  border-bottom: 1px solid black; /* Separator line */
+  margin: 10px 10px; /* Adds space above and below */
 }
 
 .trackRowStyle {
-  flex-Direction: row;
+  flex-direction: row;
   display: flex;
-  justify-Content: center;
-  flex-Wrap: wrap;
+  justify-content: center; /* Centered */
+  flex-wrap: wrap;
+  gap: 10px;
+  border-bottom: 1px solid black; /* Separator line */
+  
 }
 
 .colorButton {
-  font-size: 17px;
-  border-radius: 50px;
-  width: 250px;
-  height: 100px;
-  margin: 8px;
+  font-size: 14px; /* Smaller font size */
+  border-radius: 5px; /* Rectangular buttons */
+  width: 180px; /* Smaller button width */
+  height: 50px; /* Smaller button height */
+  margin: 7px;
 }
 
 .rowStyle > .greenButtonStyle {
   @extend .colorButton;
-  background-Color: $COLOR_GREEN;
+  background-color: $COLOR_GREEN;
 }
 
 .rowStyle > .orangeButtonStyle {
   @extend .colorButton;
-  background-Color: $COLOR_ORANGE;
+  background-color: $COLOR_ORANGE;
 }
 
 .rowStyle > .redButtonStyle {
   @extend .colorButton;
-  background-Color: $COLOR_RED_LIGHT;
+  background-color: $COLOR_RED_LIGHT;
 }
 
 .saveButtonStyle {
-  background-Color: $COLOR_BLUE;
+  background-color: $COLOR_BLUE;
 }
 
 .cancelButtonStyle {
-  background-Color: $COLOR_BLACK_TINT_10;
+  background-color: $COLOR_BLACK_TINT_10;
 }
 
 .simpleButton {
-  padding: '2px 10px';
-  border-Radius: 15;
-  font-Size: '1.2rem';
+  padding: 2px 10px;
+  border-radius: 5px; /* Smaller border radius */
+  font-size: 1rem; /* Smaller font size */
 }
 
 .rangeStyle {
-  text-Align: center;
-  margin: 10;
-  margin-Top: 0;
+  text-align: center;
+  margin: 10px; /* Smaller margin */
 }
 
 .dialogStyle {
-  background-Color: $COLOR_WHITE;
+  background-color: $COLOR_WHITE;
 }
 
 .rangediv {
-  width: 300;
+  width: 250px; /* Smaller width */
 }
 
 .statusStyle {
@@ -103,6 +106,6 @@
 }
 
 .buttonStyle {
-  border-radius: 30px;
-  width: 230px;
+  border-radius: 5px; /* Rectangular buttons */
+  width: 200px; /* Smaller width */
 }

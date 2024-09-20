@@ -6,33 +6,32 @@ const bcrypt = require('bcryptjs');
 
 const users = [
   {
-    name:'supervisor',
+    name: 'association',
     digest: bcrypt.hashSync('valvoja-hilda', config.bcrypt.hashRounds),
-    role: 'supervisor'
-    
+    role: 'association',
   },
   {
-    name:'superuser',
+    name: 'superuser',
     digest: bcrypt.hashSync('hallinto-hilda', config.bcrypt.hashRounds),
-    role: 'superuser'
-  }
+    role: 'superuser',
+  },
 ];
 
-exports.seed = function(knex) {
+exports.seed = function (knex) {
   return knex('user')
     .insert(users)
     .returning(['id', 'role', 'email'])
-    .then(ids => {
+    .then((ids) => {
       return ids
-        .filter(ids => ids.role === 'supervisor')
-        .map(({id}) => {
+        .filter((ids) => ids.role === 'association')
+        .map(({ id }) => {
           return {
             user_id: id,
-            phone: undefined
+            phone: undefined,
           };
         });
-    }).then(supervisors => {
-      return knex('supervisor')
-        .insert(supervisors);
+    })
+    .then((associations) => {
+      return knex('association').insert(associations);
     });
 };

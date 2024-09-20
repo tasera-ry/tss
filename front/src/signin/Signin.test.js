@@ -11,7 +11,7 @@ import {
 } from '@testing-library/react';
 import SignIn from './SignIn';
 
-axios.get = jest.fn(() => Promise.resolve({ data: [{ role: 'supervisor' }] }));
+axios.get = jest.fn(() => Promise.resolve({ data: [{ role: 'association' }] }));
 axios.post = jest.fn((url, credentials) => {
   if (credentials.name === 'wrong_username') {
     return Promise.reject({ response: { status: 401 } }); // eslint-disable-line

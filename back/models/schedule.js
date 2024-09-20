@@ -5,12 +5,12 @@ const knex = require(path.join(root, 'knex', 'knex'));
 /**
  * Create a new schedule item.
  *
- * @param {object} details - The schedule's details { id?, range_reservation_id, supervisor_id?, open, close }.
+ * @param {object} details - The schedule's details { id?, range_reservation_id, association_id?, open, close }.
  *
  * @return {Promise<object[]>} The added reservations details.
  *
  * @example
- * createSchedule({ id: 1, range_reservation_id: 10, supervisor_id: 3, open:'18:00', close:'21:00' })
+ * createSchedule({ id: 1, range_reservation_id: 10, association_id: 3, open:'18:00', close:'21:00' })
  */
 async function createSchedule(details) {
   return knex('scheduled_range_supervision')
@@ -21,8 +21,8 @@ async function createSchedule(details) {
 /**
  * Get the schedule items matching a key.
  *
- * @param {object} key - Identifying key, { id?, range_reservation_id?, supervisor_id?, open?, close? }
- * @param {object} fields - Attributes about the schedule to select { id?, range_reservation_id?, supervisor_id?, open?, close? }
+ * @param {object} key - Identifying key, { id?, range_reservation_id?, association_id?, open?, close? }
+ * @param {object} fields - Attributes about the schedule to select { id?, range_reservation_id?, association_id?, open?, close? }
  * @return {Promise<object[]>} Schedule items that matched the key
  *
  * @example
