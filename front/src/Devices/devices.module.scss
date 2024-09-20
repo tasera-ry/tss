@@ -1,0 +1,33 @@
+@import '../shared.module.scss';
+
+.freeSwitch {
+  // Style for switch when device is free
+  .track {
+    background-color: $COLOR_GREEN; // Default track color
+    &.Mui-checked {
+      background-color: $COLOR_RED; // Track color when switched on
+    }
+  }
+  .thumb {
+    background-color: $COLOR_GREEN; // Thumb color
+    &.Mui-checked {
+      background-color: $COLOR_RED;
+    }
+  }
+}
+
+.reservedSwitch {
+  //Style for switch when device is reserved
+  .track {
+    background-color: $COLOR_RED; // Default track color
+    &.Mui-checked {
+      background-color: $COLOR_GREEN; // Track color when switched on
+    }
+  }
+  .thumb {
+    background-color: $COLOR_RED; // Thumb color
+    &.Mui-checked {
+      background-color: $COLOR_GREEN;
+    }
+  }
+}
