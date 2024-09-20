@@ -8,8 +8,8 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 
 | Name       | Version |
 |:-----------|--------:|
-| Node.js    | 14+     |
-| PostgreSQL | 9+      |
+| Node.js    | 20+     |
+| PostgreSQL | 13+      |
 
 ## How to run the application (development)
 ## New easier way of running
@@ -19,7 +19,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 3. Done! Frontend bound on host port 3000, backend on 8000.
 ## First steps
 1. Install project dependencies
-   - https://nodejs.org/ (tested using the `LTS 14` release)
+   - https://nodejs.org/ (tested using the `LTS 20` release)
    - https://www.postgresql.org/
 
      Easiest way to set up a PSQL database is using docker:

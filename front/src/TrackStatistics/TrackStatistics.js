@@ -24,7 +24,7 @@ export const TrackStatistics = ({ track, supervision }) => {
 
   // Raises or lowers the number of visitors in a given track
   const changeVisitors = async (newVisitors) => {
-    if (!scheduled || newVisitors === 0) return;
+    if (!scheduled || newVisitors === -1) return;
     // TODO FIX: always updates the visitors state regardless of patch success
     setVisitors(newVisitors);
     await sendStats(newVisitors);
@@ -117,7 +117,7 @@ export const TrackStatistics = ({ track, supervision }) => {
           disabled={isDisabled}
           variant="contained"
           className={classes(css.button)}
-          onClick={() => handleOpen()}
+          onClick={() => {handleOpen(); changeVisitors(visitors - 1)}}
           style= {{backgroundColor: '#d1ccc2'}}
         >
           -

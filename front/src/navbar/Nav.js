@@ -14,7 +14,6 @@ import ListItem from '@material-ui/core/ListItem';
 import logo from '../logo/Logo.png';
 import SupervisorNotification from './SupervisorNotification';
 import FeedbackWindow from './FeedbackWindow';
-import { DialogWindow } from '../upcomingsupervisions/LoggedIn';
 import translations from '../texts/texts.json';
 // enables overriding material-ui component styles in scss
 import { StylesProvider } from '@material-ui/core/styles';
@@ -64,12 +63,20 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
     { to: '/email-settings', name: nav.EmailSettings[lang] },
     { to: '/statistics', name: nav.Statistics[lang] },
     { to: '/supervisor-raffle', name: nav.Raffle[lang] },
-    { to: '/info', name: nav.Info[lang] },
+    { to: '/info', name: nav.Info[lang] },    
+
+  
   ];
-  const supervisorList = [
-    { to: '/tablet', name: nav.Tablet[lang] },
-    { to: '/profile', name: nav.Profile[lang] },
+
+  const associationList = [
+    { to: '/profile', name: nav.AssociationProfile[lang] },
   ];
+
+  const rangeofficerList = [
+    { to: '/profile', name: nav.RangeofficerProfile[lang] },
+  ];
+
+  const rangeMasterList = [{ to: '/tablet', name: nav.Tablet[lang] }];
 
   const navList = (list) => (
     <>
@@ -98,14 +105,19 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
       >
         <List className={classes(css.navList)}>
           {!superuser && (
-            <ListItem
-              button
-              onClick={() => setOpen({ ...open, drawer: false, dialog: true })}
-            >
-              {nav.Supervision[lang]}
-            </ListItem>
+            <Link to="/profile/supervisions">
+              <ListItem
+                button
+                onClick={() => setOpen({ ...open, drawer: false })}
+              >
+                {nav.Supervision[lang]}
+              </ListItem>
+            </Link>
           )}
-          {superuser ? navList(superuserList) : navList(supervisorList)}
+          {superuser && navList(superuserList)}
+          {cookies.role === 'association' && navList(associationList)}
+          {cookies.role === 'rangeofficer' && navList(rangeofficerList)}
+          {cookies.role === 'rangemaster' && navList(rangeMasterList)}
           {!superuser && (
             <ListItem
               button
@@ -124,7 +136,6 @@ const SideMenu = ({ setName, superuser, setLoggingOut }) => {
           </Link>
         </List>
       </Drawer>
-      {open.dialog && <DialogWindow />}
       {open.feedback && (
         <FeedbackWindow
           user={cookies.username}
@@ -170,7 +181,9 @@ const Nav = () => {
             className={classes(css.loginLink, css.pc, css.clickable)}
             to="/signin"
           >
-            <Button className={classes(css.loginbutton)}>{nav.SignIn[lang]}</Button>
+            <Button className={classes(css.loginbutton)}>
+              {nav.SignIn[lang]}
+            </Button>
           </Link>
         )}
         <div className={classes(css.langButtons, css.pc)}>
@@ -182,7 +195,6 @@ const Nav = () => {
                 window.location.reload();
               }}
               key={name}
-              
             >
               {name}
             </Button>
