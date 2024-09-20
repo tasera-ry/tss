@@ -1,23 +1,23 @@
-import React, { useState } from "react";
-import classNames from "classnames";
-import Table from "@material-ui/core/Table";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import EditSharpIcon from "@material-ui/icons/EditSharp";
-import CloseSharpIcon from "@material-ui/icons/CloseSharp";
-import CheckSharpIcon from "@material-ui/icons/CheckSharp";
-import IconButton from "@material-ui/core/IconButton";
-import TextField from "@material-ui/core/TextField";
-import Checkbox from "@material-ui/core/Checkbox";
-import translations from "../texts/texts.json";
-import css from "./table.module.scss";
+import React, { useState } from 'react';
+import classNames from 'classnames';
+import Table from '@material-ui/core/Table';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import EditSharpIcon from '@material-ui/icons/EditSharp';
+import CloseSharpIcon from '@material-ui/icons/CloseSharp';
+import CheckSharpIcon from '@material-ui/icons/CheckSharp';
+import IconButton from '@material-ui/core/IconButton';
+import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
+import translations from '../texts/texts.json';
+import css from './table.module.scss';
 const classes = classNames.bind(css);
 
-const lang = localStorage.getItem("language");
+const lang = localStorage.getItem('language');
 const { raffle } = translations;
 
 const EditField = (props) => (
@@ -32,10 +32,14 @@ const EditField = (props) => (
   />
 );
 
-export const SupervisorsTable = ({ supervisors, onSubmitUser, isLoading }) => {
+export default function SupervisorsTable({
+  associations,
+  onSubmitUser,
+  isLoading,
+}) {
   const [hoveredRow, setHoveredRow] = useState(undefined);
   const [editOpen, setEditOpen] = useState(undefined);
-  const [editFields, setEditFields] = useState({ members: 0, supervisors: 0 });
+  const [editFields, setEditFields] = useState({ members: 0, associations: 0 });
 
   return (
     <TableContainer
@@ -55,8 +59,8 @@ export const SupervisorsTable = ({ supervisors, onSubmitUser, isLoading }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {supervisors.map(
-            ({ user_id, name, members, supervisors, raffle }) => {
+          {associations.map(
+            ({ user_id, name, members, associations, raffle }) => {
               const isEdited = editOpen === user_id;
               return (
                 <TableRow
@@ -110,17 +114,17 @@ export const SupervisorsTable = ({ supervisors, onSubmitUser, isLoading }) => {
                   >
                     {isEdited ? (
                       <EditField
-                        name="supervisors"
-                        value={editFields.supervisors}
+                        name="associations"
+                        value={editFields.associations}
                         onChange={(e) =>
                           setEditFields({
                             ...editFields,
-                            supervisors: e.target.value,
+                            associations: e.target.value,
                           })
                         }
                       />
                     ) : (
-                      supervisors
+                      associations
                     )}
                   </TableCell>
                   <TableCell align="left" className={classes(css.smallCell)}>
@@ -153,7 +157,7 @@ export const SupervisorsTable = ({ supervisors, onSubmitUser, isLoading }) => {
                         disabled={isLoading}
                         onClick={() => {
                           setEditOpen(user_id);
-                          setEditFields({ members, supervisors });
+                          setEditFields({ members, associations });
                         }}
                         className={classes(css.editButton, {
                           [css.hover]: hoveredRow === user_id,
@@ -165,10 +169,10 @@ export const SupervisorsTable = ({ supervisors, onSubmitUser, isLoading }) => {
                   </TableCell>
                 </TableRow>
               );
-            }
+            },
           )}
         </TableBody>
       </Table>
     </TableContainer>
   );
-};
+}

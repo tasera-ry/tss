@@ -1,5 +1,13 @@
 @import '../shared.module.scss';
 
+.infoBox {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 1em;
+}
+
 .exclamation2 {
   position: relative;
   top: 30px;
@@ -9,11 +17,17 @@
   max-width: 80%;
 }
 
+.arrivalTime {
+  margin: 0;
+  padding: 0;
+  font-size: 0.8em;
+  color: $COLOR_BLACK_TINT_70;
+}
+
 .bigContainer {
   width: 100vw;
   max-width: 1025px;
   margin: auto;
-  
 }
 
 .flexContainer {
@@ -39,7 +53,6 @@
   border-radius: 5px 5px 0 0;
   margin-top: -5px;
   margin-bottom: -5px;
-  
 }
 
 .flexContainer2 ~ .flexContainer2 {
@@ -63,12 +76,11 @@
   font-size: 20px;
   text-decoration: none;
   color: $COLOR_WHITE;
-
 }
 
 .flexContainer > a {
   //border-right: 1px solid;
-  
+
   width: calc(100% / 7);
   margin: 3px;
   text-align: center;
