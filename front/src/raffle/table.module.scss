@@ -15,7 +15,7 @@
 }
 
 .table {
-  background-color: $COLOR_CREAM5;
+  background-color: $COLOR_BLACK_TINT_05;
 
   .loading {
     cursor: wait;
@@ -60,7 +60,7 @@
 
 .editButton {
   path {
-    color: $COLOR_CREAM5;
+    color: $COLOR_BLACK_TINT_05;
   }
 
   &.hover path,

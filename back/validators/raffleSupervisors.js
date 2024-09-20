@@ -2,7 +2,7 @@ const { check, validationResult } = require('express-validator');
 
 const validateRaffleResults  = [
   check('results').exists(),
-  check('results.*.supervisor_id')  
+  check('results.*.association_id')  
     .not()  
     .isEmpty()
     .isInt(),

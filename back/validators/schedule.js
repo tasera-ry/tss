@@ -25,7 +25,7 @@ function idValidator(requestObject, opts, name) {
 }
 
 function supervisorValidator(requestObject, opts) {
-  const validator = requestObject('supervisor_id');
+  const validator = requestObject('association_id');
   return supplement(validator, opts);
 }
 
