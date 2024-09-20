@@ -1,7 +1,6 @@
 @import './colors.module.scss';
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
-
 body {
   margin: 0;
   font-family: 'Lato', sans-serif;
@@ -55,6 +54,13 @@ code {
   background-color: $COLOR_SAND !important;
   &:disabled {
     background-color: lighten($COLOR_GREY, 40%) !important;
+  }
+}
+
+.removeButton {
+  background-color: $COLOR_RED_LIGHT;
+  &:hover {
+    background-color: lighten($COLOR_RED_LIGHT, 10%) !important;
   }
 }
 
@@ -117,7 +123,7 @@ code {
 }
 
 .flexWrap {
-  display: flex; 
+  display: flex;
   flex-wrap: wrap;
 }
 

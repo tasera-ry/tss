@@ -16,18 +16,18 @@ const DEFAULT_RANGE_AVAILABE = true;
 
 /* Set the supervisors to database according to the raffle results */
 async function setSupervisors(raffleResults) {
-  const setSingleSupervisor = async (rangeId, supervisorId, date) => {
+  const setSingleSupervisor = async (rangeId, associationId, date) => {
     const rangeReservationId = await updateOrCreateRangeReservation(date, rangeId);
     const scheduledRangeSupervisionId = await updateOrCreateScheduledRangeSupervision(
-      rangeReservationId, date, supervisorId
+      rangeReservationId, date, associationId
     );
     await updateOrCreateRangeSupervision(scheduledRangeSupervisionId);  
   };
   
   const range_id = await getRangeId(); 
   await Promise.all(raffleResults.map(async result => {
-    const { supervisor_id, date  } = result;
-    await setSingleSupervisor(range_id, supervisor_id, date);
+    const { association_id, date  } = result;
+    await setSingleSupervisor(range_id, association_id, date);
   })
   );
 }
@@ -95,7 +95,7 @@ const getOpeningHours = (weekday) => {
 const updateOrCreateScheduledRangeSupervision = async (
   rangeReservationId,
   date,
-  supervisorId) =>
+  associationId) =>
 {
   const scheduledRangeSupervisionId =
     await getScheduledRangeSupervisionId(rangeReservationId);
@@ -104,7 +104,7 @@ const updateOrCreateScheduledRangeSupervision = async (
 
   const scheduledRangeSupervision = {
     ...openingHours,
-    supervisor_id: supervisorId,
+    association_id: associationId,
     range_reservation_id: rangeReservationId
   };
 

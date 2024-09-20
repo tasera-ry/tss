@@ -1,5 +1,6 @@
 const path = require('path');
 const root = path.join(__dirname, '..');
+
 const controllers = path.join(root, 'controllers');
 const user = require(path.join(controllers, 'user'));
 const reservation = require(path.join(controllers, 'reservation'));
@@ -14,6 +15,8 @@ const infoMessage = require(path.join(controllers, 'infoMessage'));
 const raffle = require(path.join(controllers, 'raffle'));
 const raffleSupervisors = require(path.join(controllers, 'raffleSupervisors'));
 const members = require(path.join(controllers, 'members'));
+const devices = require(path.join(controllers, 'devices'));
+
 exports.user = user;
 exports.trackSupervision = trackSupervision;
 exports.rangeSupervision = rangeSupervision;
@@ -27,3 +30,4 @@ exports.infoMessage = infoMessage;
 exports.raffle = raffle;
 exports.members = members;
 exports.raffleSupervisors = raffleSupervisors;
+exports.devices = devices;
