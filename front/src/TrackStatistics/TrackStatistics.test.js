@@ -20,15 +20,18 @@ describe('testing TrackStatistics', () => {
   it('should increment visitor number', async () => {
     render(
       <TrackStatistics
-        track={testUtils.schedule.tracks[0]}
-        supervision="absent"
+        track={testUtils.schedule.tracks[3]}
+        supervision="present"
       />,
     );
-    await waitFor(() => expect(screen.getByText('5')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('0')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('+')).toBeInTheDocument());
     fireEvent.click(screen.getByText('+'));
-    await waitFor(() => expect(screen.getByText('6')).toBeInTheDocument());
+    fireEvent.click(screen.getByText('+'));
+    await waitFor(() => expect(screen.getByText('2')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('-')).toBeInTheDocument());
     fireEvent.click(screen.getByText('-'));
     fireEvent.click(screen.getByText('-'));
-    await waitFor(() => expect(screen.getByText('4')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('0')).toBeInTheDocument());
   });
 });
