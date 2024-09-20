@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useCookies } from 'react-cookie';
 import classNames from 'classnames';
 import DeleteOutlined from '@material-ui/icons/DeleteOutlined';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+
+import {
+  Button,
+  TextField,
+  FormControlLabel, 
+  Checkbox,
+  Select,
+  MenuItem,
+} from '@material-ui/core';
+
 import { validateLogin } from '../utils/Utils';
 import translations from '../texts/texts.json';
 import api from '../api/api';
@@ -14,86 +21,99 @@ const classes = classNames.bind(css);
 
 const { infoPage } = translations;
 
-/*  IMPORTANT: ONLY SUPER USER SHOULD BE ALLOWED ON THIS PAGE
-      - Add user type checks before allowing access
+
+/* 
     IMPORTANT: Current implementation is MVP, needs to be fixed to fulfil actual customer needs
 */
 
-const InfoText = ({ message }) => {
+const InfoText = ({ message, onDelete }) => {
   const deleteMessage = async () => {
     await api.deleteInfoMessage(message);
-    // TO DO: Currently updating the list requires reload -> change the list to be SPA-like
-    window.location.reload(false);
+    onDelete();
   };
 
   return (
     <div className={classes(css.messageContainer)}>
-      • {message.message} (<i>{message.start.slice(0, 10)} → {message.end.slice(0, 10)}</i>)
+      • {message.message} (<i>{message.start.slice(0, 10)} → {message.end.slice(0, 10)} to: {message.recipients}</i>)
       <DeleteOutlined className={classes(css.deleteIcon)} onClick={deleteMessage} />
     </div>
   );
 };
 
-// TO DO: Fix calendars.
 const AddInfo = () => {
   const lang = localStorage.getItem('language');
-  const [info, setInfo] = useState([]);
-  const [message, setMessage] = useState('');
-  const [start, setStart] = useState(new Date()); // Defaults to today
-  const [end, setEnd] = useState(new Date(new Date().getTime() + 86400000)); // Defaults to tomorrow
-  const [weekly, setWeekly] = useState(false);
-  const [monthly, setMonthly] = useState(false);
+
+  const [infoText, setInfoTexts] = useState([]);
+  const [numOfInfoMessages, setNumOfInfoMessages] = useState(0);
+  const [userOption, setUserOptions] = useState([]);
   const [isLoading, setisLoading] = useState(true);
+  const [cookies] = useCookies(['username']);
+  const [infoRequest, setInfoRequest] = useState({
+    message: '',
+    start: new Date(), //Defaults to today
+    end: new Date(new Date().getTime() + 86400000), //Defaults to tomorrow
+    recipients: 'all',
+    sender: cookies.username,
+    show_weekly: false,
+    show_monthly: false,
+  });
+
+  const getMessage = async () => {
+    const logInSuccess = await validateLogin();
+    if (!logInSuccess) window.location.href = '/';
+
+    try {
+      const res = await api.getAllInfoMessages();
+      if (res) setInfoTexts(res);
+    } finally {
+      setisLoading(false);
+    }
+  };
+
+  const getUsers = async () => {
+    try {
+      const res = await api.getUsers();
+      if (res) {
+        res.sort((a, b) => {
+          if(a.name < b.name) return -1;
+          if(a.name > b.name) return 1;
+          return 0;
+        });
+        setUserOptions(res);
+      }
+    } finally {
+      setisLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const getMessage = async () => {
-      const logInSuccess = await validateLogin();
-      if (!logInSuccess) window.location.href = '/';
-
-      try {
-        const res = await api.getInfoMessage();
-        if (res) setInfo(res);
-      } finally {
-        setisLoading(false);
-      }
-    };
-    getMessage();
+    getUsers();
   }, []);
+
+  useEffect(() => {
+    getMessage();
+  }, [numOfInfoMessages]);
 
   const handleClick = async (e) => {
     e.preventDefault();
 
-    // TO DO: Actual alert/error for this
-    if (!message || !start || !end) {
-      alert('Puutteelliset tiedot');
-      return;
-    }
-
-    // TO DO: Add check that end date is not before start date
-    // TO DO: Add check that end date is not today, nor in history
-    // TO DO: Add check that start date is not in history
-    const infoRequest = {
-      message,
-      start,
-      end,
-      show_weekly: weekly,
-      show_monthly: monthly,
-    };
-
     try {
       await api.postInfoMessage(infoRequest);
+      setNumOfInfoMessages(numOfInfoMessages + 1);
     } catch (err) {
       console.log(err);
     }
 
-    setMessage('');
-    setStart(new Date());
-    setEnd(new Date(new Date().getTime() + 86400000));
-    setWeekly(false);
-    setMonthly(false);
+    setInfoRequest({
+      message: '',
+      start: new Date(), //Defaults to today
+      end: new Date(new Date().getTime() + 86400000), //Defaults to tomorrow
+      recipients: 'all',
+      sender: cookies.username,
+      show_weekly: false,
+      show_monthly: false,
+    });
 
-    // TO DO: Currently updating the list requires reload -> change the list to be SPA-like
-    window.location.reload(false);
   };
 
   if (isLoading) return null;
@@ -106,57 +126,93 @@ const AddInfo = () => {
           id="outlined-multiline-static"
           label={infoPage.message[lang]}
           multiline
-          onChange={(e) => setMessage(e.target.value)}
-          value={message}
+          onChange={(e) => setInfoRequest({ ...infoRequest, message: e.target.value })}
+          value={infoRequest.message}
           variant="standard"
           style={{ marginBottom: '10px', width: '300px' }}
         />
       </div>
       <div>
         <TextField
-          type="date"
+          type="date" required
           label={infoPage.startDate[lang]}
           defaultValue={new Date().toISOString().slice(0, 10)}
-          onChange={(e) => setStart(e.target.value)}
+          onChange={(e) => setInfoRequest({ ...infoRequest, start: e.target.value })}
+          inputProps={{ min: new Date().toISOString().slice(0, 10) }}
         />
       </div>
       <div>
         <TextField
-          type="date"
+          type="date" required
           label={infoPage.endDate[lang]}
           defaultValue={new Date(new Date().getTime() + 86400000).toISOString().slice(0, 10)}
-          onChange={(e) => setEnd(e.target.value)}
+          onChange={(e) => setInfoRequest({ ...infoRequest, end: e.target.value })}
+          inputProps={{ min: new Date(new Date(infoRequest.start).getTime() + 86400000).toISOString().slice(0, 10) }}
         />
       </div>
-      <div>
+
+
+    {/* TO-DO: Implement functionality */}
+
+      {/* <div>
         <FormControlLabel
           control={
             <Checkbox
-              checked={weekly}
-              onChange={() => setWeekly(!weekly)}
+              checked={infoRequest.show_weekly}
+              onChange={(e) => setInfoRequest({ ...infoRequest, show_weekly: e.target.value })}       
               color="default"
+              disabled
             />
-        }
+          }
           label={infoPage.repeatWeekly[lang]}
         />
-      </div>
-      <div>
+      </div> */}
+      {/* <div>
         <FormControlLabel
           control={
             <Checkbox
-              checked={monthly}
-              onChange={() => setMonthly(!monthly)}
+              checked={infoRequest.show_monthly}
+              onChange={(e) => setInfoRequest({ ...infoRequest, show_monthly: e.target.value })}
               color="default"
+              disabled
             />
           }
           label={infoPage.repeatMonthly[lang]}
         />
+      </div> */}
+
+
+      <div>
+        <Select
+          value={infoRequest.recipients}
+          onChange={(e) => setInfoRequest({ ...infoRequest, recipients: e.target.value.toString() })}
+          MenuProps={{ style: { maxHeight: 400 } }}
+
+        >
+          <MenuItem value={'all'}>{infoPage.sendPublicMessage[lang]}</MenuItem>
+          <MenuItem value={'rangemaster'}>{infoPage.sendRangeMasterMessage[lang]}</MenuItem>
+          {userOption.map((user) => <MenuItem
+            key={user.id}
+            value={user.name}
+          >
+            {user.name}
+          </MenuItem>)}
+        </Select>
       </div>
       <div>
-        <Button type="button" variant="contained" onClick={handleClick}>{infoPage.send[lang]}</Button>
+        <Button
+          type="button"
+          className={classes(css.sandButton)} 
+          variant="contained"
+          onClick={handleClick}
+          disabled={
+            infoRequest.message === '' || new Date(infoRequest.end).setHours(0, 0, 0, 0) <= new Date(infoRequest.start).setHours(0, 0, 0, 0)
+          }>
+          {infoPage.send[lang]}
+        </Button>
       </div>
       <hr />
-      {info && <> {info.map((infos) => <InfoText message={infos} />)} </> }
+      {infoText && <> {infoText.map((infos) => <InfoText key={infos.id} message={infos} onDelete={() => setNumOfInfoMessages(numOfInfoMessages - 1)} />)} </>}
     </div>
   );
 };

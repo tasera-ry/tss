@@ -18,7 +18,7 @@ const InfoComp = ({ message }) => {
   if (message.start > new Date().toISOString()) return null;
 
   return (
-    <div className={classes(css.infoContainer)}>
+    <div className={classes(css.infoContainer)} data-testid="infoboxContainer">
       <div className={classes(css.infoBox)}>
         <Close
           fontSize="small"
@@ -35,20 +35,30 @@ const InfoComp = ({ message }) => {
 };
 
 // TO DO: Take weekly and monthly values into account
-const InfoBox = () => {
+const InfoBox = ({tabletMode = false}) => {
   const [info, setInfo] = useState([]);
 
   useEffect(() => {
-    const getMessage = async () => {
-      const res = await api.getInfoMessage();
+    const getPublicMessages = async () => {
+      const res = await api.getPublicInfoMessages();
       if (res) setInfo(res);
     };
-    getMessage();
+    const getRangeMasterInfoMessages = async () => {
+      const res = await api.getRangeMasterInfoMessages();
+      if (res) setInfo(res);
+    }
+
+    if(tabletMode)
+    {
+      getRangeMasterInfoMessages();
+    } else {
+      getPublicMessages();
+    } 
   }, []);
 
   return (
     <>
-      {info && <> {info.map((infos) => <InfoComp message={infos} />)} </> }
+      {info && <> {info.map((infos) => <InfoComp key={infos.id} message={infos}/>)} </> }
     </>
   );
 };
