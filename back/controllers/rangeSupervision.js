@@ -13,23 +13,23 @@ schedule.scheduleJob('00 00 01 * * 0-6', async function(){
   //make date object 7 days from this day.
   const currentDate = new Date();
   currentDate.setDate(currentDate.getDate() + 7);
-  //function that returns the supervisor of 7 days into the future.
+  //function that returns the association of 7 days into the future.
   async function getFutureSupervision() {
     return await knex
       .from('user')
-      .leftJoin('supervisor', 'user.id', 'supervisor.user_id')
-      .leftJoin('scheduled_range_supervision', 'supervisor.user_id', 'scheduled_range_supervision.supervisor_id')
+      .leftJoin('association', 'user.id', 'association.user_id')
+      .leftJoin('scheduled_range_supervision', 'association.user_id', 'scheduled_range_supervision.association_id')
       .leftJoin('range_supervision', 'scheduled_range_supervision.id', 'range_supervision.scheduled_range_supervision_id')
       .leftJoin('range_reservation', 'scheduled_range_supervision.range_reservation_id', 'range_reservation.id')
       .where('range_reservation.date', '=', currentDate)
-      .select('scheduled_range_supervision.supervisor_id', 'range_supervisor');
+      .select('scheduled_range_supervision.association_id', 'range_supervisor');
   }
   try {
     const receiver = await getFutureSupervision();
     //first we check if the supervisor has confirmed or not.
     //if status = not cnofirmed, fetches email with supervisor id and sends it to mailer.js 
     if(receiver[0] != undefined && receiver[0].range_supervisor === 'not confirmed') {
-        email('reminder', receiver[0].supervisor_id, null);
+      email('reminder', receiver[0].association_id, null);
     }
   } catch (error) {
     console.log(error);
@@ -101,9 +101,9 @@ const controller = {
 
   create: async function createSupervision(request, response) {
     try {
-      if (!response.req.body.supervisor) return;
+      if (!response.req.body.association) return;
       const scheduleId = response.locals.id;
-      email('assigned', response.req.body.supervisor, { scheduleId: scheduleId });
+      email('assigned', response.req.body.association, { scheduleId: scheduleId });
     } catch (error) {
       console.error(error);
     }
@@ -113,12 +113,12 @@ const controller = {
   },
 
   update: async function updateSupervision(request, response) {
-    //updates.range_supervisor returns "absent" if supervisor has not been assigned. it returns "not confirmed" is supervisor is assigned.
-    //if - checks if supervisor is assigned and only sends email if it is set. otherwise it would send email aswell when supervisor is taken off.
+    //updates.range_supervisor returns "absent" if association has not been assigned. it returns "not confirmed" is association is assigned.
+    //if - checks if association is assigned and only sends email if it is set. otherwise it would send email aswell when association is taken off.
     try {
       const scheduleId = response.locals.id.scheduled_range_supervision_id;
-      if (response.locals.updates.range_supervisor === 'not confirmed' && response.locals.updates.supervisor){
-        email('update', response.locals.updates.supervisor, { scheduleId: scheduleId });
+      if (response.locals.updates.range_supervisor === 'not confirmed' && response.locals.updates.association){
+        email('update', response.locals.updates.association, { scheduleId: scheduleId });
       }
 
       if (response.locals.updates.range_supervisor === 'absent' && response.locals.user.name) {

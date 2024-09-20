@@ -6,10 +6,11 @@ nav {
   align-items: center;
   flex-wrap: wrap;
   min-height: 20vh;
-  background-color: $COLOR_CREAM50;
+  background-color: $COLOR_BLACK_TINT_40;
 
   .loginLink {
     text-decoration: none;
+    border-radius: 5%;
   }
   .langButtons {
     @extend .layout-row;
@@ -19,8 +20,22 @@ nav {
   }
 }
 
+.clickable {
+  font-family: 'Lato', sans-serif;
+  color: white;
+  font-weight: bold;
+  background-color: $COLOR_BLACK_TINT_70;
+  margin: 2px;
+}
+
+.loginbutton {
+  font-family: 'Lato', sans-serif;
+  color: white;
+  font-weight: bold;
+}
+
 .paper {
-  background: $COLOR_CREAM5;
+  background: $COLOR_BLACK_TINT_10;
 }
 
 .logo {

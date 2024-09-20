@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useCookies } from 'react-cookie';
 
 // Material UI components
 import Typography from '@material-ui/core/Typography';
@@ -32,10 +33,12 @@ import { TrackStatistics } from '../TrackStatistics/TrackStatistics';
 
 //Receiving possible info messages
 import InfoBox from '../infoBox/InfoBox';
+import Devices from '../Devices/devices';
 
 import classNames from 'classnames';
 import colors from '../colors.module.scss';
 import css from './rangeofficer.module.scss';
+
 
 const classes = classNames.bind(css);
 
@@ -62,7 +65,6 @@ const TrackRows = ({ tracks, setTracks, scheduleId, tablet, fin, socket }) =>
   ));
 
 const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
-
   const [buttonColor, setButtonColor] = useState(track.color);
 
   const supervisorState = track.scheduled.track_supervisor;
@@ -71,7 +73,9 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
   else if (supervisorState === 'closed') supervisorStateTablet = 'Red';
   else supervisorStateTablet = 'White';
 
-  const [textState, setTextState] = useState(tablet[supervisorStateTablet][fin]);
+  const [textState, setTextState] = useState(
+    tablet[supervisorStateTablet][fin],
+  );
   const [supervision, setSupervision] = useState(supervisorState);
 
   socket.on('trackUpdate', (msg) => {
@@ -88,7 +92,7 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
         setSupervision('present');
       } else if (msg.super === 'absent') {
         track.trackSupervision = 'closed'; // eslint-disable-line
-        setButtonColor(colors.cream5);
+        setButtonColor(colors.white);
         setTextState(tablet.White[fin]);
         setSupervision('closed');
       }
@@ -97,7 +101,7 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
   const HandleClick = () => {
     let newSupervision = 'absent';
     setSupervision('absent');
-    track.color = colors.cream5; // eslint-disable-line
+    track.color = colors.white; // eslint-disable-line
     setTextState(tablet.White[fin]);
 
     if (track.trackSupervision === 'present') {
@@ -168,8 +172,8 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
   return (
     <div>
       <Button
-        className = {classes(css.buttonStyle)}
-        style={{backgroundColor: buttonColor}}
+        className={classes(css.buttonStyle)}
+        style={{ backgroundColor: buttonColor }}
         size="large"
         variant="contained"
         onClick={HandleClick}
@@ -188,13 +192,13 @@ async function getColors(tracks, setTracks) {
   for (let i = 0; i < copy.length; i += 1) {
     const obj = copy[i];
     if (copy[i].trackSupervision === 'present') {
-      obj.color = colors.green;
+      copy[i].color = colors.green;
     } else if (copy[i].trackSupervision === 'closed') {
-      obj.color = colors.redLight;
+      copy[i].color = colors.redLight;
     } else if (copy[i].trackSupervision === 'absent') {
-      obj.color = colors.cream5;
+      copy[i].color = colors.white;
     } else if (copy[i].trackSupervision === 'en route') {
-      obj.color = colors.orange;
+      copy[i].color = colors.orange;
     }
   }
   setTracks(copy);
@@ -232,7 +236,7 @@ async function getData(
         setStatusColor(colors.orange);
       } else if (response.rangeSupervision === 'absent') {
         setStatusText(tablet.SuperWhite[fin]);
-        setStatusColor(colors.cream5);
+        setStatusColor(colors.white);
       } else if (response.rangeSupervision === 'closed') {
         setStatusText(tablet.Red[fin]);
         setStatusColor(colors.redLight);
@@ -244,7 +248,7 @@ async function getData(
         setStatusColor(colors.turquoise);
       } else {
         setStatusText(tablet.SuperWhite[fin]);
-        setStatusColor(colors.cream5);
+        setStatusColor(colors.white);
       }
       getColors(response.tracks, setTracks);
     });
@@ -369,10 +373,13 @@ const Tabletview = () => {
   const [rangeSupervisionScheduled, setRangeSupervisionScheduled] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [socket, setSocket] = useState();
+  const [cookies] = useCookies(['username']);
+
   const fin = localStorage.getItem('language');
   const { tablet } = data;
   const date = moment(Date.now()).format('YYYY-MM-DD');
   const today = moment().format('DD.MM.YYYY');
+  
 
   /*
     Basically the functional component version of componentdidmount
@@ -384,7 +391,10 @@ const Tabletview = () => {
 
   useEffect(() => {
     validateLogin().then((logInSuccess) => {
-      if (logInSuccess) {
+      if (
+        logInSuccess &&
+        (cookies.role === 'rangemaster' || cookies.role === 'superuser')
+      ) {
         getData(
           //data,
           tablet,
@@ -468,10 +478,14 @@ const Tabletview = () => {
     });
     updateSupervisor('closed', colors.redLight, tablet.Red[fin]);
   };
+
+
+
   return (
     <div>
       <InfoBox tabletMode={true} />
       <div className={classes(css.Text)}>{today}</div>
+
 
       <Typography variant="h5" align="center">
         {tablet.Open[fin]}: &nbsp;
@@ -494,15 +508,17 @@ const Tabletview = () => {
           setHours={setHours}
           dialogOpen={dialogOpen}
           setDialogOpen={setDialogOpen}
+          
         />
       ) : (
         ''
       )}
+      
+      <div className={classes( css.rowStyle)}>
 
-      <div className={classes(css.Status, css.rowStyle)}>
         <Button
-          className = {classes(css.statusStyle)}
-          style={{color: colors.black, backgroundColor: statusColor}}
+          className={classes(css.statusStyle)}
+          style={{ color: colors.black, backgroundColor: statusColor }}
           size="large"
           variant="outlined"
           disabled
@@ -511,7 +527,7 @@ const Tabletview = () => {
           {statusText}
         </Button>
       </div>
-
+     
       <div className={classes(css.Text)}>{tablet.HelperFirst[fin]}</div>
 
       <div className={classes(css.rowStyle)}>
@@ -544,9 +560,11 @@ const Tabletview = () => {
         </Button>
       </div>
 
+
       <div className={classes(css.Text)}>{tablet.HelperSecond[fin]}</div>
 
       <div className={classes(css.trackRowStyle)}>
+        
         <TrackRows
           tracks={tracks}
           setTracks={setTracks}
@@ -554,8 +572,14 @@ const Tabletview = () => {
           tablet={tablet}
           fin={fin}
           socket={socket}
+          
         />
+      
       </div>
+      {}
+      <Devices/>
+      
+      
     </div>
   );
 };
