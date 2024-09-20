@@ -6,6 +6,9 @@ const sendPending = async () => {
   const emailSettings = await services.emailSettings.read();
   const pending = await services.pendingEmails.read();
 
+  console.log(emailSettings);
+  console.log(pending);
+
   const emailInfo = pending.reduce((acc, val) => {
     if (acc[val.user_id] === undefined)
       acc[val.user_id] = { email: val.email, total: 0, last: null };
@@ -97,10 +100,11 @@ const sendEmail = async (text, emailAddress, emailSettings) => {
     }
 
     let transporter = nodemailer.createTransport({
+      name: 'tasera.fi',
       host: emailSettings.host,
       port: emailSettings.port,
       secure: emailSettings.secure === 'true',
-      auth: auth,
+      auth: auth
     });
 
     // send mail with defined transport object
