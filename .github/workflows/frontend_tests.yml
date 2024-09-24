@@ -2,9 +2,9 @@ name: Frontend Unit Test Run
 
 on:
   push:
-    branches: [develop, master]
+    branches: [develop, 'v**-develop', master]
   pull_request:
-    branches: [develop, master]
+    branches: [develop, 'v**-develop', master]
 
 jobs:
   build:
