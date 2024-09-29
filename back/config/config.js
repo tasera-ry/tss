@@ -9,7 +9,7 @@ const config = {
     secret: process.env.JWT_SECRET || crypto.randomBytes(2 ** 8).toString('hex')
   },
   development: {
-    range_id: 1
+    range_id: 56
   },
   bcrypt: {
     hashRounds: 8
@@ -17,12 +17,12 @@ const config = {
 
   seeds: {
     seed: 0,
-    users: 50,
+    users: 10,
     ranges: 1,
     tracks: 7,
     // use date or datetime here
-    startDate: '2020-12-01',
-    endDate: '2021-12-31',
+    startDate: '2024-09-26',
+    endDate: '2024-12-31',
     // chunkSize = how many rows are inserted in a single insertion, larger
     // chunk size equals faster insertions, but a value that is too high causes
     // errors. In case of errors, try dropping the factor down.
