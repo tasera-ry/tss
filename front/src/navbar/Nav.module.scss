@@ -43,7 +43,7 @@ nav {
 
 .logo {
   width: 60%;
-  max-width: 700px;
+  max-width: 500px;
   min-width: 300px;
   display: block;
 }
@@ -83,18 +83,19 @@ nav {
   .pc {
     display: inline;
   }
-  
+
   .logo {
     width: 70%;
-    margin-right: 15vw;
+    margin-right: 40vw;
   }
 
   .clickable {
     display: flex;
     justify-content: center;
     align-items: center;
-  } 
+  }
 }
+
 /* big landscape tablets, laptops, and desktops */
 @media only screen and (min-width: 1025px) {
   nav {
