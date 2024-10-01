@@ -22,9 +22,12 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import api from '../api/api';
 import translations from '../texts/texts.json';
+import { useCookies } from 'react-cookie';
 
 const Devices = () => {
   const [devices, setDevices] = useState(null);
+  const [cookies] = useCookies(['role']);
+  const userRole = cookies.role;
 
   const sortDevices = (devices) => {
     // Function for sorting devices alphabetically
@@ -122,7 +125,7 @@ const Devices = () => {
                 }
               }}
               editable={{
-                onRowAdd: (newData) =>
+                onRowAdd: userRole === 'superuser' ? (newData) =>
                   new Promise((resolve, reject) => {
                     if(!newData.device_name || newData.device_name.trim === "") {
                       alert(devicesList.AddError[lang]);
@@ -141,8 +144,8 @@ const Devices = () => {
                         setDevices(updatedDevices);
                         resolve();
                       });
-                  }),
-                onRowUpdate: (newData, oldData) =>
+                  }) : null,
+                onRowUpdate: userRole === 'superuser' ? (newData, oldData) =>
                   new Promise((resolve, reject) => {
                     api.patchDevice(oldData.id, newData).then(() => {
                       const updatedDevices = [...devices];
@@ -152,8 +155,8 @@ const Devices = () => {
                       setDevices(sortedUpdatedDevices);
                       resolve();
                     });
-                  }),
-                onRowDelete: (oldData) =>
+                  }) : null,
+                onRowDelete: userRole === 'superuser' ? (oldData) =>
                   new Promise((resolve, reject) => {
                     api.deleteDevice(oldData.id).then(() => {
                       const data = [...devices];
@@ -161,7 +164,7 @@ const Devices = () => {
                       setDevices(data);
                       resolve();
                     });
-                  }),
+                  }) : null,
               }}
               options={{
                 search: true,
