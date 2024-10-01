@@ -126,3 +126,7 @@ KK
 
 
 PR
+
+
+## Tss development users  
+See seeds/02_users.js for the development environment users.
