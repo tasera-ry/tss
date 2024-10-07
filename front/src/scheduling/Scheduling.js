@@ -261,8 +261,8 @@ function Scheduling(props) {
     const idx = tracks.findIndex(
       (findItem) => findItem.id === parseInt(event.target.id),
     );
-    let newTracks = tracks;
-    newTracks[idx].notice = event.target.value;
+    let newTracks = [...tracks];
+    newTracks[idx] = { ...newTracks[idx], notice: event.target.value };
     setTracks(newTracks);
   };
 

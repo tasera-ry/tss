@@ -16,18 +16,53 @@ function getRandomRole() {
 
 casual.seed(config.seeds.seed);
 exports.seed = async function (knex) {
-	const listedUsersAmount = Math.min(config.seeds.users, 50);
+	// const listedUsersAmount = Math.min(config.seeds.users, 50);
 
-	// do we really need terminal spinners?
-	const generateUsers = Promise.all(_.times(config.seeds.users, casual._user));
-	ora.promise(generateUsers, `Generating ${config.seeds.users} users`);
-	const users = await generateUsers;
+	// // do we really need terminal spinners?
+	// const generateUsers = Promise.all(_.times(config.seeds.users, casual._user));
+	// ora.promise(generateUsers, `Generating ${config.seeds.users} users`);
+	// const users = await generateUsers;
+	const users = [
+		{
+			name: 'DevAssociation',
+			password: '5Effie38',
+			digest: '$2a$10$oE0o638BBP/SkL2MQ0jEQeIxh6iKTkLoGaq/Cv6PuEzgeoqZTW4.e',
+			phone: '905-680-0458',
+			email: 'DevAssociation@yahoo.com',
+			role: 'association'
+		},
+		{
+			name: 'DevSuperuser',
+			password: '2Gordon62',
+			digest: '$2a$10$7mUgTdyd9EiWA755lHaxCeS0jqzaJmn7tp2JMK7nIzMqZcOYEuA2.',
+			phone: '079-699-6774',
+			email: 'DevSuperuser@tss.ca',
+			role: 'superuser'
+		},
+		{
+			name: 'DevRangeOfficer1',
+			password: '4Jaron49',
+			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
+			phone: '788-709-3147',
+			email: 'DevRangeOfficer1@hotmail.com',
+			role: 'rangeofficer'
+		},
+		{
+			name: 'DevRangeOfficer2',
+			password: '4Jaron49',
+			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
+			phone: '788-709-3147',
+			email: 'DevRangeOfficer2@hotmail.com',
+			role: 'rangeofficer'
+		},
+	];
 
-	const head = _.take(users, listedUsersAmount).map(
-		_.partialRight(_.pick, ['name', 'role', 'password', 'email'])
-	);
+	// const head = _.take(users, listedUsersAmount).map(
+	// 	_.partialRight(_.pick, ['name', 'role', 'password', 'email'])
+	// );
 	// simplify JSON.stringify
-	console.log(`First ${listedUsersAmount} users:\n${JSON.stringify(head, null, 2)}`);
+	// console.log(`First ${listedUsersAmount} users:\n${JSON.stringify(head, null, 2)}`);
+
 
 	const insertUsers = Promise.all(
 		_.chunk(users, config.seeds.chunkSize).map(async (userChunk) => {
@@ -42,7 +77,6 @@ exports.seed = async function (knex) {
 	);
 	ora.promise(insertUsers, 'Inserting users');
 	await insertUsers;
-
    // Generate a single user with "rangemaster" role
 		const rangemasterUser = await casual._user();
 
