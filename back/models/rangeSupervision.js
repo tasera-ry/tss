@@ -93,6 +93,30 @@ const model = {
   },
 
   /**
+   * Get the supervisions matching an association id.
+   *
+   * @param {object} key - Identifying association key, { association }
+   * @param {object} fields - Attributes about the supervision to select (currently selects all but leaving the option to make it modular in the future)
+   * @return {Promise<object[]>} Supervisions that matched the association id
+   *
+   * @example
+   * model.associationSupervisions({ association: 1 }, [])
+   */
+  associationSupervisions: async function getAssociationSupervisions(key, fields) {
+    const currentDate = new Date();
+    
+    return await knex
+      .from('scheduled_range_supervision as srs')
+      .leftJoin('range_supervision as rs', 'srs.id', 'rs.scheduled_range_supervision_id')
+      .leftJoin('range_reservation as rr', 'srs.range_reservation_id', 'rr.id')
+      .where('srs.association_id', key['association']) // filter by association id
+      .andWhere('rr.available', true)
+      .andWhere('rr.date', '>=', currentDate)           // only future reservations
+      .select(fields)                                   // empty array falls back to '*'
+      .orderBy('rr.date', 'asc');
+  },
+
+  /**
    * Update a supervision events' info.
    *
    * @param {object} current - The current identifying info of the supervision. { scheduled_range_supervision_id }

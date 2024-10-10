@@ -82,6 +82,20 @@ const controller = {
       .send(response.locals.queryResult);
   },
 
+  associationSupervisions: async function getAssociationSupervisions(request, response) {
+    if (response.locals.queryResult.length === 0) {
+      return response
+        .status(404)
+        .send({
+          error: 'Association has no supervisions'
+        });
+    }
+
+    return response
+      .status(200)
+      .send(response.locals.queryResult);
+  },
+
   feedback: async function sendFeedback(request, response) {
     const feedback = response.locals.query.feedback;
     const superusers = response.locals.superusers;
