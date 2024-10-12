@@ -143,7 +143,7 @@ const EmailSettings = () => {
   // checks whether the email in sähköpostiasetukset käyttäjä/user field is a tasera email
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(String(email).toLowerCase()) && email.endsWith('@tasera.fi');
+    return re.test(String(email).toLowerCase());
   };
 
   const handleSubmit = (e) => {
