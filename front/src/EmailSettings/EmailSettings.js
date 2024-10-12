@@ -14,6 +14,7 @@ import {
   CardContent,
   Select,
   MenuItem,
+  Snackbar,
 } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
 import {
@@ -48,7 +49,7 @@ const HelperText = (messageSelection) => {
           {`{feedback} - ${emailSettings.feedbackGiven[lang]}`}
         </p>
       );
-    case 'resetpassMsg':
+    case 'resetpassMsg':  
       return (
         <p>
           {emailSettings.dynamicValues[lang]}
@@ -106,6 +107,7 @@ const EmailSettings = () => {
   const [resultMessages, setResultMessages] = React.useState([]);
   const [resultCounter, setResultCounter] = React.useState(0);
   const [messageSelection, setMessageSelection] = React.useState('collageMsg');
+  const [notification, setNotification] = React.useState({ open: false, message: '' });
 
   const fetchAndSetSettings = () => {
     fetch('/api/email-settings')
@@ -138,8 +140,26 @@ const EmailSettings = () => {
     setSettings({ ...settings, sendPendingTime: newDate });
   };
 
+  // checks whether the email in sähköpostiasetukset käyttäjä/user field is a tasera email
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase()) && email.endsWith('@tasera.fi');
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!validateEmail(settings.user)) { // checks if the email is a tasera email
+      console.log('Invalid email!');
+      setNotification({ open: true, message: 'Invalid email. Needs to be a tasera.fi email!' });
+      return;
+    } 
+    if (!settings.pass) { // checks if the password field is empty
+      console.log('Password is empty!');
+      setNotification({ open: true, message: 'Password cannot be empty!' });
+      return;
+    }
+    console.log('email was correct');
+    setNotification({ open: true, message: 'Email was correct. Settings saved!' });
     setPendingSave(true);
     fetch('api/email-settings', {
       method: 'PUT',
@@ -167,6 +187,8 @@ const EmailSettings = () => {
         setPendingSave(false);
         setResultCounter(resultCounter + 1);
         setResultMessages((prevArr) => [
+
+
           ...prevArr,
           {
             success: false,
@@ -175,6 +197,10 @@ const EmailSettings = () => {
           },
         ]);
       });
+  };
+
+  const handleCloseNotification = () => {
+    setNotification({ open: false, message: '' });
   };
 
   return (
@@ -358,6 +384,7 @@ const EmailSettings = () => {
           )}
         </Button>
       </form>
+
       <div className="results-div">
         {resultMessages.map((result, index) => (
           <Card className="result-card" key={result.id}>
@@ -381,6 +408,18 @@ const EmailSettings = () => {
           </Card>
         ))}
       </div>
+      <Snackbar // notification for invalid/valid email
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleCloseNotification}
+        message={notification.message}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // positioning higher
+        ContentProps={{
+          style: {
+            backgroundColor: notification.message.includes('correct') ? '#4caf50' : '#f44336',
+          },
+        }}
+      />
     </div>
   );
 };
