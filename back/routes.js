@@ -96,7 +96,7 @@ router
   .get(middlewares.trackSupervision.read, controllers.trackSupervision.read)
   .put(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer', 'rangemaster'], _.includes),
     middlewares.trackSupervision.update,
     controllers.trackSupervision.update
   )
