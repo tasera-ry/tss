@@ -9,10 +9,14 @@ const schedule = require('node-schedule');
 //Stars of the scheduler explained below:
 //'seconds', 'minutes', 'hour', 'day of month', 'month', 'day of week'
 //For test purposes value '(' */1 * * * * *', function()' runs the code every second.
-schedule.scheduleJob('00 00 01 * * 0-6', async function(){
+schedule.scheduleJob(' */4 * * * * *', async function(){
+// schedule.scheduleJob('00 00 01 * * 0-6', async function(){
   //make date object 7 days from this day.
   const currentDate = new Date();
-  currentDate.setDate(currentDate.getDate() + 7);
+  // currentDate.setDate(currentDate.getDate() + 7);
+  currentDate.setDate(24);
+  console.log("Kalle: scheduleJob")
+  console.log("Kalle: scheduleJob currentDate", currentDate)
   //function that returns the association of 7 days into the future.
   async function getFutureSupervision() {
     return await knex
@@ -26,9 +30,13 @@ schedule.scheduleJob('00 00 01 * * 0-6', async function(){
   }
   try {
     const receiver = await getFutureSupervision();
+    // const receiver = [ { association_id: 97, range_supervisor: 'not confirmed' } ];
+
     //first we check if the supervisor has confirmed or not.
-    //if status = not cnofirmed, fetches email with supervisor id and sends it to mailer.js 
-    if(receiver[0] != undefined && receiver[0].range_supervisor === 'not confirmed') {
+    //if status = not confirmed, fetches email with supervisor id and sends it to mailer.js 
+    console.log("Kalle: scheduleJob receiver", receiver)
+    if(receiver && receiver[0] && receiver[0].range_supervisor === 'not confirmed') {
+      console.log("Kalle: scheduleJob send email")
       email('reminder', receiver[0].association_id, null);
     }
   } catch (error) {

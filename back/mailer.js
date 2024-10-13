@@ -3,11 +3,13 @@ const services = require('./services');
 const schedule = require('node-schedule');
 
 const sendPending = async () => {
+  console.log("Kalle: sendPending");
+
   const emailSettings = await services.emailSettings.read();
   const pending = await services.pendingEmails.read();
 
-  console.log(emailSettings);
-  console.log(pending);
+  console.log("emailSettings", emailSettings);
+  console.log("pending", pending);
 
   const emailInfo = pending.reduce((acc, val) => {
     if (acc[val.user_id] === undefined)
@@ -86,17 +88,18 @@ const getText = (message, opts, emailSettings) => {
 };
 
 const sendEmail = async (text, emailAddress, emailSettings) => {
+  console.log("Kalle sendEmail: text", text);
+  console.log("Kalle sendEmail: emailAddress", emailAddress);
+  console.log("Kalle sendEmail: emailSettings", emailSettings);
+
   try {
     const subject = 'Tasera';
-    let auth;
-    if (typeof emailSettings.user !== 'undefined') {
+    let auth = null;
+    if (emailSettings.user) {
       auth = {
         user: emailSettings.user,
         pass: emailSettings.pass,
       };
-    }
-    else {
-      auth = null;
     }
 
     let transporter = nodemailer.createTransport({
@@ -118,7 +121,7 @@ const sendEmail = async (text, emailAddress, emailSettings) => {
     console.log('Message sent: %s', info.messageId);
 
   } catch (error) {
-    console.error(error);
+    console.error("SendEmail error:", error);
   }
 };
 
@@ -126,20 +129,32 @@ const email = async (message, key, opts) => {
   const emailSettings = await services.emailSettings.read();
   const emailAddress = await services.user.getEmail(key);
 
+  console.log("Kalle: email emailAddress", emailAddress)
+  console.log("Kalle: email emailSettings", emailSettings)
+  console.log("Kalle: email message", message)
+  console.log("Kalle: email key", key)
+  console.log("Kalle: email opts", opts)
+
   if (emailSettings.shouldSend !== 'true') {
     return;
   }
+  
+  try {
 
-  switch (message) {
-  case 'assigned':
-  case 'update':
-    if (emailSettings.shouldQueue === 'true') {
-      services.pendingEmails.add(message, key, opts.scheduleId);
-      break;
+    switch (message) {
+      // case 'assigned':
+        
+      case 'update':
+        if (emailSettings.shouldQueue === 'true') {
+          services.pendingEmails.add(message, key, opts.scheduleId);
+          break;
+        }
+      default:
+        sendEmail(getText(message, opts, emailSettings), emailAddress, emailSettings);
+        break;
     }
-  default:
-    sendEmail(getText(message, opts, emailSettings), emailAddress, emailSettings);
-    break;
+  } catch (err) {
+    console.error("Kalle: Email error", err)
   }
 };
 

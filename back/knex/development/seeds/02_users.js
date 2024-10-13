@@ -32,14 +32,6 @@ exports.seed = async function (knex) {
 	// add one of each role, but two rangeofficers
 	const users = [
 		{
-			name: 'DevAssociation',
-			password: '5Effie38',
-			digest: '$2a$10$oE0o638BBP/SkL2MQ0jEQeIxh6iKTkLoGaq/Cv6PuEzgeoqZTW4.e',
-			phone: '905-680-0458',
-			email: 'DevAssociation@yahoo.com',
-			role: 'association'
-		},
-		{
 			name: 'DevSuperuser',
 			password: '2Gordon62',
 			digest: '$2a$10$7mUgTdyd9EiWA755lHaxCeS0jqzaJmn7tp2JMK7nIzMqZcOYEuA2.',
@@ -48,11 +40,27 @@ exports.seed = async function (knex) {
 			role: 'superuser'
 		},
 		{
+			name: 'DevAssociation',
+			password: '5Effie38',
+			digest: '$2a$10$oE0o638BBP/SkL2MQ0jEQeIxh6iKTkLoGaq/Cv6PuEzgeoqZTW4.e',
+			phone: '905-680-0458',
+			email: 'kalnyman77@gmail.com',
+			role: 'association'
+		},
+		{
+			name: 'DevRangemaster',
+			password: '4Jaron49',
+			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
+			phone: '788-709-3147',
+			email: 'DevRangemaster@tss.ca',
+			role: 'rangemaster'
+		},
+		{
 			name: 'DevRangeOfficer1',
 			password: '4Jaron49',
 			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
 			phone: '788-709-3147',
-			email: 'DevRangeOfficer1@hotmail.com',
+			email: 'DevRangeOfficer1@tss.ca',
 			role: 'rangeofficer'
 		},
 		{
@@ -60,16 +68,8 @@ exports.seed = async function (knex) {
 			password: '4Jaron49',
 			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
 			phone: '788-709-3147',
-			email: 'DevRangeOfficer2@hotmail.com',
+			email: 'DevRangeOfficer2@tss.ca',
 			role: 'rangeofficer'
-		},
-		{
-			name: 'RangemasterDev',
-			password: '4Jaron49',
-			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
-			phone: '788-709-3147',
-			email: 'RangemasterDev@hotmail.com',
-			role: 'rangemaster'
 		},
 	];
 
