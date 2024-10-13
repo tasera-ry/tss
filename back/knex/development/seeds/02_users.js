@@ -95,7 +95,7 @@ exports.seed = async function (knex) {
 	ora.promise(insertUsers, 'Inserting users');
 	await insertUsers;
 
-	// // Generate a single user with "rangemaster" role
+	// Randomly generate a single user with "rangemaster" role
 	// const rangemasterUser = await casual._user();
 	// rangemasterUser.role = 'rangemaster';
 	// const rangemasterInsert = await knex('user').insert(_.pick(rangemasterUser, ['name', 'role', 'digest', 'email']));
