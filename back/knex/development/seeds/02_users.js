@@ -1,3 +1,7 @@
+// NOTE: This file used to generate lots of users randomly. We (tss7) changed it to not be random.
+// All users are in const users; variable.
+// We are leaving the randomized user code commented out, in case it is useful to someone in the future. But it probably won't be.
+
 const path = require('path');
 // could this be a constant somewhere?
 const root = path.join(__dirname, '..', '..', '..');
@@ -16,12 +20,13 @@ function getRandomRole() {
 
 casual.seed(config.seeds.seed);
 exports.seed = async function (knex) {
-	// const listedUsersAmount = Math.min(config.seeds.users, 50);
 
-	// // do we really need terminal spinners?
+	// const listedUsersAmount = Math.min(config.seeds.users, 50);
 	// const generateUsers = Promise.all(_.times(config.seeds.users, casual._user));
 	// ora.promise(generateUsers, `Generating ${config.seeds.users} users`);
 	// const users = await generateUsers;
+
+	// Actual users for dev environment
 	const users = [
 		{
 			name: 'DevAssociation',
@@ -55,6 +60,14 @@ exports.seed = async function (knex) {
 			email: 'DevRangeOfficer2@hotmail.com',
 			role: 'rangeofficer'
 		},
+		{
+			name: 'RangemasterDev',
+			password: '4Jaron49',
+			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
+			phone: '788-709-3147',
+			email: 'RangemasterDev@hotmail.com',
+			role: 'rangemaster'
+		},
 	];
 
 	// const head = _.take(users, listedUsersAmount).map(
@@ -64,6 +77,7 @@ exports.seed = async function (knex) {
 	// console.log(`First ${listedUsersAmount} users:\n${JSON.stringify(head, null, 2)}`);
 
 
+	// Insert users
 	const insertUsers = Promise.all(
 		_.chunk(users, config.seeds.chunkSize).map(async (userChunk) => {
 			const users = userChunk.map((user) => _.pick(user, ['name', 'role', 'digest', 'email']));
@@ -77,19 +91,19 @@ exports.seed = async function (knex) {
 	);
 	ora.promise(insertUsers, 'Inserting users');
 	await insertUsers;
-   // Generate a single user with "rangemaster" role
-		const rangemasterUser = await casual._user();
 
-		rangemasterUser.role = 'rangemaster';
-		const rangemasterInsert = await knex('user').insert(_.pick(rangemasterUser, ['name', 'role', 'digest', 'email']));
-	
-		ora.promise(
-			Promise.resolve(rangemasterInsert),
-			'Inserting rangemaster user'
-		);
+	// // Generate a single user with "rangemaster" role
+	// const rangemasterUser = await casual._user();
+	// rangemasterUser.role = 'rangemaster';
+	// const rangemasterInsert = await knex('user').insert(_.pick(rangemasterUser, ['name', 'role', 'digest', 'email']));
 
-		const selectedFields = _.pick(rangemasterUser, ['name', 'role', 'password', 'email']);
-		console.log(`Rangemaster user:\n${JSON.stringify(selectedFields, null, 2)}`);
+	// ora.promise(
+	// 	Promise.resolve(rangemasterInsert),
+	// 	'Inserting rangemaster user'
+	// );
+
+	// const selectedFields = _.pick(rangemasterUser, ['name', 'role', 'password', 'email']);
+	// console.log(`Rangemaster user:\n${JSON.stringify(selectedFields, null, 2)}`);
 };
 
 casual.define('user', async function () {
