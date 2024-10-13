@@ -2,6 +2,8 @@
 // All users are in const users; variable.
 // We are leaving the randomized user code commented out, in case it is useful to someone in the future. But it probably won't be.
 
+// This file defines users for the local development environment.
+
 const path = require('path');
 // could this be a constant somewhere?
 const root = path.join(__dirname, '..', '..', '..');
@@ -26,7 +28,8 @@ exports.seed = async function (knex) {
 	// ora.promise(generateUsers, `Generating ${config.seeds.users} users`);
 	// const users = await generateUsers;
 
-	// Actual users for dev environment
+	// Users for dev environment
+	// add one of each role, but two rangeofficers
 	const users = [
 		{
 			name: 'DevAssociation',
