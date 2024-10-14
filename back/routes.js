@@ -11,6 +11,8 @@ const controllers = require(path.join(root, 'controllers'));
 
 const oldSchedule = require(path.join(root, 'controllers', 'oldSchedule'));
 
+const { validateEmailCredentials } = require('./mailer');
+
 router.route('/sign').post(middlewares.user.sign, controllers.user.sign);
 
 router
@@ -263,6 +265,25 @@ router
   .get(controllers.emailSettings.read)
   .put(validators.emailSettings.update, controllers.emailSettings.update);
 
+
+router
+  .post('/validate-email', async (req, res) => {
+    // Somehow we never get here (?) 
+    try {
+      const { host, port, user, pass, secure } = req.body;
+      const result = await validateEmailCredentials({ host, port, user, pass, secure });
+      if (result.success) {
+        res.status(200).json(result);
+      } else {
+        res.status(401).json(result);
+      }
+    } catch (error) {
+      console.error('Error validating email credentials:', error);
+      res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    }
+});
+
+
 router
   .route('/send-pending')
   .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'))
@@ -366,5 +387,6 @@ router
   .get(validators.devices.read, middlewares.devices.read, controllers.devices.read)
   .put(validators.devices.update, middlewares.devices.update, controllers.devices.update)
   .delete(validators.devices.delete, middlewares.devices.delete, controllers.devices.delete);
+
 
 module.exports = router;

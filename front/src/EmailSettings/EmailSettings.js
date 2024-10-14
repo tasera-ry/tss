@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import {
   FormControl,
   FormControlLabel,
@@ -77,6 +78,8 @@ const HelperText = (messageSelection) => {
   }
 };
 
+
+
 /**
  * Returns a page for specifying and submitting email-settings.
  * Makes an API call to get the current settings and
@@ -146,7 +149,28 @@ const EmailSettings = () => {
     return re.test(String(email).toLowerCase());
   };
 
-  const handleSubmit = (e) => {
+  // Check if email user and password are valid
+  const validateEmailCredentials = async (emailSettings) => {
+    try {
+      const response = await axios.post('/api/validate-email', emailSettings);
+      if (response.data.success) {
+        console.log('Email credentials are valid.');
+        return true;
+      } else {
+        console.log('Invalid email or password. Reason 1');
+        setNotification({ open: true, message: response.data.message });
+        return false;
+      }
+    } catch (error) {
+      console.log('Invalid email or password. Reason 2', error);  // Log detailed error
+      setNotification({ open: true, message: 'Server error: ' + error.message });
+      return false;
+    }
+  };
+
+  // A function that saves the email settings to the database
+  // Doesn't work now because returns before saving the settings
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateEmail(settings.user)) { // checks if the email is a tasera email
       console.log('Invalid email!');
@@ -158,10 +182,21 @@ const EmailSettings = () => {
       setNotification({ open: true, message: 'Password cannot be empty!' });
       return;
     }
-    console.log('email was correct');
+
+    // Verify if email credentials are valid and can be used to send emails
+    try {
+      const isValid = await validateEmailCredentials(settings);
+      if (!isValid) {
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+
     setNotification({ open: true, message: 'Email was correct. Settings saved!' });
     setPendingSave(true);
-    fetch('api/email-settings', {
+    fetch('/api/email-settings', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(settings),
