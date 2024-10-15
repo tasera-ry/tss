@@ -263,6 +263,7 @@
     ]
   },
   "sched": {
+    "Schedule": ["Aikataulut", "Schedules", "Schema"],
     "Day": ["Valitse päivä", "Choose date", "Välja datum"],
     "Open": ["Keskus auki", "Open", "Öppna"],
     "Rangeofficer": ["Päävalvoja", "Range officer", "Banofficer"],

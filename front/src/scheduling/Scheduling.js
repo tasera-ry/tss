@@ -33,6 +33,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { withStyles } from '@material-ui/core/styles';
+import { Box } from '@material-ui/core';
 
 import socketIOClient from 'socket.io-client';
 import {
@@ -797,8 +798,10 @@ function Scheduling(props) {
         </Backdrop>
       </Modal>
 
-      {/* Section for selecting date */}
-      <div className="firstSection">
+      <h1 className ="header">{sched.Schedule[fin]}</h1>
+
+      {/* Section for selecting date, setting range officer status, and open/close times of the tracks*/}
+      <Box className="firstSection">
         <form onSubmit={continueWithDate}>
           {/* Datepicker */}
           <MuiPickersUtilsProvider
@@ -818,25 +821,11 @@ function Scheduling(props) {
               showTodayButton
               data-testid="datePicker"
             />
-          </MuiPickersUtilsProvider>
-          <div className="continue">
-            <Button
-              type="submit"
-              variant="contained"
-              style={{ backgroundColor: '#d1ccc2' }}
-              data-testid="dateButton"
-            >
-              {sched.Day[fin]}
-            </Button>
-          </div>
+          </MuiPickersUtilsProvider>   
         </form>
-      </div>
 
-      <hr />
-
-      {/* Section for setting range officer status and open/close times of the tracks */}
-      <div className="secondSection">
-        <div className="topRow">
+        <Box className="innerBox">
+          <div className="topRow">
           <div className="text">{sched.Open[fin]}</div>
 
           <CustomSwitch
@@ -845,53 +834,58 @@ function Scheduling(props) {
             name="available"
             data-testid="available"
           />
-        </div>
-        <div className="middleRow">
-          <div className="roSwitch">
-            <div className="text">{sched.Rangeofficer[fin]}</div>
-            <CustomSwitch
-              className="officerSwitch"
-              checked={rangeSupervisorSwitch}
-              onChange={handleSwitchChange}
-              name="rangeSupervisorSwitch"
-              data-testid="rangeSupervisorSwitch"
-            />
           </div>
-          {createSupervisorSelect()}
-        </div>
-        <div className="bottomRow">
-          <div className="text">{sched.OpenHours[fin]}</div>
-          <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
-            <KeyboardTimePicker
-              autoOk
-              ampm={false}
-              margin="normal"
-              name="start"
-              label={sched.Start[fin]}
-              value={open}
-              onChange={handleTimeStartChange}
-              minutesStep={5}
-              showTodayButton
-            />
-          </MuiPickersUtilsProvider>
-          <div className="dash">-</div>
-          <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
-            <KeyboardTimePicker
-              autoOk
-              ampm={false}
-              margin="normal"
-              name="end"
-              label={sched.Stop[fin]}
-              value={close}
-              onChange={handleTimeEndChange}
-              minutesStep={5}
-              showTodayButton
-            />
-          </MuiPickersUtilsProvider>
-        </div>
-      </div>
+          <hr />
+          <div className="middleRow">
+            <div className="text">{sched.OpenHours[fin]}</div>
+            <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
+              <KeyboardTimePicker
+                autoOk
+                ampm={false}
+                margin="normal"
+                name="start"
+                label={sched.Start[fin]}
+                value={open}
+                onChange={handleTimeStartChange}
+                minutesStep={5}
+                showTodayButton
+              />
+            </MuiPickersUtilsProvider>
+            <div className="dash">-</div>
+            <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
+              <KeyboardTimePicker
+                autoOk
+                ampm={false}
+                margin="normal"
+                name="end"
+                label={sched.Stop[fin]}
+                value={close}
+                onChange={handleTimeEndChange}
+                minutesStep={5}
+                showTodayButton
+              />
+            </MuiPickersUtilsProvider>
+          </div>
+          <hr />
+          <div className="bottomRow">
+            <div className="roSwitch">
+              <div className="text">{sched.Rangeofficer[fin]}</div>
+              <CustomSwitch
+                className="officerSwitch"
+                checked={rangeSupervisorSwitch}
+                onChange={handleSwitchChange}
+                name="rangeSupervisorSwitch"
+                data-testid="rangeSupervisorSwitch"
+              />
+            </div> {createSupervisorSelect()}
+          </div>
+        </Box>
+      </Box>
 
-      <hr />
+      {/* Section for setting range officer status and open/close times of the tracks */}
+      <div className="secondSection">
+        
+      </div>
 
       {/* Section for setting track-specific open/close/absent statuses */}
       <div className="thirdSection">
