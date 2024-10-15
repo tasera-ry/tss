@@ -83,7 +83,7 @@ const controller = {
   },
 
   associationSupervisions: async function getAssociationSupervisions(request, response) {
-    if (response.locals.queryResult.length === 0) {
+    if (!response.locals.queryResult) {
       return response
         .status(404)
         .send({
