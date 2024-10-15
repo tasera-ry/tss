@@ -1,3 +1,9 @@
+// NOTE: This file used to generate lots of users randomly. We (tss7) changed it to not be random.
+// All users are in const users; variable.
+// We are leaving the randomized user code commented out, in case it is useful to someone in the future. But it probably won't be.
+
+// This file defines users for the local development environment.
+
 const path = require('path');
 // could this be a constant somewhere?
 const root = path.join(__dirname, '..', '..', '..');
@@ -16,35 +22,45 @@ function getRandomRole() {
 
 casual.seed(config.seeds.seed);
 exports.seed = async function (knex) {
-	// const listedUsersAmount = Math.min(config.seeds.users, 50);
 
-	// // do we really need terminal spinners?
+	// const listedUsersAmount = Math.min(config.seeds.users, 50);
 	// const generateUsers = Promise.all(_.times(config.seeds.users, casual._user));
 	// ora.promise(generateUsers, `Generating ${config.seeds.users} users`);
 	// const users = await generateUsers;
+
+	// Users for dev environment
+	// add one of each role, but two rangeofficers
 	const users = [
-		{
-			name: 'DevAssociation',
-			password: '5Effie38',
-			digest: '$2a$10$oE0o638BBP/SkL2MQ0jEQeIxh6iKTkLoGaq/Cv6PuEzgeoqZTW4.e',
-			phone: '905-680-0458',
-			email: 'DevAssociation@yahoo.com',
-			role: 'association'
-		},
 		{
 			name: 'DevSuperuser',
 			password: '2Gordon62',
 			digest: '$2a$10$7mUgTdyd9EiWA755lHaxCeS0jqzaJmn7tp2JMK7nIzMqZcOYEuA2.',
 			phone: '079-699-6774',
-			email: 'DevSuperuser@tss.ca',
+			email: 'notactualemailDevSuperuser@tss.ca',
 			role: 'superuser'
+		},
+		{
+			name: 'DevAssociation',
+			password: '5Effie38',
+			digest: '$2a$10$oE0o638BBP/SkL2MQ0jEQeIxh6iKTkLoGaq/Cv6PuEzgeoqZTW4.e',
+			phone: '905-680-0458',
+			email: 'notactualemailDevAssociation@tss.ca',
+			role: 'association'
+		},
+		{
+			name: 'DevRangemaster',
+			password: '4Jaron49',
+			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
+			phone: '788-709-3147',
+			email: 'notactualemailDevRangemaster@tss.ca',
+			role: 'rangemaster'
 		},
 		{
 			name: 'DevRangeOfficer1',
 			password: '4Jaron49',
 			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
 			phone: '788-709-3147',
-			email: 'DevRangeOfficer1@hotmail.com',
+			email: 'notactualemailDevRangeOfficer1@tss.ca',
 			role: 'rangeofficer'
 		},
 		{
@@ -52,7 +68,7 @@ exports.seed = async function (knex) {
 			password: '4Jaron49',
 			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
 			phone: '788-709-3147',
-			email: 'DevRangeOfficer2@hotmail.com',
+			email: 'notactualemailDevRangeOfficer2@tss.ca',
 			role: 'rangeofficer'
 		},
 	];
@@ -64,6 +80,7 @@ exports.seed = async function (knex) {
 	// console.log(`First ${listedUsersAmount} users:\n${JSON.stringify(head, null, 2)}`);
 
 
+	// Insert users
 	const insertUsers = Promise.all(
 		_.chunk(users, config.seeds.chunkSize).map(async (userChunk) => {
 			const users = userChunk.map((user) => _.pick(user, ['name', 'role', 'digest', 'email']));
@@ -77,19 +94,19 @@ exports.seed = async function (knex) {
 	);
 	ora.promise(insertUsers, 'Inserting users');
 	await insertUsers;
-   // Generate a single user with "rangemaster" role
-		const rangemasterUser = await casual._user();
 
-		rangemasterUser.role = 'rangemaster';
-		const rangemasterInsert = await knex('user').insert(_.pick(rangemasterUser, ['name', 'role', 'digest', 'email']));
-	
-		ora.promise(
-			Promise.resolve(rangemasterInsert),
-			'Inserting rangemaster user'
-		);
+	// Randomly generate a single user with "rangemaster" role
+	// const rangemasterUser = await casual._user();
+	// rangemasterUser.role = 'rangemaster';
+	// const rangemasterInsert = await knex('user').insert(_.pick(rangemasterUser, ['name', 'role', 'digest', 'email']));
 
-		const selectedFields = _.pick(rangemasterUser, ['name', 'role', 'password', 'email']);
-		console.log(`Rangemaster user:\n${JSON.stringify(selectedFields, null, 2)}`);
+	// ora.promise(
+	// 	Promise.resolve(rangemasterInsert),
+	// 	'Inserting rangemaster user'
+	// );
+
+	// const selectedFields = _.pick(rangemasterUser, ['name', 'role', 'password', 'email']);
+	// console.log(`Rangemaster user:\n${JSON.stringify(selectedFields, null, 2)}`);
 };
 
 casual.define('user', async function () {
