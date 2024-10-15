@@ -8,7 +8,9 @@ const schedule = require('node-schedule');
 //Runs the checker everyday and checks if officer has confirmed 7 days from today
 //Stars of the scheduler explained below:
 //'seconds', 'minutes', 'hour', 'day of month', 'month', 'day of week'
-//For test purposes value '(' */1 * * * * *', function()' runs the code every second.
+//For test purposes,
+// schedule.scheduleJob('*/4 * * * * *', async function(){
+// runs the code every 4 seconds.
 schedule.scheduleJob('00 00 01 * * 0-6', async function(){
   //make date object 7 days from this day.
   const currentDate = new Date();
@@ -27,7 +29,6 @@ schedule.scheduleJob('00 00 01 * * 0-6', async function(){
   }
   try {
     const receiver = await getFutureSupervision();
-    // const receiver = [ { association_id: 97, range_supervisor: 'not confirmed' } ];
 
     //first we check if the supervisor has confirmed or not.
     //if status = not confirmed, fetches email with supervisor id and sends it to mailer.js 

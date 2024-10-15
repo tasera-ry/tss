@@ -32,12 +32,13 @@ services:
       - SERVER_HOST=http://frontend:3000
       # email stuff
       # Use Ethereal for testing purposes: see https://ethereal.email/
-      # (service, that does not actually send emails but allows testing)
+      # a service, that does not actually send emails but allows testing
+      # (in the production environment an actual smtp service provided by Google is used.)
       - EMAIL_HOST=smtp.ethereal.email
       - EMAIL_PORT=587
       - EMAIL_SECURE=false
-      # fill these in with the Ethereal vanity email and password
-      - EMAIL_USER= 
+      # fill these in with the email and password from Ethereal
+      - EMAIL_USER=
       - EMAIL_PASSWORD=
       - SENDER_EMAIL=noreply@tasera.fi
       - SHOULD_SEND_EMAIL=true
