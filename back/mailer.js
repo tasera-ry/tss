@@ -161,4 +161,39 @@ const scheduleEmails = (() => {
   };
 })();
 
-module.exports = { scheduleEmails, email, sendPending };
+
+/**
+ * Check whether email and password match when sending SMTP
+ * @param emailSettings 
+ * @returns Error object or true
+ */
+const verifyEmailCredentials = (emailSettings) => {
+  try {
+
+    const transporter = nodemailer.createTransport({
+      name: 'tasera.fi',
+      host: emailSettings.host,
+      port: emailSettings.port,
+      secure: emailSettings.secure === 'true',
+      auth: {
+        user: emailSettings.user,
+        pass: emailSettings.pass,
+      }
+    });
+
+    transporter.verify(function (error, success) {
+      if (error) {
+        console.log("verifyEmailCredentials failed:", error);
+        return false;
+      } else {
+        console.log("verifyEmailCredentials success:", success);
+        return true;
+      }
+    });
+  } catch (err) {
+    console.error("verifyEmailCredentials error:", err)
+  }
+
+}
+
+module.exports = { scheduleEmails, email, sendPending, verifyEmailCredentials };
