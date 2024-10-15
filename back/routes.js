@@ -164,6 +164,13 @@ router
   );
 
 router
+  .route('/range-supervision/association/:association')
+  .get(
+    middlewares.rangeSupervision.associationSupervisions,
+    controllers.rangeSupervision.associationSupervisions
+  );
+
+router
   .route('/reservation')
   .get(controllers.reservation.read)
   .post(

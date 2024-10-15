@@ -41,6 +41,18 @@ const serviceCalls = {
     return next();
   },
 
+  associationSupervisions: async function getAssociationSupervisions(request, response, next) {
+    const query = response.locals.query;
+
+    try {
+      response.locals.queryResult = await services.rangeSupervision.associationSupervisions(query);
+    } catch (e) {
+      return next(e);
+    }
+
+    return next();
+  },
+  
   create: async function createSupervision(request, response, next) {
     const query = response.locals.query;
     let id;
@@ -124,6 +136,11 @@ exports.read = [validators.rangeSupervision.read, serviceCalls.read];
 exports.userSupervisions = [
   validators.rangeSupervision.userSupervisions,
   serviceCalls.userSupervisions,
+];
+
+exports.associationSupervisions = [
+  validators.rangeSupervision.associationSupervisions,
+  serviceCalls.associationSupervisions,
 ];
 
 exports.create = [validators.rangeSupervision.create, serviceCalls.create];

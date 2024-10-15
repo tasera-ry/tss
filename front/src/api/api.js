@@ -178,49 +178,12 @@ const deleteDevice = async (id) => {
 
 async function getSupervisions(associationId) {
   try {
-    const schedules = await axios.get(
-      `api/schedule?association_id=${associationId}`,
-    );
+    const response = await axios.get(`api/range-supervision/association/${associationId}`);
 
-    const rangeSupervisionPromises = schedules.data.map((schedule) =>
-      axios.get(`api/range-supervision/${schedule.id}`).then((rsResponse) => ({
-        ...schedule,
-        ...rsResponse.data[0],
-      })),
-    );
-
-    const schedulesWithSupervision = await Promise.all(
-      rangeSupervisionPromises,
-    );
-
-    const today = moment().format().split('T')[0];
-
-    const reservationPromises = schedulesWithSupervision.map((schedule) => {
-      const query = `api/reservation?available=true&id=${schedule.range_reservation_id}`;
-      return axios.get(query).then((response) => {
-        if (response.data.length > 0) {
-          const date = moment(response.data[0].date).format('YYYY-MM-DD');
-          return { ...schedule, date };
-        }
-        return schedule;
-      });
-    });
-
-    const updatedSchedules = await Promise.all(reservationPromises);
-
-    const filteredSchedules = updatedSchedules.filter(
-      (obj) => obj.date >= today,
-    );
-
-    const supervisions = filteredSchedules.sort(
-      (a, b) => new Date(a.date) - new Date(b.date),
-    );
-
-    return supervisions.map((supervision) => ({
-      id: supervision.id,
-      scheduled_range_supervision_id:
-        supervision.scheduled_range_supervision_id,
-      date: supervision.date,
+    return response.data.map((supervision) => ({
+      id: supervision.scheduled_range_supervision_id,
+      scheduled_range_supervision_id: supervision.scheduled_range_supervision_id,
+      date: moment(supervision.date).format('YYYY-MM-DD'),
       range_supervisor: supervision.range_supervisor,
       rangeofficer_id: supervision.rangeofficer_id,
       arriving_at: supervision.arriving_at,
