@@ -36,7 +36,7 @@ exports.seed = async function (knex) {
 			password: '2Gordon62',
 			digest: '$2a$10$7mUgTdyd9EiWA755lHaxCeS0jqzaJmn7tp2JMK7nIzMqZcOYEuA2.',
 			phone: '079-699-6774',
-			email: 'DevSuperuser@tss.ca',
+			email: 'notactualemailDevSuperuser@tss.ca',
 			role: 'superuser'
 		},
 		{
@@ -44,7 +44,7 @@ exports.seed = async function (knex) {
 			password: '5Effie38',
 			digest: '$2a$10$oE0o638BBP/SkL2MQ0jEQeIxh6iKTkLoGaq/Cv6PuEzgeoqZTW4.e',
 			phone: '905-680-0458',
-			email: 'kalnyman77@gmail.com',
+			email: 'notactualemailDevAssociation@tss.ca',
 			role: 'association'
 		},
 		{
@@ -52,7 +52,7 @@ exports.seed = async function (knex) {
 			password: '4Jaron49',
 			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
 			phone: '788-709-3147',
-			email: 'DevRangemaster@tss.ca',
+			email: 'notactualemailDevRangemaster@tss.ca',
 			role: 'rangemaster'
 		},
 		{
@@ -60,7 +60,7 @@ exports.seed = async function (knex) {
 			password: '4Jaron49',
 			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
 			phone: '788-709-3147',
-			email: 'DevRangeOfficer1@tss.ca',
+			email: 'notactualemailDevRangeOfficer1@tss.ca',
 			role: 'rangeofficer'
 		},
 		{
@@ -68,7 +68,7 @@ exports.seed = async function (knex) {
 			password: '4Jaron49',
 			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
 			phone: '788-709-3147',
-			email: 'DevRangeOfficer2@tss.ca',
+			email: 'notactualemailDevRangeOfficer2@tss.ca',
 			role: 'rangeofficer'
 		},
 	];
