@@ -3,7 +3,6 @@ const services = require('./services');
 const schedule = require('node-schedule');
 
 const sendPending = async () => {
-  console.log("Kalle: sendPending");
 
   const emailSettings = await services.emailSettings.read();
   const pending = await services.pendingEmails.read();
@@ -88,21 +87,18 @@ const getText = (message, opts, emailSettings) => {
 };
 
 const sendEmail = async (text, emailAddress, emailSettings) => {
-  console.log("Kalle sendEmail: text", text);
-  console.log("Kalle sendEmail: emailAddress", emailAddress);
-  console.log("Kalle sendEmail: emailSettings", emailSettings);
 
   try {
     const subject = 'Tasera';
     let auth = null;
-    if (emailSettings.user) {
+    if (emailSettings.user && emailSettings.pass) {
       auth = {
         user: emailSettings.user,
         pass: emailSettings.pass,
       };
     }
 
-    let transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       name: 'tasera.fi',
       host: emailSettings.host,
       port: emailSettings.port,
@@ -111,7 +107,7 @@ const sendEmail = async (text, emailAddress, emailSettings) => {
     });
 
     // send mail with defined transport object
-    let info = await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: emailSettings.sender,
       to: emailAddress,
       subject: subject,
@@ -128,12 +124,6 @@ const sendEmail = async (text, emailAddress, emailSettings) => {
 const email = async (message, key, opts) => {
   const emailSettings = await services.emailSettings.read();
   const emailAddress = await services.user.getEmail(key);
-
-  console.log("Kalle: email emailAddress", emailAddress)
-  console.log("Kalle: email emailSettings", emailSettings)
-  console.log("Kalle: email message", message)
-  console.log("Kalle: email key", key)
-  console.log("Kalle: email opts", opts)
 
   if (emailSettings.shouldSend !== 'true') {
     return;
@@ -154,7 +144,7 @@ const email = async (message, key, opts) => {
         break;
     }
   } catch (err) {
-    console.error("Kalle: Email error", err)
+    console.error("Email error", err)
   }
 };
 
