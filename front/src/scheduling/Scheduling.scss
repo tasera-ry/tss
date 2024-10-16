@@ -14,8 +14,7 @@
 
   .header {
     text-align: center;
-    margin-top: 20px;
-    margin-bottom: 16px;
+    margin: 20px 0px 16px 0px;
   }
 
   .firstSection {
@@ -27,9 +26,10 @@
     border-radius: 5px;
     width: 811px;
     padding: 20px;
+    margin: 0px 0px 12px 0px;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
 
-    .innerBox{
+    .options{
       display: flex;
       flex-direction: column;
       background-color: #ebebeb;
@@ -99,7 +99,15 @@
     }
   }
 
-  .thirdSection {
+  .secondSection {
+    background-color: #F5F5F5;
+    border: 1px solid #E8E8E8;
+    border-radius: 5px;
+    width: 811px;
+    padding: 20px;
+    margin: 12px 0px 12px 0px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+
     .leftSide {
       padding-top: 15px;
       display: flex;
@@ -112,10 +120,64 @@
     }
   }
 
-  .fourthSection .repeatCount {
+  .thirdSection {
     display: flex;
-    flex-flow: row wrap;
-    align-items: center;
+    flex-direction: column;
+    justify-content: left;
+    gap: 20px;
+    background-color: #F5F5F5;
+    border: 1px solid #E8E8E8;
+    border-radius: 5px;
+    width: 811px;
+    padding: 20px;
+    margin: 12px 0px 12px 0px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+
+    .headingAdvanced{
+      margin: 0px;
+    }
+
+    .repetition {
+      display: flex;
+      flex-direction: column;
+      background-color: #ebebeb;
+      border-radius: 10px;
+      border: 1px solid #e7e7e7;
+      width: 412px;
+      padding: 8px 20px 8px 20px;
+  
+      hr {
+        color: #ECECEC;
+        margin: 6px 0px 6px 0px;
+        opacity: 0.30;
+      }
+
+      .daily {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .weekly {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .monthly {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .repeatCount {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 412px;
+      padding: 0px 20px 8px 20px;
+    }
 
     .MuiFormControl-root {
       padding-left: 10px;
@@ -123,6 +185,14 @@
     }
 
     padding-bottom: 10px;
+  }
+
+  .save {
+    display: flex;
+    justify-content: space-between;
+    width: 811px;
+    padding: 0px 20px 0px 0px;
+    margin: 12px 20px 0px 0px;
   }
 
   .arrow-right {

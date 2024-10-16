@@ -824,7 +824,7 @@ function Scheduling(props) {
           </MuiPickersUtilsProvider>   
         </form>
 
-        <Box className="innerBox">
+        <Box className="options">
           <div className="topRow">
           <div className="text">{sched.Open[fin]}</div>
 
@@ -881,14 +881,8 @@ function Scheduling(props) {
           </div>
         </Box>
       </Box>
-
-      {/* Section for setting range officer status and open/close times of the tracks */}
-      <div className="secondSection">
-        
-      </div>
-
       {/* Section for setting track-specific open/close/absent statuses */}
-      <div className="thirdSection">
+      <div className="secondSection">
         <div className="leftSide">{createTrackList()}</div>
         <div className="rightSide">
           <Button
@@ -919,48 +913,53 @@ function Scheduling(props) {
           </Button>
         </div>
       </div>
-      <hr />
-      <div className="fourthSection">
-        <div className="repetition">
-          <div className="daily">
-            {sched.RepeatDaily[fin]}
-            <CustomSwitch
-              checked={daily}
-              onChange={handleRepeatChange}
-              id="daily"
-              data-testid="dailyRepeat"
-            />
-          </div>
-          <div className="weekly">
-            {sched.RepeatWeekly[fin]}
-            <CustomSwitch
-              checked={weekly}
-              onChange={handleRepeatChange}
-              id="weekly"
-              data-testid="weeklyRepeat"
-            />
-          </div>
-          <div className="monthly">
-            {sched.RepeatMonthly[fin]}
-            <CustomSwitch
-              checked={monthly}
-              onChange={handleRepeatChange}
-              id="monthly"
-              data-testid="monthlyRepeat"
-            />
-          </div>
-          <div className="repeatCount">
-            {sched.Amount[fin]}
-            <TextField
-              name="repeatCount"
-              type="number"
-              value={repeatCount}
-              onChange={handleValueChange}
-              InputProps={{ inputProps: { min: 1, max: 100 } }}
-            />
-          </div>
-        </div>
-        <div className="save">
+      {/* Section for Advanced options */}
+      <Box className="thirdSection">
+        <div><h3 className="headingAdvanced">{sched.AdvancedOptions[fin]}</h3></div>
+          <Box className="repetition">
+            <div className="daily">
+              {sched.RepeatDaily[fin]}
+              <CustomSwitch
+                checked={daily}
+                onChange={handleRepeatChange}
+                id="daily"
+                data-testid="dailyRepeat"
+              />
+            </div>
+            <hr />
+            <div className="weekly">
+              {sched.RepeatWeekly[fin]}
+              <CustomSwitch
+                checked={weekly}
+                onChange={handleRepeatChange}
+                id="weekly"
+                data-testid="weeklyRepeat"
+              />
+            </div>
+            <hr />
+            <div className="monthly">
+              {sched.RepeatMonthly[fin]}
+              <CustomSwitch
+                checked={monthly}
+                onChange={handleRepeatChange}
+                id="monthly"
+                data-testid="monthlyRepeat"
+              />
+            </div>
+          </Box>
+            <Box className="repeatCount">
+              {sched.Amount[fin]}
+              <TextField
+                name="repeatCount"
+                type="number"
+                value={repeatCount}
+                onChange={handleValueChange}
+                InputProps={{ inputProps: { min: 1, max: 100 } }}
+              />
+            </Box>
+        </Box>
+
+      <div className="save">
           <Button
             variant="contained"
             onClick={saveChanges}
@@ -968,14 +967,14 @@ function Scheduling(props) {
           >
             {sched.Save[fin]}
           </Button>
-          <div
+          {/*<div
             className="hoverHand arrow-right"
             onClick={() =>
               handleDatePickChange(
                 moment(date).add(1, 'days').format('YYYY-MM-DD'),
               )
             }
-          />
+          />*/}
           <div className="toast">
             <Snackbar
               open={toast}
@@ -988,7 +987,6 @@ function Scheduling(props) {
             </Snackbar>
           </div>
         </div>
-      </div>
     </div>
   );
 }

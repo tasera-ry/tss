@@ -285,6 +285,7 @@
     "OpenAll": ["Avaa kaikki", "Open All", "Öppna alla"],
     "ClearAll": ["Tyhjennä kaikki", "Clear All", "Rensa alla"],
     "CloseAll": ["Sulje kaikki", "Close All", "Stäng alla"],
+    "AdvancedOptions": ["Lisäasetukset", "Advanced options ", "Avancerade alternativ"],
     "RepeatDaily": ["Toista päivittäin", "Repeat daily", "Upprepa dagligen"],
     "RepeatWeekly": [
       "Toista viikottain",
