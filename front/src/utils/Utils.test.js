@@ -1,18 +1,32 @@
 import '@testing-library/jest-dom/extend-expect';
-import axios from 'axios';
-import * as utils from './Utils';
+import * as utils from '../utils/Utils';
 import testUtils from '../_TestUtils/TestUtils';
+import api from '../api/api'; 
+import { validateLogin, updateRangeSupervision } from '../utils/Utils'; // Import validateLogin
 
-axios.get = jest.fn(() => Promise.resolve({ data: 'dummy axios response' }));
+jest.mock('../api/api');
 
 describe('testing weekview', () => {
   it('testing getSchedulingWeek', async () => {
+    const mockResponse = 'dummy axios response';
+    api.getSchedulingWeek.mockResolvedValue(mockResponse);
+
     const { date } = testUtils;
     const result = await utils.getSchedulingWeek(date);
+    
     expect(result.weekNum).toBe(43);
     expect(result.weekBegin).toBe('2020-10-19');
     expect(result.weekEnd).toBe('2020-10-25');
-    expect(result.week).toBe('dummy axios response');
+    expect(result.week).toBe(mockResponse);
+  });
+
+  it('should handle errors gracefully', async () => {
+    api.getSchedulingWeek.mockRejectedValue(new Error('API error'));
+
+    const { date } = testUtils;
+    const result = await utils.getSchedulingWeek(date);
+
+    expect(result).toBe(false);
   });
 
   it('testing dayToString', async () => {
@@ -35,58 +49,72 @@ describe('testing weekview', () => {
     expect(result2).toBe('tammikuu');
   });
 
-  it('testing validateLogin', async () => {
-    localStorage.setItem('token', 'dummy_token');
+  it('should return true when the login token is valid', async () => {
+    api.validateLogin.mockResolvedValue();
 
-    axios.get = jest.fn(() => Promise.resolve({ status: 200 }));
-    const result = await utils.validateLogin();
+    const result = await validateLogin();
     expect(result).toBe(true);
-
-    axios.get = jest.fn(() => Promise.reject({ status: 401 }));
-    const result2 = await utils.validateLogin();
-    expect(result2).toBe(false);
   });
 
-  it('testing updateRangeSupervision', async () => {
-    axios.put = jest.fn(() => Promise.resolve({ ok: true }));
-    const result = await utils.updateRangeSupervision(
-      0,
-      0,
-      'open',
-      true,
-      'dummytoken',
-    );
+  it('should return false when the login token is invalid', async () => {
+    api.validateLogin.mockRejectedValue(new Error('Invalid token'));
+
+    const result = await validateLogin();
+    expect(result).toBe(false);
+  });
+
+  const failureText = 'general range supervision failure: Error: ';
+
+  it('should return failure text if rsId or srsId is null', async () => {
+    const result = await updateRangeSupervision(null, 1, 'open', true, 'assoc');
+    expect(result).toBe(failureText + 'reservation or schedule missing');
+
+    const result2 = await updateRangeSupervision(1, null, 'open', true, 'assoc');
+    expect(result2).toBe(failureText + 'reservation or schedule missing');
+  });
+
+  it('should handle closed range status', async () => {
+    api.patchReservation.mockResolvedValue();
+
+    const result = await updateRangeSupervision(1, 1, 'closed', true, 'assoc');
     expect(result).toBe(true);
 
-    axios.put = jest.fn((url) => {
-      if (url === '/api/reservation/0') return Promise.reject({ ok: false });
-      return Promise.resolve({ ok: true });
-    });
-    const result2 = await utils.updateRangeSupervision(
-      0,
-      0,
-      'open',
-      true,
-      'dummytoken',
-    );
-    expect(result2).toBe(
-      'general range supervision failure: Error: scheduled reserv fail',
-    );
+    api.patchReservation.mockRejectedValue(new Error('API error'));
+    const result2 = await updateRangeSupervision(1, 1, 'closed', true, 'assoc');
+    expect(result2).toBe(failureText + 'reservation update failed');
+  });
 
-    axios.put = jest.fn((url) => {
-      if (url === 'api/range-supervision/0')
-        return Promise.reject({ ok: false });
-      return Promise.resolve({ ok: true });
-    });
-    const result3 = await utils.updateRangeSupervision(
-      0,
-      0,
-      'open',
-      true,
-      'dummytoken',
-    );
-    expect(result3).toBe(
-      'general range supervision failure: Error: scheduled superv fail',
-    );
+  it('should handle adding new supervision when not scheduled', async () => {
+    api.patchReservation.mockResolvedValue();
+    api.addRangeSupervision.mockResolvedValue();
+
+    const result = await updateRangeSupervision(1, 1, 'open', false, 'assoc');
+    expect(result).toBe(true);
+
+    api.patchReservation.mockRejectedValue(new Error('API error'));
+    const result2 = await updateRangeSupervision(1, 1, 'open', false, 'assoc');
+    expect(result2).toBe(failureText + 'not scheduled reserv fail');
+
+    api.patchReservation.mockResolvedValue();
+    api.addRangeSupervision.mockRejectedValue(new Error('API error'));
+    const result3 = await updateRangeSupervision(1, 1, 'open', false, 'assoc');
+    expect(result3).toBe(failureText + 'not scheduled superv fail');
+  });
+
+  it('should handle updating existing supervision', async () => {
+    api.patchReservation.mockResolvedValue();
+    api.patchRangeSupervision.mockResolvedValue();
+
+    const result = await updateRangeSupervision(1, 1, 'open', true, 'assoc');
+    expect(result).toBe(true);
+
+    api.patchReservation.mockRejectedValue(new Error('API error'));
+    const result2 = await updateRangeSupervision(1, 1, 'open', true, 'assoc');
+    expect(result2).toBe(failureText + 'scheduled reserv fail');
+
+    api.patchReservation.mockResolvedValue();
+    api.patchRangeSupervision.mockRejectedValue(new Error('API error'));
+    const result3 = await updateRangeSupervision(1, 1, 'open', true, 'assoc');
+    expect(result3).toBe(failureText + 'scheduled superv fail');
   });
 });
