@@ -325,6 +325,11 @@
       "Change email address",
       "Ändra e-postadress"
     ],
+    "ChangeRole": [
+      "Vaihda rooli",
+      "Change role",
+      "Ändra roll"
+    ],
     "CreateUser": ["Lisää käyttäjä", "Create new user", "Skapa ny användare"],
     "Users": ["Käyttäjät", "User profiles", "Användarprofiler"],
     "Username": ["Käyttäjänimi", "Username", "Användarnamn"],
@@ -368,6 +373,11 @@
     "PasswordLowercase": ["pieni kirjain", "lowercase letter", "liten bokstav"],
     "PasswordUppercase": ["iso kirjain", "uppercase letter", "stor bokstav"],
     "Role": ["Rooli", "Role", "Roll"],
+    "RoleForUser": [
+      "Vaihda rooli käyttäjälle:",
+      "Change role for user:",
+      "Ändra roll för användare"
+    ],
     "Superuser": ["Superuser", "Superuser", "Superuser"],
     "Rangeofficer": ["Valvoja", "Range officer", "Banofficer"],
     "Association": ["Yhdistys", "Association", "Förening"],
@@ -394,9 +404,14 @@
       "Något gick fel, kom ihåg att lösenord måste vara minst 6 tecken långt"
     ],
     "ErrorEmail": [
-      "Jokin meni pieleen, Sähköpostia ei tallennettu",
+      "Jokin meni pieleen, sähköpostia ei tallennettu",
       "Something went wrong, email not saved",
       "Något gick fel, e-postadress har inte sparats"
+    ],
+    "ErrorRole": [
+      "Jokin meni pieleen, roolia ei tallennettu",
+      "Something went wrong, role not saved",
+      "Något gick fel, roll har inte sparats"
     ],
     "ErrorSmall": [
       "Jokin meni pieleen",

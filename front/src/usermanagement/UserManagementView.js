@@ -117,6 +117,12 @@ async function addEmail(id, emailn) {
   }
 }
 
+// Changes email to database
+async function changeRole(id, newRole) {
+    // TODO
+    return;
+}
+
 // Deletes user from database
 async function deleteUser(id) {
   try {
@@ -157,7 +163,6 @@ async function addUser(namen, rolen, passwordn, emailn) {
   }
 }
 
-
 function UserManagementView(props)  {
 
   const[state, setState] = useState({
@@ -169,6 +174,7 @@ function UserManagementView(props)  {
     changeOwnEmailDialogOpen: false,
     openAddNewUserDialog: false,
     changePassDialogOpen: false,
+    changeRoleDialogOpen: false,
     changeOwnPassFailed: false,
     changeOwnEmailFailed: false,
     requestErrors: false,
@@ -176,7 +182,7 @@ function UserManagementView(props)  {
     selectedROWID: 1,
     newUserName: '',
     newUserPass: '',
-    newUserRole: 'association',
+    role: 'association',
     newUserPhone: '', // eslint-disable-line
     password: '',
     oldPassword: '',
@@ -275,7 +281,7 @@ function UserManagementView(props)  {
     setState({...state, requestErrors: false});
     const req = await addUser(
       state.newUserName,
-      state.newUserRole,
+      state.role,
       state.newUserPass,
       state.email,
     );
@@ -286,7 +292,7 @@ function UserManagementView(props)  {
         requestErrors: false,
         newUserName: '',
         newUserPass: '',
-        newUserRole: 'association',
+        role: 'association',
         openAddNewUserDialog: false,
         refresh: true,
       });
@@ -351,6 +357,27 @@ function UserManagementView(props)  {
     }
   }
 
+  // Closes dialog for adding email for some1 else
+  const handleChangeRoleClose = (e) => {
+    // eslint-disable-line
+    setState({...state, role: 'association', changeRoleDialogOpen: false});
+  }
+
+  // Adds email for some1 else by their ID
+  const handleChangeRoleCloseConfirm = async() => {
+    setState({...state, changeErrors: false});
+    const response = await changeRole(findUserId(), state.role);
+    if (!response) {
+      setState({...state, changeErrors: true});
+    } else {
+      setState({...state, 
+        role: 'association', 
+        changeRoleDialogOpen: false, 
+        refresh: true,
+        changeErrors: false});
+    }
+  }
+
   const returnRemoveButton = (id, manage, fin) => {
     // eslint-disable-line
     return (
@@ -393,6 +420,21 @@ function UserManagementView(props)  {
         onClick={onaddEmailClick}
       >
         {manage.ChangeEmail[fin]}
+      </Button>
+    );
+  }
+
+  const returnRoleButton = (id, manage, fin) => {
+    // eslint-disable-line
+    return (
+      <Button
+        id={id}
+        size="small"
+        className={classes(css.lightgreenButton)}
+        variant="contained"
+        onClick={onRoleClick}
+      >
+        {manage.ChangeRole[fin]}
       </Button>
     );
   }
@@ -464,7 +506,7 @@ function UserManagementView(props)  {
       requestErrors: false,
       newUserName: '',
       newUserPass: '',
-      newUserRole: 'association',
+      role: 'association',
       openAddNewUserDialog: false,
     });
   }
@@ -536,8 +578,8 @@ function UserManagementView(props)  {
   }
 
   // handles state change for new users role
-  const handleChangeNewUserRole = (e) => {
-    setState({...state, newUserRole: e.target.value});
+  const handleChangeUserRole = (e) => {
+    setState({...state, role: e.target.value});
   }
 
   // handles state change for new users password
@@ -574,6 +616,11 @@ function UserManagementView(props)  {
   // Opens dialog for adding or changing email for someone else
   const onaddEmailClick = (e) => {
     setState({...state, selectedROWID: e.currentTarget.id, addEmailDialogOpen: true});
+  }
+
+  // Opens dialog for changing user role for someone else
+  const onRoleClick = (e) => {
+    setState({...state, selectedROWID: e.currentTarget.id, changeRoleDialogOpen: true});
   }
 
   /**
@@ -631,6 +678,23 @@ function UserManagementView(props)  {
     }
     setState({...state, rows: tempRows});
   }
+
+  const roleSelect = () => (
+    <FormControl>
+      <InputLabel>{manage.Role[fin]}</InputLabel>
+      <Select
+        className={classes(css.select)}
+        native
+        value={state.role}
+        onChange={handleChangeUserRole}
+        id="role"
+      >
+        <option value="rangeofficer">{manage.Rangeofficer[fin]}</option>
+        <option value="association">{manage.Association[fin]}</option>
+        <option value="superuser">{manage.Superuser[fin]}</option>
+      </Select>
+    </FormControl>
+  )
 
   /**
    **  ACTUAL PAGE RENDERING
@@ -707,25 +771,7 @@ function UserManagementView(props)  {
             fullWidth
           />
 
-          <FormControl>
-            <InputLabel>{manage.Role[fin]}</InputLabel>
-            <Select
-              className={classes(css.select)}
-              native
-              value={state.newUserRole}
-              onChange={handleChangeNewUserRole}
-              id="role"
-            >
-              <option
-                aria-label={manage.Rangeofficer[fin]}
-                value="rangeofficer"
-              >
-                {manage.Rangeofficer[fin]}
-              </option>
-              <option value="association">{manage.Association[fin]}</option>
-              <option value="superuser">{manage.Superuser[fin]}</option>
-            </Select>
-          </FormControl>
+          {roleSelect()}
 
           {state.requestErrors ? (
             <p className={classes(css.errorText)}>{manage.Error[fin]} </p>
@@ -1049,6 +1095,43 @@ function UserManagementView(props)  {
         </DialogActions>
       </Dialog>
 
+      {/* Dialog to change role for users */}
+      <Dialog
+        open={state.changeRoleDialogOpen}
+        onClose={handleChangeRoleClose}
+      >
+        <DialogTitle
+          id="dialog-change-role-title"
+          className={classes(css.dialogStyle)}
+        >
+          {manage.RoleForUser[fin]} {state.selectedUserName}
+        </DialogTitle>
+        <DialogContent className={classes(css.dialogStyle)}>
+          {roleSelect()}
+          {state.changeErrors ? (
+            <p className={classes(css.errorText)}>
+              {manage.ErrorRole[fin]}{' '}
+            </p>
+          ) : (
+            <p />
+          )}
+        </DialogContent>
+        <DialogActions className={classes(css.dialogStyle)}>
+          <Button
+            onClick={handleChangeRoleClose}
+            className={classes(css.removeButton)}
+          >
+            {manage.Cancel[fin]}
+          </Button>
+          <Button
+            onClick={handleChangeRoleCloseConfirm}
+            className={classes(css.acceptButton)}
+          >
+            {manage.Confirm[fin]}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       {/* THE ACTUAL PAGE */}
 
       <h1 className={classes(css.header)}>{manage.UserManage[fin]}</h1>
@@ -1108,6 +1191,9 @@ function UserManagementView(props)  {
                 <TableCell align="justify">
                   {manage.ChangeEmail[fin]}
                 </TableCell>
+                <TableCell align="justify">
+                  {manage.ChangeRole[fin]}
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -1128,6 +1214,9 @@ function UserManagementView(props)  {
                   </TableCell>
                   <TableCell align="justify">
                     {returnaddEmailButton(row.id, manage, fin)}
+                  </TableCell>
+                  <TableCell align="justify">
+                    {returnRoleButton(row.id, manage, fin)}
                   </TableCell>
                 </TableRow>
               )}
