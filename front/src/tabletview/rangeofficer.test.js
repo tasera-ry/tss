@@ -1,48 +1,89 @@
 import React from 'react';
-import '@testing-library/jest-dom/extend-expect';
-import { waitFor, render, screen, fireEvent } from '@testing-library/react';
-import axios from 'axios';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import Tabletview from './rangeofficer';
 import * as utils from '../utils/Utils';
 import testUtils from '../_TestUtils/TestUtils';
-
-import InfoBox from '../infoBox/InfoBox';
-
+import axios from 'axios';
 import { Cookies, CookiesProvider } from 'react-cookie';
+import { BrowserRouter as Router } from 'react-router-dom';
+import InfoBox from '../infoBox/InfoBox';
+import socketIOClient from 'socket.io-client';  // Import socket.io-client
+
 
 jest.mock('axios');
-axios.get.mockResolvedValue({
-  data: [{ id: 1, message: 'ok', start: '', end: '' }],
+jest.mock('../utils/Utils');
+jest.mock('socket.io-client');
+
+let mockSocket;
+
+
+beforeEach(() => {
+  jest.clearAllMocks();
+
+  mockSocket = {
+    on: jest.fn((event, callback) => {
+      if (event === 'rangeUpdate') {
+        // Simulate the event with the data your component expects
+        callback({ color: 'green', text: 'Updated' });
+      }
+      return mockSocket;
+    }),
+    emit: jest.fn(),
+    disconnect: jest.fn(),
+  };
+
+  utils.validateLogin = jest.fn().mockResolvedValue(true);
+  utils.rangeSupervision = jest.fn().mockResolvedValue(true);
+  // Mock the return value of socketIOClient to use mockSocket
+  socketIOClient.mockReturnValue(mockSocket);
+
+  axios.get = jest.fn().mockResolvedValue({
+    data: [{ id: 1, message: 'ok', start: '', end: '' }],
+  });
+  axios.put = jest.fn().mockResolvedValue();
+  axios.post = jest.fn().mockImplementation((url, postable) => {
+    return Promise.resolve(postable);
+  });
+
+  global.fetch = jest.fn((url) => {
+    if (url.includes('/api/datesupreme')) {
+      return Promise.resolve({
+        json: () => Promise.resolve({
+          scheduleId: 1,
+          reservationId: 1,
+          rangeSupervisionScheduled: true,
+          open: '08:00',
+          close: '18:00',
+          rangeSupervision: 'closed',
+          tracks: [
+            { id: 1, name: 'Track 1', short_description: 'Short 1', trackSupervision: 'closed' },
+            { id: 2, name: 'Track 2', short_description: 'Short 2', trackSupervision: 'present' },
+          ],
+        }),
+      });
+    }
+    return null;
+  });
+
+  localStorage.setItem('language', '1');
+  document.cookie = 'username=testuser; role=rangemaster';
 });
-
-axios.put = jest.fn(() => Promise.resolve());
-axios.post = jest.fn((url, postable) => Promise.resolve(postable));
-
-utils.validateLogin = jest.fn(() => Promise.resolve(true));
-utils.rangeSupervision = jest.fn(() => Promise.resolve(true));
-
-localStorage.setItem('language', '1');
-/*
-global.fetch = jest.fn((url) => {
-  if (url.includes('/api/datesupreme')) {
-    return Promise.resolve({
-      json: () => Promise.resolve(testUtils.schedule),
-    });
-  }
-  return false;
-});
-*/
 
 describe('testing rangeofficer', () => {
-  it('should render Tabletview', async () => {
+  it('should render Tabletview component', async () => {
+    await act(async () => {
+      render(
+        <CookiesProvider>
+          <Router>
+            <Tabletview />
+          </Router>
+        </CookiesProvider>
+      );
+    });
 
-    render(<Tabletview />);
-    await waitFor(() =>
-      expect(
-        screen.getByText('Define range officer status by choosing color'),
-      ).toBeInTheDocument(),
-    );
+    // Check if the component rendered correctly
+    await waitFor(() => expect(screen.getByTestId('rangeOfficerStatus')).toBeInTheDocument());
   });
 
   it('should render infobox', async () =>{
