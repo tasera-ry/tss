@@ -22,9 +22,9 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+//import Radio from '@material-ui/core/Radio';
+//import RadioGroup from '@material-ui/core/RadioGroup';
+//import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -143,7 +143,7 @@ function Scheduling(props) {
 
   // if these all tracks can work with track changes only changed updates could be sent
   // there's a bug somewhere that makes state handling here a pain
-  const openAllTracks = () => {
+  /*const openAllTracks = () => {
     if (tracks) {
       let ts = trackStates;
       tracks.forEach((track) => {
@@ -151,9 +151,25 @@ function Scheduling(props) {
       });
       setTrackStates(ts);
     }
+  };*/
+  // Opens all tracks
+  const openAllTracks = () => {
+    if (tracks) {
+      const updatedTrackStates = {};
+
+      // Set each track's state to true
+      tracks.forEach((track) => {
+        updatedTrackStates[track.id] = true;
+      });
+
+      // Update the trackStates
+      setTrackStates((prevStates) => ({
+        ...prevStates, ...updatedTrackStates,
+      }));
+    }
   };
 
-  const emptyAllTracks = () => {
+  /*const emptyAllTracks = () => {
     if (tracks) {
       let ts = trackStates;
       tracks.forEach((track) => {
@@ -161,15 +177,31 @@ function Scheduling(props) {
       });
       setTrackStates(ts);
     }
-  };
+  };*/
 
-  const closeAllTracks = () => {
+  /*const closeAllTracks = () => {
     if (tracks) {
       let ts = trackStates;
       tracks.forEach((track) => {
         ts = { ...ts, [track.id]: 'closed' };
       });
       setTrackStates(ts);
+    }
+  };*/
+  // Closes all tracks
+  const closeAllTracks = () => {
+    if (tracks) {
+      const updatedTrackStates = {};
+
+      // Set each track's state to false
+      tracks.forEach((track) => {
+        updatedTrackStates[track.id] = false;
+      });
+
+      // Update the trackStates
+      setTrackStates((prevStates) => ({
+        ...prevStates, ...updatedTrackStates,
+      }));
     }
   };
 
@@ -232,14 +264,19 @@ function Scheduling(props) {
     setToast(false);
   };
 
-  const handleRadioChange = (event) => {
+  const handleTrackSwitchChange = (event) => {
     //console.log("Radio",event.target.name, event.target);
     // having the name be a int causes
     // Failed prop type: Invalid prop `name` of type `number`
 
-    setTrackStates({ ...trackStates, [event.target.name]: event.target.value });
+    /*setTrackStates({ ...trackStates, [event.target.name]: event.target.value });
 
-    setEvents({ ...events, [event.target.name]: event.target.value });
+    setEvents({ ...events, [event.target.name]: event.target.value });*/
+    const { name, checked } = event.target;
+
+    setTrackStates((prevStates) => ({
+      ...prevStates, [name]: checked,
+    }));
   };
 
   const handleValueChange = (event) => {
@@ -374,51 +411,35 @@ function Scheduling(props) {
     const { sched } = data;
     const fin = localStorage.getItem('language');
     const items = [];
+
     for (const key in tracks) {
       items.push(
-        <React.Fragment key={key}>
-          <FormControl component="fieldset">
-            <FormLabel component="legend">{tracks[key].name}</FormLabel>
-            <RadioGroup
-              defaultValue="absent"
-              name={tracks[key].id.toString()}
-              onChange={handleRadioChange}
-              value={trackStates[tracks[key].id] || 'absent'}
-              data-testid={`track-${tracks[key].id.toString()}`}
-            >
-              <FormControlLabel
-                value="present"
-                control={
-                  <Radio style={{ fontColor: 'black', color: '#658f60' }} />
-                }
-                label={sched.OfficerPresent[fin]}
+        <React.Fragment key = {key}>
+          <Box className={`trackBox ${trackStates[tracks[key].id] ? 'track-open' : 'track-closed'}`}>
+            <FormControl component="fieldset" style={{padding:'5px'}}>
+              <FormLabel component="legend">{tracks[key].name}</FormLabel>
+              <div className="trackSwitchRow">
+                <div>{sched.TrackOpen[fin]}</div>
+                <CustomSwitch
+                  checked = {trackStates[tracks[key].id] === true}
+                  onChange = {handleTrackSwitchChange}
+                  name = {tracks[key].id.toString()}
+                  data-testid={`track-${tracks[key].id.toString()}`}
+                />
+              </div>
+              <TextareaAutosize
+                className="notice"
+                id={tracks[key].id}
+                aria-label="Ilmoitus"
+                minRows={1}
+                maxRows={3}
+                onChange={handleNotice}
+                value={tracks[key].notice !== null ? tracks[key].notice : ''}
+                placeholder={sched.Notice[fin]}
+                style={{ backgroundColor: 'blackTint10' }}
               />
-              <FormControlLabel
-                value="absent"
-                control={
-                  <Radio style={{ fontColor: 'black', color: '#5f77a1' }} />
-                }
-                label={sched.OfficerAbsent[fin]}
-              />
-              <FormControlLabel
-                value="closed"
-                control={
-                  <Radio style={{ fontColor: 'black', color: '#c97b76' }} />
-                }
-                label={sched.Closed[fin]}
-              />
-            </RadioGroup>
-            <TextareaAutosize
-              className="notice"
-              id={tracks[key].id}
-              aria-label="Ilmoitus"
-              rowsMin={1}
-              rowsMax={3}
-              onChange={handleNotice}
-              value={tracks[key].notice !== null ? tracks[key].notice : ''}
-              style={{ backgroundColor: 'blackTint10' }}
-            />
-          </FormControl>
+            </FormControl>
+          </Box>
         </React.Fragment>,
       );
     }
@@ -883,8 +904,9 @@ function Scheduling(props) {
       </Box>
       {/* Section for setting track-specific open/close/absent statuses */}
       <div className="secondSection">
-        <div className="leftSide">{createTrackList()}</div>
-        <div className="rightSide">
+        <div><h3 className="headingTracks">{sched.ManageTracks[fin]}</h3></div>
+        <div className="tracks">{createTrackList()}</div>
+        <div className="buttons">
           <Button
             variant="contained"
             color="primary"
@@ -894,14 +916,14 @@ function Scheduling(props) {
           >
             {sched.OpenAll[fin]}
           </Button>
-          <Button
+          {/*<Button
             variant="contained"
             onClick={emptyAllTracks}
             style={{ backgroundColor: '#5f77a1' }}
             data-testid="emptyAll"
           >
             {sched.ClearAll[fin]}
-          </Button>
+          </Button>*/}
           <Button
             variant="contained"
             color="secondary"
