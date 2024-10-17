@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import * as utils from '../utils/Utils';
 import testUtils from '../_TestUtils/TestUtils';
 import api from '../api/api'; 
