@@ -184,4 +184,31 @@ const scheduleEmails = (() => {
   };
 })();
 
-module.exports = { scheduleEmails, email, sendPending, validateEmailCredentials };
+
+/**
+ * Check whether email and password match when sending SMTP
+ * @param emailSettings 
+ * @param cb callback function that is called after credentials are verified with parameters (error, success)
+ */
+const verifyEmailCredentials = async (emailSettings, cb) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      name: 'tasera.fi',
+      host: emailSettings.host,
+      port: emailSettings.port,
+      secure: emailSettings.secure === 'true',
+      auth: {
+        user: emailSettings.user,
+        pass: emailSettings.pass,
+      }
+    });
+
+    transporter.verify(cb);
+
+  } catch (err) {
+    console.error("verifyEmailCredentials error:", err)
+  }
+
+}
+
+module.exports = { scheduleEmails, email, sendPending, verifyEmailCredentials };
