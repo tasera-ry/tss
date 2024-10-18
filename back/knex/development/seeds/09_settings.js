@@ -12,13 +12,13 @@ exports.seed = function(knex) {
     shouldSend: process.env.SHOULD_SEND_EMAIL,
     shouldQueue: process.env.SHOULD_QUEUE_EMAIL,
     sendPendingTime: '1970-01-01T00:00:00.000Z',
-    assignedMsg: '',
-    updateMsg: '',
-    reminderMsg: '',
-    declineMsg: '',
-    feedbackMsg: '',
-    resetpassMsg: '',
-    collageMsg: ''
+    assignedMsg: 'Assigned message',
+    updateMsg: 'Update message',
+    reminderMsg: 'Reminder message',
+    declineMsg: 'Declined message',
+    feedbackMsg: 'Feedback message',
+    resetpassMsg: 'Resetpass message',
+    collageMsg: 'Collage message'
   };
 
   return knex('settings').del()

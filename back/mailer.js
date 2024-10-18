@@ -3,11 +3,12 @@ const services = require('./services');
 const schedule = require('node-schedule');
 
 const sendPending = async () => {
+
   const emailSettings = await services.emailSettings.read();
   const pending = await services.pendingEmails.read();
 
-  console.log(emailSettings);
-  console.log(pending);
+  console.log("emailSettings", emailSettings);
+  console.log("pending", pending);
 
   const emailInfo = pending.reduce((acc, val) => {
     if (acc[val.user_id] === undefined)
@@ -86,20 +87,18 @@ const getText = (message, opts, emailSettings) => {
 };
 
 const sendEmail = async (text, emailAddress, emailSettings) => {
+
   try {
     const subject = 'Tasera';
-    let auth;
-    if (typeof emailSettings.user !== 'undefined') {
+    let auth = null;
+    if (emailSettings.user && emailSettings.pass) {
       auth = {
         user: emailSettings.user,
         pass: emailSettings.pass,
       };
     }
-    else {
-      auth = null;
-    }
 
-    let transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       name: 'tasera.fi',
       host: emailSettings.host,
       port: emailSettings.port,
@@ -108,7 +107,7 @@ const sendEmail = async (text, emailAddress, emailSettings) => {
     });
 
     // send mail with defined transport object
-    let info = await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: emailSettings.sender,
       to: emailAddress,
       subject: subject,
@@ -118,7 +117,7 @@ const sendEmail = async (text, emailAddress, emailSettings) => {
     console.log('Message sent: %s', info.messageId);
 
   } catch (error) {
-    console.error(error);
+    console.error("SendEmail error:", error);
   }
 };
 
@@ -129,17 +128,23 @@ const email = async (message, key, opts) => {
   if (emailSettings.shouldSend !== 'true') {
     return;
   }
+  
+  try {
 
-  switch (message) {
-  case 'assigned':
-  case 'update':
-    if (emailSettings.shouldQueue === 'true') {
-      services.pendingEmails.add(message, key, opts.scheduleId);
-      break;
+    switch (message) {
+      // case 'assigned':
+        
+      case 'update':
+        if (emailSettings.shouldQueue === 'true') {
+          services.pendingEmails.add(message, key, opts.scheduleId);
+          break;
+        }
+      default:
+        sendEmail(getText(message, opts, emailSettings), emailAddress, emailSettings);
+        break;
     }
-  default:
-    sendEmail(getText(message, opts, emailSettings), emailAddress, emailSettings);
-    break;
+  } catch (err) {
+    console.error("Email error", err)
   }
 };
 
@@ -156,4 +161,39 @@ const scheduleEmails = (() => {
   };
 })();
 
-module.exports = { scheduleEmails, email, sendPending };
+
+/**
+ * Check whether email and password match when sending SMTP
+ * @param emailSettings 
+ * @returns Error object or true
+ */
+const verifyEmailCredentials = (emailSettings) => {
+  try {
+
+    const transporter = nodemailer.createTransport({
+      name: 'tasera.fi',
+      host: emailSettings.host,
+      port: emailSettings.port,
+      secure: emailSettings.secure === 'true',
+      auth: {
+        user: emailSettings.user,
+        pass: emailSettings.pass,
+      }
+    });
+
+    transporter.verify(function (error, success) {
+      if (error) {
+        console.log("verifyEmailCredentials failed:", error);
+        return false;
+      } else {
+        console.log("verifyEmailCredentials success:", success);
+        return true;
+      }
+    });
+  } catch (err) {
+    console.error("verifyEmailCredentials error:", err)
+  }
+
+}
+
+module.exports = { scheduleEmails, email, sendPending, verifyEmailCredentials };
