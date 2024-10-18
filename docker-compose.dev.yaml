@@ -30,19 +30,6 @@ services:
       - DB_HOST=database
       - DB_PORT=5432
       - SERVER_HOST=http://frontend:3000
-      # email stuff
-      # Use Ethereal for testing purposes: see https://ethereal.email/
-      # a service, that does not actually send emails but allows testing
-      # (in the production environment an actual smtp service provided by Google is used.)
-      - EMAIL_HOST=smtp.ethereal.email
-      - EMAIL_PORT=587
-      - EMAIL_SECURE=false
-      # fill these in with the email and password from Ethereal
-      - EMAIL_USER=
-      - EMAIL_PASSWORD=
-      - SENDER_EMAIL=noreply@tasera.fi
-      - SHOULD_SEND_EMAIL=true
-      - SHOULD_QUEUE_EMAIL=false
     ports:
       - 8000:8000
       - 5858:5858 # node debugger
