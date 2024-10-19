@@ -3,33 +3,6 @@ const services = require('./services');
 const schedule = require('node-schedule');
 
 
-/*
-* A function that verifies the email credentials by trying to connect to the SMTP server,
-* to know if the email and password are real.
-*/
-const validateEmailCredentials = async ({host, port, user, pass, secure}) => {
-  // Create a transporter object using SMTP transport.
-  const transporter = nodemailer.createTransport({
-    host: host,
-    port: port,
-    secure: secure,
-    auth: {
-      user: user,
-      pass: pass,
-    },
-  });
-
-  try {
-    // Verify email address and password
-    await transporter.verify();
-    console.log('Email credentials verified successfully.');
-    return { success: true, message: 'Email credentials are valid.' };
-  } catch (error) {
-    console.error('Error verifying email credentials.');
-    return { success: false, message: 'Invalid email or password. ' + error.message }; // Send back the specific error
-  }
-}
-
 const sendPending = async () => {
   const emailSettings = await services.emailSettings.read();
   const pending = await services.pendingEmails.read();
