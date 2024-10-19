@@ -15,6 +15,7 @@ import {
   Select,
   MenuItem,
 } from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
@@ -103,9 +104,8 @@ const EmailSettings = () => {
     collageMsg: '',
     sendPendingTime: new Date(0),
   });
-  const [resultMessages, setResultMessages] = React.useState([]);
-  const [resultCounter, setResultCounter] = React.useState(0);
   const [messageSelection, setMessageSelection] = React.useState('collageMsg');
+  const [notification, setNotification] = React.useState({ open: false, message: '', type: 'info' });
 
   const fetchAndSetSettings = () => {
     fetch('/api/email-settings')
@@ -120,13 +120,15 @@ const EmailSettings = () => {
         setSettings(filteredData);
       });
   };
+
   const sendPendingRequest = () => {
     setPendingSend(true);
     fetch('/api/send-pending').then(() => {
       setPendingSend(false);
     });
   };
-  /* Runs the above whenever the page loads */
+
+  // Runs the above whenever the page loads
   React.useEffect(fetchAndSetSettings, []);
 
   const handleChange = (e) => {
@@ -138,44 +140,65 @@ const EmailSettings = () => {
     setSettings({ ...settings, sendPendingTime: newDate });
   };
 
-  const handleSubmit = (e) => {
+  // Checks user field is a tasera email
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  // A function that saves the email settings to the database
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    // If email is not @tasera.fi
+    if (!validateEmail(settings.user)) {
+      setNotification({ open: true, message: emailSettings.emailError[lang], type: 'error' });
+      return;
+    }
+    else if (settings.port !== '465' && settings.port !== '587') {
+      setNotification({ open: true, message: emailSettings.portError[lang], type: 'error' });
+      return;
+    }
+    // If port number and radiobutton are not compatible
+    else if ((settings.port === '465' && settings.secure === 'false')
+              || (settings.port === '587' && settings.secure === 'true')) {
+      setNotification({ open: true, message: emailSettings.secureError[lang], type: 'error' });
+      return;
+    }
+
     setPendingSave(true);
-    fetch('api/email-settings', {
+
+    // Verify email credentials and save settings to the database
+    fetch('/api/email-settings', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(settings),
     })
       .then((res) => {
+        // Wrong username or password
         if (res.status !== 200) {
           throw Error(res.statusText);
-        } else {
+        }
+        // Verifying credentials was successful, settings saved
+        else {
           setPendingSave(false);
-          setResultCounter(resultCounter + 1);
-          setResultMessages((prevArr) => [
-            ...prevArr,
-            {
-              success: true,
-              msg: emailSettings.success[lang],
-              id: resultCounter,
-            },
-          ]);
+          setNotification({ open: true, message: emailSettings.success[lang], type: 'success' });
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log('Veryfying email credentials unsuccessful. Wrong email or password. ' + err);
         setPendingSave(false);
-        setResultCounter(resultCounter + 1);
-        setResultMessages((prevArr) => [
-          ...prevArr,
-          {
-            success: false,
-            msg: err.message,
-            id: resultCounter,
-          },
-        ]);
+        setNotification({ open: true, message: emailSettings.credError[lang], type: 'error' });
       });
   };
+
+  // Closes the pop up notification
+  const handleCloseNotification = () => {
+    setNotification({ open: false, message: '', type: 'info' });
+  };
+  
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
 
   return (
     <div className="email-settings">
@@ -358,29 +381,17 @@ const EmailSettings = () => {
           )}
         </Button>
       </form>
-      <div className="results-div">
-        {resultMessages.map((result, index) => (
-          <Card className="result-card" key={result.id}>
-            <CardContent
-              className={result.success ? 'result-success' : 'result-failure'}
-            >
-              {result.msg}
-            </CardContent>
-            <CardActions>
-              <Button
-                size="small"
-                onClick={() =>
-                  setResultMessages(
-                    resultMessages.filter((val, i) => i !== index),
-                  )
-                }
-              >
-                {emailSettings.close[lang]}
-              </Button>
-            </CardActions>
-          </Card>
-        ))}
-      </div>
+
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleCloseNotification}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseNotification} severity={notification.type}>
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
