@@ -679,12 +679,32 @@
   },
   "emailSettings": {
     "success": [
-      "Onnistuneesti päivitetty",
-      "Successfully updated",
-      "Uppdatering lyckades"
+      "Onnistuneesti päivitetty!",
+      "Successfully updated!",
+      "Uppdatering lyckades!"
+    ],
+    "emailError": [
+      "Väärä sähköpostiosoite tai salasana!",
+      "Invalid email. Needs to be a tasera.fi email!",
+      "Fel e-post eller lösenord!"
+    ],
+    "portError": [
+      "Virheellinen portti!",
+      "Invalid port!",
+      "Ogiltig port!"
+    ],
+    "secureError": [
+      "Porttinumero ja SSL eivät täsmää!",
+      "Port number and SSL don't match!",
+      "Portnummer och SSL matchar inte!"
+    ],
+    "credError": [
+      "Väärä sähköpostiosoite tai salasana!",
+      "Wrong email or password!",
+      "Fel e-post eller lösenord!"
     ],
     "smtpSettings": ["SMTP-asetukset", "SMTP-settings", "SMTP-inställningar"],
-    "user": ["Käyttäjä", "User", "Användare"],
+    "user": ["Sähköposti", "Email", "E-post"],
     "pass": ["Salasana", "Password", "Lösenord"],
     "ssl": ["Käytä SSL", "Use SSL", "Använd SSL"],
     "yes": ["Kyllä", "Yes", "Ja"],

@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import {
   FormControl,
   FormControlLabel,
@@ -17,6 +16,7 @@ import {
   MenuItem,
   Snackbar,
 } from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
@@ -78,8 +78,6 @@ const HelperText = (messageSelection) => {
   }
 };
 
-
-
 /**
  * Returns a page for specifying and submitting email-settings.
  * Makes an API call to get the current settings and
@@ -107,10 +105,8 @@ const EmailSettings = () => {
     collageMsg: '',
     sendPendingTime: new Date(0),
   });
-  const [resultMessages, setResultMessages] = React.useState([]);
-  const [resultCounter, setResultCounter] = React.useState(0);
   const [messageSelection, setMessageSelection] = React.useState('collageMsg');
-  const [notification, setNotification] = React.useState({ open: false, message: '' });
+  const [notification, setNotification] = React.useState({ open: false, message: '', type: 'info' });
 
   const fetchAndSetSettings = () => {
     fetch('/api/email-settings')
@@ -125,13 +121,15 @@ const EmailSettings = () => {
         setSettings(filteredData);
       });
   };
+
   const sendPendingRequest = () => {
     setPendingSend(true);
     fetch('/api/send-pending').then(() => {
       setPendingSend(false);
     });
   };
-  /* Runs the above whenever the page loads */
+
+  // Runs the above whenever the page loads
   React.useEffect(fetchAndSetSettings, []);
 
   const handleChange = (e) => {
@@ -143,100 +141,65 @@ const EmailSettings = () => {
     setSettings({ ...settings, sendPendingTime: newDate });
   };
 
-  // checks whether the email in sähköpostiasetukset käyttäjä/user field is a tasera email
+  // Checks user field is a tasera email
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
   };
 
-  // Check if email user and password are valid
-  const validateEmailCredentials = async (emailSettings) => {
-    try {
-      const response = await axios.post('/api/validate-email', emailSettings);
-      if (response.data.success) {
-        console.log('Email credentials are valid.');
-        return true;
-      } else {
-        console.log('Invalid email or password. Reason 1');
-        setNotification({ open: true, message: response.data.message });
-        return false;
-      }
-    } catch (error) {
-      console.log('Invalid email or password. Reason 2', error);  // Log detailed error
-      setNotification({ open: true, message: 'Server error: ' + error.message });
-      return false;
-    }
-  };
-
   // A function that saves the email settings to the database
-  // Doesn't work now because returns before saving the settings
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateEmail(settings.user)) { // checks if the email is a tasera email
-      console.log('Invalid email!');
-      setNotification({ open: true, message: 'Invalid email. Needs to be a tasera.fi email!' });
+    // If email is not @tasera.fi
+    if (!validateEmail(settings.user)) {
+      setNotification({ open: true, message: emailSettings.emailError[lang], type: 'error' });
       return;
-    } 
-    if (!settings.pass) { // checks if the password field is empty
-      console.log('Password is empty!');
-      setNotification({ open: true, message: 'Password cannot be empty!' });
+    }
+    else if (settings.port !== '465' && settings.port !== '587') {
+      setNotification({ open: true, message: emailSettings.portError[lang], type: 'error' });
+      return;
+    }
+    // If port number and radiobutton are not compatible
+    else if ((settings.port === '465' && settings.secure === 'false')
+              || (settings.port === '587' && settings.secure === 'true')) {
+      setNotification({ open: true, message: emailSettings.secureError[lang], type: 'error' });
       return;
     }
 
-    // Verify if email credentials are valid and can be used to send emails
-    try {
-      const isValid = await validateEmailCredentials(settings);
-      if (!isValid) {
-        return;
-      }
-    } catch (error) {
-      console.log(error);
-      return;
-    }
-
-    setNotification({ open: true, message: 'Email was correct. Settings saved!' });
     setPendingSave(true);
+
+    // Verify email credentials and save settings to the database
     fetch('/api/email-settings', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(settings),
     })
       .then((res) => {
+        // Wrong username or password
         if (res.status !== 200) {
           throw Error(res.statusText);
-        } else {
+        }
+        // Verifying credentials was successful, settings saved
+        else {
           setPendingSave(false);
-          setResultCounter(resultCounter + 1);
-          setResultMessages((prevArr) => [
-            ...prevArr,
-            {
-              success: true,
-              msg: emailSettings.success[lang],
-              id: resultCounter,
-            },
-          ]);
+          setNotification({ open: true, message: emailSettings.success[lang], type: 'success' });
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log('Veryfying email credentials unsuccessful. Wrong email or password. ' + err);
         setPendingSave(false);
-        setResultCounter(resultCounter + 1);
-        setResultMessages((prevArr) => [
-
-
-          ...prevArr,
-          {
-            success: false,
-            msg: err.message,
-            id: resultCounter,
-          },
-        ]);
+        setNotification({ open: true, message: emailSettings.credError[lang], type: 'error' });
       });
   };
 
+  // Closes the pop up notification
   const handleCloseNotification = () => {
-    setNotification({ open: false, message: '' });
+    setNotification({ open: false, message: '', type: 'info' });
   };
+  
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
 
   return (
     <div className="email-settings">
@@ -420,41 +383,16 @@ const EmailSettings = () => {
         </Button>
       </form>
 
-      <div className="results-div">
-        {resultMessages.map((result, index) => (
-          <Card className="result-card" key={result.id}>
-            <CardContent
-              className={result.success ? 'result-success' : 'result-failure'}
-            >
-              {result.msg}
-            </CardContent>
-            <CardActions>
-              <Button
-                size="small"
-                onClick={() =>
-                  setResultMessages(
-                    resultMessages.filter((val, i) => i !== index),
-                  )
-                }
-              >
-                {emailSettings.close[lang]}
-              </Button>
-            </CardActions>
-          </Card>
-        ))}
-      </div>
-      <Snackbar // notification for invalid/valid email
+      <Snackbar
         open={notification.open}
         autoHideDuration={6000}
         onClose={handleCloseNotification}
-        message={notification.message}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // positioning higher
-        ContentProps={{
-          style: {
-            backgroundColor: notification.message.includes('correct') ? '#4caf50' : '#f44336',
-          },
-        }}
-      />
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseNotification} severity={notification.type}>
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
