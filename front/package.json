@@ -9,7 +9,7 @@
     "@material-ui/icons": "4.11.3",
     "@material-ui/lab": "4.0.0-alpha.61",
     "@material-ui/pickers": "3.3.11",
-    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^10.4.8",
     "@testing-library/user-event": "^7.2.1",
     "apexcharts": "^3.22.3",

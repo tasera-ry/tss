@@ -1,6 +1,6 @@
 import React from 'react';
 import { HashRouter as Router } from 'react-router-dom';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';

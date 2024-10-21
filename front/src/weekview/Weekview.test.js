@@ -1,5 +1,5 @@
 import React from 'react';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import { waitFor, render, screen } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
@@ -8,6 +8,9 @@ import * as utils from '../utils/Utils';
 import Weekview from './Weekview';
 import testUtils from '../_TestUtils/TestUtils';
 import * as axios from 'axios';
+
+// Mock the InfoBox component
+jest.mock('../infoBox/InfoBox', () => () => <div data-testid="mockInfoBox">Mock InfoBox</div>);
 
 jest.mock('axios');
 axios.get.mockResolvedValue({
@@ -47,6 +50,34 @@ describe('testing weekview', () => {
     );
   });
 
-  // it('should render correct week', async () => {
-  // })
+  it('should render the mocked InfoBox component', async () => {
+    utils.getSchedulingWeek = jest.fn(() => week);
+    utils.getSchedulingDate = jest.fn(() => schedule);
+    const state = {
+      state: 'loading',
+      date,
+      weekNro: 43,
+      dayNro: 21,
+      yearNro: 2020,
+      paivat: week,
+    };
+    const history = createMemoryHistory();
+    Date.now = jest.fn(() => '2020-10-21T11:30:57.000Z');
+
+    localStorage.setItem('language', '1');
+    await act(async () => {
+      render(
+        <Router>
+          <Weekview
+            match={{ params: { date } }}
+            history={history}
+            state={state}
+          />
+        </Router>,
+      );
+    });
+    await waitFor(() =>
+      expect(screen.getByTestId('mockInfoBox')).toBeInTheDocument(),
+    );
+  });
 });

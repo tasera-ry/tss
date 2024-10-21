@@ -1,8 +1,5 @@
 import React from 'react';
-import * as InfoBox from '../infoBox/InfoBox';
-import * as Infoboxes from '../infoboxes/Infoboxes';
-
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import { waitFor, render, screen, fireEvent } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
@@ -12,6 +9,10 @@ import monthTestUtil from '../_TestUtils/monthTestUtil';
 import axios from 'axios';
 
 jest.mock('axios');
+
+// Mock the InfoBox component
+jest.mock('../infoBox/InfoBox', () => () => <div data-testid="mockInfoBox">Mock InfoBox</div>);
+
 axios.get.mockResolvedValue({
   data: [{ id: 1, message: 'ok', start: '', end: '' }],
 });

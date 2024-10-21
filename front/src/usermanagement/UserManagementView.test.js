@@ -1,5 +1,5 @@
 import React from 'react';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import { waitFor, render, screen, fireEvent } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
@@ -8,7 +8,11 @@ import UserManagementView from './UserManagementView';
 import testUtils from '../_TestUtils/TestUtils';
 import * as utils from '../utils/Utils';
 
-utils.validateLogin = jest.fn(() => Promise.resolve(true));
+// Mock validateLogin before your tests
+jest.mock('../utils/Utils', () => ({
+  ...jest.requireActual('../utils/Utils'),
+  validateLogin: jest.fn(),
+}));
 
 global.fetch = jest.fn((url, ops) => {
   if (ops.method === 'GET') {
@@ -25,6 +29,14 @@ global.fetch = jest.fn((url, ops) => {
 });
 
 describe('testing UserManagementView', () => {
+  beforeEach(() => {
+    // Mock validateLogin to resolve to true (or false, depending on your test case)
+    utils.validateLogin.mockResolvedValue(true);
+
+    // Optionally mock getUsers if necessary
+    utils.getUsers = jest.fn().mockResolvedValue([{ id: 2, name: 'Alice' }, { id: 3, name: 'Bob' }]);
+  });
+
   it('should render UserManagementView', async () => {
     const history = createMemoryHistory();
     localStorage.setItem('language', '1'); // eslint-disable-line no-undef
@@ -46,7 +58,7 @@ describe('testing UserManagementView', () => {
     global.fetch = jest.fn((url) => {
       if (url.includes('/api/user')) {
         return Promise.resolve({
-          json: () => Promise.resolve([testUtils.users[0]]),
+          json: () => Promise.resolve([{ id: 2, name: 'Alice' }]),
         });
       }
       return null;
@@ -59,7 +71,7 @@ describe('testing UserManagementView', () => {
       );
     });
     await waitFor(() =>
-      expect(screen.getByText(`${testUtils.users[0].name}`, {exact: false})).toBeInTheDocument(),
+      expect(screen.getByText('Alice', { exact: false })).toBeInTheDocument(),
     );
     await waitFor(() =>
       expect(screen.getByTestId('del-2')).toBeInTheDocument(),
