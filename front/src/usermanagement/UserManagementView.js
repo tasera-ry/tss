@@ -117,10 +117,24 @@ async function addEmail(id, emailn) {
   }
 }
 
-// Changes email to database
+// Changes role to database
 async function changeRole(id, newRole) {
-    // TODO
-    return;
+  try {
+    const response = await fetch(`/api/user/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        role: newRole,
+      }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.ok;
+  } catch (err) {
+    console.error('GETTING USER FAILED', err);
+    return false;
+  }
 }
 
 // Deletes user from database
@@ -357,13 +371,13 @@ function UserManagementView(props)  {
     }
   }
 
-  // Closes dialog for adding email for some1 else
+  // Closes dialog for adding role for some1 else
   const handleChangeRoleClose = (e) => {
     // eslint-disable-line
     setState({...state, role: 'association', changeRoleDialogOpen: false});
   }
 
-  // Adds email for some1 else by their ID
+  // Adds role for some1 else by their ID
   const handleChangeRoleCloseConfirm = async() => {
     setState({...state, changeErrors: false});
     const response = await changeRole(findUserId(), state.role);

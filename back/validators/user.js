@@ -167,6 +167,7 @@ module.exports = {
     fields.name(body, 'optional'),
     fields.password(body, 'optional'),
     fields.email(body, 'optional'),
+    fields.role(body, 'optional'),
     fields.phone(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {

@@ -123,6 +123,7 @@ const model = {
       'name',
       'digest',
       'email',
+      'role',
       'reset_token',
       'reset_token_expire'
     );
