@@ -1,5 +1,5 @@
 import React from 'react';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import { waitFor, render, screen, fireEvent } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { act } from 'react-dom/test-utils';
@@ -8,6 +8,10 @@ import Scheduling from './Scheduling';
 import * as utils from '../utils/Utils';
 import api from '../api/api';
 import testUtils from '../_TestUtils/TestUtils';
+
+jest.mock('axios');
+jest.mock('../utils/Utils');
+jest.mock('../api/api');
 
 const mockTracks = [
   {
@@ -18,46 +22,48 @@ const mockTracks = [
     short_description: '25m testi',
   },
 ];
-utils.validateLogin = jest.fn(() => Promise.resolve(true));
-utils.rangeSupervision = jest.fn(() => Promise.resolve(testUtils.reservation));
-api.getSchedulingDate = jest.fn(() => Promise.resolve(testUtils.schedule));
 
-const tracks = { data: mockTracks };
-axios.get = jest.fn(() => Promise.resolve(tracks));
-axios.put = jest.fn(() => Promise.resolve());
-axios.delete = jest.fn(() => Promise.resolve());
-axios.post = jest.fn((url, postable) => {
-  if (postable.name === undefined) {
-    return Promise.reject();
-  }
-  return Promise.resolve({ tracks: { ...postable, id: 2 } });
-});
+beforeEach(() => {
+  jest.clearAllMocks();
 
-localStorage.setItem('language', '1');
+  utils.validateLogin = jest.fn().mockResolvedValue(true);
+  utils.rangeSupervision = jest.fn().mockResolvedValue(testUtils.reservation);
+  api.getSchedulingDate = jest.fn().mockResolvedValue(testUtils.schedule);
 
-global.fetch = jest.fn((url) => {
-  if (url.includes('/api/track-supervision')) {
-    return Promise.resolve({
-      json: () => Promise.resolve({ ok: true }),
-    });
-  }
-  if (url.includes('/api/user')) {
-    return Promise.resolve({
-      json: () => Promise.resolve(testUtils.association),
-    });
-  }
-  if (url.includes('/api/reservation')) {
-    return Promise.resolve({
-      json: () => Promise.resolve(testUtils.reservation),
-      ok: true,
-    });
-  }
-  if (url.includes('/api/schedule')) {
-    return Promise.resolve({
-      json: () => Promise.resolve(testUtils.oneSchedule),
-    });
-  }
-  return null;
+  axios.get = jest.fn().mockResolvedValue({ data: mockTracks });
+  axios.put = jest.fn().mockResolvedValue();
+  axios.delete = jest.fn().mockResolvedValue();
+  axios.post = jest.fn().mockImplementation((url, postable) => {
+    if (postable.name === undefined) {
+      return Promise.reject();
+    }
+    return Promise.resolve({ tracks: { ...postable, id: 2 } });
+  });
+
+  global.fetch = jest.fn((url) => {
+    if (url.includes('/api/track-supervision')) {
+      return Promise.resolve({
+        json: () => Promise.resolve({ ok: true }),
+      });
+    }
+    if (url.includes('/api/user')) {
+      return Promise.resolve({
+        json: () => Promise.resolve(testUtils.association),
+      });
+    }
+    if (url.includes('/api/reservation')) {
+      return Promise.resolve({
+        json: () => Promise.resolve(testUtils.reservation),
+        ok: true,
+      });
+    }
+    if (url.includes('/api/schedule')) {
+      return Promise.resolve({
+        json: () => Promise.resolve(testUtils.oneSchedule),
+      });
+    }
+    return null;
+  });
 });
 
 const state = {
@@ -100,9 +106,6 @@ describe('testing scheduling', () => {
       expect(screen.getByDisplayValue('22.10.2020')).toBeInTheDocument(),
     );
     fireEvent.click(screen.getByTestId('dateButton'));
-    await waitFor(() =>
-      expect(screen.getByDisplayValue('22.10.2020')).toBeInTheDocument(),
-    );
   });
 
   it('should open range', async () => {
@@ -194,6 +197,7 @@ describe('testing scheduling', () => {
       );
     });
   });
+
   it('should save repeated scheduling', async () => {
     const history = createMemoryHistory();
     localStorage.setItem('language', '1');

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, act, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import Supervisions from '../profilepages/supervisions';
 import api from '../../api/api';
 
