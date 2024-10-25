@@ -679,12 +679,42 @@
   },
   "emailSettings": {
     "success": [
-      "Onnistuneesti päivitetty",
-      "Successfully updated",
-      "Uppdatering lyckades"
+      "Onnistuneesti päivitetty!",
+      "Successfully updated!",
+      "Uppdatering lyckades!"
+    ],
+    "emailError": [
+      "Virheellinen sähköposti. Tulee olla tasera.fi sähköposti!",
+      "Invalid email. Needs to be a tasera.fi email!",
+      "Ogiltig e-post. Måste vara en tasera.fi e-post!"
+    ],
+    "passError": [
+      "Salasana ei voi olla tyhjä!",
+      "Password cannot be empty!",
+      "Lösenordet kan inte vara tomt!"
+    ],
+    "hostError": [
+      "Virheellinen host! Hostin pitää olla smtp.gmail.com.",
+      "Invalid host! Host must be smtp.gmail.com.",
+      "Ogiltig host! Hosten måste vara smtp.gmail.com."
+    ],
+    "portError": [
+      "Virheellinen portti! Portin pitää olla 465 (SSL) tai 587.",
+      "Invalid port! Port must be 465 (SSL) or 587.",
+      "Ogiltig port! Porten måste vara 465 (SSL) eller 587."
+    ],
+    "secureError": [
+      "Porttinumero ja SSL eivät täsmää! Portin pitää olla 465 (SSL) tai 587.",
+      "Port number and SSL don't match! Port must be 465 (SSL) or 587.",
+      "Portnummer och SSL matchar inte! Porten måste vara 465 (SSL) eller 587."
+    ],
+    "credError": [
+      "Väärä sähköpostiosoite tai salasana!",
+      "Wrong email or password!",
+      "Fel e-post eller lösenord!"
     ],
     "smtpSettings": ["SMTP-asetukset", "SMTP-settings", "SMTP-inställningar"],
-    "user": ["Käyttäjä", "User", "Användare"],
+    "user": ["Sähköposti", "Email", "E-post"],
     "pass": ["Salasana", "Password", "Lösenord"],
     "ssl": ["Käytä SSL", "Use SSL", "Använd SSL"],
     "yes": ["Kyllä", "Yes", "Ja"],

@@ -41,6 +41,10 @@ const service = {
     return (await models.rangeSupervision.userSupervisions(_.pick(key, 'id', 'name', 'role', 'phone', 'email'), fields));
   },
 
+  associationSupervisions: async function getAssociationSupervisions(key, fields) {
+    return (await models.rangeSupervision.associationSupervisions(_.pick(key, 'association'), fields));
+  },
+
   /**
    * Update a supervision events' info.
    *

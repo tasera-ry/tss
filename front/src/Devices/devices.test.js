@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import api from '../api/api';
-import Devices from './Devices';
+import Devices from './devices.js';
 
 jest.mock('../api/api');
 
