@@ -152,6 +152,14 @@ const EmailSettings = () => {
       setNotification({ open: true, message: emailSettings.emailError[lang], type: 'error' });
       return;
     }
+    else if (settings.pass === '') {
+      setNotification({ open: true, message: emailSettings.passError[lang], type: 'error' });
+      return;
+    }
+    else if (settings.host !== 'smtp.gmail.com') {
+      setNotification({ open: true, message: emailSettings.hostError[lang], type: 'error' });
+      return;
+    }
     else if (settings.port !== '465' && settings.port !== '587') {
       setNotification({ open: true, message: emailSettings.portError[lang], type: 'error' });
       return;
