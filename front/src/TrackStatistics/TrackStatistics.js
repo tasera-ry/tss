@@ -51,11 +51,11 @@ export const TrackStatistics = ({ track, supervision }) => {
   function rand() {
     return Math.round(Math.random() * 20) - 10;
   }
-  
+
   function getModalStyle() {
     const top = 50 + rand();
     const left = 50 + rand();
-  
+
     return {
       top: `${top}%`,
       left: `${left}%`,
@@ -117,7 +117,7 @@ export const TrackStatistics = ({ track, supervision }) => {
           disabled={isDisabled}
           variant="contained"
           className={classes(css.button)}
-          onClick={() => {handleOpen(); changeVisitors(visitors - 1)}}
+          onClick={() => {handleOpen()}}
           style= {{backgroundColor: '#d1ccc2'}}
         >
           -
