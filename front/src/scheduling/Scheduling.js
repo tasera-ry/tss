@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useCookies } from 'react-cookie';
 
 // Style and colors
 import './Scheduling.scss';
@@ -22,9 +23,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-//import Radio from '@material-ui/core/Radio';
-//import RadioGroup from '@material-ui/core/RadioGroup';
-//import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -34,6 +32,9 @@ import Modal from '@material-ui/core/Modal';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { withStyles } from '@material-ui/core/styles';
 import { Box } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import colors from '../colors.module.scss';
 
 import socketIOClient from 'socket.io-client';
 import {
@@ -109,28 +110,61 @@ function Scheduling(props) {
   const [trackStates, setTrackStates] = useState({});
   const [events, setEvents] = useState({});
   const [callUpdate, setCallUpdate] = useState(false);
+  const [expand, setExpand] = useState(false);
+  const [statusColor, setStatusColor] = useState();
+  const [statusText, setStatusText] = useState();
+  const [cookies] = useCookies(['role']);
+  const [estimatedArrivalTime, setEstimatedArrivalTime] = useState(new Date());
 
   useEffect(() => {
+    let isMounted = true;
+
     setDatePickerKey(Math.random()); // force datepicker to re-render when language changed
     validateLogin().then((logInSuccess) => {
+      if (!isMounted) return;
+
       if (!logInSuccess) {
         props.history.push('/');
       } else {
         getRangeSupervisors()
           .then((response) => {
-            if (response !== false) {
+            if (isMounted && response !== false) {
               setRangeSupervisors(response);
               update();
               setState('loading');
             }
           })
           .catch((error) => {
-            console.error('init failed', error);
+            if (isMounted) {
+              console.error('init failed', error);
+            }
           });
       }
     });
 
-    setSocket(socketIOClient());
+    const socket = socketIOClient()
+      .on('rangeUpdate', (msg) => {
+        if (isMounted) {
+          setStatusColor(msg.color);
+          setStatusText(msg.text);
+          if (rangeSupervisionScheduled === false) {
+            setRangeSupervisionScheduled(true);
+          }
+        }
+      })
+      .on('refresh', () => {
+        if (isMounted) {
+          window.location.reload();
+        }
+      });
+
+    setSocket(socket);
+
+    // cleanup function
+    return () => {
+      isMounted = false;
+      socket.disconnect();
+    };
   }, []);
 
   // runs after date changed with datePicker
@@ -138,28 +172,18 @@ function Scheduling(props) {
     if (callUpdate) {
       continueWithDate();
       setCallUpdate(false);
+      setExpand(false);
     }
   }, [callUpdate]);
 
-  // if these all tracks can work with track changes only changed updates could be sent
-  // there's a bug somewhere that makes state handling here a pain
-  /*const openAllTracks = () => {
-    if (tracks) {
-      let ts = trackStates;
-      tracks.forEach((track) => {
-        ts = { ...ts, [track.id]: 'present' };
-      });
-      setTrackStates(ts);
-    }
-  };*/
   // Opens all tracks
   const openAllTracks = () => {
     if (tracks) {
       const updatedTrackStates = {};
 
-      // Set each track's state to true
+      // Set each track's state to present
       tracks.forEach((track) => {
-        updatedTrackStates[track.id] = true;
+        updatedTrackStates[track.id] = 'present';
       });
 
       // Update the trackStates
@@ -169,33 +193,14 @@ function Scheduling(props) {
     }
   };
 
-  /*const emptyAllTracks = () => {
-    if (tracks) {
-      let ts = trackStates;
-      tracks.forEach((track) => {
-        ts = { ...ts, [track.id]: 'absent' };
-      });
-      setTrackStates(ts);
-    }
-  };*/
-
-  /*const closeAllTracks = () => {
-    if (tracks) {
-      let ts = trackStates;
-      tracks.forEach((track) => {
-        ts = { ...ts, [track.id]: 'closed' };
-      });
-      setTrackStates(ts);
-    }
-  };*/
   // Closes all tracks
   const closeAllTracks = () => {
     if (tracks) {
       const updatedTrackStates = {};
 
-      // Set each track's state to false
+      // Set each track's state to closed
       tracks.forEach((track) => {
-        updatedTrackStates[track.id] = false;
+        updatedTrackStates[track.id] = 'closed';
       });
 
       // Update the trackStates
@@ -237,9 +242,15 @@ function Scheduling(props) {
   const handleSwitchChange = (event) => {
     //console.log("Switch",event.target.name, event.target.checked);
 
-    if (event.target.name == 'available') setAvailable(event.target.checked);
-    if (event.target.name == 'rangeSupervisorSwitch')
+    if (event.target.name === 'available') {
+      setAvailable(event.target.checked);
+    }
+
+    if (event.target.name === 'rangeSupervisorSwitch') {
       setRangeSupervisorSwitch(event.target.checked);
+    }
+
+    setExpand(false);
 
     setEvents({ ...events, [event.target.name]: event.target.checked });
   };
@@ -269,22 +280,24 @@ function Scheduling(props) {
     // having the name be a int causes
     // Failed prop type: Invalid prop `name` of type `number`
 
-    /*setTrackStates({ ...trackStates, [event.target.name]: event.target.value });
-
-    setEvents({ ...events, [event.target.name]: event.target.value });*/
     const { name, checked } = event.target;
 
     setTrackStates((prevStates) => ({
-      ...prevStates, [name]: checked,
+      ...prevStates, [name]: checked ? 'present' : 'closed',
+    }));
+
+    setEvents((prevEvents) => ({
+      ...prevEvents,
+      [name]: checked ? 'present' : 'closed',
     }));
   };
 
   const handleValueChange = (event) => {
     //console.log("Value change",event.target.name, event.target.value);
 
-    if (event.target.name == 'rangeSupervisorId')
+    if (event.target.name === 'rangeSupervisorId')
       setRangeSupervisorId(event.target.value);
-    if (event.target.name == 'repeatCount') setRepeatCount(event.target.value);
+    if (event.target.name === 'repeatCount') setRepeatCount(event.target.value);
 
     setEvents({ ...events, [event.target.name]: event.target.value });
   };
@@ -304,11 +317,76 @@ function Scheduling(props) {
     setTracks(newTracks);
   };
 
+  const handleExpandClick = () => {
+    setExpand(!expand);
+  };
+
+  async function updateSupervisor(status, color, text) {
+    const res = await updateRangeSupervision(
+      reservationId,
+      scheduleId,
+      status,
+      rangeSupervisionScheduled,
+      null,
+    );
+
+    if (res === true) {
+      setStatusColor(color);
+      setStatusText(text);
+
+      if (rangeSupervisionScheduled === false) {
+        setRangeSupervisionScheduled(true);
+      }
+    }
+  }
+
+  const handleNotConfirmed = () => {
+    socket.emit('rangeUpdate', {
+      status: 'not confirmed',
+      color: colors.turquoise,
+      text: sched.SuperBlue[fin],
+    });
+    updateSupervisor('not confirmed', colors.turquoise, sched.SuperBlue[fin]);
+  };
+
+  const handleConfirmed = () => {
+    socket.emit('rangeUpdate', {
+      status: 'confirmed',
+      color: colors.greenLight,
+      text: sched.SuperLightGreen[fin],
+    });
+    updateSupervisor('confirmed', colors.greenLight, sched.SuperLightGreen[fin]);
+  };  
+
+  const handleEnRouteClick = () => {
+    socket.emit('rangeUpdate', {
+      status: 'en route',
+      color: colors.orange,
+      text: sched.SuperOrange[fin],
+    });
+    updateSupervisor('en route', colors.orange, sched.SuperOrange[fin]);
+  };
+
+  const handlePresentClick = () => {
+    socket.emit('rangeUpdate', {
+      status: 'present',
+      color: colors.green,
+      text: sched.SuperGreen[fin],
+    });
+    updateSupervisor('present', colors.green, sched.SuperGreen[fin]);
+  };
+
+  const handleArrivalTime = (time) => {
+    const parsedTime = moment(time).format('HH:mm');
+    setEstimatedArrivalTime(parsedTime);
+  }
+
   const saveChanges = async () => {
     const { sched } = data;
     const fin = localStorage.getItem('language');
 
-    setState('loading');
+    setExpand(false);
+    setState('loading');  
 
     // update call/error handling
     const updateSC = async (
@@ -413,21 +491,27 @@ function Scheduling(props) {
     const items = [];
 
     for (const key in tracks) {
+      const trackName = tracks[key].name
+      const splittedTrackName = trackName.split(' ');
+      const trackNumber = splittedTrackName[2];
+      
       items.push(
         <React.Fragment key = {key}>
-          <Box className={`trackBox ${trackStates[tracks[key].id] ? 'track-open' : 'track-closed'}`}>
+          <Box className={`trackBox ${trackStates[tracks[key].id] === 'present' ? 'track-open' : 'track-closed'}`}>
             <FormControl component="fieldset" style={{padding:'5px'}}>
-              <FormLabel component="legend">{tracks[key].name}</FormLabel>
+              <FormLabel component="legend">{`${sched.ShootingTrack[fin]} ${trackNumber}`}</FormLabel>
               <div className="trackSwitchRow">
                 <div>{sched.TrackOpen[fin]}</div>
                 <CustomSwitch
-                  checked = {trackStates[tracks[key].id] === true}
+                  disabled={!available}
+                  checked = {trackStates[tracks[key].id] === 'present'}
                   onChange = {handleTrackSwitchChange}
                   name = {tracks[key].id.toString()}
                   data-testid={`track-${tracks[key].id.toString()}`}
                 />
               </div>
               <TextareaAutosize
+                disabled={!available}
                 className="notice"
                 id={tracks[key].id}
                 aria-label="Ilmoitus"
@@ -482,6 +566,7 @@ function Scheduling(props) {
           {sched.Select[fin]}
         </InputLabel>
         <Select
+          disabled={!available}
           {...(disabled && { disabled: true })}
           labelId="chooserangeSupervisorLabel"
           name="rangeSupervisorId"
@@ -783,6 +868,29 @@ function Scheduling(props) {
       setTracks(response.tracks);
       setState('ready');
 
+      if (response.rangeSupervision === 'present') {
+        setStatusText(sched.SuperGreen[fin]);
+        setStatusColor(colors.green);
+      } else if (response.rangeSupervision === 'en route') {
+        setStatusText(sched.SuperOrange[fin]);
+        setStatusColor(colors.orange);
+      } else if (response.rangeSupervision === 'absent') {
+        setStatusText(sched.SuperWhite[fin]);
+        setStatusColor(colors.white);
+      } else if (response.rangeSupervision === 'closed') {
+        setStatusText(sched.Red[fin]);
+        setStatusColor(colors.redLight);
+      } else if (response.rangeSupervision === 'confirmed') {
+        setStatusText(sched.SuperLightGreen[fin]);
+        setStatusColor(colors.greenLight);
+      } else if (response.rangeSupervision === 'not confirmed') {
+        setStatusText(sched.SuperBlue[fin]);
+        setStatusColor(colors.turquoise);
+      } else {
+        setStatusText(sched.SuperWhite[fin]);
+        setStatusColor(colors.white);
+      }
+
       let ts = trackStates;
 
       // set current track state for scheduled
@@ -819,7 +927,7 @@ function Scheduling(props) {
         </Backdrop>
       </Modal>
 
-      <h1 className ="header">{sched.Schedule[fin]}</h1>
+      <h1 className ="heading">{sched.Schedule[fin]}</h1>
 
       {/* Section for selecting date, setting range officer status, and open/close times of the tracks*/}
       <Box className="firstSection">
@@ -844,87 +952,172 @@ function Scheduling(props) {
             />
           </MuiPickersUtilsProvider>   
         </form>
+        <FormControl component="fieldset" style={{padding:'5px'}}>
+          <div className="options">
+            <div className="topRow">
+            <div className="text">{sched.Open[fin]}</div>
 
-        <Box className="options">
-          <div className="topRow">
-          <div className="text">{sched.Open[fin]}</div>
-
-          <CustomSwitch
-            checked={available}
-            onChange={handleSwitchChange}
-            name="available"
-            data-testid="available"
-          />
+            <CustomSwitch
+              checked={available}
+              onChange={handleSwitchChange}
+              name="available"
+              data-testid="available"
+            /> 
+            </div>
+            <hr />
+            <div className="middleRow">
+              <div className="text">{sched.OpenHours[fin]}</div>
+              <div className='timePicker'>
+                <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
+                  <KeyboardTimePicker
+                    disabled={!available}
+                    autoOk
+                    ampm={false}
+                    margin="normal"
+                    name="start"
+                    label={sched.Start[fin]}
+                    value={open}
+                    onChange={handleTimeStartChange}
+                    minutesStep={5}
+                    showTodayButton
+                  />
+                </MuiPickersUtilsProvider>
+                <div className="dash">-</div>
+                <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
+                  <KeyboardTimePicker
+                    disabled={!available}
+                    autoOk
+                    ampm={false}
+                    margin="normal"
+                    name="end"
+                    label={sched.Stop[fin]}
+                    value={close}
+                    onChange={handleTimeEndChange}
+                    minutesStep={5}
+                    showTodayButton
+                  />
+                </MuiPickersUtilsProvider>
+              </div>
+            </div>
+            <hr />
+            <div className="bottomRow">
+                <div className="text">{sched.Rangeofficer[fin]}</div>
+                <CustomSwitch
+                  disabled={!available}
+                  checked={rangeSupervisorSwitch}
+                  onChange={handleSwitchChange}
+                  name="rangeSupervisorSwitch"
+                  data-testid="rangeSupervisorSwitch"
+                />
+            </div> 
+            {rangeSupervisorSwitch && (
+              <div className='selectOfficer'>{createSupervisorSelect()}</div>
+            )}  
           </div>
-          <hr />
-          <div className="middleRow">
-            <div className="text">{sched.OpenHours[fin]}</div>
-            <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
-              <KeyboardTimePicker
-                autoOk
-                ampm={false}
-                margin="normal"
-                name="start"
-                label={sched.Start[fin]}
-                value={open}
-                onChange={handleTimeStartChange}
-                minutesStep={5}
-                showTodayButton
-              />
-            </MuiPickersUtilsProvider>
-            <div className="dash">-</div>
-            <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
-              <KeyboardTimePicker
-                autoOk
-                ampm={false}
-                margin="normal"
-                name="end"
-                label={sched.Stop[fin]}
-                value={close}
-                onChange={handleTimeEndChange}
-                minutesStep={5}
-                showTodayButton
-              />
-            </MuiPickersUtilsProvider>
-          </div>
-          <hr />
-          <div className="bottomRow">
-            <div className="roSwitch">
-              <div className="text">{sched.Rangeofficer[fin]}</div>
-              <CustomSwitch
-                className="officerSwitch"
-                checked={rangeSupervisorSwitch}
-                onChange={handleSwitchChange}
-                name="rangeSupervisorSwitch"
-                data-testid="rangeSupervisorSwitch"
-              />
-            </div> {createSupervisorSelect()}
-          </div>
-        </Box>
+          </FormControl>
+          <FormControl component="fieldset" style={{padding:'5px'}}>
+            <div className="rangeOfficerStatus" style={{backgroundColor: `${statusColor}`}}>
+                <div className="statusText">{statusText}</div>
+                  {cookies.role === 'superuser' && (
+                    <div className="expandMore">
+                      <span className="edit">{sched.Edit[fin]}</span>
+                      <Button
+                        disabled={!available || !rangeSupervisorSwitch}
+                        className="expandMoreButton"
+                        onClick={handleExpandClick}>
+                        {!expand && (
+                          <ExpandMoreIcon />
+                          )}
+                        {expand && (
+                          <ExpandLessIcon />
+                        )}
+                      </Button>
+                    </div>
+                  )}
+            </div>
+            {expand && (
+              <Box>
+                <div className="dropDownContent">
+                  <div className="helperText">
+                    <p>{sched.Helper[fin]}</p>
+                  </div>
+                  <div className="statusButtons">
+                    <Button 
+                      className="notConfirmed"
+                      variant="contained"
+                      style={{backgroundColor: colors.turquoise}}
+                      onClick={handleNotConfirmed}>
+                      {sched.Blue[fin]}
+                    </Button>
+                    <Button 
+                      className="confirmed"
+                      variant="contained"
+                      style={{backgroundColor: colors.greenLight}}
+                      onClick={handleConfirmed}>
+                      {sched.LightGreen[fin]}
+                    </Button>
+                    <Button 
+                      className="onTheWay"
+                      variant="contained"
+                      style={{backgroundColor: colors.orange}}
+                      onClick={handleEnRouteClick}>
+                      {sched.Orange[fin]}
+                    </Button>
+                    <Button 
+                      className="present"
+                      variant="contained"
+                      style={{backgroundColor: colors.green}}
+                      onClick={handlePresentClick}>
+                      {sched.Green[fin]}
+                    </Button>
+                  </div>
+                  <hr />
+                  <div className="eta">
+                    <p>{sched.ETA[fin]}:</p>
+                    <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
+                      <KeyboardTimePicker
+                        autoOk
+                        ampm={false}
+                        margin="normal"
+                        name="estimatedArrivalTime"
+                        value={estimatedArrivalTime ? moment(estimatedArrivalTime, 'HH:mm').toDate() : new Date()}
+                        minutesStep={5}
+                        onChange={handleArrivalTime}
+                        showTodayButton
+                      />
+                    </MuiPickersUtilsProvider>
+                    <Button 
+                      className="confirmTimeButton"
+                      variant="contained"
+                    >{sched.ConfirmTime[fin]}
+                    </Button>
+                  </div>
+                </div>
+              </Box>
+            )}
+          </FormControl>
       </Box>
-      {/* Section for setting track-specific open/close/absent statuses */}
-      <div className="secondSection">
+
+      {/* Section for setting track-specific open/close statuses */}
+      <Box className="secondSection">
         <div><h3 className="headingTracks">{sched.ManageTracks[fin]}</h3></div>
         <div className="tracks">{createTrackList()}</div>
         <div className="buttons">
           <Button
+            disabled={!available}
+            className="openAll"
             variant="contained"
             color="primary"
             onClick={openAllTracks}
-            style={{ color: 'black', backgroundColor: '#658f60' }}
+            style={{ color: 'black', backgroundColor: '#7DA578'}}
             data-testid="openAll"
           >
             {sched.OpenAll[fin]}
           </Button>
-          {/*<Button
-            variant="contained"
-            onClick={emptyAllTracks}
-            style={{ backgroundColor: '#5f77a1' }}
-            data-testid="emptyAll"
-          >
-            {sched.ClearAll[fin]}
-          </Button>*/}
+          
           <Button
+            disabled={!available}
+            className="closeAll"
             variant="contained"
             color="secondary"
             onClick={closeAllTracks}
@@ -934,14 +1127,17 @@ function Scheduling(props) {
             {sched.CloseAll[fin]}
           </Button>
         </div>
-      </div>
+      </Box>
+
       {/* Section for Advanced options */}
       <Box className="thirdSection">
         <div><h3 className="headingAdvanced">{sched.AdvancedOptions[fin]}</h3></div>
-          <Box className="repetition">
+        <FormControl component="fieldset" style={{padding:'5px'}}>
+          <Box className="repeat">
             <div className="daily">
               {sched.RepeatDaily[fin]}
               <CustomSwitch
+                disabled={!available}
                 checked={daily}
                 onChange={handleRepeatChange}
                 id="daily"
@@ -952,6 +1148,7 @@ function Scheduling(props) {
             <div className="weekly">
               {sched.RepeatWeekly[fin]}
               <CustomSwitch
+                disabled={!available}
                 checked={weekly}
                 onChange={handleRepeatChange}
                 id="weekly"
@@ -962,6 +1159,7 @@ function Scheduling(props) {
             <div className="monthly">
               {sched.RepeatMonthly[fin]}
               <CustomSwitch
+                disabled={!available}
                 checked={monthly}
                 onChange={handleRepeatChange}
                 id="monthly"
@@ -972,6 +1170,7 @@ function Scheduling(props) {
             <Box className="repeatCount">
               {sched.Amount[fin]}
               <TextField
+                disabled={!available}
                 name="repeatCount"
                 type="number"
                 value={repeatCount}
@@ -979,7 +1178,8 @@ function Scheduling(props) {
                 InputProps={{ inputProps: { min: 1, max: 100 } }}
               />
             </Box>
-        </Box>
+        </FormControl>
+      </Box>
 
       <div className="save">
           <Button
@@ -989,14 +1189,7 @@ function Scheduling(props) {
           >
             {sched.Save[fin]}
           </Button>
-          {/*<div
-            className="hoverHand arrow-right"
-            onClick={() =>
-              handleDatePickChange(
-                moment(date).add(1, 'days').format('YYYY-MM-DD'),
-              )
-            }
-          />*/}
+      
           <div className="toast">
             <Snackbar
               open={toast}
@@ -1012,5 +1205,4 @@ function Scheduling(props) {
     </div>
   );
 }
-
 export default Scheduling;

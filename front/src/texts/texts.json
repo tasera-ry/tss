@@ -281,7 +281,54 @@
       "Track officer absent",
       "Banhandledare frånvarande"
     ],
+    "SuperGreen": [
+      "Päävalvoja paikalla",
+      "Range officer present",
+      "Banofficer närvarande"
+    ],
+    "SuperRed": [
+      "Päävalvoja ei paikalla",
+      "Range officer not present",
+      "Banofficer inte närvarande"
+    ],
+    "SuperLightGreen": [
+      "Päävalvoja varmistettu",
+      "Range officer confirmed",
+      "Banofficer bekräftat"
+    ],
+    "SuperBlue": [
+      "Päävalvoja ei varmistettu",
+      "Range officer predefined",
+      "Banofficer inte bekräftat"
+    ],
+    "SuperOrange": [
+      "Päävalvoja matkalla",
+      "Range officer on the way",
+      "Banofficer på väg"
+    ],
+    "SuperWhite": [
+      "Päävalvojaa ei asetettu",
+      "Range officer undefined",
+      "Banofficer odefinierad"
+    ],
+    "Red": ["Ampumakeskus suljettu", "Closed", "Skjutbana stängd"],
+    "Blue": ["Ei varmistettu", "Not confirmed", "Inte bekräftat"],
+    "LightGreen": ["Varmistettu", "Confirmed", "bekräftat"],
+    "Green": ["Paikalla", "Present", "Närvarande"],
+    "Orange": ["Tulossa", "On the way", "På väg"],
+    "Edit": ["Muokkaa", "Edit", "Redigera"],
+    "Helper": [
+      "Muokkaa päävalvojan statusta napauttamalla väriä alta",
+      "Edit range officer status by choosing color",
+      "Redigera status för banofficer genom att välja färg"
+    ],
+    "ETA": [
+      "Lisää arvioitu saapumisaika", 
+      "Add estimated time of arrival", 
+      "Lägg till beräknad ankomsttid"],
+    "ConfirmTime": ["Vahvista aika", "Confirm time", "Bekräfta tid"],
     "ManageTracks": ["Hallitse ratoja", "Manage shooting tracks", "Hantera skjutbanor"],
+    "ShootingTrack": ["Ampumarata", "Shooting track", "Skjutbana"],
     "TrackOpen": ["Rata auki", "Track open", "Bana öppen"],
     "Closed": ["Suljettu", "Closed", "Stängd"],
     "Notice": ["Lisätiedot", "Details", "Detaljer"],

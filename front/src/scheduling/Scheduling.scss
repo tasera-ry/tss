@@ -1,124 +1,205 @@
 .schedulingRoot {
   padding: 1vmin 5vmin 1vmin 5vmin;
-
-  .MuiButton-contained {
-    margin: 1vmin 1vmin 1vmin 0vmin;
-  }
 }
 
 .schedulingRoot {
   display: flex;
-  flex-wrap: wrap;
   flex-direction: column;
   align-items: center;
 
-  .header {
+  .heading {
     text-align: center;
     margin: 20px 0px 16px 0px;
   }
 
   .firstSection {
     display: flex;
+    flex-wrap: wrap;
     flex-direction: column;
-    gap: 20px;
+    gap: 12px;
     background-color: #F5F5F5;
     border: 1px solid #E8E8E8;
     border-radius: 5px;
-    width: 811px;
-    padding: 20px;
-    margin: 0px 0px 12px 0px;
+    padding: 10px 20px 10px 20px;
+    margin: 0px 0px 8px 0px;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
 
     .options{
       display: flex;
       flex-direction: column;
-      background-color: #ebebeb;
+      justify-content: center;
+      max-width: 400px;
+      background-color: #eeee;
       border-radius: 10px;
       border: 1px solid #e7e7e7;
-      width: 412px;
       padding: 16px 20px 16px 20px;
+    }
+    hr {
+      color: #ECECEC;
+      margin: 12px 0px 16px 0px;
+      opacity: 0.20;
+    }
+    .text {
+      display: flex;
+      align-self: center;
+    }
+    .topRow {
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .middleRow {
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0px 8px 0px 0px;
 
       .text {
-        display: flex;
-        align-self: center;
-        width: 100px;
+        margin-right: 15px;
       }
-
-      .topRow {
+      .timePicker {
         display: flex;
-        flex-flow: row wrap;
+        display: column;
         align-items: center;
-        //justify-content: space-between;
-      }
-
-      hr {
-        color: #ECECEC;
-        margin: 12px 0px 16px 0px;
-        opacity: 0.30;
-      }
-
-      .middleRow {
-        display: flex;
-        flex-flow: row wrap;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0px 8px 0px 0px;
-
-        .text {
-          margin-right: 15px;
-        }
-
+    
         .MuiFormControl-root {
           width: 100px;
           margin-top: -5px;
         }
-
         .dash {
-          padding: 0px 20px 0 20px;
+          padding: 0px 16px 0 16px;
         }
       }
+    }
+    .bottomRow {
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: -4px;
+    }
+    .selectOfficer {
+      display: flex;
+      justify-content: right;
+  
+      .MuiFormControl-root {
+        min-width: 160px;
+      }
+    }
+    .rangeOfficerStatus {
+      position: relative;
+      display: flex;
+      flex: column;
+      align-items: center;
+      flex-wrap: wrap;
+      border-radius: 10px;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+      background-color: white;
+      padding: 12px 8px 12px 8px;
+      z-index: 2;
 
-      .bottomRow {
+      .statusText {
+        flex: 1;
+        text-align: center;
+        font-weight: bold;
+      }
+      .expandMore {
+        position: absolute;
+        right: 10px;
         display: flex;
-        flex-flow: row wrap;
+        font-size: 0.875rem;
         align-items: center;
-        justify-content: space-between;
+      }
+      .expandMoreButton {
+        min-width: 0;
+      }
+    }
+    .dropDownContent {
+      display: flex;
+      flex-direction: column;
+      background-color: #f0f0f0;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      border: 1px solid #e7e7e7;
+      margin-top: -8px;
+      padding: 8px 20px 16px 20px;
+      z-index: 1;
 
-        .officerSwitch {
-          margin-right: 10px;
+      .MuiButton-contained {
+        margin: 8px;
+        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+        transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+                    box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+                    border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+        &:hover{
+          box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2),
+                      0px 4px 5px 0px rgba(0,0,0,0.14),
+                      0px 1px 10px 0px rgba(0,0,0,0.12);
         }
+      }
+      .helperText {
+        display: flex;
+        justify-content: center;
+        padding-top: 8px;
+      }
+      .statusButtons {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap; 
+        .notConfirmed {
+          border: 1px solid #7ccdd2;
+        }
+        .confirmed {
+          border: 1px solid #9fca99;
+        }  
+        .onTheWay {
+          border: 1px solid #f9bc42;
+        } 
+        .present {
+          border: 1px solid #527a4f;
+        }
+      }
+      .eta {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
 
-        .roSwitch {
-          display: flex;
+        .MuiFormControl-root {
+          max-width: 100px;
+          margin: 0px 12px 0px 12px;
         }
-
-        .MuiFormControl-root:nth-child(2) {
-          min-width: 150px;
-        }
+      }
+      .confirmTimeButton {
+        background-color: rgb(209, 204, 194);
+        border-radius: 10px;
+        text-transform: none;
+        margin-left: 16px;
       }
     }
   }
 
   .secondSection {
+    display: flex;
+    flex-wrap: wrap;
     background-color: #F5F5F5;
     border: 1px solid #E8E8E8;
     border-radius: 5px;
-    width: 811px;
     padding: 20px;
-    margin: 12px 0px 12px 0px;
+    margin: 8px 0px 8px 0px;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
 
     .headingTracks {
       margin: 0px;
     }
-
     .tracks {
       display: flex;
       flex-flow: row wrap;
       align-items: center;
       margin: 16px 0px 16px 0px;
     }
-
     .trackBox{
       display: flex;
       flex-direction: column;
@@ -127,26 +208,28 @@
       padding: 8px;
       margin: 4px;
     }
-
     .track-closed {
       background-color: #FAE0E0;
       border: 1px solid #df8d8d;
     }
-
     .track-open {
       background-color: #EEFCE0;
       border: 1px solid #669B51;
     }
-
     .trackSwitchRow {
       display: flex;
       flex-flow: row wrap;
       align-items: center;
       justify-content: space-between;
     }
-
     .notice::placeholder {
       opacity: 0.3;
+    }
+    .openAll {
+      margin: 0px 8px 0px 4px;
+    }
+    .closeAll {
+      margin: 0px 4px 0px 8px;
     }
   }
 
@@ -158,87 +241,110 @@
     background-color: #F5F5F5;
     border: 1px solid #E8E8E8;
     border-radius: 5px;
-    width: 811px;
     padding: 20px;
-    margin: 12px 0px 12px 0px;
+    margin: 8px 0px 8px 0px;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
 
     .headingAdvanced{
       margin: 0px;
     }
-
-    .repetition {
+    .repeat {
       display: flex;
       flex-direction: column;
-      background-color: #ebebeb;
+      background-color: #eeee;
       border-radius: 10px;
       border: 1px solid #e7e7e7;
-      width: 412px;
-      padding: 8px 20px 8px 20px;
-  
+      padding: 6px 20px 8px 20px;
+      max-width: 400px;
+
       hr {
         color: #ECECEC;
         margin: 6px 0px 6px 0px;
-        opacity: 0.30;
+        opacity: 0.20;
       }
-
       .daily {
         display: flex;
         align-items: center;
         justify-content: space-between;
       }
-
       .weekly {
         display: flex;
         align-items: center;
         justify-content: space-between;
       }
-
       .monthly {
         display: flex;
         align-items: center;
         justify-content: space-between;
       }
-    }
-
+    } 
     .repeatCount {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      width: 412px;
-      padding: 0px 20px 8px 20px;
+      padding: 12px 20px 8px 20px;
+      max-width: 400px;
     }
-
-    .MuiFormControl-root {
-      padding-left: 10px;
-      width: 50px;
-    }
-
-    padding-bottom: 10px;
   }
 
   .save {
     display: flex;
     justify-content: space-between;
-    width: 811px;
     padding: 0px 20px 0px 0px;
-    margin: 12px 20px 0px 0px;
-  }
-
-  .arrow-right {
-    padding: 0;
-    margin: 0;
-    margin-left: 5px;
-    width: 0;
-    height: 0;
-    border-top: 20px solid transparent;
-    border-bottom: 20px solid transparent;
-    border-left: 20px solid black;
-    display: flex;
-    align-items: center;
+    margin: 8px 20px 0px 0px;
   }
 
   .hoverHand:hover {
     cursor: pointer;
   }
+
+  @media only screen and (min-width: 320px) and (max-width: 599px) {
+    .firstSection {
+      width: 100%;
+
+      .timePicker {
+        margin-top: 10px;
+      }
+      .statusText {
+        padding-right: 60px;
+      }
+    }
+    .secondSection {
+      width: 100%;
+    }
+    .thirdSection {
+      width: 100%;
+    }
+    .save {
+      width: 100%;
+    }
+    }
+  }
+  @media only screen and (min-width: 600px) and (max-width: 1024px) {
+    .firstSection{
+      width: 90%;
+    }
+    .secondSection {
+      width: 90%;
+    }
+    .thirdSection {
+      width: 90%;
+    }
+    .save{
+      width: 90%;
+    }
+  }
+  @media only screen and (min-width: 1025px) {
+    .firstSection {
+      width: 80%;
+    }
+    .secondSection {
+      width: 80%;
+    }
+    .thirdSection {
+      width: 80%;
+    } 
+    .save {
+      width: 80%;
+    }
 }
