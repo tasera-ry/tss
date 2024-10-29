@@ -90,7 +90,7 @@ const EmailSettings = () => {
     pass: '',
     host: '',
     port: 0,
-    secure: 'false',
+    secure: 'true',
     shouldQueue: 'false',
     shouldSend: 'true',
     assignedMsg: '',
