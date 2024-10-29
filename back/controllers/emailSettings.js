@@ -12,9 +12,11 @@ const controller = {
     // callback for verifyEmailCredentials
     const updateEmailSettings = async (error, success) => {
       console.log("updateEmailSettings error:", error, "success:", success)
-      if( error ) {
-        return response.status(400).send("Wrong credentials")
-      } else if (success) { 
+      if (error) {
+        // Return detailed error message
+        return response.status(500).send({success: false, ...error});
+      }
+      else if (success) { 
         await services.emailSettings.update(request.body);
         scheduleEmails(new Date(request.body.sendPendingTime));
         return response.status(200).send();

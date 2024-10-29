@@ -178,10 +178,16 @@ const verifyEmailCredentials = async (emailSettings, cb) => {
 
     transporter.verify(cb);
 
-  } catch (err) {
-    console.error("verifyEmailCredentials error:", err)
+  } catch (error) {
+    console.error("verifyEmailCredentials error:", error);
+    // Return a structured error with relevant details to the controller
+    throw {
+      message: error.message,
+      code: error.code,
+      errno: error.errno,
+      port: error.port,
+    };
   }
-
 }
 
 module.exports = { scheduleEmails, email, sendPending, verifyEmailCredentials };
