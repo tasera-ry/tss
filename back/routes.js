@@ -11,6 +11,8 @@ const controllers = require(path.join(root, 'controllers'));
 
 const oldSchedule = require(path.join(root, 'controllers', 'oldSchedule'));
 
+const { validateEmailCredentials } = require('./mailer');
+
 router.route('/sign').post(middlewares.user.sign, controllers.user.sign);
 
 router
@@ -366,5 +368,6 @@ router
   .get(validators.devices.read, middlewares.devices.read, controllers.devices.read)
   .put(validators.devices.update, middlewares.devices.update, controllers.devices.update)
   .delete(validators.devices.delete, middlewares.devices.delete, controllers.devices.delete);
+
 
 module.exports = router;
