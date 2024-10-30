@@ -2,17 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 
 // Material UI components
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-} from '@material-ui/pickers';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 // Translations
 
@@ -308,27 +306,25 @@ const TimePick = ({
         </DialogTitle>
         <DialogContent className={classes(css.dialogStyle)}>
           <div className={classes(css.rowStyle)}>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <KeyboardTimePicker
-                margin="normal"
-                id="starttime"
-                label={tablet.Start[fin]}
-                ampm={false}
-                value={startDate}
-                onChange={(date) => setStartDate(date)}
-                minutesStep={5}
-              />
-              &nbsp;
-              <KeyboardTimePicker
-                margin="normal"
-                id="endtime"
-                label={tablet.End[fin]}
-                ampm={false}
-                value={endDate}
-                onChange={(date) => setEndDate(date)}
-                minutesStep={5}
-              />
-            </MuiPickersUtilsProvider>
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <DatePicker
+              label={tablet.Start[fin]}
+              value={startDate}
+              onChange={(date) => setStartDate(date.toDate())} //lmao mitä purkkaa: Date
+              renderInput={(params) => <TextField {...params} margin="normal" id="starttime" />}
+              minutesStep={5}
+              ampm={false}
+            />
+            &nbsp;
+            <DatePicker
+              label={tablet.End[fin]}
+              value={endDate}
+              onChange={(date) => setEndDate(date.toDate())}
+              renderInput={(params) => <TextField {...params} margin="normal" id="endtime" />}
+              minutesStep={5}
+              ampm={false}
+            />
+          </LocalizationProvider>
           </div>
 
           <br />
@@ -522,7 +518,7 @@ const Tabletview = () => {
           size="large"
           variant="outlined"
           disabled
-          data-testid="rangeOfficerStatus"
+          dataid="rangeOfficerStatus"
         >
           {statusText}
         </Button>

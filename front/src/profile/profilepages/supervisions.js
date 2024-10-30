@@ -11,8 +11,8 @@ import {
   TableCell,
   TableBody,
   TextField,
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+} from '@mui/material';
+import { Alert } from '@mui/lab';
 
 import moment from 'moment';
 

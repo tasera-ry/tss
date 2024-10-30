@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styles from './ButtonComponent.module.scss';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import api from '../api/api';
 import translations from '../texts/texts.json';
 

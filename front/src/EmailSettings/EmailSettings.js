@@ -11,14 +11,12 @@ import {
   CircularProgress,
   Select,
   MenuItem,
-  Snackbar,
-} from '@material-ui/core';
-import MuiAlert from '@material-ui/lab/Alert';
-import DateFnsUtils from '@date-io/date-fns';
+} from '@mui/material';
 import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-} from '@material-ui/pickers';
+  LocalizationProvider,
+  TimePicker,
+} from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import './EmailSettings.scss';
 import textData from '../texts/texts.json';
 
@@ -309,14 +307,14 @@ const EmailSettings = () => {
           </FormHelperText>
         </FormControl>
         <FormControl component="fieldset">
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardTimePicker
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <TimePicker
               margin="normal"
               label={emailSettings.pendingTime[lang]}
               value={settings.sendPendingTime}
               onChange={handleDateChange}
             />
-          </MuiPickersUtilsProvider>
+          </LocalizationProvider>
         </FormControl>
         <FormControl component="fieldset">
           <FormLabel className="settings-label">

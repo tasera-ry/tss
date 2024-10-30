@@ -5,18 +5,18 @@ import { useCookies } from 'react-cookie';
 
 // Material UI elements
 import { Link } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
-import Drawer from '@material-ui/core/Drawer';
-import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
+import Button from '@mui/material/Button';
+import Drawer from '@mui/material/Drawer';
+import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
 
 import logo from '../logo/Logo.png';
 import SupervisorNotification from './SupervisorNotification';
 import FeedbackWindow from './FeedbackWindow';
 import translations from '../texts/texts.json';
 // enables overriding material-ui component styles in scss
-import { StylesProvider } from '@material-ui/core/styles';
+import { StyledEngineProvider } from '@mui/material/styles';
 import css from './Nav.module.scss';
 
 const classes = classNames.bind(css);
@@ -163,7 +163,7 @@ const Nav = () => {
   ];
 
   return (
-    <StylesProvider injectFirst>
+    <StyledEngineProvider injectFirst>
       <nav>
         <Link
           className={classes(css.logo)}
@@ -213,7 +213,7 @@ const Nav = () => {
         checkSupervisions={checkSupervisions}
         setCheckSupervisions={setCheckSupervisions}
       />
-    </StylesProvider>
+    </StyledEngineProvider>
   );
 };
 export default Nav;

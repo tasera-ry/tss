@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import api from '../api/api';
 
-import { StylesProvider } from '@material-ui/core/styles';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import IconButton from '@material-ui/core/IconButton';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
+import { StyledEngineProvider } from '@mui/material/styles';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import IconButton from '@mui/material/IconButton';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/lab/Alert';
 
 import translations from '../texts/texts.json';
 import RaffleDatePicker from './RaffleDatePicker';
@@ -175,7 +175,7 @@ export default function Raffle() {
 
   if (isLoading.page) return null;
   return (
-    <StylesProvider injectFirst>
+    <StyledEngineProvider injectFirst>
       <div className={classes(css.members)}>
         <h1>{nav.Raffle[lang]}</h1>
         <div className={classes(css.tableHeader)}>
@@ -258,6 +258,6 @@ export default function Raffle() {
           </MuiAlert>
         </Snackbar>
       </div>
-    </StylesProvider>
+    </StyledEngineProvider>
   );
 }

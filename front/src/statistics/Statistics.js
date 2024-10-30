@@ -4,21 +4,17 @@ import classNames from 'classnames';
 import colors from '../colors.module.scss';
 
 // Date management
-import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 import 'moment/locale/fi';
 
 // Material UI components
-import Grid from '@material-ui/core/Grid';
-import Modal from '@material-ui/core/Modal';
-import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
-
+import Grid from '@mui/material/Grid';
+import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/lab/Alert';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { getLanguage, incrementOrDecrementDate } from '../utils/Utils';
 import api from '../api/api';
 import translations from '../texts/texts.json';
@@ -199,11 +195,10 @@ const Statistics = () => {
       <div className={classes(css.firstSection)}>
         <form onSubmit={continueWithDate}>
           {/* Datepicker */}
-          <MuiPickersUtilsProvider utils={MomentUtils} locale={lang}>
-            <KeyboardDatePicker
-              autoOk
+          <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={lang}>
+            <DatePicker
+              closeOnSelect
               margin="normal"
-              name="date"
               label={statistics.DayChoose[fin]}
               value={date}
               onChange={(newDate) => setDate(newDate)}
@@ -211,10 +206,11 @@ const Statistics = () => {
                 setDate(new Date(newDate));
                 continueWithDate();
               }}
-              format="DD.MM.YYYY"
+              inputFormat="DD.MM.YYYY"
+              renderInput={(params) => <TextField {...params} />}
               showTodayButton
             />
-          </MuiPickersUtilsProvider>
+          </LocalizationProvider>
         </form>
       </div>
       <hr />

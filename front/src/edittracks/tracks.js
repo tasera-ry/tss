@@ -3,11 +3,11 @@ import React, { useState, useEffect, forwardRef } from 'react';
 import './tracks.scss';
 
 // Material UI components
-import ScopedCssBaseline from '@material-ui/core/ScopedCssBaseline';
-import Container from '@material-ui/core/Container';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Alert from '@material-ui/lab/Alert';
-import Snackbar from '@material-ui/core/Snackbar';
+import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
+import Container from '@mui/material/Container';
+import LinearProgress from '@mui/material/LinearProgress';
+import Alert from '@mui/lab/Alert';
+import Snackbar from '@mui/material/Snackbar';
 import MaterialTable from 'material-table';
 
 // Translations
@@ -18,21 +18,21 @@ import lodash from 'lodash';
 import axios from 'axios';
 
 // Icon setup
-import AddBox from '@material-ui/icons/AddBox';
-import ArrowDownward from '@material-ui/icons/ArrowDownward';
-import Check from '@material-ui/icons/Check';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Clear from '@material-ui/icons/Clear';
-import DeleteOutline from '@material-ui/icons/DeleteOutline';
-import Edit from '@material-ui/icons/Edit';
-import FilterList from '@material-ui/icons/FilterList';
-import FirstPage from '@material-ui/icons/FirstPage';
-import LastPage from '@material-ui/icons/LastPage';
-import Remove from '@material-ui/icons/Remove';
-import SaveAlt from '@material-ui/icons/SaveAlt';
-import Search from '@material-ui/icons/Search';
-import ViewColumn from '@material-ui/icons/ViewColumn';
+import AddBox from '@mui/icons-material/AddBox';
+import ArrowDownward from '@mui/icons-material/ArrowDownward';
+import Check from '@mui/icons-material/Check';
+import ChevronLeft from '@mui/icons-material/ChevronLeft';
+import ChevronRight from '@mui/icons-material/ChevronRight';
+import Clear from '@mui/icons-material/Clear';
+import DeleteOutline from '@mui/icons-material/DeleteOutline';
+import Edit from '@mui/icons-material/Edit';
+import FilterList from '@mui/icons-material/FilterList';
+import FirstPage from '@mui/icons-material/FirstPage';
+import LastPage from '@mui/icons-material/LastPage';
+import Remove from '@mui/icons-material/Remove';
+import SaveAlt from '@mui/icons-material/SaveAlt';
+import Search from '@mui/icons-material/Search';
+import ViewColumn from '@mui/icons-material/ViewColumn';
 import l10nLines from '../texts/texts.json';
 
 // Token validation

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import api from '../api/api';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 // enables overriding material-ui component styles in scss
-import { StylesProvider } from '@material-ui/core/styles';
+import { StyledEngineProvider } from '@mui/material/styles';
 import css from './TrackStatistics.module.scss';
-import { makeStyles } from '@material-ui/core/styles';
-import Modal from '@material-ui/core/Modal';
+import { makeStyles } from '@mui/styles';
+import Modal from '@mui/material/Modal';
 import translations from '../texts/texts.json';
 const { trackStatisticsModal } = translations;
 
@@ -111,7 +111,7 @@ export const TrackStatistics = ({ track, supervision }) => {
   );
 
   return (
-    <StylesProvider injectFirst>
+    <StyledEngineProvider injectFirst>
       <div className={classes(css.trackContainer)}>
         <Button
           disabled={isDisabled}
@@ -141,6 +141,6 @@ export const TrackStatistics = ({ track, supervision }) => {
           {body}
       </Modal>
       </div>
-    </StylesProvider>
+    </StyledEngineProvider>
   );
 };
