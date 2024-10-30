@@ -28,7 +28,7 @@ const controller = {
       return response.status(200).send({success: true});
     } catch (error) {
       console.error("sendPendingEmails error:", error);
-      return response.status(500).send({success: false, message: "Failed to send pending emails.", details: error.message});
+      return response.status(500).send({success: false, error});
     }
   }
 };
