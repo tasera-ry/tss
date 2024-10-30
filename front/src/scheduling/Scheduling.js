@@ -258,11 +258,13 @@ function Scheduling(props) {
 
   const handleNotice = (event) => {
     // console.log("handle notice",event.target.id,event.target.value,this.state.tracks)
+    const maxLength = 255;
+    const value = event.target.value.slice(0, maxLength); // limit to 200 characters
     const idx = tracks.findIndex(
       (findItem) => findItem.id === parseInt(event.target.id),
     );
     let newTracks = [...tracks];
-    newTracks[idx] = { ...newTracks[idx], notice: event.target.value };
+    newTracks[idx] = { ...newTracks[idx], notice: value };
     setTracks(newTracks);
   };
 
@@ -416,6 +418,7 @@ function Scheduling(props) {
               onChange={handleNotice}
               value={tracks[key].notice !== null ? tracks[key].notice : ''}
               style={{ backgroundColor: 'blackTint10' }}
+              maxLength={255}
             />
           </FormControl>
         </React.Fragment>,
