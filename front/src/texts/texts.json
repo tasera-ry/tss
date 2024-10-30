@@ -713,6 +713,16 @@
       "Wrong email or password!",
       "Fel e-post eller lösenord!"
     ],
+    "pendingSuccess": [
+      "Viestit lähetetty onnistuneesti!",
+      "Pending messages sent successfully!",
+      "Väntande meddelanden skickades framgångsrikt!"
+    ],
+    "pendingError": [
+      "Viestien lähettäminen epäonnistui!",
+      "Sending pending messages failed!",
+      "Misslyckades att skicka väntande meddelanden!"
+    ],
     "smtpSettings": ["SMTP-asetukset", "SMTP-settings", "SMTP-inställningar"],
     "user": ["Sähköposti", "Email", "E-post"],
     "pass": ["Salasana", "Password", "Lösenord"],

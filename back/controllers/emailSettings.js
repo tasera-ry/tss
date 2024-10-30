@@ -11,8 +11,8 @@ const controller = {
   update: async function updateSettings(request, response) {
     // callback for verifyEmailCredentials
     const updateEmailSettings = async (error, success) => {
-      console.log("updateEmailSettings error:", error, "success:", success)
-      if( error ) {
+      if (error) {
+        console.error("updateEmailSettings error:", error)
         return response.status(400).send("Wrong credentials")
       } else if (success) { 
         await services.emailSettings.update(request.body);
@@ -23,8 +23,13 @@ const controller = {
     verifyEmailCredentials(request.body, updateEmailSettings);
   },
   sendPendingEmails: async function sendPendingEmails(request, response) {
-    await sendPending();
-    return response.status(200).send();
+    try {
+      await sendPending();
+      return response.status(200).send({success: true});
+    } catch (error) {
+      console.error("sendPendingEmails error:", error);
+      return response.status(500).send({success: false, message: "Failed to send pending emails.", details: error.message});
+    }
   }
 };
 

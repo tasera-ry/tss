@@ -121,9 +121,23 @@ const EmailSettings = () => {
 
   const sendPendingRequest = () => {
     setPendingSend(true);
-    fetch('/api/send-pending').then(() => {
-      setPendingSend(false);
-    });
+    fetch('/api/send-pending')
+      .then((res) => {
+        setPendingSend(false);
+        // Sending pending emails failed
+        if (res.status !== 200) {
+          setNotification({ open: true, message: emailSettings.pendingError[lang], type: 'error' });
+        }
+        // Sending pending emails was successful
+        else {
+          setNotification({ open: true, message: emailSettings.pendingSuccess[lang], type: 'success' });
+        }
+        })
+      .catch((error) => {
+        setPendingSave(false);
+        console.error('Sending pending emails failed:', error);
+        setNotification({ open: true, message: emailSettings.pendingError[lang], type: 'error' });
+      });
   };
 
   // Runs the above whenever the page loads
