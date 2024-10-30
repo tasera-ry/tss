@@ -699,21 +699,16 @@
       "Lösenordet kan inte vara tomt!"
     ],
     "hostError": [
-      "Virheellinen host!",
-      "Invalid host!",
-      "Ogiltig host!"
+      "DNS-haku epäonnistui. Tarkista, että SMTP on oikea.",
+      "DNS resolution failed. Please check that the SMTP host is correct.",
+      "DNS-upplösning misslyckades. Kontrollera att SMTP-värdena är korrekta."
     ],
-    "connectionError": [
-      "Tarkista SMTP-palvelin ja portti.",
-      "Check the SMTP server and port.",
-      "Kontrollera SMTP-server och port."
+    "socketError": [
+      "Yhteys epäonnistui. Tarkista palvelin, portti ja SSL-asetukset.",
+      "Connection failed. Please check the server, port, and SSL settings.",
+      "Anslutning misslyckades. Kontrollera servern, porten och SSL-inställningarna."
     ],
-    "secureError": [
-      "Porttinumero ja SSL eivät täsmää!",
-      "Port number and SSL don't match!",
-      "Portnummer och SSL matchar inte!"
-    ],
-    "credError": [
+    "authError": [
       "Väärä sähköpostiosoite tai salasana!",
       "Wrong email or password!",
       "Fel e-post eller lösenord!"

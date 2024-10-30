@@ -167,23 +167,21 @@ const EmailSettings = () => {
       body: JSON.stringify(settings),
     })
       .then(async (res) => {
-        const data = await res.json();
         // If veryfying credentials failed
         if (res.status !== 200) {
-          console.error('Saving email settings failed:', data);
+          const data = await res.json();
           setPendingSave(false);
           // Handle specific errors
           if (data.code === 'EAUTH') {
-            setNotification({ open: true, message: emailSettings.credError[lang], type: 'error' });
-          } else if (data.code === 'ENOTFOUND' || data.code === 'EHOSTUNREACH') {
+            setNotification({ open: true, message: emailSettings.authError[lang], type: 'error' });
+          } else if (data.code === 'EDNS') {
             setNotification({ open: true, message: emailSettings.hostError[lang], type: 'error' });
-          } else if (data.code === 'ECONNREFUSED') {
-            setNotification({ open: true, message: emailSettings.connectionError[lang], type: 'error' });
           } else if (data.code === 'ESOCKET') {
-            setNotification({ open: true, message: emailSettings.secureError[lang], type: 'error' });
+            setNotification({ open: true, message: emailSettings.socketError[lang], type: 'error' });
           } else if (data.code === 'ETIMEDOUT') {
             setNotification({ open: true, message: emailSettings.timeoutError[lang], type: 'error' });
           } else {
+            console.error('Saving email settings failed:', data);
             throw new Error("Unrecognized error code: " + data.code);
           }
         }
