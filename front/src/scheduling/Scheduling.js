@@ -801,7 +801,7 @@ function Scheduling(props) {
             <DatePicker
               closeOnSelect
               label={sched.Day[fin]}
-              value={date}
+              value={moment(date)}
               onChange={(newDate) => handleDateChange(newDate)}
               onAccept={(newDate) => handleDatePickChange(newDate)}
               inputFormat="DD.MM.YYYY" 
@@ -858,7 +858,7 @@ function Scheduling(props) {
               closeOnSelect
               ampm={false}
               label={sched.Start[fin]}
-              value={open}
+              value={moment(open)}
               onChange={handleTimeStartChange}
               minutesStep={5}
               renderInput={(params) => <TextField {...params} />}
@@ -873,7 +873,7 @@ function Scheduling(props) {
               closeOnSelect
               ampm={false}
               label={sched.Stop[fin]}
-              value={close}
+              value={moment(close)}
               onChange={handleTimeEndChange}
               minutesStep={5}
               renderInput={(params) => <TextField {...params} />}

@@ -1,4 +1,6 @@
 import React from 'react';
+import moment from 'moment';
+import Snackbar from '@mui/material/Snackbar';
 import {
   FormControl,
   FormControlLabel,
@@ -19,6 +21,7 @@ import {
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import './EmailSettings.scss';
 import textData from '../texts/texts.json';
+import { getLanguage } from '../utils/Utils';
 
 const { emailSettings, nav } = textData;
 const lang = localStorage.getItem('language');
@@ -311,7 +314,7 @@ const EmailSettings = () => {
             <TimePicker
               margin="normal"
               label={emailSettings.pendingTime[lang]}
-              value={settings.sendPendingTime}
+              value={moment(settings.sendPendingTime)}
               onChange={handleDateChange}
             />
           </LocalizationProvider>

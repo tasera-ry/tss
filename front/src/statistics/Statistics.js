@@ -200,7 +200,7 @@ const Statistics = () => {
               closeOnSelect
               margin="normal"
               label={statistics.DayChoose[fin]}
-              value={date}
+              value={moment(date)}
               onChange={(newDate) => setDate(newDate)}
               onAccept={(newDate) => {
                 setDate(new Date(newDate));
