@@ -259,7 +259,7 @@ function Scheduling(props) {
   const handleNotice = (event) => {
     // console.log("handle notice",event.target.id,event.target.value,this.state.tracks)
     const maxLength = 255;
-    const value = event.target.value.slice(0, maxLength); // limit to 200 characters
+    const value = event.target.value.slice(0, maxLength); // limit to 255 characters
     const idx = tracks.findIndex(
       (findItem) => findItem.id === parseInt(event.target.id),
     );

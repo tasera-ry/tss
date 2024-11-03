@@ -91,7 +91,7 @@ const Trackview = (props) => {
           rangeSupervision: data.rangeSupervision,
           name: selectedTrack.name,
           description: `(${selectedTrack.description})`,
-          info: selectedTrack.notice,
+          info: selectedTrack.notice, // ensure line breaks
         });
         setVisible({
           date: true,
@@ -156,7 +156,7 @@ const Trackview = (props) => {
         </Grid>
       )}
       {visible.infobox && ( // extra info of the track
-        <div>
+        <div style={{whiteSpace: 'pre-wrap'}}>
           <p>{trackview.Info[lang]}:</p>
           <div className={classes(css.infoBox)}>{state.info}</div>
         </div>
