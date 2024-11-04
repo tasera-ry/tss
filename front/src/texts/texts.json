@@ -382,6 +382,7 @@
     "Rangeofficer": ["Valvoja", "Range officer", "Banofficer"],
     "Association": ["Yhdistys", "Association", "Förening"],
     "Rangemaster": ["Päävalvoja", "Range master", "Banmästare"],
+    "SelectAssociation": ["Valitse yhdistys", "Select association", "Välja förening"],
     "ChangeFor": [
       "Vaihda salasana käyttäjälle",
       "Change password for",

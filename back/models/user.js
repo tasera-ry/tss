@@ -127,6 +127,8 @@ const model = {
       'reset_token',
       'reset_token_expire'
     );
+    const rangeofficer = _.pick(update, 'associationId');
+
     const association = _.pick(update, 'phone');
 
     const id = await model.read(current, ['id']).then((rows) => rows[0]);
@@ -142,6 +144,22 @@ const model = {
         .where(id)
         .update(user)
         .then((updates) => {
+          // Rangeofficers need association
+          if (_.isEmpty(rangeofficer) === false) {
+            return trx('association_rangeofficers')
+              .select()
+              .where('rangeofficer_id', id.id)
+              .then(function (rows) {
+                if (rows.length === 0) {
+                  // Rangeofficer id not yet in table, insert
+                  return trx('association_rangeofficers').insert({ rangeofficer_id: id.id, association_id: rangeofficer.associationId })
+                } else {
+                  // Duplicate id found, update
+                  console.log("_update_");
+                  return trx('association_rangeofficers').where('rangeofficer_id', id.id).update({ association_id: rangeofficer.associationId });
+                }
+              })
+          }
           if (_.isEmpty(association) === false) {
             return trx('association').where(id).update(association);
           }

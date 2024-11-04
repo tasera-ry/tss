@@ -117,8 +117,8 @@ async function addEmail(id, emailn) {
   }
 }
 
-// Changes role to database
-async function changeRole(id, newRole) {
+// Changes role for user that is not a rangeofficer to database
+async function changeRoleNotRangeofficer(id, newRole) {
   try {
     const response = await fetch(`/api/user/${id}`, {
       method: 'PUT',
@@ -133,6 +133,32 @@ async function changeRole(id, newRole) {
     return response.ok;
   } catch (err) {
     console.error('GETTING USER FAILED', err);
+    return false;
+  }
+}
+
+// Changes role for rangeofficer to database
+async function changeRoleRangeofficer(id, newRole, newAssociationId) {
+  if (parseInt(newAssociationId) !== 0 && parseInt(newAssociationId) !== id) {
+    try {
+      const response = await fetch(`/api/user/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          role: newRole,
+          associationId: newAssociationId,
+        }),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.ok;
+    } catch (err) {
+      console.error('GETTING USER FAILED', err);
+      return false;
+    }
+  } else {
+    console.error('ADDING ASSOCIATION FAILED');
     return false;
   }
 }
@@ -154,8 +180,8 @@ async function deleteUser(id) {
   }
 }
 
-// Add user to database
-async function addUser(namen, rolen, passwordn, emailn) {
+// Add user that is not a rangeofficer to database
+async function addUserNotRangeofficer(namen, rolen, passwordn, emailn) {
   try {
     const response = await fetch('/api/user/', {
       method: 'POST',
@@ -173,6 +199,35 @@ async function addUser(namen, rolen, passwordn, emailn) {
     return await response.json();
   } catch (err) {
     console.error('GETTING USER FAILED', err);
+    return false;
+  }
+}
+
+// Add rangeofficer to database
+async function addUserRangeofficer(namen, rolen, passwordn, emailn, newAssociationId) {
+  if (parseInt(newAssociationId) !== 0) {
+    try {
+      const response = await fetch('/api/user/', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: namen,
+          password: passwordn,
+          role: rolen,
+          email: emailn,
+          associationId: newAssociationId,
+        }),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      return await response.json();
+    } catch (err) {
+      console.error('GETTING USER FAILED', err);
+      return false;
+    }
+  } else {
+    console.error('ASSOCIATION NOT SPECIFIED');
     return false;
   }
 }
@@ -197,6 +252,7 @@ function UserManagementView(props)  {
     newUserName: '',
     newUserPass: '',
     role: 'association',
+    associationId: 0,
     newUserPhone: '', // eslint-disable-line
     password: '',
     oldPassword: '',
@@ -293,13 +349,24 @@ function UserManagementView(props)  {
   // Handles adding new users
   const handleAddNewUserDialogCloseConfirmed = async() => {
     setState({...state, requestErrors: false});
-    const req = await addUser(
-      state.newUserName,
-      state.role,
-      state.newUserPass,
-      state.email,
-    );
-    if (req.errors !== undefined) {
+    let req;
+    if (state.role === "rangeofficer") {
+      req = await addUserRangeofficer(
+        state.newUserName,
+        state.role,
+        state.newUserPass,
+        state.email,
+        state.associationId,
+      );
+    } else {
+      req = await addUserNotRangeofficer(
+        state.newUserName,
+        state.role,
+        state.newUserPass,
+        state.email,
+      );
+    }
+    if (req.errors !== undefined || !req) {
       setState({...state, requestErrors: true});
     } else {
       setState({...state, 
@@ -307,6 +374,7 @@ function UserManagementView(props)  {
         newUserName: '',
         newUserPass: '',
         role: 'association',
+        associationId: 0,
         openAddNewUserDialog: false,
         refresh: true,
       });
@@ -374,18 +442,24 @@ function UserManagementView(props)  {
   // Closes dialog for adding role for some1 else
   const handleChangeRoleClose = (e) => {
     // eslint-disable-line
-    setState({...state, role: 'association', changeRoleDialogOpen: false});
+    setState({...state, role: 'association', associationId: 0, changeRoleDialogOpen: false});
   }
 
   // Adds role for some1 else by their ID
   const handleChangeRoleCloseConfirm = async() => {
     setState({...state, changeErrors: false});
-    const response = await changeRole(findUserId(), state.role);
+    let response;
+    if (state.role === "rangeofficer") {
+      response = await changeRoleRangeofficer(findUserId(), state.role, state.associationId);
+    } else {
+      response = await changeRoleNotRangeofficer(findUserId(), state.role);
+    }
     if (!response) {
       setState({...state, changeErrors: true});
     } else {
       setState({...state, 
         role: 'association', 
+        associationId: 0,
         changeRoleDialogOpen: false, 
         refresh: true,
         changeErrors: false});
@@ -596,6 +670,11 @@ function UserManagementView(props)  {
     setState({...state, role: e.target.value});
   }
 
+  // handles state change for rangeofficer association
+  const handleChangeAssociation = (e) => {
+    setState({...state, associationId: e.target.value});
+  }
+
   // handles state change for new users password
   const handleNewuserPassChange = (e) => {
     setState({...state, newUserPass: e.target.value});
@@ -694,20 +773,60 @@ function UserManagementView(props)  {
   }
 
   const roleSelect = () => (
-    <FormControl>
-      <InputLabel>{manage.Role[fin]}</InputLabel>
-      <Select
-        className={classes(css.select)}
-        native
-        value={state.role}
-        onChange={handleChangeUserRole}
-        id="role"
-      >
-        <option value="rangeofficer">{manage.Rangeofficer[fin]}</option>
-        <option value="association">{manage.Association[fin]}</option>
-        <option value="superuser">{manage.Superuser[fin]}</option>
-      </Select>
-    </FormControl>
+    <div className="roleSelect">
+      <FormControl>
+        <InputLabel id="role-select-label">{manage.Role[fin]}</InputLabel>
+        <Select
+          labelId="role-select-label"
+          className={classes(css.select)}
+          native
+          value={state.role}
+          onChange={handleChangeUserRole}
+          id="role"
+        >
+          <option value="rangeofficer">{manage.Rangeofficer[fin]}</option>
+          <option value="association">{manage.Association[fin]}</option>
+          <option value="superuser">{manage.Superuser[fin]}</option>
+        </Select>
+      </FormControl>
+        <br />
+        <br />
+        {associationSelect()}    
+    </div>
+  )
+
+  // handles selecting association for range officer
+  const associationSelect = () => (
+    <div>
+      <FormControl>
+        {/** Only shown when selected role is range officer */}
+        {state.role === "rangeofficer" && (
+          <>
+            <InputLabel id="association-select-label">{manage.Association[fin]}</InputLabel>
+            <Select
+              labelId="association-select-label"
+              className={classes(css.select)}
+              native
+              value={state.associationId}
+              onChange={handleChangeAssociation}
+            >
+              <option key="0" value="0">  
+                --{manage.SelectAssociation[fin]}--
+              </option>
+              {state.userList.map(user => {
+                if (user.role === "association") {
+                  return (
+                    <option key={user.id} value={user.id}>
+                      {user.name}
+                    </option>
+                  )
+                }
+              })}
+            </Select>
+          </>
+        )}
+      </FormControl>
+    </div>
   )
 
   /**
