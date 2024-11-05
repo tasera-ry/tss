@@ -156,7 +156,7 @@ const Trackview = (props) => {
         </Grid>
       )}
       {visible.infobox && ( // extra info of the track
-        <div style={{whiteSpace: 'pre-wrap'}}>
+        <div className={classes(css.preWrap)}>
           <p>{trackview.Info[lang]}:</p>
           <div className={classes(css.infoBox)}>{state.info}</div>
         </div>
