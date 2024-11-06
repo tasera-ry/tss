@@ -581,6 +581,7 @@
       "Inga rader att visa"
     ],
     "editTooltip": ["Muokkaa", "Edit", "Redigera"],
+    "deleteTooltip": ["Poista", "Delete", "Ta bort"],
     "searchPlaceholder": ["Hae", "Search", "Söka"],
     "labelRowsSelect": ["riviä", "rows", "rad"],
     "saveTooltip": ["Tallenna", "Save", "Spara"],
