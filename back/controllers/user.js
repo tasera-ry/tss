@@ -31,7 +31,7 @@ const controller = {
   read: async function read(request, response) {
     if (response.locals.queryResult.length === 0) {
       return response.status(404).send({
-        error: "Query didn't match a user",
+        error: 'Query didn\'t match a user',
       });
     }
     return response.status(200).send(response.locals.queryResult);

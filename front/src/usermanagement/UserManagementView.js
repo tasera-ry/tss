@@ -139,7 +139,9 @@ async function changeRoleNotRangeofficer(id, newRole) {
 
 // Changes role for rangeofficer to database
 async function changeRoleRangeofficer(id, newRole, newAssociationId) {
-  if (parseInt(newAssociationId) !== 0 && parseInt(newAssociationId) !== id) {
+  if (!isNaN(parseInt(newAssociationId)) && 
+      parseInt(newAssociationId) !== 0 && 
+      parseInt(newAssociationId) !== id) {
     try {
       const response = await fetch(`/api/user/${id}`, {
         method: 'PUT',
@@ -154,11 +156,11 @@ async function changeRoleRangeofficer(id, newRole, newAssociationId) {
       });
       return response.ok;
     } catch (err) {
-      console.error('GETTING USER FAILED', err);
+      console.error('UPDATING USER FAILED', err);
       return false;
     }
   } else {
-    console.error('ADDING ASSOCIATION FAILED');
+    console.error('ASSOCIATION UNSPECIFIED');
     return false;
   }
 }
@@ -205,7 +207,7 @@ async function addUserNotRangeofficer(namen, rolen, passwordn, emailn) {
 
 // Add rangeofficer to database
 async function addUserRangeofficer(namen, rolen, passwordn, emailn, newAssociationId) {
-  if (parseInt(newAssociationId) !== 0) {
+  if (!isNaN(parseInt(newAssociationId)) && parseInt(newAssociationId) !== 0) {
     try {
       const response = await fetch('/api/user/', {
         method: 'POST',
@@ -223,7 +225,7 @@ async function addUserRangeofficer(namen, rolen, passwordn, emailn, newAssociati
       });
       return await response.json();
     } catch (err) {
-      console.error('GETTING USER FAILED', err);
+      console.error('CREATING RANGE OFFICER FAILED', err);
       return false;
     }
   } else {
@@ -237,7 +239,7 @@ function UserManagementView(props)  {
   const[state, setState] = useState({
     userList: [],
     rows: [],
-    openPassWarning: false, // eslint-disable-line
+    openPassWarning: false, 
     openRemoveWarning: false,
     changeOwnPassDialogOpen: false,
     changeOwnEmailDialogOpen: false,
@@ -253,14 +255,14 @@ function UserManagementView(props)  {
     newUserPass: '',
     role: 'association',
     associationId: 0,
-    newUserPhone: '', // eslint-disable-line
+    newUserPhone: '',
     password: '',
     oldPassword: '',
     newPassword: '',
     username: props.cookies.cookies.username,
     selectedUserName: '',
     email: '',
-    myStorage: window.localStorage, // eslint-disable-line
+    myStorage: window.localStorage,
     addEmailDialogOpen: false,
     refresh: false,
   });
@@ -366,7 +368,7 @@ function UserManagementView(props)  {
         state.email,
       );
     }
-    if (req.errors !== undefined || !req) {
+    if (!req || req.errors !== undefined) {
       setState({...state, requestErrors: true});
     } else {
       setState({...state, 
@@ -397,7 +399,6 @@ function UserManagementView(props)  {
 
   // Closes dialog for changing password for some1 else
   const handleChangePassClose = (e) => {
-    // eslint-disable-line
     setState({...state, password: '', changePassDialogOpen: false});
   }
 
@@ -420,7 +421,6 @@ function UserManagementView(props)  {
 
   // Closes dialog for adding email for some1 else
   const handleaddEmailClose = (e) => {
-    // eslint-disable-line
     setState({...state, email: '', addEmailDialogOpen: false});
   }
 
@@ -441,7 +441,6 @@ function UserManagementView(props)  {
 
   // Closes dialog for adding role for some1 else
   const handleChangeRoleClose = (e) => {
-    // eslint-disable-line
     setState({...state, role: 'association', associationId: 0, changeRoleDialogOpen: false});
   }
 
@@ -467,7 +466,6 @@ function UserManagementView(props)  {
   }
 
   const returnRemoveButton = (id, manage, fin) => {
-    // eslint-disable-line
     return (
       <Button
         data-testid={`del-${id}`}
@@ -483,7 +481,6 @@ function UserManagementView(props)  {
   }
 
   const returnPassButton = (id, manage, fin) => {
-    // eslint-disable-line
     return (
       <Button
         data-testid={`pw-${id}`}
@@ -498,7 +495,6 @@ function UserManagementView(props)  {
     );
   }
   const returnaddEmailButton = (id, manage, fin) => {
-    // eslint-disable-line
     return (
       <Button
         id={id}
@@ -513,7 +509,6 @@ function UserManagementView(props)  {
   }
 
   const returnRoleButton = (id, manage, fin) => {
-    // eslint-disable-line
     return (
       <Button
         id={id}
@@ -832,7 +827,7 @@ function UserManagementView(props)  {
   /**
    **  ACTUAL PAGE RENDERING
    */
-  const fin = localStorage.getItem('language'); // eslint-disable-line
+  const fin = localStorage.getItem('language');
   return (
     <div>
       {/* Dialog to add new user */}

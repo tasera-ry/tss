@@ -134,7 +134,7 @@ const model = {
     const id = await model.read(current, ['id']).then((rows) => rows[0]);
 
     if (!id) {
-      const err = Error("Didn't identify user(s) to update");
+      const err = Error('Didn\'t identify user(s) to update');
       err.name = 'Unknown user';
       throw err;
     }
@@ -152,13 +152,12 @@ const model = {
               .then(function (rows) {
                 if (rows.length === 0) {
                   // Rangeofficer id not yet in table, insert
-                  return trx('association_rangeofficers').insert({ rangeofficer_id: id.id, association_id: rangeofficer.associationId })
+                  return trx('association_rangeofficers').insert({ rangeofficer_id: id.id, association_id: rangeofficer.associationId });
                 } else {
                   // Duplicate id found, update
-                  console.log("_update_");
                   return trx('association_rangeofficers').where('rangeofficer_id', id.id).update({ association_id: rangeofficer.associationId });
                 }
-              })
+              });
           }
           if (_.isEmpty(association) === false) {
             return trx('association').where(id).update(association);
