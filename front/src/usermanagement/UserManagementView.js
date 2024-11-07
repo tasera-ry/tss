@@ -137,8 +137,8 @@ async function changeRoleNotRangeofficer(id, newRole) {
   }
 }
 
-// Changes role for rangeofficer to database
-async function changeRoleRangeofficer(id, newRole, newAssociationId) {
+// Changes role to rangeofficer and links an association to user in database
+async function changeRoleAndAssociationForRangeofficer(id, newRole, newAssociationId) {
   if (!isNaN(parseInt(newAssociationId)) && 
       parseInt(newAssociationId) !== 0 && 
       parseInt(newAssociationId) !== id) {
@@ -449,7 +449,7 @@ function UserManagementView(props)  {
     setState({...state, changeErrors: false});
     let response;
     if (state.role === "rangeofficer") {
-      response = await changeRoleRangeofficer(findUserId(), state.role, state.associationId);
+      response = await changeRoleAndAssociationForRangeofficer(findUserId(), state.role, state.associationId);
     } else {
       response = await changeRoleNotRangeofficer(findUserId(), state.role);
     }
