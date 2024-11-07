@@ -309,7 +309,7 @@ const TimePick = ({
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DatePicker
               label={tablet.Start[fin]}
-              value={startDate}
+              value={moment(startDate)}
               onChange={(date) => setStartDate(date.toDate())} //lmao mitä purkkaa: Date
               renderInput={(params) => <TextField {...params} margin="normal" id="starttime" />}
               minutesStep={5}
@@ -318,7 +318,7 @@ const TimePick = ({
             &nbsp;
             <DatePicker
               label={tablet.End[fin]}
-              value={endDate}
+              value={moment(endDate)}
               onChange={(date) => setEndDate(date.toDate())}
               renderInput={(params) => <TextField {...params} margin="normal" id="endtime" />}
               minutesStep={5}

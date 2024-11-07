@@ -96,7 +96,7 @@ const VisitorLogging = ({
             margin="normal"
             name="date"
             label={textLogs.DayChoose[lang]}
-            value={date}
+            value={moment(date)}
             onChange={(newDate) => setDate(newDate)}
             inputFormat="DD.MM.YYYY"
             renderInput={(params) => <TextField {...params} />}
