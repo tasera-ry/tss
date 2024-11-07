@@ -12,7 +12,7 @@ import Grid from '@mui/material/Grid';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/lab/Alert';
+import MuiAlert from '@mui/material/Alert';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { getLanguage, incrementOrDecrementDate } from '../utils/Utils';
@@ -207,7 +207,7 @@ const Statistics = () => {
                 continueWithDate();
               }}
               inputFormat="DD.MM.YYYY"
-              renderInput={(params) => <TextField {...params} />}
+              textField={(params) => <TextField {...params} />}
               showTodayButton
             />
           </LocalizationProvider>
@@ -233,12 +233,14 @@ const Statistics = () => {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
       >
-        <VisitorLogging
-          handleClose={() => setModalOpen(false)}
-          setToastSeverity={setToastSeverity}
-          setToastMessage={setToastMessage}
-          setToastOpen={setToastOpen}
-        />
+        <div>
+          <VisitorLogging
+            handleClose={() => setModalOpen(false)}
+            setToastSeverity={setToastSeverity}
+            setToastMessage={setToastMessage}
+            setToastOpen={setToastOpen}
+          />
+        </div>
       </Modal>
       {/* Header with arrows */}
       <Grid className={classes(css.dateHeader)}>

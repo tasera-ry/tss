@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/lab/Alert';
+import MuiAlert from '@mui/material/Alert';
 
 import translations from '../texts/texts.json';
 import RaffleDatePicker from './RaffleDatePicker';

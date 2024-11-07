@@ -14,6 +14,7 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import {
   LocalizationProvider,
   TimePicker,
@@ -135,7 +136,7 @@ const EmailSettings = () => {
   };
   const handleDateChange = (date) => {
     const newDate = new Date();
-    newDate.setHours(date.getHours(), date.getMinutes());
+    newDate.setHours(date.hours(), date.minutes());
     setSettings({ ...settings, sendPendingTime: newDate });
   };
 
@@ -395,9 +396,11 @@ const EmailSettings = () => {
         onClose={handleCloseNotification}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseNotification} severity={notification.type}>
-          {notification.message}
-        </Alert>
+        <div>
+          <Alert onClose={handleCloseNotification} severity={notification.type}>
+            {notification.message}
+          </Alert>
+        </div>
       </Snackbar>
     </div>
   );

@@ -25,7 +25,7 @@ import FormLabel from '@mui/material/FormLabel';
 import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/lab/Alert';
+import MuiAlert from '@mui/material/Alert';
 import Modal from '@mui/material/Modal';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { withStyles } from '@mui/styles';
@@ -980,9 +980,11 @@ function Scheduling(props) {
               autoHideDuration={5000}
               onClose={handleSnackbarClose}
             >
-              <Alert onClose={handleSnackbarClose} severity={toastSeverity}>
-                {toastMessage}!
-              </Alert>
+              <div>
+                <Alert onClose={handleSnackbarClose} severity={toastSeverity}>
+                  {toastMessage}!
+                </Alert>
+              </div>
             </Snackbar>
           </div>
         </div>
