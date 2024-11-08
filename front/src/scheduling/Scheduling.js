@@ -845,6 +845,7 @@ function Scheduling(props) {
   const update = async () => {
     try {
       const response = await api.getSchedulingDate(date);
+      console.log(response.arrivingAt); // Hahaa testattu että toimii, jos aikaa ei määritetty ni palauttaa null
 
       setDate(moment(response.date));
       setRangeId(response.rangeId);
