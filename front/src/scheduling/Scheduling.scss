@@ -184,6 +184,8 @@
   .secondSection {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
+    align-items: start;
     background-color: #F5F5F5;
     border: 1px solid #E8E8E8;
     border-radius: 5px;

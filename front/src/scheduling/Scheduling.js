@@ -376,10 +376,10 @@ function Scheduling(props) {
     updateSupervisor('present', colors.green, sched.SuperGreen[fin]);
   };
 
-  const handleArrivalTime = (time) => {
-    const parsedTime = moment(time).format('HH:mm');
+  const handleArrivalTime = (event) => {
+    const parsedTime = moment(event.target.value, 'HH:mm', true);
     setEstimatedArrivalTime(parsedTime);
-  }
+  };
 
   const saveChanges = async () => {
     const { sched } = data;
@@ -1022,7 +1022,7 @@ function Scheduling(props) {
                     <div className="expandMore">
                       <span className="edit">{sched.Edit[fin]}</span>
                       <Button
-                        disabled={!available || !rangeSupervisorSwitch}
+                        disabled={!available || !rangeSupervisorSwitch || !rangeSupervisorId}
                         className="expandMoreButton"
                         onClick={handleExpandClick}>
                         {!expand && (
@@ -1074,18 +1074,12 @@ function Scheduling(props) {
                   <hr />
                   <div className="eta">
                     <p>{sched.ETA[fin]}:</p>
-                    <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
-                      <KeyboardTimePicker
-                        autoOk
-                        ampm={false}
-                        margin="normal"
-                        name="estimatedArrivalTime"
-                        value={estimatedArrivalTime ? moment(estimatedArrivalTime, 'HH:mm').toDate() : new Date()}
-                        minutesStep={5}
-                        onChange={handleArrivalTime}
-                        showTodayButton
+                      <TextField
+                        id="ETA"
+                        type="time"
+                        defaultValue={estimatedArrivalTime ? moment(estimatedArrivalTime).format('HH:mm') : ''}
+                        onChange={(event) => handleArrivalTime(event)}
                       />
-                    </MuiPickersUtilsProvider>
                     <Button 
                       className="confirmTimeButton"
                       variant="contained"
