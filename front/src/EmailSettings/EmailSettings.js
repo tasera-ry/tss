@@ -119,17 +119,21 @@ const EmailSettings = () => {
       });
   };
 
+  // Sends all pending emails
   const sendPendingRequest = () => {
     setPendingSend(true);
     fetch('/api/send-pending')
-      .then((res) => {
+      .then(async (res) => {
+        const result = await res.json();
         setPendingSend(false);
         // Sending pending emails failed
         if (res.status !== 200) {
           setNotification({ open: true, message: emailSettings.pendingError[lang], type: 'error' });
         }
         // Sending pending emails was successful
-        else {
+        else if (res.status === 200 && result.message) {
+          setNotification({ open: true, message: emailSettings.pendingEmpty[lang], type: 'success' });
+        } else {
           setNotification({ open: true, message: emailSettings.pendingSuccess[lang], type: 'success' });
         }
         })

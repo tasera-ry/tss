@@ -835,6 +835,11 @@
       "Voit lähettää odottavat viestit heti tällä napilla.",
       "You can force all pending emails to be sent immediately with the button.",
       "Du kan tvinga alla väntande e-postmeddelanden att skickas omedelbart med den här knappen."
+    ],
+    "pendingEmpty": [
+      "Ei odottavia viestejä lähetettäväksi.",
+      "No pending messages to send.",
+      "Inga väntande meddelanden att skicka."
     ]
   },
   "profileSettings": {

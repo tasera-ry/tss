@@ -50,6 +50,10 @@ const sendPending = async () => {
     const emailSettings = await services.emailSettings.read();
     const pending = await services.pendingEmails.read();
 
+    if (pending.length === 0) {
+      return { success: true, message: 'No messages to send.' };
+    }
+
     // Print pending emails to console
     console.log('Pending emails:', pending);
 
@@ -68,15 +72,17 @@ const sendPending = async () => {
       return acc;
     }, {});
 
-    Object.keys(emailInfo).forEach((outerKey) => {
-      console.log('We got here 111');
+    let errors = [];
+
+    await Promise.all(Object.keys(emailInfo).map(async (outerKey) => {
       const address = emailInfo[outerKey].email;
       const total = emailInfo[outerKey].total;
       const last = emailInfo[outerKey].last;
+      let result;
       // If total is greater than 1, it indicates that there are multiple updates or messages
       // for the receiver, and a "collage" email is sent summarizing the updates.
       if (total > 1) {
-        sendEmail(
+        result = await sendEmail(
           getText(
             'collage',
             {
@@ -89,13 +95,24 @@ const sendPending = async () => {
           emailSettings
         );
       } else {
-        sendEmail(getText(last, null, emailSettings), address, emailSettings);
+        result = await sendEmail(getText(last, null, emailSettings), address, emailSettings);
       }
-    });
+
+      // If there was an error in sendEmail
+      if (!result.success) {
+        errors.push({ email: address, error: result.error });
+      }
+    }));
+
+    // If there were errors in sendEmail-functions, return them
+    if (errors.length > 0) {
+      return { success: false, errors: errors };
+    }
+
     await services.pendingEmails.clear();
   } catch (error) {
     console.error('Error in sendPending:', error);
-    throw error;
+    return { success: false, error: error.message };
   }
 };
 
@@ -176,9 +193,10 @@ const sendEmail = async (text, emailAddress, emailSettings) => {
       text: text,
     });
     console.log('Message sent:', info.messageId);
+    return { success: true };
   } catch (error) {
     console.error('Error in sendEmail:', error);
-    throw error;
+    return { success: false, error: error.message };
   }
 };
 

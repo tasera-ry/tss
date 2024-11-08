@@ -23,12 +23,14 @@ const controller = {
     verifyEmailCredentials(request.body, updateEmailSettings);
   },
   sendPendingEmails: async function sendPendingEmails(request, response) {
-    try {
-      await sendPending();
-      return response.status(200).send({success: true});
-    } catch (error) {
+    const result = await sendPending();
+    if (!result.success) {
       console.error("sendPendingEmails error:", error);
-      return response.status(500).send({success: false, error});
+      return response.status(500).send({ success: false, error: error.message });
+    } else if (result.success && result.message) {
+      return response.status(200).send({ success: true, message: result.message });
+    } else {
+      return response.status(200).send({ success: true });
     }
   }
 };
