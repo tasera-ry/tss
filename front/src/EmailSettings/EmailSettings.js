@@ -90,7 +90,7 @@ const EmailSettings = () => {
     pass: '',
     host: '',
     port: 0,
-    secure: 'false',
+    secure: 'true',
     shouldQueue: 'false',
     shouldSend: 'true',
     assignedMsg: '',
@@ -138,7 +138,8 @@ const EmailSettings = () => {
     setSettings({ ...settings, sendPendingTime: newDate });
   };
 
-  // Checks user field is a tasera email
+  // Checks if email is given in email format. For example includes '@'
+  // and characters before and after if.
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
@@ -147,27 +148,13 @@ const EmailSettings = () => {
   // A function that saves the email settings to the database
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // If email is not @tasera.fi
+    // If email isn't in email format
     if (!validateEmail(settings.user)) {
       setNotification({ open: true, message: emailSettings.emailError[lang], type: 'error' });
       return;
     }
     else if (settings.pass === '') {
       setNotification({ open: true, message: emailSettings.passError[lang], type: 'error' });
-      return;
-    }
-    else if (settings.host !== 'smtp.gmail.com') {
-      setNotification({ open: true, message: emailSettings.hostError[lang], type: 'error' });
-      return;
-    }
-    else if (settings.port !== '465' && settings.port !== '587') {
-      setNotification({ open: true, message: emailSettings.portError[lang], type: 'error' });
-      return;
-    }
-    // If port number and radiobutton are not compatible
-    else if ((settings.port === '465' && settings.secure === 'false')
-              || (settings.port === '587' && settings.secure === 'true')) {
-      setNotification({ open: true, message: emailSettings.secureError[lang], type: 'error' });
       return;
     }
 
@@ -179,10 +166,24 @@ const EmailSettings = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(settings),
     })
-      .then((res) => {
-        // Wrong username or password
+      .then(async (res) => {
+        // If veryfying credentials failed
         if (res.status !== 200) {
-          throw Error(res.statusText);
+          const data = await res.json();
+          setPendingSave(false);
+          // Handle specific errors
+          if (data.code === 'EAUTH') {
+            setNotification({ open: true, message: emailSettings.authError[lang], type: 'error' });
+          } else if (data.code === 'EDNS') {
+            setNotification({ open: true, message: emailSettings.hostError[lang], type: 'error' });
+          } else if (data.code === 'ESOCKET') {
+            setNotification({ open: true, message: emailSettings.socketError[lang], type: 'error' });
+          } else if (data.code === 'ETIMEDOUT') {
+            setNotification({ open: true, message: emailSettings.timeoutError[lang], type: 'error' });
+          } else {
+            console.error('Saving email settings failed:', data);
+            throw new Error("Unrecognized error code: " + data.code);
+          }
         }
         // Verifying credentials was successful, settings saved
         else {
@@ -190,10 +191,11 @@ const EmailSettings = () => {
           setNotification({ open: true, message: emailSettings.success[lang], type: 'success' });
         }
       })
-      .catch((err) => {
-        console.log('Veryfying email credentials unsuccessful. Wrong email or password. ' + err);
+      // Unrecognized error
+      .catch((error) => {
+        console.log('Saving email settings failed:', error);
         setPendingSave(false);
-        setNotification({ open: true, message: emailSettings.credError[lang], type: 'error' });
+        setNotification({ open: true, message: emailSettings.error[lang], type: 'error' });
       });
   };
 
