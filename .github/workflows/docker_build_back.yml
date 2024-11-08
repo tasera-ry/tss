@@ -1,0 +1,22 @@
+name: Build back Docker images
+description: 'Test building back docker image'
+
+on:
+  push:
+    branches: [develop, 'v**-develop', master]
+  pull_request:
+    branches: [develop, 'v**-develop', master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build back container
+        run: docker build -t front './back/'
