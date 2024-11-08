@@ -11,6 +11,8 @@ const controllers = require(path.join(root, 'controllers'));
 
 const oldSchedule = require(path.join(root, 'controllers', 'oldSchedule'));
 
+const { validateEmailCredentials } = require('./mailer');
+
 router.route('/sign').post(middlewares.user.sign, controllers.user.sign);
 
 router
@@ -96,7 +98,7 @@ router
   .get(middlewares.trackSupervision.read, controllers.trackSupervision.read)
   .put(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer'], _.includes),
+    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer', 'rangemaster'], _.includes),
     middlewares.trackSupervision.update,
     controllers.trackSupervision.update
   )
@@ -161,6 +163,13 @@ router
     middlewares.user.hasProperty('role', 'superuser'),
     middlewares.rangeSupervision.delete,
     controllers.rangeSupervision.delete
+  );
+
+router
+  .route('/range-supervision/association/:association')
+  .get(
+    middlewares.rangeSupervision.associationSupervisions,
+    controllers.rangeSupervision.associationSupervisions
   );
 
 router
@@ -359,5 +368,6 @@ router
   .get(validators.devices.read, middlewares.devices.read, controllers.devices.read)
   .put(validators.devices.update, middlewares.devices.update, controllers.devices.update)
   .delete(validators.devices.delete, middlewares.devices.delete, controllers.devices.delete);
+
 
 module.exports = router;

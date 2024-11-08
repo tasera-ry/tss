@@ -8,7 +8,8 @@ const schedule = require('node-schedule');
 //Runs the checker everyday and checks if officer has confirmed 7 days from today
 //Stars of the scheduler explained below:
 //'seconds', 'minutes', 'hour', 'day of month', 'month', 'day of week'
-//For test purposes value '(' */1 * * * * *', function()' runs the code every second.
+//For test purposes, you can replace the function declaration with this. It runs the code every 4 seconds.
+// schedule.scheduleJob('*/4 * * * * *', async function(){
 schedule.scheduleJob('00 00 01 * * 0-6', async function(){
   //make date object 7 days from this day.
   const currentDate = new Date();
@@ -74,6 +75,20 @@ const controller = {
         .status(404)
         .send({
           error: 'User has no supervisions or there is no such user'
+        });
+    }
+
+    return response
+      .status(200)
+      .send(response.locals.queryResult);
+  },
+
+  associationSupervisions: async function getAssociationSupervisions(request, response) {
+    if (!response.locals.queryResult) {
+      return response
+        .status(404)
+        .send({
+          error: 'Association has no supervisions'
         });
     }
 

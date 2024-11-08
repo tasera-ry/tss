@@ -29,7 +29,7 @@ const model = {
       .select('setting_value');
   },
   /**
-   * Updates all the email-related settings in the database with the exception of the password which may not be given, in which case it will remain unchanged.
+   * Updates all the email-related settings in the database.
    * The parameter JSON object should be in the following form:
    * emailSettings = {
    *    sender: *Sender email address here*,
@@ -51,6 +51,7 @@ const model = {
     return knex.transaction(async trx => {
       await trx('settings').where({ setting_name: 'email_sender' }).update({ setting_value: { sender: newSettings.sender } });
       await trx('settings').where({ setting_name: 'email_user' }).update({ setting_value: { user: newSettings.user }});
+      await trx('settings').where({ setting_name: 'email_pass' }).update({ setting_value: { pass: newSettings.pass }});
       await trx('settings').where({ setting_name: 'email_host' }).update({ setting_value: { host: newSettings.host }});
       await trx('settings').where({ setting_name: 'email_port' }).update({ setting_value: { port: newSettings.port }});
       await trx('settings').where({ setting_name: 'email_secure' }).update({ setting_value: { secure: newSettings.secure }});
@@ -64,10 +65,6 @@ const model = {
       await trx('settings').where({ setting_name: 'email_resetpass_msg' }).update({ setting_value: { resetpassMsg: newSettings.resetpassMsg }});
       await trx('settings').where({ setting_name: 'email_collage_msg' }).update({ setting_value: { collageMsg: newSettings.collageMsg }});
       await trx('settings').where({ setting_name: 'email_sendpending_time' }).update({ setting_value: { sendPendingTime: newSettings.sendPendingTime }});
-
-      if (newSettings.pass !== undefined && newSettings.pass !== '') {
-        await trx('settings').where({ setting_name: 'email_pass' }).update({ setting_value: { pass: newSettings.pass }});
-      }
     });
   }
 };
