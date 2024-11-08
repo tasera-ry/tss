@@ -714,7 +714,7 @@
       "Fel e-post eller lösenord!"
     ],
     "timeoutError": [
-      "Yhteysaikakatkaistu. Tarkista verkkoyhteys!",
+      "Yhteys aikakatkaistu. Tarkista verkkoyhteys!",
       "Connection timed out. Check network connectivity.!",
       "Anslutningstiden gick ut. Kontrollera nätverksanslutning!"
     ],
