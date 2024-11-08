@@ -723,6 +723,11 @@
       "Sending pending messages failed!",
       "Misslyckades att skicka väntande meddelanden!"
     ],
+    "pendingEmpty": [
+      "Ei odottavia viestejä lähetettäväksi.",
+      "No pending messages to send.",
+      "Inga väntande meddelanden att skicka."
+    ],
     "smtpSettings": ["SMTP-asetukset", "SMTP-settings", "SMTP-inställningar"],
     "user": ["Sähköposti", "Email", "E-post"],
     "pass": ["Salasana", "Password", "Lösenord"],
@@ -835,11 +840,6 @@
       "Voit lähettää odottavat viestit heti tällä napilla.",
       "You can force all pending emails to be sent immediately with the button.",
       "Du kan tvinga alla väntande e-postmeddelanden att skickas omedelbart med den här knappen."
-    ],
-    "pendingEmpty": [
-      "Ei odottavia viestejä lähetettäväksi.",
-      "No pending messages to send.",
-      "Inga väntande meddelanden att skicka."
     ]
   },
   "profileSettings": {
