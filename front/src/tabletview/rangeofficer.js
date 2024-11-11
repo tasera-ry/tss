@@ -43,7 +43,7 @@ import css from './rangeofficer.module.scss';
 const classes = classNames.bind(css);
 
 // shooting track rows
-const TrackRows = ({ tracks, setTracks, scheduleId, tablet, lang, socket }) =>
+const TrackRows = ({ tracks, setTracks, scheduleId, tablet, lang, socket, rangeSupervision }) =>
   tracks.map((track) => (
     <div key={track.id} className={classes(css.rangediv)}>
       <div className={classes(css.rangeStyle)}>
@@ -59,12 +59,13 @@ const TrackRows = ({ tracks, setTracks, scheduleId, tablet, lang, socket }) =>
           tablet={tablet}
           lang={lang}
           socket={socket}
+          rangeSupervision={rangeSupervision}
         />
       </div>
     </div>
   ));
 
-const TrackButtons = ({ track, scheduleId, tablet, lang, socket }) => {
+const TrackButtons = ({ track, scheduleId, tablet, lang, socket, rangeSupervision }) => {
   const [buttonColor, setButtonColor] = useState(track.color);
 
   const supervisorState = track.scheduled.track_supervisor;
@@ -78,26 +79,43 @@ const TrackButtons = ({ track, scheduleId, tablet, lang, socket }) => {
   );
   const [supervision, setSupervision] = useState(supervisorState);
 
-  socket.on('trackUpdate', (msg) => {
-    if (msg.id === track.id) {
-      if (msg.super === 'present') {
-        track.trackSupervision = 'absent'; // eslint-disable-line
-        setButtonColor(colors.green);
-        setTextState(tablet.Green[lang]);
-        setSupervision('absent');
-      } else if (msg.super === 'closed') {
-        track.trackSupervision = 'present'; // eslint-disable-line
-        setButtonColor(colors.redLight);
-        setTextState(tablet.Red[lang]);
-        setSupervision('present');
-      } else if (msg.super === 'absent') {
-        track.trackSupervision = 'closed'; // eslint-disable-line
-        setButtonColor(colors.white);
-        setTextState(tablet.White[lang]);
-        setSupervision('closed');
+  useEffect(() => {
+    const handleTrackUpdate = (msg) => {
+      if (msg.id === track.id) {
+        if (msg.super === 'present') {
+          track.trackSupervision = 'present'; // eslint-disable-line
+          setButtonColor(colors.green);
+          setTextState(tablet.Green[lang]);
+          setSupervision('present');
+        } else if (msg.super === 'closed') {
+          track.trackSupervision = 'closed'; // eslint-disable-line
+          setButtonColor(colors.redLight);
+          setTextState(tablet.Red[lang]);
+          setSupervision('closed');
+        } else if (msg.super === 'absent') {
+          track.trackSupervision = 'absent'; // eslint-disable-line
+          setButtonColor(colors.white);
+          setTextState(tablet.White[lang]);
+          setSupervision('absent');
+        }
       }
+    };
+
+    socket.on('trackUpdate', handleTrackUpdate);
+
+    return () => {
+      socket.off('trackUpdate', handleTrackUpdate);
+    };
+  }, [socket, track.id, tablet, lang, track.trackSupervision]);
+
+  useEffect(() => {
+    if (rangeSupervision !== 'closed') {
+      setSupervision(supervisorState);
+      setButtonColor(track.color);
+      setTextState(tablet[supervisorStateTablet][lang]);
     }
-  });
+  }, [rangeSupervision, supervisorState, track.color, tablet, lang, supervisorStateTablet]);
+
   const HandleClick = () => {
     let newSupervision = 'absent';
     setSupervision('absent');
@@ -118,7 +136,6 @@ const TrackButtons = ({ track, scheduleId, tablet, lang, socket }) => {
 
     let { notice } = track;
     if (notice === null) {
-      // undefined gets removed in object
       notice = undefined;
     }
 
@@ -127,7 +144,6 @@ const TrackButtons = ({ track, scheduleId, tablet, lang, socket }) => {
       notice,
     };
 
-    // if scheduled track supervision exists -> put otherwise -> post
     if (track.scheduled) {
       axios
         .put(`/api/track-supervision/${scheduleId}/${track.id}`, params)
@@ -142,6 +158,8 @@ const TrackButtons = ({ track, scheduleId, tablet, lang, socket }) => {
               id: track.id,
             });
             setButtonColor(track.color);
+            setTextState(tablet[newSupervision === 'present'
+              ? 'Green' : newSupervision === 'closed' ? 'Red' : 'White'][lang]);
           }
         });
     } else {
@@ -165,13 +183,17 @@ const TrackButtons = ({ track, scheduleId, tablet, lang, socket }) => {
               id: track.id,
             });
             setButtonColor(track.color);
+            setTextState(tablet[newSupervision === 'present'
+              ? 'Green' : newSupervision === 'closed' ? 'Red' : 'White'][lang]);
           }
         });
     }
   };
+
   return (
     <div>
       <Button
+        disabled={rangeSupervision === 'closed'}
         className={classes(css.buttonStyle)}
         style={{ backgroundColor: buttonColor }}
         size="large"
@@ -191,14 +213,14 @@ async function getColors(tracks, setTracks) {
 
   for (let i = 0; i < copy.length; i += 1) {
     const obj = copy[i];
-    if (copy[i].trackSupervision === 'present') {
-      copy[i].color = colors.green;
-    } else if (copy[i].trackSupervision === 'closed') {
-      copy[i].color = colors.redLight;
-    } else if (copy[i].trackSupervision === 'absent') {
-      copy[i].color = colors.white;
-    } else if (copy[i].trackSupervision === 'en route') {
-      copy[i].color = colors.orange;
+    if (obj.trackSupervision === 'present') {
+      obj.color = colors.green;
+    } else if (obj.trackSupervision === 'closed') {
+      obj.color = colors.redLight;
+    } else if (obj.trackSupervision === 'absent') {
+      obj.color = colors.white;
+    } else if (obj.trackSupervision === 'en route') {
+      obj.color = colors.orange;
     }
   }
   setTracks(copy);
@@ -215,6 +237,7 @@ async function getData(
   setScheduleId,
   setReservationId,
   setRangeSupervisionScheduled,
+  setRangeSupervision,
 ) {
   const date = moment(Date.now()).format('YYYY-MM-DD');
 
@@ -228,6 +251,7 @@ async function getData(
         start: moment(response.open, 'h:mm').format('HH:mm'),
         end: moment(response.close, 'h:mm').format('HH:mm'),
       });
+      setRangeSupervision(response.rangeSupervision);
       if (response.rangeSupervision === 'present') {
         setStatusText(tablet.SuperGreen[lang]);
         setStatusColor(colors.green);
@@ -371,6 +395,7 @@ const Tabletview = () => {
   const [scheduleId, setScheduleId] = useState();
   const [reservationId, setReservationId] = useState();
   const [rangeSupervisionScheduled, setRangeSupervisionScheduled] = useState();
+  const [rangeSupervision, setRangeSupervision] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [socket, setSocket] = useState();
   const [cookies] = useCookies(['username']);
@@ -389,49 +414,49 @@ const Tabletview = () => {
     window.location.href = '/';
   }
 
-  useEffect(() => {
-    validateLogin().then((logInSuccess) => {
-      if (
-        logInSuccess &&
-        (cookies.role === 'rangemaster' || cookies.role === 'superuser')
-      ) {
-        getData(
-          //data,
-          tablet,
-          lang,
-          setHours,
-          tracks,
-          setTracks,
-          setStatusText,
-          setStatusColor,
-          setScheduleId,
-          setReservationId,
-          setRangeSupervisionScheduled,
-        );
-      } else {
-        // Login failed, redirect to weekview
-        RedirectToWeekview();
-      }
-    });
+useEffect(() => {
+  validateLogin().then((logInSuccess) => {
+    if (
+      logInSuccess &&
+      (cookies.role === 'rangemaster' || cookies.role === 'superuser')
+    ) {
+      getData(
+        tablet,
+        lang,
+        setHours,
+        tracks,
+        setTracks,
+        setStatusText,
+        setStatusColor,
+        setScheduleId,
+        setReservationId,
+        setRangeSupervisionScheduled,
+        setRangeSupervision,
+      );
+    } else {
+      RedirectToWeekview();
+    }
+  });
 
-    setSocket(
-      socketIOClient()
-        .on('rangeUpdate', (msg) => {
-          setStatusColor(msg.color);
-          setStatusText(msg.text);
-          if (rangeSupervisionScheduled === false) {
-            setRangeSupervisionScheduled(true);
-          }
-        })
-        .on('refresh', () => {
-          window.location.reload();
-        }),
-    );
+  setSocket(
+    socketIOClient()
+      .on('rangeUpdate', (msg) => {
+        setStatusColor(msg.color);
+        setStatusText(msg.text);
+        if (rangeSupervisionScheduled === false) {
+          setRangeSupervisionScheduled(true);
+        }
+        setRangeSupervision(msg.status);
+      })
+      .on('refresh', () => {
+        window.location.reload();
+      }),
+  );
 
-    setTimeout(() => {
-      window.location.reload();
-    }, 3 * 60 * 60 * 1000); // 3 hours
-  }, [date]); // eslint-disable-line
+  setTimeout(() => {
+    window.location.reload();
+  }, 3 * 60 * 60 * 1000); // 3 hours
+}, [date]); // eslint-disable-line
 
   async function updateSupervisor(status, color, text) {
     const res = await updateRangeSupervision(
@@ -572,7 +597,7 @@ const Tabletview = () => {
           tablet={tablet}
           lang={lang}
           socket={socket}
-          
+          rangeSupervision={rangeSupervision}
         />
       
       </div>
