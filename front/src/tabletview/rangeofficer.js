@@ -43,7 +43,7 @@ import css from './rangeofficer.module.scss';
 const classes = classNames.bind(css);
 
 // shooting track rows
-const TrackRows = ({ tracks, setTracks, scheduleId, tablet, fin, socket }) =>
+const TrackRows = ({ tracks, setTracks, scheduleId, tablet, lang, socket }) =>
   tracks.map((track) => (
     <div key={track.id} className={classes(css.rangediv)}>
       <div className={classes(css.rangeStyle)}>
@@ -57,14 +57,14 @@ const TrackRows = ({ tracks, setTracks, scheduleId, tablet, fin, socket }) =>
           setTracks={setTracks}
           scheduleId={scheduleId}
           tablet={tablet}
-          fin={fin}
+          lang={lang}
           socket={socket}
         />
       </div>
     </div>
   ));
 
-const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
+const TrackButtons = ({ track, scheduleId, tablet, lang, socket }) => {
   const [buttonColor, setButtonColor] = useState(track.color);
 
   const supervisorState = track.scheduled.track_supervisor;
@@ -74,7 +74,7 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
   else supervisorStateTablet = 'White';
 
   const [textState, setTextState] = useState(
-    tablet[supervisorStateTablet][fin],
+    tablet[supervisorStateTablet][lang],
   );
   const [supervision, setSupervision] = useState(supervisorState);
 
@@ -83,17 +83,17 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
       if (msg.super === 'present') {
         track.trackSupervision = 'absent'; // eslint-disable-line
         setButtonColor(colors.green);
-        setTextState(tablet.Green[fin]);
+        setTextState(tablet.Green[lang]);
         setSupervision('absent');
       } else if (msg.super === 'closed') {
         track.trackSupervision = 'present'; // eslint-disable-line
         setButtonColor(colors.redLight);
-        setTextState(tablet.Red[fin]);
+        setTextState(tablet.Red[lang]);
         setSupervision('present');
       } else if (msg.super === 'absent') {
         track.trackSupervision = 'closed'; // eslint-disable-line
         setButtonColor(colors.white);
-        setTextState(tablet.White[fin]);
+        setTextState(tablet.White[lang]);
         setSupervision('closed');
       }
     }
@@ -102,18 +102,18 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
     let newSupervision = 'absent';
     setSupervision('absent');
     track.color = colors.white; // eslint-disable-line
-    setTextState(tablet.White[fin]);
+    setTextState(tablet.White[lang]);
 
     if (track.trackSupervision === 'present') {
       newSupervision = 'closed';
       setSupervision('closed');
       track.color = colors.redLight; // eslint-disable-line
-      setTextState(tablet.Red[fin]);
+      setTextState(tablet.Red[lang]);
     } else if (track.trackSupervision === 'absent') {
       newSupervision = 'present';
       setSupervision('present');
       track.color = colors.green; // eslint-disable-line
-      setTextState(tablet.Green[fin]);
+      setTextState(tablet.Green[lang]);
     }
 
     let { notice } = track;
@@ -206,7 +206,7 @@ async function getColors(tracks, setTracks) {
 
 async function getData(
   tablet,
-  fin,
+  lang,
   setHours,
   tracks,
   setTracks,
@@ -229,25 +229,25 @@ async function getData(
         end: moment(response.close, 'h:mm').format('HH:mm'),
       });
       if (response.rangeSupervision === 'present') {
-        setStatusText(tablet.SuperGreen[fin]);
+        setStatusText(tablet.SuperGreen[lang]);
         setStatusColor(colors.green);
       } else if (response.rangeSupervision === 'en route') {
-        setStatusText(tablet.SuperOrange[fin]);
+        setStatusText(tablet.SuperOrange[lang]);
         setStatusColor(colors.orange);
       } else if (response.rangeSupervision === 'absent') {
-        setStatusText(tablet.SuperWhite[fin]);
+        setStatusText(tablet.SuperWhite[lang]);
         setStatusColor(colors.white);
       } else if (response.rangeSupervision === 'closed') {
-        setStatusText(tablet.Red[fin]);
+        setStatusText(tablet.Red[lang]);
         setStatusColor(colors.redLight);
       } else if (response.rangeSupervision === 'confirmed') {
-        setStatusText(tablet.SuperLightGreen[fin]);
+        setStatusText(tablet.SuperLightGreen[lang]);
         setStatusColor(colors.greenLight);
       } else if (response.rangeSupervision === 'not confirmed') {
-        setStatusText(tablet.SuperBlue[fin]);
+        setStatusText(tablet.SuperBlue[lang]);
         setStatusColor(colors.turquoise);
       } else {
-        setStatusText(tablet.SuperWhite[fin]);
+        setStatusText(tablet.SuperWhite[lang]);
         setStatusColor(colors.white);
       }
       getColors(response.tracks, setTracks);
@@ -256,7 +256,7 @@ async function getData(
 
 const TimePick = ({
   tablet,
-  fin,
+  lang,
   scheduleId,
   hours,
   setHours,
@@ -273,7 +273,7 @@ const TimePick = ({
 
   async function handleTimeChange() {
     if (startDate === null || endDate === null) {
-      setErrorMessage(tablet.Error[fin]);
+      setErrorMessage(tablet.Error[lang]);
       return;
     }
 
@@ -296,7 +296,7 @@ const TimePick = ({
       })
       .catch((error) => {
         console.log(error);
-        setErrorMessage(tablet.Error[fin]);
+        setErrorMessage(tablet.Error[lang]);
       });
   }
 
@@ -304,7 +304,7 @@ const TimePick = ({
     <div>
       <Dialog open={dialogOpen} aria-labelledby="title">
         <DialogTitle id="title" className={classes(css.dialogStyle)}>
-          {tablet.PickTime[fin]}
+          {tablet.PickTime[lang]}
         </DialogTitle>
         <DialogContent className={classes(css.dialogStyle)}>
           <div className={classes(css.rowStyle)}>
@@ -312,7 +312,7 @@ const TimePick = ({
               <KeyboardTimePicker
                 margin="normal"
                 id="starttime"
-                label={tablet.Start[fin]}
+                label={tablet.Start[lang]}
                 ampm={false}
                 value={startDate}
                 onChange={(date) => setStartDate(date)}
@@ -322,7 +322,7 @@ const TimePick = ({
               <KeyboardTimePicker
                 margin="normal"
                 id="endtime"
-                label={tablet.End[fin]}
+                label={tablet.End[lang]}
                 ampm={false}
                 value={endDate}
                 onChange={(date) => setEndDate(date)}
@@ -347,7 +347,7 @@ const TimePick = ({
             onClick={() => setDialogOpen(false)}
             className={classes(css.cancelButtonStyle)}
           >
-            {tablet.Cancel[fin]}
+            {tablet.Cancel[lang]}
           </Button>
 
           <Button
@@ -355,7 +355,7 @@ const TimePick = ({
             onClick={() => handleTimeChange()}
             className={classes(css.saveButtonStyle)}
           >
-            {tablet.Save[fin]}
+            {tablet.Save[lang]}
           </Button>
         </DialogActions>
       </Dialog>
@@ -375,7 +375,7 @@ const Tabletview = () => {
   const [socket, setSocket] = useState();
   const [cookies] = useCookies(['username']);
 
-  const fin = localStorage.getItem('language');
+  const lang = localStorage.getItem('language');
   const { tablet } = data;
   const date = moment(Date.now()).format('YYYY-MM-DD');
   const today = moment().format('DD.MM.YYYY');
@@ -398,7 +398,7 @@ const Tabletview = () => {
         getData(
           //data,
           tablet,
-          fin,
+          lang,
           setHours,
           tracks,
           setTracks,
@@ -456,27 +456,27 @@ const Tabletview = () => {
     socket.emit('rangeUpdate', {
       status: 'present',
       color: colors.green,
-      text: tablet.SuperGreen[fin],
+      text: tablet.SuperGreen[lang],
     });
-    updateSupervisor('present', colors.green, tablet.SuperGreen[fin]);
+    updateSupervisor('present', colors.green, tablet.SuperGreen[lang]);
   };
 
   const HandleEnRouteClick = () => {
     socket.emit('rangeUpdate', {
       status: 'en route',
       color: colors.orange,
-      text: tablet.SuperOrange[fin],
+      text: tablet.SuperOrange[lang],
     });
-    updateSupervisor('en route', colors.orange, tablet.SuperOrange[fin]);
+    updateSupervisor('en route', colors.orange, tablet.SuperOrange[lang]);
   };
 
   const HandleClosedClick = () => {
     socket.emit('rangeUpdate', {
       status: 'closed',
       color: colors.redLight,
-      text: tablet.Red[fin],
+      text: tablet.Red[lang],
     });
-    updateSupervisor('closed', colors.redLight, tablet.Red[fin]);
+    updateSupervisor('closed', colors.redLight, tablet.Red[lang]);
   };
 
 
@@ -488,7 +488,7 @@ const Tabletview = () => {
 
 
       <Typography variant="h5" align="center">
-        {tablet.Open[fin]}: &nbsp;
+        {tablet.Open[lang]}: &nbsp;
         <Button
           size="medium"
           variant="outlined"
@@ -502,7 +502,7 @@ const Tabletview = () => {
       {dialogOpen ? (
         <TimePick
           tablet={tablet}
-          fin={fin}
+          lang={lang}
           scheduleId={scheduleId}
           hours={hours}
           setHours={setHours}
@@ -528,7 +528,7 @@ const Tabletview = () => {
         </Button>
       </div>
      
-      <div className={classes(css.Text)}>{tablet.HelperFirst[fin]}</div>
+      <div className={classes(css.Text)}>{tablet.HelperFirst[lang]}</div>
 
       <div className={classes(css.rowStyle)}>
         <Button
@@ -538,7 +538,7 @@ const Tabletview = () => {
           onClick={HandlePresentClick}
           data-testid="tracksupervisorPresent"
         >
-          {tablet.Green[fin]}
+          {tablet.Green[lang]}
         </Button>
         <Button
           className={classes(css.orangeButtonStyle)}
@@ -547,7 +547,7 @@ const Tabletview = () => {
           onClick={HandleEnRouteClick}
           data-testid="tracksupervisorOnWay"
         >
-          {tablet.Orange[fin]}
+          {tablet.Orange[lang]}
         </Button>
         <Button
           className={classes(css.redButtonStyle)}
@@ -556,12 +556,12 @@ const Tabletview = () => {
           onClick={HandleClosedClick}
           data-testid="tracksupervisorClosed"
         >
-          {tablet.Red[fin]}
+          {tablet.Red[lang]}
         </Button>
       </div>
 
 
-      <div className={classes(css.Text)}>{tablet.HelperSecond[fin]}</div>
+      <div className={classes(css.Text)}>{tablet.HelperSecond[lang]}</div>
 
       <div className={classes(css.trackRowStyle)}>
         
@@ -570,7 +570,7 @@ const Tabletview = () => {
           setTracks={setTracks}
           scheduleId={scheduleId}
           tablet={tablet}
-          fin={fin}
+          lang={lang}
           socket={socket}
           
         />
