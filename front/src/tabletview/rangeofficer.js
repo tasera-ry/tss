@@ -288,8 +288,8 @@ const TimePick = ({ tablet, fin, scheduleId, hours, setHours, dialogOpen, setDia
           <TimePicker
             closeOnSelect
             ampm={false}
-            label={tablet.StartTime[fin]}
-            value={startTime}
+            label={tablet.Start[fin]}
+            value={moment(startTime)}
             onChange={(time) => setStartTime(time.toDate())}
             minutesStep={5}
             renderInput={(params) => <TextField {...params} />}
@@ -298,8 +298,8 @@ const TimePick = ({ tablet, fin, scheduleId, hours, setHours, dialogOpen, setDia
           <TimePicker
             closeOnSelect
             ampm={false}
-            label={tablet.EndTime[fin]}
-            value={endTime}
+            label={tablet.End[fin]}
+            value={moment(endTime)}
             onChange={(time) => setEndTime(time.toDate())}
             minutesStep={5}
             renderInput={(params) => <TextField {...params} />}
