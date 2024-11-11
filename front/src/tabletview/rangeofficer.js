@@ -4,7 +4,8 @@ import { useCookies } from 'react-cookie';
 // Material UI components
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { TimePicker } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -252,40 +253,21 @@ async function getData(
     });
 }
 
-const TimePick = ({
-  tablet,
-  fin,
-  scheduleId,
-  hours,
-  setHours,
-  dialogOpen,
-  setDialogOpen,
-}) => {
+const TimePick = ({ tablet, fin, scheduleId, hours, setHours, dialogOpen, setDialogOpen }) => {
   const [errorMessage, setErrorMessage] = useState();
-  const [startDate, setStartDate] = useState(
-    new Date(0, 0, 0, hours.start.split(':')[0], hours.start.split(':')[1], 0),
-  );
-  const [endDate, setEndDate] = useState(
-    new Date(0, 0, 0, hours.end.split(':')[0], hours.end.split(':')[1], 0),
-  );
+  const [startTime, setStartTime] = useState(new Date(0, 0, 0, hours.start?.split(':')[0] || 0, hours.start?.split(':')[1] || 0, 0));
+  const [endTime, setEndTime] = useState(new Date(0, 0, 0, hours.end?.split(':')[0] || 0, hours.end?.split(':')[1] || 0, 0));
 
   async function handleTimeChange() {
-    if (startDate === null || endDate === null) {
-      setErrorMessage(tablet.Error[fin]);
+    if (startTime === null || endTime === null) {
+      setErrorMessage(tablet?.Error[fin] || "Invalid time selected.");
       return;
     }
-
-    const start = startDate.toTimeString().split(' ')[0].slice(0, 5);
-    const end = endDate.toTimeString().split(' ')[0].slice(0, 5);
+    const start = startTime.toTimeString().split(' ')[0].slice(0, 5);
+    const end = endTime.toTimeString().split(' ')[0].slice(0, 5);
     console.log(start, end);
-
     const query = `/api/schedule/${scheduleId}`;
-
-    await axios
-      .put(query, {
-        open: start,
-        close: end,
-      })
+    await axios.put(query, { open: start, close: end })
       .then((res) => {
         if (res) {
           setHours({ start, end });
@@ -299,70 +281,50 @@ const TimePick = ({
   }
 
   return (
-    <div>
-      <Dialog open={dialogOpen} aria-labelledby="title">
-        <DialogTitle id="title" className={classes(css.dialogStyle)}>
-          {tablet.PickTime[fin]}
-        </DialogTitle>
-        <DialogContent className={classes(css.dialogStyle)}>
-          <div className={classes(css.rowStyle)}>
-          <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DatePicker
-              label={tablet.Start[fin]}
-              value={moment(startDate)}
-              onChange={(date) => setStartDate(date.toDate())} //lmao mitä purkkaa: Date
-              renderInput={(params) => <TextField {...params} margin="normal" id="starttime" />}
-              minutesStep={5}
-              ampm={false}
-            />
-            &nbsp;
-            <DatePicker
-              label={tablet.End[fin]}
-              value={moment(endDate)}
-              onChange={(date) => setEndDate(date.toDate())}
-              renderInput={(params) => <TextField {...params} margin="normal" id="endtime" />}
-              minutesStep={5}
-              ampm={false}
-            />
-          </LocalizationProvider>
-          </div>
-
-          <br />
-          {errorMessage ? (
-            <Typography align="center" style={{ color: colors.redLight }}>
-              {errorMessage}
-            </Typography>
-          ) : (
-            ''
-          )}
-        </DialogContent>
-
-        <DialogActions className={classes(css.dialogStyle)}>
-          <Button
-            variant="contained"
-            onClick={() => setDialogOpen(false)}
-            className={classes(css.cancelButtonStyle)}
-          >
-            {tablet.Cancel[fin]}
-          </Button>
-
-          <Button
-            variant="contained"
-            onClick={() => handleTimeChange()}
-            className={classes(css.saveButtonStyle)}
-          >
-            {tablet.Save[fin]}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+    <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+      <DialogTitle>{tablet.PickTime[fin]}</DialogTitle>
+      <DialogContent>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <TimePicker
+            closeOnSelect
+            ampm={false}
+            label={tablet.StartTime[fin]}
+            value={startTime}
+            onChange={(time) => setStartTime(time.toDate())}
+            minutesStep={5}
+            renderInput={(params) => <TextField {...params} />}
+            showTodayButton
+          />
+          <TimePicker
+            closeOnSelect
+            ampm={false}
+            label={tablet.EndTime[fin]}
+            value={endTime}
+            onChange={(time) => setEndTime(time.toDate())}
+            minutesStep={5}
+            renderInput={(params) => <TextField {...params} />}
+            showTodayButton
+          />
+        </LocalizationProvider>
+        {errorMessage ? <Typography color="error">{errorMessage}</Typography> : ''}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setDialogOpen(false)} className={classes(css.cancelButtonStyle)}>
+          {tablet.Cancel[fin]}
+        </Button>
+        <Button onClick={handleTimeChange} className={classes(css.saveButtonStyle)}>
+          {tablet.Save[fin]}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
+
 
 const Tabletview = () => {
   const [statusColor, setStatusColor] = useState();
   const [statusText, setStatusText] = useState();
-  const [hours, setHours] = useState({});
+  const [hours, setHours] = useState({ start: '00:00', end: '00:00' });
   const [tracks, setTracks] = useState([]);
   const [scheduleId, setScheduleId] = useState();
   const [reservationId, setReservationId] = useState();
@@ -375,7 +337,7 @@ const Tabletview = () => {
   const { tablet } = data;
   const date = moment(Date.now()).format('YYYY-MM-DD');
   const today = moment().format('DD.MM.YYYY');
-  
+
 
   /*
     Basically the functional component version of componentdidmount
@@ -504,13 +466,13 @@ const Tabletview = () => {
           setHours={setHours}
           dialogOpen={dialogOpen}
           setDialogOpen={setDialogOpen}
-          
+
         />
       ) : (
         ''
       )}
-      
-      <div className={classes( css.rowStyle)}>
+
+      <div className={classes(css.rowStyle)}>
 
         <Button
           className={classes(css.statusStyle)}
@@ -523,7 +485,7 @@ const Tabletview = () => {
           {statusText}
         </Button>
       </div>
-     
+
       <div className={classes(css.Text)}>{tablet.HelperFirst[fin]}</div>
 
       <div className={classes(css.rowStyle)}>
@@ -560,7 +522,7 @@ const Tabletview = () => {
       <div className={classes(css.Text)}>{tablet.HelperSecond[fin]}</div>
 
       <div className={classes(css.trackRowStyle)}>
-        
+
         <TrackRows
           tracks={tracks}
           setTracks={setTracks}
@@ -568,14 +530,14 @@ const Tabletview = () => {
           tablet={tablet}
           fin={fin}
           socket={socket}
-          
+
         />
-      
+
       </div>
-      {}
-      <Devices/>
-      
-      
+      { }
+      <Devices />
+
+
     </div>
   );
 };
