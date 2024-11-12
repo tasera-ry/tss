@@ -734,6 +734,21 @@
       "Connection timed out. Check network connectivity.!",
       "Anslutningstiden gick ut. Kontrollera nätverksanslutning!"
     ],
+    "pendingSuccess": [
+      "Viestit lähetetty onnistuneesti!",
+      "Pending messages sent successfully!",
+      "Väntande meddelanden skickades framgångsrikt!"
+    ],
+    "pendingError": [
+      "Viestien lähettäminen epäonnistui!",
+      "Sending pending messages failed!",
+      "Misslyckades att skicka väntande meddelanden!"
+    ],
+    "pendingEmpty": [
+      "Ei odottavia viestejä lähetettäväksi.",
+      "No pending messages to send.",
+      "Inga väntande meddelanden att skicka."
+    ],
     "smtpSettings": ["SMTP-asetukset", "SMTP-settings", "SMTP-inställningar"],
     "user": ["Sähköposti", "Email", "E-post"],
     "pass": ["Salasana", "Password", "Lösenord"],

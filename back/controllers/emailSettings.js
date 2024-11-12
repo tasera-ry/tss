@@ -11,12 +11,10 @@ const controller = {
   update: async function updateSettings(request, response) {
     // callback for verifyEmailCredentials
     const updateEmailSettings = async (error, success) => {
-      console.log("updateEmailSettings error:", error, "success:", success)
       if (error) {
-        // Return detailed error message
-        return response.status(500).send({success: false, ...error});
-      }
-      else if (success) { 
+        console.error("updateEmailSettings error:", error)
+        return response.status(500).send({success: false, ...error})
+      } else if (success) { 
         await services.emailSettings.update(request.body);
         scheduleEmails(new Date(request.body.sendPendingTime));
         return response.status(200).send();
@@ -25,8 +23,15 @@ const controller = {
     verifyEmailCredentials(request.body, updateEmailSettings);
   },
   sendPendingEmails: async function sendPendingEmails(request, response) {
-    await sendPending();
-    return response.status(200).send();
+    const result = await sendPending();
+    if (!result.success) {
+      console.error("sendPendingEmails error:", error);
+      return response.status(500).send({ success: false, error: error.message });
+    } else if (result.success && result.message) {
+      return response.status(200).send({ success: true, message: result.message });
+    } else {
+      return response.status(200).send({ success: true });
+    }
   }
 };
 
