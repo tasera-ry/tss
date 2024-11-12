@@ -49,13 +49,12 @@
     "DeviceName": ["Nimi", "Name", "Namn"],
     "DeviceStatus": ["Tila (vapaa/varattu)", "Status (free/reserved)", "Status (fri/reserverad)"],
     "FreeStatus": ["Vapaa", "Free", "Fri"],
+    "AddButton": ["Lisää", "Add", "Lägg till"],
     "ReservedStatus": ["Varattu", "Reserved", "Reserverad"],
     "AddError": ["Virhe: Laitteen nimi ei voi olla tyhjä.", "Error: Device name cannot be empty", "Fel: Enhetsnamnet får inte vara tomt."],
     "StatusError": ["Virhe: Laitteen tilan on oltava joko 'vapaa' tai 'varattu'",
      "Error: Device status must be either 'free' or 'reserved'", "Fel: Enhetsstatusen måste vara antigen 'fri' eller 'reserverad'"]
   },
-
-
 
   "signin": {
     "SignIn": ["Kirjaudu sisään", "Sign In", "Logga in"],

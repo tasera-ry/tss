@@ -230,7 +230,7 @@ const Devices = () => {
                       </TableCell>
                       <TableCell>
                         <Button onClick={handleAddRow} startIcon={<Add />}>
-                          Add
+                          {devicesList.AddButton[lang]} 
                         </Button>
                       </TableCell>
                     </TableRow>
