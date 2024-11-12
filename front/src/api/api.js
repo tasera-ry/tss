@@ -101,11 +101,13 @@ const patchRangeSupervision = (id, rangeSupervisor) => {
     return axios.put(`api/range-supervision/${id}`, {
       range_supervisor: rangeSupervisor.range_supervisor,
       association: rangeSupervisor.association,
+      arriving_at: rangeSupervisor.arriving_at
     });
   }
 
   return axios.put(`api/range-supervision/${id}`, {
     range_supervisor: rangeSupervisor.range_supervisor,
+    arriving_at: rangeSupervisor.arriving_at
   });
 };
 

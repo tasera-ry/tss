@@ -114,7 +114,7 @@ function Scheduling(props) {
   const [statusColor, setStatusColor] = useState();
   const [statusText, setStatusText] = useState();
   const [cookies] = useCookies(['role']);
-  const [estimatedArrivalTime, setEstimatedArrivalTime] = useState(new Date());
+  const [arrivalTime, setArrivalTime] = useState(new Date());
 
   useEffect(() => {
     let isMounted = true;
@@ -141,7 +141,8 @@ function Scheduling(props) {
           });
       }
     });
-
+    // Updates the status colour and text in the UI based on the
+    // data received from the socket event
     const socket = socketIOClient()
       .on('rangeUpdate', (msg) => {
         if (isMounted) {
@@ -274,7 +275,8 @@ function Scheduling(props) {
 
     setToast(false);
   };
-
+  // Handles the toggle switches for the tracks 
+  // and updates the track states and events
   const handleTrackSwitchChange = (event) => {
     //console.log("Radio",event.target.name, event.target);
     // having the name be a int causes
@@ -317,29 +319,13 @@ function Scheduling(props) {
     setTracks(newTracks);
   };
 
+  // Handles the expansion of the status bar
   const handleExpandClick = () => {
     setExpand(!expand);
   };
 
-  async function updateSupervisor(status, color, text) {
-    const res = await updateRangeSupervision(
-      reservationId,
-      scheduleId,
-      status,
-      rangeSupervisionScheduled,
-      null,
-    );
-
-    if (res === true) {
-      setStatusColor(color);
-      setStatusText(text);
-
-      if (rangeSupervisionScheduled === false) {
-        setRangeSupervisionScheduled(true);
-      }
-    }
-  }
-
+  // Emits a 'rangeUpdate' event with the status 'not confirmed'
+  // and updates the supervisor's status in the UI
   const handleNotConfirmed = () => {
     socket.emit('rangeUpdate', {
       status: 'not confirmed',
@@ -349,6 +335,8 @@ function Scheduling(props) {
     updateSupervisor('not confirmed', colors.turquoise, sched.SuperBlue[fin]);
   };
 
+  // Emits a 'rangeUpdate' event with the status 'confirmed'
+  // and updates the supervisor's status in the UI
   const handleConfirmed = () => {
     socket.emit('rangeUpdate', {
       status: 'confirmed',
@@ -358,6 +346,8 @@ function Scheduling(props) {
     updateSupervisor('confirmed', colors.greenLight, sched.SuperLightGreen[fin]);
   };  
 
+  // Emits a 'rangeUpdate' event with the status 'en route'
+  // and updates the supervisor's status in the UI
   const handleEnRouteClick = () => {
     socket.emit('rangeUpdate', {
       status: 'en route',
@@ -367,6 +357,8 @@ function Scheduling(props) {
     updateSupervisor('en route', colors.orange, sched.SuperOrange[fin]);
   };
 
+  // Emits a 'rangeUpdate' event with the status 'present'
+  // and updates the supervisor's status in the UI
   const handlePresentClick = () => {
     socket.emit('rangeUpdate', {
       status: 'present',
@@ -376,9 +368,38 @@ function Scheduling(props) {
     updateSupervisor('present', colors.green, sched.SuperGreen[fin]);
   };
 
+  // Parses and formats the time user entered and set it as arrival time
   const handleArrivalTime = (event) => {
-    const parsedTime = moment(event.target.value, 'HH:mm', true);
-    setEstimatedArrivalTime(parsedTime);
+    const parsedTime = moment(event.target.value, 'HH:mm:ss', true);
+    setArrivalTime(parsedTime.format('HH:mm:ss'));
+  };
+
+  // Confirms the set arrival time when confirm time button is clicked
+  const confirmArrivalTime = async () => {
+    const rangeStatus = determineRangeStatus();
+
+    // Updates information of the range supervision if the arrival time is valid 
+    if (arrivalTime) {
+      try {
+        await updateRangeSupervision(
+          reservationId,
+          scheduleId,
+          rangeStatus,
+          rangeSupervisionScheduled,
+          rangeSupervisorId,
+          arrivalTime,
+        )
+        // If the arrival time is successfully updated, set a success message
+        setToastMessage(sched.SuccessfulUpdate[fin]);
+        setToastSeverity('success');
+        setToast(true);
+        } // If there is an error, set an error message
+          catch(error) {
+            setToastMessage(sched.FailedUpdate[fin]);
+            setToastSeverity('error');
+            setToast(true);
+        }
+    } 
   };
 
   const saveChanges = async () => {
@@ -475,6 +496,53 @@ function Scheduling(props) {
     update();
     setState('ready');
     socket.emit('refresh');
+  };
+
+  // Determines current range status and returns it
+  const determineRangeStatus = () => {
+    let rangeStatus = null;
+
+      if (!available) {
+        rangeStatus = 'closed';
+      } else if (!rangeSupervisorSwitch) {
+        rangeStatus = 'absent';
+      } else if (statusColor === colors.turquoise) {
+        rangeStatus = 'not confirmed';
+      } else if (statusColor === colors.orange) {
+        rangeStatus = 'en route';
+      } else if (statusColor === colors.greenLight) {
+        rangeStatus = 'confirmed';
+      }
+      return rangeStatus;
+  };
+
+  // Updates the status of range supervisor's status on the backend
+  // and updates the UI with the new status
+  async function updateSupervisor(status, color, text) {
+    const res = await updateRangeSupervision(
+      reservationId,
+      scheduleId,
+      status,
+      rangeSupervisionScheduled,
+    );
+
+    if (res === true) {
+      setStatusColor(color);
+      setStatusText(text);
+
+      if (rangeSupervisionScheduled === false) {
+        setRangeSupervisionScheduled(true);
+      }
+    }
+  };
+
+  // creates status message for coloured status bar
+  const createStatusMessage = () => {
+    if (!arrivalTime || arrivalTime === 'Invalid date' || statusColor === colors.green) {
+      return;
+    } else {
+      return ` (ETA ${arrivalTime})`;
+    }
   };
 
   /*
@@ -763,6 +831,7 @@ function Scheduling(props) {
           rangeStatus,
           rangeSupervisionScheduled,
           rangeSupervisorId,
+          arrivalTime
         );
         if (rangeSupervisionRes !== true) {
           return reject(new Error(rangeSupervisionRes));
@@ -845,7 +914,6 @@ function Scheduling(props) {
   const update = async () => {
     try {
       const response = await api.getSchedulingDate(date);
-      console.log(response.arrivingAt); // Hahaa testattu että toimii, jos aikaa ei määritetty ni palauttaa null
 
       setDate(moment(response.date));
       setRangeId(response.rangeId);
@@ -868,6 +936,7 @@ function Scheduling(props) {
       setRangeSupervisionScheduled(response.rangeSupervisionScheduled);
       setTracks(response.tracks);
       setState('ready');
+      setArrivalTime(response.arrivingAt);
 
       if (response.rangeSupervision === 'present') {
         setStatusText(sched.SuperGreen[fin]);
@@ -1018,72 +1087,72 @@ function Scheduling(props) {
           </FormControl>
           <FormControl component="fieldset" style={{padding:'5px'}}>
             <div className="rangeOfficerStatus" style={{backgroundColor: `${statusColor}`}}>
-                <div className="statusText">{statusText}</div>
+                <div className="statusText">
+                  <span style={{ fontWeight: 'bold', fontSize: '1.1rem'}}>{statusText}</span>{createStatusMessage()}
+                </div>
                   {cookies.role === 'superuser' && (
                     <div className="expandMore">
                       <span className="edit">{sched.Edit[fin]}</span>
                       <Button
                         disabled={!available || !rangeSupervisorSwitch || !rangeSupervisorId}
                         className="expandMoreButton"
-                        onClick={handleExpandClick}>
-                        {!expand && (
-                          <ExpandMoreIcon />
-                          )}
-                        {expand && (
-                          <ExpandLessIcon />
-                        )}
+                        onClick={handleExpandClick}
+                        aria-expanded={expand}
+                        aria-lable={expand ? "Collapse options" : "Expand options"}
+                      >
+                        {!expand ? <ExpandMoreIcon /> : <ExpandLessIcon />}
                       </Button>
                     </div>
                   )}
-            </div>
+                </div>
             {expand && (
               <Box>
                 <div className="dropDownContent">
-                  <div className="helperText">
-                    <p>{sched.Helper[fin]}</p>
-                  </div>
+                  <div className="helperText"><p>{sched.Helper[fin]}</p></div>
                   <div className="statusButtons">
-                    <Button 
+                    <Button
                       className="notConfirmed"
                       variant="contained"
-                      style={{backgroundColor: colors.turquoise}}
+                      style={{ backgroundColor: colors.turquoise }}
                       onClick={handleNotConfirmed}>
                       {sched.Blue[fin]}
                     </Button>
-                    <Button 
+                    <Button
                       className="confirmed"
                       variant="contained"
-                      style={{backgroundColor: colors.greenLight}}
+                      style={{ backgroundColor: colors.greenLight }}
                       onClick={handleConfirmed}>
                       {sched.LightGreen[fin]}
                     </Button>
-                    <Button 
+                    <Button
                       className="onTheWay"
                       variant="contained"
-                      style={{backgroundColor: colors.orange}}
+                      style={{ backgroundColor: colors.orange }}
                       onClick={handleEnRouteClick}>
                       {sched.Orange[fin]}
                     </Button>
-                    <Button 
+                    <Button
                       className="present"
                       variant="contained"
-                      style={{backgroundColor: colors.green}}
+                      style={{ backgroundColor: colors.green }}
                       onClick={handlePresentClick}>
                       {sched.Green[fin]}
                     </Button>
                   </div>
                   <hr />
                   <div className="eta">
-                    <p>{sched.ETA[fin]}:</p>
-                      <TextField
-                        id="ETA"
-                        type="time"
-                        defaultValue={estimatedArrivalTime ? moment(estimatedArrivalTime).format('HH:mm') : ''}
-                        onChange={(event) => handleArrivalTime(event)}
-                      />
-                    <Button 
+                    <p>{sched.AddETA[fin]}:</p>
+                    <TextField
+                      disabled={statusColor === colors.green}
+                      id="time"
+                      type="time"
+                      defaultValue={arrivalTime ? arrivalTime : "00:00:00"}
+                      onChange={(event) => handleArrivalTime(event)} />
+                    <Button
+                      disabled={statusColor === colors.green}
                       className="confirmTimeButton"
                       variant="contained"
+                      onClick={confirmArrivalTime}
                     >{sched.ConfirmTime[fin]}
                     </Button>
                   </div>
