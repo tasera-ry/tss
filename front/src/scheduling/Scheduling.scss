@@ -101,9 +101,12 @@
       z-index: 2;
 
       .statusText {
+        display: flex;
+        flex-direction: column;
         flex: 1;
         text-align: center;
-        font-weight: bold;
+        font-size: 1rem;
+
       }
       .expandMore {
         position: absolute;
@@ -308,7 +311,10 @@
         margin-top: 10px;
       }
       .statusText {
-        padding-right: 60px;
+        padding-right: 100px;
+      }
+      .edit {
+        font-size: 0.8rem;
       }
     }
     .secondSection {
