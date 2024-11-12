@@ -325,6 +325,11 @@
       "Change email address",
       "Ändra e-postadress"
     ],
+    "ChangeRole": [
+      "Vaihda rooli",
+      "Change role",
+      "Ändra roll"
+    ],
     "CreateUser": ["Lisää käyttäjä", "Create new user", "Skapa ny användare"],
     "Users": ["Käyttäjät", "User profiles", "Användarprofiler"],
     "Username": ["Käyttäjänimi", "Username", "Användarnamn"],
@@ -368,10 +373,16 @@
     "PasswordLowercase": ["pieni kirjain", "lowercase letter", "liten bokstav"],
     "PasswordUppercase": ["iso kirjain", "uppercase letter", "stor bokstav"],
     "Role": ["Rooli", "Role", "Roll"],
+    "RoleForUser": [
+      "Vaihda rooli käyttäjälle:",
+      "Change role for user:",
+      "Ändra roll för användare"
+    ],
     "Superuser": ["Superuser", "Superuser", "Superuser"],
     "Rangeofficer": ["Valvoja", "Range officer", "Banofficer"],
     "Association": ["Yhdistys", "Association", "Förening"],
     "Rangemaster": ["Päävalvoja", "Range master", "Banmästare"],
+    "SelectAssociation": ["Valitse yhdistys", "Select association", "Välja förening"],
     "ChangeFor": [
       "Vaihda salasana käyttäjälle",
       "Change password for",
@@ -394,9 +405,14 @@
       "Något gick fel, kom ihåg att lösenord måste vara minst 6 tecken långt"
     ],
     "ErrorEmail": [
-      "Jokin meni pieleen, Sähköpostia ei tallennettu",
+      "Jokin meni pieleen, sähköpostia ei tallennettu",
       "Something went wrong, email not saved",
       "Något gick fel, e-postadress har inte sparats"
+    ],
+    "ErrorRole": [
+      "Jokin meni pieleen, roolia ei tallennettu",
+      "Something went wrong, role not saved",
+      "Något gick fel, roll har inte sparats"
     ],
     "ErrorSmall": [
       "Jokin meni pieleen",
@@ -683,10 +699,15 @@
       "Successfully updated!",
       "Uppdatering lyckades!"
     ],
+    "error": [
+      "Jokin meni pieleen!",
+      "Something went wrong!",
+      "Något gick fel!"
+    ],
     "emailError": [
-      "Virheellinen sähköposti. Tulee olla tasera.fi sähköposti!",
-      "Invalid email. Needs to be a tasera.fi email!",
-      "Ogiltig e-post. Måste vara en tasera.fi e-post!"
+      "Virheellinen sähköposti!",
+      "Invalid email!",
+      "Ogiltig e-post!"
     ],
     "passError": [
       "Salasana ei voi olla tyhjä!",
@@ -694,24 +715,24 @@
       "Lösenordet kan inte vara tomt!"
     ],
     "hostError": [
-      "Virheellinen host! Hostin pitää olla smtp.gmail.com.",
-      "Invalid host! Host must be smtp.gmail.com.",
-      "Ogiltig host! Hosten måste vara smtp.gmail.com."
+      "DNS-haku epäonnistui. Tarkista, että SMTP on oikea.",
+      "DNS resolution failed. Please check that the SMTP host is correct.",
+      "DNS-upplösning misslyckades. Kontrollera att SMTP-värdena är korrekta."
     ],
-    "portError": [
-      "Virheellinen portti! Portin pitää olla 465 (SSL) tai 587.",
-      "Invalid port! Port must be 465 (SSL) or 587.",
-      "Ogiltig port! Porten måste vara 465 (SSL) eller 587."
+    "socketError": [
+      "Yhteys epäonnistui. Tarkista palvelin, portti ja SSL-asetukset.",
+      "Connection failed. Please check the server, port, and SSL settings.",
+      "Anslutning misslyckades. Kontrollera servern, porten och SSL-inställningarna."
     ],
-    "secureError": [
-      "Porttinumero ja SSL eivät täsmää! Portin pitää olla 465 (SSL) tai 587.",
-      "Port number and SSL don't match! Port must be 465 (SSL) or 587.",
-      "Portnummer och SSL matchar inte! Porten måste vara 465 (SSL) eller 587."
-    ],
-    "credError": [
+    "authError": [
       "Väärä sähköpostiosoite tai salasana!",
       "Wrong email or password!",
       "Fel e-post eller lösenord!"
+    ],
+    "timeoutError": [
+      "Yhteys aikakatkaistu. Tarkista verkkoyhteys!",
+      "Connection timed out. Check network connectivity.!",
+      "Anslutningstiden gick ut. Kontrollera nätverksanslutning!"
     ],
     "pendingSuccess": [
       "Viestit lähetetty onnistuneesti!",

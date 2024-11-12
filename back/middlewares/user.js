@@ -18,7 +18,7 @@ const userUpdateCheck = function canUpdatePassword(request, response, next) {
   }
 
   return response.status(403).send({
-    error: "User doesn't have privileges to this resource",
+    error: 'User doesn\'t have privileges to this resource',
   });
 };
 
@@ -36,7 +36,7 @@ const canRead = function canReadUserData(request, response, next) {
     return next();
   }
   return response.status(403).send({
-    error: "User doesn't have privileges to this resource",
+    error: 'User doesn\'t have privileges to this resource',
   });
 };
 
@@ -56,7 +56,7 @@ exports.hasProperty = function userHasProperty(
       return next();
     }
     return response.status(403).send({
-      error: "User doesn't have privileges to this resource",
+      error: 'User doesn\'t have privileges to this resource',
     });
   };
 };
