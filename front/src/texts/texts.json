@@ -322,10 +322,21 @@
       "Edit range officer status by choosing color",
       "Redigera status för banofficer genom att välja färg"
     ],
-    "ETA": [
+    "AddETA": [
       "Lisää arvioitu saapumisaika", 
       "Add estimated time of arrival", 
-      "Lägg till beräknad ankomsttid"],
+      "Lägg till beräknad ankomsttid"
+    ],
+    "SuccessfulUpdate": [
+      "Arvioitu saapumisaika päivitetty",
+      "Estimated time of arrival updated",
+      "Beräknad ankomsttid uppdaterad"
+    ],
+    "FailedUpdate": [
+      "Arvioidun saapumisajan päivitys epäonnistui",
+      "Failed to update estimated time of arrival",
+      "Uppdatering av beräknad ankomsttid misslyckades"
+    ],
     "ConfirmTime": ["Vahvista aika", "Confirm time", "Bekräfta tid"],
     "ManageTracks": ["Hallitse ratoja", "Manage shooting tracks", "Hantera skjutbanor"],
     "ShootingTrack": ["Ampumarata", "Shooting track", "Skjutbana"],
