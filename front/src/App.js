@@ -8,7 +8,7 @@ import axios from 'axios';
 // Custom components
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { CookiesProvider, withCookies } from 'react-cookie';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import SignIn from './signin/SignIn';
 import ResetPassword from './resetPW/ResetPassword';
 import RenewPassword from './renewPW/RenewPassword';
@@ -31,11 +31,9 @@ import Raffle from './raffle/raffle';
 
 import { validateLogin } from './utils/Utils';
 
-import Devices from './Devices/devices';
-
 // TO DO: Move this to scss if possible.
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: '#4D4D4D',

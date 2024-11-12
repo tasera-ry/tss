@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import MomentUtils from '@date-io/moment';
-
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import moment from 'moment';
 
 import api from '../api/api';
 import { getLanguage } from '../utils/Utils';
@@ -94,19 +91,20 @@ const VisitorLogging = ({
   return (
     <div className={classes(css.loggingContainer)}>
       <div>
-        <MuiPickersUtilsProvider locale={getLanguage()} utils={MomentUtils}>
-          <KeyboardDatePicker
-            autoOk
+        <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={getLanguage()}>
+          <DatePicker
+            closeOnSelect
             margin="normal"
             name="date"
             label={textLogs.DayChoose[lang]}
-            value={date}
+            value={moment(date)}
             onChange={(newDate) => setDate(newDate)}
-            format="DD.MM.YYYY"
+            inputFormat="DD.MM.YYYY"
+            renderInput={(params) => <TextField {...params} />}
             showTodayButton
             data-testid="datePicker"
           />
-        </MuiPickersUtilsProvider>
+        </LocalizationProvider>
         {tracks[0] && tracks[0].id ? (
           <div className={classes(css.inputContainer)}>
             {tracks.map(({ id, short_description, scheduled }) => (

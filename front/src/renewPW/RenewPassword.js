@@ -4,11 +4,11 @@ import classNames from 'classnames';
 import colors from '../colors.module.scss';
 
 // Material UI components
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
 
 import api from '../api/api';
 import translations from '../texts/texts.json';

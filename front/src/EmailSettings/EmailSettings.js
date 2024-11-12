@@ -1,4 +1,6 @@
 import React from 'react';
+import moment from 'moment';
+import Snackbar from '@mui/material/Snackbar';
 import {
   FormControl,
   FormControlLabel,
@@ -11,16 +13,16 @@ import {
   CircularProgress,
   Select,
   MenuItem,
-  Snackbar,
-} from '@material-ui/core';
-import MuiAlert from '@material-ui/lab/Alert';
-import DateFnsUtils from '@date-io/date-fns';
+} from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-} from '@material-ui/pickers';
+  LocalizationProvider,
+  TimePicker,
+} from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import './EmailSettings.scss';
 import textData from '../texts/texts.json';
+import { getLanguage } from '../utils/Utils';
 
 const { emailSettings, nav } = textData;
 const lang = localStorage.getItem('language');
@@ -152,7 +154,7 @@ const EmailSettings = () => {
   };
   const handleDateChange = (date) => {
     const newDate = new Date();
-    newDate.setHours(date.getHours(), date.getMinutes());
+    newDate.setHours(date.hours(), date.minutes());
     setSettings({ ...settings, sendPendingTime: newDate });
   };
 
@@ -329,14 +331,14 @@ const EmailSettings = () => {
           </FormHelperText>
         </FormControl>
         <FormControl component="fieldset">
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardTimePicker
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <TimePicker
               margin="normal"
               label={emailSettings.pendingTime[lang]}
-              value={settings.sendPendingTime}
+              value={moment(settings.sendPendingTime)}
               onChange={handleDateChange}
             />
-          </MuiPickersUtilsProvider>
+          </LocalizationProvider>
         </FormControl>
         <FormControl component="fieldset">
           <FormLabel className="settings-label">
@@ -414,9 +416,11 @@ const EmailSettings = () => {
         onClose={handleCloseNotification}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseNotification} severity={notification.type}>
-          {notification.message}
-        </Alert>
+        <div>
+          <Alert onClose={handleCloseNotification} severity={notification.type}>
+            {notification.message}
+          </Alert>
+        </div>
       </Snackbar>
     </div>
   );

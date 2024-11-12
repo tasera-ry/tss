@@ -1,75 +1,32 @@
-import React, { useState, useEffect, forwardRef } from 'react';
-
+import React, { useState, useEffect } from 'react';
 import './tracks.scss';
-
 // Material UI components
-import ScopedCssBaseline from '@material-ui/core/ScopedCssBaseline';
-import Container from '@material-ui/core/Container';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Alert from '@material-ui/lab/Alert';
-import Snackbar from '@material-ui/core/Snackbar';
-import MaterialTable from 'material-table';
-
+import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
+import Container from '@mui/material/Container';
+import LinearProgress from '@mui/material/LinearProgress';
+import Snackbar from '@mui/material/Snackbar';
 // Translations
-
 import lodash from 'lodash';
-
 // Axios for calls to backend
 import axios from 'axios';
-
-// Icon setup
-import AddBox from '@material-ui/icons/AddBox';
-import ArrowDownward from '@material-ui/icons/ArrowDownward';
-import Check from '@material-ui/icons/Check';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Clear from '@material-ui/icons/Clear';
-import DeleteOutline from '@material-ui/icons/DeleteOutline';
-import Edit from '@material-ui/icons/Edit';
-import FilterList from '@material-ui/icons/FilterList';
-import FirstPage from '@material-ui/icons/FirstPage';
-import LastPage from '@material-ui/icons/LastPage';
-import Remove from '@material-ui/icons/Remove';
-import SaveAlt from '@material-ui/icons/SaveAlt';
-import Search from '@material-ui/icons/Search';
-import ViewColumn from '@material-ui/icons/ViewColumn';
 import l10nLines from '../texts/texts.json';
-
 // Token validation
 import { validateLogin } from '../utils/Utils';
-
-const tableIcons = {
-  Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
-  Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-  Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-  DetailPanel: forwardRef((props, ref) => (
-    <ChevronRight {...props} ref={ref} />
-  )),
-  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  PreviousPage: forwardRef((props, ref) => (
-    <ChevronLeft {...props} ref={ref} />
-  )),
-  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-  SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
-  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
-};
-
-const tableStyle = {
-  backgroundColor: '#cccccc',
-};
-const headerStyle = {
-  backgroundColor: '#e9e9e9', //colorcream10
-};
-
-/* Get first element of an array */
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  TextField,
+  IconButton,
+  Tooltip,
+  Alert,
+} from '@mui/material';
+import { Add, Edit, Delete, Save, Cancel } from '@mui/icons-material';
 
 const RequestStatusAlert = ({ statusSetter, requestStatus, text }) => {
   if (requestStatus === null) {
@@ -82,14 +39,9 @@ const RequestStatusAlert = ({ statusSetter, requestStatus, text }) => {
   );
 };
 
-/* eslint-disable-next-line */
 const MaybeProgress = ({ finished }) =>
   finished ? <></> : <LinearProgress variant="query" />;
 
-/*
-  Main table for showing track information
-  Parts commented out = adding or removing tracks.
-*/
 const TrackTable = ({
   setTrackData,
   trackData,
@@ -97,144 +49,159 @@ const TrackTable = ({
   setRequestText,
   l10n,
   lang,
-}) => (
-  <MaterialTable
-    style={tableStyle}
-    localization={{
-      pagination: {
-        nextTooltip: l10n.nextTooltip[lang],
-        previousTooltip: l10n.previousTooltip[lang],
-        firstTooltip: l10n.firstTooltip[lang],
-        lastTooltip: l10n.lastTooltip[lang],
-        // labelDisplayedRows: l10n.pagination[lang],
-        labelRowsSelect: l10n.labelRowsSelect[lang],
-      },
-      header: {
-        actions: l10n.tableHeaderActions[lang],
-        cellStyle: { backgroundColor: '#cccccc' },
-      },
-      toolbar: {
-        searchPlaceholder: l10n.searchPlaceholder[lang],
-      },
-      body: {
-        emptyDataSourceMessage: l10n.emptyDataSourceMessage[lang],
-        editTooltip: l10n.editTooltip[lang],
-        editRow: {
-          saveTooltip: l10n.saveTooltip[lang],
-          cancelTooltip: l10n.cancelTooltip[lang],
-        },
-      },
-    }}
-    // Editing tracks
-    editable={{
-      /* eslint-disable-next-line */
-      onRowAdd: ({ name, description, short_description }) =>
-        /* eslint-disable-next-line */
-        new Promise(async (resolve, reject) => {
-          try {
-            const response = await axios.post('/api/track', {
-              name,
-              description,
-              short_description,
-              range_id: trackData[0].range_id,
-            });
-            setTrackData(trackData.concat(response.data));
-            setRequestStatus('success');
-            setRequestText('Rata lisätty');
-            resolve();
-          } catch (e) {
-            setRequestStatus('error');
-            setRequestText('Radan lisäys epäonnistui');
-            reject();
-          }
-        }),
-      onRowUpdate: (newData, oldData) =>
-        /* eslint-disable-next-line */
-        new Promise(async (resolve, reject) => {
-          resolve();
-          const trackInfo = trackData.filter(
-            (track) =>
-              track.name === oldData.name &&
-              track.short_description === oldData.short_description &&
-              track.description === oldData.description,
-          )[0];
+}) => {
+  const [editingRow, setEditingRow] = useState(null);
+  const [newRow, setNewRow] = useState({ name: '', description: '', short_description: '' });
 
-          if (trackInfo === undefined) {
-            setRequestStatus('error');
-            setRequestText(l10n.rowUpdateFail[lang]);
-            reject();
-          }
+  const handleAddRow = async () => {
+    try {
+      const response = await axios.post('/api/track', {
+        ...newRow,
+        range_id: trackData[0].range_id,
+      });
+      setTrackData([...trackData, response.data]);
+      setRequestStatus('success');
+      setRequestText('Rata lisätty');
+      setNewRow({ name: '', description: '', short_description: '' });
+    } catch (e) {
+      setRequestStatus('error');
+      setRequestText('Radan lisäys epäonnistui');
+    }
+  };
 
-          try {
-            await axios.put(`/api/track/${trackInfo.id}`, newData);
-            const modified = trackData
-              .filter((track) => track.id !== trackInfo.id)
-              .concat({ ...trackInfo, ...newData });
-            setTrackData(modified);
-            setRequestStatus('success');
-            setRequestText(l10n.rowUpdateSuccess[lang]);
-          } catch (e) {
-            setRequestStatus('error');
-            setRequestText(l10n.rowUpdateFail[lang]);
-            reject();
-          }
-          resolve();
-        }),
-      onRowDelete: ({ name, description }) =>
-        /* eslint-disable-next-line */
-        new Promise(async (resolve, reject) => {
-          const trackInfo = trackData.filter(
-            (track) => track.name === name && track.description === description,
-          )[0];
+  const handleEditRow = async (index) => {
+    const trackInfo = trackData[index];
+    try {
+      await axios.put(`/api/track/${trackInfo.id}`, editingRow);
+      const updatedData = trackData.map((track, i) =>
+        i === index ? { ...track, ...editingRow } : track
+      );
+      setTrackData(updatedData);
+      setRequestStatus('success');
+      setRequestText(l10n.rowUpdateSuccess[lang]);
+      setEditingRow(null);
+    } catch (e) {
+      setRequestStatus('error');
+      setRequestText(l10n.rowUpdateFail[lang]);
+    }
+  };
 
-          // Should never happen
-          if (trackInfo === undefined) {
-            setRequestStatus('error');
-            setRequestText('Radan poisto epäonnistui');
-            reject();
-          }
+  const handleDeleteRow = async (index) => {
+    const trackInfo = trackData[index];
+    try {
+      await axios.delete(`/api/track/${trackInfo.id}`);
+      setTrackData(trackData.filter((_, i) => i !== index));
+      setRequestStatus('success');
+      setRequestText('Rata poistettu');
+    } catch (e) {
+      setRequestStatus('error');
+      setRequestText('Radan poisto epäonnistui');
+    }
+  };
 
-          try {
-            const response = await axios.delete(`/api/track/${trackInfo.id}`); // eslint-disable-line
-            setTrackData(
-              trackData.filter((track) => track.id !== trackInfo.id),
-            );
-            setRequestStatus('success');
-            setRequestText('Rata poistettu');
-            resolve();
-          } catch (e) {
-            setRequestStatus('error');
-            setRequestText('Radan poisto epäonnistui');
-            reject();
-          }
-        }),
-    }}
-    options={{
-      pageSize: 10,
-      headerStyle,
-    }}
-    icons={tableIcons}
-    columns={[
-      {
-        title: l10n.tableHeaderName[lang],
-        field: 'name',
-        headerStyle,
-      },
-      {
-        title: l10n.tableHeaderDescription[lang],
-        field: 'description',
-        headerStyle,
-      },
-      {
-        title: l10n.tableHeaderShort[lang],
-        field: 'short_description',
-        headerStyle,
-      },
-    ]}
-    data={trackData}
-    title={l10n.tableTitle[lang]}
-  />
-);
+  return (
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>{l10n.tableHeaderName[lang]}</TableCell>
+            <TableCell>{l10n.tableHeaderDescription[lang]}</TableCell>
+            <TableCell>{l10n.tableHeaderShort[lang]}</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {trackData.map((row, index) => (
+            <TableRow key={row.id}>
+              {editingRow && editingRow.index === index ? (
+                <>
+                  <TableCell>
+                    <TextField
+                      value={editingRow.name}
+                      onChange={(e) =>
+                        setEditingRow({ ...editingRow, name: e.target.value })
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      value={editingRow.description}
+                      onChange={(e) =>
+                        setEditingRow({ ...editingRow, description: e.target.value })
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      value={editingRow.short_description}
+                      onChange={(e) =>
+                        setEditingRow({ ...editingRow, short_description: e.target.value })
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => handleEditRow(index)}>
+                      <Save />
+                    </IconButton>
+                    <IconButton onClick={() => setEditingRow(null)}>
+                      <Cancel />
+                    </IconButton>
+                  </TableCell>
+                </>
+              ) : (
+                <>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell>{row.description}</TableCell>
+                  <TableCell>{row.short_description}</TableCell>
+                  <TableCell>
+                    <Tooltip title={l10n.editTooltip[lang]}>
+                      <IconButton onClick={() => setEditingRow({ ...row, index })}>
+                        <Edit />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title={l10n.deleteTooltip[lang]}>
+                      <IconButton onClick={() => handleDeleteRow(index)}>
+                        <Delete />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </>
+              )}
+            </TableRow>
+          ))}
+          <TableRow>
+            <TableCell>
+              <TextField
+                value={newRow.name}
+                onChange={(e) => setNewRow({ ...newRow, name: e.target.value })}
+                placeholder={l10n.tableHeaderName[lang]}
+              />
+            </TableCell>
+            <TableCell>
+              <TextField
+                value={newRow.description}
+                onChange={(e) => setNewRow({ ...newRow, description: e.target.value })}
+                placeholder={l10n.tableHeaderDescription[lang]}
+              />
+            </TableCell>
+            <TableCell>
+              <TextField
+                value={newRow.short_description}
+                onChange={(e) => setNewRow({ ...newRow, short_description: e.target.value })}
+                placeholder={l10n.tableHeaderShort[lang]}
+              />
+            </TableCell>
+            <TableCell>
+              <Button onClick={handleAddRow} startIcon={<Add />}>
+                Add
+              </Button>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+};
 
 const TrackCRUD = () => {
   const [trackData, setTrackData] = useState([]);
