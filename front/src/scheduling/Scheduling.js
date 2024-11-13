@@ -1090,7 +1090,7 @@ function Scheduling(props) {
                         className="expandMoreButton"
                         onClick={handleExpandClick}
                         aria-expanded={expand}
-                        aria-lable={expand ? "Collapse options" : "Expand options"}
+                        aria-label={expand ? "Collapse options" : "Expand options"}
                       >
                         {!expand ? <ExpandMoreIcon /> : <ExpandLessIcon />}
                       </Button>
