@@ -20,7 +20,7 @@
     background-color: #F5F5F5;
     border: 1px solid #E8E8E8;
     border-radius: 5px;
-    padding: 10px 20px 10px 20px;
+    padding: 20px 20px 20px 20px;
     margin: 0px 0px 8px 0px;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
 
@@ -65,8 +65,7 @@
         align-items: center;
     
         .MuiFormControl-root {
-          width: 100px;
-          margin-top: -5px;
+          width: 104px;
         }
         .dash {
           padding: 0px 16px 0 16px;
@@ -83,6 +82,7 @@
     .selectOfficer {
       display: flex;
       justify-content: right;
+      margin-top: 16px;
   
       .MuiFormControl-root {
         min-width: 160px;
@@ -145,6 +145,7 @@
       .helperText {
         display: flex;
         justify-content: center;
+        text-align: center;
         padding-top: 8px;
       }
       .statusButtons {
@@ -308,7 +309,7 @@
       width: 100%;
 
       .timePicker {
-        margin-top: 10px;
+        margin-top: 12px;
       }
       .statusText {
         padding-right: 100px;

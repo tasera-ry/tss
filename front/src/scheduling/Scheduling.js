@@ -636,6 +636,7 @@ function Scheduling(props) {
           disabled={!available}
           {...(disabled && { disabled: true })}
           labelId="chooserangeSupervisorLabel"
+          label={sched.Select[fin]}
           name="rangeSupervisorId"
           value={rangeSupervisorId || ''}
           onChange={handleValueChange}
@@ -1009,8 +1010,8 @@ function Scheduling(props) {
               value={moment(date)}
               onChange={(newDate) => handleDateChange(newDate)}
               onAccept={(newDate) => handleDatePickChange(newDate)}
-              inputFormat="DD.MM.YYYY" 
-              renderInput={(params) => <TextField {...params} />}
+              inputFormat="DD.MM.YYYY"               
+              slots={{textField: TextField}}
               showTodayButton
               data-testid="datePicker"
             />
@@ -1041,7 +1042,7 @@ function Scheduling(props) {
                     value={moment(open)}
                     onChange={handleTimeStartChange}
                     minutesStep={5}
-                    renderInput={(params) => <TextField {...params} />}
+                    slots={{textField: TextField}}
                     showTodayButton
                   />
                 </LocalizationProvider>
@@ -1055,7 +1056,7 @@ function Scheduling(props) {
                     value={moment(close)}
                     onChange={handleTimeEndChange}
                     minutesStep={5}
-                    renderInput={(params) => <TextField {...params} />}
+                    slots={{textField: TextField}}
                     showTodayButton
                   />
                 </LocalizationProvider>
@@ -1139,7 +1140,9 @@ function Scheduling(props) {
                       id="time"
                       type="time"
                       defaultValue={arrivalTime ? arrivalTime : "00:00:00"}
-                      onChange={(event) => handleArrivalTime(event)} />
+                      onChange={(event) => handleArrivalTime(event)} 
+                      style={{minWidth:'112px'}}
+                    />
                     <Button
                       disabled={statusColor === colors.green}
                       className="confirmTimeButton"
