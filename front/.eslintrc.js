@@ -1,3 +1,4 @@
+require("eslint-plugin-only-warn");
 module.exports = {
   env: {
     'jest/globals': true,
@@ -5,7 +6,7 @@ module.exports = {
   },
   extends: ['airbnb'],
   plugins: ['react', 'jest', 'prettier'],
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   rules: {
     'react/jsx-filename-extension': [0],
     'jsx-a11y/alt-text': [0],
@@ -26,6 +27,15 @@ module.exports = {
     'guard-for-in': [0],
     'linebreak-style': [0],
     curly: 'off',
+    
+    "padded-blocks": "warn",
+    "no-unused-vars": "warn",
+    "keyword-spacing": "warn",
+    "space-before-blocks": "warn",
+    "keyword-spacing": "warn",
+    "space-before-blocks": "warn",
+    "no-trailing-spaces": "warn",
+    "semi": "warn",
     /* following conflicts with prettier */
     'implicit-arrow-linebreak': 'off',
     'operator-linebreak': 'off',

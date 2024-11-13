@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 
 // Material UI components
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
 
 import colors from '../colors.module.scss';
 

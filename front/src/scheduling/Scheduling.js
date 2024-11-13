@@ -6,36 +6,32 @@ import './Scheduling.scss';
 import '../shared.module.scss';
 
 // Date management
-import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 import 'moment/locale/fi';
 
 // Material UI components
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
-import Switch from '@material-ui/core/Switch';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import FormLabel from '@material-ui/core/FormLabel';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Backdrop from '@material-ui/core/Backdrop';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
-import Modal from '@material-ui/core/Modal';
-import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import { withStyles } from '@material-ui/core/styles';
-import { Box } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import colors from '../colors.module.scss';
+import { LocalizationProvider, TimePicker, DatePicker } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import Switch from '@mui/material/Switch';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import FormLabel from '@mui/material/FormLabel';
+import CircularProgress from '@mui/material/CircularProgress';
+import Backdrop from '@mui/material/Backdrop';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import Modal from '@mui/material/Modal';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
+import { withStyles } from '@mui/styles';
+import Box from '@mui/material/Box';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
+import colors from '../colors.module.scss';
 import socketIOClient from 'socket.io-client';
 import {
   updateRangeSupervision,
@@ -311,11 +307,13 @@ function Scheduling(props) {
 
   const handleNotice = (event) => {
     // console.log("handle notice",event.target.id,event.target.value,this.state.tracks)
+    const maxLength = 255;
+    const value = event.target.value.slice(0, maxLength); // limit to 255 characters
     const idx = tracks.findIndex(
       (findItem) => findItem.id === parseInt(event.target.id),
     );
     let newTracks = [...tracks];
-    newTracks[idx] = { ...newTracks[idx], notice: event.target.value };
+    newTracks[idx] = { ...newTracks[idx], notice: value };
     setTracks(newTracks);
   };
 
@@ -589,6 +587,7 @@ function Scheduling(props) {
                 value={tracks[key].notice !== null ? tracks[key].notice : ''}
                 placeholder={sched.Notice[fin]}
                 style={{ backgroundColor: 'blackTint10' }}
+                maxLength={255}
               />
             </FormControl>
           </Box>
@@ -1003,24 +1002,19 @@ function Scheduling(props) {
       <Box className="firstSection">
         <form onSubmit={continueWithDate}>
           {/* Datepicker */}
-          <MuiPickersUtilsProvider
-            utils={MomentUtils}
-            locale={lang}
-            key={datePickerKey}
-          >
-            <KeyboardDatePicker
-              autoOk
-              margin="normal"
-              name="date"
+          <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={lang} key={datePickerKey}>
+            <DatePicker
+              closeOnSelect
               label={sched.Day[fin]}
-              value={date}
+              value={moment(date)}
               onChange={(newDate) => handleDateChange(newDate)}
               onAccept={(newDate) => handleDatePickChange(newDate)}
-              format="DD.MM.YYYY"
+              inputFormat="DD.MM.YYYY" 
+              renderInput={(params) => <TextField {...params} />}
               showTodayButton
               data-testid="datePicker"
             />
-          </MuiPickersUtilsProvider>   
+          </LocalizationProvider>
         </form>
         <FormControl component="fieldset" style={{padding:'5px'}}>
           <div className="options">
@@ -1038,35 +1032,33 @@ function Scheduling(props) {
             <div className="middleRow">
               <div className="text">{sched.OpenHours[fin]}</div>
               <div className='timePicker'>
-                <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
-                  <KeyboardTimePicker
+                <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="fi">
+                  <TimePicker
                     disabled={!available}
-                    autoOk
+                    closeOnSelect
                     ampm={false}
-                    margin="normal"
-                    name="start"
                     label={sched.Start[fin]}
-                    value={open}
+                    value={moment(open)}
                     onChange={handleTimeStartChange}
                     minutesStep={5}
+                    renderInput={(params) => <TextField {...params} />}
                     showTodayButton
                   />
-                </MuiPickersUtilsProvider>
+                </LocalizationProvider>
                 <div className="dash">-</div>
-                <MuiPickersUtilsProvider utils={MomentUtils} locale="fi">
-                  <KeyboardTimePicker
+                <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="fi">
+                  <TimePicker
                     disabled={!available}
-                    autoOk
+                    closeOnSelect
                     ampm={false}
-                    margin="normal"
-                    name="end"
                     label={sched.Stop[fin]}
-                    value={close}
+                    value={moment(close)}
                     onChange={handleTimeEndChange}
                     minutesStep={5}
+                    renderInput={(params) => <TextField {...params} />}
                     showTodayButton
                   />
-                </MuiPickersUtilsProvider>
+                </LocalizationProvider>
               </div>
             </div>
             <hr />
@@ -1260,9 +1252,11 @@ function Scheduling(props) {
               autoHideDuration={5000}
               onClose={handleSnackbarClose}
             >
-              <Alert onClose={handleSnackbarClose} severity={toastSeverity}>
-                {toastMessage}!
-              </Alert>
+              <div>
+                <Alert onClose={handleSnackbarClose} severity={toastSeverity}>
+                  {toastMessage}!
+                </Alert>
+              </div>
             </Snackbar>
           </div>
         </div>

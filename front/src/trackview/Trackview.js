@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 
-import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import api from '../api/api';
 import { dayToString } from '../utils/Utils';
@@ -91,7 +91,7 @@ const Trackview = (props) => {
           rangeSupervision: data.rangeSupervision,
           name: selectedTrack.name,
           description: `(${selectedTrack.description})`,
-          info: selectedTrack.notice,
+          info: selectedTrack.notice, // ensure line breaks
         });
         setVisible({
           date: true,
@@ -156,7 +156,7 @@ const Trackview = (props) => {
         </Grid>
       )}
       {visible.infobox && ( // extra info of the track
-        <div>
+        <div className={classes(css.preWrap)}>
           <p>{trackview.Info[lang]}:</p>
           <div className={classes(css.infoBox)}>{state.info}</div>
         </div>
