@@ -604,7 +604,8 @@
     "nextTooltip": ["Seuraava sivu", "Next page", "Nästa sida"],
     "previousTooltip": ["Edellinen sivu", "Previous page", "Föregående sida"],
     "firstTooltip": ["Ensimmäinen sivu", "First page", "Första sidan"],
-    "lastTooltip": ["Viimeinen sivu", "Last page", "Sista sidan"]
+    "lastTooltip": ["Viimeinen sivu", "Last page", "Sista sidan"],
+    "addButton": ["Lisää", "Add", "Lägg till"]
   },
 
 

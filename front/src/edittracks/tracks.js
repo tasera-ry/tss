@@ -65,7 +65,7 @@ const TrackTable = ({
       setNewRow({ name: '', description: '', short_description: '' });
     } catch (e) {
       setRequestStatus('error');
-      setRequestText('Radan lisäys epäonnistui');
+      setRequestText('Radan lisäys epäonnistui.');
     }
   };
 
@@ -193,7 +193,7 @@ const TrackTable = ({
             </TableCell>
             <TableCell>
               <Button onClick={handleAddRow} startIcon={<Add />}>
-                Add
+                {l10n.addButton[lang]}
               </Button>
             </TableCell>
           </TableRow>
