@@ -239,10 +239,15 @@ function Scheduling(props) {
   const handleSwitchChange = (event) => {
     //console.log("Switch",event.target.name, event.target.checked);
 
-    if (event.target.name === 'available') {
+    if (event.target.name === 'available' && !available) {
       setAvailable(event.target.checked);
     }
-
+    // If center is closed also the shooting tracks will be closed
+    if (event.target.name === 'available' && available) {
+      setAvailable(event.target.checked);
+      closeAllTracks();
+    }
+    
     if (event.target.name === 'rangeSupervisorSwitch') {
       setRangeSupervisorSwitch(event.target.checked);
     }
