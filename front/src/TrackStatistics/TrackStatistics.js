@@ -3,15 +3,22 @@ import classNames from 'classnames';
 import api from '../api/api';
 import Button from '@mui/material/Button';
 // enables overriding material-ui component styles in scss
-import { StyledEngineProvider } from '@mui/material/styles';
+import { StyledEngineProvider, styled } from '@mui/material/styles';
 import css from './TrackStatistics.module.scss';
-import { makeStyles } from '@mui/styles';
 import Modal from '@mui/material/Modal';
 import translations from '../texts/texts.json';
 const { trackStatisticsModal } = translations;
 
-
 const classes = classNames.bind(css);
+
+const Paper = styled('div')(({ theme }) => ({
+  position: 'absolute',
+  width: 400,
+  backgroundColor: theme.palette.background.paper,
+  border: '2px solid #000',
+  boxShadow: theme.shadows[5],
+  padding: theme.spacing(2, 4, 3),
+}));
 
 export const TrackStatistics = ({ track, supervision }) => {
   const isDisabled = Boolean(track.trackSupervision === 'absent')
@@ -22,7 +29,7 @@ export const TrackStatistics = ({ track, supervision }) => {
     scheduled && scheduled.visitors ? scheduled.visitors : 0,
   );
 
-  // Raises or lowers the number of visitors in a given track
+    // Raises or lowers the number of visitors in a given track
   const changeVisitors = async (newVisitors) => {
     if (!scheduled || newVisitors === -1) return;
     // TODO FIX: always updates the visitors state regardless of patch success
@@ -30,7 +37,7 @@ export const TrackStatistics = ({ track, supervision }) => {
     await sendStats(newVisitors);
   };
 
-  // Sends the changed visitors statistics to backend
+    // Sends the changed visitors statistics to backend
   const sendStats = async (newVisitors) => {
     if (!scheduled) return;
     try {
@@ -63,18 +70,6 @@ export const TrackStatistics = ({ track, supervision }) => {
     };
   }
 
-  const useStyles = makeStyles((theme) => ({
-    paper: {
-      position: 'absolute',
-      width: 400,
-      backgroundColor: theme.palette.background.paper,
-      border: '2px solid #000',
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-    },
-  }));
-
-  const classesStyles = useStyles();
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
 
@@ -87,27 +82,27 @@ export const TrackStatistics = ({ track, supervision }) => {
   };
 
   const body = (
-    <div style={modalStyle} className={classesStyles.paper}>
+    <Paper style={modalStyle}>
       <h2 id="simple-modal-title">{trackStatisticsModal.messageTitle[lang]}</h2>
       <p id="simple-modal-description">
         {trackStatisticsModal.message[lang]}
       </p>
       <div className={classes(css.trackContainer)}>
-      <Button
-        variant="contained"
-        style={{ color: 'red' }}
-        onClick={() => {changeVisitors(visitors - 1); handleClose();}}
+        <Button
+          variant="contained"
+          style={{ color: 'red' }}
+          onClick={() => {changeVisitors(visitors - 1); handleClose();}}
         >
-        {trackStatisticsModal.messageYes[lang]}
-      </Button>
-      <Button
-        variant="contained"
-        style={{ color: 'green' }}
-        onClick={() => handleClose()}>
-        {trackStatisticsModal.messageNo[lang]}
-      </Button>
+          {trackStatisticsModal.messageYes[lang]}
+        </Button>
+        <Button
+          variant="contained"
+          style={{ color: 'green' }}
+          onClick={() => handleClose()}>
+          {trackStatisticsModal.messageNo[lang]}
+        </Button>
       </div>
-    </div>
+    </Paper>
   );
 
   return (
@@ -139,7 +134,7 @@ export const TrackStatistics = ({ track, supervision }) => {
           aria-describedby="simple-modal-description"
         >
           {body}
-      </Modal>
+        </Modal>
       </div>
     </StyledEngineProvider>
   );
