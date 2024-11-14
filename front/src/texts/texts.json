@@ -318,6 +318,11 @@
       "User management",
       "Användarhantering"
     ],
+    "LoggedIn": [
+      "Olet kirjautunut sisään käyttäjänä",
+      "You are logged in as",
+      "Du är inloggad som"
+    ],
     "ChangePass": ["Vaihda salasana", "Change password", "Ändra lösenord"],
     "ChangeEmail": [
       "Vaihda sähköpostiosoite",
@@ -329,6 +334,7 @@
       "Change role",
       "Ändra roll"
     ],
+    "Edit": ["Muokka", "Edit", "Redigera"],
     "CreateUser": ["Lisää käyttäjä", "Create new user", "Skapa ny användare"],
     "Users": ["Käyttäjät", "User profiles", "Användarprofiler"],
     "Username": ["Käyttäjänimi", "Username", "Användarnamn"],
