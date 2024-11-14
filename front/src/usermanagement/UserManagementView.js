@@ -23,6 +23,8 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import EditOffIcon from '@mui/icons-material/EditOff';
 import NiceInputPassword from 'react-nice-input-password';
 import 'react-nice-input-password/dist/react-nice-input-password.css';
 
@@ -265,7 +267,9 @@ function UserManagementView(props)  {
     myStorage: window.localStorage,
     addEmailDialogOpen: false,
     refresh: false,
+    editingRows: {},
   });
+  
 
   // is ran when component mounts
   useEffect(() => {
@@ -464,6 +468,27 @@ function UserManagementView(props)  {
         changeErrors: false});
     }
   }
+
+  // Handles the edit mode of the rows in the table of users
+  // when edit button is clicked
+  const handleEditClick = (rowId) => {
+
+    // Checks the edit state of the selected row
+    setState((prevState) => {
+      const editState = !!prevState.editingRows[rowId];
+
+      // Updates the edit state for the selected row in the editingRows object
+      // If the row is in edit mode, the state will be set to false, if not
+      // it will be set to true
+      return {
+        ...prevState,
+        editingRows: {
+          ...prevState.editingRows,
+          [rowId]: !editState,
+        }
+      };
+    });
+  };
 
   const returnRemoveButton = (id, manage, fin) => {
     return (
@@ -1261,46 +1286,43 @@ function UserManagementView(props)  {
       </Dialog>
 
       {/* THE ACTUAL PAGE */}
-
       <h1 className={classes(css.header)}>{manage.UserManage[fin]}</h1>
-      <Divider />
-      <Box className={classes(css.userbox)}>
-        <h3 className={classes(css.header)}>{manage.ChangePass[fin]}:</h3>
-        <Button
-          onClick={handleOpenOwnPassChangeDialog}
-          variant="contained"
-          className={classes(css.turquoiseButton)}
+      <Box 
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          maxWidth: '800px',
+          backgroundColor:'#eeee',
+          borderRadius: '10px',
+          border: '1px solid #e7e7e7',
+          padding: '16px 20px 16px 20px',
+          margin: '0 auto',
+        }}
         >
-          {manage.ChangePass[fin]}
-        </Button>
+        <div>{manage.LoggedIn[fin]}: <span style={{fontWeight:"bold"}}>{state.username}</span></div>
+        <div className={classes(css.buttonContainer)}>
+          <Button
+            onClick={handleOpenOwnEmailChangeDialog}
+            variant="contained"
+            className={classes(css.sandButton)}
+          >
+            {manage.ChangeEmail[fin]}
+          </Button>
+          <Button
+            onClick={handleOpenOwnPassChangeDialog}
+            variant="contained"
+            className={classes(css.turquoiseButton)}
+          >
+            {manage.ChangePass[fin]}
+          </Button>
+        </div>
       </Box>
-      <Divider />
-      <Box className={classes(css.userbox)}>
-        <h3 className={classes(css.header)}>{manage.ChangeEmail[fin]}:</h3>
-        <Button
-          onClick={handleOpenOwnEmailChangeDialog}
-          variant="contained"
-          className={css.sandButton}
-        >
-          {manage.ChangeEmail[fin]}
-        </Button>
-      </Box>
-      <Divider />
-      <Box className={classes(css.userbox)}>
-        <h3 className={classes(css.header)}>{manage.CreateUser[fin]}:</h3>
-        <Button
-          onClick={handleAddUserOpenDialog}
-          variant="contained"
-          className={css.lightgreenButton}
-        >
-          {manage.CreateUser[fin]}
-        </Button>
-      </Box>
-      <Divider />
 
       {/* USER PROFILES TABLE */}
 
-      <h3 className={classes(css.header)}>{`${manage.Users[fin]}:`}</h3>
+      <h3 className={classes(css.header)}>{manage.Users[fin]}</h3>
       <Box className={classes(css.userbox)}>
         <TableContainer
           component={Paper}
@@ -1309,18 +1331,24 @@ function UserManagementView(props)  {
           <Table aria-label="table of users" className={classes(css.table)}>
             <TableHead>
               <TableRow>
-                <TableCell align="justify">{manage.Username[fin]}</TableCell>
-                <TableCell align="justify">
-                  {manage.ChangePass[fin]}
+                <TableCell align="justify" style={{fontWeight: 'bold'}}>
+                  {manage.Username[fin]}
                 </TableCell>
-                <TableCell align="justify">
-                  {manage.RemoveUser[fin]}
+                <TableCell align="justify" style={{fontWeight: 'bold'}}>
+                  {manage.Role[fin]}
                 </TableCell>
-                <TableCell align="justify">
-                  {manage.ChangeEmail[fin]}
+                <TableCell align="justify" style={{fontWeight: 'bold'}}>
+                  {manage.Association[fin]}
                 </TableCell>
+                <TableCell align="justify"></TableCell>
                 <TableCell align="justify">
-                  {manage.ChangeRole[fin]}
+                  <Button
+                    onClick={handleAddUserOpenDialog}
+                    variant="contained"
+                    className={css.lightgreenButton}
+                  >
+                    {manage.CreateUser[fin]}
+                  </Button>
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -1329,22 +1357,38 @@ function UserManagementView(props)  {
                 <TableRow key={row.name} hover>
                   <TableCell align="justify" component="th" scope="row">
                     {row.name}
-                    <br />
-                    {row.roleToPrint}
-                    <br />
+                    <br /> 
                     {row.email}
+                    {state.editingRows[row.id] && (
+                      <Button onClick={onaddEmailClick}> 
+                        <EditIcon />
+                      </Button>
+                    )}
                   </TableCell>
                   <TableCell align="justify">
-                    {returnPassButton(row.id, manage, fin)}
+                    {row.roleToPrint}
+                    {state.editingRows[row.id] && (
+                      <Button onClick={onRoleClick}> 
+                        <EditIcon />
+                      </Button>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {/* Need to add printing of accosiation name */}
                   </TableCell>
                   <TableCell align="justify">
-                    {returnRemoveButton(row.id, manage, fin)}
+                    {state.editingRows[row.id] && (
+                      returnPassButton(row.id, manage, fin)
+                    )}
+                    {state.editingRows[row.id] && (
+                      returnRemoveButton(row.id, manage, fin)
+                    )}
                   </TableCell>
                   <TableCell align="justify">
-                    {returnaddEmailButton(row.id, manage, fin)}
-                  </TableCell>
-                  <TableCell align="justify">
-                    {returnRoleButton(row.id, manage, fin)}
+                    {manage.Edit[fin]}
+                    <Button onClick={() => handleEditClick(row.id)}>
+                      {!state.editingRows[row.id] ? <EditIcon/> : <EditOffIcon/>}
+                    </Button>
                   </TableCell>
                 </TableRow>
               )}
