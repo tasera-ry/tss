@@ -334,7 +334,7 @@
       "Change role",
       "Ändra roll"
     ],
-    "Edit": ["Muokka", "Edit", "Redigera"],
+    "Edit": ["Muokkaa", "Edit", "Redigera"],
     "CreateUser": ["Lisää käyttäjä", "Create new user", "Skapa ny användare"],
     "Users": ["Käyttäjät", "User profiles", "Användarprofiler"],
     "Username": ["Käyttäjänimi", "Username", "Användarnamn"],
