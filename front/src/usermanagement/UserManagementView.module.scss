@@ -10,39 +10,105 @@
   text-align: center;
 }
 
-.userbox {
-  @extend .layout-row;
-  justify-content: center;
-  flex-wrap: wrap;
-
-  .turquoiseButton {
-    background-color: $COLOR_TURQUOISE;
-    margin: 15px;
-    text-align: center;
-  }
-
-  .sandButton {
-    background-color: $COLOR_SAND;
-    margin: 15px;
-    text-align: center;
-  }
-
-  .lightgreenButton {
-    background-color: $COLOR_GREEN_LIGHT;
-    margin: 15px;
-    text-align: center;
-  }
-}
-
 .header {
   text-align: center;
+  margin: 24px 0px 24px 0px;
+}
+
+.LoggedIn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 700px;
+  padding: 20px 20px 20px 20px;
+  margin: 0 auto;
+  gap: 18px;
+  background-color: $COLOR_BLACK_TINT_05;
+  border-radius: 10px;
+  border: 1px solid #e7e7e7;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+  
+  .buttonContainer {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    .sandButton {
+      background-color: $COLOR_SAND;
+      color: $COLOR_BLACK;
+      margin: 6px;
+      text-align: center;
+      font-size:smaller;
+      border-radius: 20px;
+      padding: 8px 20px 8px 20px;
+    }
+    .turquoiseButton {
+      background-color: $COLOR_TURQUOISE;
+      color: $COLOR_BLACK;
+      margin: 6px;
+      text-align: center;
+      font-size: smaller;
+      border-radius: 20px;
+      padding: 8px 20px 8px 20px;
+    }
+  }
 }
 
 .tableContainer {
   table-layout: auto;
+  justify-content: center;
+  width: 90%;
+  margin: 0 auto;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 
   .table {
-    background-color: $COLOR_BLACK_TINT_20;
+    background-color: $COLOR_BLACK_TINT_05;
+  }
+  .MuiTableRow-root{
+    padding: 8px;
+  }
+  .lightgreenButton {
+    background-color: $COLOR_GREEN_LIGHT;
+    color: $COLOR_BLACK;
+    margin: 15px;
+    text-align: center;
+    font-size: smaller;
+    text-wrap: nowrap;
+    border-radius: 20px;
+    padding: 8px 20px 8px 20px;
+  }
+  .buttonCell{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 12px;
+
+    .turquoiseButton {
+      background-color: $COLOR_TURQUOISE;
+      color: $COLOR_BLACK;
+      text-align: center;
+      text-wrap: nowrap;
+      text-transform: none;
+      font-size: 0.8rem;
+      border-radius: 20px;
+      padding: 6px 16px 6px 16px;
+    }
+    .removeButton {
+      background-color: $COLOR_RED_LIGHT;
+      color: $COLOR_BLACK;
+      text-align: center;
+      text-wrap: nowrap;
+      text-transform: none;
+      font-size: 0.8rem;
+      border-radius: 20px;
+      padding: 6px 16px 6px 16px;
+    }
+  }
+  .tableRow > TableCell:last-child {
+    width: 100px;
   }
 }
 

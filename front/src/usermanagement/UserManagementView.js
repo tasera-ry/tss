@@ -1287,20 +1287,7 @@ function UserManagementView(props)  {
 
       {/* THE ACTUAL PAGE */}
       <h1 className={classes(css.header)}>{manage.UserManage[fin]}</h1>
-      <Box 
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          maxWidth: '800px',
-          backgroundColor:'#eeee',
-          borderRadius: '10px',
-          border: '1px solid #e7e7e7',
-          padding: '16px 20px 16px 20px',
-          margin: '0 auto',
-        }}
-        >
+      <Box className={classes(css.LoggedIn)}>
         <div>{manage.LoggedIn[fin]}: <span style={{fontWeight:"bold"}}>{state.username}</span></div>
         <div className={classes(css.buttonContainer)}>
           <Button
@@ -1322,26 +1309,26 @@ function UserManagementView(props)  {
 
       {/* USER PROFILES TABLE */}
 
-      <h3 className={classes(css.header)}>{manage.Users[fin]}</h3>
+      <h2 className={classes(css.header)}>{manage.Users[fin]}</h2>
       <Box className={classes(css.userbox)}>
         <TableContainer
           component={Paper}
           className={classes(css.tableContainer)}
         >
           <Table aria-label="table of users" className={classes(css.table)}>
-            <TableHead>
+            <TableHead className={classes(css.tableHead)}>
               <TableRow>
-                <TableCell align="justify" style={{fontWeight: 'bold'}}>
+                <TableCell align="left" style={{fontWeight: 'bold', width: '300px'}}>
                   {manage.Username[fin]}
                 </TableCell>
-                <TableCell align="justify" style={{fontWeight: 'bold'}}>
+                <TableCell align="left" style={{fontWeight: 'bold', width: '200px'}}>
                   {manage.Role[fin]}
                 </TableCell>
-                <TableCell align="justify" style={{fontWeight: 'bold'}}>
+                <TableCell align="left" style={{fontWeight: 'bold', width: '100px'}}>
                   {manage.Association[fin]}
                 </TableCell>
-                <TableCell align="justify"></TableCell>
-                <TableCell align="justify">
+                <TableCell align="right"></TableCell>
+                <TableCell align="right" style={{width: '100px'}}>
                   <Button
                     onClick={handleAddUserOpenDialog}
                     variant="contained"
@@ -1358,10 +1345,10 @@ function UserManagementView(props)  {
                   <TableCell align="justify" component="th" scope="row">
                     {row.name}
                     <br /> 
-                    {row.email}
+                    {row.email} 
                     {state.editingRows[row.id] && (
                       <Button onClick={onaddEmailClick}> 
-                        <EditIcon />
+                        <EditIcon style={{fontSize: 'large'}}/>
                       </Button>
                     )}
                   </TableCell>
@@ -1369,25 +1356,27 @@ function UserManagementView(props)  {
                     {row.roleToPrint}
                     {state.editingRows[row.id] && (
                       <Button onClick={onRoleClick}> 
-                        <EditIcon />
+                        <EditIcon style={{fontSize: 'large'}}/>
                       </Button>
                     )}
                   </TableCell>
                   <TableCell>
                     {/* Need to add printing of accosiation name */}
                   </TableCell>
-                  <TableCell align="justify">
-                    {state.editingRows[row.id] && (
-                      returnPassButton(row.id, manage, fin)
-                    )}
-                    {state.editingRows[row.id] && (
-                      returnRemoveButton(row.id, manage, fin)
-                    )}
+                  <TableCell align="right">
+                    <div className={classes(css.buttonCell)}>
+                      {state.editingRows[row.id] && (
+                        returnPassButton(row.id, manage, fin)
+                      )}
+                      {state.editingRows[row.id] && (
+                        returnRemoveButton(row.id, manage, fin)
+                      )}
+                    </div>
                   </TableCell>
-                  <TableCell align="justify">
+                  <TableCell align="right">
                     {manage.Edit[fin]}
                     <Button onClick={() => handleEditClick(row.id)}>
-                      {!state.editingRows[row.id] ? <EditIcon/> : <EditOffIcon/>}
+                      {!state.editingRows[row.id] ? <EditIcon style={{fontSize: 'large'}}/> : <EditOffIcon style={{fontSize: 'large'}}/>}
                     </Button>
                   </TableCell>
                 </TableRow>
