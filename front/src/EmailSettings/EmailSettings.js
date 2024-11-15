@@ -92,6 +92,7 @@ const EmailSettings = () => {
     pass: '',
     host: '',
     port: 0,
+    cc: '',
     secure: 'true',
     shouldQueue: 'false',
     shouldSend: 'true',
@@ -177,6 +178,10 @@ const EmailSettings = () => {
       setNotification({ open: true, message: emailSettings.passError[lang], type: 'error' });
       return;
     }
+    else if (settings.cc && !validateEmail(settings.cc)) {
+      setNotification({ open: true, message: emailSettings.ccError[lang], type: 'error' });
+      return;
+    }
 
     setPendingSave(true);
 
@@ -260,6 +265,12 @@ const EmailSettings = () => {
             type="password"
             onChange={handleChange}
             autoComplete="new-password"
+          />
+          <TextField
+            name="cc"
+            label="CC"
+            value={settings.cc}
+            onChange={handleChange}
           />
           <FormHelperText>{emailSettings.ssl[lang]}</FormHelperText>
           <RadioGroup

@@ -30,6 +30,7 @@ const emailSettingConstraints = {
   pass: {in: ['body']},
   host: {in: ['body'], exists: true, isURL: true, errorMessage: 'Invalid host address'},
   port: {in: ['body'], exists: true, isInt: true, errorMessage: 'Invalid port'},
+  cc: {in: ['body'], optional: true},
   secure: {in: ['body'], exists: true},
   shouldSend: {in: ['body'], exists: true},
   shouldQueue: { in: ['body'], exists: true },

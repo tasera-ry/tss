@@ -714,6 +714,11 @@
       "Password cannot be empty!",
       "Lösenordet kan inte vara tomt!"
     ],
+    "ccError": [
+      "Virheellinen kopio-sähköposti!",
+      "Invalid CC email!",
+      "Ogiltig CC e-post!"
+    ],
     "hostError": [
       "DNS-haku epäonnistui. Tarkista, että SMTP on oikea.",
       "DNS resolution failed. Please check that the SMTP host is correct.",
