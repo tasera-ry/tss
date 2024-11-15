@@ -395,14 +395,14 @@
       "Denna åtgärd kommer att ta bort användaren permanent"
     ],
     "Error": [
-      "Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki",
-      "Something went wrong, remember to have at least 6 characters long password and a unique name",
-      "Något gick fel, kom ihåg att lösenord måste vara minst 6 tecken långt och ett unikt namn"
+      "Jokin meni pieleen, huomaathan että salasanan on täytettävä listatut vaatimukset ja nimen oltava uniikki",
+      "Something went wrong, remember that the password has to meet the listed requirements and the name needs to be unique",
+      "Något gick fel, kom ihåg att lösenordet måste uppfylla de angivna kraven och att namnet måste vara unikt"
     ],
     "ErrorPassword": [
-      "Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä",
-      "Something went wrong, password has to be at least 6 characters long",
-      "Något gick fel, kom ihåg att lösenord måste vara minst 6 tecken långt"
+      "Jokin meni pieleen, huomaathan että salasanan on täytettävä listatut vaatimukset",
+      "Something went wrong, remember that the password has to meet the listed requirements",
+      "Något gick fel, kom ihåg att lösenordet måste uppfylla de angivna kraven"
     ],
     "ErrorEmail": [
       "Jokin meni pieleen, sähköpostia ei tallennettu",
