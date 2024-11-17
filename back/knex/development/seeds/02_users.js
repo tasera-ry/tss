@@ -28,7 +28,7 @@ exports.seed = async function (knex) {
 			password: '5Effie38',
 			digest: '$2a$10$oE0o638BBP/SkL2MQ0jEQeIxh6iKTkLoGaq/Cv6PuEzgeoqZTW4.e',
 			phone: '905-680-0458',
-			email: 'DevAssociation@yahoo.com',
+			email: 'DevAssociation@email.com',
 			role: 'association'
 		},
 		{
@@ -36,7 +36,7 @@ exports.seed = async function (knex) {
 			password: '2Gordon62',
 			digest: '$2a$10$7mUgTdyd9EiWA755lHaxCeS0jqzaJmn7tp2JMK7nIzMqZcOYEuA2.',
 			phone: '079-699-6774',
-			email: 'DevSuperuser@tss.ca',
+			email: 'DevSuperuser@email.com',
 			role: 'superuser'
 		},
 		{
@@ -44,7 +44,7 @@ exports.seed = async function (knex) {
 			password: '4Jaron49',
 			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
 			phone: '788-709-3147',
-			email: 'DevRangeOfficer1@hotmail.com',
+			email: 'DevRangeOfficer1@email.com',
 			role: 'rangeofficer'
 		},
 		{
@@ -52,9 +52,18 @@ exports.seed = async function (knex) {
 			password: '4Jaron49',
 			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
 			phone: '788-709-3147',
-			email: 'DevRangeOfficer2@hotmail.com',
+			email: 'DevRangeOfficer2@email.com',
 			role: 'rangeofficer'
 		},
+		// for Cypress tests
+		{
+			name: 'CypressAssociation',
+			password: '0Marilou36',
+			digest: '$2a$10$/udiVo6laqJXbKiLOVQVpenMbQKhykA4n.uOcqKORZS3GgCvu9CNS',
+			phone: '788-709-3147',
+			email: 'CypressAssociation@email.com',
+			role: 'association'
+		}
 	];
 
 	// const head = _.take(users, listedUsersAmount).map(
