@@ -49,10 +49,12 @@ const fields = {
         minSymbols: 0
       })
       .withMessage('must contain at least one lowercase, uppercase, number and be six characters long')
+      .isString()
+      .withMessage('must be a string')
+      .isAscii()
+      .withMessage('must only contain ASCII characters')
       .isByteLength({ max: 72 })
-      .withMessage('must be under 72 characters')
-      .matches(/^[a-zA-Z0-9_.-]*$/)
-      .withMessage('must only contain letters, numbers or characters _ . - ');
+      .withMessage('must be under 72 characters');
     return validatorAdditions(validator, opts);
   },
 
