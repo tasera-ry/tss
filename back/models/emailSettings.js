@@ -37,6 +37,7 @@ const model = {
    *    pass: *SMTP password here*,
    *    host: *SMTP host address here*,
    *    port: *SMTP port here*,
+   *    cc: *CC email address here*,
    *    secure: *Whether or not to use SSL here*,
    *    shouldSend: *Whether or not to automatically send emails here*
    *    assignedMsg: *New supervisor assignment email message*
@@ -54,6 +55,7 @@ const model = {
       await trx('settings').where({ setting_name: 'email_pass' }).update({ setting_value: { pass: newSettings.pass }});
       await trx('settings').where({ setting_name: 'email_host' }).update({ setting_value: { host: newSettings.host }});
       await trx('settings').where({ setting_name: 'email_port' }).update({ setting_value: { port: newSettings.port }});
+      await trx('settings').where({ setting_name: 'email_cc' }).update({ setting_value: { cc: newSettings.cc }});
       await trx('settings').where({ setting_name: 'email_secure' }).update({ setting_value: { secure: newSettings.secure }});
       await trx('settings').where({ setting_name: 'email_shouldsend' }).update({ setting_value: { shouldSend: newSettings.shouldSend }});
       await trx('settings').where({ setting_name: 'email_shouldqueue' }).update({ setting_value: { shouldQueue: newSettings.shouldQueue }});

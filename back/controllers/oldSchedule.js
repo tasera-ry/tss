@@ -141,6 +141,7 @@ exports.getScheduleDate = async (req, res) => {
     let rangeSupervisionState = 'absent';
     // could this be removed somehow?
     let rangeSupervisionScheduled = false;
+    let arrivingAt = null;
 
     // lousy, should probably return only one, not an array eq
     const reservation = await getReservation(date);
@@ -188,6 +189,7 @@ exports.getScheduleDate = async (req, res) => {
     if(rangeSupervision && rangeSupervision.length > 0) {
       rangeSupervisionState = rangeSupervision[0].range_supervisor;
       rangeSupervisionScheduled = true;
+      arrivingAt = rangeSupervision[0].arriving_at;
     } else rangeSupervisionScheduled = false;
 
     let result = {
@@ -199,6 +201,7 @@ exports.getScheduleDate = async (req, res) => {
       close: close,
       available: available,
       rangeSupervisorId: rangeSupervisorId,
+      arrivingAt: arrivingAt,
       rangeSupervision: (!available ? 'closed' : rangeSupervisionState),
       rangeSupervisionScheduled: rangeSupervisionScheduled,
       tracks: tracks

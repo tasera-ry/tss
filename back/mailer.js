@@ -189,6 +189,7 @@ const sendEmail = async (text, emailAddress, emailSettings) => {
     let info = await transporter.sendMail({
       from: emailSettings.sender,
       to: emailAddress,
+      cc: emailSettings.cc,
       subject: subject,
       text: text,
     });

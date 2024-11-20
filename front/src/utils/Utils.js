@@ -232,6 +232,7 @@ export const updateRangeSupervision = async (
   rangeStatus,
   rsScheduled,
   association,
+  arrivalTime
 ) => {
   const failureText = 'general range supervision failure: Error: ';
   if (rsId === null || srsId === null)
@@ -274,8 +275,8 @@ export const updateRangeSupervision = async (
     await api.patchRangeSupervision(
       srsId,
       association
-        ? { range_supervisor: rangeStatus, association }
-        : { range_supervisor: rangeStatus },
+        ? { range_supervisor: rangeStatus, association, arriving_at: arrivalTime }
+        : { range_supervisor: rangeStatus, arriving_at: arrivalTime },
     );
     return true;
   } catch (err) {
