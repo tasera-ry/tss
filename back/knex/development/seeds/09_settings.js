@@ -11,7 +11,7 @@ exports.seed = function(knex) {
     secure: process.env.EMAIL_SECURE,
     shouldSend: process.env.SHOULD_SEND_EMAIL,
     shouldQueue: process.env.SHOULD_QUEUE_EMAIL,
-    sendPendingTime: '1970-01-01T00:00:00.000Z',
+    sendPendingTime: String(new Date(2024, 1, 2, 4, 0, 0)),
     assignedMsg: '',
     updateMsg: '',
     reminderMsg: '',

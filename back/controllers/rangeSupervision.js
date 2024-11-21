@@ -7,19 +7,18 @@ const schedule = require('node-schedule');
 const services = require(path.join(root, 'services'));
 
 
-async function setEmailSchedule() {
+async function scheduleEmailReminder() {
   try {
     const emailSettings = await services.emailSettings.read();
-    console.log("Kalle: emailSettings", emailSettings)
     if( !emailSettings ) {
-      console.error("setEmailSchedule cannot read emailSettings!")
+      console.error("scheduleEmailReminder cannot read emailSettings!", emailSettings)
       return
     }
     const sendTime = new Date(emailSettings.sendPendingTime)
     const hour = sendTime.getHours().toString().padStart(2, '0');
     const minute = sendTime.getMinutes().toString().padStart(2, '0');
-    console.log("Kalle: hour", hour)
-    console.log("Kalle: minute", minute)
+    console.log("scheduleEmailReminder: hour", hour)
+    console.log("scheduleEmailReminder: minute", minute)
     //Runs the checker everyday and checks if officer has confirmed 7 days from today
     //Stars of the scheduler explained below:
     //'seconds', 'minutes', 'hour', 'day of month', 'month', 'day of week'
@@ -48,14 +47,14 @@ async function setEmailSchedule() {
           email('reminder', receiver[0].association_id, null);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     });
   } catch (err) {
     console.error(err)
   }
 }
-setEmailSchedule();
+scheduleEmailReminder();
 
 // TODO: definitely update the database 1:1 connections so you don't
 // have to do this crap
