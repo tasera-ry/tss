@@ -109,6 +109,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 | `SENDER_EMAIL`  | Email address that will be used to send emails                         | undefined               |
 | `EMAIL_HOST`    | Host that will be used to send emails                                  | undefined               |
 | `EMAIL_PORT`    | Port that will be used to send emails                                  | undefined               |
+| `EMAIL_CC`      | Email address where copy of the email will be sent                     | undefined               |
 | `EMAIL_SECURE`  | Email secure option                                                    | undefined               |
 | `EMAIL_USER`    | Email username that will be used to send email. Optional               | undefined               |
 | `EMAIL_PASSWORD`| Password for Email user. Optional                                      | undefined               |

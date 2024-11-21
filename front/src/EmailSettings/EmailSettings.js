@@ -1,4 +1,6 @@
 import React from 'react';
+import moment from 'moment';
+import Snackbar from '@mui/material/Snackbar';
 import {
   FormControl,
   FormControlLabel,
@@ -11,16 +13,16 @@ import {
   CircularProgress,
   Select,
   MenuItem,
-  Snackbar,
-} from '@material-ui/core';
-import MuiAlert from '@material-ui/lab/Alert';
-import DateFnsUtils from '@date-io/date-fns';
+} from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-} from '@material-ui/pickers';
+  LocalizationProvider,
+  TimePicker,
+} from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import './EmailSettings.scss';
 import textData from '../texts/texts.json';
+import { getLanguage } from '../utils/Utils';
 
 const { emailSettings, nav } = textData;
 const lang = localStorage.getItem('language');
@@ -90,6 +92,7 @@ const EmailSettings = () => {
     pass: '',
     host: '',
     port: 0,
+    cc: '',
     secure: 'true',
     shouldQueue: 'false',
     shouldSend: 'true',
@@ -119,11 +122,29 @@ const EmailSettings = () => {
       });
   };
 
+  // Sends all pending emails
   const sendPendingRequest = () => {
     setPendingSend(true);
-    fetch('/api/send-pending').then(() => {
-      setPendingSend(false);
-    });
+    fetch('/api/send-pending')
+      .then(async (res) => {
+        const result = await res.json();
+        setPendingSend(false);
+        // Sending pending emails failed
+        if (res.status !== 200) {
+          setNotification({ open: true, message: emailSettings.pendingError[lang], type: 'error' });
+        }
+        // Sending pending emails was successful
+        else if (res.status === 200 && result.message) {
+          setNotification({ open: true, message: emailSettings.pendingEmpty[lang], type: 'success' });
+        } else {
+          setNotification({ open: true, message: emailSettings.pendingSuccess[lang], type: 'success' });
+        }
+        })
+      .catch((error) => {
+        setPendingSave(false);
+        console.error('Sending pending emails failed:', error);
+        setNotification({ open: true, message: emailSettings.pendingError[lang], type: 'error' });
+      });
   };
 
   // Runs the above whenever the page loads
@@ -134,7 +155,7 @@ const EmailSettings = () => {
   };
   const handleDateChange = (date) => {
     const newDate = new Date();
-    newDate.setHours(date.getHours(), date.getMinutes());
+    newDate.setHours(date.hours(), date.minutes());
     setSettings({ ...settings, sendPendingTime: newDate });
   };
 
@@ -155,6 +176,10 @@ const EmailSettings = () => {
     }
     else if (settings.pass === '') {
       setNotification({ open: true, message: emailSettings.passError[lang], type: 'error' });
+      return;
+    }
+    else if (settings.cc && !validateEmail(settings.cc)) {
+      setNotification({ open: true, message: emailSettings.ccError[lang], type: 'error' });
       return;
     }
 
@@ -241,6 +266,12 @@ const EmailSettings = () => {
             onChange={handleChange}
             autoComplete="new-password"
           />
+          <TextField
+            name="cc"
+            label="CC"
+            value={settings.cc}
+            onChange={handleChange}
+          />
           <FormHelperText>{emailSettings.ssl[lang]}</FormHelperText>
           <RadioGroup
             name="secure"
@@ -311,14 +342,14 @@ const EmailSettings = () => {
           </FormHelperText>
         </FormControl>
         <FormControl component="fieldset">
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardTimePicker
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <TimePicker
               margin="normal"
               label={emailSettings.pendingTime[lang]}
-              value={settings.sendPendingTime}
+              value={moment(settings.sendPendingTime)}
               onChange={handleDateChange}
             />
-          </MuiPickersUtilsProvider>
+          </LocalizationProvider>
         </FormControl>
         <FormControl component="fieldset">
           <FormLabel className="settings-label">
@@ -396,9 +427,11 @@ const EmailSettings = () => {
         onClose={handleCloseNotification}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseNotification} severity={notification.type}>
-          {notification.message}
-        </Alert>
+        <div>
+          <Alert onClose={handleCloseNotification} severity={notification.type}>
+            {notification.message}
+          </Alert>
+        </div>
       </Snackbar>
     </div>
   );

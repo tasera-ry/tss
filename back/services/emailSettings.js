@@ -23,6 +23,7 @@ const service = {
    *    pass: *SMTP password here*,
    *    host: *SMTP host address here*,
    *    port: *SMTP port here*,
+   *    cc: *CC email address here*,
    *    secure: *Whether or not to use SSL here*,
    *    shouldSend: *Whether or not to automatically send emails here*
    *  };

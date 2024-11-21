@@ -49,13 +49,12 @@
     "DeviceName": ["Nimi", "Name", "Namn"],
     "DeviceStatus": ["Tila (vapaa/varattu)", "Status (free/reserved)", "Status (fri/reserverad)"],
     "FreeStatus": ["Vapaa", "Free", "Fri"],
+    "AddButton": ["Lisää", "Add", "Lägg till"],
     "ReservedStatus": ["Varattu", "Reserved", "Reserverad"],
     "AddError": ["Virhe: Laitteen nimi ei voi olla tyhjä.", "Error: Device name cannot be empty", "Fel: Enhetsnamnet får inte vara tomt."],
     "StatusError": ["Virhe: Laitteen tilan on oltava joko 'vapaa' tai 'varattu'",
      "Error: Device status must be either 'free' or 'reserved'", "Fel: Enhetsstatusen måste vara antigen 'fri' eller 'reserverad'"]
   },
-
-
 
   "signin": {
     "SignIn": ["Kirjaudu sisään", "Sign In", "Logga in"],
@@ -263,6 +262,7 @@
     ]
   },
   "sched": {
+    "Schedule": ["Aikataulut", "Schedules", "Schema"],
     "Day": ["Valitse päivä", "Choose date", "Välja datum"],
     "Open": ["Keskus auki", "Open", "Öppna"],
     "Rangeofficer": ["Päävalvoja", "Range officer", "Banofficer"],
@@ -280,10 +280,72 @@
       "Track officer absent",
       "Banhandledare frånvarande"
     ],
+    "SuperGreen": [
+      "Päävalvoja paikalla",
+      "Range officer present",
+      "Banofficer närvarande"
+    ],
+    "SuperRed": [
+      "Päävalvoja ei paikalla",
+      "Range officer not present",
+      "Banofficer inte närvarande"
+    ],
+    "SuperLightGreen": [
+      "Päävalvoja varmistettu",
+      "Range officer confirmed",
+      "Banofficer bekräftat"
+    ],
+    "SuperBlue": [
+      "Päävalvoja ei varmistettu",
+      "Range officer predefined",
+      "Banofficer inte bekräftat"
+    ],
+    "SuperOrange": [
+      "Päävalvoja matkalla",
+      "Range officer on the way",
+      "Banofficer på väg"
+    ],
+    "SuperWhite": [
+      "Päävalvojaa ei asetettu",
+      "Range officer undefined",
+      "Banofficer odefinierad"
+    ],
+    "Red": ["Ampumakeskus suljettu", "Closed", "Skjutbana stängd"],
+    "Blue": ["Ei varmistettu", "Not confirmed", "Inte bekräftat"],
+    "LightGreen": ["Varmistettu", "Confirmed", "bekräftat"],
+    "Green": ["Paikalla", "Present", "Närvarande"],
+    "Orange": ["Tulossa", "On the way", "På väg"],
+    "Edit": ["Muokkaa", "Edit", "Redigera"],
+    "Helper": [
+      "Muokkaa päävalvojan statusta napauttamalla väriä alta",
+      "Edit range officer status by choosing color",
+      "Redigera status för banofficer genom att välja färg"
+    ],
+    "AddETA": [
+      "Lisää arvioitu saapumisaika", 
+      "Add estimated time of arrival", 
+      "Lägg till beräknad ankomsttid"
+    ],
+    "SuccessfulUpdate": [
+      "Arvioitu saapumisaika päivitetty",
+      "Estimated time of arrival updated",
+      "Beräknad ankomsttid uppdaterad"
+    ],
+    "FailedUpdate": [
+      "Arvioidun saapumisajan päivitys epäonnistui",
+      "Failed to update estimated time of arrival",
+      "Uppdatering av beräknad ankomsttid misslyckades"
+    ],
+    "ConfirmTime": ["Vahvista aika", "Confirm time", "Bekräfta tid"],
+    "ManageTracks": ["Hallitse ratoja", "Manage shooting tracks", "Hantera skjutbanor"],
+    "ShootingTrack": ["Ampumarata", "Shooting track", "Skjutbana"],
+    "TrackOpen": ["Rata auki", "Track open", "Bana öppen"],
     "Closed": ["Suljettu", "Closed", "Stängd"],
+    "Notice": ["Lisätiedot", "Details", "Detaljer"],
     "OpenAll": ["Avaa kaikki", "Open All", "Öppna alla"],
     "ClearAll": ["Tyhjennä kaikki", "Clear All", "Rensa alla"],
     "CloseAll": ["Sulje kaikki", "Close All", "Stäng alla"],
+    "AdvancedOptions": ["Lisäasetukset", "Advanced options", "Avancerade alternativ"],
     "RepeatDaily": ["Toista päivittäin", "Repeat daily", "Upprepa dagligen"],
     "RepeatWeekly": [
       "Toista viikottain",
@@ -597,6 +659,7 @@
       "Inga rader att visa"
     ],
     "editTooltip": ["Muokkaa", "Edit", "Redigera"],
+    "deleteTooltip": ["Poista", "Delete", "Ta bort"],
     "searchPlaceholder": ["Hae", "Search", "Söka"],
     "labelRowsSelect": ["riviä", "rows", "rad"],
     "saveTooltip": ["Tallenna", "Save", "Spara"],
@@ -604,7 +667,8 @@
     "nextTooltip": ["Seuraava sivu", "Next page", "Nästa sida"],
     "previousTooltip": ["Edellinen sivu", "Previous page", "Föregående sida"],
     "firstTooltip": ["Ensimmäinen sivu", "First page", "Första sidan"],
-    "lastTooltip": ["Viimeinen sivu", "Last page", "Sista sidan"]
+    "lastTooltip": ["Viimeinen sivu", "Last page", "Sista sidan"],
+    "addButton": ["Lisää", "Add", "Lägg till"]
   },
 
 
@@ -714,6 +778,11 @@
       "Password cannot be empty!",
       "Lösenordet kan inte vara tomt!"
     ],
+    "ccError": [
+      "Virheellinen kopio-sähköposti!",
+      "Invalid CC email!",
+      "Ogiltig CC e-post!"
+    ],
     "hostError": [
       "DNS-haku epäonnistui. Tarkista, että SMTP on oikea.",
       "DNS resolution failed. Please check that the SMTP host is correct.",
@@ -733,6 +802,21 @@
       "Yhteys aikakatkaistu. Tarkista verkkoyhteys!",
       "Connection timed out. Check network connectivity.!",
       "Anslutningstiden gick ut. Kontrollera nätverksanslutning!"
+    ],
+    "pendingSuccess": [
+      "Viestit lähetetty onnistuneesti!",
+      "Pending messages sent successfully!",
+      "Väntande meddelanden skickades framgångsrikt!"
+    ],
+    "pendingError": [
+      "Viestien lähettäminen epäonnistui!",
+      "Sending pending messages failed!",
+      "Misslyckades att skicka väntande meddelanden!"
+    ],
+    "pendingEmpty": [
+      "Ei odottavia viestejä lähetettäväksi.",
+      "No pending messages to send.",
+      "Inga väntande meddelanden att skicka."
     ],
     "smtpSettings": ["SMTP-asetukset", "SMTP-settings", "SMTP-inställningar"],
     "user": ["Sähköposti", "Email", "E-post"],
