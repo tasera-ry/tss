@@ -4,38 +4,58 @@ const knex = require(path.join(root, 'knex', 'knex'));
 const { email } = require('../mailer.js');
 const moment = require('moment');
 const schedule = require('node-schedule');
+const services = require(path.join(root, 'services'));
 
-//Runs the checker everyday and checks if officer has confirmed 7 days from today
-//Stars of the scheduler explained below:
-//'seconds', 'minutes', 'hour', 'day of month', 'month', 'day of week'
-//For test purposes, you can replace the function declaration with this. It runs the code every 4 seconds.
-// schedule.scheduleJob('*/4 * * * * *', async function(){
-schedule.scheduleJob('00 00 01 * * 0-6', async function(){
-  //make date object 7 days from this day.
-  const currentDate = new Date();
-  currentDate.setDate(currentDate.getDate() + 7);
-  //function that returns the association of 7 days into the future.
-  async function getFutureSupervision() {
-    return await knex
-      .from('user')
-      .leftJoin('association', 'user.id', 'association.user_id')
-      .leftJoin('scheduled_range_supervision', 'association.user_id', 'scheduled_range_supervision.association_id')
-      .leftJoin('range_supervision', 'scheduled_range_supervision.id', 'range_supervision.scheduled_range_supervision_id')
-      .leftJoin('range_reservation', 'scheduled_range_supervision.range_reservation_id', 'range_reservation.id')
-      .where('range_reservation.date', '=', currentDate)
-      .select('scheduled_range_supervision.association_id', 'range_supervisor');
-  }
+
+async function setEmailSchedule() {
   try {
-    const receiver = await getFutureSupervision();
-    //first we check if the supervisor has confirmed or not.
-    //if status = not cnofirmed, fetches email with supervisor id and sends it to mailer.js 
-    if(receiver[0] != undefined && receiver[0].range_supervisor === 'not confirmed') {
-      email('reminder', receiver[0].association_id, null);
+    const emailSettings = await services.emailSettings.read();
+    console.log("Kalle: emailSettings", emailSettings)
+    if( !emailSettings ) {
+      console.error("setEmailSchedule cannot read emailSettings!")
+      return
     }
-  } catch (error) {
-    console.log(error);
+    const sendTime = new Date(emailSettings.sendPendingTime)
+    const hour = sendTime.getHours().toString().padStart(2, '0');
+    const minute = sendTime.getMinutes().toString().padStart(2, '0');
+    console.log("Kalle: hour", hour)
+    console.log("Kalle: minute", minute)
+    //Runs the checker everyday and checks if officer has confirmed 7 days from today
+    //Stars of the scheduler explained below:
+    //'seconds', 'minutes', 'hour', 'day of month', 'month', 'day of week'
+    //For test purposes, you can replace the function declaration with this. It runs the code every 4 seconds.
+    // schedule.scheduleJob('*/4 * * * * *', async function(){
+    schedule.scheduleJob(`00 ${minute} ${hour} * * 0-6`, async function () {
+      //make date object 7 days from this day.
+      const currentDate = new Date();
+      currentDate.setDate(currentDate.getDate() + 7);
+      //function that returns the association of 7 days into the future.
+      async function getFutureSupervision() {
+        return await knex
+          .from('user')
+          .leftJoin('association', 'user.id', 'association.user_id')
+          .leftJoin('scheduled_range_supervision', 'association.user_id', 'scheduled_range_supervision.association_id')
+          .leftJoin('range_supervision', 'scheduled_range_supervision.id', 'range_supervision.scheduled_range_supervision_id')
+          .leftJoin('range_reservation', 'scheduled_range_supervision.range_reservation_id', 'range_reservation.id')
+          .where('range_reservation.date', '=', currentDate)
+          .select('scheduled_range_supervision.association_id', 'range_supervisor');
+      }
+      try {
+        const receiver = await getFutureSupervision();
+        //first we check if the supervisor has confirmed or not.
+        //if status = not cnofirmed, fetches email with supervisor id and sends it to mailer.js 
+        if (receiver[0] != undefined && receiver[0].range_supervisor === 'not confirmed') {
+          email('reminder', receiver[0].association_id, null);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  } catch (err) {
+    console.error(err)
   }
-});
+}
+setEmailSchedule();
 
 // TODO: definitely update the database 1:1 connections so you don't
 // have to do this crap
@@ -63,7 +83,6 @@ const controller = {
           error: 'Query didn\'t match range supervision event'
         });
     }
-
     return response
       .status(200)
       .send(response.locals.queryResult);
