@@ -41,7 +41,7 @@
     "react": "^16.14.0",
     "react-moment": "^0.9.7",
     "react-router-dom": "^5.2.0",
-    "socket.io": "^2.5.0",
+    "socket.io": "^4.8.1",
     "taseraschedulingsoftware": "file:",
     "validate.js": "^0.13.1"
   },
