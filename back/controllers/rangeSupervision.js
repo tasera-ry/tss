@@ -10,8 +10,8 @@ const services = require(path.join(root, 'services'));
 async function scheduleEmailReminder() {
   try {
     const emailSettings = await services.emailSettings.read();
-    if( !emailSettings ) {
-      console.error("scheduleEmailReminder cannot read emailSettings!", emailSettings)
+    if( !emailSettings || !emailSettings.sendPendingTime ) {
+      console.error("scheduleEmailReminder cannot read emailSettings sendPendingTime!", emailSettings)
       return
     }
     const sendTime = new Date(emailSettings.sendPendingTime)
