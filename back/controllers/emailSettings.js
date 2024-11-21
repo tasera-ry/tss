@@ -1,7 +1,7 @@
 const path = require('path');
 const root = path.join(__dirname, '..');
 const services = require(path.join(root, 'services'));
-const { sendPending, scheduleEmails, verifyEmailCredentials } = require('../mailer.js');
+const { sendPending, scheduleEmails, verifyEmailCredentials, scheduleEmailReminder } = require('../mailer.js');
 
 const controller = {
   read: async function readSettings(request, response) {
@@ -17,6 +17,7 @@ const controller = {
       } else if (success) { 
         await services.emailSettings.update(request.body);
         scheduleEmails(new Date(request.body.sendPendingTime));
+        scheduleEmailReminder();
         return response.status(200).send();
       }
     }

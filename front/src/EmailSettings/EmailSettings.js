@@ -108,7 +108,6 @@ const EmailSettings = () => {
   const [notification, setNotification] = React.useState({ open: false, message: '', type: 'info' });
 
   const fetchAndSetSettings = () => {
-    console.log("Kalle: hourii")
 
     fetch('/api/email-settings')
       .then((res) => res.json())
