@@ -400,6 +400,7 @@
     "Edit": ["Muokkaa", "Edit", "Redigera"],
     "CreateUser": ["Lisää käyttäjä", "Create new user", "Skapa ny användare"],
     "Users": ["Käyttäjät", "User profiles", "Användarprofiler"],
+    "User": ["Käyttäjä", "User", "Användare"],
     "Username": ["Käyttäjänimi", "Username", "Användarnamn"],
     "RemoveUser": ["Poista käyttäjä", "Delete profile", "Ta bort användare"],
     "Helper": [
