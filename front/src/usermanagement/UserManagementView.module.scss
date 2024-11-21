@@ -15,12 +15,25 @@
   margin: 24px 0px 24px 0px;
 }
 
+.lightgreenButton {
+  background-color: $COLOR_GREEN_LIGHT;
+  color: $COLOR_BLACK;
+  margin: 15px;
+  text-align: center;
+  text-transform: none;
+  text-wrap: nowrap;
+  font-size: 0.8rem;
+  border-radius: 20px;
+  padding: 8px 16px 8px 16px;
+}
+
 .LoggedIn {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   max-width: 700px;
+  width: 80%;
   padding: 20px 20px 20px 20px;
   margin: 0 auto;
   gap: 18px;
@@ -40,19 +53,30 @@
       color: $COLOR_BLACK;
       margin: 6px;
       text-align: center;
-      font-size:smaller;
+      font-size: 0.8rem;
       border-radius: 20px;
-      padding: 8px 20px 8px 20px;
+      padding: 6px 20px 6px 20px;
     }
     .turquoiseButton {
       background-color: $COLOR_TURQUOISE;
       color: $COLOR_BLACK;
       margin: 6px;
       text-align: center;
-      font-size: smaller;
+      font-size: 0.8rem;
       border-radius: 20px;
-      padding: 8px 20px 8px 20px;
+      padding: 6px 20px 6px 20px;
     }
+  }
+}
+.usersHeaderMobile {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  margin: 12px auto 0 auto;
+
+  .header {
+    margin: 15px 15px 15px 15px;
   }
 }
 
@@ -63,24 +87,15 @@
   margin: 0 auto;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
+  margin-bottom: 16px;
 
   .table {
     background-color: $COLOR_BLACK_TINT_05;
   }
-  .MuiTableRow-root{
+  .MuiTableRow-root {
     padding: 8px;
   }
-  .lightgreenButton {
-    background-color: $COLOR_GREEN_LIGHT;
-    color: $COLOR_BLACK;
-    margin: 15px;
-    text-align: center;
-    font-size: smaller;
-    text-wrap: nowrap;
-    border-radius: 20px;
-    padding: 8px 20px 8px 20px;
-  }
-  .buttonCell{
+  .buttonCell {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -107,8 +122,31 @@
       padding: 6px 16px 6px 16px;
     }
   }
-  .tableRow > TableCell:last-child {
-    width: 100px;
+  .tableCellMobile {
+    .buttonsMobile {
+      .turquoiseButton {
+        background-color: $COLOR_TURQUOISE;
+        color: $COLOR_BLACK;
+        text-align: center;
+        text-wrap: nowrap;
+        text-transform: none;
+        font-size: 0.8rem;
+        border-radius: 20px;
+        padding: 6px 16px 6px 16px;
+        margin: 8px;
+      }
+      .removeButton {
+        background-color: $COLOR_RED_LIGHT;
+        color: $COLOR_BLACK;
+        text-align: center;
+        text-wrap: nowrap;
+        text-transform: none;
+        font-size: 0.8rem;
+        border-radius: 20px;
+        padding: 6px 16px 6px 16px;
+        margin: 8px;
+      }
+    }
   }
 }
 
@@ -116,6 +154,28 @@
     margin-top: 15px;
 }
 
-.removeButton {
-    background-color: $COLOR_RED_LIGHT;
+@media (max-width: 799px) {
+  .addUserButtonDesk {
+    display: none;
+  }
+  .usersHeaderDesk {
+    display: none;
+  }
+  .tableCellDesk {
+    display: none;
+  }
+  .lightgreenButton {
+    text-wrap: wrap;
+    line-height: normal;
+    min-width: 100px;
+  }
+}
+@media (min-width: 800px) {
+  .usersHeaderMobile {
+    display: none;
+  }
+  .tableCellMobile {
+    display: none;
+  }
+
 }

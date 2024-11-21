@@ -1309,7 +1309,21 @@ function UserManagementView(props)  {
 
       {/* USER PROFILES TABLE */}
 
-      <h2 className={classes(css.header)}>{manage.Users[fin]}</h2>
+      {/* for larger devices only*/}
+      <div className={classes(css.usersHeaderDesk)}>
+        <h2 className={classes(css.header)}>{manage.Users[fin]}</h2>
+      </div>
+      {/* for smaller devices only */}
+      <div className={classes(css.usersHeaderMobile)}>
+        <h3 className={classes(css.header)}>{manage.Users[fin]}</h3>
+        <Button
+          onClick={handleAddUserOpenDialog}
+          variant="contained"
+          className={css.lightgreenButton}
+        >
+          {manage.CreateUser[fin]}
+        </Button>
+      </div>
       <Box className={classes(css.userbox)}>
         <TableContainer
           component={Paper}
@@ -1319,16 +1333,28 @@ function UserManagementView(props)  {
             <TableHead className={classes(css.tableHead)}>
               <TableRow>
                 <TableCell align="left" style={{fontWeight: 'bold', width: '300px'}}>
-                  {manage.Username[fin]}
+                  {manage.User[fin]}
                 </TableCell>
-                <TableCell align="left" style={{fontWeight: 'bold', width: '200px'}}>
+                <TableCell 
+                  align="left" 
+                  style={{fontWeight: 'bold', width: '200px'}} 
+                  className={classes(css.tableCellDesk)}
+                >
                   {manage.Role[fin]}
                 </TableCell>
-                <TableCell align="left" style={{fontWeight: 'bold', width: '100px'}}>
+                <TableCell 
+                  align="left" 
+                  style={{fontWeight: 'bold', width: '100px'}} 
+                  className={classes(css.tableCellDesk)}
+                >
                   {manage.Association[fin]}
                 </TableCell>
                 <TableCell align="right"></TableCell>
-                <TableCell align="right" style={{width: '100px'}}>
+                <TableCell 
+                  align="right" 
+                  style={{width: '100px'}}
+                  className={classes(css.tableCellDesk)}
+                >
                   <Button
                     onClick={handleAddUserOpenDialog}
                     variant="contained"
@@ -1351,8 +1377,33 @@ function UserManagementView(props)  {
                         <EditIcon style={{fontSize: 'large'}}/>
                       </Button>
                     )}
+                    {/* only for small devices */}
+                    <div className={classes(css.tableCellMobile)}>
+                      <br />
+                      <div>
+                        <span style={{fontWeight:'bold'}}>{manage.Role[fin]}: </span> {row.roleToPrint}
+                        {state.editingRows[row.id] && (
+                          <Button onClick={onRoleClick}> 
+                            <EditIcon style={{fontSize: 'large'}}/>
+                          </Button>
+                        )}
+                      </div>
+                      <div>
+                        <span style={{fontWeight:'bold'}}>{manage.Association[fin]}: </span> 
+                        {/* Need to add printing of association name */}
+                      </div>
+                      <br />  
+                      <div className={classes(css.buttonsMobile)}>
+                        {state.editingRows[row.id] && (
+                          returnPassButton(row.id, manage, fin)
+                        )}
+                        {state.editingRows[row.id] && (
+                          returnRemoveButton(row.id, manage, fin)
+                        )}
+                      </div>
+                    </div>
                   </TableCell>
-                  <TableCell align="justify">
+                  <TableCell align="justify" className={classes(css.tableCellDesk)}>
                     {row.roleToPrint}
                     {state.editingRows[row.id] && (
                       <Button onClick={onRoleClick}> 
@@ -1360,10 +1411,11 @@ function UserManagementView(props)  {
                       </Button>
                     )}
                   </TableCell>
-                  <TableCell>
-                    {/* Need to add printing of accosiation name */}
+                  <TableCell className={classes(css.tableCellDesk)}>
+                    {/* Need to add printing of association name */}
+                    {row.associationId}
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell align="right" className={classes(css.tableCellDesk)}>
                     <div className={classes(css.buttonCell)}>
                       {state.editingRows[row.id] && (
                         returnPassButton(row.id, manage, fin)
@@ -1376,7 +1428,10 @@ function UserManagementView(props)  {
                   <TableCell align="right">
                     {manage.Edit[fin]}
                     <Button onClick={() => handleEditClick(row.id)}>
-                      {!state.editingRows[row.id] ? <EditIcon style={{fontSize: 'large'}}/> : <EditOffIcon style={{fontSize: 'large'}}/>}
+                      {!state.editingRows[row.id] 
+                        ? <EditIcon style={{fontSize: 'large'}}/> 
+                        : <EditOffIcon style={{fontSize: 'large'}}/>
+                      }
                     </Button>
                   </TableCell>
                 </TableRow>
