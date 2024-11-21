@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 // Material UI components
 import { Link } from 'react-router-dom';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // Moment for date management
 import moment from 'moment';

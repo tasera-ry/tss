@@ -167,7 +167,9 @@ module.exports = {
     fields.name(body, 'optional'),
     fields.password(body, 'optional'),
     fields.email(body, 'optional'),
+    fields.role(body, 'optional'),
     fields.phone(body, 'optional'),
+    fields.associationId(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
       response.locals.id = matchedData(request, { locations: ['params'] });

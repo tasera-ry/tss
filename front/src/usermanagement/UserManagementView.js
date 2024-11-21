@@ -22,7 +22,7 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
 import NiceInputPassword from 'react-nice-input-password';
 import 'react-nice-input-password/dist/react-nice-input-password.css';
 
@@ -117,6 +117,54 @@ async function addEmail(id, emailn) {
   }
 }
 
+// Changes role for user that is not a rangeofficer to database
+async function changeRoleNotRangeofficer(id, newRole) {
+  try {
+    const response = await fetch(`/api/user/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        role: newRole,
+      }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.ok;
+  } catch (err) {
+    console.error('GETTING USER FAILED', err);
+    return false;
+  }
+}
+
+// Changes role to rangeofficer and links an association to user in database
+async function changeRoleAndAssociationForRangeofficer(id, newRole, newAssociationId) {
+  if (!isNaN(parseInt(newAssociationId)) && 
+      parseInt(newAssociationId) !== 0 && 
+      parseInt(newAssociationId) !== id) {
+    try {
+      const response = await fetch(`/api/user/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          role: newRole,
+          associationId: newAssociationId,
+        }),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.ok;
+    } catch (err) {
+      console.error('UPDATING USER FAILED', err);
+      return false;
+    }
+  } else {
+    console.error('ASSOCIATION UNSPECIFIED');
+    return false;
+  }
+}
+
 // Deletes user from database
 async function deleteUser(id) {
   try {
@@ -134,8 +182,8 @@ async function deleteUser(id) {
   }
 }
 
-// Add user to database
-async function addUser(namen, rolen, passwordn, emailn) {
+// Add user that is not a rangeofficer to database
+async function addUserNotRangeofficer(namen, rolen, passwordn, emailn) {
   try {
     const response = await fetch('/api/user/', {
       method: 'POST',
@@ -157,18 +205,47 @@ async function addUser(namen, rolen, passwordn, emailn) {
   }
 }
 
+// Add rangeofficer to database
+async function addUserRangeofficer(namen, rolen, passwordn, emailn, newAssociationId) {
+  if (!isNaN(parseInt(newAssociationId)) && parseInt(newAssociationId) !== 0) {
+    try {
+      const response = await fetch('/api/user/', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: namen,
+          password: passwordn,
+          role: rolen,
+          email: emailn,
+          associationId: newAssociationId,
+        }),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      return await response.json();
+    } catch (err) {
+      console.error('CREATING RANGE OFFICER FAILED', err);
+      return false;
+    }
+  } else {
+    console.error('ASSOCIATION NOT SPECIFIED');
+    return false;
+  }
+}
 
 function UserManagementView(props)  {
 
   const[state, setState] = useState({
     userList: [],
     rows: [],
-    openPassWarning: false, // eslint-disable-line
+    openPassWarning: false, 
     openRemoveWarning: false,
     changeOwnPassDialogOpen: false,
     changeOwnEmailDialogOpen: false,
     openAddNewUserDialog: false,
     changePassDialogOpen: false,
+    changeRoleDialogOpen: false,
     changeOwnPassFailed: false,
     changeOwnEmailFailed: false,
     requestErrors: false,
@@ -176,15 +253,16 @@ function UserManagementView(props)  {
     selectedROWID: 1,
     newUserName: '',
     newUserPass: '',
-    newUserRole: 'association',
-    newUserPhone: '', // eslint-disable-line
+    role: 'association',
+    associationId: 0,
+    newUserPhone: '',
     password: '',
     oldPassword: '',
     newPassword: '',
     username: props.cookies.cookies.username,
     selectedUserName: '',
     email: '',
-    myStorage: window.localStorage, // eslint-disable-line
+    myStorage: window.localStorage,
     addEmailDialogOpen: false,
     refresh: false,
   });
@@ -273,20 +351,32 @@ function UserManagementView(props)  {
   // Handles adding new users
   const handleAddNewUserDialogCloseConfirmed = async() => {
     setState({...state, requestErrors: false});
-    const req = await addUser(
-      state.newUserName,
-      state.newUserRole,
-      state.newUserPass,
-      state.email,
-    );
-    if (req.errors !== undefined) {
+    let req;
+    if (state.role === "rangeofficer") {
+      req = await addUserRangeofficer(
+        state.newUserName,
+        state.role,
+        state.newUserPass,
+        state.email,
+        state.associationId,
+      );
+    } else {
+      req = await addUserNotRangeofficer(
+        state.newUserName,
+        state.role,
+        state.newUserPass,
+        state.email,
+      );
+    }
+    if (!req || req.errors !== undefined) {
       setState({...state, requestErrors: true});
     } else {
       setState({...state, 
         requestErrors: false,
         newUserName: '',
         newUserPass: '',
-        newUserRole: 'association',
+        role: 'association',
+        associationId: 0,
         openAddNewUserDialog: false,
         refresh: true,
       });
@@ -309,7 +399,6 @@ function UserManagementView(props)  {
 
   // Closes dialog for changing password for some1 else
   const handleChangePassClose = (e) => {
-    // eslint-disable-line
     setState({...state, password: '', changePassDialogOpen: false});
   }
 
@@ -332,7 +421,6 @@ function UserManagementView(props)  {
 
   // Closes dialog for adding email for some1 else
   const handleaddEmailClose = (e) => {
-    // eslint-disable-line
     setState({...state, email: '', addEmailDialogOpen: false});
   }
 
@@ -351,8 +439,33 @@ function UserManagementView(props)  {
     }
   }
 
+  // Closes dialog for adding role for some1 else
+  const handleChangeRoleClose = (e) => {
+    setState({...state, role: 'association', associationId: 0, changeRoleDialogOpen: false});
+  }
+
+  // Adds role for some1 else by their ID
+  const handleChangeRoleCloseConfirm = async() => {
+    setState({...state, changeErrors: false});
+    let response;
+    if (state.role === "rangeofficer") {
+      response = await changeRoleAndAssociationForRangeofficer(findUserId(), state.role, state.associationId);
+    } else {
+      response = await changeRoleNotRangeofficer(findUserId(), state.role);
+    }
+    if (!response) {
+      setState({...state, changeErrors: true});
+    } else {
+      setState({...state, 
+        role: 'association', 
+        associationId: 0,
+        changeRoleDialogOpen: false, 
+        refresh: true,
+        changeErrors: false});
+    }
+  }
+
   const returnRemoveButton = (id, manage, fin) => {
-    // eslint-disable-line
     return (
       <Button
         data-testid={`del-${id}`}
@@ -368,7 +481,6 @@ function UserManagementView(props)  {
   }
 
   const returnPassButton = (id, manage, fin) => {
-    // eslint-disable-line
     return (
       <Button
         data-testid={`pw-${id}`}
@@ -383,7 +495,6 @@ function UserManagementView(props)  {
     );
   }
   const returnaddEmailButton = (id, manage, fin) => {
-    // eslint-disable-line
     return (
       <Button
         id={id}
@@ -393,6 +504,20 @@ function UserManagementView(props)  {
         onClick={onaddEmailClick}
       >
         {manage.ChangeEmail[fin]}
+      </Button>
+    );
+  }
+
+  const returnRoleButton = (id, manage, fin) => {
+    return (
+      <Button
+        id={id}
+        size="small"
+        className={classes(css.lightgreenButton)}
+        variant="contained"
+        onClick={onRoleClick}
+      >
+        {manage.ChangeRole[fin]}
       </Button>
     );
   }
@@ -464,7 +589,7 @@ function UserManagementView(props)  {
       requestErrors: false,
       newUserName: '',
       newUserPass: '',
-      newUserRole: 'association',
+      role: 'association',
       openAddNewUserDialog: false,
     });
   }
@@ -536,8 +661,13 @@ function UserManagementView(props)  {
   }
 
   // handles state change for new users role
-  const handleChangeNewUserRole = (e) => {
-    setState({...state, newUserRole: e.target.value});
+  const handleChangeUserRole = (e) => {
+    setState({...state, role: e.target.value});
+  }
+
+  // handles state change for rangeofficer association
+  const handleChangeAssociation = (e) => {
+    setState({...state, associationId: e.target.value});
   }
 
   // handles state change for new users password
@@ -574,6 +704,11 @@ function UserManagementView(props)  {
   // Opens dialog for adding or changing email for someone else
   const onaddEmailClick = (e) => {
     setState({...state, selectedROWID: e.currentTarget.id, addEmailDialogOpen: true});
+  }
+
+  // Opens dialog for changing user role for someone else
+  const onRoleClick = (e) => {
+    setState({...state, selectedROWID: e.currentTarget.id, changeRoleDialogOpen: true});
   }
 
   /**
@@ -632,10 +767,67 @@ function UserManagementView(props)  {
     setState({...state, rows: tempRows});
   }
 
+  const roleSelect = () => (
+    <div className="roleSelect">
+      <FormControl>
+        <InputLabel id="role-select-label">{manage.Role[fin]}</InputLabel>
+        <Select
+          labelId="role-select-label"
+          className={classes(css.select)}
+          native
+          value={state.role}
+          onChange={handleChangeUserRole}
+          id="role"
+        >
+          <option value="rangeofficer">{manage.Rangeofficer[fin]}</option>
+          <option value="association">{manage.Association[fin]}</option>
+          <option value="superuser">{manage.Superuser[fin]}</option>
+        </Select>
+      </FormControl>
+        <br />
+        <br />
+        {associationSelect()}    
+    </div>
+  )
+
+  // handles selecting association for range officer
+  const associationSelect = () => (
+    <div>
+      <FormControl>
+        {/** Only shown when selected role is range officer */}
+        {state.role === "rangeofficer" && (
+          <>
+            <InputLabel id="association-select-label">{manage.Association[fin]}</InputLabel>
+            <Select
+              labelId="association-select-label"
+              className={classes(css.select)}
+              native
+              value={state.associationId}
+              onChange={handleChangeAssociation}
+            >
+              <option key="0" value="0">  
+                --{manage.SelectAssociation[fin]}--
+              </option>
+              {state.userList.map(user => {
+                if (user.role === "association") {
+                  return (
+                    <option key={user.id} value={user.id}>
+                      {user.name}
+                    </option>
+                  )
+                }
+              })}
+            </Select>
+          </>
+        )}
+      </FormControl>
+    </div>
+  )
+
   /**
    **  ACTUAL PAGE RENDERING
    */
-  const fin = localStorage.getItem('language'); // eslint-disable-line
+  const fin = localStorage.getItem('language');
   return (
     <div>
       {/* Dialog to add new user */}
@@ -707,25 +899,7 @@ function UserManagementView(props)  {
             fullWidth
           />
 
-          <FormControl>
-            <InputLabel>{manage.Role[fin]}</InputLabel>
-            <Select
-              className={classes(css.select)}
-              native
-              value={state.newUserRole}
-              onChange={handleChangeNewUserRole}
-              id="role"
-            >
-              <option
-                aria-label={manage.Rangeofficer[fin]}
-                value="rangeofficer"
-              >
-                {manage.Rangeofficer[fin]}
-              </option>
-              <option value="association">{manage.Association[fin]}</option>
-              <option value="superuser">{manage.Superuser[fin]}</option>
-            </Select>
-          </FormControl>
+          {roleSelect()}
 
           {state.requestErrors ? (
             <p className={classes(css.errorText)}>{manage.Error[fin]} </p>
@@ -1049,6 +1223,43 @@ function UserManagementView(props)  {
         </DialogActions>
       </Dialog>
 
+      {/* Dialog to change role for users */}
+      <Dialog
+        open={state.changeRoleDialogOpen}
+        onClose={handleChangeRoleClose}
+      >
+        <DialogTitle
+          id="dialog-change-role-title"
+          className={classes(css.dialogStyle)}
+        >
+          {manage.RoleForUser[fin]} {state.selectedUserName}
+        </DialogTitle>
+        <DialogContent className={classes(css.dialogStyle)}>
+          {roleSelect()}
+          {state.changeErrors ? (
+            <p className={classes(css.errorText)}>
+              {manage.ErrorRole[fin]}{' '}
+            </p>
+          ) : (
+            <p />
+          )}
+        </DialogContent>
+        <DialogActions className={classes(css.dialogStyle)}>
+          <Button
+            onClick={handleChangeRoleClose}
+            className={classes(css.removeButton)}
+          >
+            {manage.Cancel[fin]}
+          </Button>
+          <Button
+            onClick={handleChangeRoleCloseConfirm}
+            className={classes(css.acceptButton)}
+          >
+            {manage.Confirm[fin]}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       {/* THE ACTUAL PAGE */}
 
       <h1 className={classes(css.header)}>{manage.UserManage[fin]}</h1>
@@ -1108,6 +1319,9 @@ function UserManagementView(props)  {
                 <TableCell align="justify">
                   {manage.ChangeEmail[fin]}
                 </TableCell>
+                <TableCell align="justify">
+                  {manage.ChangeRole[fin]}
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -1128,6 +1342,9 @@ function UserManagementView(props)  {
                   </TableCell>
                   <TableCell align="justify">
                     {returnaddEmailButton(row.id, manage, fin)}
+                  </TableCell>
+                  <TableCell align="justify">
+                    {returnRoleButton(row.id, manage, fin)}
                   </TableCell>
                 </TableRow>
               )}
