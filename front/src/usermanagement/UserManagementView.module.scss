@@ -24,7 +24,7 @@
   text-wrap: nowrap;
   font-size: 0.8rem;
   border-radius: 20px;
-  padding: 8px 16px 8px 16px;
+  padding: 6px 16px 6px 16px;
 }
 
 .LoggedIn {
@@ -32,7 +32,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  max-width: 700px;
+  text-align: center;
+  max-width: 500px;
   width: 80%;
   padding: 20px 20px 20px 20px;
   margin: 0 auto;
@@ -154,7 +155,7 @@
     margin-top: 15px;
 }
 
-@media (max-width: 799px) {
+@media (min-width: 320px) and (max-width: 599px) {
   .addUserButtonDesk {
     display: none;
   }
@@ -168,9 +169,18 @@
     text-wrap: wrap;
     line-height: normal;
     min-width: 100px;
+    padding: 8px 16px 8px 16px;
   }
 }
-@media (min-width: 800px) {
+@media (min-width: 600px) and (max-width: 999px) {
+  .usersHeaderMobile {
+    display: none;
+  }
+  .tableCellDesk {
+    display: none;
+  }
+}
+@media (min-width: 1000px) {
   .usersHeaderMobile {
     display: none;
   }

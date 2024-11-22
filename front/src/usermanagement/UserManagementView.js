@@ -1300,7 +1300,11 @@ function UserManagementView(props)  {
       {/* THE ACTUAL PAGE */}
       <h1 className={classes(css.header)}>{manage.UserManage[fin]}</h1>
       <Box className={classes(css.LoggedIn)}>
-        <div>{manage.LoggedIn[fin]}: <span style={{fontWeight:"bold"}}>{state.username}</span></div>
+        <div>
+          {manage.LoggedIn[fin]}: 
+          <br />
+          <span style={{fontWeight:"bold"}}>{state.username}</span>
+        </div>
         <div className={classes(css.buttonContainer)}>
           <Button
             onClick={handleOpenOwnEmailChangeDialog}
@@ -1361,16 +1365,21 @@ function UserManagementView(props)  {
                 >
                   {manage.Association[fin]}
                 </TableCell>
-                <TableCell align="right"></TableCell>
+                <TableCell 
+                  align="right" 
+                  className={classes(css.tableCellDesk)} 
+                  style= {{color: '#f2f2f2'}}
+                > 
+                  {manage.Edit[fin]}
+                </TableCell>
                 <TableCell 
                   align="right" 
                   style={{width: '100px'}}
-                  className={classes(css.tableCellDesk)}
                 >
                   <Button
                     onClick={handleAddUserOpenDialog}
                     variant="contained"
-                    className={css.lightgreenButton}
+                    className={classes(css.addUserButtonDesk, css.lightgreenButton)}
                   >
                     {manage.CreateUser[fin]}
                   </Button>
@@ -1386,7 +1395,10 @@ function UserManagementView(props)  {
                     {row.email} 
                     {state.editingRows[row.id] && (
                       <Tooltip title={manage.EditEmail[fin]}>
-                        <IconButton onClick={onaddEmailClick}> 
+                        <IconButton 
+                          onClick={onaddEmailClick}
+                          aria-label="Edit email"
+                        > 
                           <EditIcon style={{fontSize: 'large'}}/>
                         </IconButton>
                       </Tooltip>
@@ -1398,7 +1410,10 @@ function UserManagementView(props)  {
                         <span style={{fontWeight:'bold'}}>{manage.Role[fin]}: </span> {row.roleToPrint}
                         {state.editingRows[row.id] && (
                           <Tooltip title={manage.EditRole[fin]}>
-                            <IconButton onClick={onRoleClick}> 
+                            <IconButton 
+                              onClick={onRoleClick}
+                              aria-label="Edit role"
+                            > 
                               <EditIcon style={{fontSize: 'large'}}/>
                             </IconButton>
                           </Tooltip>
@@ -1423,7 +1438,10 @@ function UserManagementView(props)  {
                     {row.roleToPrint}
                     {state.editingRows[row.id] && (
                       <Tooltip title={manage.EditRole[fin]}>
-                        <IconButton onClick={onRoleClick}> 
+                        <IconButton 
+                          onClick={onRoleClick}
+                          aria-label="Edit role"
+                        > 
                           <EditIcon style={{fontSize: 'large'}}/>
                         </IconButton>
                       </Tooltip>
@@ -1444,7 +1462,10 @@ function UserManagementView(props)  {
                     </div>
                   </TableCell>
                   <TableCell align="right">
-                    <IconButton onClick={() => handleEditClick(row.id)}>
+                    <IconButton 
+                      onClick={() => handleEditClick(row.id)}
+                      aria-label="Edit"
+                    >
                       {!state.editingRows[row.id] 
                         ? <Tooltip title={manage.Edit[fin]}><EditIcon/></Tooltip>
                         : <Tooltip title={manage.EditOff[fin]}><EditOffIcon/></Tooltip>
