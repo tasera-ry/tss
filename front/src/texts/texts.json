@@ -398,6 +398,9 @@
       "Ändra roll"
     ],
     "Edit": ["Muokkaa", "Edit", "Redigera"],
+    "EditOff": ["Sulje muokkaustila", "Close editing mode", "Stäng redigeringsläge"],
+    "EditEmail": ["Muokkaa sähköpostiosoitetta", "Edit email address", "Redigera e-postadress"],
+    "EditRole": ["Muokka roolia", "Edit role", "Redigera roll"],
     "CreateUser": ["Lisää käyttäjä", "Create new user", "Skapa ny användare"],
     "Users": ["Käyttäjät", "User profiles", "Användarprofiler"],
     "User": ["Käyttäjä", "User", "Användare"],
