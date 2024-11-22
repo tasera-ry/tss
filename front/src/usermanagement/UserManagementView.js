@@ -6,6 +6,7 @@ import {
   Divider,
   Button,
   FormControl,
+  IconButton,
   InputLabel,
   Select,
   Box,
@@ -15,6 +16,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Paper,
   Dialog,
   DialogActions,
@@ -1383,9 +1385,11 @@ function UserManagementView(props)  {
                     <br /> 
                     {row.email} 
                     {state.editingRows[row.id] && (
-                      <Button onClick={onaddEmailClick}> 
-                        <EditIcon style={{fontSize: 'large'}}/>
-                      </Button>
+                      <Tooltip title={manage.EditEmail[fin]}>
+                        <IconButton onClick={onaddEmailClick}> 
+                          <EditIcon style={{fontSize: 'large'}}/>
+                        </IconButton>
+                      </Tooltip>
                     )}
                     {/* only for small devices */}
                     <div className={classes(css.tableCellMobile)}>
@@ -1393,9 +1397,11 @@ function UserManagementView(props)  {
                       <div>
                         <span style={{fontWeight:'bold'}}>{manage.Role[fin]}: </span> {row.roleToPrint}
                         {state.editingRows[row.id] && (
-                          <Button onClick={onRoleClick}> 
-                            <EditIcon style={{fontSize: 'large'}}/>
-                          </Button>
+                          <Tooltip title={manage.EditRole[fin]}>
+                            <IconButton onClick={onRoleClick}> 
+                              <EditIcon style={{fontSize: 'large'}}/>
+                            </IconButton>
+                          </Tooltip>
                         )}
                       </div>
                       <div>
@@ -1416,9 +1422,11 @@ function UserManagementView(props)  {
                   <TableCell align="justify" className={classes(css.tableCellDesk)}>
                     {row.roleToPrint}
                     {state.editingRows[row.id] && (
-                      <Button onClick={onRoleClick}> 
-                        <EditIcon style={{fontSize: 'large'}}/>
-                      </Button>
+                      <Tooltip title={manage.EditRole[fin]}>
+                        <IconButton onClick={onRoleClick}> 
+                          <EditIcon style={{fontSize: 'large'}}/>
+                        </IconButton>
+                      </Tooltip>
                     )}
                   </TableCell>
                   <TableCell className={classes(css.tableCellDesk)}>
@@ -1436,13 +1444,12 @@ function UserManagementView(props)  {
                     </div>
                   </TableCell>
                   <TableCell align="right">
-                    {manage.Edit[fin]}
-                    <Button onClick={() => handleEditClick(row.id)}>
+                    <IconButton onClick={() => handleEditClick(row.id)}>
                       {!state.editingRows[row.id] 
-                        ? <EditIcon style={{fontSize: 'large'}}/> 
-                        : <EditOffIcon style={{fontSize: 'large'}}/>
+                        ? <Tooltip title={manage.Edit[fin]}><EditIcon/></Tooltip>
+                        : <Tooltip title={manage.EditOff[fin]}><EditOffIcon/></Tooltip>
                       }
-                    </Button>
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               )}
