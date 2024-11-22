@@ -403,7 +403,10 @@ function UserManagementView(props)  {
 
   // Closes dialog for changing password for some1 else
   const handleChangePassClose = (e) => {
-    setState({...state, password: '', changePassDialogOpen: false});
+    setState({...state,
+      password: '',
+      changePassDialogOpen: false,
+      changeErrors: false});
   }
 
   // Changes password for some1 else by their ID
@@ -425,7 +428,10 @@ function UserManagementView(props)  {
 
   // Closes dialog for adding email for some1 else
   const handleaddEmailClose = (e) => {
-    setState({...state, email: '', addEmailDialogOpen: false});
+    setState({...state,
+      email: '',
+      addEmailDialogOpen: false,
+      changeErrors: false});
   }
 
   // Adds email for some1 else by their ID
@@ -445,7 +451,11 @@ function UserManagementView(props)  {
 
   // Closes dialog for adding role for some1 else
   const handleChangeRoleClose = (e) => {
-    setState({...state, role: 'association', associationId: 0, changeRoleDialogOpen: false});
+    setState({...state, 
+      role: 'association',
+      associationId: 0,
+      changeRoleDialogOpen: false,
+      changeErrors: false});
   }
 
   // Adds role for some1 else by their ID
