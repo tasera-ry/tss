@@ -37,14 +37,16 @@
   background-color: $COLOR_BLACK_TINT_20;
   outline: 2px solid $COLOR_BLACK;
   color: $COLOR_BLACK;
-  width: 440px;
+  width: fit-content;
+  min-width: 50%;
+  max-width: 50%;
+  height: fit-content;
   border: 1px;
-  height: 105px;
   margin: 0 auto;
   margin-bottom: 15px;
   text-align: center;
   align-items: center;
-  padding: 5px;
+  padding: 12px;
   min-height: 48px;
 }
 
