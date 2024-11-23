@@ -66,7 +66,7 @@ const TrackRows = ({ tracks, setTracks, scheduleId, tablet, fin, socket }) =>
 const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
   const [buttonColor, setButtonColor] = useState(track.color);
 
-  const supervisorState = track.scheduled.track_supervisor;
+  const supervisorState = track.scheduled ? track.scheduled.track_supervisor : 'absent';
   let supervisorStateTablet;
   if (supervisorState === 'present') supervisorStateTablet = 'Green';
   else if (supervisorState === 'closed') supervisorStateTablet = 'Red';
