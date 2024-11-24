@@ -26,26 +26,26 @@ const model = {
       role: {},
       email: {},
     };
-
+  
     const associationConstraints = {
       phone: {},
     };
-
+  
     const officerConstraints = {
       associationId: {},
     };
-
+  
     const general = validate.cleanAttributes(user, userConstraints);
     const association = validate.cleanAttributes(user, associationConstraints);
     const officer = validate.cleanAttributes(user, officerConstraints);
-
+  
     return await knex.transaction((trx) => {
       return trx
         .returning('id')
         .insert(general)
         .into('user')
         .then((ids) => {
-          const id = ids[0];
+          const id = ids[0].id;
           if (user.role === 'association') {
             return trx
               .returning('user_id')
@@ -53,9 +53,10 @@ const model = {
                 user_id: id,
                 phone: association.phone,
               })
-              .into('association');
+              .into('association')
+              .then(() => id);
           }
-
+  
           if (user.role === 'rangeofficer') {
             return trx
               .returning('rangeofficer_id')
@@ -63,9 +64,10 @@ const model = {
                 rangeofficer_id: id,
                 association_id: officer.associationId,
               })
-              .into('association_rangeofficers');
+              .into('association_rangeofficers')
+              .then(() => id);
           }
-          return ids;
+          return id;
         })
         .then(trx.commit)
         .catch(trx.rollback);
