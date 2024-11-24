@@ -576,6 +576,7 @@ function UserManagementView(props)  {
   // Close dialog for removing user
   const handleRemoveWarningClose = () => {
     setState({...state, openRemoveWarning: false, deleteErrors: false});
+    console.log(state.openAddNewUserDialog);
   }
 
   // Open dialog for adding new users
@@ -800,6 +801,7 @@ function UserManagementView(props)  {
             <InputLabel id="association-select-label">{manage.Association[fin]}</InputLabel>
             <Select
               labelId="association-select-label"
+              id="associationSelect"
               className={classes(css.select)}
               native
               value={state.associationId}
@@ -832,9 +834,10 @@ function UserManagementView(props)  {
     <div>
       {/* Dialog to add new user */}
       <Dialog
+        id="dialog-add-user"
         open={state.openAddNewUserDialog}
-        keepMounted
-        onClose={handleAddNewUserDialogClose}
+        keepMounted={true}
+        //onClose={handleAddNewUserDialogClose}
       >
         <DialogTitle
           id="dialog-add-user-title"
@@ -926,7 +929,7 @@ function UserManagementView(props)  {
       {/* Dialog to remove user */}
       <Dialog
         open={state.openRemoveWarning}
-        keepMounted
+        keepMounted={true}
         onClose={handleRemoveWarningClose}
       >
         <DialogTitle
