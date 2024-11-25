@@ -3,7 +3,7 @@ description: 'Publish docker image'
 
 on:
   push:
-    branches: [master, 'v**-develop', '*']
+    branches: [master, 'v**-develop']
 
 env:
   REGISTRY: ghcr.io
