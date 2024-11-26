@@ -835,7 +835,7 @@ function UserManagementView(props)  {
       <Dialog
         id="dialog-add-user"
         open={state.openAddNewUserDialog}
-        keepMounted=
+        keepMounted
       >
         <DialogTitle
           id="dialog-add-user-title"
