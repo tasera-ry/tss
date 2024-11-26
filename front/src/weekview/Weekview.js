@@ -350,7 +350,7 @@ const Weekview = (props) => {
         });
       }
 
-      if (paivat[j].arriving_at !== null) {
+      if (paivat[j].arriving_at !== null && rataStatus !== 'present') {
         info = true;
         arrivalTime = moment(paivat[j].arriving_at, 'HH:mm:ss').format('HH:mm');
       }
