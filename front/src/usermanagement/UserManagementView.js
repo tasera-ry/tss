@@ -39,6 +39,8 @@ import { validateLogin } from '../utils/Utils';
 import translations from '../texts/texts.json';
 import css from './UserManagementView.module.scss';
 
+import api from '../api/api';
+
 const classes = classNames.bind(css);
 
 const fin = localStorage.getItem('language');
@@ -270,8 +272,8 @@ function UserManagementView(props)  {
     addEmailDialogOpen: false,
     refresh: false,
     editingRows: {},
+    rangeOfficers: [],
   });
-  
 
   // is ran when component mounts
   useEffect(() => {
@@ -296,9 +298,18 @@ function UserManagementView(props)  {
     });
   }, []);
 
-  // run update after fetched user data from back-end
+  // run update and fetchAssociation after fetched user data from back-end
   useEffect(() => {
     update();
+
+    const rangeofficerIds = state.userList
+    .filter((user) => user.role === 'rangeofficer')
+    .map((user) => user.id);
+
+    if (rangeofficerIds.length > 0) {
+      fetchAssociation(rangeofficerIds);
+    }
+
   }, [state.userList]);
 
   // run if changes to users
@@ -531,33 +542,6 @@ function UserManagementView(props)  {
       </Button>
     );
   }
-  const returnaddEmailButton = (id, manage, fin) => {
-    return (
-      <Button
-        id={id}
-        size="small"
-        className={classes(css.sandButton)}
-        variant="contained"
-        onClick={onaddEmailClick}
-      >
-        {manage.ChangeEmail[fin]}
-      </Button>
-    );
-  }
-
-  const returnRoleButton = (id, manage, fin) => {
-    return (
-      <Button
-        id={id}
-        size="small"
-        className={classes(css.lightgreenButton)}
-        variant="contained"
-        onClick={onRoleClick}
-      >
-        {manage.ChangeRole[fin]}
-      </Button>
-    );
-  }
 
   const createData = (
     name,
@@ -583,6 +567,16 @@ function UserManagementView(props)  {
       id,
     };
   }
+
+  const printAssociationName = (id) => {
+    const rangeofficer = state.rangeOfficers.find((officer) => officer.id === id);
+
+    if (rangeofficer) {
+      return rangeofficer.association_name || 'No association';
+    } else {
+      return null;
+    }
+  };
 
   const makeDataFreshAgain = async() => {
     try {
@@ -802,6 +796,34 @@ function UserManagementView(props)  {
       }
     }
     setState({...state, rows: tempRows});
+  }
+
+  // Fetch the id of the association which range officer 
+  // is associated with and update the state
+  const fetchAssociation = async (rangeofficerIds) => {
+    const rangeofficers = [];
+    for (const id of rangeofficerIds) {
+      try {
+        const rangeOfficer = state.userList.find((user) => user.id === id);
+        const response = await api.getAssociation(id);
+        const associationId = response[0].association_id;
+
+        // Find the association in the userList
+        const association = state.userList.find((user) => user.id === associationId);
+
+        // Add data into an array
+        rangeofficers.push ({
+          id,
+          name: rangeOfficer.name, // range officer's name
+          association_name: association.name || null, // association's name
+        });
+   
+      } catch (error) {
+        console.log(`Failed to fetch association for range officer ${id}`, error);
+      }
+    }
+    // Update the state for range officers when associations are fetched
+    setState((prevState) => ({...prevState, rangeOfficers: rangeofficers}));
   }
 
   const roleSelect = () => (
@@ -1421,7 +1443,7 @@ function UserManagementView(props)  {
                       </div>
                       <div>
                         <span style={{fontWeight:'bold'}}>{manage.Association[fin]}: </span> 
-                        {/* Need to add printing of association name */}
+                        {printAssociationName(row.id)}
                       </div>
                       <br />  
                       <div className={classes(css.buttonsMobile)}>
@@ -1448,8 +1470,7 @@ function UserManagementView(props)  {
                     )}
                   </TableCell>
                   <TableCell className={classes(css.tableCellDesk)}>
-                    {/* Need to add printing of association name */}
-                    {row.associationId}
+                    {printAssociationName(row.id)}
                   </TableCell>
                   <TableCell align="right" className={classes(css.tableCellDesk)}>
                     <div className={classes(css.buttonCell)}>
