@@ -24,6 +24,7 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
+  MenuItem
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import EditOffIcon from '@mui/icons-material/EditOff';
@@ -828,19 +829,18 @@ function UserManagementView(props)  {
 
   const roleSelect = () => (
     <div className="roleSelect">
-      <FormControl>
-        <InputLabel id="role-select-label">{manage.Role[fin]}</InputLabel>
+      <FormControl className={classes(css.selectRole)}>
+        <InputLabel id="role-select-label">{manage.SelectRole[fin]}</InputLabel>
         <Select
           labelId="role-select-label"
-          className={classes(css.select)}
-          native
-          value={state.role}
+          label={manage.SelectRole[fin]}
+          value={state.role || ''}
           onChange={handleChangeUserRole}
           id="role"
         >
-          <option value="rangeofficer">{manage.Rangeofficer[fin]}</option>
-          <option value="association">{manage.Association[fin]}</option>
-          <option value="superuser">{manage.Superuser[fin]}</option>
+          <MenuItem value="rangeofficer">{manage.Rangeofficer[fin]}</MenuItem>
+          <MenuItem value="association">{manage.Association[fin]}</MenuItem>
+          <MenuItem value="superuser">{manage.Superuser[fin]}</MenuItem>
         </Select>
       </FormControl>
         <br />
@@ -852,27 +852,23 @@ function UserManagementView(props)  {
   // handles selecting association for range officer
   const associationSelect = () => (
     <div>
-      <FormControl>
+      <FormControl className={classes(css.selectAssociation)}>
         {/** Only shown when selected role is range officer */}
         {state.role === "rangeofficer" && (
           <>
-            <InputLabel id="association-select-label">{manage.Association[fin]}</InputLabel>
+            <InputLabel id="association-select-label">{manage.SelectAssociation[fin]}</InputLabel>
             <Select
               labelId="association-select-label"
-              className={classes(css.select)}
-              native
-              value={state.associationId}
+              label={manage.SelectAssociation[fin]}
+              value={state.associationId || ''}
               onChange={handleChangeAssociation}
             >
-              <option key="0" value="0">  
-                --{manage.SelectAssociation[fin]}--
-              </option>
               {state.userList.map(user => {
                 if (user.role === "association") {
                   return (
-                    <option key={user.id} value={user.id}>
+                    <MenuItem key={user.id} value={user.id}>
                       {user.name}
-                    </option>
+                    </MenuItem>
                   )
                 }
               })}
@@ -1443,10 +1439,16 @@ function UserManagementView(props)  {
                           </Tooltip>
                         )}
                       </div>
-                      <div>
-                        <span style={{fontWeight:'bold'}}>{manage.Association[fin]}: </span> 
-                        {printAssociationName(row.id)}
-                      </div>
+                      {/* print association if the role is range officer */}
+                      {(row.roleToPrint === 'Valvoja' || 
+                        row.roleToPrint === 'Range officer' || 
+                        row.roleToPrint === 'Banofficer'
+                      ) &&(
+                        <div>
+                          <span style={{fontWeight:'bold'}}>{manage.Association[fin]}: </span> 
+                          {printAssociationName(row.id)}
+                        </div>
+                      )}
                       <br />  
                       <div className={classes(css.buttonsMobile)}>
                         {state.editingRows[row.id] && (
