@@ -114,6 +114,7 @@ export const TrackStatistics = ({ track, supervision }) => {
     <StyledEngineProvider injectFirst>
       <div className={classes(css.trackContainer)}>
         <Button
+          name="decrease-visitors"
           disabled={isDisabled}
           variant="contained"
           className={classes(css.button)}
@@ -122,8 +123,9 @@ export const TrackStatistics = ({ track, supervision }) => {
         >
           -
         </Button>
-        <div className={classes(css.visitorAmount)}>{visitors}</div>
+        <div className={classes(css.visitorAmount)} name="amount-of-visitors">{visitors}</div>
         <Button
+          name="increase-visitors"
           disabled={isDisabled}
           variant="contained"
           className={classes(css.button)}

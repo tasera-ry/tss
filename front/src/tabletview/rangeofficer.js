@@ -176,7 +176,7 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
         size="large"
         variant="contained"
         onClick={HandleClick}
-        data-testid={track.id}
+        data-testid="trackSupervisorButton"
       >
         {textState}
       </Button>
