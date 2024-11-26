@@ -27,7 +27,7 @@ const model = {
         .insert(device)
         .into('devices')
         .then((ids) => {
-          return ids;
+          return ids[0].id;
         })
         .then(trx.commit)
         .catch(trx.rollback);
