@@ -1418,6 +1418,7 @@ function UserManagementView(props)  {
                     {state.editingRows[row.id] && (
                       <Tooltip title={manage.EditEmail[fin]}>
                         <IconButton 
+                          id={row.id}
                           onClick={onaddEmailClick}
                           aria-label="Edit email"
                         > 
@@ -1433,6 +1434,7 @@ function UserManagementView(props)  {
                         {state.editingRows[row.id] && (
                           <Tooltip title={manage.EditRole[fin]}>
                             <IconButton 
+                              id={row.id}
                               onClick={onRoleClick}
                               aria-label="Edit role"
                             > 
@@ -1461,6 +1463,7 @@ function UserManagementView(props)  {
                     {state.editingRows[row.id] && (
                       <Tooltip title={manage.EditRole[fin]}>
                         <IconButton 
+                          id={row.id}
                           onClick={onRoleClick}
                           aria-label="Edit role"
                         > 
