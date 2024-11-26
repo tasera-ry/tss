@@ -455,6 +455,7 @@
     "Association": ["Yhdistys", "Association", "Förening"],
     "Rangemaster": ["Päävalvoja", "Range master", "Banmästare"],
     "SelectAssociation": ["Valitse yhdistys", "Select association", "Välja förening"],
+    "SelectRole": ["Valitse rooli", "Select role", "Välj roll"],
     "ChangeFor": [
       "Vaihda salasana käyttäjälle",
       "Change password for",
