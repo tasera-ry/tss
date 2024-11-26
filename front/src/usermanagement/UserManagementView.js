@@ -576,7 +576,6 @@ function UserManagementView(props)  {
   // Close dialog for removing user
   const handleRemoveWarningClose = () => {
     setState({...state, openRemoveWarning: false, deleteErrors: false});
-    console.log(state.openAddNewUserDialog);
   }
 
   // Open dialog for adding new users
@@ -836,8 +835,7 @@ function UserManagementView(props)  {
       <Dialog
         id="dialog-add-user"
         open={state.openAddNewUserDialog}
-        keepMounted={true}
-        //onClose={handleAddNewUserDialogClose}
+        keepMounted=
       >
         <DialogTitle
           id="dialog-add-user-title"
@@ -929,7 +927,7 @@ function UserManagementView(props)  {
       {/* Dialog to remove user */}
       <Dialog
         open={state.openRemoveWarning}
-        keepMounted={true}
+        keepMounted
         onClose={handleRemoveWarningClose}
       >
         <DialogTitle
