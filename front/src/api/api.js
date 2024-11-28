@@ -89,12 +89,15 @@ const addRangeSupervision = (
   scheduledRangeSupervisionId,
   rangeSupervisor,
   association,
-) =>
+) => {
+
+  console.log("Kalle: scheduledRangesup...", scheduledRangeSupervisionId)
   axios.post('/api/range-supervision', {
-    scheduled_range_supervision_id: scheduledRangeSupervisionId,
+    scheduled_range_supervision_id: scheduledRangeSupervisionId.scheduled_range_supervision_id,
     range_supervisor: rangeSupervisor,
     association,
   });
+}
 
 const patchRangeSupervision = (id, rangeSupervisor) => {
   if (rangeSupervisor.association) {

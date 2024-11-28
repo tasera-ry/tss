@@ -13,26 +13,34 @@ const schedule = require('node-schedule');
  * @param {Object} opts - Additional options that may be used for sending the email.
  * @returns {Promise<void>} - A promise that resolves when the email is successfully sent or if sending is skipped.
  */
-const email = async (message, key, opts) => {
+const email = async (messageType, key, opts) => {
   const emailSettings = await services.emailSettings.read();
   const emailAddress = await services.user.getEmail(key);
+
+  console.log("Kalle: email")
+  console.log("Kalle: emailSettings", emailSettings)
+  console.log("Kalle: emailAddress", emailAddress)
+  console.log("Kalle: messageType", messageType)
+  console.log("Kalle: key, opts", key, opts)
 
   // If it has been selected that emails should not be sent, do nothing
   if (emailSettings.shouldSend !== 'true') {
     return;
   }
 
-  switch (message) {
+  switch (messageType) {
     case 'assigned':
+      services.pendingEmails.add(messageType, key, opts.scheduleId);
+      break;
     case 'update':
       // If the emails should queued, add the email to the pending emails
-      if (emailSettings.shouldQueue === 'true') {
-        services.pendingEmails.add(message, key, opts.scheduleId);
-        break;
-      }
+      // if (emailSettings.shouldQueue === 'true') {
+      services.pendingEmails.add(messageType, key, opts.scheduleId);
+      break;
+      // }
     // Otherwise, send the email immediately
     default:
-      sendEmail(getText(message, opts, emailSettings), emailAddress, emailSettings);
+      sendEmail(getText(messageType, opts, emailSettings), emailAddress, emailSettings);
       break;
   }
 };
@@ -72,9 +80,8 @@ const sendPending = async () => {
       return acc;
     }, {});
 
-    let errors = [];
 
-    await Promise.all(Object.keys(emailInfo).map(async (outerKey) => {
+    return await Promise.all(Object.keys(emailInfo).map(async (outerKey) => {
       const address = emailInfo[outerKey].email;
       const total = emailInfo[outerKey].total;
       const last = emailInfo[outerKey].last;
@@ -97,19 +104,19 @@ const sendPending = async () => {
       } else {
         result = await sendEmail(getText(last, null, emailSettings), address, emailSettings);
       }
-
+      console.log("Kalle: result", result)
+      await services.pendingEmails.clear();
+      return {success: true}
       // If there was an error in sendEmail
-      if (!result.success) {
-        errors.push({ email: address, error: result.error });
-      }
     }));
-
-    // If there were errors in sendEmail-functions, return them
-    if (errors.length > 0) {
-      return { success: false, errors: errors };
-    }
-
-    await services.pendingEmails.clear();
+    // if (result && !result.success) {
+    //   errors.push({ email: address, error: result.error });
+    // }
+    // // If there were errors in sendEmail-functions, return them
+    // if (errors.length > 0) {
+      // return { success: false, errors: errors };
+    // }
+    
   } catch (error) {
     console.error('Error in sendPending:', error);
     return { success: false, error: error.message };
@@ -288,7 +295,7 @@ async function scheduleEmailReminder() {
         //first we check if the supervisor has confirmed or not.
         //if status = not cnofirmed, fetches email with supervisor id and sends it to mailer.js 
         if (receiver[0] != undefined && receiver[0].range_supervisor === 'not confirmed') {
-          email('reminder', receiver[0].association_id, null);
+          email('update', receiver[0].association_id, null);
         }
       } catch (error) {
         console.error(error);

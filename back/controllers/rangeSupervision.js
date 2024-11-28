@@ -85,8 +85,11 @@ const controller = {
 
   create: async function createSupervision(request, response) {
     try {
+      console.log("Kalle: createSupervision")
+      console.log("Kalle: createSupervision response.req.body.association", response.req.body.association)
       if (!response.req.body.association) return;
       const scheduleId = response.locals.id;
+      console.log("Kalle: email assigned scheduleId", scheduleId)
       email('assigned', response.req.body.association, { scheduleId: scheduleId });
     } catch (error) {
       console.error(error);
