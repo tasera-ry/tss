@@ -16,8 +16,7 @@ const controller = {
         return response.status(500).send({success: false, ...error})
       } else if (success) { 
         await services.emailSettings.update(request.body);
-        scheduleEmails(new Date(request.body.sendPendingTime));
-        scheduleEmailReminder();
+        scheduleEmailReminder(request.body);
         return response.status(200).send();
       }
     }
