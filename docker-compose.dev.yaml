@@ -31,6 +31,7 @@ services:
       - 8000:8000
       - 5858:5858 # node debugger
     volumes:
+      - '/app/node_modules/'
       - ./back:/app
     command: >
       /bin/sh -c "npx knex migrate:latest
