@@ -131,3 +131,6 @@ PR
 
 ## Tss development users  
 See seeds/02_users.js for the development environment users.
+
+## Cypress tests
+Automated UI tests can be run with cypress in the /back/cypress -folder. Navigate to /back folder, and run `npm install cypress` and `npm run cy:open`. This will open cypress console, where tests can be run by clicking on the test suite file names.
