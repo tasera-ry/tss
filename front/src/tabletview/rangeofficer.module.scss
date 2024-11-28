@@ -16,6 +16,10 @@
   font-size: 1em; /* Smaller font size */
 }
 
+:global(.MuiButton-contained) {
+  color: $COLOR_BLACK;
+}
+
 .Status {
   display: flex;
   width: 400px;
