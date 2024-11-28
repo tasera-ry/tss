@@ -7,6 +7,10 @@
   flex-direction: column;
   align-items: center;
 
+  .MuiButton-contained {
+    color: black;
+  }
+
   .heading {
     text-align: center;
     margin: 20px 0px 16px 0px;

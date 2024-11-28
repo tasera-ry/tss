@@ -117,7 +117,7 @@ describe(`${endpoint}`, () => {
       await request
         .post(endpoint)
         .set('Cookie', [`token=${jwt.sign({ id: 'id123' }, config.jwt.secret)}`])
-        .send({ name: 'normal3', role: 'association', password: 'psw123' })
+        .send({ name: 'normal3', role: 'association', password: 'Psw123' })
         .expect(201);
 
       const { digest, ...createdUser } = (await userModel.read({ name: 'normal3' }))[0];

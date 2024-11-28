@@ -27,17 +27,17 @@ describe(`${endpoint}`, () => {
 
     it('When invalid credentials are provided: returns status code 401.', async () => {
       await request.post(endpoint)
-        .send({name: 'hipsu', password: 'A@asd###ASDASD', secure: false})
+        .send({name: 'hipsu', password: 'Aasdf123', secure: false})
         .expect(401);
     });
 
     it('When valid credentials are provided: returns status code 200 and sets token cookie', async () => {
       // Create user
-      const user = {name: 'tiivitaavi', digest: hash('@L44L44L33')};
+      const user = {name: 'tiivitaavi', digest: hash('@L44L44Lee')};
       userModel.create(user);
 
       let res = await request.post(endpoint)
-        .send({name: 'tiivitaavi', password: '@L44L44L33', secure: false});
+        .send({name: 'tiivitaavi', password: '@L44L44Lee', secure: false});
  
       expect(res.status).toBe(200);
       expect(res['headers']['set-cookie'][0].slice(0, 5)).toBe('token');

@@ -47,6 +47,7 @@ const TrackTable = ({
   trackData,
   setRequestStatus,
   setRequestText,
+  setRefresh,
   l10n,
   lang,
 }) => {
@@ -63,6 +64,7 @@ const TrackTable = ({
       setRequestStatus('success');
       setRequestText('Rata lisätty');
       setNewRow({ name: '', description: '', short_description: '' });
+      setRefresh(true);
     } catch (e) {
       setRequestStatus('error');
       setRequestText('Radan lisäys epäonnistui.');
@@ -80,6 +82,7 @@ const TrackTable = ({
       setRequestStatus('success');
       setRequestText(l10n.rowUpdateSuccess[lang]);
       setEditingRow(null);
+      setRefresh(true);
     } catch (e) {
       setRequestStatus('error');
       setRequestText(l10n.rowUpdateFail[lang]);
@@ -107,7 +110,7 @@ const TrackTable = ({
             <TableCell>{l10n.tableHeaderName[lang]}</TableCell>
             <TableCell>{l10n.tableHeaderDescription[lang]}</TableCell>
             <TableCell>{l10n.tableHeaderShort[lang]}</TableCell>
-            <TableCell>Actions</TableCell>
+            <TableCell>{l10n.tableHeaderActions[lang]}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -208,32 +211,44 @@ const TrackCRUD = () => {
   const [initFinished, setInitFinished] = useState(false);
   const [requestStatus, setRequestStatus] = useState(null);
   const [requestText, setRequestText] = useState(null);
-
-  const partialFetch = lodash.partial(fetch, '/api/track'); // eslint-disable-line
+  const [refresh, setRefresh] = useState(false);
 
   // TODO: this needs to be centralized for best effect
   function RedirectToWeekview() {
     window.location.href = '/';
   }
 
+  // run at start
   useEffect(() => {
     (async () => {
       const logInSuccess = await validateLogin();
       if (logInSuccess) {
-        try {
-          const response = await axios.get('/api/track');
-          setTrackData(response.data);
-        } catch (e) {
-          // /api/track returns 404 when no tracks are set, should be fixed in
-          // server code
-          setTrackData([]);
-        }
+        updateData();
         setInitFinished(true);
       } else {
         RedirectToWeekview();
       }
     })();
   }, [initFinished]);
+
+  // run if changes to users
+  useEffect(() => {
+    if(refresh){
+      updateData();
+    }
+  }, [refresh]);
+
+  const updateData = async() => {
+    try {
+      const response = await axios.get('/api/track');
+      setTrackData(response.data);
+      setRefresh(false);
+    } catch (e) {
+      // /api/track returns 404 when no tracks are set, should be fixed in
+      // server code
+      setTrackData([]);
+    }
+  }
 
   // Translations
   const l10n = l10nLines.tracks;
@@ -248,6 +263,7 @@ const TrackCRUD = () => {
           trackData={trackData}
           setRequestStatus={setRequestStatus}
           setRequestText={setRequestText}
+          setRefresh={setRefresh}
           l10n={l10n}
           lang={lang}
         />
