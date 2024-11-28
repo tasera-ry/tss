@@ -561,16 +561,12 @@ function Scheduling(props) {
     const fin = localStorage.getItem('language');
     const items = [];
 
-    for (const key in tracks) {
-      const trackName = tracks[key].name
-      const splittedTrackName = trackName.split(' ');
-      const trackNumber = splittedTrackName[2];
-      
+    for (const key in tracks) {   
       items.push(
         <React.Fragment key = {key}>
           <Box className={`trackBox ${trackStates[tracks[key].id] === 'present' ? 'track-open' : 'track-closed'}`}>
             <FormControl component="fieldset" style={{padding:'5px'}}>
-              <FormLabel component="legend">{`${sched.ShootingTrack[fin]} ${trackNumber}`}</FormLabel>
+              <FormLabel component="legend">{tracks[key].name}</FormLabel>
               <div className="trackSwitchRow">
                 <div>{sched.TrackOpen[fin]}</div>
                 <CustomSwitch

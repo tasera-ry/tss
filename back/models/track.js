@@ -31,8 +31,8 @@ const model = {
         .returning('id')
         .insert(track)
         .into('track')
-        .then(ids => {
-          return ids;
+        .then((ids) => {
+          return ids[0].id;
         }).then(trx.commit)
         .catch(trx.rollback);
     });
