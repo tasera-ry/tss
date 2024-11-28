@@ -16,7 +16,7 @@ const service = {
    * service.create({ range_id: 1, name: 'Shooting track 1', description: '100m Kohdistusrata' })
    */
   create: async function createTrack(info) {
-    return (await models.track.create(info)).pop();
+    return await models.track.create(info);
   },
 
   /**
