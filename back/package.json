@@ -15,7 +15,7 @@
   "author": "TUNI Project Team",
   "license": "MIT",
   "dependencies": {
-    "@cypress/github-action": "^3.0.3",
+    "@cypress/github-action": "^6.7.7",
     "@cypress/xvfb": "^1.2.4",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.1",
