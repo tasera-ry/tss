@@ -853,6 +853,7 @@
       "Email messages",
       "E-postmeddelanden"
     ],
+    "messageType": ["Viestin tyyppi", "Message type", "Meddelandetyp"],
     "emailContent": [
       "Viestin sisältö",
       "Message content",
