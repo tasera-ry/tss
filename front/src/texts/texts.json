@@ -381,6 +381,11 @@
       "User management",
       "Användarhantering"
     ],
+    "LoggedIn": [
+      "Olet kirjautunut sisään käyttäjänä",
+      "You are logged in as",
+      "Du är inloggad som"
+    ],
     "ChangePass": ["Vaihda salasana", "Change password", "Ändra lösenord"],
     "ChangeEmail": [
       "Vaihda sähköpostiosoite",
@@ -392,8 +397,13 @@
       "Change role",
       "Ändra roll"
     ],
+    "Edit": ["Muokkaa", "Edit", "Redigera"],
+    "EditOff": ["Sulje muokkaustila", "Close editing mode", "Stäng redigeringsläge"],
+    "EditEmail": ["Muokkaa sähköpostiosoitetta", "Edit email address", "Redigera e-postadress"],
+    "EditRole": ["Muokka roolia", "Edit role", "Redigera roll"],
     "CreateUser": ["Lisää käyttäjä", "Create new user", "Skapa ny användare"],
     "Users": ["Käyttäjät", "User profiles", "Användarprofiler"],
+    "User": ["Käyttäjä", "User", "Användare"],
     "Username": ["Käyttäjänimi", "Username", "Användarnamn"],
     "RemoveUser": ["Poista käyttäjä", "Delete profile", "Ta bort användare"],
     "Helper": [
@@ -445,6 +455,7 @@
     "Association": ["Yhdistys", "Association", "Förening"],
     "Rangemaster": ["Päävalvoja", "Range master", "Banmästare"],
     "SelectAssociation": ["Valitse yhdistys", "Select association", "Välja förening"],
+    "SelectRole": ["Valitse rooli", "Select role", "Välj roll"],
     "ChangeFor": [
       "Vaihda salasana käyttäjälle",
       "Change password for",
@@ -457,14 +468,14 @@
       "Denna åtgärd kommer att ta bort användaren permanent"
     ],
     "Error": [
-      "Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä ja nimen uniikki",
-      "Something went wrong, remember to have at least 6 characters long password and a unique name",
-      "Något gick fel, kom ihåg att lösenord måste vara minst 6 tecken långt och ett unikt namn"
+      "Jokin meni pieleen, huomaathan että salasanan on täytettävä listatut vaatimukset ja nimen oltava uniikki",
+      "Something went wrong, remember that the password has to meet the listed requirements and the name needs to be unique",
+      "Något gick fel, kom ihåg att lösenordet måste uppfylla de angivna kraven och att namnet måste vara unikt"
     ],
     "ErrorPassword": [
-      "Jokin meni pieleen, huomaathan että salasanan täytyy olla vähintään 6 merkkiä pitkä",
-      "Something went wrong, password has to be at least 6 characters long",
-      "Något gick fel, kom ihåg att lösenord måste vara minst 6 tecken långt"
+      "Jokin meni pieleen, huomaathan että salasanan on täytettävä listatut vaatimukset",
+      "Something went wrong, remember that the password has to meet the listed requirements",
+      "Något gick fel, kom ihåg att lösenordet måste uppfylla de angivna kraven"
     ],
     "ErrorEmail": [
       "Jokin meni pieleen, sähköpostia ei tallennettu",
@@ -842,6 +853,7 @@
       "Email messages",
       "E-postmeddelanden"
     ],
+    "messageType": ["Viestin tyyppi", "Message type", "Meddelandetyp"],
     "emailContent": [
       "Viestin sisältö",
       "Message content",

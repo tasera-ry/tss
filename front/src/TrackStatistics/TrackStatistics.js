@@ -16,7 +16,7 @@ const classes = classNames.bind(css);
 export const TrackStatistics = ({ track, supervision }) => {
   const isDisabled = Boolean(track.trackSupervision === 'absent')
   const { scheduled, id } = track;
-  const { scheduled_range_supervision_id } = scheduled;
+  const scheduled_range_supervision_id = scheduled ? scheduled.scheduled_range_supervision_id : null;
   const lang = localStorage.getItem('language');
   const [visitors, setVisitors] = useState(
     scheduled && scheduled.visitors ? scheduled.visitors : 0,

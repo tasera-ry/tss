@@ -70,7 +70,7 @@ const service = {
    */
   delete: async function deleteSupervision(key) {
     return models.rangeSupervision.delete(key);
-  }
+  },
 };
 
 module.exports = service;

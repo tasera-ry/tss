@@ -33,7 +33,7 @@ describe(`${endpoint}`, () => {
 
       await userModel.create({ ...user, digest: 't' });
 
-      const newPassword = 'password1234';
+      const newPassword = 'Password1234';
       const res = await request
         .put(`${endpoint}/223`)
         .set('Cookie', [`token=${jwt.sign({ id: '223' }, config.jwt.secret)}`])
@@ -90,7 +90,7 @@ describe(`${endpoint}`, () => {
 
       await userModel.create({ ...user, digest: 't' });
 
-      const newPassword = 'wordpass4321';
+      const newPassword = 'Wordpass4321';
       const res = await request
         .put(`${endpoint}/223`)
         .set('Cookie', [`token=${jwt.sign({ id: '123' }, config.jwt.secret)}`])

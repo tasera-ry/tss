@@ -64,7 +64,7 @@ const service = {
     const digest = await hash(info.password);
     delete info.password;
     info.digest = digest;
-    return (await models.user.create(info)).pop();
+    return await models.user.create(info);
   },
 
   /**

@@ -6,6 +6,7 @@ import {
   Divider,
   Button,
   FormControl,
+  IconButton,
   InputLabel,
   Select,
   Box,
@@ -15,6 +16,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Paper,
   Dialog,
   DialogActions,
@@ -22,7 +24,10 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
+  MenuItem
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import EditOffIcon from '@mui/icons-material/EditOff';
 import NiceInputPassword from 'react-nice-input-password';
 import 'react-nice-input-password/dist/react-nice-input-password.css';
 
@@ -34,6 +39,8 @@ import { withCookies } from 'react-cookie';
 import { validateLogin } from '../utils/Utils';
 import translations from '../texts/texts.json';
 import css from './UserManagementView.module.scss';
+
+import api from '../api/api';
 
 const classes = classNames.bind(css);
 
@@ -265,6 +272,8 @@ function UserManagementView(props)  {
     myStorage: window.localStorage,
     addEmailDialogOpen: false,
     refresh: false,
+    editingRows: {},
+    rangeOfficers: [],
   });
 
   // is ran when component mounts
@@ -290,9 +299,18 @@ function UserManagementView(props)  {
     });
   }, []);
 
-  // run update after fetched user data from back-end
+  // run update and fetchAssociation after fetched user data from back-end
   useEffect(() => {
     update();
+
+    const rangeofficerIds = state.userList
+    .filter((user) => user.role === 'rangeofficer')
+    .map((user) => user.id);
+
+    if (rangeofficerIds.length > 0) {
+      fetchAssociation(rangeofficerIds);
+    }
+
   }, [state.userList]);
 
   // run if changes to users
@@ -399,7 +417,10 @@ function UserManagementView(props)  {
 
   // Closes dialog for changing password for some1 else
   const handleChangePassClose = (e) => {
-    setState({...state, password: '', changePassDialogOpen: false});
+    setState({...state,
+      password: '',
+      changePassDialogOpen: false,
+      changeErrors: false});
   }
 
   // Changes password for some1 else by their ID
@@ -421,7 +442,10 @@ function UserManagementView(props)  {
 
   // Closes dialog for adding email for some1 else
   const handleaddEmailClose = (e) => {
-    setState({...state, email: '', addEmailDialogOpen: false});
+    setState({...state,
+      email: '',
+      addEmailDialogOpen: false,
+      changeErrors: false});
   }
 
   // Adds email for some1 else by their ID
@@ -441,7 +465,11 @@ function UserManagementView(props)  {
 
   // Closes dialog for adding role for some1 else
   const handleChangeRoleClose = (e) => {
-    setState({...state, role: 'association', associationId: 0, changeRoleDialogOpen: false});
+    setState({...state, 
+      role: 'association',
+      associationId: 0,
+      changeRoleDialogOpen: false,
+      changeErrors: false});
   }
 
   // Adds role for some1 else by their ID
@@ -464,6 +492,27 @@ function UserManagementView(props)  {
         changeErrors: false});
     }
   }
+
+  // Handles the edit mode of the rows in the table of users
+  // when edit button is clicked
+  const handleEditClick = (rowId) => {
+
+    // Checks the edit state of the selected row
+    setState((prevState) => {
+      const editState = !!prevState.editingRows[rowId];
+
+      // Updates the edit state for the selected row in the editingRows object
+      // If the row is in edit mode, the state will be set to false, if not
+      // it will be set to true
+      return {
+        ...prevState,
+        editingRows: {
+          ...prevState.editingRows,
+          [rowId]: !editState,
+        }
+      };
+    });
+  };
 
   const returnRemoveButton = (id, manage, fin) => {
     return (
@@ -494,33 +543,6 @@ function UserManagementView(props)  {
       </Button>
     );
   }
-  const returnaddEmailButton = (id, manage, fin) => {
-    return (
-      <Button
-        id={id}
-        size="small"
-        className={classes(css.sandButton)}
-        variant="contained"
-        onClick={onaddEmailClick}
-      >
-        {manage.ChangeEmail[fin]}
-      </Button>
-    );
-  }
-
-  const returnRoleButton = (id, manage, fin) => {
-    return (
-      <Button
-        id={id}
-        size="small"
-        className={classes(css.lightgreenButton)}
-        variant="contained"
-        onClick={onRoleClick}
-      >
-        {manage.ChangeRole[fin]}
-      </Button>
-    );
-  }
 
   const createData = (
     name,
@@ -546,6 +568,16 @@ function UserManagementView(props)  {
       id,
     };
   }
+
+  const printAssociationName = (id) => {
+    const rangeofficer = state.rangeOfficers.find((officer) => officer.id === id);
+
+    if (rangeofficer) {
+      return rangeofficer.association_name || 'No association';
+    } else {
+      return null;
+    }
+  };
 
   const makeDataFreshAgain = async() => {
     try {
@@ -767,21 +799,48 @@ function UserManagementView(props)  {
     setState({...state, rows: tempRows});
   }
 
+  // Fetch the id of the association which range officer 
+  // is associated with and update the state
+  const fetchAssociation = async (rangeofficerIds) => {
+    const rangeofficers = [];
+    for (const id of rangeofficerIds) {
+      try {
+        const rangeOfficer = state.userList.find((user) => user.id === id);
+        const response = await api.getAssociation(id);
+        const associationId = response[0].association_id;
+
+        // Find the association in the userList
+        const association = state.userList.find((user) => user.id === associationId);
+
+        // Add data into an array
+        rangeofficers.push ({
+          id,
+          name: rangeOfficer.name, // range officer's name
+          association_name: association.name || null, // association's name
+        });
+   
+      } catch (error) {
+        console.log(`Failed to fetch association for range officer ${id}`, error);
+      }
+    }
+    // Update the state for range officers when associations are fetched
+    setState((prevState) => ({...prevState, rangeOfficers: rangeofficers}));
+  }
+
   const roleSelect = () => (
     <div className="roleSelect">
-      <FormControl>
-        <InputLabel id="role-select-label">{manage.Role[fin]}</InputLabel>
+      <FormControl className={classes(css.selectRole)}>
+        <InputLabel id="role-select-label">{manage.SelectRole[fin]}</InputLabel>
         <Select
           labelId="role-select-label"
-          className={classes(css.select)}
-          native
-          value={state.role}
+          label={manage.SelectRole[fin]}
+          value={state.role || ''}
           onChange={handleChangeUserRole}
           id="role"
         >
-          <option value="rangeofficer">{manage.Rangeofficer[fin]}</option>
-          <option value="association">{manage.Association[fin]}</option>
-          <option value="superuser">{manage.Superuser[fin]}</option>
+          <MenuItem value="rangeofficer">{manage.Rangeofficer[fin]}</MenuItem>
+          <MenuItem value="association">{manage.Association[fin]}</MenuItem>
+          <MenuItem value="superuser">{manage.Superuser[fin]}</MenuItem>
         </Select>
       </FormControl>
         <br />
@@ -793,28 +852,26 @@ function UserManagementView(props)  {
   // handles selecting association for range officer
   const associationSelect = () => (
     <div>
-      <FormControl>
+      <FormControl className={classes(css.selectAssociation)}>
         {/** Only shown when selected role is range officer */}
         {state.role === "rangeofficer" && (
           <>
-            <InputLabel id="association-select-label">{manage.Association[fin]}</InputLabel>
+            <InputLabel id="association-select-label">{manage.SelectAssociation[fin]}</InputLabel>
             <Select
-              labelId="association-select-label"
+              labelId="association-select-label
               id="associationSelect"
               className={classes(css.select)}
               native
-              value={state.associationId}
+              label={manage.SelectAssociation[fin]}
+              value={state.associationId || ''}
               onChange={handleChangeAssociation}
             >
-              <option key="0" value="0">  
-                --{manage.SelectAssociation[fin]}--
-              </option>
               {state.userList.map(user => {
                 if (user.role === "association") {
                   return (
-                    <option key={user.id} value={user.id}>
+                    <MenuItem key={user.id} value={user.id}>
                       {user.name}
-                    </option>
+                    </MenuItem>
                   )
                 }
               })}
@@ -1262,33 +1319,40 @@ function UserManagementView(props)  {
       </Dialog>
 
       {/* THE ACTUAL PAGE */}
-
       <h1 className={classes(css.header)}>{manage.UserManage[fin]}</h1>
-      <Divider />
-      <Box className={classes(css.userbox)}>
-        <h3 className={classes(css.header)}>{manage.ChangePass[fin]}:</h3>
-        <Button
-          onClick={handleOpenOwnPassChangeDialog}
-          variant="contained"
-          className={classes(css.turquoiseButton)}
-        >
-          {manage.ChangePass[fin]}
-        </Button>
+      <Box className={classes(css.LoggedIn)}>
+        <div>
+          {manage.LoggedIn[fin]}: 
+          <br />
+          <span style={{fontWeight:"bold"}}>{state.username}</span>
+        </div>
+        <div className={classes(css.buttonContainer)}>
+          <Button
+            onClick={handleOpenOwnEmailChangeDialog}
+            variant="contained"
+            className={classes(css.sandButton)}
+          >
+            {manage.ChangeEmail[fin]}
+          </Button>
+          <Button
+            onClick={handleOpenOwnPassChangeDialog}
+            variant="contained"
+            className={classes(css.turquoiseButton)}
+          >
+            {manage.ChangePass[fin]}
+          </Button>
+        </div>
       </Box>
-      <Divider />
-      <Box className={classes(css.userbox)}>
-        <h3 className={classes(css.header)}>{manage.ChangeEmail[fin]}:</h3>
-        <Button
-          onClick={handleOpenOwnEmailChangeDialog}
-          variant="contained"
-          className={css.sandButton}
-        >
-          {manage.ChangeEmail[fin]}
-        </Button>
-      </Box>
-      <Divider />
-      <Box className={classes(css.userbox)}>
-        <h3 className={classes(css.header)}>{manage.CreateUser[fin]}:</h3>
+
+      {/* USER PROFILES TABLE */}
+
+      {/* for larger devices only*/}
+      <div className={classes(css.usersHeaderDesk)}>
+        <h2 className={classes(css.header)}>{manage.Users[fin]}</h2>
+      </div>
+      {/* for smaller devices only */}
+      <div className={classes(css.usersHeaderMobile)}>
+        <h3 className={classes(css.header)}>{manage.Users[fin]}</h3>
         <Button
           onClick={handleAddUserOpenDialog}
           variant="contained"
@@ -1296,32 +1360,50 @@ function UserManagementView(props)  {
         >
           {manage.CreateUser[fin]}
         </Button>
-      </Box>
-      <Divider />
-
-      {/* USER PROFILES TABLE */}
-
-      <h3 className={classes(css.header)}>{`${manage.Users[fin]}:`}</h3>
+      </div>
       <Box className={classes(css.userbox)}>
         <TableContainer
           component={Paper}
           className={classes(css.tableContainer)}
         >
           <Table aria-label="table of users" className={classes(css.table)}>
-            <TableHead>
+            <TableHead className={classes(css.tableHead)}>
               <TableRow>
-                <TableCell align="justify">{manage.Username[fin]}</TableCell>
-                <TableCell align="justify">
-                  {manage.ChangePass[fin]}
+                <TableCell align="left" style={{fontWeight: 'bold', width: '300px'}}>
+                  {manage.User[fin]}
                 </TableCell>
-                <TableCell align="justify">
-                  {manage.RemoveUser[fin]}
+                <TableCell 
+                  align="left" 
+                  style={{fontWeight: 'bold', width: '200px'}} 
+                  className={classes(css.tableCellDesk)}
+                >
+                  {manage.Role[fin]}
                 </TableCell>
-                <TableCell align="justify">
-                  {manage.ChangeEmail[fin]}
+                <TableCell 
+                  align="left" 
+                  style={{fontWeight: 'bold', width: '100px'}} 
+                  className={classes(css.tableCellDesk)}
+                >
+                  {manage.Association[fin]}
                 </TableCell>
-                <TableCell align="justify">
-                  {manage.ChangeRole[fin]}
+                <TableCell 
+                  align="right" 
+                  className={classes(css.tableCellDesk)} 
+                  style= {{color: '#f2f2f2'}}
+                > 
+                  {manage.Edit[fin]}
+                </TableCell>
+                <TableCell 
+                  align="right" 
+                  style={{width: '100px'}}
+                >
+                  <Button
+                    onClick={handleAddUserOpenDialog}
+                    variant="contained"
+                    className={classes(css.addUserButtonDesk, css.lightgreenButton)}
+                  >
+                    {manage.CreateUser[fin]}
+                  </Button>
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -1330,22 +1412,94 @@ function UserManagementView(props)  {
                 <TableRow key={row.name} hover>
                   <TableCell align="justify" component="th" scope="row">
                     {row.name}
-                    <br />
+                    <br /> 
+                    {row.email} 
+                    {state.editingRows[row.id] && (
+                      <Tooltip title={manage.EditEmail[fin]}>
+                        <IconButton 
+                          id={row.id}
+                          onClick={onaddEmailClick}
+                          aria-label="Edit email"
+                        > 
+                          <EditIcon style={{fontSize: 'large'}}/>
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                    {/* only for small devices */}
+                    <div className={classes(css.tableCellMobile)}>
+                      <br />
+                      <div>
+                        <span style={{fontWeight:'bold'}}>{manage.Role[fin]}: </span> {row.roleToPrint}
+                        {state.editingRows[row.id] && (
+                          <Tooltip title={manage.EditRole[fin]}>
+                            <IconButton 
+                              id={row.id}
+                              onClick={onRoleClick}
+                              aria-label="Edit role"
+                            > 
+                              <EditIcon style={{fontSize: 'large'}}/>
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                      </div>
+                      {/* print association if the role is range officer */}
+                      {(row.roleToPrint === 'Valvoja' || 
+                        row.roleToPrint === 'Range officer' || 
+                        row.roleToPrint === 'Banofficer'
+                      ) &&(
+                        <div>
+                          <span style={{fontWeight:'bold'}}>{manage.Association[fin]}: </span> 
+                          {printAssociationName(row.id)}
+                        </div>
+                      )}
+                      <br />  
+                      <div className={classes(css.buttonsMobile)}>
+                        {state.editingRows[row.id] && (
+                          returnPassButton(row.id, manage, fin)
+                        )}
+                        {state.editingRows[row.id] && (
+                          returnRemoveButton(row.id, manage, fin)
+                        )}
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell align="justify" className={classes(css.tableCellDesk)}>
                     {row.roleToPrint}
-                    <br />
-                    {row.email}
+                    {state.editingRows[row.id] && (
+                      <Tooltip title={manage.EditRole[fin]}>
+                        <IconButton 
+                          id={row.id}
+                          onClick={onRoleClick}
+                          aria-label="Edit role"
+                        > 
+                          <EditIcon style={{fontSize: 'large'}}/>
+                        </IconButton>
+                      </Tooltip>
+                    )}
                   </TableCell>
-                  <TableCell align="justify">
-                    {returnPassButton(row.id, manage, fin)}
+                  <TableCell className={classes(css.tableCellDesk)}>
+                    {printAssociationName(row.id)}
                   </TableCell>
-                  <TableCell align="justify">
-                    {returnRemoveButton(row.id, manage, fin)}
+                  <TableCell align="right" className={classes(css.tableCellDesk)}>
+                    <div className={classes(css.buttonCell)}>
+                      {state.editingRows[row.id] && (
+                        returnPassButton(row.id, manage, fin)
+                      )}
+                      {state.editingRows[row.id] && (
+                        returnRemoveButton(row.id, manage, fin)
+                      )}
+                    </div>
                   </TableCell>
-                  <TableCell align="justify">
-                    {returnaddEmailButton(row.id, manage, fin)}
-                  </TableCell>
-                  <TableCell align="justify">
-                    {returnRoleButton(row.id, manage, fin)}
+                  <TableCell align="right">
+                    <IconButton 
+                      onClick={() => handleEditClick(row.id)}
+                      aria-label="Edit"
+                    >
+                      {!state.editingRows[row.id] 
+                        ? <Tooltip title={manage.Edit[fin]}><EditIcon/></Tooltip>
+                        : <Tooltip title={manage.EditOff[fin]}><EditOffIcon/></Tooltip>
+                      }
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               )}

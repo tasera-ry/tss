@@ -13,6 +13,7 @@ import {
   CircularProgress,
   Select,
   MenuItem,
+  InputLabel,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import {
@@ -109,6 +110,7 @@ const EmailSettings = () => {
   const [notification, setNotification] = React.useState({ open: false, message: '', type: 'info' });
 
   const fetchAndSetSettings = () => {
+
     fetch('/api/email-settings')
       .then((res) => res.json())
       .then((data) => {
@@ -236,43 +238,54 @@ const EmailSettings = () => {
   return (
     <div className="email-settings">
       <form onSubmit={handleSubmit}>
-        <FormLabel component="legend">{nav.EmailSettings[lang]}</FormLabel>
+        <div className="group">
+          <FormLabel component="legend">{nav.EmailSettings[lang]}</FormLabel>
+          <FormControl component="fieldset">
+            <FormLabel>SMTP-asetukset</FormLabel>
+            <TextField
+              className="component"
+              name="host"
+              label="Host"
+              value={settings.host}
+              onChange={handleChange}
+            />
+            <TextField
+              className="component"
+              name="port"
+              label="Port"
+              type="number"
+              value={settings.port}
+              onChange={handleChange}
+            />
+            <TextField
+              className="component"
+              name="user"
+              label={emailSettings.user[lang]}
+              value={settings.user}
+              onChange={handleChange}
+            />
+            <TextField
+              className="component"
+              name="pass"
+              label={emailSettings.pass[lang]}
+              value={settings.pass}
+              type="password"
+              onChange={handleChange}
+              autoComplete="new-password"
+            />
+            <TextField
+              className="component"
+              name="cc"
+              label="CC"
+              value={settings.cc}
+              onChange={handleChange}
+            />
+          </FormControl>
+        </div>
         <FormControl component="fieldset">
-          <FormLabel>SMTP-asetukset</FormLabel>
-          <TextField
-            name="host"
-            label="Host"
-            value={settings.host}
-            onChange={handleChange}
-          />
-          <TextField
-            name="port"
-            label="Port"
-            type="number"
-            value={settings.port}
-            onChange={handleChange}
-          />
-          <TextField
-            name="user"
-            label={emailSettings.user[lang]}
-            value={settings.user}
-            onChange={handleChange}
-          />
-          <TextField
-            name="pass"
-            label={emailSettings.pass[lang]}
-            value={settings.pass}
-            type="password"
-            onChange={handleChange}
-            autoComplete="new-password"
-          />
-          <TextField
-            name="cc"
-            label="CC"
-            value={settings.cc}
-            onChange={handleChange}
-          />
-          <FormHelperText>{emailSettings.ssl[lang]}</FormHelperText>
+          <FormLabel className="settings-label">
+            {emailSettings.ssl[lang]}
+          </FormLabel>
           <RadioGroup
             name="secure"
             value={settings.secure}
@@ -290,67 +303,80 @@ const EmailSettings = () => {
             />
           </RadioGroup>
         </FormControl>
-        <FormControl component="fieldset">
-          <FormLabel className="settings-label">
-            {emailSettings.senderAddress[lang]}
-          </FormLabel>
-          <TextField
-            name="sender"
-            label={emailSettings.address[lang]}
-            value={settings.sender}
-            onChange={handleChange}
-          />
-        </FormControl>
-        <FormControl component="fieldset">
-          <FormLabel className="settings-label">
-            {emailSettings.emailMessages[lang]}
-          </FormLabel>
-          <Select
-            value={messageSelection}
-            onChange={(e) => setMessageSelection(e.target.value)}
-            label="Message type"
-          >
-            <MenuItem value="collageMsg">
-              {emailSettings.collage[lang]}
-            </MenuItem>
-            <MenuItem value="assignedMsg">
-              {emailSettings.assigned[lang]}
-            </MenuItem>
-            <MenuItem value="updateMsg">{emailSettings.update[lang]}</MenuItem>
-            <MenuItem value="reminderMsg">
-              {emailSettings.reminder[lang]}
-            </MenuItem>
-            <MenuItem value="declineMsg">
-              {emailSettings.decline[lang]}
-            </MenuItem>
-            <MenuItem value="feedbackMsg">
-              {emailSettings.feedback[lang]}
-            </MenuItem>
-            <MenuItem value="resetpassMsg">
-              {emailSettings.resetpass[lang]}
-            </MenuItem>
-          </Select>
-          <TextField
-            multiline
-            name={messageSelection}
-            label={emailSettings.emailContent[lang]}
-            value={settings[messageSelection]}
-            onChange={handleChange}
-          />
-          <FormHelperText display="inline" component="div">
-            {HelperText(messageSelection)}
-          </FormHelperText>
-        </FormControl>
-        <FormControl component="fieldset">
-          <LocalizationProvider dateAdapter={AdapterMoment}>
-            <TimePicker
-              margin="normal"
-              label={emailSettings.pendingTime[lang]}
-              value={moment(settings.sendPendingTime)}
-              onChange={handleDateChange}
+        <div className="group">
+          <FormControl component="fieldset">
+            <FormLabel className="settings-label">
+              {emailSettings.senderAddress[lang]}
+            </FormLabel>
+            <TextField
+              className="component"
+              name="sender"
+              label={emailSettings.address[lang]}
+              value={settings.sender}
+              onChange={handleChange}
             />
-          </LocalizationProvider>
-        </FormControl>
+          </FormControl>
+        </div>
+        <div className="group">
+            <FormLabel className="settings-label">
+              {emailSettings.emailMessages[lang]}
+            </FormLabel>
+            <FormControl component="fieldset">
+            <InputLabel id="message-type-label">
+              {emailSettings.messageType[lang]}
+            </InputLabel>
+            <Select
+              labelId="message-type-label"
+              label={emailSettings.messageType[lang]}
+              value={messageSelection}
+              onChange={(e) => setMessageSelection(e.target.value)}
+            >
+              <MenuItem value="collageMsg">
+                {emailSettings.collage[lang]}
+              </MenuItem>
+              <MenuItem value="assignedMsg">
+                {emailSettings.assigned[lang]}
+              </MenuItem>
+              <MenuItem value="updateMsg">{emailSettings.update[lang]}</MenuItem>
+              <MenuItem value="reminderMsg">
+                {emailSettings.reminder[lang]}
+              </MenuItem>
+              <MenuItem value="declineMsg">
+                {emailSettings.decline[lang]}
+              </MenuItem>
+              <MenuItem value="feedbackMsg">
+                {emailSettings.feedback[lang]}
+              </MenuItem>
+              <MenuItem value="resetpassMsg">
+                {emailSettings.resetpass[lang]}
+              </MenuItem>
+            </Select>
+            <TextField
+              className="component"
+              multiline
+              name={messageSelection}
+              label={emailSettings.emailContent[lang]}
+              value={settings[messageSelection]}
+              onChange={handleChange}
+            />
+            <FormHelperText display="inline" component="div">
+              {HelperText(messageSelection)}
+            </FormHelperText>
+          </FormControl>
+        </div>
+        <div className="group">
+          <FormControl component="fieldset" className="component">
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <TimePicker
+                className="component"
+                margin="normal"
+                label={emailSettings.pendingTime[lang]}
+                value={moment(settings.sendPendingTime)}
+                onChange={handleDateChange}
+              />
+            </LocalizationProvider>
+          </FormControl>
+        </div>
         <FormControl component="fieldset">
           <FormLabel className="settings-label">
             {emailSettings.queueMessages[lang]}
@@ -371,22 +397,26 @@ const EmailSettings = () => {
               label={emailSettings.no[lang]}
             />
           </RadioGroup>
-          <Button
-            variant="contained"
-            style={{ color: 'black', backgroundColor: '#d1ccc2' }}
-            id="send-pending-button"
-            onClick={sendPendingRequest}
-          >
-            {pendingSend ? (
-              <CircularProgress />
-            ) : (
-              emailSettings.sendPending[lang]
-            )}
-          </Button>
-          <FormHelperText display="inline">
-            {emailSettings.sendPendingTip[lang]}
-          </FormHelperText>
         </FormControl>
+        <div className="group">
+          <FormControl component="fieldset" className="component">
+            <Button
+              variant="contained"
+              style={{ color: 'black', backgroundColor: '#d1ccc2' }}
+              id="send-pending-button"
+              onClick={sendPendingRequest}
+            >
+              {pendingSend ? (
+                <CircularProgress />
+              ) : (
+                emailSettings.sendPending[lang]
+              )}
+            </Button>
+            <FormHelperText display="inline" className="helperText">
+              {emailSettings.sendPendingTip[lang]}
+            </FormHelperText>
+          </FormControl>
+        </div>
         <FormControl component="fieldset">
           <FormLabel className="settings-label">
             {emailSettings.sendAutomatically[lang]}
@@ -408,17 +438,21 @@ const EmailSettings = () => {
             />
           </RadioGroup>
         </FormControl>
-        <Button
-          type="submit"
-          variant="contained"
-          style={{ color: 'black', backgroundColor: '#d1ccc2' }}
-        >
-          {pendingSave ? (
-            <CircularProgress />
-          ) : (
-            emailSettings.saveSettings[lang]
-          )}
-        </Button>
+        <div className="group">
+          <FormControl component="fieldset" className="component">
+            <Button
+              type="submit"
+              variant="contained"
+              style={{ color: 'black', backgroundColor: '#d1ccc2' }}
+            >
+              {pendingSave ? (
+                <CircularProgress />
+              ) : (
+                emailSettings.saveSettings[lang]
+              )}
+            </Button>
+          </FormControl>
+        </div>
       </form>
 
       <Snackbar

@@ -41,11 +41,20 @@ const fields = {
 
   password: function passwordValidation(requestObject, ...opts) {
     const validator = requestObject('password')
+      .isStrongPassword({
+        minLength: 6,
+        minLowercase: 1,
+        minUppercase: 1,
+        minNumbers: 1,
+        minSymbols: 0
+      })
+      .withMessage('must contain at least one lowercase, uppercase, number and be six characters long')
       .isString()
       .withMessage('must be a string')
-      .isAscii('must only contain ASCII characters')
-      .isByteLength({ min: 6, max: 72 })
-      .withMessage('must be between 6 and 72 characters');
+      .isAscii()
+      .withMessage('must only contain ASCII characters')
+      .isByteLength({ max: 72 })
+      .withMessage('must be under 72 characters');
     return validatorAdditions(validator, opts);
   },
 

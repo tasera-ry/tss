@@ -13,7 +13,7 @@ const service = {
    * service.create({ device_name: 'Timer 1', status: 'free' })
    */
   create: async function createDevice(deviceInfo) {
-    return (await models.devices.create(deviceInfo)).pop();
+    return await models.devices.create(deviceInfo);
   },
 
   /**
