@@ -858,7 +858,10 @@ function UserManagementView(props)  {
           <>
             <InputLabel id="association-select-label">{manage.SelectAssociation[fin]}</InputLabel>
             <Select
-              labelId="association-select-label"
+              labelId="association-select-label
+              id="associationSelect"
+              className={classes(css.select)}
+              native
               label={manage.SelectAssociation[fin]}
               value={state.associationId || ''}
               onChange={handleChangeAssociation}
@@ -887,9 +890,9 @@ function UserManagementView(props)  {
     <div>
       {/* Dialog to add new user */}
       <Dialog
+        id="dialog-add-user"
         open={state.openAddNewUserDialog}
         keepMounted
-        onClose={handleAddNewUserDialogClose}
       >
         <DialogTitle
           id="dialog-add-user-title"
