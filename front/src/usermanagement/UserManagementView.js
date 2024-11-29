@@ -858,7 +858,7 @@ function UserManagementView(props)  {
           <>
             <InputLabel id="association-select-label">{manage.SelectAssociation[fin]}</InputLabel>
             <Select
-              labelId="association-select-label
+              labelId="association-select-label"
               id="associationSelect"
               className={classes(css.select)}
               native
