@@ -180,6 +180,14 @@ const EmailSettings = () => {
       setNotification({ open: true, message: emailSettings.passError[lang], type: 'error' });
       return;
     }
+    else if (settings.host === '') {
+      setNotification({ open: true, message: emailSettings.hostError[lang], type: 'error' });
+      return;
+    }
+    else if (settings.port === 0) {
+      setNotification({ open: true, message: emailSettings.portError[lang], type: 'error' });
+      return;
+    }
     else if (settings.cc && !validateEmail(settings.cc)) {
       setNotification({ open: true, message: emailSettings.ccError[lang], type: 'error' });
       return;
@@ -202,7 +210,7 @@ const EmailSettings = () => {
           if (data.code === 'EAUTH') {
             setNotification({ open: true, message: emailSettings.authError[lang], type: 'error' });
           } else if (data.code === 'EDNS') {
-            setNotification({ open: true, message: emailSettings.hostError[lang], type: 'error' });
+            setNotification({ open: true, message: emailSettings.DNSError[lang], type: 'error' });
           } else if (data.code === 'ESOCKET') {
             setNotification({ open: true, message: emailSettings.socketError[lang], type: 'error' });
           } else if (data.code === 'ETIMEDOUT') {

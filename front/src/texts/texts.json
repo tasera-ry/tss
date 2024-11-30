@@ -789,12 +789,22 @@
       "Password cannot be empty!",
       "Lösenordet kan inte vara tomt!"
     ],
+    "hostError": [
+      "Host ei voi olla tyhjä!",
+      "Host cannot be empty!",
+      "Host kan inte vara tomt!"
+    ],
+    "portError": [
+      "Portti ei voi olla nolla!",
+      "Port cannot be zero!",
+      "Port kan inte vara noll!"
+    ],
     "ccError": [
       "Virheellinen kopio-sähköposti!",
       "Invalid CC email!",
       "Ogiltig CC e-post!"
     ],
-    "hostError": [
+    "DNSError": [
       "DNS-haku epäonnistui. Tarkista, että SMTP on oikea.",
       "DNS resolution failed. Please check that the SMTP host is correct.",
       "DNS-upplösning misslyckades. Kontrollera att SMTP-värdena är korrekta."
