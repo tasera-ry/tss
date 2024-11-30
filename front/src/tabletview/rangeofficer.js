@@ -104,11 +104,13 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
     setTextState(tablet.White[fin]);
 
     if (track.trackSupervision === 'present') {
+      console.log('track tracksupervision present', track.trackSupervision); // oona
       newSupervision = 'closed';
       setSupervision('closed');
       track.color = colors.redLight; // eslint-disable-line
       setTextState(tablet.Red[fin]);
     } else if (track.trackSupervision === 'absent') {
+      console.log('track tracksupervision absent', track.trackSupervision); // oona
       newSupervision = 'present';
       setSupervision('present');
       track.color = colors.green; // eslint-disable-line
@@ -411,6 +413,7 @@ const Tabletview = () => {
   }
 
   const HandlePresentClick = () => {
+    console.log('present'); // oona
     socket.emit('rangeUpdate', {
       status: 'present',
       color: colors.green,
@@ -420,6 +423,7 @@ const Tabletview = () => {
   };
 
   const HandleEnRouteClick = () => {
+    console.log('en route'); // oona
     socket.emit('rangeUpdate', {
       status: 'en route',
       color: colors.orange,
@@ -429,12 +433,14 @@ const Tabletview = () => {
   };
 
   const HandleClosedClick = () => {
+    console.log('closed'); // oona
     socket.emit('rangeUpdate', {
       status: 'closed',
       color: colors.redLight,
       text: tablet.Red[fin],
     });
     updateSupervisor('closed', colors.redLight, tablet.Red[fin]);
+    console.log('closed'); // oona
   };
 
 
