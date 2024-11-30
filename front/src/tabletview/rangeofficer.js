@@ -184,7 +184,7 @@ const TrackButtons = ({ track, scheduleId, tablet, lang, socket, disabled }) => 
       >
         {textState}
       </Button>
-      <TrackStatistics track={track} supervision={supervision} />
+      <TrackStatistics track={track} supervision={supervision} disabled={disabled} />
     </div>
   );
 };
@@ -335,7 +335,7 @@ const Tabletview = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [socket, setSocket] = useState();
   const [cookies] = useCookies(['username']);
-  const [buttonsDisabled, setButtonsDisabled] = useState(false);
+  const [buttonsDisabled, setButtonsDisabled] = useState(true);
 
   const lang = localStorage.getItem('language');
   const { tablet } = data;
@@ -368,7 +368,14 @@ const Tabletview = () => {
           setScheduleId,
           setReservationId,
           setRangeSupervisionScheduled,
-        );
+        ).then(() => {
+          // Enable or disable buttons based on initial range supervision status
+          if (statusText === tablet.SuperGreen[lang] || statusText === tablet.SuperOrange[lang]) {
+            setButtonsDisabled(false);
+          } else {
+            setButtonsDisabled(true);
+          }
+        });
       } else {
         // Login failed, redirect to weekview
         RedirectToWeekview();
@@ -436,7 +443,6 @@ const Tabletview = () => {
   };
 
   const HandleClosedClick = () => {
-    console.log('What is happening here');
     socket.emit('rangeUpdate', {
       status: 'closed',
       color: colors.redLight,

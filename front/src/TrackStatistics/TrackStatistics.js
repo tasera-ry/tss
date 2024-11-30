@@ -13,8 +13,8 @@ const { trackStatisticsModal } = translations;
 
 const classes = classNames.bind(css);
 
-export const TrackStatistics = ({ track, supervision }) => {
-  const isDisabled = Boolean(track.trackSupervision === 'absent')
+export const TrackStatistics = ({ track, supervision, disabled }) => {
+  const isDisabled = Boolean(track.trackSupervision === 'absent' || disabled);
   const { scheduled, id } = track;
   const scheduled_range_supervision_id = scheduled ? scheduled.scheduled_range_supervision_id : null;
   const lang = localStorage.getItem('language');
