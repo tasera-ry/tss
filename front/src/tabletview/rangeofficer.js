@@ -217,11 +217,11 @@ async function getData(
   setStatusColor,
   setScheduleId,
   setReservationId,
-  setRangeSupervisionScheduled,
+  setRangeSupervisionScheduled
 ) {
   const date = moment(Date.now()).format('YYYY-MM-DD');
 
-  await fetch(`/api/datesupreme/${date}`)
+  return await fetch(`/api/datesupreme/${date}`)
     .then((res) => res.json())
     .then((response) => {
       setScheduleId(response.scheduleId);
@@ -254,6 +254,11 @@ async function getData(
         setStatusColor(colors.white);
       }
       getColors(response.tracks, setTracks);
+      return response.rangeSupervision;
+    })
+    .catch((error) => {
+      console.log("Error in fetching data for tablet view: ", error);
+      return null;
     });
 }
 
@@ -335,7 +340,7 @@ const Tabletview = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [socket, setSocket] = useState();
   const [cookies] = useCookies(['username']);
-  const [buttonsDisabled, setButtonsDisabled] = useState(true);
+  const [buttonsDisabled, setButtonsDisabled] = useState(false);
 
   const lang = localStorage.getItem('language');
   const { tablet } = data;
@@ -353,10 +358,7 @@ const Tabletview = () => {
 
   useEffect(() => {
     validateLogin().then((logInSuccess) => {
-      if (
-        logInSuccess &&
-        (cookies.role === 'rangemaster' || cookies.role === 'superuser')
-      ) {
+      if (logInSuccess && (cookies.role === 'rangemaster' || cookies.role === 'superuser')) {
         getData(
           tablet,
           lang,
@@ -367,12 +369,11 @@ const Tabletview = () => {
           setStatusColor,
           setScheduleId,
           setReservationId,
-          setRangeSupervisionScheduled,
-        ).then(() => {
-          // Enable or disable buttons based on initial range supervision status
-          if (statusText === tablet.SuperGreen[lang] || statusText === tablet.SuperOrange[lang]) {
-            setButtonsDisabled(false);
-          } else {
+          setRangeSupervisionScheduled
+        )
+        .then((rangeSupervision) => {
+          // Disable buttons if center is closed
+          if (rangeSupervision === 'closed') {
             setButtonsDisabled(true);
           }
         });
