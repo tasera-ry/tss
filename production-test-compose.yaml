@@ -28,6 +28,8 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_DB=${DB_DB}
       - PGPASSWORD=${DB_PASSWORD}
+      - PGUSER=${DB_USER}
+      - PGDATABASE=${DB_DB}
     volumes:
       - ${DB_DATA}:/var/lib/postgresql/data
       - ${DB_TMP}:/dbtmp
