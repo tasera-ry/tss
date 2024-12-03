@@ -17,6 +17,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 | PostgreSQL | 13+      |
 
 ## How to run the application (development)
+
 ## New easier way of running
 1. Have docker and docker-compose installed
 2. Run command
@@ -67,6 +68,14 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
        bash -c 'cd back && npm run dev:withFront'
    ```
 3. The program should start up at http://localhost:3000 (default host)
+
+
+## How to run the application (production test)
+Run
+```sh
+docker-compose --env-file test_env_variables.env -f production-test-compose.yaml up
+```
+
 
 ## How to run the application (production)
 1. Run steps 1., 2., & 3. from the previous section
