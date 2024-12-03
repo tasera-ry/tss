@@ -1,7 +1,9 @@
+version: '3.8'
 services:
+  # Nodejs
   tss:
     image: ${TSS_IMAGE}:${TSS_IMAGE_TAG}
-    container_name: tss-test
+    container_name: tss
     environment:
       - DB=${DB_DB}
       - DB_HOST=${DB_HOST}
@@ -28,17 +30,39 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_DB=${DB_DB}
       - PGPASSWORD=${DB_PASSWORD}
-      - PGUSER=${DB_USER}
-      - PGDATABASE=${DB_DB}
     volumes:
       - ${DB_DATA}:/var/lib/postgresql/data
       - ${DB_TMP}:/dbtmp
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      backend:
+ # Reverse proxy
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ${NGINX_CONF}:/etc/nginx/conf.d
+      - ${CERT_CONF}:/etc/letsencrypt
+      - ${CERT_WWW}:/var/www/certbot
+    ports:
+      - "80:80"
+      - "443:443"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    networks:
+      backend:
+   # Let's encrypt SSL certificates
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+        - ${CERT_CONF}:/etc/letsencrypt
+        - ${CERT_WWW}:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 1h & wait $${!}; done;'"
     networks:
       backend:
 networks:
