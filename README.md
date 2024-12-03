@@ -12,6 +12,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 | PostgreSQL | 13+      |
 
 ## How to run the application (development)
+
 ## New easier way of running
 1. Have docker and docker-compose installed
 2. Run command
@@ -31,10 +32,10 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 3. Install project packages
    - `cd back && npm install && cd ../front && npm install && cd ..`
 
-### Starting up the app using an .env file 
+### Starting up the app using an .env file
 1. Create a `.env` file into the `back/` directory (an .env.example file is included in the folder, which can be copied and renamed).
 2. Write the runtime variables into the `.env` file.
-3. When using `.env` file you can run the commands without the environment variables, 
+3. When using `.env` file you can run the commands without the environment variables,
 4. Migrations and seeds
    ```sh
        bash -c 'cd back && npx knex migrate:latest && npx knex seed:run && cd ..
@@ -45,7 +46,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
    ```
 6. The application should start at http://localhost:3000 (default host)
 
-### Starting the app with command line variables 
+### Starting the app with command line variables
 1. Run database migrations
    ```sh
    env DB_USER=postgres \
@@ -62,6 +63,14 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
        bash -c 'cd back && npm run dev:withFront'
    ```
 3. The program should start up at http://localhost:3000 (default host)
+
+
+## How to run the application (production test)
+Run
+```sh
+docker-compose --env-file test_env_variables.env -f production-test-compose.yaml up
+```
+
 
 ## How to run the application (production)
 1. Run steps 1., 2., & 3. from the previous section
@@ -129,5 +138,5 @@ KK
 PR
 
 
-## Tss development users  
+## Tss development users
 See seeds/02_users.js for the development environment users.

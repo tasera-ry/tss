@@ -1,0 +1,43 @@
+services:
+  tss:
+    image: ghcr.io/tasera-ry/tss:v7-develop
+    container_name: tss-test
+    environment:
+      - DB=${DB_DB}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DEBUG=${DB_DEBUG}
+      - JWT_SECRET=${TSS_JWT_SECRET}
+      - NODE_ENV=${TSS_ENV}
+      - SERVER_HOST=${TSS_HOST}
+      - ALT_PORT=${TSS_ALT_PORT}
+    restart: always
+    volumes:
+      - ${TSS_LOCK}:/var/lock
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      backend:
+  # Database
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_DB}
+      - PGPASSWORD=${DB_PASSWORD}
+    volumes:
+      - ${DB_DATA}:/var/lib/postgresql/data
+      - ${DB_TMP}:/dbtmp
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      backend:
+networks:
+  backend:
