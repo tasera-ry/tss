@@ -78,6 +78,20 @@ docker-compose --env-file test_env_variables.env -f production-test-compose.yaml
 
 
 ## How to run the application (production)
+
+1. Copy `test_env_variables.env`
+
+2. Rename to `env_variables.env`
+
+3. Change passwords and usernames in `env_variables.env` as required
+
+4. Run
+```sh
+docker-compose --env-file env_variables.env -f production-compose.yaml up
+```
+
+
+
 1. Run steps 1., 2., & 3. from the previous section
 2. Build react image
    ```sh
