@@ -264,8 +264,6 @@ async function scheduleEmailReminder(emailSettings) {
       rule.second = 0;
       rule.tz = 'Europe/Helsinki'; // Set timezone to UTC+2 (Helsinki local time)
       
-      console.log("Kalle tz", rule.tz);
-      
         
         const job = schedule.scheduleJob(rule, async function () {
           console.log('Run scheduled at Helsinki time!');
