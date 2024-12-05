@@ -872,7 +872,7 @@ function Scheduling(props) {
               trackSupervisionMethod = 'POST';
               params = {
                 ...params,
-                scheduled_range_supervision_id: srsId,
+                scheduled_range_supervision_id: srsId && srsId.id ? srsId: srsId,
                 track_id: tracks[key].id,
               };
             }

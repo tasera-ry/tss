@@ -1,21 +1,22 @@
 
 exports.seed = function(knex) {
-  /* This JSON object serves as the model for how the front-end expects to eventually receive the data 
-   The initial values for the settings are expected to be given as env variables */
+  /* This JSON object serves as the model for how the front-end expects to eventually receive the data */
   const emailSettings = {
-    sender: process.env.SENDER_EMAIL,
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    cc: process.env.EMAIL_CC,
-    secure: process.env.EMAIL_SECURE,
-    shouldSend: process.env.SHOULD_SEND_EMAIL,
-    shouldQueue: process.env.SHOULD_QUEUE_EMAIL,
-    sendPendingTime: String(new Date(2024, 1, 2, 4, 0, 0)),
+    sender: "noreply@tasera.fi",
+    user: "ratavuorot@tasera.fi",
+    pass: "mbpw svpd pcgu waey",
+    // user: process.env.EMAIL_USER,
+    // pass: process.env.EMAIL_PASSWORD,
+    host: "smtp.gmail.com",
+    port: 465,
+    cc: "",
+    secure: "true",
+    shouldSend: "true",
+    shouldQueue: "false",
+    sendPendingTime: String(new Date(2024, 1, 1, 21, 17)),
     assignedMsg: '',
     updateMsg: '',
-    reminderMsg: '',
+    reminderMsg: 'reminder',
     declineMsg: '',
     feedbackMsg: '',
     resetpassMsg: '',

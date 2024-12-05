@@ -100,6 +100,7 @@ const controller = {
     //updates.range_supervisor returns "absent" if association has not been assigned. it returns "not confirmed" is association is assigned.
     //if - checks if association is assigned and only sends email if it is set. otherwise it would send email aswell when association is taken off.
     try {
+      
       const scheduleId = response.locals.id.scheduled_range_supervision_id;
       if (response.locals.updates.range_supervisor === 'not confirmed' && response.locals.updates.association){
         email('update', response.locals.updates.association, { scheduleId: scheduleId });
