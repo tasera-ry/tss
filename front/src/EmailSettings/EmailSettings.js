@@ -176,15 +176,15 @@ const EmailSettings = () => {
       setNotification({ open: true, message: emailSettings.emailError[lang], type: 'error' });
       return;
     }
-    else if (settings.pass === '') {
+    else if (!settings.pass) {
       setNotification({ open: true, message: emailSettings.passError[lang], type: 'error' });
       return;
     }
-    else if (settings.host === '') {
+    else if (!settings.host) {
       setNotification({ open: true, message: emailSettings.hostError[lang], type: 'error' });
       return;
     }
-    else if (settings.port === 0) {
+    else if (!settings.port) {
       setNotification({ open: true, message: emailSettings.portError[lang], type: 'error' });
       return;
     }
