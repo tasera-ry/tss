@@ -160,7 +160,6 @@ const EmailSettings = () => {
     // FIXME: for whatever reason the number gets decremented by 2 at some point.
     // No time to fix now
     newDate.setHours(date.hours(), date.minutes());
-    console.log("Kalle newdate", newDate)
     setSettings({ ...settings, sendPendingTime: newDate });
   };
 
