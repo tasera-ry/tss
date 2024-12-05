@@ -24,7 +24,6 @@ const controller = {
   },
   sendPendingEmails: async function sendPendingEmails(request, response) {
     const result = await sendPending();
-    console.log("Kalle: sendPending result", result)
     if (!result[0].success) {
       console.error("sendPendingEmails error:", error);
       return response.status(500).send({ success: false, error: error.message });

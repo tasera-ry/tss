@@ -85,11 +85,8 @@ const controller = {
 
   create: async function createSupervision(request, response) {
     try {
-      console.log("Kalle: createSupervision")
-      console.log("Kalle: createSupervision response.req.body.association", response.req.body.association)
       if (!response.req.body.association) return;
       const scheduleId = response.locals.id;
-      console.log("Kalle: email assigned scheduleId", scheduleId)
       email('assigned', response.req.body.association, { scheduleId: scheduleId });
     } catch (error) {
       console.error(error);
@@ -105,8 +102,6 @@ const controller = {
     try {
       
       const scheduleId = response.locals.id.scheduled_range_supervision_id;
-      console.log("Kalle: updatesupervision", response.locals.updates.range_supervisor)
-      console.log("Kalle: updatesupervision", response.locals.updates.association)
       if (response.locals.updates.range_supervisor === 'not confirmed' && response.locals.updates.association){
         email('update', response.locals.updates.association, { scheduleId: scheduleId });
       }

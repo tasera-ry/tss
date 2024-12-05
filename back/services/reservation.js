@@ -15,9 +15,7 @@ const _ = require('lodash');
  * createReservation({ date:'2020-01-01', available:true })
  */
 async function createReservation(details) {
-  console.log("Kalle: createreservation eeeeeee", details)
   details = _.pick(details, 'range_id', 'date', 'available');
-  console.log("Kalle: createreservation", details)
   return (await models.reservation.create(details)).pop();
 }
 

@@ -21,12 +21,6 @@ const email = async (messageType, key, opts) => {
   const emailSettings = await services.emailSettings.read();
   const emailAddress = await services.user.getEmail(key);
 
-  console.log("Kalle: email")
-  console.log("Kalle: emailSettings", emailSettings)
-  console.log("Kalle: emailAddress", emailAddress)
-  console.log("Kalle: messageType", messageType)
-  console.log("Kalle: key, opts", key, opts)
-
   // If it has been selected that emails should not be sent, do nothing
   if (emailSettings.shouldSend !== 'true') {
     return;
@@ -108,7 +102,6 @@ const sendPending = async () => {
       } else {
         result = await sendEmail(getText(last, null, emailSettings), address, emailSettings);
       }
-      console.log("Kalle: result", result)
       await services.pendingEmails.clear();
       return {success: true}
       // If there was an error in sendEmail
@@ -176,7 +169,6 @@ const getText = (message, opts, emailSettings) => {
  * @returns {Promise<void>} - A promise that resolves when the email is successfully sent.
  */
 const sendEmail = async (text, emailAddress, emailSettings) => {
-  console.log("Kalle: sendemail", emailSettings)
   try {
     const subject = 'Tasera';
     let auth;
@@ -278,7 +270,6 @@ async function scheduleEmailReminder(emailSettings) {
         const job = schedule.scheduleJob(rule, async function () {
           console.log('Run scheduled at Helsinki time!');
           try {
-            console.log("Kalle: run scheduled")
             // Get date 7 days from now and format it to YYYY-MM-DD
             const currentDate = new Date();
             currentDate.setDate(currentDate.getDate() + 7);
@@ -307,7 +298,6 @@ async function scheduleEmailReminder(emailSettings) {
             }
         
             const receiver = await getFutureSupervision();
-            console.log('Kalle: scheduled receiver', receiver);
         
             if (Array.isArray(receiver) && receiver[0]?.range_supervisor === 'not confirmed') {
               email('reminder', receiver[0].association_id, null);
