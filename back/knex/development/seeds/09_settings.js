@@ -4,7 +4,7 @@ exports.seed = function(knex) {
   const emailSettings = {
     sender: "noreply@tasera.fi",
     user: "ratavuorot@tasera.fi",
-    pass: "mbpw svpd pcgu waey",
+    pass: "",
     // user: process.env.EMAIL_USER,
     // pass: process.env.EMAIL_PASSWORD,
     host: "smtp.gmail.com",

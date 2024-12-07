@@ -56,8 +56,10 @@ const sendPending = async () => {
     const emailSettings = await services.emailSettings.read();
     const pending = await services.pendingEmails.read();
 
-    if (pending.length === 0) {
-      return { success: true, message: 'No messages to send.' };
+    console.log("Kalle: pending", pending)
+
+    if (!pending || pending.length === 0) {
+      return { success: false, message: 'No messages to send.' };
     }
 
     // Print pending emails to console
