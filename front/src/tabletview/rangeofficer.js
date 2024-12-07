@@ -13,8 +13,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
-// Translations
-
 // Date handling
 import moment from 'moment';
 
@@ -30,7 +28,7 @@ import data from '../texts/texts.json';
 // Submitting track usage statistics
 import { TrackStatistics } from '../TrackStatistics/TrackStatistics';
 
-//Receiving possible info messages
+// Receiving possible info messages
 import InfoBox from '../infoBox/InfoBox';
 import Devices from '../Devices/devices';
 
@@ -42,7 +40,7 @@ import css from './rangeofficer.module.scss';
 const classes = classNames.bind(css);
 
 // shooting track rows
-const TrackRows = ({ tracks, setTracks, scheduleId, tablet, fin, socket }) =>
+const TrackRows = ({ tracks, setTracks, scheduleId, tablet, lang, socket, disabled }) =>
   tracks.map((track) => (
     <div key={track.id} className={classes(css.rangediv)}>
       <div className={classes(css.rangeStyle)}>
@@ -56,14 +54,15 @@ const TrackRows = ({ tracks, setTracks, scheduleId, tablet, fin, socket }) =>
           setTracks={setTracks}
           scheduleId={scheduleId}
           tablet={tablet}
-          fin={fin}
+          lang={lang}
           socket={socket}
+          disabled={disabled}
         />
       </div>
     </div>
   ));
 
-const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
+const TrackButtons = ({ track, scheduleId, tablet, lang, socket, disabled }) => {
   const [buttonColor, setButtonColor] = useState(track.color);
 
   const supervisorState = track.scheduled ? track.scheduled.track_supervisor : 'absent';
@@ -73,7 +72,7 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
   else supervisorStateTablet = 'White';
 
   const [textState, setTextState] = useState(
-    tablet[supervisorStateTablet][fin],
+    tablet[supervisorStateTablet][lang],
   );
   const [supervision, setSupervision] = useState(supervisorState);
 
@@ -82,37 +81,41 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
       if (msg.super === 'present') {
         track.trackSupervision = 'absent'; // eslint-disable-line
         setButtonColor(colors.green);
-        setTextState(tablet.Green[fin]);
+        setTextState(tablet.Green[lang]);
         setSupervision('absent');
       } else if (msg.super === 'closed') {
         track.trackSupervision = 'present'; // eslint-disable-line
         setButtonColor(colors.redLight);
-        setTextState(tablet.Red[fin]);
+        setTextState(tablet.Red[lang]);
         setSupervision('present');
       } else if (msg.super === 'absent') {
         track.trackSupervision = 'closed'; // eslint-disable-line
         setButtonColor(colors.white);
-        setTextState(tablet.White[fin]);
+        setTextState(tablet.White[lang]);
         setSupervision('closed');
       }
     }
   });
   const HandleClick = () => {
+    // Set "No track officer" by default
     let newSupervision = 'absent';
     setSupervision('absent');
     track.color = colors.white; // eslint-disable-line
-    setTextState(tablet.White[fin]);
+    setTextState(tablet.White[lang]);
 
+    // If track supervision is present, when clicked, set it to closed
     if (track.trackSupervision === 'present') {
       newSupervision = 'closed';
       setSupervision('closed');
       track.color = colors.redLight; // eslint-disable-line
-      setTextState(tablet.Red[fin]);
-    } else if (track.trackSupervision === 'absent') {
+      setTextState(tablet.Red[lang]);
+    }
+    // If track supervision is closed, when clicked, set it to absent
+    else if (track.trackSupervision === 'absent') {
       newSupervision = 'present';
       setSupervision('present');
       track.color = colors.green; // eslint-disable-line
-      setTextState(tablet.Green[fin]);
+      setTextState(tablet.Green[lang]);
     }
 
     let { notice } = track;
@@ -177,10 +180,11 @@ const TrackButtons = ({ track, scheduleId, tablet, fin, socket }) => {
         variant="contained"
         onClick={HandleClick}
         data-testid="trackSupervisorButton"
+        disabled={disabled}
       >
         {textState}
       </Button>
-      <TrackStatistics track={track} supervision={supervision} />
+      <TrackStatistics track={track} supervision={supervision} disabled={disabled} />
     </div>
   );
 };
@@ -205,7 +209,7 @@ async function getColors(tracks, setTracks) {
 
 async function getData(
   tablet,
-  fin,
+  lang,
   setHours,
   tracks,
   setTracks,
@@ -213,11 +217,11 @@ async function getData(
   setStatusColor,
   setScheduleId,
   setReservationId,
-  setRangeSupervisionScheduled,
+  setRangeSupervisionScheduled
 ) {
   const date = moment(Date.now()).format('YYYY-MM-DD');
 
-  await fetch(`/api/datesupreme/${date}`)
+  return await fetch(`/api/datesupreme/${date}`)
     .then((res) => res.json())
     .then((response) => {
       setScheduleId(response.scheduleId);
@@ -228,44 +232,48 @@ async function getData(
         end: moment(response.close, 'h:mm').format('HH:mm'),
       });
       if (response.rangeSupervision === 'present') {
-        setStatusText(tablet.SuperGreen[fin]);
+        setStatusText(tablet.SuperGreen[lang]);
         setStatusColor(colors.green);
       } else if (response.rangeSupervision === 'en route') {
-        setStatusText(tablet.SuperOrange[fin]);
+        setStatusText(tablet.SuperOrange[lang]);
         setStatusColor(colors.orange);
       } else if (response.rangeSupervision === 'absent') {
-        setStatusText(tablet.SuperWhite[fin]);
+        setStatusText(tablet.SuperWhite[lang]);
         setStatusColor(colors.white);
       } else if (response.rangeSupervision === 'closed') {
-        setStatusText(tablet.Red[fin]);
+        setStatusText(tablet.Red[lang]);
         setStatusColor(colors.redLight);
       } else if (response.rangeSupervision === 'confirmed') {
-        setStatusText(tablet.SuperLightGreen[fin]);
+        setStatusText(tablet.SuperLightGreen[lang]);
         setStatusColor(colors.greenLight);
       } else if (response.rangeSupervision === 'not confirmed') {
-        setStatusText(tablet.SuperBlue[fin]);
+        setStatusText(tablet.SuperBlue[lang]);
         setStatusColor(colors.turquoise);
       } else {
-        setStatusText(tablet.SuperWhite[fin]);
+        setStatusText(tablet.SuperWhite[lang]);
         setStatusColor(colors.white);
       }
       getColors(response.tracks, setTracks);
+      return response.rangeSupervision;
+    })
+    .catch((error) => {
+      console.log("Error in fetching data for tablet view: ", error);
+      return null;
     });
 }
 
-const TimePick = ({ tablet, fin, scheduleId, hours, setHours, dialogOpen, setDialogOpen }) => {
+const TimePick = ({ tablet, lang, scheduleId, hours, setHours, dialogOpen, setDialogOpen }) => {
   const [errorMessage, setErrorMessage] = useState();
   const [startTime, setStartTime] = useState(new Date(0, 0, 0, hours.start?.split(':')[0] || 0, hours.start?.split(':')[1] || 0, 0));
   const [endTime, setEndTime] = useState(new Date(0, 0, 0, hours.end?.split(':')[0] || 0, hours.end?.split(':')[1] || 0, 0));
 
   async function handleTimeChange() {
     if (startTime === null || endTime === null) {
-      setErrorMessage(tablet?.Error[fin] || "Invalid time selected.");
+      setErrorMessage(tablet?.Error[lang] || "Invalid time selected.");
       return;
     }
     const start = startTime.toTimeString().split(' ')[0].slice(0, 5);
     const end = endTime.toTimeString().split(' ')[0].slice(0, 5);
-    console.log(start, end);
     const query = `/api/schedule/${scheduleId}`;
     await axios.put(query, { open: start, close: end })
       .then((res) => {
@@ -276,19 +284,19 @@ const TimePick = ({ tablet, fin, scheduleId, hours, setHours, dialogOpen, setDia
       })
       .catch((error) => {
         console.log(error);
-        setErrorMessage(tablet.Error[fin]);
+        setErrorMessage(tablet.Error[lang]);
       });
   }
 
   return (
     <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-      <DialogTitle>{tablet.PickTime[fin]}</DialogTitle>
+      <DialogTitle>{tablet.PickTime[lang]}</DialogTitle>
       <DialogContent>
         <LocalizationProvider dateAdapter={AdapterMoment}>
           <TimePicker
             closeOnSelect
             ampm={false}
-            label={tablet.Start[fin]}
+            label={tablet.Start[lang]}
             value={moment(startTime)}
             onChange={(time) => setStartTime(time.toDate())}
             minutesStep={5}
@@ -298,7 +306,7 @@ const TimePick = ({ tablet, fin, scheduleId, hours, setHours, dialogOpen, setDia
           <TimePicker
             closeOnSelect
             ampm={false}
-            label={tablet.End[fin]}
+            label={tablet.End[lang]}
             value={moment(endTime)}
             onChange={(time) => setEndTime(time.toDate())}
             minutesStep={5}
@@ -310,10 +318,10 @@ const TimePick = ({ tablet, fin, scheduleId, hours, setHours, dialogOpen, setDia
       </DialogContent>
       <DialogActions>
         <Button onClick={() => setDialogOpen(false)} className={classes(css.cancelButtonStyle)}>
-          {tablet.Cancel[fin]}
+          {tablet.Cancel[lang]}
         </Button>
         <Button onClick={handleTimeChange} className={classes(css.saveButtonStyle)}>
-          {tablet.Save[fin]}
+          {tablet.Save[lang]}
         </Button>
       </DialogActions>
     </Dialog>
@@ -332,8 +340,9 @@ const Tabletview = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [socket, setSocket] = useState();
   const [cookies] = useCookies(['username']);
+  const [buttonsDisabled, setButtonsDisabled] = useState(false);
 
-  const fin = localStorage.getItem('language');
+  const lang = localStorage.getItem('language');
   const { tablet } = data;
   const date = moment(Date.now()).format('YYYY-MM-DD');
   const today = moment().format('DD.MM.YYYY');
@@ -349,14 +358,10 @@ const Tabletview = () => {
 
   useEffect(() => {
     validateLogin().then((logInSuccess) => {
-      if (
-        logInSuccess &&
-        (cookies.role === 'rangemaster' || cookies.role === 'superuser')
-      ) {
+      if (logInSuccess && (cookies.role === 'rangemaster' || cookies.role === 'superuser')) {
         getData(
-          //data,
           tablet,
-          fin,
+          lang,
           setHours,
           tracks,
           setTracks,
@@ -364,8 +369,14 @@ const Tabletview = () => {
           setStatusColor,
           setScheduleId,
           setReservationId,
-          setRangeSupervisionScheduled,
-        );
+          setRangeSupervisionScheduled
+        )
+        .then((rangeSupervision) => {
+          // Disable buttons if center is closed
+          if (rangeSupervision === 'closed') {
+            setButtonsDisabled(true);
+          }
+        });
       } else {
         // Login failed, redirect to weekview
         RedirectToWeekview();
@@ -414,27 +425,33 @@ const Tabletview = () => {
     socket.emit('rangeUpdate', {
       status: 'present',
       color: colors.green,
-      text: tablet.SuperGreen[fin],
+      text: tablet.SuperGreen[lang],
     });
-    updateSupervisor('present', colors.green, tablet.SuperGreen[fin]);
+    updateSupervisor('present', colors.green, tablet.SuperGreen[lang]);
+    // Enable track buttons
+    setButtonsDisabled(false);
   };
 
   const HandleEnRouteClick = () => {
     socket.emit('rangeUpdate', {
       status: 'en route',
       color: colors.orange,
-      text: tablet.SuperOrange[fin],
+      text: tablet.SuperOrange[lang],
     });
-    updateSupervisor('en route', colors.orange, tablet.SuperOrange[fin]);
+    updateSupervisor('en route', colors.orange, tablet.SuperOrange[lang]);
+    // Enable track buttons
+    setButtonsDisabled(false);
   };
 
   const HandleClosedClick = () => {
     socket.emit('rangeUpdate', {
       status: 'closed',
       color: colors.redLight,
-      text: tablet.Red[fin],
+      text: tablet.Red[lang],
     });
-    updateSupervisor('closed', colors.redLight, tablet.Red[fin]);
+    updateSupervisor('closed', colors.redLight, tablet.Red[lang]);
+    // Disable track buttons since no supervisor is present
+    setButtonsDisabled(true);
   };
 
 
@@ -446,7 +463,7 @@ const Tabletview = () => {
 
 
       <Typography variant="h5" align="center">
-        {tablet.Open[fin]}: &nbsp;
+        {tablet.Open[lang]}: &nbsp;
         <Button
           size="medium"
           variant="outlined"
@@ -460,7 +477,7 @@ const Tabletview = () => {
       {dialogOpen ? (
         <TimePick
           tablet={tablet}
-          fin={fin}
+          lang={lang}
           scheduleId={scheduleId}
           hours={hours}
           setHours={setHours}
@@ -486,7 +503,7 @@ const Tabletview = () => {
         </Button>
       </div>
 
-      <div className={classes(css.Text)}>{tablet.HelperFirst[fin]}</div>
+      <div className={classes(css.Text)}>{tablet.HelperFirst[lang]}</div>
 
       <div className={classes(css.rowStyle)}>
         <Button
@@ -496,7 +513,7 @@ const Tabletview = () => {
           onClick={HandlePresentClick}
           data-testid="tracksupervisorPresent"
         >
-          {tablet.Green[fin]}
+          {tablet.Green[lang]}
         </Button>
         <Button
           className={classes(css.orangeButtonStyle)}
@@ -505,7 +522,7 @@ const Tabletview = () => {
           onClick={HandleEnRouteClick}
           data-testid="tracksupervisorOnWay"
         >
-          {tablet.Orange[fin]}
+          {tablet.Orange[lang]}
         </Button>
         <Button
           className={classes(css.redButtonStyle)}
@@ -514,12 +531,12 @@ const Tabletview = () => {
           onClick={HandleClosedClick}
           data-testid="tracksupervisorClosed"
         >
-          {tablet.Red[fin]}
+          {tablet.Red[lang]}
         </Button>
       </div>
 
 
-      <div className={classes(css.Text)}>{tablet.HelperSecond[fin]}</div>
+      <div className={classes(css.Text)}>{tablet.HelperSecond[lang]}</div>
 
       <div className={classes(css.trackRowStyle)}>
 
@@ -528,9 +545,9 @@ const Tabletview = () => {
           setTracks={setTracks}
           scheduleId={scheduleId}
           tablet={tablet}
-          fin={fin}
+          lang={lang}
           socket={socket}
-
+          disabled={buttonsDisabled}
         />
 
       </div>

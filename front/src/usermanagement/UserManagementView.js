@@ -861,7 +861,6 @@ function UserManagementView(props)  {
               labelId="association-select-label"
               id="associationSelect"
               className={classes(css.select)}
-              native
               label={manage.SelectAssociation[fin]}
               value={state.associationId || ''}
               onChange={handleChangeAssociation}

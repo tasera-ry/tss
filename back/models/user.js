@@ -131,7 +131,7 @@ const model = {
     );
     const rangeofficer = _.pick(update, 'associationId');
 
-    const association = _.pick(update, 'phone');
+    const association = _.pick(update, 'role').role == 'association';
 
     const id = await model.read(current, ['id']).then((rows) => rows[0]);
 
@@ -161,8 +161,17 @@ const model = {
                 }
               });
           }
-          if (_.isEmpty(association) === false) {
-            return trx('association').where(id).update(association);
+          if (association) {
+            return trx('association')
+              .select()
+              .where('user_id', id.id)
+              .then(function (rows) {
+                if (rows.length === 0) {
+                  // Association id not yet in table, insert
+                  return trx('association').insert({ user_id: id.id });
+                }
+                // Phone number is not currently used for anything, no need to update existing association
+              });
           }
           return updates;
         })
