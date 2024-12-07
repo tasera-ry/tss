@@ -19,6 +19,7 @@ const model = {
       .orWhere({ setting_name: 'email_shouldsend' })
       .orWhere({ setting_name: 'email_assigned_msg' })
       .orWhere({ setting_name: 'email_update_msg' })
+      .orWhere({ setting_name: 'email_cc' })
       .orWhere({ setting_name: 'email_reminder_msg' })
       .orWhere({ setting_name: 'email_decline_msg' })
       .orWhere({ setting_name: 'email_feedback_msg' })

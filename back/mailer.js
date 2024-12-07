@@ -27,15 +27,20 @@ const email = async (messageType, key, opts) => {
   }
   switch (messageType) {
     case 'reminder':
-      // always send reminders
+      // always send reminders, no need to queue
       sendEmail(getText(messageType, opts, emailSettings), emailAddress, emailSettings);
       break;
     default:
-      if (emailSettings.shouldQueue === 'true') {
+      // I have no idea what this scheduleId is supposed to be, but we must include it when saving pending emails.
+      if (emailSettings.shouldQueue === 'true' && opts && opts.scheduleId) {
+        console.log("email: add email to pending emails", messageType)
+        console.log("email: add email to pending emails", emailAddress)
         // add to pending emails
         services.pendingEmails.add(messageType, key, opts.scheduleId);
       } else { 
         // send directly
+        console.log("email: send email directly", messageType)
+        console.log("email: send email directly", emailAddress)
         sendEmail(getText(messageType, opts, emailSettings), emailAddress, emailSettings);
       }
   }
@@ -56,8 +61,8 @@ const sendPending = async () => {
     const emailSettings = await services.emailSettings.read();
     const pending = await services.pendingEmails.read();
 
-    if (pending.length === 0) {
-      return { success: true, message: 'No messages to send.' };
+    if (!pending || pending.length === 0) {
+      return { success: false, message: 'No messages to send.' };
     }
 
     // Print pending emails to console
@@ -123,6 +128,7 @@ const sendPending = async () => {
 const getText = (message, opts, emailSettings) => {
   let text = message;
   let allowedVars = {};
+  console.log("Mailer: getText message:", message)
   switch (message) {
     case 'assigned':
       text = emailSettings.assignedMsg;
@@ -153,6 +159,7 @@ const getText = (message, opts, emailSettings) => {
       allowedVars['{assigned}'] = opts.assignedCount;
       break;
   }
+  console.log("Mailer: getText text:", text)
   // Insert dynamic values into the message
   Object.keys(allowedVars).forEach(token => {
     text = text.replace(new RegExp(token, 'g'), allowedVars[token]);

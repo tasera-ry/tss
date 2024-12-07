@@ -132,7 +132,11 @@ const EmailSettings = () => {
         const result = await res.json();
         setPendingSend(false);
         // Sending pending emails failed
-        if (res.status !== 200) {
+        if(res.status === 404) {
+          // no pending emails to send
+          setNotification({ open: true, message: emailSettings.pendingEmpty[lang], type: 'success' });
+        }
+        else if (res.status !== 200) {
           setNotification({ open: true, message: emailSettings.pendingError[lang], type: 'error' });
         }
         // Sending pending emails was successful

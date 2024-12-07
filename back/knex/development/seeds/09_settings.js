@@ -4,7 +4,7 @@ exports.seed = function(knex) {
   const emailSettings = {
     sender: "noreply@tasera.fi",
     user: "ratavuorot@tasera.fi",
-    pass: "mbpw svpd pcgu waey",
+    pass: "",
     // user: process.env.EMAIL_USER,
     // pass: process.env.EMAIL_PASSWORD,
     host: "smtp.gmail.com",
@@ -14,13 +14,13 @@ exports.seed = function(knex) {
     shouldSend: "true",
     shouldQueue: "false",
     sendPendingTime: String(new Date(2024, 1, 1, 21, 17)),
-    assignedMsg: '',
-    updateMsg: '',
-    reminderMsg: 'reminder',
-    declineMsg: '',
-    feedbackMsg: '',
-    resetpassMsg: '',
-    collageMsg: ''
+    collageMsg: '{assigned} - Annettujen vuorojen määrä \n {update} - Muutettujen vuorojen määrä',
+    assignedMsg: 'Hei, yhteisöllenne on aikataulutettu uusi(a) päävalvojavuoro(ja). Terveisin Tampereen Seudun Ampumaratayhdistys ry.', 
+    updateMsg: 'Hei, teille annettua päävalvojavuoroa on muutettu. Käythän tarkistamassa vuoronne. Terveisin Tampereen Seudun Ampumaratayhdistys ry.',
+    reminderMsg: 'Hei, ette ole varmistaneet viikon päästä alkavaa päävalvojavuoroanne. Käykää mahdollisimman pian varmistamassa vuoronne. Terveisin Tampereen Seudun Ampumaratayhdistys ry.',
+    declineMsg: 'Valvontavuorosta kieltäydytty Valvoja: {user} Päivämäärä: {date} ', 
+    feedbackMsg: 'Palaute vastaanotettu. Valvoja: {user} Palaute: {feedback} ',
+    resetpassMsg: 'Olet pyytänyt salasanasi resetointia. Jos olet saanut tämän viestin vahingossa tai jos et ole tilannut salasanan resetointia TSS-sivulta, voit jättää tämän viestin huomiotta. \n Voit resetoida Tasera-salasanasi tästä linkistä: https://tss.tasera.fi/#/renew-password/{token} \n Terveisin, TASERA ry', 
   };
 
   return knex('settings').del()
