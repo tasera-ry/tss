@@ -31,7 +31,6 @@ async function readReservationStrict(request, response) {
 }
 
 async function updateReservation(request, response) {
-  console.log("Kalle: request", request.body)
   if( request.body && request.body.supervisor ) {
     const scheduleId = request.body.scheduleId ? {scheduleId: request.body.scheduleId} : undefined;
     // send update email to supervisor associations
@@ -52,7 +51,6 @@ async function updateReservation(request, response) {
 }
 
 async function deleteReservation(request, response) {
-  console.log("Kalle: DELETE request", request.body)
 
   if(response.locals.queryResult === 0) {
     return response

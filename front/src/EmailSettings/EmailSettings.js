@@ -120,8 +120,6 @@ const EmailSettings = () => {
             filteredData[key] = data[key];
           else filteredData[key] = settings[key];
         });
-        console.log("Kalle: fetch settings", data)
-        console.log("Kalle: filteredData", filteredData)
         setSettings(filteredData);
       });
   };
@@ -200,7 +198,6 @@ const EmailSettings = () => {
       setNotification({ open: true, message: emailSettings.ccError[lang], type: 'error' });
       return;
     }
-    console.log("Kalle: settings.cc", settings.cc)
 
     setPendingSave(true);
 

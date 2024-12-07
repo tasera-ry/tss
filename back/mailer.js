@@ -33,15 +33,14 @@ const email = async (messageType, key, opts) => {
     default:
       // I have no idea what this scheduleId is supposed to be, but we must include it when saving pending emails.
       if (emailSettings.shouldQueue === 'true' && opts && opts.scheduleId) {
-        console.log("Kalle: add email to pending emails", messageType)
-        console.log("Kalle: add email to pending emails", opts)
-        console.log("Kalle: add email to pending emails", emailAddress)
+        console.log("email: add email to pending emails", messageType)
+        console.log("email: add email to pending emails", emailAddress)
         // add to pending emails
         services.pendingEmails.add(messageType, key, opts.scheduleId);
       } else { 
         // send directly
-        console.log("Kalle: send directly", messageType)
-        console.log("Kalle: send directly", emailAddress)
+        console.log("email: send email directly", messageType)
+        console.log("email: send email directly", emailAddress)
         sendEmail(getText(messageType, opts, emailSettings), emailAddress, emailSettings);
       }
   }
