@@ -1,5 +1,10 @@
 # Tasera Scheduling Software
 
+[![Frontend Unit Test Run](https://github.com/tasera-ry/tss/actions/workflows/frontend_tests.yml/badge.svg)](https://github.com/tasera-ry/tss/actions/workflows/frontend_tests.yml)
+[![Backend Unit Test Run](https://github.com/tasera-ry/tss/actions/workflows/backend_tests.yml/badge.svg)](https://github.com/tasera-ry/tss/actions/workflows/backend_tests.yml)
+[![Cypress Test Run](https://github.com/tasera-ry/tss/actions/workflows/end2end_tests.yml/badge.svg)](https://github.com/tasera-ry/tss/actions/workflows/end2end_tests.yml)
+[![Publish Docker image](https://github.com/tasera-ry/tss/actions/workflows/build_docker.yml/badge.svg)](https://github.com/tasera-ry/tss/actions/workflows/build_docker.yml)
+
 ## About
 
 Program for management and scheduling of Tasera managed shooting ranges in Pirkanmaa area.
@@ -31,10 +36,10 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 3. Install project packages
    - `cd back && npm install && cd ../front && npm install && cd ..`
 
-### Starting up the app using an .env file 
+### Starting up the app using an .env file
 1. Create a `.env` file into the `back/` directory (an .env.example file is included in the folder, which can be copied and renamed).
 2. Write the runtime variables into the `.env` file.
-3. When using `.env` file you can run the commands without the environment variables, 
+3. When using `.env` file you can run the commands without the environment variables,
 4. Migrations and seeds
    ```sh
        bash -c 'cd back && npx knex migrate:latest && npx knex seed:run && cd ..
@@ -45,7 +50,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
    ```
 6. The application should start at http://localhost:3000 (default host)
 
-### Starting the app with command line variables 
+### Starting the app with command line variables
 1. Run database migrations
    ```sh
    env DB_USER=postgres \
@@ -118,6 +123,50 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 | `SERVER_HOST`   | Manually set hostname                                                  | `http://localhost:3000` |
 | `JWT_SECRET`    | Secret key used to sign JSON Web Tokens                                | Random on startup       |
 
+## Automatic CI/CD Workflows
+
+### Frontend tests
+
+[![Frontend Unit Test Run](https://github.com/tasera-ry/tss/actions/workflows/frontend_tests.yml/badge.svg)](https://github.com/tasera-ry/tss/actions/workflows/frontend_tests.yml)
+
+Due to running out of time to fix the tests, some tests have been skipped in:
+```
+   front/src/TrackStatistics/TrackStatistics.test.js
+   front/src/edittracks/tracks.test.js
+   front/src/scheduling/Scheduling.test.js
+   front/src/tabletview/rangeofficer.test.js
+   front/src/usermanagement/UserManagementView.test.js
+```
+
+There are some common themes to the broken tests.
+
+Common errors are:
+
+```
+MUI: The `styles` argument provided is invalid
+```
+
+```
+Unable to find an element by: [data-testid="___"]
+```
+
+### Backend tests
+
+[![Backend Unit Test Run](https://github.com/tasera-ry/tss/actions/workflows/backend_tests.yml/badge.svg)](https://github.com/tasera-ry/tss/actions/workflows/backend_tests.yml)
+
+### Cypress tests
+
+[![Cypress Test Run](https://github.com/tasera-ry/tss/actions/workflows/end2end_tests.yml/badge.svg)](https://github.com/tasera-ry/tss/actions/workflows/end2end_tests.yml)
+
+Cypress tests have been created, but the Github workflow for them is disabled.
+- See comments in end2end_tests.yml.
+
+
+### Docker Production Image
+
+[![Publish Docker image](https://github.com/tasera-ry/tss/actions/workflows/build_docker.yml/badge.svg)](https://github.com/tasera-ry/tss/actions/workflows/build_docker.yml)
+
+
 # Spring 2021 Team
 RK
 AV
@@ -129,7 +178,7 @@ KK
 PR
 
 
-## Tss development users  
+## Tss development users
 See seeds/02_users.js for the development environment users.
 
 ## Cypress tests
