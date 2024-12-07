@@ -14,13 +14,13 @@ exports.seed = function(knex) {
     shouldSend: "true",
     shouldQueue: "false",
     sendPendingTime: String(new Date(2024, 1, 1, 21, 17)),
-    assignedMsg: '',
-    updateMsg: '',
-    reminderMsg: 'reminder',
-    declineMsg: '',
-    feedbackMsg: '',
-    resetpassMsg: '',
-    collageMsg: ''
+    collageMsg: '{assigned} - Annettujen vuorojen määrä \n {update} - Muutettujen vuorojen määrä', // Kalle: not sure if works
+    assignedMsg: 'Hei, yhteisöllenne on aikataulutettu uusi(a) päävalvojavuoro(ja). Terveisin Tampereen Seudun Ampumaratayhdistys ry.',  // Kalle: not sure if works
+    updateMsg: 'Hei, teille annettua päävalvojavuoroa on muutettu. Käythän tarkistamassa vuoronne. Terveisin Tampereen Seudun Ampumaratayhdistys ry.',
+    reminderMsg: 'Hei, ette ole varmistaneet viikon päästä alkavaa päävalvojavuoroanne. Käykää mahdollisimman pian varmistamassa vuoronne. Terveisin Tampereen Seudun Ampumaratayhdistys ry.',
+    declineMsg: 'Valvontavuorosta kieltäydytty Valvoja: {user} Päivämäärä: {date} ',  // Kalle: not sure if works
+    feedbackMsg: 'Palaute vastaanotettu. Valvoja: {user} Palaute: {feedback} ', // Kalle: not sure if works
+    resetpassMsg: 'Olet pyytänyt salasanasi resetointia. Jos olet saanut tämän viestin vahingossa tai jos et ole tilannut salasanan resetointia TSS-sivulta, voit jättää tämän viestin huomiotta. \n Voit resetoida Tasera-salasanasi tästä linkistä: https://tss.tasera.fi/#/renew-password/{token} \n Terveisin, TASERA ry',  // Kalle: not sure if works
   };
 
   return knex('settings').del()

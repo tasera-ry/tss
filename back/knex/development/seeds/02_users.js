@@ -28,7 +28,7 @@ exports.seed = async function (knex) {
 			password: '5Effie38',
 			digest: '$2a$10$oE0o638BBP/SkL2MQ0jEQeIxh6iKTkLoGaq/Cv6PuEzgeoqZTW4.e',
 			phone: '905-680-0458',
-			email: 'DevAssociation@email.com',
+			email: 'kalnyman77@gmail.com', // Kalle: muuta takaisin DevAssociation@email.com
 			role: 'association'
 		},
 		{

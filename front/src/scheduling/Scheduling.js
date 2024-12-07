@@ -679,11 +679,12 @@ function Scheduling(props) {
         scheduledRangeSupervisionMethod = 'PUT';
         scheduledRangeSupervisionPath = `/${srsId}`;
       } else scheduledRangeSupervisionMethod = 'POST';
-
       let params = {
         range_id: rangeId,
         available: available,
         supervisor: rangeSupervisorId,
+        originalSupervisor: rangeSupervisorOriginal,
+        scheduleId: srsId
       };
 
       if (reservationMethod === 'POST') {

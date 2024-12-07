@@ -85,7 +85,6 @@ const controller = {
 
   create: async function createSupervision(request, response) {
     try {
-      if (!response.req.body.association) return;
       const scheduleId = response.locals.id;
       email('assigned', response.req.body.association, { scheduleId: scheduleId });
     } catch (error) {
@@ -100,11 +99,12 @@ const controller = {
     //updates.range_supervisor returns "absent" if association has not been assigned. it returns "not confirmed" is association is assigned.
     //if - checks if association is assigned and only sends email if it is set. otherwise it would send email aswell when association is taken off.
     try {
-      
+
       const scheduleId = response.locals.id.scheduled_range_supervision_id;
-      if (response.locals.updates.range_supervisor === 'not confirmed' && response.locals.updates.association){
-        email('update', response.locals.updates.association, { scheduleId: scheduleId });
-      }
+      // Association was assigned supervision
+      // if (response.locals.updates && response.locals.updates.range_supervisor === 'not confirmed' && response.locals.updates.association){
+        // email('assigned', response.locals.updates.association, { scheduleId: scheduleId });
+      // }
 
       if (response.locals.updates.range_supervisor === 'absent' && response.locals.user.name) {
         const superusers = response.locals.superusers;

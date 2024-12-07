@@ -120,6 +120,8 @@ const EmailSettings = () => {
             filteredData[key] = data[key];
           else filteredData[key] = settings[key];
         });
+        console.log("Kalle: fetch settings", data)
+        console.log("Kalle: filteredData", filteredData)
         setSettings(filteredData);
       });
   };
@@ -132,7 +134,11 @@ const EmailSettings = () => {
         const result = await res.json();
         setPendingSend(false);
         // Sending pending emails failed
-        if (res.status !== 200) {
+        if(res.status === 404) {
+          // no pending emails to send
+          setNotification({ open: true, message: emailSettings.pendingEmpty[lang], type: 'success' });
+        }
+        else if (res.status !== 200) {
           setNotification({ open: true, message: emailSettings.pendingError[lang], type: 'error' });
         }
         // Sending pending emails was successful
@@ -194,6 +200,7 @@ const EmailSettings = () => {
       setNotification({ open: true, message: emailSettings.ccError[lang], type: 'error' });
       return;
     }
+    console.log("Kalle: settings.cc", settings.cc)
 
     setPendingSave(true);
 
