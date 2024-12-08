@@ -12,6 +12,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 // Date handling
 import moment from 'moment';
@@ -194,14 +196,14 @@ async function getColors(tracks, setTracks) {
 
   for (let i = 0; i < copy.length; i += 1) {
     const obj = copy[i];
-    if (copy[i].trackSupervision === 'present') {
-      copy[i].color = colors.green;
-    } else if (copy[i].trackSupervision === 'closed') {
-      copy[i].color = colors.redLight;
-    } else if (copy[i].trackSupervision === 'absent') {
-      copy[i].color = colors.white;
-    } else if (copy[i].trackSupervision === 'en route') {
-      copy[i].color = colors.orange;
+    if (obj.trackSupervision === 'present') {
+      obj.color = colors.green;
+    } else if (obj.trackSupervision === 'closed') {
+      obj.color = colors.redLight;
+    } else if (obj.trackSupervision === 'absent') {
+      obj.color = colors.white;
+    } else if (obj.trackSupervision === 'en route') {
+      obj.color = colors.orange;
     }
   }
   setTracks(copy);
@@ -341,6 +343,7 @@ const Tabletview = () => {
   const [socket, setSocket] = useState();
   const [cookies] = useCookies(['username']);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
+  const [notification, setNotification] = useState({ open: false, message: '', type: '' });
 
   const lang = localStorage.getItem('language');
   const { tablet } = data;
@@ -372,8 +375,8 @@ const Tabletview = () => {
           setRangeSupervisionScheduled
         )
         .then((rangeSupervision) => {
-          // Disable buttons if center is closed
-          if (rangeSupervision === 'closed') {
+          // Disable buttons if center is closed or no supervisor is set
+          if (rangeSupervision === 'closed' || rangeSupervision === 'absent') {
             setButtonsDisabled(true);
           }
         });
@@ -422,6 +425,11 @@ const Tabletview = () => {
   }
 
   const HandlePresentClick = () => {
+    // If no range supervisor is set, show error message
+    if (rangeSupervisionScheduled === false) {
+      setNotification({ open: true, message: tablet.rangeSupervisorError[lang], type: 'error' });
+      return;
+    }
     socket.emit('rangeUpdate', {
       status: 'present',
       color: colors.green,
@@ -433,6 +441,11 @@ const Tabletview = () => {
   };
 
   const HandleEnRouteClick = () => {
+    // If no range supervisor is set, show error message
+    if (rangeSupervisionScheduled === false) {
+      setNotification({ open: true, message: tablet.rangeSupervisorError[lang], type: 'error' });
+      return;
+    }
     socket.emit('rangeUpdate', {
       status: 'en route',
       color: colors.orange,
@@ -554,6 +567,16 @@ const Tabletview = () => {
       { }
       <Devices />
 
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={() => setNotification({ ...notification, open: false })}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+        <MuiAlert elevation={6} variant="filled" onClose={() => setNotification({ ...notification, open: false })}
+        severity={notification.type}>
+          {notification.message}
+        </MuiAlert>
+      </Snackbar>
 
     </div>
   );
