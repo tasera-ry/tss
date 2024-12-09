@@ -1012,7 +1012,7 @@ function Scheduling(props) {
               value={moment(date)}
               onChange={(newDate) => handleDateChange(newDate)}
               onAccept={(newDate) => handleDatePickChange(newDate)}
-              inputFormat="DD.MM.YYYY"               
+              format="DD.MM.YYYY"               
               slots={{textField: TextField}}
               showTodayButton
               data-testid="datePicker"
