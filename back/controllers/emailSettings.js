@@ -16,8 +16,7 @@ const controller = {
         return response.status(500).send({success: false, ...error})
       } else if (success) { 
         await services.emailSettings.update(request.body);
-        scheduleEmails(new Date(request.body.sendPendingTime));
-        scheduleEmailReminder();
+        scheduleEmailReminder(request.body);
         return response.status(200).send();
       }
     }
@@ -25,7 +24,8 @@ const controller = {
   },
   sendPendingEmails: async function sendPendingEmails(request, response) {
     const result = await sendPending();
-    if (!result.success) {
+    if( !result || !result.length ) return response.status(404).send({ success: false, error: result.message });
+    if (!result[0].success) {
       console.error("sendPendingEmails error:", error);
       return response.status(500).send({ success: false, error: error.message });
     } else if (result.success && result.message) {

@@ -1,20 +1,26 @@
 .email-settings {
-  padding: 1vmin 5vmin 1vmin 5vmin;
+  padding: 4vmin 5vmin 4vmin 5vmin;
   margin: auto;
   max-width: 500px;
 
   legend {
     font-size: 1.4rem;
-    padding-bottom: 15px;
+    //padding-bottom: 15px;
   }
-
-  * {
+  .group {
     display: grid;
+    gap: 12px;
+  }
+  .component {
+    margin-top: 16px;
+  }
+  .helperText {
+    margin: 6px 0px;
   }
 }
 
 .settings-label {
-  margin-top: 5vh;
+  margin-top: 4vh;
 }
 
 .results-div {
