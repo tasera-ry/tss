@@ -193,12 +193,10 @@ export const getLanguage = () => {
 
 export const dayToString = (i) => {
   const lang = getLanguage();
-  console.log(lang);
   moment.locale(lang);
   // en has different number for start date compared to fi and swe
   if (lang !== 'en') i -= 1; // eslint-disable-line
   const dayString = moment().weekday(i).format('dddd');
-  console.log(dayString);
   // first letter only to uppercase
   return dayString.charAt(0).toUpperCase() + dayString.slice(1);
 };
@@ -211,7 +209,6 @@ export const monthToString = (i) => {
 
 /*
   Validates the login token (in cookies)
-
   return: boolean, is token valid (true = yes)
 */
 export const validateLogin = async () => {
