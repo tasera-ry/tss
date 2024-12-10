@@ -233,7 +233,7 @@ function Scheduling(props) {
   };
 
   const continueWithDate = (event) => {
-    if (event && event.type === 'submit') {
+    if (event && event.type && event.type === 'submit') {
       event.preventDefault();
     }
     setState('loading');
