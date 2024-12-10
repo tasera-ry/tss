@@ -1,25 +1,26 @@
 
 exports.seed = function(knex) {
-  /* This JSON object serves as the model for how the front-end expects to eventually receive the data 
-   The initial values for the settings are expected to be given as env variables */
+  /* This JSON object serves as the model for how the front-end expects to eventually receive the data */
   const emailSettings = {
-    sender: process.env.SENDER_EMAIL,
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    cc: process.env.EMAIL_CC,
-    secure: process.env.EMAIL_SECURE,
-    shouldSend: process.env.SHOULD_SEND_EMAIL,
-    shouldQueue: process.env.SHOULD_QUEUE_EMAIL,
-    sendPendingTime: String(new Date(2024, 1, 2, 4, 0, 0)),
-    assignedMsg: '',
-    updateMsg: '',
-    reminderMsg: '',
-    declineMsg: '',
-    feedbackMsg: '',
-    resetpassMsg: '',
-    collageMsg: ''
+    sender: "noreply@tasera.fi",
+    user: "ratavuorot@tasera.fi",
+    pass: "",
+    // user: process.env.EMAIL_USER,
+    // pass: process.env.EMAIL_PASSWORD,
+    host: "smtp.gmail.com",
+    port: 465,
+    cc: "",
+    secure: "true",
+    shouldSend: "true",
+    shouldQueue: "false",
+    sendPendingTime: String(new Date(2024, 1, 1, 21, 17)),
+    collageMsg: '{assigned} - Annettujen vuorojen määrä \n {update} - Muutettujen vuorojen määrä',
+    assignedMsg: 'Hei, yhteisöllenne on aikataulutettu uusi(a) päävalvojavuoro(ja). Terveisin Tampereen Seudun Ampumaratayhdistys ry.', 
+    updateMsg: 'Hei, teille annettua päävalvojavuoroa on muutettu. Käythän tarkistamassa vuoronne. Terveisin Tampereen Seudun Ampumaratayhdistys ry.',
+    reminderMsg: 'Hei, ette ole varmistaneet viikon päästä alkavaa päävalvojavuoroanne. Käykää mahdollisimman pian varmistamassa vuoronne. Terveisin Tampereen Seudun Ampumaratayhdistys ry.',
+    declineMsg: 'Valvontavuorosta kieltäydytty Valvoja: {user} Päivämäärä: {date} ', 
+    feedbackMsg: 'Palaute vastaanotettu. Valvoja: {user} Palaute: {feedback} ',
+    resetpassMsg: 'Olet pyytänyt salasanasi resetointia. Jos olet saanut tämän viestin vahingossa tai jos et ole tilannut salasanan resetointia TSS-sivulta, voit jättää tämän viestin huomiotta. \n Voit resetoida Tasera-salasanasi tästä linkistä: https://tss.tasera.fi/#/renew-password/{token} \n Terveisin, TASERA ry', 
   };
 
   return knex('settings').del()
