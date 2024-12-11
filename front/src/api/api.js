@@ -141,8 +141,13 @@ const getPublicInfoMessages = async () => {
 };
 
 const getRangeMasterInfoMessages = async () => {
-  const response = await axios.get(`api/infomessage/tablet`);
-  return response.data;
+  try {
+    const response = await axios.get('api/infomessage/tablet');
+    return response.data;
+  } catch (err) {
+    console.error("Error in getting range master info message. User is not logged in.");
+    return;
+  }
 };
 
 const getAllInfoMessages = async () => {

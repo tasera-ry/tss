@@ -288,14 +288,6 @@ router
 
 router
   .route('/infomessage/all')
-  .all(
-    middlewares.jwt.read,
-    middlewares.user.hasProperty(
-      'role',
-      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
-      _.includes
-    )
-  )
   .get(validators.infoMessage.read, controllers.infoMessage.readAll);
 
 router

@@ -35,7 +35,7 @@ const InfoComp = ({ message }) => {
 };
 
 // TO DO: Take weekly and monthly values into account
-const InfoBox = ({tabletMode = false}) => {
+const InfoBox = ({ tabletMode = false }) => {
   const [info, setInfo] = useState([]);
 
   useEffect(() => {
@@ -45,15 +45,19 @@ const InfoBox = ({tabletMode = false}) => {
     };
     const getRangeMasterInfoMessages = async () => {
       const res = await api.getRangeMasterInfoMessages();
-      if (res) setInfo(res);
-    }
+      if (!res) {
+        // User is not logged in, fetch public messages
+        getPublicMessages();
+      } else {
+        setInfo(res);
+      }
+    };
 
-    if(tabletMode)
-    {
+    if (tabletMode) {
       getRangeMasterInfoMessages();
     } else {
       getPublicMessages();
-    } 
+    }
   }, []);
 
   return (
