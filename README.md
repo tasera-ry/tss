@@ -18,7 +18,7 @@
    - [First steps](#first-steps)
    - [Starting up the app using an .env file](#starting-up-the-app-using-an-env-file)
 - [Runtime configuration](#runtime-configuration)
-- [Automatic CI/CD Workflows](#automatic-CICD-workflows)
+- [Automatic CI/CD Workflows](#automatic-cicd-workflows)
    - [Frontend tests](#frontend-tests)
    - [Backend tests](#backend-tests)
    - [Cypress tests](#cypress-tests)
@@ -183,9 +183,30 @@ Navigate to /back folder, and run `npm install cypress` and `npm run cy:open`. T
 
 [![Publish Docker image](https://github.com/tasera-ry/tss/actions/workflows/build_docker.yml/badge.svg)](https://github.com/tasera-ry/tss/actions/workflows/build_docker.yml)
 
-Production image is automatically built every time code is merged to `master`. A test image is built every time code is merged to any `v*_-develop` branch.
+Production image is automatically built every time code is merged to `master`. A test image is built every time code is merged to any `v*_-develop` branch. Unique tags are generated for builds created using the GitHub release feature.
 
-The production image is available at
+The latest production image is always available at
 ```
 ghcr.io/tasera-ry/tss:master
+```
+
+Individual production images are avaliable by their release tag, such as:
+```
+ghcr.io/tasera-ry/tss:7.0.0
+```
+
+#### Releases
+
+Tagged release images are created, when a release is created through GitHub. Using this feature is useful, in order to allow roll back, in case of a broken release.
+
+#### Test images
+
+The latest build is always avalable with the `latest` tag.
+```
+ghcr.io/tasera-ry/tss:latest
+```
+
+Both push, and pull request to v*-develop branches triggers a new build:
+```
+ghcr.io/tasera-ry/tss:{branch name}
 ```
