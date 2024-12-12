@@ -1,9 +1,22 @@
 name: Publish Docker image
 description: 'Publish docker image'
 
+# Builds a new image on push to 'master' or 'v**-develop' branch
+# Images are:
+# ghcr.io/tasera-ry/tss:latest
+# ghcr.io/tasera-ry/tss:{branch name}
+#
+#     and on release
+#
+# ghcr.io/tasera-ry/tss:{release tag}
+#   recommend convention: 'x.x.x' (e.g. '7.0.1' ) )
+
 on:
   push:
     branches: [master, 'v**-develop']
+  release:
+    types: [released]
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -25,6 +38,10 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest
+            type=ref,event=branch
+            type=ref,event=tag
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
