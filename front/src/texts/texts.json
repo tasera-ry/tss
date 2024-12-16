@@ -339,8 +339,7 @@
     "ConfirmTime": ["Vahvista aika", "Confirm time", "Bekräfta tid"],
     "ManageTracks": ["Hallitse ratoja", "Manage shooting tracks", "Hantera skjutbanor"],
     "ShootingTrack": ["Ampumarata", "Shooting track", "Skjutbana"],
-    "TrackOpen": ["Rata auki", "Track open", "Bana öppen"],
-    "Closed": ["Suljettu", "Closed", "Stängd"],
+    "Closed": ["Rata suljettu", "Track closed", "Bana stängd"],
     "Notice": ["Lisätiedot", "Details", "Detaljer"],
     "OpenAll": ["Avaa kaikki", "Open All", "Öppna alla"],
     "ClearAll": ["Tyhjennä kaikki", "Clear All", "Rensa alla"],
@@ -543,6 +542,11 @@
       "Päivitys epäonnistui",
       "Something went wrong",
       "Uppdatering misslyckades"
+    ],
+    "rangeSupervisorError": [
+      "Päävalvojaa ei ole asetettu!",
+      "Range supervisor is not set!",
+      "Banofficer är inte inställd!"
     ]
   },
   "dayview": {
