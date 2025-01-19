@@ -21,7 +21,7 @@ import css from './Monthview.module.scss';
 
 const classes = classNames.bind(css);
 
-const smallInfoIcon = require('../logo/Small-info.png');
+import smallInfoIcon from '../logo/Small-info.png';
 
 const { weekdayShorthand, month } = texts; // eslint-disable-line
 const fin = localStorage.getItem('language');

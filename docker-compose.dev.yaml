@@ -14,7 +14,6 @@ services:
   backend:
     build:
       context: ./back
-      target: dev
     restart: always
     depends_on:
       database:
@@ -26,7 +25,7 @@ services:
       - DB_HOST=database
       - DB_PORT=5432
       - SENDER_EMAIL=noreply@tasera.fi
-      - SERVER_HOST=http://frontend:3000
+      - SERVER_HOST=http://localhost:8000
     ports:
       - 8000:8000
       - 5858:5858 # node debugger
@@ -40,12 +39,11 @@ services:
   frontend:
     build:
       context: ./front
-      target: dev
     restart: always
     depends_on:
       - backend
     ports:
-      - 3000:3000
+      - 5173:5173
     environment:
       - ESLINT_NO_DEV_ERRORS=true
       - CHOKIDAR_USEPOLLING=true

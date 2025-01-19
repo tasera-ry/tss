@@ -30,7 +30,7 @@ const lang = getLanguage();
 
 const Weekview = (props) => {
   const [state, setState] = useState('loading');
-  const [date, setDate] = useState(new Date(Date.now()));
+  const [date, setDate] = useState(new Date());
   const [weekNro, setWeekNro] = useState(0);
   const [dayNro, setDayNro] = useState(0);
   const [yearNro, setYearNro] = useState(0);
