@@ -1,6 +1,6 @@
 import React from 'react';
 
-import InfoImg from '../logo/Info.png';
+import InfoImg from '@/assets/Info.png';
 
 import texts from '../texts/texts.json';
 

@@ -10,7 +10,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 // Moment for date handling
 import moment from 'moment';
 import { dayToString, jumpToCurrent, viewChanger } from '../utils/Utils';
-import info from '../logo/Info.png';
+import info from '@/assets/Info.png';
 import api from '../api/api';
 import InfoBox from '../infoBox/InfoBox';
 import translations from '../texts/texts.json';
