@@ -15,7 +15,7 @@ import {
   jumpToCurrent,
   getLanguage,
 } from '../utils/Utils';
-import exclamation from '../logo/Info.png';
+import exclamation from '@/assets/Info.png';
 import Infoboxes from '../infoboxes/Infoboxes';
 import InfoBox from '../infoBox/InfoBox';
 // Translation

@@ -11,7 +11,7 @@ import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 
-import logo from '../logo/Logo.png';
+import logo from '@/assets/Logo.png';
 import SupervisorNotification from './SupervisorNotification';
 import FeedbackWindow from './FeedbackWindow';
 import translations from '../texts/texts.json';
