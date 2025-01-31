@@ -1,7 +1,5 @@
-import React from 'react';
-import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
-import axios from 'axios';
+import * as axios from 'axios';
 import {
   render,
   screen,
@@ -11,8 +9,12 @@ import {
 } from '@testing-library/react';
 import SignIn from './SignIn';
 
-axios.get = jest.fn(() => Promise.resolve({ data: [{ role: 'association' }] }));
-axios.post = jest.fn((url, credentials) => {
+vi.mock('axios', () => ({
+  get: vi.fn(),
+  post: vi.fn(),
+}));
+axios.get = vi.fn(() => Promise.resolve({ data: [{ role: 'association' }] }));
+axios.post = vi.fn((url, credentials) => {
   if (credentials.name === 'wrong_username') {
     return Promise.reject({ response: { status: 401 } }); // eslint-disable-line
   }

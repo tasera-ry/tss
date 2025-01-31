@@ -1,11 +1,9 @@
-import React from 'react';
-import '@testing-library/jest-dom';
 import { waitFor, render, screen, fireEvent } from '@testing-library/react';
 import axios from 'axios';
 import { TrackStatistics } from './TrackStatistics';
 import testUtils from '../_TestUtils/TestUtils';
 
-axios.put = jest.fn(() => Promise.resolve());
+axios.put = vi.fn(() => Promise.resolve());
 
 // Tests skipped
 // Test fails with MUI error:

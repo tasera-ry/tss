@@ -1,5 +1,3 @@
-import React from 'react';
-import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 import {
@@ -11,8 +9,8 @@ import {
 } from '@testing-library/react';
 import ResetPassword from './ResetPassword';
 
-axios.get = jest.fn(() => Promise.resolve({ data: [{ role: 'association' }] }));
-axios.post = jest.fn((url, credentials) => {
+axios.get = vi.fn(() => Promise.resolve({ data: [{ role: 'association' }] }));
+axios.post = vi.fn((url, credentials) => {
   if (credentials.email === '') {
     return Promise.reject({ response: { status: 400 } }); // eslint-disable-line
   }

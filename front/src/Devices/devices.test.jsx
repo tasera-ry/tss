@@ -1,15 +1,14 @@
-import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import api from '../api/api';
-import Devices from './devices.js';
+import Devices from './devices';
 
-jest.mock('../api/api');
+vi.mock('../api/api');
 
 describe('Devices Component', () => {
     beforeEach(() => {
         // Clear all mocks before each test
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         api.getAllDevices.mockResolvedValue([]);
         api.createDevice.mockResolvedValue([{ id: 3, device_name: 'Device 3', status: 'free' }]);
     });

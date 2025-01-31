@@ -1,6 +1,4 @@
-import React from 'react';
 import { render, screen, act, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import Supervisions from '../profilepages/supervisions';
 import api from '../../api/api';
 
@@ -38,12 +36,12 @@ const rangeofficerListMock = [
 describe('Supervisions component', () => {
   beforeEach(() => {
     // Mock api calls before each test to set the state
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
-    api.getRangeOfficers = jest.fn();
-    api.getSupervisions = jest.fn();
-    api.getAssociation = jest.fn();
-    api.putSupervision = jest.fn();
+    api.getRangeOfficers = vi.fn();
+    api.getSupervisions = vi.fn();
+    api.getAssociation = vi.fn();
+    api.putSupervision = vi.fn();
   });
 
   test('renders the table correctly', async () => {

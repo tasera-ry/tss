@@ -1,5 +1,3 @@
-import React from 'react';
-import '@testing-library/jest-dom';
 import { waitFor, render, screen } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
 import Trackview from './Trackview';
@@ -10,7 +8,7 @@ describe('testing Trackview', () => {
   it('should render Trackview', async () => {
     const { date, schedule } = testUtils;
 
-    api.getSchedulingDate = jest.fn(() => schedule);
+    api.getSchedulingDate = vi.fn(() => schedule);
 
     localStorage.setItem('language', '1');
     render(

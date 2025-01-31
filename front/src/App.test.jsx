@@ -1,4 +1,3 @@
-import React from 'react';
 import '@testing-library/jest-dom';
 import { waitFor, render, screen } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
@@ -9,12 +8,14 @@ import App from './App';
 import testUtils from './_TestUtils/TestUtils';
 import axios from 'axios';
 
-jest.mock('axios');
-jest.mock('./utils/Utils');
+vi.mock('axios');
+vi.mock('./utils/Utils');
 // Mock the InfoBox component
-jest.mock('./infoBox/InfoBox', () => () => <div data-testid="mockInfoBox">Mock InfoBox</div>);
+vi.mock('./infoBox/InfoBox', () => ({
+  default: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
+}));
 
-axios.get = jest.fn().mockResolvedValue({
+axios.get = vi.fn().mockResolvedValue({
   data: [{ id: 1, message: 'ok', start: '', end: '' }],
 });
 
@@ -22,11 +23,11 @@ const { date, week, schedule } = testUtils;
 
 describe('testing App', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
-    utils.getSchedulingWeek = jest.fn(() => week);
-    utils.getSchedulingDate = jest.fn(() => schedule);
-    utils.validateLogin = jest.fn(() => Promise.resolve(false));
+    utils.getSchedulingWeek = vi.fn(() => week);
+    utils.getSchedulingDate = vi.fn(() => schedule);
+    utils.validateLogin = vi.fn(() => Promise.resolve(false));
     localStorage.setItem('token', 'dummy_token');
   });
 
@@ -40,7 +41,7 @@ describe('testing App', () => {
       paivat: week,
     };
     const history = createMemoryHistory();
-    Date.now = jest.fn(() => '2020-10-21T11:30:57.000Z');
+    Date.now = vi.fn(() => '2020-10-21T11:30:57.000Z');
 
     await act(async () => {
       render(

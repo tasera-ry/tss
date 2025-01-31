@@ -1,10 +1,8 @@
-import React from 'react';
-import '@testing-library/jest-dom';
 import { waitFor, render, screen, fireEvent } from '@testing-library/react';
 import axios from 'axios';
 import FeedbackWindow from './FeedbackWindow';
 
-axios.put = jest.fn(() => Promise.resolve());
+axios.put = vi.fn(() => Promise.resolve());
 localStorage.setItem('language', '1');
 
 describe('testing FeedbackWindow', () => {

@@ -1,5 +1,3 @@
-import React from 'react';
-import '@testing-library/jest-dom';
 import { waitFor, render, screen, fireEvent } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { act } from 'react-dom/test-utils';
@@ -9,9 +7,9 @@ import * as utils from '../utils/Utils';
 import api from '../api/api';
 import testUtils from '../_TestUtils/TestUtils';
 
-jest.mock('axios');
-jest.mock('../utils/Utils');
-jest.mock('../api/api');
+vi.mock('axios');
+vi.mock('../utils/Utils');
+vi.mock('../api/api');
 
 const mockTracks = [
   {
@@ -24,23 +22,23 @@ const mockTracks = [
 ];
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 
-  utils.validateLogin = jest.fn().mockResolvedValue(true);
-  utils.rangeSupervision = jest.fn().mockResolvedValue(testUtils.reservation);
-  api.getSchedulingDate = jest.fn().mockResolvedValue(testUtils.schedule);
+  utils.validateLogin = vi.fn().mockResolvedValue(true);
+  utils.rangeSupervision = vi.fn().mockResolvedValue(testUtils.reservation);
+  api.getSchedulingDate = vi.fn().mockResolvedValue(testUtils.schedule);
 
-  axios.get = jest.fn().mockResolvedValue({ data: mockTracks });
-  axios.put = jest.fn().mockResolvedValue();
-  axios.delete = jest.fn().mockResolvedValue();
-  axios.post = jest.fn().mockImplementation((url, postable) => {
+  axios.get = vi.fn().mockResolvedValue({ data: mockTracks });
+  axios.put = vi.fn().mockResolvedValue();
+  axios.delete = vi.fn().mockResolvedValue();
+  axios.post = vi.fn().mockImplementation((url, postable) => {
     if (postable.name === undefined) {
       return Promise.reject();
     }
     return Promise.resolve({ tracks: { ...postable, id: 2 } });
   });
 
-  global.fetch = jest.fn((url) => {
+  global.fetch = vi.fn((url) => {
     if (url.includes('/api/track-supervision')) {
       return Promise.resolve({
         json: () => Promise.resolve({ ok: true }),

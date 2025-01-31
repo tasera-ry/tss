@@ -1,52 +1,51 @@
-import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import Tabletview from './rangeofficer';
 import * as utils from '../utils/Utils';
 import testUtils from '../_TestUtils/TestUtils';
 import axios from 'axios';
-import { Cookies, CookiesProvider } from 'react-cookie';
+import { CookiesProvider } from 'react-cookie';
 import { BrowserRouter as Router } from 'react-router-dom';
 import InfoBox from '../infoBox/InfoBox';
 import socketIOClient from 'socket.io-client';  // Import socket.io-client
 
 
-jest.mock('axios');
-jest.mock('../utils/Utils');
-jest.mock('socket.io-client');
+vi.mock('axios');
+vi.mock('../utils/Utils');
+vi.mock('socket.io-client');
 
 let mockSocket;
 
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 
   mockSocket = {
-    on: jest.fn((event, callback) => {
+    on: vi.fn((event, callback) => {
       if (event === 'rangeUpdate') {
         // Simulate the event with the data your component expects
         callback({ color: 'green', text: 'Updated' });
       }
       return mockSocket;
     }),
-    emit: jest.fn(),
-    disconnect: jest.fn(),
+    emit: vi.fn(),
+    disconnect: vi.fn(),
   };
 
-  utils.validateLogin = jest.fn().mockResolvedValue(true);
-  utils.rangeSupervision = jest.fn().mockResolvedValue(true);
+  utils.validateLogin = vi.fn().mockResolvedValue(true);
+  utils.rangeSupervision = vi.fn().mockResolvedValue(true);
   // Mock the return value of socketIOClient to use mockSocket
   socketIOClient.mockReturnValue(mockSocket);
 
-  axios.get = jest.fn().mockResolvedValue({
+  axios.get = vi.fn().mockResolvedValue({
     data: [{ id: 1, message: 'ok', start: '', end: '' }],
   });
-  axios.put = jest.fn().mockResolvedValue();
-  axios.post = jest.fn().mockImplementation((url, postable) => {
+  axios.put = vi.fn().mockResolvedValue();
+  axios.post = vi.fn().mockImplementation((url, postable) => {
     return Promise.resolve(postable);
   });
 
-  global.fetch = jest.fn((url) => {
+  global.fetch = vi.fn((url) => {
     if (url.includes('/api/datesupreme')) {
       return Promise.resolve({
         json: () => Promise.resolve({
@@ -99,7 +98,7 @@ describe.skip('testing rangeofficer', () => {
 
   it('should change range officer status', async () => {
 
-    global.fetch = jest.fn(() =>
+    global.fetch = vi.fn(() =>
       Promise.resolve({
         json: () =>
           Promise.resolve({
@@ -168,7 +167,7 @@ describe.skip('testing rangeofficer', () => {
   });
 
   it('should show correct color when present', async () => {
-    global.fetch = jest.fn(() =>
+    global.fetch = vi.fn(() =>
       Promise.resolve({
         json: () =>
           Promise.resolve({
@@ -185,7 +184,7 @@ describe.skip('testing rangeofficer', () => {
     );
   });
   it('should show correct color when en route', async () => {
-    global.fetch = jest.fn(() =>
+    global.fetch = vi.fn(() =>
       Promise.resolve({
         json: () =>
           Promise.resolve({
@@ -202,7 +201,7 @@ describe.skip('testing rangeofficer', () => {
     );
   });
   it('should show correct color when absent', async () => {
-    global.fetch = jest.fn(() =>
+    global.fetch = vi.fn(() =>
       Promise.resolve({
         json: () =>
           Promise.resolve({
@@ -219,7 +218,7 @@ describe.skip('testing rangeofficer', () => {
     );
   });
   it('should show correct color when closed', async () => {
-    global.fetch = jest.fn(() =>
+    global.fetch = vi.fn(() =>
       Promise.resolve({
         json: () =>
           Promise.resolve({
@@ -236,7 +235,7 @@ describe.skip('testing rangeofficer', () => {
     );
   });
   it('should show correct color when confirmed', async () => {
-    global.fetch = jest.fn(() =>
+    global.fetch = vi.fn(() =>
       Promise.resolve({
         json: () =>
           Promise.resolve({
@@ -253,7 +252,7 @@ describe.skip('testing rangeofficer', () => {
     );
   });
   it('should show correct color when not confirmed', async () => {
-    global.fetch = jest.fn(() =>
+    global.fetch = vi.fn(() =>
       Promise.resolve({
         json: () =>
           Promise.resolve({
@@ -270,7 +269,7 @@ describe.skip('testing rangeofficer', () => {
     );
   });
   it('should show correct color when no defined range officer', async () => {
-    global.fetch = jest.fn(() => {
+    global.fetch = vi.fn(() => {
       return Promise.resolve({
         json: () =>
           Promise.resolve({ ...testUtils.schedule, rangeSupervision: '' }),
@@ -287,7 +286,7 @@ describe.skip('testing rangeofficer', () => {
   it('should show tracks', async () => {
     localStorage.setItem('language', '1');
 
-    global.fetch = jest.fn(() =>
+    global.fetch = vi.fn(() =>
       Promise.resolve({
         json: () =>
           Promise.resolve({
@@ -316,7 +315,7 @@ describe.skip('testing rangeofficer', () => {
     localStorage.setItem('language', '1');
     global.Date.now = () => new Date('2024-04-10T11:30:57.000Z');
 
-    global.fetch = jest.fn((url) => {
+    global.fetch = vi.fn((url) => {
       if (url.includes('/api/datesupreme')) {
         return Promise.resolve({
           json: () => Promise.resolve(testUtils.schedule),

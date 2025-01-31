@@ -1,27 +1,38 @@
-import React from 'react';
 import '@testing-library/jest-dom';
 import { waitFor, render, screen } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { act } from 'react-dom/test-utils';
-import * as utils from '../utils/Utils';
+import { getSchedulingWeek } from '../utils/Utils';
 import Weekview from './Weekview';
 import testUtils from '../_TestUtils/TestUtils';
 import * as axios from 'axios';
 
-// Mock the InfoBox component
-jest.mock('../infoBox/InfoBox', () => () => <div data-testid="mockInfoBox">Mock InfoBox</div>);
+const { date, week } = testUtils;
 
-jest.mock('axios');
+// Mock the InfoBox component
+vi.mock('../infoBox/InfoBox', () => ({
+  default: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
+}));
+
+vi.mock(import("../utils/Utils"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    getSchedulingWeek: vi.fn(),
+  }
+})
+getSchedulingWeek.mockResolvedValue(week);
+
+vi.mock('axios', () => ({
+  get: vi.fn(),
+}));
 axios.get.mockResolvedValue({
   data: [{ id: 1, message: 'ok', start: '', end: '' }],
 });
-const { date, week, schedule } = testUtils;
 
 describe('testing weekview', () => {
   it('should render weekView', async () => {
-    utils.getSchedulingWeek = jest.fn(() => week);
-    utils.getSchedulingDate = jest.fn(() => schedule);
     const state = {
       state: 'loading',
       date,
@@ -31,7 +42,7 @@ describe('testing weekview', () => {
       paivat: week,
     };
     const history = createMemoryHistory();
-    Date.now = jest.fn(() => '2020-10-21T11:30:57.000Z');
+    Date.now = vi.fn(() => '2020-10-21T11:30:57.000Z');
 
     localStorage.setItem('language', '1');
     await act(async () => {
@@ -51,8 +62,6 @@ describe('testing weekview', () => {
   });
 
   it('should render the mocked InfoBox component', async () => {
-    utils.getSchedulingWeek = jest.fn(() => week);
-    utils.getSchedulingDate = jest.fn(() => schedule);
     const state = {
       state: 'loading',
       date,
@@ -62,7 +71,7 @@ describe('testing weekview', () => {
       paivat: week,
     };
     const history = createMemoryHistory();
-    Date.now = jest.fn(() => '2020-10-21T11:30:57.000Z');
+    Date.now = vi.fn(() => '2020-10-21T11:30:57.000Z');
 
     localStorage.setItem('language', '1');
     await act(async () => {

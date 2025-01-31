@@ -1,11 +1,8 @@
-import React from 'react';
 import { HashRouter as Router } from 'react-router-dom';
-import '@testing-library/jest-dom';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import axios from 'axios';
+import * as axios from 'axios';
 import { act } from 'react-dom/test-utils';
 import TrackCRUD from './tracks';
-import * as utils from '../utils/Utils';
 
 const mockTracks = [
   {
@@ -17,12 +14,26 @@ const mockTracks = [
   },
 ];
 const data = { data: mockTracks };
-utils.validateLogin = jest.fn(() => true);
 
-axios.get = jest.fn(() => Promise.resolve(data));
-axios.put = jest.fn(() => Promise.resolve());
-axios.delete = jest.fn(() => Promise.resolve());
-axios.post = jest.fn((url, postable) => {
+vi.mock(import("../utils/Utils"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    validateLogin: vi.fn(() => true),
+  }
+})
+
+vi.mock('axios', () => ({
+  get: vi.fn(),
+  put: vi.fn(),
+  delete: vi.fn(),
+  post: vi.fn(),
+}));
+
+axios.get = vi.fn(() => Promise.resolve(data));
+axios.put = vi.fn(() => Promise.resolve());
+axios.delete = vi.fn(() => Promise.resolve());
+axios.post = vi.fn((url, postable) => {
   if (postable.name === undefined) {
     return Promise.reject();
   }
