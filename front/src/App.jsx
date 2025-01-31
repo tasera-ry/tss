@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 // Style and colors
 import './shared.module.scss';
+import './App.css';
 
 import axios from 'axios';
 
