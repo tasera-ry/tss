@@ -19,7 +19,7 @@ localStorage.setItem('language', '1');
 // checkSupervisorReservations, DialogWindow
 describe('testing Nav', () => {
   it('should render Nav', async () => {
-    axios.get = jest.fn(() => Promise.resolve({ data: [{ id: 1 }] }));
+    axios.get = vi.fn(() => Promise.resolve({ data: [{ id: 1 }] }));
 
     await act(async () => {
       render(

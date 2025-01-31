@@ -8,13 +8,14 @@ import CircularProgress from '@mui/material/CircularProgress';
 // Moment for date management
 import moment from 'moment';
 import {
-  viewChanger,
   jumpToCurrent,
   getSchedulingFreeform,
   checkColor,
 } from '../utils/Utils';
 import Infoboxes from '../infoboxes/Infoboxes';
 import InfoBox from '../infoBox/InfoBox';
+import { ViewChanger } from '@/lib/components/ViewChanger';
+
 // Translation
 import texts from '../texts/texts.json';
 import css from './Monthview.module.scss';
@@ -410,7 +411,7 @@ function Monthview(props)  {
                 {jumpToCurrent()}
               </div>
               <div className={classes(css.viewChangerContainer)}>
-                {viewChanger()}
+                <ViewChanger />
               </div>
             </div>
             

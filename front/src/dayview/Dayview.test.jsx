@@ -1,17 +1,21 @@
-import React from 'react';
 import { HashRouter as Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
-import '@testing-library/jest-dom';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import Dayview from './Dayview';
 import api from '../api/api';
 import testUtils from '../_TestUtils/TestUtils';
+import { createAxiosMock } from '../_TestUtils/axiosMock';
 import * as axios from 'axios';
 
 // Mock the InfoBox component
-jest.mock('../infoBox/InfoBox', () => () => <div data-testid="mockInfoBox">Mock InfoBox</div>);
+vi.mock('../infoBox/InfoBox', () => ({
+  default: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
+}));
 
-jest.mock('axios');
+vi.mock('axios', () => ({
+  get: vi.fn(),
+}));
+
 axios.get.mockResolvedValue({
   data: [{ id: 1, message: 'ok', start: '', end: '' }],
 });
@@ -30,9 +34,9 @@ const history = createMemoryHistory();
 
 describe('testing Dayview component', () => {
   it('should render Dayview', async () => {
-    api.getSchedulingDate = jest.fn(() => schedule);
+    api.getSchedulingDate = vi.fn(() => schedule);
     localStorage.setItem('language', '1');
-    Date.now = jest.fn(() => '2020-10-21T11:30:57.000Z');
+    Date.now = vi.fn(() => '2020-10-21T11:30:57.000Z');
 
     render(
       <Router>
@@ -46,7 +50,7 @@ describe('testing Dayview component', () => {
 
   it('should change to previous and next day', async () => {
     localStorage.setItem('language', '1');
-    Date.now = jest.fn(() => '2020-10-21T11:30:57.000Z');
+    Date.now = vi.fn(() => '2020-10-21T11:30:57.000Z');
 
     render(
       <Router>
@@ -68,8 +72,8 @@ describe('testing Dayview component', () => {
 
   it('should show range officer status', async () => {
     localStorage.setItem('language', '1');
-    Date.now = jest.fn(() => '2020-10-21T11:30:57.000Z');
-    api.getSchedulingDate = jest.fn(() => ({
+    Date.now = vi.fn(() => '2020-10-21T11:30:57.000Z');
+    api.getSchedulingDate = vi.fn(() => ({
       ...schedule,
       rangeSupervision: 'closed',
     }));
@@ -89,9 +93,9 @@ describe('testing Dayview component', () => {
   });
 
   it('should render the mocked InfoBox component', async () => {
-    api.getSchedulingDate = jest.fn(() => schedule);
+    api.getSchedulingDate = vi.fn(() => schedule);
     localStorage.setItem('language', '1');
-    Date.now = jest.fn(() => '2020-10-21T11:30:57.000Z');
+    Date.now = vi.fn(() => '2020-10-21T11:30:57.000Z');
 
     render(
       <Router>

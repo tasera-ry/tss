@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   render,
   screen,
@@ -11,7 +10,7 @@ import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 
 // Mock axios
-jest.mock('axios');
+vi.mock('axios');
 
 // Mock the api response
 axios.post.mockResolvedValue();

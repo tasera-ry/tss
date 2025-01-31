@@ -1,5 +1,3 @@
-import React from 'react';
-import '@testing-library/jest-dom';
 import { waitFor, render, screen, fireEvent } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
@@ -8,10 +6,21 @@ import Monthview from './Monthview';
 import monthTestUtil from '../_TestUtils/monthTestUtil';
 import axios from 'axios';
 
-jest.mock('axios');
+
+vi.mock('axios');
 
 // Mock the InfoBox component
-jest.mock('../infoBox/InfoBox', () => () => <div data-testid="mockInfoBox">Mock InfoBox</div>);
+vi.mock('../infoBox/InfoBox', () => ({
+  default: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
+}));
+
+vi.mock(import("../utils/Utils"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    getSchedulingFreeform: vi.fn(),
+  }
+})
 
 axios.get.mockResolvedValue({
   data: [{ id: 1, message: 'ok', start: '', end: '' }],
@@ -32,10 +41,10 @@ describe('testing monthview', () => {
   };
 
   it('should render monthView when URL is broken/invalid', async () => {
-    utils.getSchedulingFreeform = jest.fn(() => ({
+    utils.getSchedulingFreeform.mockResolvedValue({
       month: mockMonth('09', '28'),
-    }));
-    Date.now = jest.fn(() => '2020-10-21T11:30:57.000Z');
+    });
+    Date.now = vi.fn(() => '2020-10-21T11:30:57.000Z');
 
     localStorage.setItem('language', '1');
     render(
@@ -49,12 +58,12 @@ describe('testing monthview', () => {
   });
 
   it('should change to previous, current and next month', async () => {
-    utils.getSchedulingFreeform = jest.fn(() => ({
+    utils.getSchedulingFreeform.mockResolvedValue({
       month: mockMonth('09', '28'),
-    }));
+    });
     localStorage.setItem('language', '1');
-    Date.now = jest.fn(() => '2020-10-21T11:30:57.000Z');
-    history.replace = jest.fn((params) => defineUrl(params));
+    Date.now = vi.fn(() => '2020-10-21T11:30:57.000Z');
+    history.replace = vi.fn((params) => defineUrl(params));
     render(
       <Router>
         <Monthview history={history} />
@@ -63,23 +72,23 @@ describe('testing monthview', () => {
     await waitFor(() =>
       expect(screen.getByText('October, 2020')).toBeInTheDocument(),
     );
-    utils.getSchedulingFreeform = jest.fn(() => ({
+    utils.getSchedulingFreeform.mockResolvedValue({
       month: mockMonth('08', '31'),
-    }));
+    });
     fireEvent.click(screen.getByTestId('previousMonth'));
     await waitFor(() =>
       expect(screen.getByText('September, 2020')).toBeInTheDocument(),
     );
-    utils.getSchedulingFreeform = jest.fn(() => ({
+    utils.getSchedulingFreeform.mockResolvedValue({
       month: mockMonth('09', '28'),
-    }));
+    });
     fireEvent.click(screen.getByTestId('nextMonth'));
     await waitFor(() =>
       expect(screen.getByText('October, 2020')).toBeInTheDocument(),
     );
-    utils.getSchedulingFreeform = jest.fn(() => ({
+    utils.getSchedulingFreeform.mockResolvedValue({
       month: mockMonth('10', '26'),
-    }));
+    });
     fireEvent.click(screen.getByTestId('nextMonth'));
     await waitFor(() =>
       expect(screen.getByText('November, 2020')).toBeInTheDocument(),

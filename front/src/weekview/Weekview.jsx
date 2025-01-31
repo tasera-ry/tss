@@ -11,13 +11,14 @@ import moment from 'moment';
 import api from '../api/api';
 import {
   getSchedulingWeek,
-  viewChanger,
   jumpToCurrent,
   getLanguage,
 } from '../utils/Utils';
 import exclamation from '@/assets/Info.png';
 import Infoboxes from '../infoboxes/Infoboxes';
 import InfoBox from '../infoBox/InfoBox';
+import { ViewChanger } from '@/lib/components/ViewChanger';
+
 // Translation
 import texts from '../texts/texts.json';
 import css from './Weekview.module.scss';
@@ -516,7 +517,7 @@ const Weekview = (props) => {
               {jumpToCurrent()}
             </div>
             <div className={classes(css.viewChangerContainer)}>
-              {viewChanger()}
+              <ViewChanger />
             </div>
           </div>
 

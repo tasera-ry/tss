@@ -1,4 +1,3 @@
-import React from 'react';
 import moment from 'moment';
 import 'moment/locale/sv';
 import { Link } from 'react-router-dom';
@@ -79,83 +78,6 @@ export const checkColor = (days, oneDay) => {
       return colors.blackTint05;
     default:
       return 'blue';
-  }
-};
-
-export const viewChanger = () => {
-  const { viewChanger } = texts; // eslint-disable-line
-  const lang = localStorage.getItem('language');
-  const table = [];
-
-  try {
-    const fullUrl = window.location.href.split('/');
-    const urlParamDate = fullUrl[5];
-
-    // When first access to '/' (no params in URL)
-    let paramDay = '';
-    let paramMonth = '';
-    let paramYear = '';
-    if (urlParamDate) {
-      const urlParamDateSplit = urlParamDate.split('-');
-      [paramYear, paramMonth, paramDay] = urlParamDateSplit;
-      [paramDay] = paramDay.split('T');
-    } else {
-      throw 'No valid URL'; // eslint-disable-line
-    }
-
-    const time = `${paramYear}-${paramMonth}-${paramDay}`;
-
-    table.push(
-      <Link key="month" className="link" to={`/monthview/${time}`}>
-        <div>{viewChanger.Month[lang]}</div>
-      </Link>,
-    );
-    table.push(
-      <Link key="week" className="link" to={`/weekview/${time}`}>
-        <div>{viewChanger.Week[lang]}</div>
-      </Link>,
-    );
-    table.push(
-      <Link key="day" className="link" to={`/dayview/${time}`}>
-        <div>{viewChanger.Day[lang]}</div>
-      </Link>,
-    );
-    return table;
-  } catch (err) {
-    console.error(err);
-    const date = new Date(Date.now());
-    const time = moment(
-      `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-      'YYYY-MM-DD',
-    );
-    table.push(
-      <Link
-        className="link"
-        key="1"
-        to={`/monthview/${time.format('YYYY-MM-DD')}`}
-      >
-        <div>{viewChanger.Month[lang]}</div>
-      </Link>,
-    );
-    table.push(
-      <Link
-        className="link"
-        key="2"
-        to={`/weekview/${time.format('YYYY-MM-DD')}`}
-      >
-        <div>{viewChanger.Week[lang]}</div>
-      </Link>,
-    );
-    table.push(
-      <Link
-        className="link"
-        key="3"
-        to={`/dayview/${time.format('YYYY-MM-DD')}`}
-      >
-        <div>{viewChanger.Day[lang]}</div>
-      </Link>,
-    );
-    return table;
   }
 };
 

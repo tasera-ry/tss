@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 
 // Material UI components
@@ -9,13 +9,14 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 // Moment for date handling
 import moment from 'moment';
-import { dayToString, jumpToCurrent, viewChanger } from '../utils/Utils';
+import { dayToString, jumpToCurrent } from '../utils/Utils';
 import info from '@/assets/Info.png';
 import api from '../api/api';
 import InfoBox from '../infoBox/InfoBox';
 import translations from '../texts/texts.json';
 import css from './Dayview.module.scss';
 import ButtonComponent from '../ButtonComponent/ButtonComponent';
+import { ViewChanger } from '@/lib/components/ViewChanger';
 
 const classes = classNames.bind(css);
 
@@ -232,7 +233,7 @@ function Dayview(props) {
               {jumpToCurrent()}
             </div>
             <div className={classes(css.viewChangerCurrent)}>
-              {viewChanger()}
+              <ViewChanger />
             </div>
           </div>
           <div className={classes(css.dayviewTrackContainer)}>

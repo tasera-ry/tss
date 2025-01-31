@@ -1,5 +1,3 @@
-import React from 'react';
-import '@testing-library/jest-dom';
 import { waitFor, render, screen, fireEvent } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
@@ -9,12 +7,15 @@ import testUtils from '../_TestUtils/TestUtils';
 import * as utils from '../utils/Utils';
 
 // Mock validateLogin before your tests
-jest.mock('../utils/Utils', () => ({
-  ...jest.requireActual('../utils/Utils'),
-  validateLogin: jest.fn(),
-}));
+vi.mock(import('../utils/Utils'), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    validateLogin: vi.fn(),
+  }
+});
 
-global.fetch = jest.fn((url, ops) => {
+global.fetch = vi.fn((url, ops) => {
   if (ops.method === 'GET') {
     return Promise.resolve({
       json: () => Promise.resolve(testUtils.users),
@@ -34,7 +35,7 @@ describe('testing UserManagementView', () => {
     utils.validateLogin.mockResolvedValue(true);
 
     // Optionally mock getUsers if necessary
-    utils.getUsers = jest.fn().mockResolvedValue([{ id: 2, name: 'Alice' }, { id: 3, name: 'Bob' }]);
+    utils.getUsers = vi.fn().mockResolvedValue([{ id: 2, name: 'Alice' }, { id: 3, name: 'Bob' }]);
   });
 
   it('should render UserManagementView', async () => {
@@ -58,7 +59,7 @@ describe('testing UserManagementView', () => {
   it.skip('should delete users', async () => {
     const history = createMemoryHistory();
     localStorage.setItem('language', '1'); // eslint-disable-line no-undef
-    global.fetch = jest.fn((url) => {
+    global.fetch = vi.fn((url) => {
       if (url.includes('/api/user')) {
         return Promise.resolve({
           json: () => Promise.resolve([{ id: 2, name: 'Alice' }]),

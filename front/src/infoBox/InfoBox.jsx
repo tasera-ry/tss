@@ -60,11 +60,9 @@ const InfoBox = ({ tabletMode = false }) => {
     }
   }, []);
 
-  return (
-    <>
-      {info && <> {info.map((infos) => <InfoComp key={infos.id} message={infos}/>)} </> }
-    </>
-  );
+  if (!info) return null;
+
+  return info.map((infos) => <InfoComp key={infos.id} message={infos}/>);
 };
 
 export default InfoBox;

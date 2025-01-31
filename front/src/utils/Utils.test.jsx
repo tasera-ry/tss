@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom';
-import * as utils from '../utils/Utils';
+import * as utils from './Utils';
 import testUtils from '../_TestUtils/TestUtils';
 import api from '../api/api'; 
-import { validateLogin, updateRangeSupervision } from '../utils/Utils'; // Import validateLogin
+import { validateLogin, updateRangeSupervision } from './Utils'; // Import validateLogin
 
-jest.mock('../api/api');
+vi.mock('../api/api');
 
 describe('testing weekview', () => {
   it('testing getSchedulingWeek', async () => {

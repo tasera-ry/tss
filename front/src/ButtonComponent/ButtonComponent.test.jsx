@@ -1,15 +1,14 @@
-import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import ButtonComponent from './ButtonComponent';
 import api from '../api/api';
-import translations from '../texts/texts.json';
 
-jest.mock('../api/api');
-jest.mock('../texts/texts.json', () => ({
-  devicesList: {
+vi.mock('../api/api');
+vi.mock('../texts/texts.json', () => ({
+  default: {
+    devicesList: {
     ReservedStatus: { en: "reserved" },
     FreeStatus: { en: "free" }
+    }
   }
 }));
 
