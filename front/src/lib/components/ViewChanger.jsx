@@ -1,6 +1,11 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+import moment from 'moment';
+import 'moment/locale/sv';
 import { Link } from 'react-router-dom';
+import api from '../../api/api';
 import texts from '../../texts/texts.json';
+import colors from '../../colors.module.scss';
+
 
 export function ViewChanger() {
   const { viewChanger } = texts; // eslint-disable-line
@@ -18,13 +23,13 @@ export function ViewChanger() {
   return (
     <>
       <Link key="month" className="link" to={`/monthview/${time}`}>
-        {viewChanger.Month[lang]}
+        <div>{viewChanger.Month[lang]}</div>
       </Link>,
       <Link key="week" className="link" to={`/weekview/${time}`}>
-        {viewChanger.Week[lang]}
+        <div>{viewChanger.Week[lang]}</div>
       </Link>,
       <Link key="day" className="link" to={`/dayview/${time}`}>
-        {viewChanger.Day[lang]}
+        <div>{viewChanger.Day[lang]}</div>
       </Link>,
     </>
   )
