@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import classNames from 'classnames';
-import api from '../api/api';
-import translations from '../texts/texts.json';
+import { useState } from 'react';
+import api from '../../../api/api';
+import translations from '../../../texts/texts.json';
 
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -10,28 +9,29 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
-import css from './FeedbackWindow.module.scss';
+import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
 
-const classes = classNames.bind(css);
 const { feedback } = translations;
 
-const FeedbackWindow = ({ user, dialogOpen, onCloseDialog }) => {
+const FeedbackWindow = ({ dialogOpen, onCloseDialog }) => {
+
+  const { username } = useLoggedInUser();
+
   const fin = localStorage.getItem('language');
   const [textFeedback, setTextFeedback] = useState('');
 
   return (
     <Dialog
       aria-labelledby="title"
-      className={classes(css.dialog)}
       open={dialogOpen}
-      classes={{ paper: classes(css.paper) }}
+      classes={{ paper: "bg-black-tint-05" }}
     >
       <DialogTitle id="title">{feedback.Title[fin]}</DialogTitle>
       <DialogContent>
         <DialogContentText>{feedback.Note[fin]}</DialogContentText>
         <TextField
           id="feedback-field"
-          className={classes(css.textField)}
+          className="w-full"
           inputProps={{
             'data-testid': 'feedback-field',
           }}
@@ -43,18 +43,17 @@ const FeedbackWindow = ({ user, dialogOpen, onCloseDialog }) => {
       </DialogContent>
       <DialogActions>
         <Button
-          className={classes(css.cancelButton)}
           variant="contained"
           onClick={onCloseDialog}
         >
           {feedback.Cancel[fin]}
         </Button>
         <Button
-          className={classes(css.acceptButton)}
+          className="bg-sand!"
           variant="contained"
           onClick={async () => {
             onCloseDialog();
-            await api.sendFeedback(textFeedback, user);
+            await api.sendFeedback(textFeedback, username);
           }}
         >
           {feedback.Send[fin]}
