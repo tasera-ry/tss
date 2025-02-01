@@ -1,11 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { StyledEngineProvider } from '@mui/material/styles'
-import App from './App';
+import { StyledEngineProvider, ThemeProvider, createTheme } from '@mui/material/styles'
+import { App } from './App';
+import { CookiesProvider } from 'react-cookie';
+
+// TO DO: Move this to scss if possible.
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#4D4D4D',
+    },
+  },
+});
 
 ReactDOM.render(
-    <StyledEngineProvider injectFirst>
+  <StyledEngineProvider injectFirst>
+    <ThemeProvider theme={theme}>
+      <CookiesProvider>
         <App />
-    </StyledEngineProvider>,
-    document.getElementById('root')
+      </CookiesProvider>
+    </ThemeProvider>
+  </StyledEngineProvider>,
+  document.getElementById('root')
 ); 

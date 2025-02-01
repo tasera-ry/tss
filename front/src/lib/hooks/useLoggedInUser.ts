@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useCookies } from "react-cookie";
 import api from '../../api/api';
+import { validateLogin } from "@/utils/Utils";
 
 
 export type Role = 'superuser' | 'association' | 'rangeofficer' | 'rangemaster' | undefined;
@@ -18,6 +19,16 @@ export function useLoggedInUser() {
     location.reload();
   }, []);
 
+  const validateToken = useCallback(async () => {
+    if (!username) return false;
+    const isTokenValid = await validateLogin()
+    if (!isTokenValid) {
+      await logout();
+      return false;
+    }
+    return true;
+  }, [username, logout]);
+
 
   const isLoggedIn = useMemo(() => !!username, [username]);
 
@@ -25,6 +36,7 @@ export function useLoggedInUser() {
     isLoggedIn,
     username,
     role,
-    logout
+    logout,
+    validateToken,
   }
 }
