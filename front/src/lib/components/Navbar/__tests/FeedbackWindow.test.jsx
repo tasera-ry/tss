@@ -1,6 +1,6 @@
 import { waitFor, render, screen, fireEvent } from '@testing-library/react';
 import axios from 'axios';
-import FeedbackWindow from './FeedbackWindow';
+import FeedbackWindow from '../FeedbackWindow';
 
 axios.put = vi.fn(() => Promise.resolve());
 localStorage.setItem('language', '1');

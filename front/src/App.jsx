@@ -13,7 +13,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import SignIn from './signin/SignIn';
 import ResetPassword from './resetPW/ResetPassword';
 import RenewPassword from './renewPW/RenewPassword';
-import Nav from './navbar/Nav';
 import AddInfo from './infoBox/AddInfo';
 import Dayview from './dayview/Dayview';
 import Weekview from './weekview/Weekview';
@@ -31,6 +30,7 @@ import Raffle from './raffle/raffle';
 // React router. Hashrouter, because normal router won't work in apache
 
 import { validateLogin } from './utils/Utils';
+import { Navbar } from '@/lib/components/Navbar';
 
 // TO DO: Move this to scss if possible.
 
@@ -74,7 +74,7 @@ const App = (props) => {
         <ThemeProvider theme={theme}>
           <div className="App">
             <header className="App-header">
-              <Nav />
+              <Navbar />
               <Switch>
                 <Route exact path="/" component={Weekview} />
                 <Route exact path="/signin" component={SignIn} />
