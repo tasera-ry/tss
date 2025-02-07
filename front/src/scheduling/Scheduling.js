@@ -180,6 +180,7 @@ function Scheduling(props) {
     };
   }, []);
 
+  
   // runs after date changed with datePicker
   useEffect(() => {
     if (callUpdate) {
@@ -221,6 +222,12 @@ function Scheduling(props) {
         ...prevStates, ...updatedTrackStates,
       }));
     }
+  };
+
+  // Implementing the date buttons
+  const handleBtnDateChangeClick = (newDate) => {
+    setDate(newDate)
+    setCallUpdate(true)
   };
 
   const handleDateChange = (newDate) => {
@@ -1004,9 +1011,13 @@ function Scheduling(props) {
 
       <h1 className ="heading">{sched.Schedule[lang]}</h1>
 
-      {/* Section for selecting date, setting range officer status, and open/close times of the tracks*/}
-      <Box className="firstSection">
-        <form onSubmit={continueWithDate}>
+      /* Section for selecting date, setting range officer status, and open/close times of the tracks*/
+        <Box className="firstSection">
+          <div className="dateNavigation">
+            <Button onClick={() => handleBtnDateChangeClick(moment(date).subtract(1, 'days'))}>
+          {sched.PreviousDay[lang]}
+            </Button>
+            <form onSubmit={continueWithDate}>
           {/* Datepicker */}
           <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={lang} key={datePickerKey}>
             <DatePicker
@@ -1021,148 +1032,153 @@ function Scheduling(props) {
               data-testid="datePicker"
             />
           </LocalizationProvider>
-        </form>
-        <FormControl component="fieldset" style={{padding:'5px'}}>
-          <div className="options">
-            <div className="topRow">
-            <div className="text">{sched.Open[lang]}</div>
-
-            <CustomSwitchGreen
-              checked={available}
-              onChange={handleSwitchChange}
-              name="available"
-              data-testid="available"
-            /> 
-            </div>
-            <hr />
-            <div className="middleRow">
-              <div className="text">{sched.OpenHours[lang]}</div>
-              <div className='timePicker'>
-                <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="fi">
-                  <TimePicker
-                    disabled={!available}
-                    closeOnSelect
-                    ampm={false}
-                    label={sched.Start[lang]}
-                    value={moment(open)}
-                    onChange={handleTimeStartChange}
-                    minutesStep={5}
-                    slots={{textField: TextField}}
-                    showTodayButton
-                  />
-                </LocalizationProvider>
-                <div className="dash">-</div>
-                <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="fi">
-                  <TimePicker
-                    disabled={!available}
-                    closeOnSelect
-                    ampm={false}
-                    label={sched.Stop[lang]}
-                    value={moment(close)}
-                    onChange={handleTimeEndChange}
-                    minutesStep={5}
-                    slots={{textField: TextField}}
-                    showTodayButton
-                  />
-                </LocalizationProvider>
-              </div>
-            </div>
-            <hr />
-            <div className="bottomRow">
-                <div className="text">{sched.Rangeofficer[lang]}</div>
-                <CustomSwitchGreen
-                  disabled={!available}
-                  checked={rangeSupervisorSwitch}
-                  onChange={handleSwitchChange}
-                  name="rangeSupervisorSwitch"
-                  data-testid="rangeSupervisorSwitch"
-                />
-            </div> 
-            {rangeSupervisorSwitch && (
-              <div className='selectOfficer'>{createSupervisorSelect()}</div>
-            )}  
+            </form>
+            <Button onClick={() => handleBtnDateChangeClick(moment(date).add(1, 'days'))}>
+            {sched.NextDay[lang]}
+            </Button>
           </div>
-          </FormControl>
+          
           <FormControl component="fieldset" style={{padding:'5px'}}>
-            <div className="rangeOfficerStatus" style={{backgroundColor: `${statusColor}`}}>
-                <div className="statusText">
-                  <span style={{ fontWeight: 'bold', fontSize: '1.1rem'}}>{statusText}</span>{createStatusMessage()}
-                </div>
-                  {cookies.role === 'superuser' && (
-                    <div className="expandMore">
-                      <span className="edit">{sched.Edit[lang]}</span>
-                      <Button
-                        disabled={!available || !rangeSupervisorSwitch || !rangeSupervisorId}
-                        className="expandMoreButton"
-                        onClick={handleExpandClick}
-                        aria-expanded={expand}
-                        aria-label={expand ? "Collapse options" : "Expand options"}
-                      >
-                        {!expand ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-                      </Button>
-                    </div>
-                  )}
-                </div>
-            {expand && (
-              <Box>
-                <div className="dropDownContent">
-                  <div className="helperText"><p>{sched.Helper[lang]}</p></div>
-                  <div className="statusButtons">
-                    <Button
-                      className="notConfirmed"
-                      variant="contained"
-                      style={{ backgroundColor: colors.turquoise }}
-                      onClick={handleNotConfirmed}>
-                      {sched.Blue[lang]}
-                    </Button>
-                    <Button
-                      className="confirmed"
-                      variant="contained"
-                      style={{ backgroundColor: colors.greenLight }}
-                      onClick={handleConfirmed}>
-                      {sched.LightGreen[lang]}
-                    </Button>
-                    <Button
-                      className="onTheWay"
-                      variant="contained"
-                      style={{ backgroundColor: colors.orange }}
-                      onClick={handleEnRouteClick}>
-                      {sched.Orange[lang]}
-                    </Button>
-                    <Button
-                      className="present"
-                      variant="contained"
-                      style={{ backgroundColor: colors.green }}
-                      onClick={handlePresentClick}>
-                      {sched.Green[lang]}
-                    </Button>
-                  </div>
-                  <hr />
-                  <div className="eta">
-                    <p>{sched.AddETA[lang]}:</p>
-                    <TextField
-                      disabled={statusColor === colors.green}
-                      id="time"
-                      type="time"
-                      defaultValue={arrivalTime ? arrivalTime : "00:00:00"}
-                      onChange={(event) => handleArrivalTime(event)} 
-                      style={{minWidth:'112px'}}
-                    />
-                    <Button
-                      disabled={statusColor === colors.green}
-                      className="confirmTimeButton"
-                      variant="contained"
-                      onClick={confirmArrivalTime}
-                    >{sched.ConfirmTime[lang]}
-                    </Button>
-                  </div>
-                </div>
-              </Box>
-            )}
-          </FormControl>
-      </Box>
+            <div className="options">
+          <div className="topRow">
+          <div className="text">{sched.Open[lang]}</div>
 
-      {/* Section for setting track-specific open/close statuses */}
+          <CustomSwitchGreen
+            checked={available}
+            onChange={handleSwitchChange}
+            name="available"
+            data-testid="available"
+          /> 
+          </div>
+          <hr />
+          <div className="middleRow">
+            <div className="text">{sched.OpenHours[lang]}</div>
+            <div className='timePicker'>
+              <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="fi">
+            <TimePicker
+              disabled={!available}
+              closeOnSelect
+              ampm={false}
+              label={sched.Start[lang]}
+              value={moment(open)}
+              onChange={handleTimeStartChange}
+              minutesStep={5}
+              slots={{textField: TextField}}
+              showTodayButton
+            />
+              </LocalizationProvider>
+              <div className="dash">-</div>
+              <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="fi">
+            <TimePicker
+              disabled={!available}
+              closeOnSelect
+              ampm={false}
+              label={sched.Stop[lang]}
+              value={moment(close)}
+              onChange={handleTimeEndChange}
+              minutesStep={5}
+              slots={{textField: TextField}}
+              showTodayButton
+            />
+              </LocalizationProvider>
+            </div>
+          </div>
+          <hr />
+          <div className="bottomRow">
+              <div className="text">{sched.Rangeofficer[lang]}</div>
+              <CustomSwitchGreen
+            disabled={!available}
+            checked={rangeSupervisorSwitch}
+            onChange={handleSwitchChange}
+            name="rangeSupervisorSwitch"
+            data-testid="rangeSupervisorSwitch"
+              />
+          </div> 
+          {rangeSupervisorSwitch && (
+            <div className='selectOfficer'>{createSupervisorSelect()}</div>
+          )}  
+            </div>
+            </FormControl>
+            <FormControl component="fieldset" style={{padding:'5px'}}>
+          <div className="rangeOfficerStatus" style={{backgroundColor: `${statusColor}`}}>
+              <div className="statusText">
+            <span style={{ fontWeight: 'bold', fontSize: '1.1rem'}}>{statusText}</span>{createStatusMessage()}
+              </div>
+            {cookies.role === 'superuser' && (
+              <div className="expandMore">
+                <span className="edit">{sched.Edit[lang]}</span>
+                <Button
+              disabled={!available || !rangeSupervisorSwitch || !rangeSupervisorId}
+              className="expandMoreButton"
+              onClick={handleExpandClick}
+              aria-expanded={expand}
+              aria-label={expand ? "Collapse options" : "Expand options"}
+                >
+              {!expand ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                </Button>
+              </div>
+            )}
+              </div>
+          {expand && (
+            <Box>
+              <div className="dropDownContent">
+            <div className="helperText"><p>{sched.Helper[lang]}</p></div>
+            <div className="statusButtons">
+              <Button
+                className="notConfirmed"
+                variant="contained"
+                style={{ backgroundColor: colors.turquoise }}
+                onClick={handleNotConfirmed}>
+                {sched.Blue[lang]}
+              </Button>
+              <Button
+                className="confirmed"
+                variant="contained"
+                style={{ backgroundColor: colors.greenLight }}
+                onClick={handleConfirmed}>
+                {sched.LightGreen[lang]}
+              </Button>
+              <Button
+                className="onTheWay"
+                variant="contained"
+                style={{ backgroundColor: colors.orange }}
+                onClick={handleEnRouteClick}>
+                {sched.Orange[lang]}
+              </Button>
+              <Button
+                className="present"
+                variant="contained"
+                style={{ backgroundColor: colors.green }}
+                onClick={handlePresentClick}>
+                {sched.Green[lang]}
+              </Button>
+            </div>
+            <hr />
+            <div className="eta">
+              <p>{sched.AddETA[lang]}:</p>
+              <TextField
+                disabled={statusColor === colors.green}
+                id="time"
+                type="time"
+                defaultValue={arrivalTime ? arrivalTime : "00:00:00"}
+                onChange={(event) => handleArrivalTime(event)} 
+                style={{minWidth:'112px'}}
+              />
+              <Button
+                disabled={statusColor === colors.green}
+                className="confirmTimeButton"
+                variant="contained"
+                onClick={confirmArrivalTime}
+              >{sched.ConfirmTime[lang]}
+              </Button>
+            </div>
+              </div>
+            </Box>
+          )}
+            </FormControl>
+        </Box>
+
+        {/* Section for setting track-specific open/close statuses */}
       <Box className="secondSection">
         <div><h3 className="headingTracks">{sched.ManageTracks[lang]}</h3></div>
         <div className="tracks">{createTrackList()}</div>
