@@ -47,6 +47,19 @@
       display: flex;
       align-self: center;
     }
+    .dateNavigation {
+      display: flex;
+      align-items: left;
+      justify-content: left;
+    }
+    
+    .dateNavigation Button {
+      margin: 0 10px;
+    }
+    
+    .datePickerForm {
+      display: inline-block;
+    }
     .topRow {
       display: flex;
       flex-flow: row wrap;
