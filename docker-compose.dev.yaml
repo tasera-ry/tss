@@ -11,10 +11,19 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
   backend:
     build:
       context: ./back
-      target: dev
     restart: always
     depends_on:
       database:
@@ -26,7 +35,7 @@ services:
       - DB_HOST=database
       - DB_PORT=5432
       - SENDER_EMAIL=noreply@tasera.fi
-      - SERVER_HOST=http://frontend:3000
+      - SERVER_HOST=http://localhost:8000
     ports:
       - 8000:8000
       - 5858:5858 # node debugger
@@ -40,17 +49,15 @@ services:
   frontend:
     build:
       context: ./front
-      target: dev
     restart: always
     depends_on:
       - backend
     ports:
-      - 3000:3000
+      - 5173:5173
     environment:
       - ESLINT_NO_DEV_ERRORS=true
       - CHOKIDAR_USEPOLLING=true
-      - PROXY_HOSTNAME=backend
-      - PROXY_PORT=8000
+      - PROXY_API=http://backend:8000
     volumes:
       - ./front/src:/app/src
     stdin_open: true
