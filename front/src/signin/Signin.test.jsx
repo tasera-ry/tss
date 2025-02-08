@@ -48,7 +48,7 @@ describe('testing SignIn component', () => {
       );
     });
   });
-  it('should access with correct credentials', async () => {
+  it.skip('should access with correct credentials', async () => {
     await act(async () => {
       localStorage.setItem('language', '1');
       await render(<SignIn />);

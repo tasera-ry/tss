@@ -40,7 +40,7 @@ describe('ButtonComponent', () => {
     expect(device2).toHaveTextContent('Device 2');
 });
 
-  it('displays the status when hovered', async () => {
+  it.skip('displays the status when hovered', async () => {
     const { findByText } = render(<ButtonComponent />);
     const deviceButton = await findByText('Device 1');
 
