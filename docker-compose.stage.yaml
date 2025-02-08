@@ -1,0 +1,95 @@
+#version: '3.8'
+services:
+# Remember to create .env file! Check env-template for example!
+
+  # This is the actual calendar software
+  tss:
+    #image: ${TSS_IMAGE}
+    #image: tasera/tssnodejs:1.6.7
+    image: ghcr.io/tasera-ry/tss:master
+    container_name: tss
+    environment:
+      - DB=${DB_DB}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DEBUG=${DB_DEBUG}
+      - JWT_SECRET=${TSS_JWT_SECRET}
+      - NODE_ENV=${TSS_ENV}
+      - SERVER_HOST=${TSS_HOST}
+      - ALT_PORT=${TSS_ALT_PORT}
+    restart: always
+    volumes:
+      - ./opt/tasera/lock:/var/lock
+    labels:
+      - com.centurylinklabs.watchtower.enable=true # Enable watchtower updates
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      tasera_net:
+         ipv4_address: 10.8.9.3
+
+  # Database
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_DB}
+      - PGPASSWORD=${DB_PASSWORD}
+    volumes:
+      - ./opt/tasera/db:/var/lib/postgresql/data
+      - ./opt/tasera/dbtmp:/dbtmp
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      tasera_net:
+         ipv4_address: 10.8.9.4
+
+  # Reverse proxy
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ./opt/tasera/nginx/conf:/etc/nginx/conf.d
+      - ./opt/tasera/certbot/conf:/etc/letsencrypt
+      - ./opt/tasera/certbot/www:/var/www/certbot
+      - ./opt/tasera/backup:/var/www/backup
+    ports:
+      - "80:80"
+      - "443:443"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    networks:
+      tasera_net:
+         ipv4_address: 10.8.9.5
+
+   # Let's encrypt SSL certificates
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+        - ./opt/tasera/certbot/conf:/etc/letsencrypt
+        - ./opt/tasera/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 1h & wait $${!}; done;'"
+    networks:
+      tasera_net:
+         ipv4_address: 10.8.9.6
+
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --label-enable --cleanup --interval 600 # Poll every 10min
+
+networks:
+  tasera_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.8.9.0/28
+          gateway: 10.8.9.1
