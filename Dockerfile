@@ -11,7 +11,7 @@ RUN npm run build
 FROM node:20-slim AS production
 ENV NODE_ENV=stable
 WORKDIR /usr/src/app
-COPY --from=frontbuild /usr/src/app/build ./front/build
+COPY --from=frontbuild /usr/src/app/dist ./front/build
 COPY ./back ./back
 WORKDIR /usr/src/app/back
 RUN npm install --production
