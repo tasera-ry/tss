@@ -4,7 +4,7 @@ ENV NODE_ENV=stable
 ENV NODE_OPTIONS=--max_old_space_size=2048
 WORKDIR /usr/src/app
 COPY ./front/package*.json ./
-RUN npm install --production
+RUN npm install
 COPY ./front ./
 RUN npm run build
 
