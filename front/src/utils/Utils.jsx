@@ -24,26 +24,21 @@ export const incrementOrDecrementDate = (date, amountOfDays) =>
   new Date(date.setDate(date.getDate() + amountOfDays));
 
 export const getSchedulingWeek = async (date) => {
-  try {
-    const weekNum = moment(date, 'YYYY-MM-DD').isoWeek();
-    const begin = moment(date, 'YYYY-MM-DD').startOf('isoWeek');
-    const end = moment(date, 'YYYY-MM-DD').endOf('isoWeek');
+  const weekNum = moment(date, 'YYYY-MM-DD').isoWeek();
+  const begin = moment(date, 'YYYY-MM-DD').startOf('isoWeek');
+  const end = moment(date, 'YYYY-MM-DD').endOf('isoWeek');
 
-    const current = moment(begin);
-    moment.prototype.add.bind(current, 1, 'day');
+  const current = moment(begin);
+  moment.prototype.add.bind(current, 1, 'day');
 
-    const week = await api.getSchedulingWeek(begin);
+  const week = await api.getSchedulingWeek(begin);
 
-    return {
-      weekNum,
-      weekBegin: begin.format('YYYY-MM-DD'),
-      weekEnd: end.format('YYYY-MM-DD'),
-      week,
-    };
-  } catch (err) {
-    console.error(err);
-    return false;
-  }
+  return {
+    weekNum,
+    weekBegin: begin.format('YYYY-MM-DD'),
+    weekEnd: end.format('YYYY-MM-DD'),
+    week,
+  };
 };
 
 export const getSchedulingFreeform = async (date) => {
@@ -81,29 +76,25 @@ export const checkColor = (days, oneDay) => {
   }
 };
 
-export const jumpToCurrent = () => {
-  const { viewChanger } = texts; // eslint-disable-line
+
+const { viewChanger } = texts;
+
+export function JumpToCurrent() {
   const lang = localStorage.getItem('language');
 
-  try {
-    const fullUrl = window.location.href.split('/');
-    const urlParamDate = fullUrl[4];
-    const date = new Date(Date.now());
-    return (
-      <Link
-        className="link"
-        data-testid="jumpToCur"
-        to={`/${urlParamDate}/${moment(date, 'YYYY-MM-DD')
-          .toISOString()
-          .substring(0, 10)}`}
-      >
-        <div>{viewChanger.JumpToCurrent[lang]}</div>
-      </Link>
-    );
-  } catch (err) {
-    console.error(err);
-    return false;
-  }
+  const fullUrl = window.location.href.split('/');
+  const urlParamDate = fullUrl[4];
+  const date = new Date().toISOString().split('T')[0];
+
+  return (
+    <Link
+      className='bg-black-tint-70 rounded-t-lg p-2 flex justify-center items-center text-white text-lg font-bold'
+      data-testid="jumpToCur"
+      to={`/${urlParamDate}/${date}`}
+    >
+      <div>{viewChanger.JumpToCurrent[lang]}</div>
+    </Link>
+  );
 };
 
 // english, swedish and finnish are supported

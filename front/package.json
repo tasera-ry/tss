@@ -30,6 +30,7 @@
     "react-day-picker": "^7.4.10",
     "react-dom": "^17.0.2",
     "react-nice-input-password": "^2.7.0",
+    "react-query": "^3.39.3",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-window": "^1.8.6",

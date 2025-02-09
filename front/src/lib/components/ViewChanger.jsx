@@ -1,10 +1,8 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import moment from 'moment';
 import 'moment/locale/sv';
 import { Link } from 'react-router-dom';
-import api from '../../api/api';
 import texts from '../../texts/texts.json';
-import colors from '../../colors.module.scss';
 
 
 export function ViewChanger() {
@@ -16,22 +14,33 @@ export function ViewChanger() {
     const urlParamDate = fullUrl[5];
     if (urlParamDate) return urlParamDate;
 
-    const date = new Date();
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    return moment().format("YYYY-MM-DD");
   }, []);
 
   return (
-    <>
-      <Link key="month" className="link" to={`/monthview/${time}`}>
-        <div>{viewChanger.Month[lang]}</div>
-      </Link>,
-      <Link key="week" className="link" to={`/weekview/${time}`}>
-        <div>{viewChanger.Week[lang]}</div>
-      </Link>,
-      <Link key="day" className="link" to={`/dayview/${time}`}>
-        <div>{viewChanger.Day[lang]}</div>
-      </Link>,
-    </>
+    <div className='flex gap-1'>
+      <Link
+        key="month"
+        className='bg-black-tint-70 rounded-t-lg p-2 flex justify-center items-center text-white text-lg font-bold'
+        to={`/monthview/${time}`}
+      >
+        {viewChanger.Month[lang]}
+      </Link>
+      <Link
+        key="week"
+        className='bg-black-tint-70 rounded-t-lg p-2 flex justify-center items-center text-white text-lg font-bold'
+        to={`/weekview/${time}`}
+      >
+        {viewChanger.Week[lang]}
+      </Link>
+      <Link
+        key="day"
+        className='bg-black-tint-70 rounded-t-lg p-2 flex justify-center items-center text-white text-lg font-bold'
+        to={`/dayview/${time}`}
+      >
+        {viewChanger.Day[lang]}
+      </Link>
+    </div>
   )
-
 };
+ 

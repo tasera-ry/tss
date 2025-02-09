@@ -9,20 +9,20 @@ import ResetPassword from './resetPW/ResetPassword';
 import RenewPassword from './renewPW/RenewPassword';
 import AddInfo from './infoBox/AddInfo';
 import Dayview from './dayview/Dayview';
-import Weekview from './weekview/Weekview';
+import { Weekview } from './weekview/Weekview';
 import Trackview from './trackview/Trackview';
 import Scheduling from './scheduling/Scheduling';
 import RangeOfficerView from './tabletview/rangeofficer';
 import Profile from './profile/profilesettings';
 import UserManagementView from './usermanagement/UserManagementView';
 import TrackCRUD from './edittracks/tracks';
-import Monthview from './monthview/Monthview';
 import Statistics from './statistics/Statistics';
 import EmailSettings from './EmailSettings/EmailSettings';
 import Raffle from './raffle/raffle';
 
 import { Navbar } from '@/lib/components/Navbar';
 import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
+import { Monthview } from '@/monthview/Monthview';
 
 
 export function App() {
@@ -52,8 +52,8 @@ export function App() {
           component={RenewPassword}
         />
         <Route path="/dayview/:date?" component={Dayview} />
-        <Route path="/weekview" component={Weekview} />
-        <Route path="/monthview" component={Monthview} />
+        <Route path="/weekview/:date?" component={Weekview} />
+        <Route path="/monthview/:date?" component={Monthview} />
         <Route
           path="/trackview/:date?/:track?"
           component={Trackview}
