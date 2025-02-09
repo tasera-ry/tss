@@ -3,6 +3,14 @@ import ReactDOM from 'react-dom';
 import { StyledEngineProvider, ThemeProvider, createTheme } from '@mui/material/styles'
 import { App } from './App';
 import { CookiesProvider } from 'react-cookie';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import moment from 'moment';
+
+moment.locale('fi', {
+  week: {
+      dow: 6
+  }
+});
 
 // TO DO: Move this to scss if possible.
 
@@ -14,13 +22,17 @@ const theme = createTheme({
   },
 });
 
+const queryClient = new QueryClient()
+
 ReactDOM.render(
   <StyledEngineProvider injectFirst>
-    <ThemeProvider theme={theme}>
-      <CookiesProvider>
-        <App />
-      </CookiesProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <CookiesProvider>
+          <App />
+        </CookiesProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   </StyledEngineProvider>,
   document.getElementById('root')
 ); 
