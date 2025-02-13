@@ -11,13 +11,12 @@ import EditSharpIcon from '@mui/icons-material/EditSharp';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 import CheckSharpIcon from '@mui/icons-material/CheckSharp';
 import IconButton from '@mui/material/IconButton';
-import translations from '../texts/texts.json';
 import { FixedSizeList as List } from 'react-window';
 import css from './table.module.scss';
-const classes = classNames.bind(css);
+import { t } from '@lingui/core/macro';
 
-const lang = localStorage.getItem('language');
-const { raffle } = translations;
+
+const classes = classNames.bind(css);
 
 const ResultsRow = ({
   result,
@@ -135,10 +134,10 @@ export default function SupervisionResultsTable({
         <TableHead component="div">
           <div className={classes(css.flexRow)}>
             <TableCell component="div" className={classes(css.flexCell)}>
-              {raffle.date[lang]}
+              {t`Date`}
             </TableCell>
             <TableCell component="div" className={classes(css.flexCell)}>
-              {raffle.user[lang]}
+              {t`Association`}
             </TableCell>
             <TableCell component="div" className={classes(css.smallCell)} />
           </div>

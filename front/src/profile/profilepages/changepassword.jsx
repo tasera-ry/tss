@@ -4,13 +4,9 @@ import api from '../../api/api';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import translations from '../../texts/texts.json';
 import css from './ChangePassword.module.scss';
 
 const classes = classNames.bind(css);
-
-const lang = localStorage.getItem('language');
-const { passwordSettings } = translations;
 
 const ChangePassword = ({ username, id }) => {
   const [oldPass, setOldPass] = useState('');
@@ -21,11 +17,11 @@ const ChangePassword = ({ username, id }) => {
     e.preventDefault();
 
     if (oldPass === '' || newPass === '' || confirmPass === '') {
-      alert(passwordSettings.alertFields[lang]);
+      alert(t`Fill all the text fields`);
       return;
     }
     if (confirmPass !== newPass) {
-      alert(passwordSettings.alertPwordMatch[lang]);
+      alert(t`Confirmation doesn't match the new password`);
       return;
     }
 
@@ -33,17 +29,17 @@ const ChangePassword = ({ username, id }) => {
       const secure = window.location.protocol === 'https:';
       await api.signIn(username, oldPass, secure);
     } catch (err) {
-      alert(passwordSettings.alertWrongPword[lang]);
+      alert(t`Old password isn't valid`);
     }
     try {
       const data = await api.getUser(id);
       await api.patchPassword(data[0].id, newPass);
-      alert(passwordSettings.alertSuccess[lang]);
+      alert(t`Password change successful`);
       setOldPass('');
       setNewPass('');
       setConfirmPass('');
     } catch (err) {
-      alert(passwordSettings.alertFail[lang]);
+      alert(t`Password change failed`);
     }
   };
 
@@ -51,19 +47,19 @@ const ChangePassword = ({ username, id }) => {
     {
       name: 'oldpword',
       value: oldPass,
-      label: passwordSettings.old[lang],
+      label: t`Old password`,
       changeValue: (value) => setOldPass(value),
     },
     {
       name: 'newpword',
       value: newPass,
-      label: passwordSettings.new[lang],
+      label: t`New password`,
       changeValue: (value) => setNewPass(value),
     },
     {
       name: 'confirmpword',
       value: confirmPass,
-      label: passwordSettings.confirmNew[lang],
+      label: t`Confirm new password`,
       changeValue: (value) => setConfirmPass(value),
     },
   ];
@@ -72,11 +68,11 @@ const ChangePassword = ({ username, id }) => {
     <div>
       <div className={classes(css.title)}>
         <Typography component="h1" variant="h5">
-          {passwordSettings.title[lang]}
+          {t`Change password`}
         </Typography>
       </div>
       <form
-        className={passwordSettings.title[lang]}
+        className={t`Change password`}
         noValidate
         onSubmit={handleSubmit}
       >

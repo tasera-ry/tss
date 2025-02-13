@@ -7,9 +7,7 @@ import { StyledEngineProvider } from '@mui/material/styles';
 import css from './TrackStatistics.module.scss';
 import { makeStyles } from '@mui/styles';
 import Modal from '@mui/material/Modal';
-import translations from '../texts/texts.json';
-const { trackStatisticsModal } = translations;
-
+import { t } from '@lingui/core/macro'
 
 const classes = classNames.bind(css);
 
@@ -88,9 +86,9 @@ export const TrackStatistics = ({ track, supervision, disabled }) => {
 
   const body = (
     <div style={modalStyle} className={classesStyles.paper}>
-      <h2 id="simple-modal-title">{trackStatisticsModal.messageTitle[lang]}</h2>
+      <h2 id="simple-modal-title">{t`Warning!`}</h2>
       <p id="simple-modal-description">
-        {trackStatisticsModal.message[lang]}
+        {t`Users should not be reduced, Do you really want to reduce the number of users?`}
       </p>
       <div className={classes(css.trackContainer)}>
       <Button
@@ -98,13 +96,13 @@ export const TrackStatistics = ({ track, supervision, disabled }) => {
         style={{ color: 'red' }}
         onClick={() => {changeVisitors(visitors - 1); handleClose();}}
         >
-        {trackStatisticsModal.messageYes[lang]}
+        {t`Yes`}
       </Button>
       <Button
         variant="contained"
         style={{ color: 'green' }}
         onClick={() => handleClose()}>
-        {trackStatisticsModal.messageNo[lang]}
+        {t`No`}
       </Button>
       </div>
     </div>

@@ -14,16 +14,16 @@ import { TableLegends } from '../TableLegends/TableLegends';
 import InfoBox from '../infoBox/InfoBox';
 import { ViewChanger } from '@/lib/components/ViewChanger';
 
-import texts from '../texts/texts.json';
 import css from './Weekview.module.scss';
 import { DaySchedule } from '@/types';
 import { useQuery } from 'react-query';
 import { DateHeader } from '@/lib/components/DateHeader';
+import { msg, t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react';
+
 
 const classes = classNames.bind(css);
 
-const { weekdayShorthand, week } = texts;
-const langId = localStorage.getItem('language');
 
 export const Weekview = () => {
 
@@ -75,6 +75,16 @@ export const Weekview = () => {
 };
 
 
+const tWeekdays = [
+  msg`Mon`,
+  msg`Tue`,
+  msg`Wed`,
+  msg`Thu`,
+  msg`Fri`,
+  msg`Sat`,
+  msg`Sun`
+]
+
 function CalenderHeader({days}: {days: DaySchedule[]}) {
   
   const weekdays = useMemo(() => {
@@ -96,7 +106,7 @@ function CalenderHeader({days}: {days: DaySchedule[]}) {
           className='flex flex-col gap-1 items-center justify-center text-white'
         >
           <span>
-            {weekdayShorthand[day.dayNumber][langId]}
+            <Trans id={tWeekdays[day.dayNumber].id} />
           </span>
           <span id="weekDay">
             {moment(days[day.dayNumber].date).format('DD.MM')}
@@ -167,7 +177,7 @@ function CalenderCell({day}: { day: DaySchedule }) {
           <img
             className={classes(css.exclamation2)}
             src={exclamation}
-            alt={week.Notice[langId]}
+            alt={t`Track has additional information`}
           />
         ) : (
           <br />

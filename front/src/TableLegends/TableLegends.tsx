@@ -1,36 +1,33 @@
 import classNames from 'classnames';
 
 import InfoImg from '@/assets/Info.png';
-import texts from '../texts/texts.json';
-
+import { t } from '@lingui/core/macro'
 
 export function TableLegends() {
-  const fin = localStorage.getItem('language');
-  const { week } = texts;
   return (
     <div className='flex justify-center'>
       <div className="grid grid-cols-3 gap-2 max-w-7xl">
         {/* Open */}
-        <LegendItem label={week.Green[fin]} colorClass="bg-green" />
+        <LegendItem label={t`Range officer present`} colorClass="bg-green" />
         {/* Closed */}
-        <LegendItem label={week.Blue[fin]} colorClass="bg-turquoise" />
+        <LegendItem label={t`Range officer predefined, not confirmed`} colorClass="bg-turquoise" />
         {/* Range officer confirmed */}
-        <LegendItem label={week.Lightgreen[fin]} colorClass="bg-green-light" />
+        <LegendItem label={t`Range officer confirmed, estimated time of arrival`} colorClass="bg-green-light" />
         {/* Range officer on the way */}
-        <LegendItem label={week.Orange[fin]} colorClass="bg-orange" />
+        <LegendItem label={t`Range officer on the way`} colorClass="bg-orange" />
         {/* Range closed */}
-        <LegendItem label={week.Red[fin]} colorClass="bg-red-light" />
+        <LegendItem label={t`Range closed`} colorClass="bg-red-light" />
         {/* Range officer undefined  */}
-        <LegendItem label={week.White[fin]} colorClass="bg-black-tint-05" />
+        <LegendItem label={t`Range officer undefined`} colorClass="bg-black-tint-05" />
         {/* Track has additional information */}
         <div className='flex gap-1 justify-start items-center pl-2.5'>
           <img
             className="size-5"
             src={InfoImg}
-            alt={week.Notice[fin]}
+            alt={t`Track has additional information`}
             />
           <p>
-            {week.Notice[fin]}
+            {t`Track has additional information`}
           </p>
         </div>
       </div>

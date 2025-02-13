@@ -7,10 +7,8 @@ import { Link } from 'react-router-dom';
 import {
   checkSupervisorReservations,
 } from '../../../upcomingsupervisions/LoggedIn';
-import translations from '../../../texts/texts.json';
 import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
-
-const { banner } = translations;
+import { t } from '@lingui/core/macro';
 
 export const SupervisorNotification = () => {
   const lang = localStorage.getItem('language');
@@ -36,12 +34,12 @@ export const SupervisorNotification = () => {
       action={
         <Link to="/profile/supervisions">
           <Button color="inherit" size="small">
-              {banner.Check[lang]}
+              {t`CHECK`}
           </Button>
         </Link>
       }
     >
-      {banner.Notification[lang]}
+      {t`You have unconfirmed range officer reservations!`}
     </Alert>
   );
 };

@@ -13,12 +13,11 @@ import CheckSharpIcon from '@mui/icons-material/CheckSharp';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
-import translations from '../texts/texts.json';
 import css from './table.module.scss';
-const classes = classNames.bind(css);
+import { t } from '@lingui/core/macro';
 
-const lang = localStorage.getItem('language');
-const { raffle } = translations;
+
+const classes = classNames.bind(css);
 
 const EditField = (props) => (
   <TextField
@@ -50,11 +49,11 @@ export default function SupervisorsTable({
         <TableHead>
           <TableRow>
             <TableCell align="center" className={classes(css.mediumCell)}>
-              {raffle.raffled[lang]}
+              {t`In raffle`}
             </TableCell>
-            <TableCell>{raffle.user[lang]}</TableCell>
-            <TableCell align="center">{raffle.members[lang]}</TableCell>
-            <TableCell align="center">{raffle.supervisors[lang]}</TableCell>
+            <TableCell>{t`Association`}</TableCell>
+            <TableCell align="center">{t`Gun license owners`}</TableCell>
+            <TableCell align="center">{t`Rangeofficers`}</TableCell>
             <TableCell className={classes(css.smallCell)} />
           </TableRow>
         </TableHead>

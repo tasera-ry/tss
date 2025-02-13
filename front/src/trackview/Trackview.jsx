@@ -8,39 +8,35 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import api from '../api/api';
 import { dayToString } from '../utils/Utils';
-import translations from '../texts/texts.json';
 import css from './Trackview.module.scss';
 
 const classes = classNames.bind(css);
 
-const lang = localStorage.getItem('language');
-const { trackview } = translations;
-
 const getRangeStatus = (rangeSupervision) => {
   switch (rangeSupervision) {
     case 'present':
-      return { status: 'available', text: trackview.SuperGreen[lang] };
+      return { status: 'available', text: t`Range officer present` };
     case 'absent':
-      return { status: 'unavailable', text: trackview.SuperWhite[lang] };
+      return { status: 'unavailable', text: t`Range officer undefined` };
     case 'confirmed':
-      return { status: 'confirmed', text: trackview.SuperLightGreen[lang] };
+      return { status: 'confirmed', text: t`Range officer confirmed` };
     case 'not confirmed':
-      return { status: 'notConfirmed', text: trackview.SuperBlue[lang] };
+      return { status: 'notConfirmed', text: t`Range officer predefined` };
     case 'en route':
-      return { status: 'enRoute', text: trackview.SuperOrange[lang] };
+      return { status: 'enRoute', text: t`Range officer on the way` };
     default:
-      return { status: 'closed', text: trackview.Red[lang] };
+      return { status: 'closed', text: t`Range officer not present` };
   }
 };
 
 const getTrackAvailability = (trackSupervision) => {
   switch (trackSupervision) {
     case 'present':
-      return { status: 'available', text: trackview.RangeGreen[lang] };
+      return { status: 'available', text: t`Track officer present` };
     case 'absent':
-      return { status: 'unavailable', text: trackview.RangeWhite[lang] };
+      return { status: 'unavailable', text: t`No defined track officer` };
     default:
-      return { status: 'closed', text: trackview.RangeRed[lang] };
+      return { status: 'closed', text: t`Range closed` };
   }
 };
 
@@ -74,7 +70,7 @@ const Trackview = (props) => {
         if (selectedTrack === undefined) {
           setState({
             ...state,
-            name: trackview.TrackNameError[lang],
+            name: t`Track cannot be found.`,
           });
           setVisible({
             date: false,
@@ -157,7 +153,7 @@ const Trackview = (props) => {
       )}
       {visible.infobox && ( // extra info of the track
         <div className={classes(css.preWrap)}>
-          <p>{trackview.Info[lang]}:</p>
+          <p>{t`Info`}:</p>
           <div className={classes(css.infoBox)}>{state.info}</div>
         </div>
       )}
@@ -168,7 +164,7 @@ const Trackview = (props) => {
         }-${state.date.getDate()}`}
       >
         <ArrowBackIcon />
-        {trackview.DayviewLink[lang]}
+        {t`Back to dayview`}
       </Link>
     </div>
   );

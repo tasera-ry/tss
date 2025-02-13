@@ -2,8 +2,8 @@ import moment from 'moment';
 import 'moment/locale/sv';
 import { Link } from 'react-router-dom';
 import api from '../api/api';
-import texts from '../texts/texts.json';
 import colors from '../colors.module.scss';
+import { t } from '@lingui/macro';
 
 export const dateToString = (d) => {
   const month = d.getMonth() + 1;
@@ -77,10 +77,8 @@ export const checkColor = (days, oneDay) => {
 };
 
 
-const { viewChanger } = texts;
 
 export function JumpToCurrent() {
-  const lang = localStorage.getItem('language');
 
   const fullUrl = window.location.href.split('/');
   const urlParamDate = fullUrl[4];
@@ -92,7 +90,7 @@ export function JumpToCurrent() {
       data-testid="jumpToCur"
       to={`/${urlParamDate}/${date}`}
     >
-      <div>{viewChanger.JumpToCurrent[lang]}</div>
+      <div>{t`Today`}</div>
     </Link>
   );
 };

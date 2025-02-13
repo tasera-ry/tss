@@ -8,16 +8,17 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 // Moment for date handling
 import moment from 'moment';
-import { dayToString, JumpToCurrent } from '../utils/Utils';
+import { JumpToCurrent } from '../utils/Utils';
 import info from '@/assets/Info.png';
 import api from '../api/api';
 import InfoBox from '../infoBox/InfoBox';
-import translations from '../texts/texts.json';
 import css from './Dayview.module.scss';
 import ButtonComponent from '../ButtonComponent/ButtonComponent';
 import { ViewChanger } from '@/lib/components/ViewChanger';
 import { useQuery } from 'react-query';
 import { DateHeader } from '@/lib/components/DateHeader';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 
 const classes = classNames.bind(css);
 
@@ -25,9 +26,6 @@ export function Dayview() {
 
   const history = useHistory();
   const { date: dateParam } = useParams<{ date: string}>();
-
-  const lang = localStorage.getItem('language');
-  const { dayview } = translations;
 
   const targetDate = useMemo(() => {
     return dateParam ?? moment().format('YYYY-MM-DD');
@@ -46,11 +44,14 @@ export function Dayview() {
     history.push(`/dayview/${moment(targetDate).add(1, 'day').format('YYYY-MM-DD')}`)
   };
 
-  const openHours = useMemo(() => {
+  const opensAt = useMemo(() => {
     if (!data) return undefined;
-    const opensAt = moment(data.open, 'HH:mm').format('H.mm');
-    const closesAt = moment(data.close, 'HH:mm').format('H.mm');
-    return `${dayview.OpenHours[lang]}: ${opensAt}-${closesAt}`;
+    return moment(data.open, 'HH:mm').format('H.mm');
+  }, [data])
+
+  const closesAt = useMemo(() => {
+    if (!data) return undefined;
+    return moment(data.close, 'HH:mm').format('H.mm');
   }, [data])
 
   return (
@@ -59,8 +60,8 @@ export function Dayview() {
       <div className={classes(css.dayviewContainer)}>
         <DateHeader targetDate={targetDate} onPrevious={previousDayClick} onNext={nextDayClick} />
         {data && <OfficerBanner rangeSupervision={data.rangeSupervision} />}
-        {openHours && <h2 className={classes(css.headerText)}>
-          {openHours}
+        {data && <h2 className={classes(css.headerText)}>
+          <Trans>Opening hours: {opensAt}-{closesAt}</Trans>
         </h2>}
         {/* Whole view */}
         <div className={classes(css.dayviewBigContainer)}>
@@ -84,7 +85,7 @@ export function Dayview() {
           to={`/weekview/${targetDate}`}
         >
           <ArrowBackIcon />
-          {dayview.WeekviewLink[lang]}
+          <Trans>Back to weekview</Trans>
         </Link>
 
         <hr />
@@ -112,7 +113,6 @@ function TrackList({ tracks, date }) {
 
 function TrackBox({ track, date }) {
   const lang = localStorage.getItem('language');
-  const { dayview } = translations;
 
   const color = useMemo(() => {
     if (track.state === 'present') {
@@ -142,7 +142,7 @@ function TrackBox({ track, date }) {
         <img
           className="size-11 self-center mt-auto"
           src={info}
-          alt={dayview.Notice[lang]}
+          alt={t`Track has additional information`}
         />
       )}
     </Link>
@@ -151,22 +151,19 @@ function TrackBox({ track, date }) {
 
 
 function OfficerBanner({ rangeSupervision }) {
-  const lang = localStorage.getItem('language');
-  const { dayview } = translations;
-
   const { text, color } = useMemo(() => {
     if (rangeSupervision === 'present') {
-      return { text: dayview.Green[lang], color: css.greenB };
+      return { text: t`Range officer present`, color: css.greenB };
     } else if (rangeSupervision === 'absent') {
-      return { text: dayview.White[lang], color: css.whiteB };
+      return { text: t`Range officer undefined`, color: css.whiteB };
     } else if (rangeSupervision === 'confirmed') {
-      return { text: dayview.Lightgreen[lang], color: css.lightGreenB };
+      return { text: t`Range officer confirmed`, color: css.lightGreenB };
     } else if (rangeSupervision === 'not confirmed') {
-      return { text: dayview.Blue[lang], color: css.blueB };
+      return { text: t`Range officer predefined`, color: css.blueB };
     } else if (rangeSupervision === 'en route') {
-      return { text: dayview.Orange[lang], color: css.yellowB };
+      return { text: t`Range officer on the way`, color: css.yellowB };
     }
-    return { text: dayview.Red[lang], color: css.redB };
+    return { text: t`Range closed`, color: css.redB };
   }, [])
 
   return <h2 className={classes(css.info, color)}>{text}</h2>;
@@ -174,22 +171,21 @@ function OfficerBanner({ rangeSupervision }) {
 
 function Legends() {
   const lang = localStorage.getItem('language');
-  const { dayview } = translations;
 
   return (
     <div className='flex justify-center'>
       <div className='grid grid-cols-2 gap-2'>
-        <LegendItem label={dayview.Open[lang]} colorClass={css.greenB} />
-        <LegendItem label={dayview.Closed[lang]} colorClass={css.redB} />
-        <LegendItem label={dayview.NotAvailable[lang]} colorClass={css.whiteB} />
+        <LegendItem label={t`Open`} colorClass={css.greenB} />
+        <LegendItem label={t`Closed`} colorClass={css.redB} />
+        <LegendItem label={t`No track officer available`} colorClass={css.whiteB} />
         <div className='flex gap-1 justify-start items-center pl-2.5'>
           <img
             className="size-5"
             src={info}
-            alt={dayview.Notice[lang]}
+            alt={t`Track has additional information`}
           />
           <p>
-            {dayview.Notice[lang]}
+            {t`Track has additional information`}
           </p>
         </div>
       </div>

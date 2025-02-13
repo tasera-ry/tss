@@ -7,7 +7,6 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import { useHistory } from 'react-router-dom';
-import translations from '../texts/texts.json';
 import css from './ResetPassword.module.scss';
 
 const classes = classNames.bind(css);
@@ -18,8 +17,6 @@ const ResetPasswordForm = ({
   isWaiting,
   onSubmit,
 }) => {
-  const lang = localStorage.getItem('language');
-  const { resetPW } = translations;
   const history = useHistory();
 
   const [email, setEmail] = useState('');
@@ -27,7 +24,7 @@ const ResetPasswordForm = ({
   return (
     <>
       <Typography component="h1" variant="h5" align="center">
-        {resetPW.ResetPassword[lang]}
+        {t`Input your e-mail address in order to reset your password`}
       </Typography>
       <form noValidate className={classes(css.wideForm)}>
         <TextField
@@ -36,9 +33,9 @@ const ResetPasswordForm = ({
           required
           fullWidth
           id="email"
-          label={resetPW.eMail[lang]}
+          label={t`E-mail`}
           name="email"
-          autoComplete={resetPW.eMail[lang]}
+          autoComplete={t`E-mail`}
           autoFocus
           value={email}
           error={showNullError || showError}
@@ -51,13 +48,13 @@ const ResetPasswordForm = ({
 
         {showNullError && (
           <Typography align="center" className={classes(css.error)}>
-            {resetPW.NullErr[lang]}
+            {t`E-mail address is required!`}
           </Typography>
         )}
 
         {showError && (
           <Typography align="center" className={classes(css.error)}>
-            {resetPW.InvErr[lang]}
+            {t`Invalid e-mail address!`}
           </Typography>
         )}
 
@@ -72,7 +69,7 @@ const ResetPasswordForm = ({
             variant="contained"
             className={classes(css.submitButton, css.acceptButton)}
           >
-            {resetPW.ResetBtn[lang]}
+            {t`Reset`}
           </Button>
         )}
       </form>
@@ -81,7 +78,7 @@ const ResetPasswordForm = ({
         fullWidth
         className={classes(css.secondaryButton)}
       >
-        {resetPW.Back[lang]}
+        {t`Go back`}
       </Button>
     </>
   );

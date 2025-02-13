@@ -14,17 +14,13 @@ import { TableLegends } from '../TableLegends/TableLegends';
 import InfoBox from '../infoBox/InfoBox';
 import { ViewChanger } from '@/lib/components/ViewChanger';
 
-// Translation
-import texts from '../texts/texts.json';
-
 import smallInfoIcon from '@/assets/Small-info.png';
 import { useQuery } from 'react-query';
 import api from '@/api/api';
 import { DaySchedule } from '@/types';
 import { DateHeader } from '@/lib/components/DateHeader';
-
-const { weekdayShorthand, month } = texts; // eslint-disable-line
-const fin = localStorage.getItem('language');
+import { msg, t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react';
 
 export function Monthview()  {
 
@@ -98,20 +94,25 @@ export function Monthview()  {
   );
 }
 
+
+const weekdays = [
+  msg`Mon`,
+  msg`Tue`,
+  msg`Wed`,
+  msg`Thu`,
+  msg`Fri`,
+  msg`Sat`,
+  msg`Sun`
+]
+
+
 function TableHeader() {
-  
-  const langId = localStorage.getItem('language'); // eslint-disable-line
-
-  const weekdays = useMemo(() => {
-    return Array.from({ length: 7 }, (_, i) => weekdayShorthand[i]);
-  }, []);
-
   return (
     <thead>
       <tr className='text-white'>
-        <th key="weekLabel">{month.weekNumber[langId]}</th>
+        <th key="weekLabel">{t`Wk`}</th>
         {weekdays.map((day) => (
-          <th key={`weekDayLabel-${day}`}>{day[langId]}</th>
+          <th key={`weekDayLabel-${day.id}`}><Trans id={day.id} /></th>
         ))}
       </tr>
     </thead>
@@ -201,7 +202,7 @@ function TableCell({ day }: TableCellProps) {
         <img
           className="absolute top-1 right-1"
           src={smallInfoIcon}
-          alt={month.Notice[fin]}
+          alt={t`Track has additional information`}
         />
       )}
     </td>

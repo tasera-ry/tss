@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import classNames from 'classnames';
 
 // Material UI components
@@ -13,8 +13,8 @@ import { useHistory } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import colors from '../colors.module.scss';
 import api from '../api/api';
-import translations from '../texts/texts.json';
 import css from './SignIn.module.scss';
+import { t } from '@lingui/core/macro';
 
 const classes = classNames.bind(css);
 
@@ -24,8 +24,6 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [mistake, setMistake] = useState(false);
   const history = useHistory();
-  const { signin } = translations;
-  const lang = localStorage.getItem('language');
   const [cookies, setCookie] = useCookies(['username', 'role']); // eslint-disable-line
   const secure = window.location.protocol === 'https:';
 
@@ -60,7 +58,7 @@ const SignIn = () => {
             onClick={() => history.push('/')}
           />
           <Typography component="h1" variant="h5">
-            {signin.SignIn[lang]}
+            {t`Sign In`}
           </Typography>
         </div>
         <form noValidate className={classes(css.wideForm)}>
@@ -72,14 +70,16 @@ const SignIn = () => {
             fullWidth
             id="email"
             name="username"
-            label={signin.Name[lang]}
-            autoComplete={signin.Name[lang]}
+            label={t`Username`}
+            autoComplete={t`Username`}
             value={name}
             error={mistake}
             onInput={(e) => setName(e.target.value)}
             className={classes(css.text)}
-            inputProps={{
-              'data-testid': 'nameField',
+            slotProps={{
+              input: {
+                'data-testid': 'nameField',
+              }
             }}
           />
           <TextField
@@ -89,7 +89,7 @@ const SignIn = () => {
             fullWidth
             id="password"
             name="password"
-            label={signin.Password[lang]}
+            label={t`Password`}
             type="password"
             autoComplete="current-password"
             value={password}
@@ -102,7 +102,7 @@ const SignIn = () => {
           />
           {mistake && (
           <Typography align="center" className={classes(css.error)}>
-            {signin.Helper[lang]}
+            {t`Wrong username or password`}
           </Typography>
           )}
           <Button
@@ -111,14 +111,14 @@ const SignIn = () => {
             variant="contained"
             className={classes(css.submitButton, css.acceptButton)}
           >
-            {signin.LogIn[lang]}
+            {t`Log in`}
           </Button>
           <Button
             onClick={() => history.push('/signin/reset-password')}
             fullWidth
             className={classes(css.secondaryButton)}
           >
-            {signin.ForgotPassword[lang]}
+            {t`Forgot password?`}
           </Button>
         </form>
       </div>

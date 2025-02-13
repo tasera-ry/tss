@@ -3,14 +3,7 @@ import ButtonComponent from './ButtonComponent';
 import api from '../api/api';
 
 vi.mock('../api/api');
-vi.mock('../texts/texts.json', () => ({
-  default: {
-    devicesList: {
-    ReservedStatus: { en: "reserved" },
-    FreeStatus: { en: "free" }
-    }
-  }
-}));
+
 
 describe('ButtonComponent', () => {
   beforeEach(() => {
@@ -19,7 +12,6 @@ describe('ButtonComponent', () => {
       { id: 2, device_name: 'Device 2', status: 'reserved' }
     ];
     api.getAllDevices.mockResolvedValue(devices);
-    localStorage.setItem('language', 'en');
   });
 
   it('fetches and displays devices successfully', async () => {

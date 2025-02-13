@@ -40,7 +40,7 @@ import {
 } from '../utils/Utils';
 import api from '../api/api';
 // Translation
-import data from '../texts/texts.json';
+import { t } from '@lingui/core/macro';
 
 const lang = getLanguage();
 moment.locale(lang);
@@ -337,9 +337,9 @@ function Scheduling(props) {
     socket.emit('rangeUpdate', {
       status: 'not confirmed',
       color: colors.turquoise,
-      text: sched.SuperBlue[lang],
+      text: t`Range officer predefined`,
     });
-    updateSupervisor('not confirmed', colors.turquoise, sched.SuperBlue[lang]);
+    updateSupervisor('not confirmed', colors.turquoise, t`Range officer predefined`);
   };
 
   // Emits a 'rangeUpdate' event with the status 'confirmed'
@@ -348,9 +348,9 @@ function Scheduling(props) {
     socket.emit('rangeUpdate', {
       status: 'confirmed',
       color: colors.greenLight,
-      text: sched.SuperLightGreen[lang],
+      text: t`Range officer confirmed`,
     });
-    updateSupervisor('confirmed', colors.greenLight, sched.SuperLightGreen[lang]);
+    updateSupervisor('confirmed', colors.greenLight, t`Range officer confirmed`);
   };  
 
   // Emits a 'rangeUpdate' event with the status 'en route'
@@ -359,9 +359,9 @@ function Scheduling(props) {
     socket.emit('rangeUpdate', {
       status: 'en route',
       color: colors.orange,
-      text: sched.SuperOrange[lang],
+      text: t`Range officer on the way`,
     });
-    updateSupervisor('en route', colors.orange, sched.SuperOrange[lang]);
+    updateSupervisor('en route', colors.orange, t`Range officer on the way`);
   };
 
   // Emits a 'rangeUpdate' event with the status 'present'
@@ -370,9 +370,9 @@ function Scheduling(props) {
     socket.emit('rangeUpdate', {
       status: 'present',
       color: colors.green,
-      text: sched.SuperGreen[lang],
+      text: t`Range officer present`,
     });
-    updateSupervisor('present', colors.green, sched.SuperGreen[lang]);
+    updateSupervisor('present', colors.green, t`Range officer present`);
   };
 
   // Parses and formats the time user entered and set it as arrival time
@@ -397,12 +397,12 @@ function Scheduling(props) {
           arrivalTime,
         )
         // If the arrival time is successfully updated, set a success message
-        setToastMessage(sched.SuccessfulUpdate[lang]);
+        setToastMessage(t`Estimated time of arrival updated`);
         setToastSeverity('success');
         setToast(true);
         } // If there is an error, set an error message
           catch(error) {
-            setToastMessage(sched.FailedUpdate[lang]);
+            setToastMessage(t`Failed to update estimated time of arrival`);
             setToastSeverity('error');
             setToast(true);
         }
@@ -435,18 +435,18 @@ function Scheduling(props) {
       ).then(
         () => {
           setToast(true);
-          setToastMessage(sched.Success[lang]);
+          setToastMessage(t`Update successful`);
           setToastSeverity('success');
         },
         (error) => {
           console.error(`Update rejection called: ${error.message}`);
           if (error.message === 'Range officer enabled but no id') {
             setToast(true);
-            setToastMessage(sched.Warning[lang]);
+            setToastMessage(t`Range officer active with no selection`);
             setToastSeverity('warning');
           } else {
             setToast(true);
-            setToastMessage(sched.Error[lang]);
+            setToastMessage(t`Something went wrong`);
             setToastSeverity('error');
           }
         },
@@ -572,7 +572,7 @@ function Scheduling(props) {
             <FormControl component="fieldset" style={{padding:'5px'}}>
               <FormLabel component="legend">{tracks[key].name}</FormLabel>
               <div className="trackSwitchRow">
-                <div>{sched.Closed[lang]}</div>
+                <div>{t`Track closed`}</div>
                 <CustomSwitchRed
                   disabled={!available}
                   checked={trackStates[tracks[key].id] === 'closed'}
@@ -590,7 +590,7 @@ function Scheduling(props) {
                 maxRows={3}
                 onChange={handleNotice}
                 value={tracks[key].notice !== null ? tracks[key].notice : ''}
-                placeholder={sched.Notice[lang]}
+                placeholder={t`Details`}
                 style={{ backgroundColor: 'blackTint10' }}
                 maxLength={255}
               />
@@ -635,13 +635,13 @@ function Scheduling(props) {
     return (
       <FormControl>
         <InputLabel id="chooserangeSupervisorLabel">
-          {sched.Select[lang]}
+          {t`Select range officer`}
         </InputLabel>
         <Select
           disabled={!available}
           {...(disabled && { disabled: true })}
           labelId="chooserangeSupervisorLabel"
-          label={sched.Select[lang]}
+          label={t`Select range officer`}
           name="rangeSupervisorId"
           value={rangeSupervisorId || ''}
           onChange={handleValueChange}
@@ -944,25 +944,25 @@ function Scheduling(props) {
       setArrivalTime(response.arrivingAt);
 
       if (response.rangeSupervision === 'present') {
-        setStatusText(sched.SuperGreen[lang]);
+        setStatusText(t`Range officer present`);
         setStatusColor(colors.green);
       } else if (response.rangeSupervision === 'en route') {
-        setStatusText(sched.SuperOrange[lang]);
+        setStatusText(t`Range officer on the way`);
         setStatusColor(colors.orange);
       } else if (response.rangeSupervision === 'absent') {
-        setStatusText(sched.SuperWhite[lang]);
+        setStatusText(t`Range officer undefined`);
         setStatusColor(colors.white);
       } else if (response.rangeSupervision === 'closed') {
-        setStatusText(sched.Red[lang]);
+        setStatusText(t`Closed`);
         setStatusColor(colors.redLight);
       } else if (response.rangeSupervision === 'confirmed') {
-        setStatusText(sched.SuperLightGreen[lang]);
+        setStatusText(t`Range officer confirmed`);
         setStatusColor(colors.greenLight);
       } else if (response.rangeSupervision === 'not confirmed') {
-        setStatusText(sched.SuperBlue[lang]);
+        setStatusText(t`Range officer predefined`);
         setStatusColor(colors.turquoise);
       } else {
-        setStatusText(sched.SuperWhite[lang]);
+        setStatusText(t`Range officer undefined`);
         setStatusColor(colors.white);
       }
 
@@ -1002,7 +1002,7 @@ function Scheduling(props) {
         </Backdrop>
       </Modal>
 
-      <h1 className ="heading">{sched.Schedule[lang]}</h1>
+      <h1 className ="heading">{t`Schedules`}</h1>
 
       {/* Section for selecting date, setting range officer status, and open/close times of the tracks*/}
       <Box className="firstSection">
@@ -1018,7 +1018,7 @@ function Scheduling(props) {
           <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={lang} key={datePickerKey}>
             <DatePicker
               closeOnSelect
-              label={sched.Day[lang]}
+              label={t`Choose date`}
               value={moment(date)}
               onChange={(newDate) => handleDateChange(newDate)}
               onAccept={(newDate) => handleDatePickChange(newDate)}
@@ -1039,7 +1039,7 @@ function Scheduling(props) {
         <FormControl component="fieldset" style={{padding:'5px'}}>
           <div className="options">
             <div className="topRow">
-            <div className="text">{sched.Open[lang]}</div>
+            <div className="text">{t`Open`}</div>
 
             <CustomSwitchGreen
               checked={available}
@@ -1050,14 +1050,14 @@ function Scheduling(props) {
             </div>
             <hr />
             <div className="middleRow">
-              <div className="text">{sched.OpenHours[lang]}</div>
+              <div className="text">{t`Opening hours`}</div>
               <div className='timePicker'>
                 <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="fi">
                   <TimePicker
                     disabled={!available}
                     closeOnSelect
                     ampm={false}
-                    label={sched.Start[lang]}
+                    label={t`Start`}
                     value={moment(open)}
                     onChange={handleTimeStartChange}
                     minutesStep={5}
@@ -1071,7 +1071,7 @@ function Scheduling(props) {
                     disabled={!available}
                     closeOnSelect
                     ampm={false}
-                    label={sched.Stop[lang]}
+                    label={t`End`}
                     value={moment(close)}
                     onChange={handleTimeEndChange}
                     minutesStep={5}
@@ -1083,7 +1083,7 @@ function Scheduling(props) {
             </div>
             <hr />
             <div className="bottomRow">
-                <div className="text">{sched.Rangeofficer[lang]}</div>
+                <div className="text">{t`Range officer`}</div>
                 <CustomSwitchGreen
                   disabled={!available}
                   checked={rangeSupervisorSwitch}
@@ -1092,7 +1092,7 @@ function Scheduling(props) {
                   data-testid="rangeSupervisorSwitch"
                 />
             </div> 
-            {rangeSupervisorSwitch && (
+            {rangeSupervisorSwitch && ( 
               <div className='selectOfficer'>{createSupervisorSelect()}</div>
             )}  
           </div>
@@ -1104,7 +1104,7 @@ function Scheduling(props) {
                 </div>
                   {cookies.role === 'superuser' && (
                     <div className="expandMore">
-                      <span className="edit">{sched.Edit[lang]}</span>
+                      <span className="edit">{t`Edit`}</span>
                       <Button
                         disabled={!available || !rangeSupervisorSwitch || !rangeSupervisorId}
                         className="expandMoreButton"
@@ -1120,40 +1120,40 @@ function Scheduling(props) {
             {expand && (
               <Box>
                 <div className="dropDownContent">
-                  <div className="helperText"><p>{sched.Helper[lang]}</p></div>
+                  <div className="helperText"><p>{t`Edit range officer status by choosing color`}</p></div>
                   <div className="statusButtons">
                     <Button
                       className="notConfirmed"
                       variant="contained"
                       style={{ backgroundColor: colors.turquoise }}
                       onClick={handleNotConfirmed}>
-                      {sched.Blue[lang]}
+                      {t`Not confirmed`}
                     </Button>
                     <Button
                       className="confirmed"
                       variant="contained"
                       style={{ backgroundColor: colors.greenLight }}
                       onClick={handleConfirmed}>
-                      {sched.LightGreen[lang]}
+                      {t`Confirmed`}
                     </Button>
                     <Button
                       className="onTheWay"
                       variant="contained"
                       style={{ backgroundColor: colors.orange }}
                       onClick={handleEnRouteClick}>
-                      {sched.Orange[lang]}
+                      {t`On the way`}
                     </Button>
                     <Button
                       className="present"
                       variant="contained"
                       style={{ backgroundColor: colors.green }}
                       onClick={handlePresentClick}>
-                      {sched.Green[lang]}
+                      {t`Present`}
                     </Button>
                   </div>
                   <hr />
                   <div className="eta">
-                    <p>{sched.AddETA[lang]}:</p>
+                    <p>{t`Add estimated time of arrival`}:</p>
                     <TextField
                       disabled={statusColor === colors.green}
                       id="time"
@@ -1167,7 +1167,7 @@ function Scheduling(props) {
                       className="confirmTimeButton"
                       variant="contained"
                       onClick={confirmArrivalTime}
-                    >{sched.ConfirmTime[lang]}
+                    >{t`Confirm time`}
                     </Button>
                   </div>
                 </div>
@@ -1178,7 +1178,7 @@ function Scheduling(props) {
 
       {/* Section for setting track-specific open/close statuses */}
       <Box className="secondSection">
-        <div><h3 className="headingTracks">{sched.ManageTracks[lang]}</h3></div>
+        <div><h3 className="headingTracks">{t`Manage shooting tracks`}</h3></div>
         <div className="tracks">{createTrackList()}</div>
         <div className="buttons">
           <Button
@@ -1190,7 +1190,7 @@ function Scheduling(props) {
             style={{ color: 'black', backgroundColor: '#FFFFFF'}}
             data-testid="openAll"
           >
-            {sched.OpenAll[lang]}
+            {t`Open All`}
           </Button>
           
           <Button
@@ -1202,18 +1202,18 @@ function Scheduling(props) {
             style={{ color: 'black', backgroundColor: '#c97b76' }}
             data-testid="closeAll"
           >
-            {sched.CloseAll[lang]}
+            {t`Close All`}
           </Button>
         </div>
       </Box>
 
       {/* Section for Advanced options */}
       <Box className="thirdSection">
-        <div><h3 className="headingAdvanced">{sched.AdvancedOptions[lang]}</h3></div>
+        <div><h3 className="headingAdvanced">{t`Advanced options`}</h3></div>
         <FormControl component="fieldset" style={{padding:'5px'}}>
           <Box className="repeat">
             <div className="daily">
-              {sched.RepeatDaily[lang]}
+              {t`Repeat daily`}
               <CustomSwitchGreen
                 disabled={!available}
                 checked={daily}
@@ -1224,7 +1224,7 @@ function Scheduling(props) {
             </div>
             <hr />
             <div className="weekly">
-              {sched.RepeatWeekly[lang]}
+              {t`Repeat weekly`}
               <CustomSwitchGreen
                 disabled={!available}
                 checked={weekly}
@@ -1235,7 +1235,7 @@ function Scheduling(props) {
             </div>
             <hr />
             <div className="monthly">
-              {sched.RepeatMonthly[lang]}
+              {t`Repeat monthly`}
               <CustomSwitchGreen
                 disabled={!available}
                 checked={monthly}
@@ -1246,7 +1246,7 @@ function Scheduling(props) {
             </div>
           </Box>
             <Box className="repeatCount">
-              {sched.Amount[lang]}
+              {t`End repeat after`}
               <TextField
                 disabled={!available}
                 name="repeatCount"
@@ -1265,7 +1265,7 @@ function Scheduling(props) {
             onClick={saveChanges}
             style={{ backgroundColor: '#d1ccc2' }}
           >
-            {sched.Save[lang]}
+            {t`Save changes`}
           </Button>
       
           <div className="toast">

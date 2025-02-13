@@ -11,9 +11,13 @@
     "eject": "react-scripts eject",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "lingui:extract": "lingui extract",
+    "lingui:compile": "lingui compile"
   },
   "dependencies": {
+    "@lingui/core": "^5.2.0",
+    "@lingui/react": "^5.2.0",
     "@mui/icons-material": "^6.1.6",
     "@mui/lab": "^6.0.0-beta.14",
     "@mui/material": "^6.1.6",
@@ -40,6 +44,8 @@
     "tailwindcss": "^4.0.2"
   },
   "devDependencies": {
+    "@lingui/babel-plugin-lingui-macro": "^5.2.0",
+    "@lingui/vite-plugin": "^5.2.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^10.4.9",
     "@testing-library/user-event": "^7.2.1",

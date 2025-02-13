@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styles from './ButtonComponent.module.scss';
 import Button from '@mui/material/Button';
 import api from '../api/api';
-import translations from '../texts/texts.json';
+import { t } from '@lingui/core/macro';
 
 // Class for buttoncomponent for dayview.js to see states of loan devices
 class ButtonComponent extends Component {
@@ -85,8 +85,6 @@ class ButtonComponent extends Component {
 
     render() {
         //Updates loan devices on a grid in dayview.js
-        const lang = localStorage.getItem('language');
-        const { devicesList } = translations;
         const { items, hoveredDeviceId } = this.state;
 
         if (items.length > 0) {
@@ -102,7 +100,7 @@ class ButtonComponent extends Component {
                             disableElevation
                             >
                                 {hoveredDeviceId === device.id || device.toggleText
-                                    ? (device.status === 'reserved' ? devicesList.ReservedStatus[lang] : devicesList.FreeStatus[lang])
+                                    ? (device.status === 'reserved' ? t`Reserved` : t`Free`)
                                     : device.device_name}
                             </Button>
                         </div>

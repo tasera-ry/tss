@@ -11,19 +11,16 @@ import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 
-import translations from '../texts/texts.json';
 import RaffleDatePicker from './RaffleDatePicker';
 import SupervisorsTable from './SupervisorsTable';
 import { dateToString, validateLogin } from '../utils/Utils';
 import SupervisionResultsTable from './SupervisionResultsTable';
 import SupervisionAmountsTable from './SupervisionAmountsTable';
 import css from './raffle.module.scss';
+import { t } from '@lingui/core/macro';
+
 
 const classes = classNames.bind(css);
-
-const lang = localStorage.getItem('language');
-const { nav } = translations;
-const { raffle } = translations;
 
 const supervisionAmounts = (raffleResults, supervisors) => {
   const userMap = new Map();
@@ -71,7 +68,7 @@ export default function Raffle() {
       } catch (err) {
         setToast({
           open: true,
-          msg: raffle.loadError[lang],
+          msg: t`Could not load associations`,
           severity: 'error',
         });
       } finally {
@@ -91,7 +88,7 @@ export default function Raffle() {
 
   const handleSubmitUser = async (user_id, data) => {
     if (data.members < 0 || data.associations < 0) {
-      setToast({ open: true, msg: raffle.valueError[lang], severity: 'error' });
+      setToast({ open: true, msg: t`Values cannot be negative`, severity: 'error' });
       return;
     }
     setIsLoading({ ...isLoading, table: true });
@@ -104,14 +101,14 @@ export default function Raffle() {
       });
       setToast({
         open: true,
-        msg: raffle.updateSuccess[lang],
+        msg: t`Organization updated`,
         severity: 'success',
       });
       setSupervisors(updatedSupervisors);
     } catch (err) {
       setToast({
         open: true,
-        msg: raffle.updateError[lang],
+        msg: t`Association update failed`,
         severity: 'error',
       });
     } finally {
@@ -131,7 +128,7 @@ export default function Raffle() {
     } catch (err) {
       setToast({
         open: true,
-        msg: raffle.raffleError[lang],
+        msg: t`The execution of the raffle failed`,
         severity: 'error',
       });
     } finally {
@@ -152,7 +149,7 @@ export default function Raffle() {
 
       setToast({
         open: true,
-        msg: raffle.saveSuccess[lang],
+        msg: t`Results saved`,
         severity: 'success',
       });
       setSelectedDays([]);
@@ -160,7 +157,7 @@ export default function Raffle() {
     } catch (err) {
       setToast({
         open: true,
-        msg: raffle.saveError[lang],
+        msg: t`The saving of the results failed`,
         severity: 'error',
       });
     } finally {
@@ -177,9 +174,9 @@ export default function Raffle() {
   return (
     <StyledEngineProvider injectFirst>
       <div className={classes(css.members)}>
-        <h1>{nav.Raffle[lang]}</h1>
+        <h1>{t`Raffle supervisors`}</h1>
         <div className={classes(css.tableHeader)}>
-          {raffle.tableTitle[lang]}
+          {t`Associations`}
           <IconButton onClick={() => setSupervisorsOpen(!supervisorsOpen)}>
             {supervisorsOpen ? <ArrowDropDownIcon /> : <ArrowDropUpIcon />}
           </IconButton>
@@ -195,7 +192,7 @@ export default function Raffle() {
         )}
         {supervisors.length !== 0 && (
           <div className={classes(css.raffleForm)}>
-            <h2>{raffle.dates[lang]}</h2>
+            <h2>{t`Choose dates for the raffle`}</h2>
             <RaffleDatePicker
               selectedDays={selectedDays}
               setSelectedDays={setSelectedDays}
@@ -208,7 +205,7 @@ export default function Raffle() {
                   disabled={selectedDays.length === 0}
                   onClick={handleSubmitRaffle}
                 >
-                  {raffle.raffle[lang]}
+                  {t`Raffle supervisors`}
                 </Button>
               ) : (
                 <CircularProgress />
@@ -218,7 +215,7 @@ export default function Raffle() {
         )}
         {raffleResults.length > 0 && (
           <>
-            <h2>{raffle.results[lang]}</h2>
+            <h2>{t`Raffle results`}</h2>
             <div className={classes(css.raffleResults)}>
               <SupervisionResultsTable
                 results={raffleResults}
@@ -236,7 +233,7 @@ export default function Raffle() {
                 disabled={selectedDays.length === 0}
                 onClick={handleSubmitResults}
               >
-                {raffle.save[lang]}
+                {t`Save results`}
               </Button>
             ) : (
               <CircularProgress />

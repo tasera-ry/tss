@@ -9,7 +9,6 @@ import Snackbar from '@mui/material/Snackbar';
 import lodash from 'lodash';
 // Axios for calls to backend
 import axios from 'axios';
-import l10nLines from '../texts/texts.json';
 // Token validation
 import { validateLogin } from '../utils/Utils';
 import {
@@ -27,6 +26,8 @@ import {
   Alert,
 } from '@mui/material';
 import { Add, Edit, Delete, Save, Cancel } from '@mui/icons-material';
+import { t } from '@lingui/core/macro';
+
 
 const RequestStatusAlert = ({ statusSetter, requestStatus, text }) => {
   if (requestStatus === null) {
@@ -48,8 +49,6 @@ const TrackTable = ({
   setRequestStatus,
   setRequestText,
   setRefresh,
-  l10n,
-  lang,
 }) => {
   const [editingRow, setEditingRow] = useState(null);
   const [newRow, setNewRow] = useState({ name: '', description: '', short_description: '' });
@@ -80,12 +79,12 @@ const TrackTable = ({
       );
       setTrackData(updatedData);
       setRequestStatus('success');
-      setRequestText(l10n.rowUpdateSuccess[lang]);
+      setRequestText(t`Track updated`	);
       setEditingRow(null);
       setRefresh(true);
     } catch (e) {
       setRequestStatus('error');
-      setRequestText(l10n.rowUpdateFail[lang]);
+      setRequestText(t`Track update failed`);
     }
   };
 
@@ -95,10 +94,10 @@ const TrackTable = ({
       await axios.delete(`/api/track/${trackInfo.id}`);
       setTrackData(trackData.filter((_, i) => i !== index));
       setRequestStatus('success');
-      setRequestText('Rata poistettu');
+      setRequestText(t`Track deleted`);
     } catch (e) {
       setRequestStatus('error');
-      setRequestText('Radan poisto epäonnistui');
+      setRequestText(t`Track deletion failed`);
     }
   };
 
@@ -107,10 +106,10 @@ const TrackTable = ({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>{l10n.tableHeaderName[lang]}</TableCell>
-            <TableCell>{l10n.tableHeaderDescription[lang]}</TableCell>
-            <TableCell>{l10n.tableHeaderShort[lang]}</TableCell>
-            <TableCell>{l10n.tableHeaderActions[lang]}</TableCell>
+            <TableCell>{t`Name`}</TableCell>
+            <TableCell>{t`Description`}</TableCell>
+            <TableCell>{t`Short description`}</TableCell>
+            <TableCell>{t`Actions`}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -157,12 +156,12 @@ const TrackTable = ({
                   <TableCell>{row.description}</TableCell>
                   <TableCell>{row.short_description}</TableCell>
                   <TableCell>
-                    <Tooltip title={l10n.editTooltip[lang]}>
+                    <Tooltip title={t`Edit`}>
                       <IconButton onClick={() => setEditingRow({ ...row, index })}>
                         <Edit />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title={l10n.deleteTooltip[lang]}>
+                    <Tooltip title={t`Delete`}>
                       <IconButton onClick={() => handleDeleteRow(index)}>
                         <Delete />
                       </IconButton>
@@ -177,26 +176,26 @@ const TrackTable = ({
               <TextField
                 value={newRow.name}
                 onChange={(e) => setNewRow({ ...newRow, name: e.target.value })}
-                placeholder={l10n.tableHeaderName[lang]}
+                placeholder={t`Name`}
               />
             </TableCell>
             <TableCell>
               <TextField
                 value={newRow.description}
                 onChange={(e) => setNewRow({ ...newRow, description: e.target.value })}
-                placeholder={l10n.tableHeaderDescription[lang]}
+                placeholder={t`Description`}
               />
             </TableCell>
             <TableCell>
               <TextField
                 value={newRow.short_description}
                 onChange={(e) => setNewRow({ ...newRow, short_description: e.target.value })}
-                placeholder={l10n.tableHeaderShort[lang]}
+                placeholder={t`Short description`}
               />
             </TableCell>
             <TableCell>
               <Button onClick={handleAddRow} startIcon={<Add />}>
-                {l10n.addButton[lang]}
+                {t`Add`}
               </Button>
             </TableCell>
           </TableRow>
@@ -250,10 +249,6 @@ const TrackCRUD = () => {
     }
   }
 
-  // Translations
-  const l10n = l10nLines.tracks;
-  const lang = localStorage.getItem('language');
-
   return (
     <ScopedCssBaseline>
       <Container>
@@ -264,8 +259,6 @@ const TrackCRUD = () => {
           setRequestStatus={setRequestStatus}
           setRequestText={setRequestText}
           setRefresh={setRefresh}
-          l10n={l10n}
-          lang={lang}
         />
         <RequestStatusAlert
           statusSetter={setRequestStatus}

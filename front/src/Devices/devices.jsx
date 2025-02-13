@@ -18,7 +18,6 @@ import {
 import { Add, Edit, Delete, Save, Cancel } from '@mui/icons-material';
 import Styles from './devices.module.scss';
 import api from '../api/api';
-import translations from '../texts/texts.json';
 import { useCookies } from 'react-cookie';
 
 const Devices = () => {
@@ -59,12 +58,12 @@ const Devices = () => {
 
   const handleAddRow = async () => {
     if (!newRow.device_name.trim()) {
-      alert(translations.devicesList.AddError[lang]);
+      alert(t`Error: Device name cannot be empty`);
       return;
     }
     newRow.status = translateStatus(newRow.status);
     if (!newRow.status) {
-      alert(translations.devicesList.StatusError[lang]);
+      alert(t`Error: Device status must be either 'free' or 'reserved'`);
       return;
     }
     try {
@@ -123,9 +122,9 @@ const Devices = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>{devicesList.DeviceName[lang]}</TableCell>
-                    <TableCell>{devicesList.DeviceStatus[lang]}</TableCell>
-                    <TableCell>Actions</TableCell>
+                    <TableCell>{t`Name`}</TableCell>
+                    <TableCell>{t`Status (free/reserved)`}</TableCell>
+                    <TableCell>`{t`Actions`}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -187,12 +186,12 @@ const Devices = () => {
                           <TableCell>
                             {userRole === 'superuser' && (
                               <>
-                                <Tooltip title={translations.tracks.editTooltip[lang]}>
+                                <Tooltip title={t`Edit`}>
                                   <IconButton onClick={() => setEditingRow({ ...row, index })}>
                                     <Edit />
                                   </IconButton>
                                 </Tooltip>
-                                <Tooltip title={translations.tracks.deleteTooltip[lang]}>
+                                <Tooltip title={t`Delete`}>
                                   <IconButton onClick={() => handleDeleteRow(index)}>
                                     <Delete />
                                   </IconButton>
@@ -210,7 +209,7 @@ const Devices = () => {
                         <TextField
                           value={newRow.device_name}
                           onChange={(e) => setNewRow({ ...newRow, device_name: e.target.value })}
-                          placeholder={devicesList.DeviceName[lang]}
+                          placeholder={t`Name`}
                         />
                       </TableCell>
                       <TableCell>
@@ -230,7 +229,7 @@ const Devices = () => {
                       </TableCell>
                       <TableCell>
                         <Button onClick={handleAddRow} startIcon={<Add />}>
-                          {devicesList.AddButton[lang]} 
+                          {t`Add`} 
                         </Button>
                       </TableCell>
                     </TableRow>

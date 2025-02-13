@@ -8,11 +8,10 @@ import moment from 'moment';
 
 import api from '../api/api';
 import { getLanguage } from '../utils/Utils';
-import texts from '../texts/texts.json';
 import css from './VisitorLogging.module.scss';
+import { t } from '@lingui/core/macro';
 
 const classes = classNames.bind(css);
-const textLogs = texts.visitorLogging;
 
 const VisitorLogging = ({
   handleClose,
@@ -20,7 +19,6 @@ const VisitorLogging = ({
   setToastMessage,
   setToastOpen,
 }) => {
-  const lang = localStorage.getItem('language');
   const [tracks, setTracks] = useState([]);
   const [date, setDate] = useState();
 
@@ -62,7 +60,7 @@ const VisitorLogging = ({
 
       setToastOpen(true);
       setToastSeverity('success');
-      setToastMessage(textLogs.SuccessfullyUpdated[lang]);
+      setToastMessage(t`Track visitors successfully upded`);
       handleClose();
     } catch (error) {
       setToastSeverity('error');
@@ -96,7 +94,7 @@ const VisitorLogging = ({
             closeOnSelect
             margin="normal"
             name="date"
-            label={textLogs.DayChoose[lang]}
+            label={t`Choose date`}
             value={moment(date)}
             onChange={(newDate) => setDate(newDate)}
             inputFormat="DD.MM.YYYY"
@@ -121,7 +119,9 @@ const VisitorLogging = ({
             ))}
           </div>
         ) : (
-          <div>{textLogs.NoSchedule[lang]}</div>
+          <div>
+            {t`No reservations found. Set reservation in Schedules page`}
+          </div>
         )}
         <div className={classes(css.modalButtonContainer)}>
           <div className={classes(css.modalButton)}>
@@ -131,7 +131,7 @@ const VisitorLogging = ({
               color="secondary"
               style={{ color: 'black', backgroundColor: '#808080' }}
             >
-              {textLogs.Close[lang]}
+              {t`Close`}
             </Button>
           </div>
           <div className={classes(css.modalButton)}>
@@ -141,7 +141,7 @@ const VisitorLogging = ({
               color="primary"
               style={{ color: 'black', backgroundColor: '#d1ccc2' }}
             >
-              {textLogs.Save[lang]}
+              {t`Save`}
             </Button>
           </div>
         </div>

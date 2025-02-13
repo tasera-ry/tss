@@ -11,15 +11,13 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
 import api from '../api/api';
-import translations from '../texts/texts.json';
 import css from './RenewPassword.module.scss';
+import { t } from '@lingui/core/macro';
 
 const classes = classNames.bind(css);
 
 const RenewPassword = (props) => {
-  const lang = localStorage.getItem('language');
   const history = useHistory();
-  const { renewPW } = translations;
   const { token } = props.match.params;
 
   const [username, setUsername] = useState('');
@@ -77,7 +75,7 @@ const RenewPassword = (props) => {
 
   const displayLoading = () => (
     <Typography component="h3" variant="h5" align="center">
-      {renewPW.Loading[lang]}
+      {t`Loading user data...`}
     </Typography>
   );
 
@@ -88,10 +86,10 @@ const RenewPassword = (props) => {
       align="center"
       className={classes(css.error)}
     >
-      {renewPW.Error[lang]}
+      {t`Error verifying token!`}
       &nbsp;
       <Typography align="center" className={classes(css.description)}>
-        {renewPW.ErrorDesc[lang]}
+        {t`The link is incorrect or it has expired. Please send a new reset link!`}
       </Typography>
       &nbsp;
       <Button
@@ -100,14 +98,14 @@ const RenewPassword = (props) => {
         variant="contained"
         className={classes(css.acceptButton)}
       >
-        {renewPW.ForgotPassword[lang]}
+        {t`Forgot password?`}
       </Button>
     </Typography>
   );
 
   const displayTokenOK = () => (
     <Typography component="h3" variant="h5" align="center">
-      {renewPW.RenewPassword[lang]}
+      {t`Input new password`}
 
       <form className={classes(css.wideForm)}>
         <TextField
@@ -116,9 +114,9 @@ const RenewPassword = (props) => {
           required
           fullWidth
           id="newPassword"
-          label={renewPW.NewPassword[lang]}
+          label={t`New password`}
           name="newPassword"
-          autoComplete={renewPW.NewPassword[lang]}
+          autoComplete={t`New password`}
           type="password"
           autoFocus
           value={newPassword}
@@ -136,10 +134,10 @@ const RenewPassword = (props) => {
           required
           fullWidth
           id="confirmNewPassword"
-          label={renewPW.ConfirmNewPassword[lang]}
+          label={t`Confirm new password`}
           name="confirmNewPassword"
           type="password"
-          autoComplete={renewPW.ConfirmNewPassword[lang]}
+          autoComplete={t`Confirm new password`}
           value={confirmNewPassword}
           error={mismatch}
           onInput={(e) => setConfirmNewPassword(e.target.value)}
@@ -151,7 +149,7 @@ const RenewPassword = (props) => {
 
         {mismatch && (
           <Typography align="center" className={classes(css.error)}>
-            {renewPW.Mismatch[lang]}
+            {t`Passwords don't match!`}
           </Typography>
         )}
 
@@ -163,7 +161,7 @@ const RenewPassword = (props) => {
             variant="contained"
             className={classes(css.submitButton, css.acceptButton)}
           >
-            {renewPW.RenewBtn[lang]}
+            {t`Submit`}
           </Button>
         )}
       </form>
@@ -177,10 +175,10 @@ const RenewPassword = (props) => {
       align="center"
       className={classes(css.success)}
     >
-      {renewPW.Updated[lang]}
+      {t`Password updated succesfully!`}
       &nbsp;
       <Typography align="center" className={classes(css.description)}>
-        {renewPW.UpdatedDesc[lang]}
+        {t`You will be redirected to the login page automatically in 5 seconds.`}
       </Typography>
     </Typography>
   );
