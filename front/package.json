@@ -10,7 +10,8 @@
     "test:coverage": "vitest run --coverage",
     "eject": "react-scripts eject",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@mui/icons-material": "^6.1.6",
