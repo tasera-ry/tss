@@ -143,6 +143,13 @@ const schedule = {
   ],
 };
 
+export const schedulingWeek = {
+  weekNum: 1,
+  weekBegin: '2020-10-21',
+  weekEnd: '2020-10-27',
+  days: new Array(7).fill(0).map(() => structuredClone(schedule))
+}
+
 const reservation = [
   {
     id: 300,
