@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 const date = new Date('2020-10-21T11:30:57.000Z');
 let week = [{}, {}, {}, {}, {}, {}, {}];
 week = week.map(() => ({
@@ -147,7 +149,10 @@ export const schedulingWeek = {
   weekNum: 1,
   weekBegin: '2020-10-21',
   weekEnd: '2020-10-27',
-  days: new Array(7).fill(0).map(() => structuredClone(schedule))
+  week: new Array(7).fill(0).map(() => structuredClone(schedule)).map((day, index) => ({
+    ...day,
+    date: moment('2020-10-21').add(index, 'day').format('YYYY-MM-DD')
+  }))
 }
 
 const reservation = [
