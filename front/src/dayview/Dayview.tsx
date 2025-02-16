@@ -4,7 +4,6 @@ import classNames from 'classnames';
 // Material UI components
 import { Link, useHistory, useParams } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Grid from '@mui/material/Grid';
 import CircularProgress from '@mui/material/CircularProgress';
 
 // Moment for date handling
@@ -22,7 +21,7 @@ import { DateHeader } from '@/lib/components/DateHeader';
 
 const classes = classNames.bind(css);
 
-function Dayview() {
+export function Dayview() {
 
   const history = useHistory();
   const { date: dateParam } = useParams<{ date: string}>();
