@@ -12,7 +12,7 @@ export default ({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: process.env.PROXY_API ?? 'http://localhost:8000',
+          target: process.env.VITE_PROXY_API ?? 'http://localhost:8000',
           changeOrigin: true,
           ws: true,
           rewriteWsOrigin: true,
