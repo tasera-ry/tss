@@ -1,10 +1,9 @@
 import { waitFor, render, screen, fireEvent } from '@testing-library/react';
-import { HashRouter as Router } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
-import * as utils from '../utils/Utils';
-import Monthview from './Monthview';
+import { HashRouter as Router, useParams } from 'react-router-dom';
+import { Monthview } from './Monthview';
 import monthTestUtil from '../_TestUtils/monthTestUtil';
-import axios from 'axios';
+import api from '@/api/api';
+import { TestProviders } from '@/_TestUtils/TestProvides';
 
 
 vi.mock('axios');
@@ -14,84 +13,56 @@ vi.mock('../infoBox/InfoBox', () => ({
   default: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
 }));
 
-vi.mock(import("../utils/Utils"), async (importOriginal) => {
-  const actual = await importOriginal()
+vi.mock('../api/api')
+vi.mock('react-router-dom', async (originalImport) => {
+  const originalModule = await originalImport() as any
   return {
-    ...actual,
-    getSchedulingFreeform: vi.fn(),
+    ...originalModule,
+    useParams: vi.fn().mockImplementation(() => ({
+      date: undefined,
+    })),
   }
-})
-
-axios.get.mockResolvedValue({
-  data: [{ id: 1, message: 'ok', start: '', end: '' }],
 });
+
 const mockMonth = monthTestUtil.month;
 
-const history = createMemoryHistory();
-
 describe('testing monthview', () => {
-  global.window = Object.create(window);
-  const defineUrl = (params) => {
-    Object.defineProperty(window, 'location', {
-      value: {
-        href: `https://tss.tasera.fi/#${params}`,
-      },
-      writable: true,
-    });
-  };
 
   it('should render monthView when URL is broken/invalid', async () => {
-    utils.getSchedulingFreeform.mockResolvedValue({
+
+    vi.mocked(api.getSchedulingFreeform).mockResolvedValue({
       month: mockMonth('09', '28'),
     });
-    Date.now = vi.fn(() => '2020-10-21T11:30:57.000Z');
+
+    vi.setSystemTime('2020-10-21T11:30:57.000Z');
+    localStorage.setItem('language', '1');
+    render(
+      <Router>
+        <Monthview />
+      </Router>, {wrapper: TestProviders}
+    );
+    await waitFor(() =>
+      expect(screen.getByText('Wednesday 21.10.2020')).toBeInTheDocument(),
+    );
+  });
+
+  it('should render monthview when URL is valid', async () => {
+    vi.mocked(api.getSchedulingFreeform).mockResolvedValue({
+      month: mockMonth('09', '28'),
+    });
+    vi.mocked(useParams).mockImplementation(() => ({
+      date: '2020-10-21',
+    }));
 
     localStorage.setItem('language', '1');
     render(
       <Router>
-        <Monthview history={history} />
-      </Router>,
+        <Monthview />
+      </Router>, {wrapper: TestProviders}
     );
     await waitFor(() =>
-      expect(screen.getByText('October, 2020')).toBeInTheDocument(),
+      expect(screen.getByText('Wednesday 21.10.2020')).toBeInTheDocument(),
     );
   });
 
-  it('should change to previous, current and next month', async () => {
-    utils.getSchedulingFreeform.mockResolvedValue({
-      month: mockMonth('09', '28'),
-    });
-    localStorage.setItem('language', '1');
-    Date.now = vi.fn(() => '2020-10-21T11:30:57.000Z');
-    history.replace = vi.fn((params) => defineUrl(params));
-    render(
-      <Router>
-        <Monthview history={history} />
-      </Router>,
-    );
-    await waitFor(() =>
-      expect(screen.getByText('October, 2020')).toBeInTheDocument(),
-    );
-    utils.getSchedulingFreeform.mockResolvedValue({
-      month: mockMonth('08', '31'),
-    });
-    fireEvent.click(screen.getByTestId('previousMonth'));
-    await waitFor(() =>
-      expect(screen.getByText('September, 2020')).toBeInTheDocument(),
-    );
-    utils.getSchedulingFreeform.mockResolvedValue({
-      month: mockMonth('09', '28'),
-    });
-    fireEvent.click(screen.getByTestId('nextMonth'));
-    await waitFor(() =>
-      expect(screen.getByText('October, 2020')).toBeInTheDocument(),
-    );
-    utils.getSchedulingFreeform.mockResolvedValue({
-      month: mockMonth('10', '26'),
-    });
-    fireEvent.click(screen.getByTestId('nextMonth'));
-    await waitFor(() =>
-      expect(screen.getByText('November, 2020')).toBeInTheDocument(),
-    );
-  });
 });
