@@ -4,9 +4,9 @@ import { HashRouter as Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { act } from 'react-dom/test-utils';
 import { getSchedulingWeek } from '../utils/Utils';
-import Weekview from './Weekview';
-import testUtils from '../_TestUtils/TestUtils';
-import * as axios from 'axios';
+import { Weekview } from './Weekview';
+import testUtils, { schedulingWeek} from '../_TestUtils/TestUtils';
+import { TestProviders } from '@/_TestUtils/TestProvides';
 
 const { date, week } = testUtils;
 
@@ -22,38 +22,16 @@ vi.mock(import("../utils/Utils"), async (importOriginal) => {
     getSchedulingWeek: vi.fn(),
   }
 })
-getSchedulingWeek.mockResolvedValue(week);
-
-vi.mock('axios', () => ({
-  get: vi.fn(),
-}));
-axios.get.mockResolvedValue({
-  data: [{ id: 1, message: 'ok', start: '', end: '' }],
-});
 
 describe('testing weekview', () => {
   it('should render weekView', async () => {
-    const state = {
-      state: 'loading',
-      date,
-      weekNro: 43,
-      dayNro: 21,
-      yearNro: 2020,
-      paivat: week,
-    };
-    const history = createMemoryHistory();
-    Date.now = vi.fn(() => '2020-10-21T11:30:57.000Z');
-
+    vi.mocked(getSchedulingWeek).mockResolvedValue(schedulingWeek as any);
     localStorage.setItem('language', '1');
     await act(async () => {
       render(
         <Router>
-          <Weekview
-            match={{ params: { date } }}
-            history={history}
-            state={state}
-          />
-        </Router>,
+          <Weekview />
+        </Router>, {wrapper: TestProviders}
       );
     });
     await waitFor(() =>
@@ -62,27 +40,13 @@ describe('testing weekview', () => {
   });
 
   it('should render the mocked InfoBox component', async () => {
-    const state = {
-      state: 'loading',
-      date,
-      weekNro: 43,
-      dayNro: 21,
-      yearNro: 2020,
-      paivat: week,
-    };
-    const history = createMemoryHistory();
-    Date.now = vi.fn(() => '2020-10-21T11:30:57.000Z');
-
+    vi.mocked(getSchedulingWeek).mockResolvedValue(schedulingWeek as any);
     localStorage.setItem('language', '1');
     await act(async () => {
       render(
         <Router>
-          <Weekview
-            match={{ params: { date } }}
-            history={history}
-            state={state}
-          />
-        </Router>,
+          <Weekview />
+        </Router>, {wrapper: TestProviders}
       );
     });
     await waitFor(() =>
