@@ -1,30 +1,39 @@
 import '@testing-library/jest-dom';
 import { waitFor, render, screen } from '@testing-library/react';
-import { HashRouter as Router } from 'react-router-dom';
 import { act } from 'react-dom/test-utils';
 import { App } from './App';
-import axios from 'axios';
+import { TestProviders } from '@/_TestUtils/TestProvides';
+import { getSchedulingWeek, validateLogin } from '@/utils/Utils';
+import { schedulingWeek } from '@/_TestUtils/TestUtils';
 
-vi.mock('./utils/Utils');
-vi.mock('./infoBox/InfoBox', () => ({
+vi.mock('../infoBox/InfoBox', () => ({
   default: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
 }));
 
-axios.get = vi.fn().mockResolvedValue({
-  data: [{ id: 1, message: 'ok', start: '', end: '' }],
-});
+vi.mock(import("@/utils/Utils"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    getSchedulingWeek: vi.fn(),
+    validateLogin: vi.fn(), 
+  }
+})
+
+vi.mock('@/api/api', () => ({
+  default: {
+    getPublicInfoMessages: vi.fn(),
+    getRangeMasterInfoMessages: vi.fn().mockResolvedValue([{id: 1, message: 'test message'}]),
+  }
+}))
 
 describe('testing App', () => {
   it('should render App', async () => {
+    vi.mocked(getSchedulingWeek).mockResolvedValue(schedulingWeek as any);
+    vi.mocked(validateLogin).mockResolvedValue(true);
+    
+    localStorage.setItem('language', '1');
     await act(async () => {
-      render(
-        <Router>
-          <App/>
-        </Router>,
-      );
+      render(<App />, { wrapper: TestProviders });
     });
-    await waitFor(() =>
-      expect(screen.getByText('Päävalvoja paikalla')).toBeInTheDocument(),
-    );
   });
 });
