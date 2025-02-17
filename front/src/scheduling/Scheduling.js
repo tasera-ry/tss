@@ -1006,6 +1006,13 @@ function Scheduling(props) {
 
       {/* Section for selecting date, setting range officer status, and open/close times of the tracks*/}
       <Box className="firstSection">
+      <div className="dateNavigation">
+        <Button onClick={() => {
+          handleDateChange(moment(date).subtract(1, 'days'));
+          handleDatePickChange(moment(date).subtract(1, 'days'));
+        }}>
+          &#11013; {/* Left arrow */}
+        </Button>
         <form onSubmit={continueWithDate}>
           {/* Datepicker */}
           <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={lang} key={datePickerKey}>
@@ -1015,13 +1022,20 @@ function Scheduling(props) {
               value={moment(date)}
               onChange={(newDate) => handleDateChange(newDate)}
               onAccept={(newDate) => handleDatePickChange(newDate)}
-              format="DD.MM.YYYY"               
-              slots={{textField: TextField}}
+              format="DD.MM.YYYY"
+              slots={{ textField: TextField }}
               showTodayButton
               data-testid="datePicker"
             />
           </LocalizationProvider>
         </form>
+        <Button onClick={() => {
+          handleDateChange(moment(date).add(1, 'days'));
+          handleDatePickChange(moment(date).add(1, 'days'));
+        }}>
+          &#11157; {/* Right arrow */}
+        </Button>
+      </div>
         <FormControl component="fieldset" style={{padding:'5px'}}>
           <div className="options">
             <div className="topRow">

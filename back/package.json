@@ -1,6 +1,6 @@
 {
   "name": "taseraschedulingsoftware",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Scheduling software for managing shooting ranges",
   "main": "index.js",
   "scripts": {
