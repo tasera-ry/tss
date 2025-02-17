@@ -1228,7 +1228,7 @@
       "Användare ska inte minskas. Vill du verkligen minska antalet användare?"
     ],
     "messageTitle": ["Varoitus!", "Warning!", "Varning!"],
-    "messageYes": ["Joo", "Yes", "Ja"],
+    "messageYes": ["Kyllä", "Yes", "Ja"],
     "messageNo": ["Ei", "No", "Nej"]
   }
 }
