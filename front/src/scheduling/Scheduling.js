@@ -1011,7 +1011,7 @@ function Scheduling(props) {
           handleDateChange(moment(date).subtract(1, 'days'));
           handleDatePickChange(moment(date).subtract(1, 'days'));
         }}>
-          &larr; {/* Left arrow */}
+          &#11013; {/* Left arrow */}
         </Button>
         <form onSubmit={continueWithDate}>
           {/* Datepicker */}
@@ -1033,7 +1033,7 @@ function Scheduling(props) {
           handleDateChange(moment(date).add(1, 'days'));
           handleDatePickChange(moment(date).add(1, 'days'));
         }}>
-          &rarr; {/* Right arrow */}
+          &#11157; {/* Right arrow */}
         </Button>
       </div>
         <FormControl component="fieldset" style={{padding:'5px'}}>
