@@ -6,6 +6,7 @@ import Scheduling from './Scheduling';
 import * as utils from '../utils/Utils';
 import api from '../api/api';
 import testUtils from '../_TestUtils/TestUtils';
+import { TestProviders } from '@/_TestUtils/TestProvides';
 
 vi.mock('axios');
 vi.mock('../utils/Utils');
@@ -77,7 +78,7 @@ describe('testing scheduling', () => {
     localStorage.setItem('language', '1');
 
     await act(async () => {
-      render(<Scheduling history={history} state={state} />);
+      render(<Scheduling history={history} state={state} />, { wrapper: TestProviders });
     });
     await waitFor(() =>
       expect(screen.getByText('Save changes')).toBeInTheDocument(),
@@ -92,7 +93,7 @@ describe('testing scheduling', () => {
     localStorage.setItem('language', '1');
 
     await act(async () => {
-      render(<Scheduling history={history} state={state} />);
+      render(<Scheduling history={history} state={state} />, { wrapper: TestProviders });
     });
 
     await waitFor(() =>
@@ -114,7 +115,7 @@ describe('testing scheduling', () => {
     localStorage.setItem('language', '1');
 
     await act(async () => {
-      render(<Scheduling history={history} state={state} />);
+      render(<Scheduling history={history} state={state} />, { wrapper: TestProviders });
 
       await waitFor(() =>
         expect(screen.getByTestId('available')).toBeInTheDocument(),
@@ -135,7 +136,7 @@ describe('testing scheduling', () => {
     localStorage.setItem('language', '1');
 
     await act(async () => {
-      render(<Scheduling history={history} state={state} />);
+      render(<Scheduling history={history} state={state} />, { wrapper: TestProviders } );
 
       await waitFor(() =>
         expect(screen.getByTestId('available')).toBeInTheDocument(),
@@ -162,7 +163,7 @@ describe('testing scheduling', () => {
     localStorage.setItem('language', '1');
 
     await act(async () => {
-      render(<Scheduling history={history} state={state} />);
+      render(<Scheduling history={history} state={state} />, { wrapper: TestProviders });
       await waitFor(() =>
         expect(screen.getByTestId('track-1')).toBeInTheDocument(),
       );
@@ -182,7 +183,7 @@ describe('testing scheduling', () => {
     localStorage.setItem('language', '1');
 
     await act(async () => {
-      render(<Scheduling history={history} state={state} />);
+      render(<Scheduling history={history} state={state} />, { wrapper: TestProviders });
       await waitFor(() =>
         expect(screen.getByTestId('openAll')).toBeInTheDocument(),
       );
@@ -207,7 +208,7 @@ describe('testing scheduling', () => {
     localStorage.setItem('language', '1');
 
     await act(async () => {
-      render(<Scheduling history={history} state={state} />);
+      render(<Scheduling history={history} state={state} />, { wrapper: TestProviders });
       await waitFor(() =>
         expect(screen.getByTestId('available')).toBeInTheDocument(),
       );

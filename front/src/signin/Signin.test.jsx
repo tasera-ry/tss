@@ -8,6 +8,7 @@ import {
   act,
 } from '@testing-library/react';
 import SignIn from './SignIn';
+import { TestProviders } from '../_TestUtils/TestProvides';
 
 vi.mock('axios', () => ({
   get: vi.fn(),
@@ -23,8 +24,7 @@ axios.post = vi.fn((url, credentials) => {
 
 describe('testing SignIn component', () => {
   it('should render SignIn', async () => {
-    localStorage.setItem('language', '1');
-    render(<SignIn />);
+    render(<SignIn />, { wrapper: TestProviders });
     await waitFor(() =>
       expect(screen.getByText('Sign In')).toBeInTheDocument(),
     );
@@ -32,8 +32,7 @@ describe('testing SignIn component', () => {
 
   it('should give error on wrong credentials', async () => {
     await act(async () => {
-      localStorage.setItem('language', '1');
-      await render(<SignIn />);
+      await render(<SignIn />, { wrapper: TestProviders });
 
       await waitFor(() =>
         expect(screen.getByTestId('nameField')).toBeInTheDocument(),
@@ -50,8 +49,7 @@ describe('testing SignIn component', () => {
   });
   it.skip('should access with correct credentials', async () => {
     await act(async () => {
-      localStorage.setItem('language', '1');
-      await render(<SignIn />);
+      await render(<SignIn />, { wrapper: TestProviders });
 
       await waitFor(() =>
         expect(screen.getByTestId('nameField')).toBeInTheDocument(),

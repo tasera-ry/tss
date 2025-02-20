@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -9,7 +9,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import api from '../api/api';
 import css from './Trackview.module.scss';
 import { t } from '@lingui/core/macro';
-
+import { useWeekDay } from '../utils/dateUtils';
 
 const classes = classNames.bind(css);
 
@@ -42,6 +42,9 @@ const getTrackAvailability = (trackSupervision) => {
 };
 
 const Trackview = (props) => {
+
+  const { date: targetDate, track } = useParams();
+
   const [state, setState] = useState({
     date: new Date(Date.now()),
     opens: 16,
@@ -61,8 +64,6 @@ const Trackview = (props) => {
 
   useEffect(() => {
     // /dayview/2020-02-20
-    const { date } = props.match.params;
-    const { track } = props.match.params;
     const request = async () => {
       try {
         const data = await api.getSchedulingDate(date);

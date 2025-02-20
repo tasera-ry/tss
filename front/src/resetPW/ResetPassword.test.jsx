@@ -8,6 +8,7 @@ import {
   act,
 } from '@testing-library/react';
 import ResetPassword from './ResetPassword';
+import { TestProviders } from '@/_TestUtils/TestProvides';
 
 axios.get = vi.fn(() => Promise.resolve({ data: [{ role: 'association' }] }));
 axios.post = vi.fn((url, credentials) => {
@@ -23,7 +24,7 @@ axios.post = vi.fn((url, credentials) => {
 describe('testing ResetPassword component', () => {
   it('should render ResetPassword', async () => {
     localStorage.setItem('language', '1');
-    render(<ResetPassword />);
+    render(<ResetPassword />, { wrapper: TestProviders });
     await waitFor(() =>
       expect(
         screen.getByText(
@@ -36,7 +37,7 @@ describe('testing ResetPassword component', () => {
   it('should give error on empty field', async () => {
     await act(async () => {
       localStorage.setItem('language', '1');
-      await render(<ResetPassword />);
+      await render(<ResetPassword />, { wrapper: TestProviders });
 
       await waitFor(() =>
         expect(screen.getByTestId('emailField')).toBeInTheDocument(),
@@ -54,7 +55,7 @@ describe('testing ResetPassword component', () => {
   it('should give error on wrong email address', async () => {
     await act(async () => {
       localStorage.setItem('language', '1');
-      await render(<ResetPassword />);
+      await render(<ResetPassword />, { wrapper: TestProviders });
 
       await waitFor(() =>
         expect(screen.getByTestId('emailField')).toBeInTheDocument(),
@@ -75,7 +76,7 @@ describe('testing ResetPassword component', () => {
   it('should send email with correct email address', async () => {
     await act(async () => {
       localStorage.setItem('language', '1');
-      await render(<ResetPassword />);
+      await render(<ResetPassword />, { wrapper: TestProviders });
 
       await waitFor(() =>
         expect(screen.getByTestId('emailField')).toBeInTheDocument(),

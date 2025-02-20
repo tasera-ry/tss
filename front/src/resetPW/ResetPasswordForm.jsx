@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 
 import { useHistory } from 'react-router-dom';
 import css from './ResetPassword.module.scss';
-
+import { t } from '@lingui/core/macro';
 const classes = classNames.bind(css);
 
 const ResetPasswordForm = ({

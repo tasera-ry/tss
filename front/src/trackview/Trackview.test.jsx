@@ -3,26 +3,27 @@ import { HashRouter as Router } from 'react-router-dom';
 import Trackview from './Trackview';
 import api from '../api/api';
 import testUtils from '../_TestUtils/TestUtils';
+import { TestProviders } from '@/_TestUtils/TestProvides';
+
+vi.mock('react-router-dom', async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    useParams: vi.fn().mockReturnValue({
+      date: '2020-02-20',
+      track: 'Shooting Track 0',
+    }),
+  }
+});
 
 describe('testing Trackview', () => {
   it('should render Trackview', async () => {
-    const { date, schedule } = testUtils;
+    const { schedule } = testUtils;
 
     api.getSchedulingDate = vi.fn(() => schedule);
 
-    localStorage.setItem('language', '1');
-    render(
-      <Router>
-        <Trackview
-          match={{
-            params: {
-              date,
-              track: 'Shooting Track 0',
-            },
-          }}
-        />
-      </Router>,
-    );
+    render(<Trackview />, { wrapper: TestProviders });
+    console.log(screen.debug());
     await waitFor(() =>
       expect(screen.getByText('Shooting Track 0')).toBeInTheDocument(),
     );

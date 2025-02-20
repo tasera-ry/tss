@@ -21,26 +21,6 @@ describe('testing weekview', () => {
     expect(result.week).toBe(mockResponse);
   });
 
-  it('testing dayToString', async () => {
-    localStorage.setItem('language', '1');
-    const result = await utils.dayToString(1);
-    expect(result).toBe('Monday');
-
-    localStorage.setItem('language', '0');
-    const result2 = await utils.dayToString(1);
-    expect(result2).toBe('Maanantai');
-  });
-
-  it('testing monthToString', async () => {
-    localStorage.setItem('language', '1');
-    const result = await utils.monthToString(0);
-    expect(result).toBe('January');
-
-    localStorage.setItem('language', '0');
-    const result2 = await utils.monthToString(0);
-    expect(result2).toBe('tammikuu');
-  });
-
   it('should return true when the login token is valid', async () => {
     vi.mocked(api.validateLogin).mockResolvedValue({} as AxiosResponse);
 

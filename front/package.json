@@ -51,6 +51,7 @@
     "@testing-library/user-event": "^7.2.1",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "^3.0.4",
+    "@vitest/ui": "^3.0.4",
     "babel-eslint": "^10.1.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-only-warn": "^1.1.0",
