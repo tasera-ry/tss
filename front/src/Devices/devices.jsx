@@ -19,6 +19,7 @@ import { Add, Edit, Delete, Save, Cancel } from '@mui/icons-material';
 import Styles from './devices.module.scss';
 import api from '../api/api';
 import { useCookies } from 'react-cookie';
+import { t } from '@lingui/core/macro';
 
 const Devices = () => {
   const [devices, setDevices] = useState([]);
@@ -101,8 +102,6 @@ const Devices = () => {
     }
   };
 
-  const lang = localStorage.getItem('language');
-  const { devicesList } = translations;
   const translateStatus = (status) => {
     if (!status || status.trim() === '') {
       return null;

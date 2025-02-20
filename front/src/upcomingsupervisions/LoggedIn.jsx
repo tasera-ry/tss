@@ -464,7 +464,6 @@ const DialogWindow = ({ onCancel }) => {
   const [arrivalTime, setArrivalTime] = useState('');
   const [rangeofficer, setRangeOfficer] = useState('');
   const [rangeofficerList, setRangeOfficerList] = useState('');
-  const { sv } = data;
 
   if (onCancel === undefined) {
     onCancel = () => {}; // eslint-disable-line
@@ -502,7 +501,6 @@ const DialogWindow = ({ onCancel }) => {
           setChecked={setChecked}
           done={done}
           setDone={setDone}
-          sv={sv}
           onCancel={onCancel}
         />
       </ArrivalTimeContext.Provider>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import api from '../api/api';
 
@@ -13,7 +13,8 @@ import MuiAlert from '@mui/material/Alert';
 
 import RaffleDatePicker from './RaffleDatePicker';
 import SupervisorsTable from './SupervisorsTable';
-import { dateToString, validateLogin } from '../utils/Utils';
+import { validateLogin } from '../utils/Utils';
+import { dateToString } from '../utils/dateUtils';
 import SupervisionResultsTable from './SupervisionResultsTable';
 import SupervisionAmountsTable from './SupervisionAmountsTable';
 import css from './raffle.module.scss';

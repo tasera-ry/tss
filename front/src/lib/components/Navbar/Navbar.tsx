@@ -7,7 +7,7 @@ import { DrawerMenu } from '@/lib/components/Navbar/DrawerMenu';
 import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
 import { Button } from '@mui/material';
 import { SupervisorNotification } from '@/lib/components/Navbar/SupervisorNotification';
-import { useLanguageContext } from '@/i18n';
+import { Language, useLanguageContext } from '@/i18n';
 import { Trans } from '@lingui/react/macro';
 
 
@@ -21,7 +21,7 @@ export const Navbar = () => {
         <TaseraLogo />
         {username ? <Username /> : <LogInButton />}
         <div className="flex gap-1">
-          <LanguageButton label="SWE" lang="se" />
+          <LanguageButton label="SWE" lang="sv" />
           <LanguageButton label="ENG" lang="en" />
           <LanguageButton label="FIN" lang="fi" />
         </div>
@@ -34,7 +34,7 @@ export const Navbar = () => {
 
 interface LanguageButtonProps {
   label: string;
-  lang: string;
+  lang: Language;
 }
 
 function LanguageButton({ label, lang }: LanguageButtonProps) {
@@ -43,8 +43,8 @@ function LanguageButton({ label, lang }: LanguageButtonProps) {
 
   return (
     <Button
-      className="bg-black-tint-70! text-white! font-lato! font-bold! text-sm! py-1.5! px-5! rounded-4xl! m-0.5 ml-auto border border-[#484848] shadow data-[isActive='true']:underline!"
-      data-isActive={currentLang === lang}
+      className="bg-black-tint-70! text-white! font-lato! font-bold! text-sm! py-1.5! px-5! rounded-4xl! m-0.5 ml-auto border border-[#484848] shadow data-[is-active='true']:underline!"
+      data-is-active={currentLang === lang}
       onClick={() => {
         setCurrentLang(lang)
       }}

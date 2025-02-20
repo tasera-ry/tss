@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 
@@ -7,8 +7,9 @@ import Grid from '@mui/material/Grid';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import api from '../api/api';
-import { dayToString } from '../utils/Utils';
 import css from './Trackview.module.scss';
+import { t } from '@lingui/core/macro';
+
 
 const classes = classNames.bind(css);
 
@@ -104,6 +105,9 @@ const Trackview = (props) => {
   const rangeStatus = getRangeStatus(state.rangeSupervision);
   const trackAvailability = getTrackAvailability(state.trackSupervision);
 
+  const date = useMemo(() => new Date(targetDate), [targetDate])
+  const weekDay = useWeekDay(date)
+
   return (
     <div className={classes(css.wholeScreenDiv)}>
       <div className={classes(css.trackNameAndType)}>
@@ -117,7 +121,7 @@ const Trackview = (props) => {
       {visible.date && (
         <div>
           <h2>
-            {dayToString(state.date.getDay())}{' '}
+            {weekDay}{' '}
             {state.date.toLocaleDateString('fi-FI')}
           </h2>
         </div>

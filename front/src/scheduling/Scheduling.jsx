@@ -410,9 +410,6 @@ function Scheduling(props) {
   };
 
   const saveChanges = async () => {
-    const { sched } = data;
-    const lang = localStorage.getItem('language');
-
     setExpand(false);
     setState('loading');  
 
@@ -561,8 +558,6 @@ function Scheduling(props) {
 
   // builds tracklist
   const createTrackList = () => {
-    const { sched } = data;
-    const lang = localStorage.getItem('language');
     const items = [];
 
     for (const key in tracks) {   
@@ -604,8 +599,6 @@ function Scheduling(props) {
 
   // builds range officer select
   const createSupervisorSelect = () => {
-    const { sched } = data;
-    const lang = localStorage.getItem('language');
 
     const items = [];
     let sortedSupervisors;
@@ -990,9 +983,6 @@ function Scheduling(props) {
   function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
   }
-
-  const { sched } = data;
-  const lang = localStorage.getItem('language');
 
   return (
     <div className="schedulingRoot">

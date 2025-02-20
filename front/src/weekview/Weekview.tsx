@@ -18,8 +18,8 @@ import css from './Weekview.module.scss';
 import { DaySchedule } from '@/types';
 import { useQuery } from 'react-query';
 import { DateHeader } from '@/lib/components/DateHeader';
-import { msg, t } from '@lingui/core/macro';
-import { Trans } from '@lingui/react';
+import { t } from '@lingui/core/macro';
+import { Weekday } from '@/utils/dateUtils';
 
 
 const classes = classNames.bind(css);
@@ -74,17 +74,6 @@ export const Weekview = () => {
   );
 };
 
-
-const tWeekdays = [
-  msg`Mon`,
-  msg`Tue`,
-  msg`Wed`,
-  msg`Thu`,
-  msg`Fri`,
-  msg`Sat`,
-  msg`Sun`
-]
-
 function CalenderHeader({days}: {days: DaySchedule[]}) {
   
   const weekdays = useMemo(() => {
@@ -92,7 +81,7 @@ function CalenderHeader({days}: {days: DaySchedule[]}) {
     return Array.from({ length: 7 }, (_, i) => {
       return {
         dayNumber: i,
-        link: `/dayview/${days[i].date}`
+        link: `/dayview/${days[i]?.date}`
       }
     });
   }, [days])
@@ -106,10 +95,10 @@ function CalenderHeader({days}: {days: DaySchedule[]}) {
           className='flex flex-col gap-1 items-center justify-center text-white'
         >
           <span>
-            <Trans id={tWeekdays[day.dayNumber].id} />
+            <Weekday date={days[day.dayNumber]?.date} weekday='short' />
           </span>
           <span id="weekDay">
-            {moment(days[day.dayNumber].date).format('DD.MM')}
+            {moment(days[day.dayNumber]?.date).format('DD.MM')}
           </span>
         </Link>
       ))}
