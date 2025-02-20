@@ -13,7 +13,7 @@ import info from '@/assets/Info.png';
 import api from '../api/api';
 import InfoBox from '../infoBox/InfoBox';
 import css from './Dayview.module.scss';
-import ButtonComponent from '../ButtonComponent/ButtonComponent';
+import { DeviceStatusList } from '../DeviceStatusList/DeviceStatusList';
 import { ViewChanger } from '@/lib/components/ViewChanger';
 import { useQuery } from 'react-query';
 import { DateHeader } from '@/lib/components/DateHeader';
@@ -77,7 +77,8 @@ export function Dayview() {
             ) : (
               <TrackList tracks={data.tracks} date={targetDate} />
             )}
-            <ButtonComponent />
+            {/* <ButtonComponent /> */}
+            <DeviceStatusList />
           </div>
         </div>
         <Link
