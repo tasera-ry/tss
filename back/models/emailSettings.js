@@ -2,7 +2,6 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 const knex = require(path.join(root, 'knex', 'knex'));
 
-
 const model = {
   /**
    * Gets all the email-related settings from the database.
@@ -49,7 +48,7 @@ const model = {
    *  };
    * @param {object} newSettings - A JSON object with the email settings in the format that the mailer uses.
    */
-  update: async function updateEmailSettings(newSettings) {
+  upsert: async function updateEmailSettings(newSettings) {
     return knex.transaction(async trx => {
       await trx('settings').where({ setting_name: 'email_sender' }).update({ setting_value: { sender: newSettings.sender } });
       await trx('settings').where({ setting_name: 'email_user' }).update({ setting_value: { user: newSettings.user }});
