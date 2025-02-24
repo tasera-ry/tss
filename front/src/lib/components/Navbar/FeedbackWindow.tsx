@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import api from '../../../api/api';
-import translations from '../../../texts/texts.json';
 
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -10,8 +9,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
-
-const { feedback } = translations;
+import { t } from '@lingui/core/macro';
 
 const FeedbackWindow = ({ dialogOpen, onCloseDialog }) => {
 
@@ -26,9 +24,11 @@ const FeedbackWindow = ({ dialogOpen, onCloseDialog }) => {
       open={dialogOpen}
       classes={{ paper: "bg-black-tint-05" }}
     >
-      <DialogTitle id="title">{feedback.Title[fin]}</DialogTitle>
+      <DialogTitle id="title">{t`Give feedback`}</DialogTitle>
       <DialogContent>
-        <DialogContentText>{feedback.Note[fin]}</DialogContentText>
+        <DialogContentText>
+          {t`Write in the textbox below the feedback you received from the range. Remember to identify the track if the feedback is for a certain track. The feedback will be sent to the superusers.`}
+        </DialogContentText>
         <TextField
           id="feedback-field"
           className="w-full"
@@ -46,7 +46,7 @@ const FeedbackWindow = ({ dialogOpen, onCloseDialog }) => {
           variant="contained"
           onClick={onCloseDialog}
         >
-          {feedback.Cancel[fin]}
+          {t`Cancel`}
         </Button>
         <Button
           className="bg-sand!"
@@ -56,7 +56,7 @@ const FeedbackWindow = ({ dialogOpen, onCloseDialog }) => {
             await api.sendFeedback(textFeedback, username);
           }}
         >
-          {feedback.Send[fin]}
+          {t`Send`}
         </Button>
       </DialogActions>
     </Dialog>

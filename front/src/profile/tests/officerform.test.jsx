@@ -8,7 +8,7 @@ import {
 import OfficerForm from '../profilepages/officerform';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-
+import { TestProviders } from '@/_TestUtils/TestProvides';
 // Mock axios
 vi.mock('axios');
 
@@ -18,7 +18,7 @@ axios.post.mockResolvedValue();
 describe('OfficerForm', () => {
   it('renders form inputs correctly', async() => {
 
-    render(<OfficerForm id={1} />);
+    render(<OfficerForm id={1} />, { wrapper: TestProviders } );
 
     await waitFor(() => expect(screen.getByTestId('username')).toBeInTheDocument());
     await waitFor(() => expect(screen.getByTestId('password')).toBeInTheDocument());
@@ -29,7 +29,7 @@ describe('OfficerForm', () => {
   test('displays error notification when form is submitted with empty fields', async () => {
     await act(async () => {
       localStorage.setItem('language', '1');
-      render(<OfficerForm id={1} />);
+      render(<OfficerForm id={1} />, { wrapper: TestProviders });
 
       await waitFor(() =>
         expect(screen.getByTestId('username')).toBeInTheDocument(),
@@ -48,7 +48,7 @@ describe('OfficerForm', () => {
   test('displays error notification when passwords do not match', async () => {
     await act(async () => {
       localStorage.setItem('language', '1');
-      render(<OfficerForm id={1} />);
+      render(<OfficerForm id={1} />, { wrapper: TestProviders });
 
       await waitFor(() =>
         expect(screen.getByTestId('username')).toBeInTheDocument(),
@@ -71,7 +71,7 @@ describe('OfficerForm', () => {
     await act(async () => {
       localStorage.setItem('language', '1');
 
-      render(<OfficerForm id={1} />);
+      render(<OfficerForm id={1} />, { wrapper: TestProviders });
 
       await waitFor(() =>
         expect(screen.getByTestId('username')).toBeInTheDocument(),

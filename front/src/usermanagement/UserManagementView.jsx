@@ -37,15 +37,13 @@ import axios from 'axios';
 // Token validation
 import { withCookies } from 'react-cookie';
 import { validateLogin } from '../utils/Utils';
-import translations from '../texts/texts.json';
 import css from './UserManagementView.module.scss';
+import { t } from '@lingui/core/macro'
 
 import api from '../api/api';
 
 const classes = classNames.bind(css);
 
-const fin = localStorage.getItem('language');
-const { manage } = translations;
 
 // Finds all users from database
 async function getUsers() {
@@ -524,7 +522,7 @@ function UserManagementView(props)  {
         variant="contained"
         onClick={onRemoveClick}
       >
-        {manage.RemoveUser[fin]}
+        {t`Delete profile`}
       </Button>
     );
   }
@@ -539,7 +537,7 @@ function UserManagementView(props)  {
         variant="contained"
         onClick={onChangePassClick}
       >
-        {manage.ChangePass[fin]}
+        {t`Change password`}
       </Button>
     );
   }
@@ -552,13 +550,13 @@ function UserManagementView(props)  {
   ) => {
     const roleToPrint =
       role === 'superuser'
-        ? manage.Superuser[fin]
+        ? t`Superuser`
         : role === 'association'
-        ? manage.Association[fin]
+        ? t`Association`
         : role === 'rangeofficer'
-        ? manage.Rangeofficer[fin]
+        ? t`Range officer`
         : role === 'rangemaster'
-        ? manage.Rangemaster[fin]
+        ? t`Range master`
         : null;
 
     return {
@@ -830,17 +828,17 @@ function UserManagementView(props)  {
   const roleSelect = () => (
     <div className="roleSelect">
       <FormControl className={classes(css.selectRole)}>
-        <InputLabel id="role-select-label">{manage.SelectRole[fin]}</InputLabel>
+        <InputLabel id="role-select-label">{t`Select role`}</InputLabel>
         <Select
           labelId="role-select-label"
-          label={manage.SelectRole[fin]}
+          label={t`Select role`}
           value={state.role || ''}
           onChange={handleChangeUserRole}
           id="role"
         >
-          <MenuItem value="rangeofficer">{manage.Rangeofficer[fin]}</MenuItem>
-          <MenuItem value="association">{manage.Association[fin]}</MenuItem>
-          <MenuItem value="superuser">{manage.Superuser[fin]}</MenuItem>
+          <MenuItem value="rangeofficer">{t`Range officer`}</MenuItem>
+          <MenuItem value="association">{t`Association`}</MenuItem>
+          <MenuItem value="superuser">{t`Superuser`}</MenuItem>
         </Select>
       </FormControl>
         <br />
@@ -856,12 +854,12 @@ function UserManagementView(props)  {
         {/** Only shown when selected role is range officer */}
         {state.role === "rangeofficer" && (
           <>
-            <InputLabel id="association-select-label">{manage.SelectAssociation[fin]}</InputLabel>
+            <InputLabel id="association-select-label">{t`Select association`}</InputLabel>
             <Select
               labelId="association-select-label"
               id="associationSelect"
               className={classes(css.select)}
-              label={manage.SelectAssociation[fin]}
+              label={t`Select association`}
               value={state.associationId || ''}
               onChange={handleChangeAssociation}
             >
@@ -897,14 +895,14 @@ function UserManagementView(props)  {
           id="dialog-add-user-title"
           className={classes(css.dialogStyle)}
         >
-          {manage.New[fin]}
+          {t`Create new user`}
         </DialogTitle>
         <DialogContent className={classes(css.dialogStyle)}>
           <TextField
             value={state.newUserName}
             margin="dense"
             id="name"
-            label={manage.Username[fin]}
+            label={t`Username`}
             onChange={handleNewuserNameChange}
             fullWidth
           />
@@ -918,27 +916,27 @@ function UserManagementView(props)  {
             className={classes(css.dialogStyle)}
             value={state.newUserPass}
             margin="dense"
-            label={manage.Password[fin]}
+            label={t`Password`}
             name="passwordField"
             fullWidth
             securityLevels={[
               {
                 descriptionLabel:
-                  manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
+                  t`Minimum` + ' 1 ' + t`number`,
                 validator: /.*[0-9].*/,
               },
               {
                 descriptionLabel:
-                  manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
+                  t`Minimum` + ' 1 ' + t`lowercase letter`,
                 validator: /.*[a-z].*/,
               },
               {
                 descriptionLabel:
-                  manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
+                  t`Minimum` + ' 1 ' + t`uppercase letter`,
                 validator: /.*[A-Z].*/,
               },
               {
-                descriptionLabel: manage.MinimumLength[fin],
+                descriptionLabel: t`Minimum length of password is 6 characters`,
                 validator: /^.{6,}$/,
               },
             ]}
@@ -951,7 +949,7 @@ function UserManagementView(props)  {
             value={state.email}
             margin="dense"
             id="sposti"
-            label={manage.Email[fin]}
+            label={t`Email`}
             onChange={handleNewEmailChange}
             fullWidth
           />
@@ -959,7 +957,9 @@ function UserManagementView(props)  {
           {roleSelect()}
 
           {state.requestErrors ? (
-            <p className={classes(css.errorText)}>{manage.Error[fin]} </p>
+            <p className={classes(css.errorText)}>
+              {t`Something went wrong, remember that the password has to meet the listed requirements and the name needs to be unique`}
+            </p>
           ) : (
             <p />
           )}
@@ -969,13 +969,13 @@ function UserManagementView(props)  {
             onClick={handleAddNewUserDialogClose}
             className={classes(css.removeButton)}
           >
-            {manage.Cancel[fin]}
+            {t`Cancel`}
           </Button>
           <Button
             onClick={handleAddNewUserDialogCloseConfirmed}
             className={classes(css.acceptButton)}
           >
-            {manage.Confirm[fin]}
+            {t`Save changes`}
           </Button>
         </DialogActions>
       </Dialog>
@@ -990,19 +990,19 @@ function UserManagementView(props)  {
           id="dialog-remove-user-title"
           className={classes(css.dialogStyle)}
         >
-          {manage.Ask[fin]}
+          {t`Are you sure?`}
         </DialogTitle>
         <DialogContent
           id="dialog-remove-user-contet"
           className={classes(css.dialogStyle)}
         >
           <DialogContentText id="dialog-remove-user-text">
-            {manage.AskDelete[fin]} {state.selectedUserName}
+            {t`This action will permanently remove user`} {state.selectedUserName}
           </DialogContentText>
 
           {state.deleteErrors ? (
             <p className={classes(css.errorText)}>
-              {manage.ErrorSmall[fin]}{' '}
+              {t`Something went wrong`}{' '}
             </p>
           ) : (
             <p />
@@ -1013,13 +1013,13 @@ function UserManagementView(props)  {
             onClick={handleRemoveWarningClose}
             className={classes(css.removeButton)}
           >
-            {manage.Cancel[fin]}
+            {t`Cancel`}
           </Button>
           <Button
             onClick={handleRemoveWarningCloseAgree}
             className={classes(css.acceptButton)}
           >
-            {manage.ConfirmDelete[fin]}
+            {t`Confirm`}
           </Button>
         </DialogActions>
       </Dialog>
@@ -1033,17 +1033,19 @@ function UserManagementView(props)  {
           id="dialog-change-own-pass-title"
           className={classes(css.dialogStyle)}
         >
-          {manage.ChangePass[fin]}
+          {t`Change password`}
         </DialogTitle>
         <DialogContent className={classes(css.dialogStyle)}>
-          <DialogContentText>{manage.Helper[fin]}</DialogContentText>
+          <DialogContentText>
+            {t`Give your current and new password`}
+          </DialogContentText>
 
           <TextField
             type="password"
             value={state.oldPassword}
             margin="dense"
             id="oldpassword"
-            label={manage.OldPass[fin]}
+            label={t`Current password`}
             onChange={handleOldpassStringChange}
             fullWidth
           />
@@ -1058,27 +1060,27 @@ function UserManagementView(props)  {
             className={classes(css.dialogStyle)}
             value={state.newPassword}
             margin="dense"
-            label={manage.NewPass[fin]}
+            label={t`New password`}
             name="passwordField"
             fullWidth
             securityLevels={[
               {
                 descriptionLabel:
-                  manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
+                  t`Minimum` + ' 1 ' + t`number`,
                 validator: /.*[0-9].*/,
               },
               {
                 descriptionLabel:
-                  manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
+                  t`Minimum` + ' 1 ' + t`lowercase letter`,
                 validator: /.*[a-z].*/,
               },
               {
                 descriptionLabel:
-                  manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
+                  t`Minimum` + ' 1 ' + t`uppercase letter`,
                 validator: /.*[A-Z].*/,
               },
               {
-                descriptionLabel: manage.MinimumLength[fin],
+                descriptionLabel: t`Minimum length of password is 6 characters`,
                 validator: /^.{6,}$/,
               },
             ]}
@@ -1089,7 +1091,7 @@ function UserManagementView(props)  {
 
           {state.changeOwnPassFailed ? (
             <p className={classes(css.errorText)}>
-              {manage.ErrorPassword[fin]}{' '}
+              {t`Something went wrong, remember that the password has to meet the listed requirements`}{' '}
             </p>
           ) : (
             <p />
@@ -1100,13 +1102,13 @@ function UserManagementView(props)  {
             onClick={handleChangeOwnPassDialogClose}
             className={classes(css.removeButton)}
           >
-            {manage.Cancel[fin]}
+            {t`Cancel`}
           </Button>
           <Button
             onClick={handleChangeOwnPassDialogCloseAgree}
             className={classes(css.acceptButton)}
           >
-            {manage.Confirm[fin]}
+            {t`Save changes`}
           </Button>
         </DialogActions>
       </Dialog>
@@ -1120,24 +1122,28 @@ function UserManagementView(props)  {
           id="dialog-change-own-email-title"
           className={classes(css.dialogStyle)}
         >
-          {manage.ChangeEmail[fin]}
+          {t`Change email address`}
         </DialogTitle>
         <DialogContent className={classes(css.dialogStyle)}>
-          <DialogContentText>{manage.EmailHelper[fin]}</DialogContentText>
+          <DialogContentText>
+            {t`Please give your new email address`}
+          </DialogContentText>
 
-          <div>{`${manage.OldEmail[fin]}: ${findOwnEmail()}`}</div>
+          <div>{`${t`Current email address`}: ${findOwnEmail()}`}</div>
           <TextField
             type="text"
             value={state.newemail}
             margin="dense"
             id="newemail"
-            label={manage.ChangeEmail[fin]}
+            label={t`Change email address`}
             onChange={handleNewEmailChange}
             fullWidth
           />
 
           {state.changeOwnEmailFailed ? (
-            <p className={classes(css.errorText)}>{manage.Error[fin]} </p>
+            <p className={classes(css.errorText)}>
+              {t`Something went wrong, remember that the password has to meet the listed requirements and the name needs to be unique`}
+              </p>
           ) : (
             <p />
           )}
@@ -1147,13 +1153,13 @@ function UserManagementView(props)  {
             onClick={handleChangeOwnEmailDialogClose}
             className={classes(css.removeButton)}
           >
-            {manage.Cancel[fin]}
+            {t`Cancel`}
           </Button>
           <Button
             onClick={handleChangeOwnEmailDialogCloseAgree}
             className={classes(css.accceptButton)}
           >
-            {manage.Confirm[fin]}
+            {t`Save changes`}
           </Button>
         </DialogActions>
       </Dialog>
@@ -1167,7 +1173,7 @@ function UserManagementView(props)  {
           id="dialog-change-pass-title"
           className={classes(css.dialogStyle)}
         >
-          {manage.ChangeFor[fin]} {state.selectedUserName}
+          {t`Change password for`} {state.selectedUserName}
         </DialogTitle>
         <DialogContent className={classes(css.dialogStyle)}>
           <NiceInputPassword
@@ -1177,27 +1183,27 @@ function UserManagementView(props)  {
             className={classes(css.dialogStyle)}
             value={state.password}
             margin="dense"
-            label={manage.NewPass[fin]}
+            label={t`New password`}
             name="passwordField"
             fullWidth
             securityLevels={[
               {
                 descriptionLabel:
-                  manage.Minimum[fin] + ' 1 ' + manage.PasswordNumber[fin],
+                  t`Minimum` + ' 1 ' + t`number`,
                 validator: /.*[0-9].*/,
               },
               {
                 descriptionLabel:
-                  manage.Minimum[fin] + ' 1 ' + manage.PasswordLowercase[fin],
+                  t`Minimum` + ' 1 ' + t`lowercase letter`,
                 validator: /.*[a-z].*/,
               },
               {
                 descriptionLabel:
-                  manage.Minimum[fin] + ' 1 ' + manage.PasswordUppercase[fin],
+                  t`Minimum` + ' 1 ' + t`uppercase letter`,
                 validator: /.*[A-Z].*/,
               },
               {
-                descriptionLabel: manage.MinimumLength[fin],
+                descriptionLabel: t`Minimum length of password is 6 characters`,
                 validator: /^.{6,}$/,
               },
             ]}
@@ -1211,7 +1217,7 @@ function UserManagementView(props)  {
 
           {state.changeErrors ? (
             <p className={classes(css.errorText)}>
-              {manage.ErrorPassword[fin]}{' '}
+              {t`Something went wrong, remember that the password has to meet the listed requirements`}{' '}
             </p>
           ) : (
             <p />
@@ -1222,13 +1228,13 @@ function UserManagementView(props)  {
             onClick={handleChangePassClose}
             className={classes(css.removeButton)}
           >
-            {manage.Cancel[fin]}
+            {t`Cancel`}
           </Button>
           <Button
             onClick={handleChangePassCloseConfirm}
             className={classes(css.acceptButton)}
           >
-            {manage.Confirm[fin]}
+            {t`Save changes`}
           </Button>
         </DialogActions>
       </Dialog>
@@ -1242,7 +1248,7 @@ function UserManagementView(props)  {
           id="dialog-add-email-title"
           className={classes(css.dialogStyle)}
         >
-          {manage.EmailForUser[fin]} {state.selectedUserName}
+          {t`Change Email for user:`} {state.selectedUserName}
         </DialogTitle>
         <DialogContent className={classes(css.dialogStyle)}>
           <TextField
@@ -1250,7 +1256,7 @@ function UserManagementView(props)  {
             value={state.email}
             margin="dense"
             id="name"
-            label={manage.ChangeEmail[fin]}
+            label={t`Change email address`}
             onChange={(e) => {
               setState({...state, email: e.target.value });
             }}
@@ -1258,7 +1264,7 @@ function UserManagementView(props)  {
           />
           {state.changeErrors ? (
             <p className={classes(css.errorText)}>
-              {manage.ErrorEmail[fin]}{' '}
+              {t`Something went wrong, email not saved`}{' '}
             </p>
           ) : (
             <p />
@@ -1269,13 +1275,13 @@ function UserManagementView(props)  {
             onClick={handleaddEmailClose}
             className={classes(css.removeButton)}
           >
-            {manage.Cancel[fin]}
+            {t`Cancel`}
           </Button>
           <Button
             onClick={handleaddEmailCloseConfirm}
             className={classes(css.acceptButton)}
           >
-            {manage.Confirm[fin]}
+            {t`Save changes`}
           </Button>
         </DialogActions>
       </Dialog>
@@ -1289,13 +1295,13 @@ function UserManagementView(props)  {
           id="dialog-change-role-title"
           className={classes(css.dialogStyle)}
         >
-          {manage.RoleForUser[fin]} {state.selectedUserName}
+          {t`Change role for user:`} {state.selectedUserName}
         </DialogTitle>
         <DialogContent className={classes(css.dialogStyle)}>
           {roleSelect()}
           {state.changeErrors ? (
             <p className={classes(css.errorText)}>
-              {manage.ErrorRole[fin]}{' '}
+              {t`Something went wrong, role not saved`}{' '}
             </p>
           ) : (
             <p />
@@ -1306,22 +1312,22 @@ function UserManagementView(props)  {
             onClick={handleChangeRoleClose}
             className={classes(css.removeButton)}
           >
-            {manage.Cancel[fin]}
+            {t`Cancel`}
           </Button>
           <Button
             onClick={handleChangeRoleCloseConfirm}
             className={classes(css.acceptButton)}
           >
-            {manage.Confirm[fin]}
+            {t`Save changes`}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* THE ACTUAL PAGE */}
-      <h1 className={classes(css.header)}>{manage.UserManage[fin]}</h1>
+      <h1 className={classes(css.header)}>{t`User management`}</h1>
       <Box className={classes(css.LoggedIn)}>
         <div>
-          {manage.LoggedIn[fin]}: 
+          {t`You are logged in as`}: 
           <br />
           <span style={{fontWeight:"bold"}}>{state.username}</span>
         </div>
@@ -1331,14 +1337,14 @@ function UserManagementView(props)  {
             variant="contained"
             className={classes(css.sandButton)}
           >
-            {manage.ChangeEmail[fin]}
+            {t`Change email address`}
           </Button>
           <Button
             onClick={handleOpenOwnPassChangeDialog}
             variant="contained"
             className={classes(css.turquoiseButton)}
           >
-            {manage.ChangePass[fin]}
+            {t`Change password`}
           </Button>
         </div>
       </Box>
@@ -1347,17 +1353,17 @@ function UserManagementView(props)  {
 
       {/* for larger devices only*/}
       <div className={classes(css.usersHeaderDesk)}>
-        <h2 className={classes(css.header)}>{manage.Users[fin]}</h2>
+        <h2 className={classes(css.header)}>{t`User profiles`}</h2>
       </div>
       {/* for smaller devices only */}
       <div className={classes(css.usersHeaderMobile)}>
-        <h3 className={classes(css.header)}>{manage.Users[fin]}</h3>
+        <h3 className={classes(css.header)}>{t`User profiles`}</h3>
         <Button
           onClick={handleAddUserOpenDialog}
           variant="contained"
           className={css.lightgreenButton}
         >
-          {manage.CreateUser[fin]}
+          {t`Create new user`}
         </Button>
       </div>
       <Box className={classes(css.userbox)}>
@@ -1369,28 +1375,28 @@ function UserManagementView(props)  {
             <TableHead className={classes(css.tableHead)}>
               <TableRow>
                 <TableCell align="left" style={{fontWeight: 'bold', width: '300px'}}>
-                  {manage.User[fin]}
+                  {t`User`}
                 </TableCell>
                 <TableCell 
                   align="left" 
                   style={{fontWeight: 'bold', width: '200px'}} 
                   className={classes(css.tableCellDesk)}
                 >
-                  {manage.Role[fin]}
+                  {t`Role`}
                 </TableCell>
                 <TableCell 
                   align="left" 
                   style={{fontWeight: 'bold', width: '100px'}} 
                   className={classes(css.tableCellDesk)}
                 >
-                  {manage.Association[fin]}
+                  {t`Association`}
                 </TableCell>
                 <TableCell 
                   align="right" 
                   className={classes(css.tableCellDesk)} 
                   style= {{color: '#f2f2f2'}}
                 > 
-                  {manage.Edit[fin]}
+                  {t`Edit`}
                 </TableCell>
                 <TableCell 
                   align="right" 
@@ -1401,7 +1407,7 @@ function UserManagementView(props)  {
                     variant="contained"
                     className={classes(css.addUserButtonDesk, css.lightgreenButton)}
                   >
-                    {manage.CreateUser[fin]}
+                    {t`Create new user`}
                   </Button>
                 </TableCell>
               </TableRow>
@@ -1414,7 +1420,7 @@ function UserManagementView(props)  {
                     <br /> 
                     {row.email} 
                     {state.editingRows[row.id] && (
-                      <Tooltip title={manage.EditEmail[fin]}>
+                      <Tooltip title={t`Edit email address`}>
                         <IconButton 
                           id={row.id}
                           onClick={onaddEmailClick}
@@ -1428,9 +1434,9 @@ function UserManagementView(props)  {
                     <div className={classes(css.tableCellMobile)}>
                       <br />
                       <div>
-                        <span style={{fontWeight:'bold'}}>{manage.Role[fin]}: </span> {row.roleToPrint}
+                        <span style={{fontWeight:'bold'}}>{t`Role`}: </span> {row.roleToPrint}
                         {state.editingRows[row.id] && (
-                          <Tooltip title={manage.EditRole[fin]}>
+                          <Tooltip title={t`Edit role`}>
                             <IconButton 
                               id={row.id}
                               onClick={onRoleClick}
@@ -1447,7 +1453,7 @@ function UserManagementView(props)  {
                         row.roleToPrint === 'Banofficer'
                       ) &&(
                         <div>
-                          <span style={{fontWeight:'bold'}}>{manage.Association[fin]}: </span> 
+                          <span style={{fontWeight:'bold'}}>{t`Association`}: </span> 
                           {printAssociationName(row.id)}
                         </div>
                       )}
@@ -1465,7 +1471,7 @@ function UserManagementView(props)  {
                   <TableCell align="justify" className={classes(css.tableCellDesk)}>
                     {row.roleToPrint}
                     {state.editingRows[row.id] && (
-                      <Tooltip title={manage.EditRole[fin]}>
+                      <Tooltip title={t`Edit role`}>
                         <IconButton 
                           id={row.id}
                           onClick={onRoleClick}
@@ -1495,8 +1501,8 @@ function UserManagementView(props)  {
                       aria-label="Edit"
                     >
                       {!state.editingRows[row.id] 
-                        ? <Tooltip title={manage.Edit[fin]}><EditIcon/></Tooltip>
-                        : <Tooltip title={manage.EditOff[fin]}><EditOffIcon/></Tooltip>
+                        ? <Tooltip title={t`Edit`}><EditIcon/></Tooltip>
+                        : <Tooltip title={t`Close editing mode`}><EditOffIcon/></Tooltip>
                       }
                     </IconButton>
                   </TableCell>

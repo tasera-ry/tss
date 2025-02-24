@@ -5,6 +5,7 @@ import { act } from 'react-dom/test-utils';
 import UserManagementView from './UserManagementView';
 import testUtils from '../_TestUtils/TestUtils';
 import * as utils from '../utils/Utils';
+import { TestProviders } from '@/_TestUtils/TestProvides';
 
 // Mock validateLogin before your tests
 vi.mock(import('../utils/Utils'), async (importOriginal) => {
@@ -45,7 +46,7 @@ describe('testing UserManagementView', () => {
       render(
         <Router>
           <UserManagementView history={history} />
-        </Router>,
+        </Router>, { wrapper: TestProviders }
       );
     });
     await waitFor(() =>
@@ -71,7 +72,7 @@ describe('testing UserManagementView', () => {
       render(
         <Router>
           <UserManagementView history={history} />
-        </Router>,
+        </Router>, { wrapper: TestProviders }
       );
     });
     await waitFor(() =>

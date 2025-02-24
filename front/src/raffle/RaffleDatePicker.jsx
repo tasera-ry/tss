@@ -1,15 +1,41 @@
-import React from "react";
 import DayPicker, { DateUtils, ModifiersUtils } from "react-day-picker";
 import "react-day-picker/lib/style.css";
 import "./RaffleDatePicker.scss";
-import translations from "../texts/texts.json";
+import { msg } from '@lingui/core/macro';
+import { useLingui } from "@lingui/react";
 
-const LANGUAGE = localStorage.getItem("language");
-
-const WEEKDAYS_TEXT_LONG = translations.raffleDatePicker.weekdaysLong[LANGUAGE];
-const WEEKDAYS_TEXT_SHORT =
-  translations.raffleDatePicker.weekdaysShort[LANGUAGE];
-const MONTHS_TEXT = translations.raffleDatePicker.months[LANGUAGE];
+const WEEKDAYS_TEXT_LONG = [
+  msg`Sunday`,
+  msg`Monday`,
+  msg`Tuesday`,
+  msg`Wednesday`,
+  msg`Thursday`,
+  msg`Friday`,
+  msg`Saturday`,
+];
+const WEEKDAYS_TEXT_SHORT = [
+  msg`Su`,
+  msg`Mo`,
+  msg`Tu`,
+  msg`We`,
+  msg`Th`,
+  msg`Fr`,
+  msg`Sa`,
+];
+const MONTHS_TEXT = [
+  msg`January`,
+  msg`February`,
+  msg`March`,
+  msg`April`,
+  msg`May`,
+  msg`June`,
+  msg`July`,
+  msg`August`,
+  msg`September`,
+  msg`October`,
+  msg`November`,
+  msg`December`,
+];
 
 const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
   const currentDate = new Date();
@@ -61,15 +87,21 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
     }
   };
 
+  const { _ } = useLingui();
+
+  const shortWeekdays = WEEKDAYS_TEXT_SHORT.map((day) => _(day))
+  const longWeekdays = WEEKDAYS_TEXT_LONG.map((day) => _(day))
+  const months = MONTHS_TEXT.map((month) => _(month))
+
   return (
     <DayPicker
       // Set the calendar to start from current month
       fromMonth={currentDate}
       showWeekNumbers
       disabledDays={disabledDays}
-      months={MONTHS_TEXT}
-      weekdaysShort={WEEKDAYS_TEXT_SHORT}
-      weekdaysLong={WEEKDAYS_TEXT_LONG}
+      months={months}
+      weekdaysShort={shortWeekdays}
+      weekdaysLong={longWeekdays}
       firstDayOfWeek={1}
       selectedDays={selectedDays}
       onDayClick={handleDayClick}

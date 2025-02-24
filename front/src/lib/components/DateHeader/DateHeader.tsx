@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { dayToString } from '../../../utils/Utils';
+import { useWeekDay } from '../../../utils/dateUtils';
 import css from './DateHeader.module.scss';
 import { useMemo } from 'react';
 
@@ -13,9 +13,9 @@ export interface DateHeaderProps {
 
 export function DateHeader({targetDate, onPrevious, onNext}: DateHeaderProps) {
 
-  const weekDay = useMemo(() => {
-    return dayToString(new Date(targetDate).getDay());
-  }, [targetDate])
+  const date = useMemo(() => new Date(targetDate), [targetDate])
+
+  const weekDay = useWeekDay(date, 'long')
 
   const dateString = useMemo(() => {
     return new Date(targetDate).toLocaleDateString('fi-FI');

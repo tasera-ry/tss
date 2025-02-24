@@ -2,17 +2,9 @@ import moment from 'moment';
 import 'moment/locale/sv';
 import { Link } from 'react-router-dom';
 import api from '../api/api';
-import texts from '../texts/texts.json';
 import colors from '../colors.module.scss';
+import { t } from '@lingui/macro';
 
-export const dateToString = (d) => {
-  const month = d.getMonth() + 1;
-  const date = d.getDate();
-
-  return `${d.getFullYear()}-${month < 10 ? '0' : ''}${month}-${
-    date < 10 ? '0' : ''
-  }${date}`;
-};
 /**
  * Increments or decrements the date by the param amount
  * @param {Date} date The date to be incemented or decremented
@@ -77,10 +69,8 @@ export const checkColor = (days, oneDay) => {
 };
 
 
-const { viewChanger } = texts;
 
 export function JumpToCurrent() {
-  const lang = localStorage.getItem('language');
 
   const fullUrl = window.location.href.split('/');
   const urlParamDate = fullUrl[4];
@@ -92,7 +82,7 @@ export function JumpToCurrent() {
       data-testid="jumpToCur"
       to={`/${urlParamDate}/${date}`}
     >
-      <div>{viewChanger.JumpToCurrent[lang]}</div>
+      <div>{t`Today`}</div>
     </Link>
   );
 };
@@ -102,22 +92,6 @@ export const getLanguage = () => {
   if (localStorage.getItem('language') === '1') return 'en';
   else if (localStorage.getItem('language') === '2') return 'sv';
   return 'fi';
-};
-
-export const dayToString = (i) => {
-  const lang = getLanguage();
-  moment.locale(lang);
-  // en has different number for start date compared to fi and swe
-  if (lang !== 'en') i -= 1; // eslint-disable-line
-  const dayString = moment().weekday(i).format('dddd');
-  // first letter only to uppercase
-  return dayString.charAt(0).toUpperCase() + dayString.slice(1);
-};
-
-export const monthToString = (i) => {
-  const lang = getLanguage();
-  moment.locale(lang);
-  return moment().month(i).format('MMMM');
 };
 
 /*

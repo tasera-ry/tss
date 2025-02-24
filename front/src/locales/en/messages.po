@@ -1,0 +1,1069 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2025-02-09 11:46+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: en\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#: src/upcomingsupervisions/LoggedIn.jsx:82
+#: src/upcomingsupervisions/LoggedIn.jsx:143
+#: src/upcomingsupervisions/LoggedIn.jsx:192
+#: src/profile/profilepages/supervisions.jsx:279
+msgid "Absent"
+msgstr "Absent"
+
+#: src/lib/components/Navbar/DrawerMenu.tsx:39
+msgid "Account dashboard"
+msgstr "Account dashboard"
+
+#: src/profile/profilepages/supervisions.jsx:244
+#: src/profile/profilepages/officerform.jsx:52
+#: src/edittracks/tracks.jsx:112
+msgid "Actions"
+msgstr "Actions"
+
+#: src/edittracks/tracks.jsx:198
+msgid "Add"
+msgstr "Add"
+
+#: src/scheduling/Scheduling.jsx:1142
+msgid "Add estimated time of arrival"
+msgstr "Add estimated time of arrival"
+
+#: src/infoBox/AddInfo.jsx:120
+msgid "Add info"
+msgstr "Add info"
+
+#: src/lib/components/Navbar/DrawerMenu.tsx:31
+msgid "Add info message"
+msgstr "Add info message"
+
+#: src/profile/profilepages/officerform.jsx:200
+msgid "Add new range officer"
+msgstr "Add new range officer"
+
+#: src/profile/profilepages/officerform.jsx:262
+msgid "Add range officer"
+msgstr "Add range officer"
+
+#: src/scheduling/Scheduling.jsx:1198
+msgid "Advanced options"
+msgstr "Advanced options"
+
+#: src/raffle/SupervisionAmountsTable.jsx:47
+msgid "Amount of supervisions"
+msgstr "Amount of supervisions"
+
+#: src/raffle/RaffleDatePicker.jsx:29
+msgid "April"
+msgstr "April"
+
+#: src/usermanagement/UserManagementView.jsx:993
+msgid "Are you sure?"
+msgstr "Are you sure?"
+
+#: src/profile/profilepages/supervisions.jsx:241
+msgid "Assigned officer"
+msgstr "Assigned officer"
+
+#: src/usermanagement/UserManagementView.jsx:555
+#: src/usermanagement/UserManagementView.jsx:840
+#: src/usermanagement/UserManagementView.jsx:1392
+#: src/usermanagement/UserManagementView.jsx:1456
+#: src/raffle/SupervisorsTable.jsx:54
+#: src/raffle/SupervisionResultsTable.jsx:140
+#: src/raffle/SupervisionAmountsTable.jsx:45
+msgid "Association"
+msgstr "Association"
+
+#: src/lib/components/Navbar/DrawerMenu.tsx:35
+msgid "Association dashboard"
+msgstr "Association dashboard"
+
+#: src/raffle/raffle.jsx:111
+msgid "Association update failed"
+msgstr "Association update failed"
+
+#: src/profile/profilepages/supervisions.jsx:223
+msgid "Association's upcoming supervisions"
+msgstr "Association's upcoming supervisions"
+
+#: src/raffle/raffle.jsx:179
+msgid "Associations"
+msgstr "Associations"
+
+#: src/raffle/RaffleDatePicker.jsx:33
+msgid "August"
+msgstr "August"
+
+#: src/dayview/Dayview.tsx:88
+msgid "Back to weekview"
+msgstr "Back to weekview"
+
+#: src/usermanagement/UserManagementView.jsx:972
+#: src/usermanagement/UserManagementView.jsx:1016
+#: src/usermanagement/UserManagementView.jsx:1105
+#: src/usermanagement/UserManagementView.jsx:1156
+#: src/usermanagement/UserManagementView.jsx:1231
+#: src/usermanagement/UserManagementView.jsx:1278
+#: src/usermanagement/UserManagementView.jsx:1315
+#: src/upcomingsupervisions/LoggedIn.jsx:625
+#: src/profile/profilepages/officerform.jsx:84
+#: src/lib/components/Navbar/FeedbackWindow.tsx:49
+msgid "Cancel"
+msgstr "Cancel"
+
+#: src/usermanagement/UserManagementView.jsx:1125
+#: src/usermanagement/UserManagementView.jsx:1138
+#: src/usermanagement/UserManagementView.jsx:1259
+#: src/usermanagement/UserManagementView.jsx:1340
+msgid "Change email address"
+msgstr "Change email address"
+
+#: src/usermanagement/UserManagementView.jsx:1251
+msgid "Change Email for user:"
+msgstr "Change Email for user:"
+
+#: src/usermanagement/UserManagementView.jsx:540
+#: src/usermanagement/UserManagementView.jsx:1036
+#: src/usermanagement/UserManagementView.jsx:1347
+#: src/profile/profilesettings.jsx:26
+msgid "Change password"
+msgstr "Change password"
+
+#: src/usermanagement/UserManagementView.jsx:1176
+msgid "Change password for"
+msgstr "Change password for"
+
+#: src/usermanagement/UserManagementView.jsx:1298
+msgid "Change role for user:"
+msgstr "Change role for user:"
+
+#: src/lib/components/Navbar/SupervisorNotification.tsx:37
+msgid "CHECK"
+msgstr "CHECK"
+
+#: src/scheduling/Scheduling.jsx:1014
+#: src/VisitorLogging/VisitorLogging.jsx:97
+msgid "Choose date"
+msgstr "Choose date"
+
+#: src/raffle/raffle.jsx:195
+msgid "Choose dates for the raffle"
+msgstr "Choose dates for the raffle"
+
+#: src/VisitorLogging/VisitorLogging.jsx:134
+msgid "Close"
+msgstr "Close"
+
+#: src/scheduling/Scheduling.jsx:1191
+msgid "Close All"
+msgstr "Close All"
+
+#: src/usermanagement/UserManagementView.jsx:1505
+msgid "Close editing mode"
+msgstr "Close editing mode"
+
+#: src/scheduling/Scheduling.jsx:956
+#: src/dayview/Dayview.tsx:179
+msgid "Closed"
+msgstr "Closed"
+
+#: src/usermanagement/UserManagementView.jsx:1022
+msgid "Confirm"
+msgstr "Confirm"
+
+#: src/upcomingsupervisions/LoggedIn.jsx:72
+#: src/upcomingsupervisions/LoggedIn.jsx:128
+#: src/upcomingsupervisions/LoggedIn.jsx:186
+#: src/profile/profilepages/supervisions.jsx:273
+msgid "Confirm date"
+msgstr "Confirm date"
+
+#: src/renewPW/RenewPassword.jsx:137
+#: src/renewPW/RenewPassword.jsx:140
+msgid "Confirm new password"
+msgstr "Confirm new password"
+
+#: src/profile/profilepages/officerform.jsx:247
+msgid "Confirm password"
+msgstr "Confirm password"
+
+#: src/upcomingsupervisions/LoggedIn.jsx:589
+#: src/profile/profilepages/supervisions.jsx:218
+msgid "Confirm supervisions"
+msgstr "Confirm supervisions"
+
+#: src/scheduling/Scheduling.jsx:1156
+msgid "Confirm time"
+msgstr "Confirm time"
+
+#: src/upcomingsupervisions/LoggedIn.jsx:78
+#: src/upcomingsupervisions/LoggedIn.jsx:135
+#: src/upcomingsupervisions/LoggedIn.jsx:189
+#: src/upcomingsupervisions/LoggedIn.jsx:197
+#: src/upcomingsupervisions/LoggedIn.jsx:231
+#: src/scheduling/Scheduling.jsx:1123
+#: src/profile/profilepages/supervisions.jsx:276
+msgid "Confirmed"
+msgstr "Confirmed"
+
+#: src/raffle/raffle.jsx:71
+msgid "Could not load associations"
+msgstr "Could not load associations"
+
+#: src/usermanagement/UserManagementView.jsx:898
+#: src/usermanagement/UserManagementView.jsx:1366
+#: src/usermanagement/UserManagementView.jsx:1410
+msgid "Create new user"
+msgstr "Create new user"
+
+#: src/usermanagement/UserManagementView.jsx:1132
+msgid "Current email address"
+msgstr "Current email address"
+
+#: src/usermanagement/UserManagementView.jsx:1048
+msgid "Current password"
+msgstr "Current password"
+
+#: src/raffle/SupervisionResultsTable.jsx:137
+#: src/profile/profilepages/supervisions.jsx:238
+msgid "Date"
+msgstr "Date"
+
+#: src/lib/components/ViewChanger.jsx:38
+msgid "Day"
+msgstr "Day"
+
+#: src/raffle/RaffleDatePicker.jsx:37
+msgid "December"
+msgstr "December"
+
+#: src/profile/profilepages/officerform.jsx:68
+#: src/profile/profilepages/officerform.jsx:93
+#: src/edittracks/tracks.jsx:164
+msgid "Delete"
+msgstr "Delete"
+
+#: src/usermanagement/UserManagementView.jsx:525
+msgid "Delete profile"
+msgstr "Delete profile"
+
+#: src/profile/profilepages/officerform.jsx:80
+msgid "Delete range officer"
+msgstr "Delete range officer"
+
+#: src/edittracks/tracks.jsx:110
+#: src/edittracks/tracks.jsx:186
+msgid "Description"
+msgstr "Description"
+
+#: src/scheduling/Scheduling.jsx:593
+msgid "Details"
+msgstr "Details"
+
+#: src/usermanagement/UserManagementView.jsx:1399
+#: src/usermanagement/UserManagementView.jsx:1504
+#: src/scheduling/Scheduling.jsx:1093
+#: src/edittracks/tracks.jsx:159
+msgid "Edit"
+msgstr "Edit"
+
+#: src/usermanagement/UserManagementView.jsx:1423
+msgid "Edit email address"
+msgstr "Edit email address"
+
+#: src/scheduling/Scheduling.jsx:1109
+msgid "Edit range officer status by choosing color"
+msgstr "Edit range officer status by choosing color"
+
+#: src/usermanagement/UserManagementView.jsx:1439
+#: src/usermanagement/UserManagementView.jsx:1474
+msgid "Edit role"
+msgstr "Edit role"
+
+#: src/lib/components/Navbar/DrawerMenu.tsx:26
+msgid "Edit tracks"
+msgstr "Edit tracks"
+
+#: src/usermanagement/UserManagementView.jsx:952
+msgid "Email"
+msgstr "Email"
+
+#: src/lib/components/Navbar/DrawerMenu.tsx:28
+msgid "Email settings"
+msgstr "Email settings"
+
+#: src/upcomingsupervisions/LoggedIn.jsx:261
+msgid "En route"
+msgstr "En route"
+
+#: src/scheduling/Scheduling.jsx:1060
+msgid "End"
+msgstr "End"
+
+#: src/infoBox/AddInfo.jsx:144
+msgid "End date"
+msgstr "End date"
+
+#: src/scheduling/Scheduling.jsx:1235
+msgid "End repeat after"
+msgstr "End repeat after"
+
+#: src/renewPW/RenewPassword.jsx:89
+msgid "Error verifying token!"
+msgstr "Error verifying token!"
+
+#: src/scheduling/Scheduling.jsx:400
+msgid "Estimated time of arrival updated"
+msgstr "Estimated time of arrival updated"
+
+#: src/scheduling/Scheduling.jsx:405
+msgid "Failed to update estimated time of arrival"
+msgstr "Failed to update estimated time of arrival"
+
+#: src/raffle/RaffleDatePicker.jsx:27
+msgid "February"
+msgstr "February"
+
+#: src/lib/components/Navbar/DrawerMenu.tsx:106
+msgid "Feedback"
+msgstr "Feedback"
+
+#: src/profile/profilepages/officerform.jsx:142
+msgid "Fill all the text fields"
+msgstr "Fill all the text fields"
+
+#: src/signin/SignIn.jsx:121
+#: src/renewPW/RenewPassword.jsx:101
+msgid "Forgot password?"
+msgstr "Forgot password?"
+
+#: src/raffle/RaffleDatePicker.jsx:22
+msgid "Fr"
+msgstr "Fr"
+
+#: src/ButtonComponent/ButtonComponent.jsx:103
+msgid "Free"
+msgstr "Free"
+
+#: src/weekview/Weekview.tsx:83
+#: src/monthview/Monthview.tsx:103
+msgid "Fri"
+msgstr "Fri"
+
+#: src/raffle/RaffleDatePicker.jsx:13
+msgid "Friday"
+msgstr "Friday"
+
+#: src/lib/components/Navbar/FeedbackWindow.tsx:27
+msgid "Give feedback"
+msgstr "Give feedback"
+
+#: src/usermanagement/UserManagementView.jsx:1040
+msgid "Give your current and new password"
+msgstr "Give your current and new password"
+
+#: src/raffle/SupervisorsTable.jsx:55
+msgid "Gun license owners"
+msgstr "Gun license owners"
+
+#: src/raffle/SupervisorsTable.jsx:52
+msgid "In raffle"
+msgstr "In raffle"
+
+#: src/renewPW/RenewPassword.jsx:108
+msgid "Input new password"
+msgstr "Input new password"
+
+#: src/raffle/RaffleDatePicker.jsx:26
+msgid "January"
+msgstr "January"
+
+#: src/raffle/RaffleDatePicker.jsx:32
+msgid "July"
+msgstr "July"
+
+#: src/raffle/RaffleDatePicker.jsx:31
+msgid "June"
+msgstr "June"
+
+#: src/renewPW/RenewPassword.jsx:78
+msgid "Loading user data..."
+msgstr "Loading user data..."
+
+#: src/signin/SignIn.jsx:114
+msgid "Log in"
+msgstr "Log in"
+
+#: src/usermanagement/UserManagementView.jsx:930
+#: src/usermanagement/UserManagementView.jsx:1074
+#: src/usermanagement/UserManagementView.jsx:1197
+msgid "lowercase letter"
+msgstr "lowercase letter"
+
+#: src/scheduling/Scheduling.jsx:1167
+msgid "Manage shooting tracks"
+msgstr "Manage shooting tracks"
+
+#: src/raffle/RaffleDatePicker.jsx:28
+msgid "March"
+msgstr "March"
+
+#: src/raffle/RaffleDatePicker.jsx:30
+msgid "May"
+msgstr "May"
+
+#: src/lib/components/Navbar/DrawerMenu.tsx:73
+msgid "Menu"
+msgstr "Menu"
+
+#: src/infoBox/AddInfo.jsx:124
+msgid "Message"
+msgstr "Message"
+
+#: src/usermanagement/UserManagementView.jsx:925
+#: src/usermanagement/UserManagementView.jsx:930
+#: src/usermanagement/UserManagementView.jsx:935
+#: src/usermanagement/UserManagementView.jsx:1069
+#: src/usermanagement/UserManagementView.jsx:1074
+#: src/usermanagement/UserManagementView.jsx:1079
+#: src/usermanagement/UserManagementView.jsx:1192
+#: src/usermanagement/UserManagementView.jsx:1197
+#: src/usermanagement/UserManagementView.jsx:1202
+msgid "Minimum"
+msgstr "Minimum"
+
+#: src/usermanagement/UserManagementView.jsx:939
+#: src/usermanagement/UserManagementView.jsx:1083
+#: src/usermanagement/UserManagementView.jsx:1206
+msgid "Minimum length of password is 6 characters"
+msgstr "Minimum length of password is 6 characters"
+
+#: src/raffle/RaffleDatePicker.jsx:18
+msgid "Mo"
+msgstr "Mo"
+
+#: src/weekview/Weekview.tsx:79
+#: src/monthview/Monthview.tsx:99
+msgid "Mon"
+msgstr "Mon"
+
+#: src/raffle/RaffleDatePicker.jsx:9
+msgid "Monday"
+msgstr "Monday"
+
+#: src/lib/components/ViewChanger.jsx:24
+msgid "Month"
+msgstr "Month"
+
+#: src/edittracks/tracks.jsx:109
+#: src/edittracks/tracks.jsx:179
+msgid "Name"
+msgstr "Name"
+
+#: src/usermanagement/UserManagementView.jsx:1063
+#: src/usermanagement/UserManagementView.jsx:1186
+#: src/renewPW/RenewPassword.jsx:117
+#: src/renewPW/RenewPassword.jsx:119
+msgid "New password"
+msgstr "New password"
+
+#: src/TrackStatistics/TrackStatistics.jsx:105
+msgid "No"
+msgstr "No"
+
+#: src/VisitorLogging/VisitorLogging.jsx:123
+msgid "No reservations found. Set reservation in Schedules page"
+msgstr "No reservations found. Set reservation in Schedules page"
+
+#: src/upcomingsupervisions/LoggedIn.jsx:157
+#: src/upcomingsupervisions/LoggedIn.jsx:214
+#: src/profile/profilepages/supervisions.jsx:307
+msgid "No selection"
+msgstr "No selection"
+
+#: src/dayview/Dayview.tsx:180
+msgid "No track officer available"
+msgstr "No track officer available"
+
+#: src/scheduling/Scheduling.jsx:1116
+msgid "Not confirmed"
+msgstr "Not confirmed"
+
+#: src/upcomingsupervisions/LoggedIn.jsx:593
+msgid "Nothing to confirm"
+msgstr "Nothing to confirm"
+
+#: src/raffle/RaffleDatePicker.jsx:36
+msgid "November"
+msgstr "November"
+
+#: src/usermanagement/UserManagementView.jsx:925
+#: src/usermanagement/UserManagementView.jsx:1069
+#: src/usermanagement/UserManagementView.jsx:1192
+msgid "number"
+msgstr "number"
+
+#: src/raffle/RaffleDatePicker.jsx:35
+msgid "October"
+msgstr "October"
+
+#: src/scheduling/Scheduling.jsx:1130
+msgid "On the way"
+msgstr "On the way"
+
+#: src/scheduling/Scheduling.jsx:1028
+#: src/dayview/Dayview.tsx:178
+msgid "Open"
+msgstr "Open"
+
+#: src/scheduling/Scheduling.jsx:1179
+msgid "Open All"
+msgstr "Open All"
+
+#: src/scheduling/Scheduling.jsx:1039
+msgid "Opening hours"
+msgstr "Opening hours"
+
+#: src/dayview/Dayview.tsx:64
+msgid "Opening hours: {opensAt}-{closesAt}"
+msgstr "Opening hours: {opensAt}-{closesAt}"
+
+#: src/raffle/raffle.jsx:104
+msgid "Organization updated"
+msgstr "Organization updated"
+
+#: src/usermanagement/UserManagementView.jsx:919
+#: src/signin/SignIn.jsx:92
+#: src/profile/profilepages/officerform.jsx:230
+msgid "Password"
+msgstr "Password"
+
+#: src/resetPW/ResetPassword.jsx:71
+msgid "Password reset e-mail succesfully sent!"
+msgstr "Password reset e-mail succesfully sent!"
+
+#: src/renewPW/RenewPassword.jsx:178
+msgid "Password updated succesfully!"
+msgstr "Password updated succesfully!"
+
+#: src/profile/profilepages/officerform.jsx:148
+msgid "Passwords don't match"
+msgstr "Passwords don't match"
+
+#: src/renewPW/RenewPassword.jsx:152
+msgid "Passwords don't match!"
+msgstr "Passwords don't match!"
+
+#: src/usermanagement/UserManagementView.jsx:1129
+msgid "Please give your new email address"
+msgstr "Please give your new email address"
+
+#: src/scheduling/Scheduling.jsx:1137
+msgid "Present"
+msgstr "Present"
+
+#: src/raffle/raffle.jsx:218
+msgid "Raffle results"
+msgstr "Raffle results"
+
+#: src/raffle/raffle.jsx:177
+#: src/raffle/raffle.jsx:208
+msgid "Raffle supervisors"
+msgstr "Raffle supervisors"
+
+#: src/dayview/Dayview.tsx:166
+#: src/TableLegends/TableLegends.tsx:19
+msgid "Range closed"
+msgstr "Range closed"
+
+#: src/usermanagement/UserManagementView.jsx:559
+msgid "Range master"
+msgstr "Range master"
+
+#: src/usermanagement/UserManagementView.jsx:557
+#: src/usermanagement/UserManagementView.jsx:839
+#: src/scheduling/Scheduling.jsx:1072
+msgid "Range officer"
+msgstr "Range officer"
+
+#: src/scheduling/Scheduling.jsx:445
+msgid "Range officer active with no selection"
+msgstr "Range officer active with no selection"
+
+#: src/profile/profilepages/officerform.jsx:165
+msgid "Range officer added successfully"
+msgstr "Range officer added successfully"
+
+#: src/profile/profilepages/officerform.jsx:176
+msgid "Range officer addition failed"
+msgstr "Range officer addition failed"
+
+#: src/scheduling/Scheduling.jsx:351
+#: src/scheduling/Scheduling.jsx:353
+#: src/scheduling/Scheduling.jsx:959
+#: src/dayview/Dayview.tsx:160
+msgid "Range officer confirmed"
+msgstr "Range officer confirmed"
+
+#: src/TableLegends/TableLegends.tsx:15
+msgid "Range officer confirmed, estimated time of arrival"
+msgstr "Range officer confirmed, estimated time of arrival"
+
+#: src/profile/profilepages/officerform.jsx:190
+msgid "Range officer deleted successfully"
+msgstr "Range officer deleted successfully"
+
+#: src/profile/profilepages/officerform.jsx:193
+msgid "Range officer deletion failed"
+msgstr "Range officer deletion failed"
+
+#: src/profile/profilesettings.jsx:30
+msgid "Range officer management"
+msgstr "Range officer management"
+
+#: src/scheduling/Scheduling.jsx:362
+#: src/scheduling/Scheduling.jsx:364
+#: src/scheduling/Scheduling.jsx:950
+#: src/dayview/Dayview.tsx:164
+#: src/TableLegends/TableLegends.tsx:17
+msgid "Range officer on the way"
+msgstr "Range officer on the way"
+
+#: src/scheduling/Scheduling.jsx:340
+#: src/scheduling/Scheduling.jsx:342
+#: src/scheduling/Scheduling.jsx:962
+#: src/dayview/Dayview.tsx:162
+msgid "Range officer predefined"
+msgstr "Range officer predefined"
+
+#: src/TableLegends/TableLegends.tsx:13
+msgid "Range officer predefined, not confirmed"
+msgstr "Range officer predefined, not confirmed"
+
+#: src/scheduling/Scheduling.jsx:373
+#: src/scheduling/Scheduling.jsx:375
+#: src/scheduling/Scheduling.jsx:947
+#: src/dayview/Dayview.tsx:156
+#: src/TableLegends/TableLegends.tsx:11
+msgid "Range officer present"
+msgstr "Range officer present"
+
+#: src/scheduling/Scheduling.jsx:953
+#: src/scheduling/Scheduling.jsx:965
+#: src/dayview/Dayview.tsx:158
+#: src/TableLegends/TableLegends.tsx:21
+msgid "Range officer undefined"
+msgstr "Range officer undefined"
+
+#: src/profile/profilepages/officerform.jsx:51
+msgid "Range officers"
+msgstr "Range officers"
+
+#: src/infoBox/AddInfo.jsx:190
+msgid "Rangemaster"
+msgstr "Rangemaster"
+
+#: src/raffle/SupervisorsTable.jsx:56
+msgid "Rangeofficers"
+msgstr "Rangeofficers"
+
+#: src/scheduling/Scheduling.jsx:1202
+msgid "Repeat daily"
+msgstr "Repeat daily"
+
+#: src/scheduling/Scheduling.jsx:1224
+msgid "Repeat monthly"
+msgstr "Repeat monthly"
+
+#: src/scheduling/Scheduling.jsx:1213
+msgid "Repeat weekly"
+msgstr "Repeat weekly"
+
+#: src/ButtonComponent/ButtonComponent.jsx:103
+msgid "Reserved"
+msgstr "Reserved"
+
+#: src/profile/profilepages/supervisions.jsx:358
+msgid "Reset"
+msgstr "Reset"
+
+#: src/raffle/raffle.jsx:152
+msgid "Results saved"
+msgstr "Results saved"
+
+#: src/upcomingsupervisions/LoggedIn.jsx:594
+msgid "Retrieving information..."
+msgstr "Retrieving information..."
+
+#: src/usermanagement/UserManagementView.jsx:1385
+#: src/usermanagement/UserManagementView.jsx:1437
+msgid "Role"
+msgstr "Role"
+
+#: src/raffle/RaffleDatePicker.jsx:23
+msgid "Sa"
+msgstr "Sa"
+
+#: src/weekview/Weekview.tsx:84
+#: src/monthview/Monthview.tsx:104
+msgid "Sat"
+msgstr "Sat"
+
+#: src/raffle/RaffleDatePicker.jsx:14
+msgid "Saturday"
+msgstr "Saturday"
+
+#: src/upcomingsupervisions/LoggedIn.jsx:633
+#: src/VisitorLogging/VisitorLogging.jsx:144
+msgid "Save"
+msgstr "Save"
+
+#: src/usermanagement/UserManagementView.jsx:978
+#: src/usermanagement/UserManagementView.jsx:1111
+#: src/usermanagement/UserManagementView.jsx:1162
+#: src/usermanagement/UserManagementView.jsx:1237
+#: src/usermanagement/UserManagementView.jsx:1284
+#: src/usermanagement/UserManagementView.jsx:1321
+#: src/scheduling/Scheduling.jsx:1254
+msgid "Save changes"
+msgstr "Save changes"
+
+#: src/raffle/raffle.jsx:236
+msgid "Save results"
+msgstr "Save results"
+
+#: src/scheduling/Scheduling.jsx:1005
+#: src/lib/components/Navbar/DrawerMenu.tsx:24
+msgid "Schedules"
+msgstr "Schedules"
+
+#: src/usermanagement/UserManagementView.jsx:857
+#: src/usermanagement/UserManagementView.jsx:862
+msgid "Select association"
+msgstr "Select association"
+
+#: src/upcomingsupervisions/LoggedIn.jsx:87
+#: src/profile/profilepages/supervisions.jsx:298
+msgid "Select officer"
+msgstr "Select officer"
+
+#: src/scheduling/Scheduling.jsx:638
+#: src/scheduling/Scheduling.jsx:644
+msgid "Select range officer"
+msgstr "Select range officer"
+
+#: src/usermanagement/UserManagementView.jsx:831
+#: src/usermanagement/UserManagementView.jsx:834
+msgid "Select role"
+msgstr "Select role"
+
+#: src/lib/components/Navbar/FeedbackWindow.tsx:59
+#: src/infoBox/AddInfo.jsx:208
+msgid "Send"
+msgstr "Send"
+
+#: src/infoBox/AddInfo.jsx:189
+msgid "Send public message"
+msgstr "Send public message"
+
+#: src/raffle/RaffleDatePicker.jsx:34
+msgid "September"
+msgstr "September"
+
+#: src/profile/profilepages/supervisions.jsx:344
+msgid "Set"
+msgstr "Set"
+
+#: src/edittracks/tracks.jsx:111
+#: src/edittracks/tracks.jsx:193
+msgid "Short description"
+msgstr "Short description"
+
+#: src/signin/SignIn.jsx:61
+#: src/lib/components/Navbar/Navbar.tsx:71
+msgid "Sign In"
+msgstr "Sign In"
+
+#: src/lib/components/Navbar/DrawerMenu.tsx:90
+msgid "Sign Out"
+msgstr "Sign Out"
+
+#: src/usermanagement/UserManagementView.jsx:1005
+#: src/scheduling/Scheduling.jsx:449
+#: src/profile/profilepages/supervisions.jsx:183
+#: src/profile/profilepages/supervisions.jsx:211
+msgid "Something went wrong"
+msgstr "Something went wrong"
+
+#: src/usermanagement/UserManagementView.jsx:1267
+msgid "Something went wrong, email not saved"
+msgstr "Something went wrong, email not saved"
+
+#: src/usermanagement/UserManagementView.jsx:1094
+#: src/usermanagement/UserManagementView.jsx:1220
+msgid "Something went wrong, remember that the password has to meet the listed requirements"
+msgstr "Something went wrong, remember that the password has to meet the listed requirements"
+
+#: src/usermanagement/UserManagementView.jsx:961
+#: src/usermanagement/UserManagementView.jsx:1145
+msgid "Something went wrong, remember that the password has to meet the listed requirements and the name needs to be unique"
+msgstr "Something went wrong, remember that the password has to meet the listed requirements and the name needs to be unique"
+
+#: src/usermanagement/UserManagementView.jsx:1304
+msgid "Something went wrong, role not saved"
+msgstr "Something went wrong, role not saved"
+
+#: src/scheduling/Scheduling.jsx:1046
+msgid "Start"
+msgstr "Start"
+
+#: src/infoBox/AddInfo.jsx:135
+msgid "Start date"
+msgstr "Start date"
+
+#: src/lib/components/Navbar/DrawerMenu.tsx:29
+msgid "Statistics"
+msgstr "Statistics"
+
+#: src/profile/profilepages/supervisions.jsx:239
+msgid "Status"
+msgstr "Status"
+
+#: src/raffle/RaffleDatePicker.jsx:17
+msgid "Su"
+msgstr "Su"
+
+#: src/renewPW/RenewPassword.jsx:164
+msgid "Submit"
+msgstr "Submit"
+
+#: src/weekview/Weekview.tsx:85
+#: src/monthview/Monthview.tsx:105
+msgid "Sun"
+msgstr "Sun"
+
+#: src/raffle/RaffleDatePicker.jsx:8
+msgid "Sunday"
+msgstr "Sunday"
+
+#: src/usermanagement/UserManagementView.jsx:553
+#: src/usermanagement/UserManagementView.jsx:841
+msgid "Superuser"
+msgstr "Superuser"
+
+#: src/profile/profilepages/supervisions.jsx:207
+msgid "Supervision cleared for"
+msgstr "Supervision cleared for"
+
+#: src/profile/profilepages/supervisions.jsx:179
+msgid "Supervision updated for"
+msgstr "Supervision updated for"
+
+#: src/profile/profilesettings.jsx:34
+#: src/lib/components/Navbar/DrawerMenu.tsx:34
+#: src/lib/components/Navbar/DrawerMenu.tsx:38
+#: src/lib/components/Navbar/DrawerMenu.tsx:42
+msgid "Supervisions"
+msgstr "Supervisions"
+
+#: src/lib/components/Navbar/DrawerMenu.tsx:30
+msgid "Supervisor raffle"
+msgstr "Supervisor raffle"
+
+#: src/lib/components/Navbar/DrawerMenu.tsx:27
+#: src/lib/components/Navbar/DrawerMenu.tsx:43
+msgid "Tablet view"
+msgstr "Tablet view"
+
+#: src/weekview/Weekview.tsx:56
+#~ msgid "Test"
+#~ msgstr "Test"
+
+#: src/raffle/RaffleDatePicker.jsx:21
+msgid "Th"
+msgstr "Th"
+
+#: src/raffle/raffle.jsx:131
+msgid "The execution of the raffle failed"
+msgstr "The execution of the raffle failed"
+
+#: src/renewPW/RenewPassword.jsx:92
+msgid "The link is incorrect or it has expired. Please send a new reset link!"
+msgstr "The link is incorrect or it has expired. Please send a new reset link!"
+
+#: src/raffle/raffle.jsx:160
+msgid "The saving of the results failed"
+msgstr "The saving of the results failed"
+
+#: src/usermanagement/UserManagementView.jsx:1000
+msgid "This action will permanently remove user"
+msgstr "This action will permanently remove user"
+
+#: src/weekview/Weekview.tsx:82
+#: src/monthview/Monthview.tsx:102
+msgid "Thu"
+msgstr "Thu"
+
+#: src/raffle/RaffleDatePicker.jsx:12
+msgid "Thursday"
+msgstr "Thursday"
+
+#: src/utils/Utils.jsx:93
+msgid "Today"
+msgstr "Today"
+
+#: src/scheduling/Scheduling.jsx:575
+msgid "Track closed"
+msgstr "Track closed"
+
+#: src/edittracks/tracks.jsx:97
+msgid "Track deleted"
+msgstr "Track deleted"
+
+#: src/edittracks/tracks.jsx:100
+msgid "Track deletion failed"
+msgstr "Track deletion failed"
+
+#: src/weekview/Weekview.tsx:180
+#: src/monthview/Monthview.tsx:205
+#: src/dayview/Dayview.tsx:145
+#: src/dayview/Dayview.tsx:185
+#: src/dayview/Dayview.tsx:188
+#: src/TableLegends/TableLegends.tsx:27
+#: src/TableLegends/TableLegends.tsx:30
+msgid "Track has additional information"
+msgstr "Track has additional information"
+
+#: src/edittracks/tracks.jsx:87
+msgid "Track update failed"
+msgstr "Track update failed"
+
+#: src/edittracks/tracks.jsx:82
+msgid "Track updated"
+msgstr "Track updated"
+
+#: src/VisitorLogging/VisitorLogging.jsx:63
+msgid "Track visitors successfully upded"
+msgstr "Track visitors successfully upded"
+
+#: src/raffle/RaffleDatePicker.jsx:19
+msgid "Tu"
+msgstr "Tu"
+
+#: src/weekview/Weekview.tsx:80
+#: src/monthview/Monthview.tsx:100
+msgid "Tue"
+msgstr "Tue"
+
+#: src/raffle/RaffleDatePicker.jsx:10
+msgid "Tuesday"
+msgstr "Tuesday"
+
+#: src/scheduling/Scheduling.jsx:438
+msgid "Update successful"
+msgstr "Update successful"
+
+#: src/usermanagement/UserManagementView.jsx:935
+#: src/usermanagement/UserManagementView.jsx:1079
+#: src/usermanagement/UserManagementView.jsx:1202
+msgid "uppercase letter"
+msgstr "uppercase letter"
+
+#: src/usermanagement/UserManagementView.jsx:1378
+msgid "User"
+msgstr "User"
+
+#: src/lib/components/Navbar/DrawerMenu.tsx:25
+msgid "User managemenmsg"
+msgstr "User managemenmsg"
+
+#: src/usermanagement/UserManagementView.jsx:1327
+msgid "User management"
+msgstr "User management"
+
+#: src/usermanagement/UserManagementView.jsx:1356
+#: src/usermanagement/UserManagementView.jsx:1360
+msgid "User profiles"
+msgstr "User profiles"
+
+#: src/usermanagement/UserManagementView.jsx:905
+#: src/signin/SignIn.jsx:73
+#: src/signin/SignIn.jsx:74
+#: src/profile/profilepages/officerform.jsx:213
+msgid "Username"
+msgstr "Username"
+
+#: src/TrackStatistics/TrackStatistics.jsx:91
+msgid "Users should not be reduced, Do you really want to reduce the number of users?"
+msgstr "Users should not be reduced, Do you really want to reduce the number of users?"
+
+#: src/raffle/raffle.jsx:91
+msgid "Values cannot be negative"
+msgstr "Values cannot be negative"
+
+#: src/TrackStatistics/TrackStatistics.jsx:89
+msgid "Warning!"
+msgstr "Warning!"
+
+#: src/raffle/RaffleDatePicker.jsx:20
+msgid "We"
+msgstr "We"
+
+#: src/weekview/Weekview.tsx:81
+#: src/monthview/Monthview.tsx:101
+msgid "Wed"
+msgstr "Wed"
+
+#: src/raffle/RaffleDatePicker.jsx:11
+msgid "Wednesday"
+msgstr "Wednesday"
+
+#: src/lib/components/ViewChanger.jsx:31
+msgid "Week"
+msgstr "Week"
+
+#: src/monthview/Monthview.tsx:113
+msgid "Wk"
+msgstr "Wk"
+
+#: src/lib/components/Navbar/FeedbackWindow.tsx:30
+msgid "Write in the textbox below the feedback you received from the range. Remember to identify the track if the feedback is for a certain track. The feedback will be sent to the superusers."
+msgstr "Write in the textbox below the feedback you received from the range. Remember to identify the track if the feedback is for a certain track. The feedback will be sent to the superusers."
+
+#: src/signin/SignIn.jsx:105
+msgid "Wrong username or password"
+msgstr "Wrong username or password"
+
+#: src/TrackStatistics/TrackStatistics.jsx:99
+msgid "Yes"
+msgstr "Yes"
+
+#: src/usermanagement/UserManagementView.jsx:1330
+msgid "You are logged in as"
+msgstr "You are logged in as"
+
+#: src/lib/components/Navbar/SupervisorNotification.tsx:42
+msgid "You have unconfirmed range officer reservations!"
+msgstr "You have unconfirmed range officer reservations!"
+
+#: src/renewPW/RenewPassword.jsx:181
+msgid "You will be redirected to the login page automatically in 5 seconds."
+msgstr "You will be redirected to the login page automatically in 5 seconds."
+
+#: src/profile/profilepages/supervisions.jsx:227
+msgid "Your association's free supervisions. If the status is confirmed, the association has set the shift for you"
+msgstr "Your association's free supervisions. If the status is confirmed, the association has set the shift for you"
+
+#: src/upcomingsupervisions/LoggedIn.jsx:140
+msgid "Your estimated time of arrival:"
+msgstr "Your estimated time of arrival:"

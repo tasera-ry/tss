@@ -17,7 +17,6 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { getLanguage, incrementOrDecrementDate } from '../utils/Utils';
 import api from '../api/api';
-import translations from '../texts/texts.json';
 import VisitorLogging from '../VisitorLogging/VisitorLogging';
 import css from './Statistics.module.scss';
 
@@ -25,8 +24,6 @@ const classes = classNames.bind(css);
 
 const lang = getLanguage();
 moment.locale(lang);
-const { statistics } = translations;
-const fin = localStorage.getItem('language');
 
 const getChart = (id, categories) => ({
   chart: { id },
@@ -35,8 +32,8 @@ const getChart = (id, categories) => ({
     title: {
       text:
         id === 'monthChart'
-          ? statistics.DayLabel[fin]
-          : statistics.TrackLabel[fin],
+          ? t`Day`
+          : t`Track`,
       style: {
         fontSize: '14px',
       },
@@ -44,7 +41,7 @@ const getChart = (id, categories) => ({
   },
   yaxis: {
     title: {
-      text: statistics.VisitorLabel[fin],
+      text: t`Number of visitors`,
       style: {
         fontSize: '14px',
       },
@@ -199,7 +196,7 @@ const Statistics = () => {
             <DatePicker
               closeOnSelect
               margin="normal"
-              label={statistics.DayChoose[fin]}
+              label={t`Choose date`}
               value={moment(date)}
               onChange={(newDate) => setDate(newDate)}
               onAccept={(newDate) => {
@@ -221,7 +218,7 @@ const Statistics = () => {
           style={{backgroundColor: '#d1ccc2'}}
           variant="contained"
         >
-          {statistics.OpenLogging[fin]}
+          {t`Open user logging`}
         </Button>
       </div>
       <Modal
@@ -259,13 +256,13 @@ const Statistics = () => {
       {/* Charts */}
       <div className={classes(css.charts)}>
         {/* Labels */}
-        <h2>{statistics.Day[fin]}</h2>
+        <h2>{t`Day`}</h2>
         <h3>
-          {`${statistics.Total[fin]} ${date.toLocaleDateString('fi-FI')}: ${
+          {`${t`Visitors in total`} ${date.toLocaleDateString('fi-FI')}: ${
             monthlyUsers[dayNumber - 1]
           }`}
         </h3>
-        <h3>{statistics.DayChartHeader[fin]}</h3>
+        <h3>{t`Visitors per track`}</h3>
         <Chart
           options={dayOptions}
           series={daySeries}
@@ -274,13 +271,13 @@ const Statistics = () => {
           height="400"
         />
         {/* Labels */}
-        <h2>{statistics.Month[fin]}</h2>
+        <h2>{t`Month`}</h2>
         <h3>
-          {`${statistics.Total[fin]} ${
+          {`${t`Visitors in total`} ${
             date.getMonth() + 1
           }/${date.getFullYear()}: ${totalUsers}`}
         </h3>
-        <h3>{statistics.MonthChart1Header[fin]}</h3>
+        <h3>{t`Visitors per day`}</h3>
         <Chart
           options={monthOptions}
           series={monthSeries}
@@ -288,7 +285,7 @@ const Statistics = () => {
           width="700"
           height="400"
         />
-        <h3>{statistics.MonthChart2Header[fin]}</h3>
+        <h3>{t`Monthly visitors per track`}</h3>
         <Chart
           options={monthlyTrackOptions}
           series={monthlyTrackSeries}

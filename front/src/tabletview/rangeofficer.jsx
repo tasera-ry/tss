@@ -25,8 +25,6 @@ import axios from 'axios';
 import socketIOClient from 'socket.io-client';
 import { validateLogin, updateRangeSupervision } from '../utils/Utils';
 
-import data from '../texts/texts.json';
-
 // Submitting track usage statistics
 import { TrackStatistics } from '../TrackStatistics/TrackStatistics';
 
@@ -38,11 +36,10 @@ import classNames from 'classnames';
 import colors from '../colors.module.scss';
 import css from './rangeofficer.module.scss';
 
-
 const classes = classNames.bind(css);
 
 // shooting track rows
-const TrackRows = ({ tracks, setTracks, scheduleId, tablet, lang, socket, disabled }) =>
+const TrackRows = ({ tracks, setTracks, scheduleId, socket, disabled }) =>
   tracks.map((track) => (
     <div key={track.id} className={classes(css.rangediv)}>
       <div className={classes(css.rangeStyle)}>
@@ -55,8 +52,6 @@ const TrackRows = ({ tracks, setTracks, scheduleId, tablet, lang, socket, disabl
           tracks={tracks}
           setTracks={setTracks}
           scheduleId={scheduleId}
-          tablet={tablet}
-          lang={lang}
           socket={socket}
           disabled={disabled}
         />
@@ -64,18 +59,16 @@ const TrackRows = ({ tracks, setTracks, scheduleId, tablet, lang, socket, disabl
     </div>
   ));
 
-const TrackButtons = ({ track, scheduleId, tablet, lang, socket, disabled }) => {
+const TrackButtons = ({ track, scheduleId, socket, disabled }) => {
   const [buttonColor, setButtonColor] = useState(track.color);
 
   const supervisorState = track.scheduled ? track.scheduled.track_supervisor : 'absent';
   let supervisorStateTablet;
-  if (supervisorState === 'present') supervisorStateTablet = 'Green';
-  else if (supervisorState === 'closed') supervisorStateTablet = 'Red';
-  else supervisorStateTablet = 'White';
+  if (supervisorState === 'present') supervisorStateTablet = t`Present`;
+  else if (supervisorState === 'closed') supervisorStateTablet = t`Closed`;
+  else supervisorStateTablet = t`No track officer`;
 
-  const [textState, setTextState] = useState(
-    tablet[supervisorStateTablet][lang],
-  );
+  const [textState, setTextState] = useState(supervisorStateTablet,);
   const [supervision, setSupervision] = useState(supervisorState);
 
   socket.on('trackUpdate', (msg) => {
@@ -83,17 +76,17 @@ const TrackButtons = ({ track, scheduleId, tablet, lang, socket, disabled }) => 
       if (msg.super === 'present') {
         track.trackSupervision = 'absent'; // eslint-disable-line
         setButtonColor(colors.green);
-        setTextState(tablet.Green[lang]);
+        setTextState(t`Present`);
         setSupervision('absent');
       } else if (msg.super === 'closed') {
         track.trackSupervision = 'present'; // eslint-disable-line
         setButtonColor(colors.redLight);
-        setTextState(tablet.Red[lang]);
+        setTextState(t`Closed`);
         setSupervision('present');
       } else if (msg.super === 'absent') {
         track.trackSupervision = 'closed'; // eslint-disable-line
         setButtonColor(colors.white);
-        setTextState(tablet.White[lang]);
+        setTextState(t`No track officer`);
         setSupervision('closed');
       }
     }
@@ -103,21 +96,21 @@ const TrackButtons = ({ track, scheduleId, tablet, lang, socket, disabled }) => 
     let newSupervision = 'absent';
     setSupervision('absent');
     track.color = colors.white; // eslint-disable-line
-    setTextState(tablet.White[lang]);
+    setTextState(t`No track officer`);
 
     // If track supervision is present, when clicked, set it to closed
     if (track.trackSupervision === 'present') {
       newSupervision = 'closed';
       setSupervision('closed');
       track.color = colors.redLight; // eslint-disable-line
-      setTextState(tablet.Red[lang]);
+      setTextState(t`Closed`);
     }
     // If track supervision is closed, when clicked, set it to absent
     else if (track.trackSupervision === 'absent') {
       newSupervision = 'present';
       setSupervision('present');
       track.color = colors.green; // eslint-disable-line
-      setTextState(tablet.Green[lang]);
+      setTextState(t`Present`);
     }
 
     let { notice } = track;
@@ -210,8 +203,6 @@ async function getColors(tracks, setTracks) {
 }
 
 async function getData(
-  tablet,
-  lang,
   setHours,
   tracks,
   setTracks,
@@ -234,25 +225,25 @@ async function getData(
         end: moment(response.close, 'h:mm').format('HH:mm'),
       });
       if (response.rangeSupervision === 'present') {
-        setStatusText(tablet.SuperGreen[lang]);
+        setStatusText(t`Range officer present`);
         setStatusColor(colors.green);
       } else if (response.rangeSupervision === 'en route') {
-        setStatusText(tablet.SuperOrange[lang]);
+        setStatusText(t`Range officer on the way`);
         setStatusColor(colors.orange);
       } else if (response.rangeSupervision === 'absent') {
-        setStatusText(tablet.SuperWhite[lang]);
+        setStatusText(t`Range officer undefined`);
         setStatusColor(colors.white);
       } else if (response.rangeSupervision === 'closed') {
-        setStatusText(tablet.Red[lang]);
+        setStatusText(t`Closed`);
         setStatusColor(colors.redLight);
       } else if (response.rangeSupervision === 'confirmed') {
-        setStatusText(tablet.SuperLightGreen[lang]);
+        setStatusText(t`Range officer confirmed`);
         setStatusColor(colors.greenLight);
       } else if (response.rangeSupervision === 'not confirmed') {
-        setStatusText(tablet.SuperBlue[lang]);
+        setStatusText(t`Range officer predefined`);
         setStatusColor(colors.turquoise);
       } else {
-        setStatusText(tablet.SuperWhite[lang]);
+        setStatusText(t`Range officer undefined`);
         setStatusColor(colors.white);
       }
       getColors(response.tracks, setTracks);
@@ -264,14 +255,14 @@ async function getData(
     });
 }
 
-const TimePick = ({ tablet, lang, scheduleId, hours, setHours, dialogOpen, setDialogOpen }) => {
+const TimePick = ({ scheduleId, hours, setHours, dialogOpen, setDialogOpen }) => {
   const [errorMessage, setErrorMessage] = useState();
   const [startTime, setStartTime] = useState(new Date(0, 0, 0, hours.start?.split(':')[0] || 0, hours.start?.split(':')[1] || 0, 0));
   const [endTime, setEndTime] = useState(new Date(0, 0, 0, hours.end?.split(':')[0] || 0, hours.end?.split(':')[1] || 0, 0));
 
   async function handleTimeChange() {
     if (startTime === null || endTime === null) {
-      setErrorMessage(tablet?.Error[lang] || "Invalid time selected.");
+      setErrorMessage(t`"Invalid time selected.`);
       return;
     }
     const start = startTime.toTimeString().split(' ')[0].slice(0, 5);
@@ -286,19 +277,19 @@ const TimePick = ({ tablet, lang, scheduleId, hours, setHours, dialogOpen, setDi
       })
       .catch((error) => {
         console.log(error);
-        setErrorMessage(tablet.Error[lang]);
+        setErrorMessage(t`Something went wrong`);
       });
   }
 
   return (
     <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-      <DialogTitle>{tablet.PickTime[lang]}</DialogTitle>
+      <DialogTitle>{t`Set opening hours`}</DialogTitle>
       <DialogContent>
         <LocalizationProvider dateAdapter={AdapterMoment}>
           <TimePicker
             closeOnSelect
             ampm={false}
-            label={tablet.Start[lang]}
+            label={t`Start`}
             value={moment(startTime)}
             onChange={(time) => setStartTime(time.toDate())}
             minutesStep={5}
@@ -308,7 +299,7 @@ const TimePick = ({ tablet, lang, scheduleId, hours, setHours, dialogOpen, setDi
           <TimePicker
             closeOnSelect
             ampm={false}
-            label={tablet.End[lang]}
+            label={t`End`}
             value={moment(endTime)}
             onChange={(time) => setEndTime(time.toDate())}
             minutesStep={5}
@@ -320,10 +311,10 @@ const TimePick = ({ tablet, lang, scheduleId, hours, setHours, dialogOpen, setDi
       </DialogContent>
       <DialogActions>
         <Button onClick={() => setDialogOpen(false)} className={classes(css.cancelButtonStyle)}>
-          {tablet.Cancel[lang]}
+          {t`Cancel`}
         </Button>
         <Button onClick={handleTimeChange} className={classes(css.saveButtonStyle)}>
-          {tablet.Save[lang]}
+          {t`Save`}
         </Button>
       </DialogActions>
     </Dialog>
@@ -345,8 +336,6 @@ const Tabletview = () => {
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const [notification, setNotification] = useState({ open: false, message: '', type: '' });
 
-  const lang = localStorage.getItem('language');
-  const { tablet } = data;
   const date = moment(Date.now()).format('YYYY-MM-DD');
   const today = moment().format('DD.MM.YYYY');
 
@@ -363,8 +352,6 @@ const Tabletview = () => {
     validateLogin().then((logInSuccess) => {
       if (logInSuccess && (cookies.role === 'rangemaster' || cookies.role === 'superuser')) {
         getData(
-          tablet,
-          lang,
           setHours,
           tracks,
           setTracks,
@@ -427,15 +414,15 @@ const Tabletview = () => {
   const HandlePresentClick = () => {
     // If no range supervisor is set, show error message
     if (rangeSupervisionScheduled === false) {
-      setNotification({ open: true, message: tablet.rangeSupervisorError[lang], type: 'error' });
+      setNotification({ open: true, message: t`Range supervisor is not set!`, type: 'error' });
       return;
     }
     socket.emit('rangeUpdate', {
       status: 'present',
       color: colors.green,
-      text: tablet.SuperGreen[lang],
+      text: t`Range officer present`,
     });
-    updateSupervisor('present', colors.green, tablet.SuperGreen[lang]);
+    updateSupervisor('present', colors.green, t`Range officer present`);
     // Enable track buttons
     setButtonsDisabled(false);
   };
@@ -443,15 +430,15 @@ const Tabletview = () => {
   const HandleEnRouteClick = () => {
     // If no range supervisor is set, show error message
     if (rangeSupervisionScheduled === false) {
-      setNotification({ open: true, message: tablet.rangeSupervisorError[lang], type: 'error' });
+      setNotification({ open: true, message: t`Range supervisor is not set!`, type: 'error' });
       return;
     }
     socket.emit('rangeUpdate', {
       status: 'en route',
       color: colors.orange,
-      text: tablet.SuperOrange[lang],
+      text: t`Range officer on the way`,
     });
-    updateSupervisor('en route', colors.orange, tablet.SuperOrange[lang]);
+    updateSupervisor('en route', colors.orange, t`Range officer on the way`);
     // Enable track buttons
     setButtonsDisabled(false);
   };
@@ -460,9 +447,9 @@ const Tabletview = () => {
     socket.emit('rangeUpdate', {
       status: 'closed',
       color: colors.redLight,
-      text: tablet.Red[lang],
+      text: t`Closed`,
     });
-    updateSupervisor('closed', colors.redLight, tablet.Red[lang]);
+    updateSupervisor('closed', colors.redLight, t`Closed`);
     // Disable track buttons since no supervisor is present
     setButtonsDisabled(true);
   };
@@ -476,7 +463,7 @@ const Tabletview = () => {
 
 
       <Typography variant="h5" align="center">
-        {tablet.Open[lang]}: &nbsp;
+        {t`Open`}: &nbsp;
         <Button
           size="medium"
           variant="outlined"
@@ -489,8 +476,6 @@ const Tabletview = () => {
 
       {dialogOpen ? (
         <TimePick
-          tablet={tablet}
-          lang={lang}
           scheduleId={scheduleId}
           hours={hours}
           setHours={setHours}
@@ -516,7 +501,9 @@ const Tabletview = () => {
         </Button>
       </div>
 
-      <div className={classes(css.Text)}>{tablet.HelperFirst[lang]}</div>
+      <div className={classes(css.Text)}>
+        {t`Define range officer status by choosing color`}
+      </div>
 
       <div className={classes(css.rowStyle)}>
         <Button
@@ -526,7 +513,7 @@ const Tabletview = () => {
           onClick={HandlePresentClick}
           data-testid="tracksupervisorPresent"
         >
-          {tablet.Green[lang]}
+          {t`Present`}
         </Button>
         <Button
           className={classes(css.orangeButtonStyle)}
@@ -535,7 +522,7 @@ const Tabletview = () => {
           onClick={HandleEnRouteClick}
           data-testid="tracksupervisorOnWay"
         >
-          {tablet.Orange[lang]}
+          {t`On the way`}
         </Button>
         <Button
           className={classes(css.redButtonStyle)}
@@ -544,12 +531,14 @@ const Tabletview = () => {
           onClick={HandleClosedClick}
           data-testid="tracksupervisorClosed"
         >
-          {tablet.Red[lang]}
+          {t`Closed`}
         </Button>
       </div>
 
 
-      <div className={classes(css.Text)}>{tablet.HelperSecond[lang]}</div>
+      <div className={classes(css.Text)}>
+        {t`Change track officer status by choosing color. Change number of track users with buttons`}
+      </div>
 
       <div className={classes(css.trackRowStyle)}>
 
@@ -557,8 +546,6 @@ const Tabletview = () => {
           tracks={tracks}
           setTracks={setTracks}
           scheduleId={scheduleId}
-          tablet={tablet}
-          lang={lang}
           socket={socket}
           disabled={buttonsDisabled}
         />

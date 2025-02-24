@@ -10,14 +10,12 @@ import colors from '../colors.module.scss';
 
 import ResetPasswordForm from './ResetPasswordForm';
 import api from '../api/api';
-import translations from '../texts/texts.json';
 import css from './ResetPassword.module.scss';
+import { t } from '@lingui/core/macro';
 
 const classes = classNames.bind(css);
 
 const ResetPassword = () => {
-  const lang = localStorage.getItem('language');
-  const { resetPW } = translations;
 
   const [showForm, setShowForm] = useState(true);
   const [showNullError, setShowNullError] = useState(false);
@@ -70,7 +68,7 @@ const ResetPassword = () => {
             align="center"
             className={classes(css.success)}
           >
-            {resetPW.Sent[lang]}
+            {t`Password reset e-mail succesfully sent!`}
           </Typography>
         )}
       </div>

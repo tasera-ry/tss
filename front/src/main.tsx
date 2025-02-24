@@ -1,10 +1,10 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
 import { StyledEngineProvider, ThemeProvider, createTheme } from '@mui/material/styles'
 import { App } from './App';
 import { CookiesProvider } from 'react-cookie';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import moment from 'moment';
+import { LinguiProvider } from './i18n';
 
 moment.locale('fi', {
   week: {
@@ -26,13 +26,15 @@ const queryClient = new QueryClient()
 
 ReactDOM.render(
   <StyledEngineProvider injectFirst>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <CookiesProvider>
-          <App />
-        </CookiesProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <LinguiProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <CookiesProvider>
+            <App />
+          </CookiesProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </LinguiProvider>
   </StyledEngineProvider>,
   document.getElementById('root')
 ); 

@@ -14,16 +14,16 @@ import { TableLegends } from '../TableLegends/TableLegends';
 import InfoBox from '../infoBox/InfoBox';
 import { ViewChanger } from '@/lib/components/ViewChanger';
 
-import texts from '../texts/texts.json';
 import css from './Weekview.module.scss';
 import { DaySchedule } from '@/types';
 import { useQuery } from 'react-query';
 import { DateHeader } from '@/lib/components/DateHeader';
+import { t } from '@lingui/core/macro';
+import { Weekday } from '@/utils/dateUtils';
+
 
 const classes = classNames.bind(css);
 
-const { weekdayShorthand, week } = texts;
-const langId = localStorage.getItem('language');
 
 export const Weekview = () => {
 
@@ -74,7 +74,6 @@ export const Weekview = () => {
   );
 };
 
-
 function CalenderHeader({days}: {days: DaySchedule[]}) {
   
   const weekdays = useMemo(() => {
@@ -82,7 +81,7 @@ function CalenderHeader({days}: {days: DaySchedule[]}) {
     return Array.from({ length: 7 }, (_, i) => {
       return {
         dayNumber: i,
-        link: `/dayview/${days[i].date}`
+        link: `/dayview/${days[i]?.date}`
       }
     });
   }, [days])
@@ -96,10 +95,10 @@ function CalenderHeader({days}: {days: DaySchedule[]}) {
           className='flex flex-col gap-1 items-center justify-center text-white'
         >
           <span>
-            {weekdayShorthand[day.dayNumber][langId]}
+            <Weekday date={days[day.dayNumber]?.date} weekday='short' />
           </span>
           <span id="weekDay">
-            {moment(days[day.dayNumber].date).format('DD.MM')}
+            {moment(days[day.dayNumber]?.date).format('DD.MM')}
           </span>
         </Link>
       ))}
@@ -167,7 +166,7 @@ function CalenderCell({day}: { day: DaySchedule }) {
           <img
             className={classes(css.exclamation2)}
             src={exclamation}
-            alt={week.Notice[langId]}
+            alt={t`Track has additional information`}
           />
         ) : (
           <br />

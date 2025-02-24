@@ -3,6 +3,7 @@ import { HashRouter as Router } from 'react-router-dom';
 import { act } from 'react-dom/test-utils';
 import { SupervisorNotification } from '../SupervisorNotification';
 import * as checkSuper from '../../../../upcomingsupervisions/LoggedIn';
+import { TestProviders } from '@/_TestUtils/TestProvides';
 
 vi.mock(import('../../../../upcomingsupervisions/LoggedIn'), async (importOriginal) => {
   const actual = await importOriginal()
@@ -22,6 +23,7 @@ describe('testing SupervisorNotification', () => {
         <Router>
           <SupervisorNotification />
         </Router>,
+        { wrapper: TestProviders }
       );
     });
     await waitFor(() =>

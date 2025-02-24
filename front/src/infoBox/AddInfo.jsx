@@ -13,14 +13,11 @@ import {
 } from '@mui/material';
 
 import { validateLogin } from '../utils/Utils';
-import translations from '../texts/texts.json';
 import api from '../api/api';
 import css from './AddInfo.module.scss';
+import { t } from '@lingui/core/macro';
 
 const classes = classNames.bind(css);
-
-const { infoPage } = translations;
-
 
 /* 
     IMPORTANT: Current implementation is MVP, needs to be fixed to fulfil actual customer needs
@@ -120,11 +117,11 @@ const AddInfo = () => {
 
   return (
     <div className={classes(css.infoContainer)}>
-      <h1>{infoPage.title[lang]}</h1>
+      <h1>{t`Add info`}</h1>
       <div>
         <TextField
           id="outlined-multiline-static"
-          label={infoPage.message[lang]}
+          label={t`Message`}
           multiline
           onChange={(e) => setInfoRequest({ ...infoRequest, message: e.target.value })}
           value={infoRequest.message}
@@ -135,7 +132,7 @@ const AddInfo = () => {
       <div>
         <TextField
           type="date" required
-          label={infoPage.startDate[lang]}
+          label={t`Start date`}
           defaultValue={new Date().toISOString().slice(0, 10)}
           onChange={(e) => setInfoRequest({ ...infoRequest, start: e.target.value })}
           inputProps={{ min: new Date().toISOString().slice(0, 10) }}
@@ -144,7 +141,7 @@ const AddInfo = () => {
       <div>
         <TextField
           type="date" required
-          label={infoPage.endDate[lang]}
+          label={t`End date`}
           defaultValue={new Date(new Date().getTime() + 86400000).toISOString().slice(0, 10)}
           onChange={(e) => setInfoRequest({ ...infoRequest, end: e.target.value })}
           inputProps={{ min: new Date(new Date(infoRequest.start).getTime() + 86400000).toISOString().slice(0, 10) }}
@@ -164,7 +161,7 @@ const AddInfo = () => {
               disabled
             />
           }
-          label={infoPage.repeatWeekly[lang]}
+          label={t`Repeat weekly`}
         />
       </div> */}
       {/* <div>
@@ -177,7 +174,7 @@ const AddInfo = () => {
               disabled
             />
           }
-          label={infoPage.repeatMonthly[lang]}
+          label={t`Repeat monthly`}
         />
       </div> */}
 
@@ -189,8 +186,8 @@ const AddInfo = () => {
           MenuProps={{ style: { maxHeight: 400 } }}
 
         >
-          <MenuItem value={'all'}>{infoPage.sendPublicMessage[lang]}</MenuItem>
-          <MenuItem value={'rangemaster'}>{infoPage.sendRangeMasterMessage[lang]}</MenuItem>
+          <MenuItem value={'all'}>{t`Send public message`}</MenuItem>
+          <MenuItem value={'rangemaster'}>{t`Rangemaster`}</MenuItem>
           {userOption.map((user) => <MenuItem
             key={user.id}
             value={user.name}
@@ -208,7 +205,7 @@ const AddInfo = () => {
           disabled={
             infoRequest.message === '' || new Date(infoRequest.end).setHours(0, 0, 0, 0) <= new Date(infoRequest.start).setHours(0, 0, 0, 0)
           }>
-          {infoPage.send[lang]}
+          {t`Send`}
         </Button>
       </div>
       <hr />

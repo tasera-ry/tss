@@ -9,11 +9,11 @@ import { HashRouter as Router } from 'react-router-dom';
 import { act } from 'react-dom/test-utils';
 import axios from 'axios';
 import { Navbar } from '../Navbar';
+import { TestProviders } from '@/_TestUtils/TestProvides';
 
 localStorage.setItem('token', 'foobar');
 localStorage.setItem('taseraUserName', 'testName');
 localStorage.setItem('role', 'superuser');
-localStorage.setItem('language', '1');
 
 // checkSupervisorReservations, DialogWindow
 describe('testing Nav', () => {
@@ -25,6 +25,7 @@ describe('testing Nav', () => {
         <Router>
           <Navbar />
         </Router>,
+        { wrapper: TestProviders },
       );
     });
     await waitFor(() => expect(screen.getByText('ENG')).toBeInTheDocument());

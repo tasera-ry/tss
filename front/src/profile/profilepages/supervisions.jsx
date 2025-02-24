@@ -17,14 +17,11 @@ import { Alert } from '@mui/lab';
 import moment from 'moment';
 
 import classNames from 'classnames';
-import translations from '../../texts/texts.json';
 import css from './ChangePassword.module.scss';
 import api from '../../api/api';
+import { t } from '@lingui/core/macro';
 
 const classes = classNames.bind(css);
-
-const lang = localStorage.getItem('language');
-const { sv } = translations;
 
 /**
  * Component for displaying association supervisions in a table
@@ -179,11 +176,11 @@ export default function Supervisions({ cookies }) {
 
       createNotification(
         'success',
-        `${sv.updatedSupervision[lang]} ${supervisions[rowIndex].date}`,
+        `${t`Supervision updated for`} ${supervisions[rowIndex].date}`,
       );
     } catch (error) {
       console.log(error);
-      createNotification('error', sv.error[lang]);
+      createNotification('error', t`Something went wrong`);
     }
   };
 
@@ -207,24 +204,28 @@ export default function Supervisions({ cookies }) {
 
       createNotification(
         'success',
-        `${sv.clearNotification[lang]} ${supervisions[rowIndex].date}`,
+        `${t`Supervision cleared for`} ${supervisions[rowIndex].date}`,
       );
     } catch (error) {
       console.log(error);
-      createNotification('error', sv.error[lang]);
+      createNotification('error', t`Something went wrong`);
     }
   };
 
   return (
     <div className={classes(css.title)}>
       <Typography component="h1" variant="h5">
-        {sv.Header[lang]}
+        {t`Confirm supervisions`}
       </Typography>
 
       {cookies.role === 'association' ? (
-        <Typography variant="subtitle1">{sv.Association[lang]}</Typography>
+        <Typography variant="subtitle1">
+          {t`Association's upcoming supervisions`}
+        </Typography>
       ) : (
-        <Typography variant="subtitle1"> {sv.Rangeofficer[lang]}</Typography>
+        <Typography variant="subtitle1">
+          {t`Your association's free supervisions. If the status is confirmed, the association has set the shift for you`}
+        </Typography>
       )}
 
       {notification && (
@@ -234,13 +235,13 @@ export default function Supervisions({ cookies }) {
       <Table data-testid="supervisions-table">
         <TableHead>
           <TableRow>
-            <TableCell>{sv.date[lang]}</TableCell>
-            <TableCell>{sv.status[lang]}</TableCell>
+            <TableCell>{t`Date`}</TableCell>
+            <TableCell>{t`Status`}</TableCell>
             {rangeofficerList !== null && (
-              <TableCell>{sv.AssignedOfficer[lang]}</TableCell>
+              <TableCell>{t`Assigned officer`}</TableCell>
             )}
             <TableCell>ETA</TableCell>
-            <TableCell>{sv.actionsRow[lang]}</TableCell>
+            <TableCell>{t`Actions`}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -269,13 +270,13 @@ export default function Supervisions({ cookies }) {
                       onClick={() => handleStatusSelect('not confirmed')}
                       style={{ color: '#b3b3b3' }}
                     >
-                      {sv.Present[lang]}
+                      {t`Confirm date`}
                     </MenuItem>
                     <MenuItem onClick={() => handleStatusSelect('confirmed')}>
-                      {sv.Confirmed[lang]}
+                      {t`Confirmed`}
                     </MenuItem>
                     <MenuItem onClick={() => handleStatusSelect('absent')}>
-                      {sv.Absent[lang]}
+                      {t`Absent`}
                     </MenuItem>
                   </Menu>
                 </TableCell>
@@ -294,7 +295,7 @@ export default function Supervisions({ cookies }) {
                           (officer) =>
                             officer.id ===
                             supervisions[rowIndex].rangeofficer_id,
-                        )?.name || sv.OfficerSelect[lang]}
+                        )?.name || t`Select officer`}
                       </Button>
                       <Menu
                         open={Boolean(officerAnchorEl)}
@@ -303,7 +304,7 @@ export default function Supervisions({ cookies }) {
                         keepMounted
                       >
                         <MenuItem onClick={() => handleOfficerSelect(null)}>
-                          {sv.NoOfficer[lang]}
+                          {t`No selection`}
                         </MenuItem>
                         {rangeofficerList.map((officer) => (
                           <MenuItem
@@ -340,7 +341,7 @@ export default function Supervisions({ cookies }) {
                     onClick={() => handleSubmit(rowIndex)}
                     data-testid="submit-button"
                   >
-                    {sv.setButton[lang]}
+                    {t`Set`}
                   </Button>
                 </TableCell>
 
@@ -354,7 +355,7 @@ export default function Supervisions({ cookies }) {
                     onClick={() => handleReset(rowIndex)}
                     data-testid="reset-button"
                   >
-                    {sv.resetButton[lang]}
+                    {t`Reset`}
                   </Button>
                 </TableCell>
               </TableRow>

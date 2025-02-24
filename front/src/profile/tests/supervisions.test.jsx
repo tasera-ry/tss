@@ -1,6 +1,7 @@
 import { render, screen, act, waitFor } from '@testing-library/react';
 import Supervisions from '../profilepages/supervisions';
 import api from '../../api/api';
+import { TestProviders } from '@/_TestUtils/TestProvides';
 
 // Mock data for the tests
 const supervisionsMock = [
@@ -49,8 +50,10 @@ describe('Supervisions component', () => {
       api.getSupervisions.mockResolvedValueOnce(supervisionsMock);
       api.getRangeOfficers.mockResolvedValueOnce(rangeofficerListMock);
 
-      render(<Supervisions cookies={{ role: 'association', id: 1 }} />);
-      expect(screen.getByTestId('supervisions-table')).toBeInTheDocument();
+      render(<Supervisions cookies={{ role: 'association', id: 1 }} />, { wrapper: TestProviders });
+      await waitFor(() => {
+        expect(screen.getByTestId('supervisions-table')).toBeInTheDocument();
+      });
     });
   });
 
@@ -59,7 +62,7 @@ describe('Supervisions component', () => {
       api.getSupervisions.mockResolvedValueOnce(supervisionsMock);
       api.getRangeOfficers.mockResolvedValueOnce(rangeofficerListMock);
 
-      render(<Supervisions cookies={{ role: 'association', id: 1 }} />);
+      render(<Supervisions cookies={{ role: 'association', id: 1 }} />, { wrapper: TestProviders });
 
       // Wait for the API calls to be resolved
       await waitFor(() => {
@@ -92,7 +95,7 @@ describe('Supervisions component', () => {
       api.getSupervisions.mockResolvedValueOnce(supervisionsMock);
       api.getAssociation.mockResolvedValueOnce([{ association_id: 1 }]);
 
-      render(<Supervisions cookies={{ role: 'rangeofficer', id: 5 }} />);
+      render(<Supervisions cookies={{ role: 'rangeofficer', id: 5 }} />, { wrapper: TestProviders });
 
       // Check that getRangeofficers endpoint is not called
       await waitFor(() => {

@@ -2,19 +2,18 @@
 import { Link } from 'react-router-dom';
 
 import logo from '@/assets/Logo.png';
-import translations from '../../../texts/texts.json';
 
 import { DrawerMenu } from '@/lib/components/Navbar/DrawerMenu';
 import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
 import { Button } from '@mui/material';
 import { SupervisorNotification } from '@/lib/components/Navbar/SupervisorNotification';
+import { Language, useLanguageContext } from '@/i18n';
+import { Trans } from '@lingui/react/macro';
 
-
-const { nav } = translations;
 
 export const Navbar = () => {
 
-  const { username, role } = useLoggedInUser();
+  const { username } = useLoggedInUser();
 
   return (
     <>
@@ -22,9 +21,9 @@ export const Navbar = () => {
         <TaseraLogo />
         {username ? <Username /> : <LogInButton />}
         <div className="flex gap-1">
-          <LanguageButton label="SWE" num={2} />
-          <LanguageButton label="ENG" num={1} />
-          <LanguageButton label="FIN" num={0} />
+          <LanguageButton label="SWE" lang="sv" />
+          <LanguageButton label="ENG" lang="en" />
+          <LanguageButton label="FIN" lang="fi" />
         </div>
         <DrawerMenu />
       </nav>
@@ -35,16 +34,19 @@ export const Navbar = () => {
 
 interface LanguageButtonProps {
   label: string;
-  num: number;
+  lang: Language;
 }
 
-function LanguageButton({ label, num }: LanguageButtonProps) {
+function LanguageButton({ label, lang }: LanguageButtonProps) {
+
+  const [currentLang, setCurrentLang] = useLanguageContext();
+
   return (
     <Button
-      className="bg-black-tint-70! text-white! font-lato! font-bold! text-sm! py-1.5! px-5! rounded-4xl! m-0.5 ml-auto border border-[#484848] shadow"
+      className="bg-black-tint-70! text-white! font-lato! font-bold! text-sm! py-1.5! px-5! rounded-4xl! m-0.5 ml-auto border border-[#484848] shadow data-[is-active='true']:underline!"
+      data-is-active={currentLang === lang}
       onClick={() => {
-        localStorage.setItem('language', num.toString());
-        window.location.reload();
+        setCurrentLang(lang)
       }}
     >
       {label}
@@ -61,14 +63,12 @@ function Username() {
 }
 
 function LogInButton() {
-  const lang = localStorage.getItem('language');
-
   return (
     <Link
       className="bg-black-tint-70 text-white! font-lato! font-bold! text-sm py-1.5! px-5! rounded-4xl m-0.5 ml-auto border border-[#484848] shadow"
       to="/signin"
     >
-      {nav.SignIn[lang]}
+      <Trans>Sign In</Trans>
     </Link>
   )
 }

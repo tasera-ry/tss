@@ -2,6 +2,7 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import api from '../api/api';
 import Devices from './devices';
+import { TestProviders } from '@/_TestUtils/TestProvides';
 
 vi.mock('../api/api');
 
@@ -18,7 +19,7 @@ describe('Devices Component', () => {
             { id: 1, device_name: 'Device 1', status: 'free' },
             { id: 2, device_name: 'Device 2', status: 'reserved' }
         ]);
-        render(<Devices />);
+        render(<Devices />, { wrapper: TestProviders });
         expect(await screen.findByText('Device 1')).toBeInTheDocument();
         expect(await screen.findByText('Device 2')).toBeInTheDocument();
     });
@@ -27,7 +28,7 @@ describe('Devices Component', () => {
         api.getAllDevices.mockResolvedValue([{ id: 1, device_name: 'Device 1', status: 'free' }]);
         api.patchDevice.mockResolvedValue();
 
-        render(<Devices />);
+        render(<Devices />, { wrapper: TestProviders });
         const switchButton = await screen.findByRole('checkbox');
         fireEvent.click(switchButton);
         await waitFor(() => {

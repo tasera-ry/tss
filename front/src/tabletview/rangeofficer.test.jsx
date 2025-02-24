@@ -8,7 +8,7 @@ import { CookiesProvider } from 'react-cookie';
 import { BrowserRouter as Router } from 'react-router-dom';
 import InfoBox from '../infoBox/InfoBox';
 import socketIOClient from 'socket.io-client';  // Import socket.io-client
-
+import { TestProviders } from '@/_TestUtils/TestProvides';
 
 vi.mock('axios');
 vi.mock('../utils/Utils');
@@ -82,7 +82,7 @@ describe.skip('testing rangeofficer', () => {
           <Router>
             <Tabletview />
           </Router>
-        </CookiesProvider>
+        </CookiesProvider>, { wrapper: TestProviders }
       );
     });
 
@@ -115,7 +115,7 @@ describe.skip('testing rangeofficer', () => {
     localStorage.setItem('language', '1');
 
     await act(async() => {
-      render(<Tabletview />);
+      render(<Tabletview />, { wrapper: TestProviders });
     });
 
     await waitFor(() => expect(screen.getByTestId('rangeOfficerStatus')).toBeInTheDocument());
@@ -176,7 +176,7 @@ describe.skip('testing rangeofficer', () => {
           }),
       }),
     );
-    render(<Tabletview />);
+    render(<Tabletview />, { wrapper: TestProviders });
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveStyle(
         'backgroundColor: colors.green',
@@ -193,7 +193,7 @@ describe.skip('testing rangeofficer', () => {
           }),
       }),
     );
-    render(<Tabletview />);
+    render(<Tabletview />, { wrapper: TestProviders });
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveStyle(
         'backgroundColor: colors.orange',
@@ -210,7 +210,7 @@ describe.skip('testing rangeofficer', () => {
           }),
       }),
     );
-    render(<Tabletview />);
+    render(<Tabletview />, { wrapper: TestProviders });
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveStyle(
         'backgroundColor: colors.blackTint05',
@@ -227,7 +227,7 @@ describe.skip('testing rangeofficer', () => {
           }),
       }),
     );
-    render(<Tabletview />);
+    render(<Tabletview />, { wrapper: TestProviders });
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveStyle(
         'backgroundColor: colors.redLight',
@@ -244,7 +244,7 @@ describe.skip('testing rangeofficer', () => {
           }),
       }),
     );
-    render(<Tabletview />);
+    render(<Tabletview />, { wrapper: TestProviders });
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveStyle(
         'backgroundColor: colors.greenLight',
@@ -261,7 +261,7 @@ describe.skip('testing rangeofficer', () => {
           }),
       }),
     );
-    render(<Tabletview />);
+    render(<Tabletview />, { wrapper: TestProviders });
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveStyle(
         'backgroundColor: colors.turquoise',
@@ -275,7 +275,7 @@ describe.skip('testing rangeofficer', () => {
           Promise.resolve({ ...testUtils.schedule, rangeSupervision: '' }),
       })},
     );
-    render(<Tabletview />);
+    render(<Tabletview />, { wrapper: TestProviders });
     await waitFor(() =>
       expect(screen.getByTestId('rangeOfficerStatus')).toHaveStyle(
         'backgroundColor: colors.blackTint05',
@@ -301,7 +301,7 @@ describe.skip('testing rangeofficer', () => {
     });
 
     await act(async() => render(
-        <Tabletview />
+        <Tabletview />, { wrapper: TestProviders }
     ));
     await waitFor(() =>
       expect(screen.getByText('Shooting Track 0 — s 0', {exact: false})).toBeInTheDocument(),
@@ -329,7 +329,7 @@ describe.skip('testing rangeofficer', () => {
       value: 'role=rangemaster',
     });
 
-    await act(async() => render(<Tabletview />));
+    await act(async() => render(<Tabletview />, { wrapper: TestProviders }));
 
     await waitFor(() => expect(screen.getByTestId('1')).toBeInTheDocument());
     await waitFor(() =>

@@ -16,14 +16,11 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 
 import classNames from 'classnames';
-import translations from '../../texts/texts.json';
 import css from './ChangePassword.module.scss';
 import api from '../../api/api';
+import { t } from '@lingui/core/macro';
 
 const classes = classNames.bind(css);
-
-const lang = localStorage.getItem('language');
-const { rangeofficerSettings } = translations;
 
 /**
  * Component for displaying range officers in a table
@@ -51,8 +48,8 @@ function OfficerTable({ rangeOfficers, handleDelete }) {
       <Table data-testid="officer-table">
         <TableHead>
           <TableRow>
-            <TableCell>{rangeofficerSettings.officersRow[lang]}</TableCell>
-            <TableCell>{rangeofficerSettings.actionsRow[lang]}</TableCell>
+            <TableCell>{t`Range officers`}</TableCell>
+            <TableCell>{t`Actions`}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -68,7 +65,7 @@ function OfficerTable({ rangeOfficers, handleDelete }) {
                   className={classes(css.removeButton)}
                   onClick={() => handleDeleteClick(officer)}
                 >
-                  {rangeofficerSettings.delete[lang]}
+                  {t`Delete`}
                 </Button>
               </TableCell>
             </TableRow>
@@ -80,11 +77,11 @@ function OfficerTable({ rangeOfficers, handleDelete }) {
       {officerToDelete ? (
         <Dialog open={open} onClose={() => setOpen(false)}>
           <DialogTitle>
-            {rangeofficerSettings.deleteTitle[lang]} {officerToDelete.name}?
+            {t`Delete range officer`} {officerToDelete.name}?
           </DialogTitle>
           <DialogActions>
             <Button onClick={() => setOpen(false)}>
-              {rangeofficerSettings.cancel[lang]}
+              {t`Cancel`}
             </Button>
             <Button
               onClick={() => {
@@ -93,7 +90,7 @@ function OfficerTable({ rangeOfficers, handleDelete }) {
               }}
               className={classes(css.removeButton)}
             >
-              {rangeofficerSettings.delete[lang]}
+              {t`Delete`}
             </Button>
           </DialogActions>
         </Dialog>
@@ -142,13 +139,13 @@ export default function OfficerForm({ id }) {
 
     // check if all fields are filled
     if (!username || !password || !passwordConfirm) {
-      createNotification('error', rangeofficerSettings.empty[lang]);
+      createNotification('error', t`Fill all the text fields`);
       return;
     }
 
     // Check if passwords match
     if (password !== passwordConfirm) {
-      createNotification('error', rangeofficerSettings.passwordMatch[lang]);
+      createNotification('error', t`Passwords don't match`);
       return;
     }
 
@@ -165,7 +162,7 @@ export default function OfficerForm({ id }) {
       await api.createUser(newUser);
 
       // Send notification & clear input fields
-      createNotification('success', rangeofficerSettings.success[lang]);
+      createNotification('success', t`Range officer added successfully`);
       setUsername('');
       setPassword('');
       setPasswordConfirm('');
@@ -176,7 +173,7 @@ export default function OfficerForm({ id }) {
     } catch (err) {
       // log error and send notification
       console.log(err);
-      createNotification('error', rangeofficerSettings.error[lang]);
+      createNotification('error', t`Range officer addition failed`);
     }
   };
 
@@ -190,17 +187,17 @@ export default function OfficerForm({ id }) {
         prevOfficers.filter((officer) => officer.id !== removeId),
       );
 
-      createNotification('success', rangeofficerSettings.deleteSuccess[lang]);
+      createNotification('success', t`Range officer deleted successfully`);
     } catch (err) {
       console.log(err);
-      createNotification('error', rangeofficerSettings.deleteError[lang]);
+      createNotification('error', t`Range officer deletion failed`);
     }
   };
 
   return (
     <div className={classes(css.title)}>
       <Typography component="h1" variant="h5">
-        {rangeofficerSettings.title[lang]}
+        {t`Add new range officer`}
       </Typography>
 
       <form noValidate onSubmit={handleSubmit}>
@@ -213,7 +210,7 @@ export default function OfficerForm({ id }) {
           name="username"
           value={username}
           type="text"
-          label={rangeofficerSettings.username[lang]}
+          label={t`Username`}
           onChange={(e) => setUsername(e.target.value)}
           className={classes(css.textField)}
           inputProps={{
@@ -230,7 +227,7 @@ export default function OfficerForm({ id }) {
           name="password"
           value={password}
           type="password"
-          label={rangeofficerSettings.password[lang]}
+          label={t`Password`}
           onChange={(e) => setPassword(e.target.value)}
           className={classes(css.textField)}
           inputProps={{
@@ -247,7 +244,7 @@ export default function OfficerForm({ id }) {
           name="passwordConfirm"
           value={passwordConfirm}
           type="password"
-          label={rangeofficerSettings.passwordConfirm[lang]}
+          label={t`Confirm password`}
           onChange={(e) => setPasswordConfirm(e.target.value)}
           className={classes(css.textField)}
           inputProps={{
@@ -262,7 +259,7 @@ export default function OfficerForm({ id }) {
           className={classes(css.acceptButton)}
           data-testid="submit-button"
         >
-          {rangeofficerSettings.confirm[lang]}
+          {t`Add range officer`}
         </Button>
       </form>
 

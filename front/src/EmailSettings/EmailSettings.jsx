@@ -22,52 +22,47 @@ import {
 } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import './EmailSettings.scss';
-import textData from '../texts/texts.json';
-import { getLanguage } from '../utils/Utils';
-
-const { emailSettings, nav } = textData;
-const lang = localStorage.getItem('language');
 
 const HelperText = (messageSelection) => {
   switch (messageSelection) {
     case 'declineMsg':
       return (
         <p>
-          {emailSettings.dynamicValues[lang]}
+          {t`Allowed dynamic values:`}
           <br />
-          {`{user} - ${emailSettings.userDecline[lang]}`}
+          {`{user} - ${t`The user who declined`}`}
           <br />
-          {`{date} - ${emailSettings.declineDate[lang]}`}
+          {`{date} - ${t`The date of the user declining`}`}
         </p>
       );
     case 'feedbackMsg':
       return (
         <p>
-          {emailSettings.dynamicValues[lang]}
+          {t`Allowed dynamic values:`}
           <br />
-          {`{user} - ${emailSettings.userFeedback[lang]}`}
+          {`{user} - ${t`The user who gave feedback`}`}
           <br />
-          {`{feedback} - ${emailSettings.feedbackGiven[lang]}`}
+          {`{feedback} - ${t`The feedback given by the user`}`}
         </p>
       );
     case 'resetpassMsg':  
       return (
         <p>
-          {emailSettings.dynamicValues[lang]}
+          {t`Allowed dynamic values:`}
           <br />
-          {`{token} - ${emailSettings.resetpassToken[lang]}`}
+          {`{token} - ${t`The password reset link token.`}`}
           <br />
-          {emailSettings.resetpassGuide[lang]}
+          {t`The link can be made like this: http://tss.tasera.fi/#/renew-password/{token}`}
         </p>
       );
     case 'collageMsg':
       return (
         <p>
-          {emailSettings.dynamicValues[lang]}
+          {t`Allowed dynamic values:`}
           <br />
-          {`{assigned} - ${emailSettings.assignedCount[lang]}`}
+          {`{assigned} - ${t`The number of assigned shifts`}`}
           <br />
-          {`{update} - ${emailSettings.updateCount[lang]}`}
+          {`{update} - ${t`The number of updated shifts`}`}
         </p>
       );
     case 'assignedMsg':
@@ -134,22 +129,22 @@ const EmailSettings = () => {
         // Sending pending emails failed
         if(res.status === 404) {
           // no pending emails to send
-          setNotification({ open: true, message: emailSettings.pendingEmpty[lang], type: 'success' });
+          setNotification({ open: true, message: t`No pending messages to send.`, type: 'success' });
         }
         else if (res.status !== 200) {
-          setNotification({ open: true, message: emailSettings.pendingError[lang], type: 'error' });
+          setNotification({ open: true, message: t`Sending pending messages failed!`, type: 'error' });
         }
         // Sending pending emails was successful
         else if (res.status === 200 && result.message) {
-          setNotification({ open: true, message: emailSettings.pendingEmpty[lang], type: 'success' });
+          setNotification({ open: true, message: t`No pending messages to send.`, type: 'success' });
         } else {
-          setNotification({ open: true, message: emailSettings.pendingSuccess[lang], type: 'success' });
+          setNotification({ open: true, message: t`Pending messages sent successfully!`, type: 'success' });
         }
         })
       .catch((error) => {
         setPendingSave(false);
         console.error('Sending pending emails failed:', error);
-        setNotification({ open: true, message: emailSettings.pendingError[lang], type: 'error' });
+        setNotification({ open: true, message: t`Sending pending messages failed!`, type: 'error' });
       });
   };
 
@@ -179,23 +174,23 @@ const EmailSettings = () => {
     e.preventDefault();
     // If email isn't in email format
     if (!validateEmail(settings.user)) {
-      setNotification({ open: true, message: emailSettings.emailError[lang], type: 'error' });
+      setNotification({ open: true, message: t`Invalid email!`, type: 'error' });
       return;
     }
     else if (!settings.pass) {
-      setNotification({ open: true, message: emailSettings.passError[lang], type: 'error' });
+      setNotification({ open: true, message: t`Password cannot be empty!`, type: 'error' });
       return;
     }
     else if (!settings.host) {
-      setNotification({ open: true, message: emailSettings.hostError[lang], type: 'error' });
+      setNotification({ open: true, message: t`Host cannot be empty!`, type: 'error' });
       return;
     }
     else if (!settings.port) {
-      setNotification({ open: true, message: emailSettings.portError[lang], type: 'error' });
+      setNotification({ open: true, message: t`Port cannot be zero!`, type: 'error' });
       return;
     }
     else if (settings.cc && !validateEmail(settings.cc)) {
-      setNotification({ open: true, message: emailSettings.ccError[lang], type: 'error' });
+      setNotification({ open: true, message: t`Invalid CC email!`, type: 'error' });
       return;
     }
 
@@ -214,13 +209,13 @@ const EmailSettings = () => {
           setPendingSave(false);
           // Handle specific errors
           if (data.code === 'EAUTH') {
-            setNotification({ open: true, message: emailSettings.authError[lang], type: 'error' });
+            setNotification({ open: true, message: t`Wrong email or password!`, type: 'error' });
           } else if (data.code === 'EDNS') {
-            setNotification({ open: true, message: emailSettings.DNSError[lang], type: 'error' });
+            setNotification({ open: true, message: t`DNS resolution failed. Please check that the SMTP host is correct.`, type: 'error' });
           } else if (data.code === 'ESOCKET') {
-            setNotification({ open: true, message: emailSettings.socketError[lang], type: 'error' });
+            setNotification({ open: true, message: t`Connection failed. Please check the server, port, and SSL settings.`, type: 'error' });
           } else if (data.code === 'ETIMEDOUT') {
-            setNotification({ open: true, message: emailSettings.timeoutError[lang], type: 'error' });
+            setNotification({ open: true, message: t`Connection timed out. Check network connectivity.!`, type: 'error' });
           } else {
             console.error('Saving email settings failed:', data);
             throw new Error("Unrecognized error code: " + data.code);
@@ -229,14 +224,14 @@ const EmailSettings = () => {
         // Verifying credentials was successful, settings saved
         else {
           setPendingSave(false);
-          setNotification({ open: true, message: emailSettings.success[lang], type: 'success' });
+          setNotification({ open: true, message: t`Successfully updated!`, type: 'success' });
         }
       })
       // Unrecognized error
       .catch((error) => {
         console.log('Saving email settings failed:', error);
         setPendingSave(false);
-        setNotification({ open: true, message: emailSettings.error[lang], type: 'error' });
+        setNotification({ open: true, message: t`Something went wrong!`, type: 'error' });
       });
   };
 
@@ -253,7 +248,7 @@ const EmailSettings = () => {
     <div className="email-settings">
       <form onSubmit={handleSubmit}>
         <div className="group">
-          <FormLabel component="legend">{nav.EmailSettings[lang]}</FormLabel>
+          <FormLabel component="legend">{t`Email settings`}</FormLabel>
           <FormControl component="fieldset">
             <FormLabel>SMTP-asetukset</FormLabel>
             <TextField
@@ -274,14 +269,14 @@ const EmailSettings = () => {
             <TextField
               className="component"
               name="user"
-              label={emailSettings.user[lang]}
+              label={t`Email`}
               value={settings.user}
               onChange={handleChange}
             />
             <TextField
               className="component"
               name="pass"
-              label={emailSettings.pass[lang]}
+              label={t`Password`}
               value={settings.pass}
               type="password"
               onChange={handleChange}
@@ -290,7 +285,7 @@ const EmailSettings = () => {
             <TextField
               className="component"
               name="cc"
-              label="CC"
+              label={t`CC`}
               value={settings.cc}
               onChange={handleChange}
             />
@@ -298,7 +293,7 @@ const EmailSettings = () => {
         </div>
         <FormControl component="fieldset">
           <FormLabel className="settings-label">
-            {emailSettings.ssl[lang]}
+            {t`Use SSL`}
           </FormLabel>
           <RadioGroup
             name="secure"
@@ -308,24 +303,24 @@ const EmailSettings = () => {
             <FormControlLabel
               value="false"
               control={<Radio />}
-              label={emailSettings.no[lang]}
+              label={t`No`}
             />
             <FormControlLabel
               value="true"
               control={<Radio />}
-              label={emailSettings.yes[lang]}
+              label={t`Yes`}
             />
           </RadioGroup>
         </FormControl>
         <div className="group">
           <FormControl component="fieldset">
             <FormLabel className="settings-label">
-              {emailSettings.senderAddress[lang]}
+              {t`Sender email address`}
             </FormLabel>
             <TextField
               className="component"
               name="sender"
-              label={emailSettings.address[lang]}
+              label={t`Address`}
               value={settings.sender}
               onChange={handleChange}
             />
@@ -333,43 +328,43 @@ const EmailSettings = () => {
         </div>
         <div className="group">
             <FormLabel className="settings-label">
-              {emailSettings.emailMessages[lang]}
+              {t`Email messages`}
             </FormLabel>
             <FormControl component="fieldset">
             <InputLabel id="message-type-label">
-              {emailSettings.messageType[lang]}
+              {t`Message type`}
             </InputLabel>
             <Select
               labelId="message-type-label"
-              label={emailSettings.messageType[lang]}
+              label={t`Message type`}
               value={messageSelection}
               onChange={(e) => setMessageSelection(e.target.value)}
             >
               <MenuItem value="collageMsg">
-                {emailSettings.collage[lang]}
+                {t`Compiled shift changes`}
               </MenuItem>
               <MenuItem value="assignedMsg">
-                {emailSettings.assigned[lang]}
+                {t`Shift assigned`}
               </MenuItem>
-              <MenuItem value="updateMsg">{emailSettings.update[lang]}</MenuItem>
+              <MenuItem value="updateMsg">{t`Shift updated`}</MenuItem>
               <MenuItem value="reminderMsg">
-                {emailSettings.reminder[lang]}
+                {t`Unconfirmed shift reminder`}
               </MenuItem>
               <MenuItem value="declineMsg">
-                {emailSettings.decline[lang]}
+                {t`Shift declined`}
               </MenuItem>
               <MenuItem value="feedbackMsg">
-                {emailSettings.feedback[lang]}
+                {t`Feedback received`}
               </MenuItem>
               <MenuItem value="resetpassMsg">
-                {emailSettings.resetpass[lang]}
+                {t`Password reset link`}
               </MenuItem>
             </Select>
             <TextField
               className="component"
               multiline
               name={messageSelection}
-              label={emailSettings.emailContent[lang]}
+              label={t`Message content`}
               value={settings[messageSelection]}
               onChange={handleChange}
             />
@@ -384,7 +379,7 @@ const EmailSettings = () => {
               <TimePicker
                 className="component"
                 margin="normal"
-                label={emailSettings.pendingTime[lang]}
+                label={t`Time for sending emails`}
                 value={moment(settings.sendPendingTime)}
                 onChange={handleDateChange}
               />
@@ -393,7 +388,7 @@ const EmailSettings = () => {
         </div>
         <FormControl component="fieldset">
           <FormLabel className="settings-label">
-            {emailSettings.queueMessages[lang]}
+            {t`Send compiled messages at a certain time`}
           </FormLabel>
           <RadioGroup
             name="shouldQueue"
@@ -403,12 +398,12 @@ const EmailSettings = () => {
             <FormControlLabel
               value="true"
               control={<Radio />}
-              label={emailSettings.yes[lang]}
+              label={t`Yes`}
             />
             <FormControlLabel
               value="false"
               control={<Radio />}
-              label={emailSettings.no[lang]}
+              label={t`No`}
             />
           </RadioGroup>
         </FormControl>
@@ -423,17 +418,17 @@ const EmailSettings = () => {
               {pendingSend ? (
                 <CircularProgress />
               ) : (
-                emailSettings.sendPending[lang]
+                t`Send messages`
               )}
             </Button>
             <FormHelperText display="inline" className="helperText">
-              {emailSettings.sendPendingTip[lang]}
+              {t`You can force all pending emails to be sent immediately with the button.`}
             </FormHelperText>
           </FormControl>
         </div>
         <FormControl component="fieldset">
           <FormLabel className="settings-label">
-            {emailSettings.sendAutomatically[lang]}
+            {t`Send email`}
           </FormLabel>
           <RadioGroup
             name="shouldSend"
@@ -443,12 +438,12 @@ const EmailSettings = () => {
             <FormControlLabel
               value="true"
               control={<Radio />}
-              label={emailSettings.yes[lang]}
+              label={t`Yes`}
             />
             <FormControlLabel
               value="false"
               control={<Radio />}
-              label={emailSettings.no[lang]}
+              label={t`No`}
             />
           </RadioGroup>
         </FormControl>
@@ -462,7 +457,7 @@ const EmailSettings = () => {
               {pendingSave ? (
                 <CircularProgress />
               ) : (
-                emailSettings.saveSettings[lang]
+                t`Save settings`
               )}
             </Button>
           </FormControl>

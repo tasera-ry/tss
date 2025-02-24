@@ -3,6 +3,7 @@ import { HashRouter as Router } from 'react-router-dom';
 import { act } from 'react-dom/test-utils';
 import { DialogWindow } from './LoggedIn';
 import axios from 'axios';
+import { TestProviders } from '@/_TestUtils/TestProvides';
 
 vi.mock('axios', () => ({
   default: {
@@ -21,6 +22,7 @@ describe('testing LoggedIn', () => {
         <Router>
           <DialogWindow />
         </Router>,
+        { wrapper: TestProviders },
       );
     });
     await waitFor(() =>

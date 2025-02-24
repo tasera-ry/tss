@@ -15,6 +15,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { makeStyles } from '@mui/styles';
 import { useCookies } from 'react-cookie';
 import TextField from '@mui/material/TextField';
+import { t } from '@lingui/core/macro';
 
 // Axios for call-handling to backend
 import axios from 'axios';
@@ -25,9 +26,6 @@ import 'moment/locale/en-ca';
 
 // API for backend calls
 import api from '../api/api';
-
-// Translations
-import data from '../texts/texts.json';
 
 // Styles
 const dialogStyle = {
@@ -67,27 +65,26 @@ const ArrivalTimeContext = createContext({
 
 // print drop down menus in rows
 const DropDowns = (props) => {
-  const fin = localStorage.getItem('language');
   const id = props.d;
   const obj = props.changes.find((o) => o.date === id);
   const { rangeofficerList } = props;
 
-  let text = props.sv.Present[fin];
+  let text = t`Confirm date`;
   let color = '#f2f2f2';
   if (
     obj.range_supervisor === 'confirmed' ||
     obj.range_supervisor === 'en route'
   ) {
-    text = props.sv.Confirmed[fin];
+    text = t`Confirmed`;
     color = '#658f60';
   }
   if (obj.range_supervisor === 'absent') {
-    text = props.sv.Absent[fin];
+    text = t`Absent`;
     color = '#c97b7b';
   }
   const [buttonText, setButtonText] = useState(text);
   const [officerButtonText, setOfficerButtonText] = useState(
-    props.sv.OfficerSelect[fin],
+    t`Select officer`,
   );
   const [buttonColor, setButtonColor] = useState(color);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -128,22 +125,22 @@ const DropDowns = (props) => {
     // empty info means date is not confirmed
 
     if (event.currentTarget.dataset.info === '') {
-      setButtonText(props.sv.Present[fin]);
+      setButtonText(t`Confirm date`);
       setButtonColor('#f2f2f2');
       setDisable(true);
       obj.range_supervisor = 'not confirmed';
       setProvideTimeText('');
     }
     if (event.currentTarget.dataset.info === 'y') {
-      setButtonText(props.sv.Confirmed[fin]);
+      setButtonText(t`Confirmed`);
       setButtonColor('#658f60');
       setDisable(false);
       obj.range_supervisor = 'confirmed';
 
-      setProvideTimeText(props.sv.ProvideTime[fin]);
+      setProvideTimeText(t`Your estimated time of arrival:`);
     }
     if (event.currentTarget.dataset.info === 'n') {
-      setButtonText(props.sv.Absent[fin]);
+      setButtonText(t`Absent`);
       setButtonColor('#c97b7b');
       setDisable(true);
       obj.range_supervisor = 'absent';
@@ -157,7 +154,7 @@ const DropDowns = (props) => {
 
   const handleOfficerClose = (officer) => {
     if (officer === null) {
-      setOfficerButtonText(props.sv.NoOfficer[fin]);
+      setOfficerButtonText(t`No selection`);
       setRangeOfficer(null);
       setOfficerAnchorEl(null);
     } else {
@@ -186,18 +183,18 @@ const DropDowns = (props) => {
         onClose={HandleClose}
       >
         <MenuItem onClick={HandleClose} data-info="" style={discardChanges}>
-          {props.sv.Present[fin]}
+          {t`Confirm date`}
         </MenuItem>
         <MenuItem onClick={HandleClose} data-info="y">
-          {props.sv.Confirmed[fin]}
+          {t`Confirmed`}
         </MenuItem>
         <MenuItem onClick={HandleClose} data-info="n">
-          {props.sv.Absent[fin]}
+          {t`Absent`}
         </MenuItem>
       </Menu>
       {/* Range officer selection menu */}
       <div>
-        {buttonText === props.sv.Confirmed[fin] && (
+        {buttonText === t`Confirmed` && (
           <div>
             <p>Select rangeofficer</p>
             <Button
@@ -214,7 +211,7 @@ const DropDowns = (props) => {
               keepMounted
             >
               <MenuItem onClick={() => handleOfficerClose(null)} data-info="">
-                {props.sv.NoOfficer[fin]}
+                {t`No selection`}
               </MenuItem>
               {rangeofficerList.map((officer) => (
                 <MenuItem
@@ -231,7 +228,7 @@ const DropDowns = (props) => {
       </div>
       <div>
         <p>{provideTime}</p>
-        {buttonText === props.sv.Confirmed[fin] && (
+        {buttonText === t`Confirmed` && (
           <TextField
             id="time"
             type="time"
@@ -256,14 +253,12 @@ const DropDowns = (props) => {
 };
 
 // prints matkalla-checkbox
-const Check = ({ HandleChange, checked, sv, disable }) => {
-  const fin = localStorage.getItem('language');
-
+const Check = ({ HandleChange, checked, disable }) => {
   return (
     <>
       <br />
       <FormControlLabel
-        label={sv.EnRoute[fin]}
+        label={t`En route`}
         disabled={disable}
         control={
           <Checkbox
@@ -469,7 +464,6 @@ const DialogWindow = ({ onCancel }) => {
   const [arrivalTime, setArrivalTime] = useState('');
   const [rangeofficer, setRangeOfficer] = useState('');
   const [rangeofficerList, setRangeOfficerList] = useState('');
-  const { sv } = data;
 
   if (onCancel === undefined) {
     onCancel = () => {}; // eslint-disable-line
@@ -507,7 +501,6 @@ const DialogWindow = ({ onCancel }) => {
           setChecked={setChecked}
           done={done}
           setDone={setDone}
-          sv={sv}
           onCancel={onCancel}
         />
       </ArrivalTimeContext.Provider>
@@ -548,7 +541,6 @@ const Logic = ({
   const classes = useStyles();
   const [open, setOpen] = useState(true);
   const [wait, setWait] = useState(false);
-  const fin = localStorage.getItem('language');
   const changes = [...schedules];
 
   const { arrivalTime, rangeofficer } = useContext(ArrivalTimeContext);
@@ -592,12 +584,12 @@ const Logic = ({
     <div>
       <Dialog open={open} aria-labelledby="otsikko">
         <DialogTitle id="otsikko" style={dialogStyle}>
-          {sv.Header[fin]}
+          {t`Confirm supervisions`}
         </DialogTitle>
         <DialogContent style={dialogStyle}>
           <DialogContentText>
-            {noSchedule ? sv.No[fin] : ''}
-            {done ? '' : sv.Wait[fin]}
+            {noSchedule ? t`Nothing to confirm` : ''}
+            {done ? '' : t`Retrieving information...`}
           </DialogContentText>
           {schedules.length !== 0 ? (
             <Rows
@@ -628,7 +620,7 @@ const Logic = ({
             }}
             style={{ backgroundColor: '#e5e5e5' }}
           >
-            {sv.Cancel[fin]}
+            {t`Cancel`}
           </Button>
           {done && !noSchedule ? (
             <Button
@@ -636,7 +628,7 @@ const Logic = ({
               onClick={HandleClose}
               style={{ backgroundColor: '#5f77a1' }}
             >
-              {sv.Save[fin]}
+              {t`Save`}
             </Button>
           ) : (
             ''

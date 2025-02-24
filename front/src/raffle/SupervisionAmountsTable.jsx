@@ -7,13 +7,11 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import translations from '../texts/texts.json';
 import { FixedSizeList as List } from 'react-window';
 import css from './table.module.scss';
-const classes = classNames.bind(css);
+import { t } from '@lingui/core/macro';
 
-const lang = localStorage.getItem('language');
-const { raffle } = translations;
+const classes = classNames.bind(css);
 
 const AmountRow = ({ style, amount }) => (
   <TableRow
@@ -44,9 +42,9 @@ export default function SupervisionAmountsTable({ amounts }) {
         <TableHead component="div">
           <div className={classes(css.flexRow)}>
             <TableCell component="div" className={classes(css.flexCell)}>
-              {raffle.user[lang]}
+              {t`Association`}
             </TableCell>
-            <TableCell component="div">{raffle.amount[lang]}</TableCell>
+            <TableCell component="div">{t`Amount of supervisions`}</TableCell>
           </div>
         </TableHead>
         <TableBody component="div">
