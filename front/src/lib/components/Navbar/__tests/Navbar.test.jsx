@@ -1,4 +1,3 @@
-import React from 'react';
 import '@testing-library/jest-dom';
 import {
   waitFor,
@@ -9,7 +8,7 @@ import {
 import { HashRouter as Router } from 'react-router-dom';
 import { act } from 'react-dom/test-utils';
 import axios from 'axios';
-import Nav from './Nav';
+import { Navbar } from '../Navbar';
 
 localStorage.setItem('token', 'foobar');
 localStorage.setItem('taseraUserName', 'testName');
@@ -24,7 +23,7 @@ describe('testing Nav', () => {
     await act(async () => {
       render(
         <Router>
-          <Nav />
+          <Navbar />
         </Router>,
       );
     });

@@ -1,6 +1,9 @@
 import { useMemo } from 'react';
+import moment from 'moment';
+import 'moment/locale/sv';
 import { Link } from 'react-router-dom';
 import texts from '../../texts/texts.json';
+
 
 export function ViewChanger() {
   const { viewChanger } = texts; // eslint-disable-line
@@ -11,22 +14,33 @@ export function ViewChanger() {
     const urlParamDate = fullUrl[5];
     if (urlParamDate) return urlParamDate;
 
-    const date = new Date();
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    return moment().format("YYYY-MM-DD");
   }, []);
 
   return (
-    <>
-      <Link key="month" className="link" to={`/monthview/${time}`}>
+    <div className='flex gap-1'>
+      <Link
+        key="month"
+        className='bg-black-tint-70 rounded-t-lg p-2 flex justify-center items-center text-white text-lg font-bold'
+        to={`/monthview/${time}`}
+      >
         {viewChanger.Month[lang]}
-      </Link>,
-      <Link key="week" className="link" to={`/weekview/${time}`}>
+      </Link>
+      <Link
+        key="week"
+        className='bg-black-tint-70 rounded-t-lg p-2 flex justify-center items-center text-white text-lg font-bold'
+        to={`/weekview/${time}`}
+      >
         {viewChanger.Week[lang]}
-      </Link>,
-      <Link key="day" className="link" to={`/dayview/${time}`}>
+      </Link>
+      <Link
+        key="day"
+        className='bg-black-tint-70 rounded-t-lg p-2 flex justify-center items-center text-white text-lg font-bold'
+        to={`/dayview/${time}`}
+      >
         {viewChanger.Day[lang]}
-      </Link>,
-    </>
+      </Link>
+    </div>
   )
-
 };
+ 
