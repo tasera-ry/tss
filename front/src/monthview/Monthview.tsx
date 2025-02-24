@@ -66,11 +66,11 @@ export function Monthview()  {
   }, [targetDate])
 
   const previousMonthClick = useCallback(() => {
-    history.push(`/monthview/${moment(targetDate).subtract(1, 'week').format('YYYY-MM-DD')}`)
+    history.push(`/monthview/${moment(targetDate).subtract(1, 'month').format('YYYY-MM-DD')}`)
   }, [targetDate]);
 
   const nextMonthClick = useCallback(() => {
-    history.push(`/monthview/${moment(targetDate).add(1, 'week').format('YYYY-MM-DD')}`)
+    history.push(`/monthview/${moment(targetDate).add(1, 'month').format('YYYY-MM-DD')}`)
   }, [targetDate]);
 
   return (
