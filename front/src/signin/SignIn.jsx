@@ -77,7 +77,7 @@ const SignIn = () => {
             onInput={(e) => setName(e.target.value)}
             className={classes(css.text)}
             slotProps={{
-              input: {
+              htmlInput: {
                 'data-testid': 'nameField',
               }
             }}
@@ -96,8 +96,10 @@ const SignIn = () => {
             error={mistake}
             onInput={(e) => setPassword(e.target.value)}
             className={classes(css.text)}
-            inputProps={{
-              'data-testid': 'passwordField',
+            slotProps={{
+              htmlInput: {
+                'data-testid': 'passwordField',
+              }
             }}
           />
           {mistake && (

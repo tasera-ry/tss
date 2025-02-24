@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import * as axios from 'axios';
+import axios from 'axios';
 import {
   render,
   screen,
@@ -11,18 +11,16 @@ import SignIn from './SignIn';
 import { TestProviders } from '../_TestUtils/TestProvides';
 
 vi.mock('axios', () => ({
-  get: vi.fn(),
-  post: vi.fn(),
+  default: {
+    post: vi.fn(),
+  },
 }));
-axios.get = vi.fn(() => Promise.resolve({ data: [{ role: 'association' }] }));
-axios.post = vi.fn((url, credentials) => {
-  if (credentials.name === 'wrong_username') {
-    return Promise.reject({ response: { status: 401 } }); // eslint-disable-line
-  }
-  return Promise.resolve({ data: 'dummy token' });
-});
 
 describe('testing SignIn component', () => {
+
+  beforeAll(() => {
+  })
+
   it('should render SignIn', async () => {
     render(<SignIn />, { wrapper: TestProviders });
     await waitFor(() =>
@@ -32,13 +30,16 @@ describe('testing SignIn component', () => {
 
   it('should give error on wrong credentials', async () => {
     await act(async () => {
+      vi.mocked(axios.post).mockRejectedValue({ response: { status: 401 } });
+
       await render(<SignIn />, { wrapper: TestProviders });
 
-      await waitFor(() =>
-        expect(screen.getByTestId('nameField')).toBeInTheDocument(),
-      );
-      userEvent.type(screen.getByTestId('nameField'), 'wrong_username');
-      userEvent.type(screen.getByTestId('passwordField'), 'wrong_pw');
+      await waitFor(() => {
+        expect(screen.getByTestId('nameField')).toBeInTheDocument()
+        expect(screen.getByTestId('passwordField')).toBeInTheDocument()
+      });
+      await userEvent.type(screen.getByTestId('nameField'), 'wrong_username');
+      await userEvent.type(screen.getByTestId('passwordField'), 'wrong_pw');
       fireEvent.click(screen.getByText('Log in'));
       await waitFor(() =>
         expect(
@@ -47,13 +48,16 @@ describe('testing SignIn component', () => {
       );
     });
   });
-  it.skip('should access with correct credentials', async () => {
+  it('should access with correct credentials', async () => {
     await act(async () => {
+      vi.mocked(axios.post).mockResolvedValue({ data: 'dummy token' });
+
       await render(<SignIn />, { wrapper: TestProviders });
 
-      await waitFor(() =>
-        expect(screen.getByTestId('nameField')).toBeInTheDocument(),
-      );
+      await waitFor(() => {
+        expect(screen.getByTestId('nameField')).toBeInTheDocument()
+        expect(screen.getByTestId('passwordField')).toBeInTheDocument()
+      });
       userEvent.type(screen.getByTestId('nameField'), 'correct_name');
       userEvent.type(screen.getByTestId('passwordField'), 'correct_pw');
       fireEvent.click(screen.getByText('Log in'));
