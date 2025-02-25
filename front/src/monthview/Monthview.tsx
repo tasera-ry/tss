@@ -32,7 +32,7 @@ export function Monthview()  {
   }, [dateParam])
 
   const { data: schedule, isSuccess } = useQuery({
-    queryKey: ['weekview', targetDate],
+    queryKey: ['monthview', targetDate],
     queryFn: async () => {
       const firstDay = moment(targetDate).startOf('month').startOf('isoWeek').format('YYYY-MM-DD')
       const lastDay = moment(targetDate).endOf('month').endOf('isoWeek').format('YYYY-MM-DD')
@@ -51,7 +51,7 @@ export function Monthview()  {
       }))
     }
   });
-
+  console.log(schedule)
   const monthNro = useMemo(() => {
     // Months are padded to two characters
     return moment(targetDate).month().toString().padStart(2, '0');
@@ -125,7 +125,6 @@ interface SchedyleWeek {
 }
 
 function TableBody({schedule}: {schedule: SchedyleWeek[]}) {
-
   if (!schedule) return null
 
   return (
