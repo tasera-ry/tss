@@ -10,7 +10,7 @@ import RenewPassword from './renewPW/RenewPassword';
 import AddInfo from './infoBox/AddInfo';
 import Dayview from './dayview/Dayview';
 import { Weekview } from './weekview/Weekview';
-import Trackview from './trackview/Trackview';
+import { Trackview } from './trackview/Trackview';
 import Scheduling from './scheduling/Scheduling';
 import RangeOfficerView from './tabletview/rangeofficer';
 import Profile from './profile/profilesettings';
