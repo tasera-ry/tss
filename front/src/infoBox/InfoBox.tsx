@@ -1,15 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import classNames from 'classnames';
+import { useState, useMemo } from 'react';
 import Close from '@mui/icons-material/Close';
 import Alert from '@mui/lab/Alert';
 import api from '../api/api';
-import css from './InfoBox.module.scss';
+import { useQuery } from 'react-query';
 
-const classes = classNames.bind(css);
 
-// IMPORTANT: Current implementation is MVP, needs to be fixed to fulfil actual customer needs
+// TO DO: Take weekly and monthly values into account
+export const InfoBox = ({ tabletMode = false }) => {
+  
+  const publicMessagesQuery = useQuery({
+    queryKey: ['publicMessages'],
+    queryFn: () => api.getPublicInfoMessages()
+  });
 
-const InfoComp = ({ message }) => {
+  const rangeMasterMessagesQuery = useQuery({
+    queryKey: ['rangeMasterMessages'],
+    queryFn: () => api.getRangeMasterInfoMessages(),
+    enabled: tabletMode
+  })
+
+  const messages = useMemo(() => {
+    return rangeMasterMessagesQuery.data ?? publicMessagesQuery.data ?? [];
+  }, [tabletMode, publicMessagesQuery.data, rangeMasterMessagesQuery.data]);
+
+  if (messages.length === 0) return null;
+
+  return messages.map((message) => <InfoMessage key={message.id} message={message}/>);
+};
+
+function InfoMessage({ message }) {
+
+  const severity = useMemo(() => {
+    return message.level === 'error' ? 'error' : message.level === 'warning' ? 'warning' : 'info';
+  }, [message.level]);
+
   // TO DO: Fix -> Visibility resets every time you reload / change page
   const [visible, setVisible] = useState(true);
   if (!visible) return null;
@@ -18,51 +42,17 @@ const InfoComp = ({ message }) => {
   if (message.start > new Date().toISOString()) return null;
 
   return (
-    <div className={classes(css.infoContainer)} data-testid="infoboxContainer">
-      <div className={classes(css.infoBox)}>
+    <div className="text-center" data-testid="infoboxContainer">
+      <div className="relative text-left inline-block max-w-[70%] min-w-[40%] word-break-break-word ml-auto mr-auto">
         <Close
           fontSize="small"
-          className={classes(css.closeIcon)}
+          className="absolute right-1 top-1 cursor-pointer"
           onClick={() => setVisible(false)}
         />
-        {/* TO DO: severity based on the type of info-message */}
-        <Alert severity="warning">
+        <Alert severity={severity}>
           {message.message}
         </Alert>
       </div>
     </div>
   );
 };
-
-// TO DO: Take weekly and monthly values into account
-const InfoBox = ({ tabletMode = false }) => {
-  const [info, setInfo] = useState([]);
-
-  useEffect(() => {
-    const getPublicMessages = async () => {
-      const res = await api.getPublicInfoMessages();
-      if (res) setInfo(res);
-    };
-    const getRangeMasterInfoMessages = async () => {
-      const res = await api.getRangeMasterInfoMessages();
-      if (!res) {
-        // User is not logged in, fetch public messages
-        getPublicMessages();
-      } else {
-        setInfo(res);
-      }
-    };
-
-    if (tabletMode) {
-      getRangeMasterInfoMessages();
-    } else {
-      getPublicMessages();
-    }
-  }, []);
-
-  if (!info) return null;
-
-  return info.map((infos) => <InfoComp key={infos.id} message={infos}/>);
-};
-
-export default InfoBox;
