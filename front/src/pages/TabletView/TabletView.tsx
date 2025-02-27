@@ -11,7 +11,7 @@ import socketIOClient from 'socket.io-client';
 import { validateLogin } from '../../utils/Utils';
 
 // Receiving possible info messages
-import InfoBox from '../../infoBox/InfoBox';
+import { InfoBox } from '@/infoBox/InfoBox';
 import { DeviceStatusPanel } from './components/DeviceStatusPanel/DeviceStatusPanel';
 
 import classNames from 'classnames';

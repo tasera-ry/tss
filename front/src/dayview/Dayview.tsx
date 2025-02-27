@@ -11,7 +11,7 @@ import moment from 'moment';
 import { JumpToCurrent } from '../utils/Utils';
 import info from '@/assets/Info.png';
 import api from '../api/api';
-import InfoBox from '../infoBox/InfoBox';
+import { InfoBox } from '../infoBox/InfoBox';
 import css from './Dayview.module.scss';
 import { DeviceStatusList } from '../DeviceStatusList/DeviceStatusList';
 import { ViewChanger } from '@/lib/components/ViewChanger';
