@@ -6,7 +6,7 @@ import testUtils from '../_TestUtils/TestUtils';
 import axios from 'axios';
 import { CookiesProvider } from 'react-cookie';
 import { BrowserRouter as Router } from 'react-router-dom';
-import InfoBox from '../infoBox/InfoBox';
+import InfoBox from '../lib/components/InfoBox';
 import socketIOClient from 'socket.io-client';  // Import socket.io-client
 import { TestProviders } from '@/_TestUtils/TestProvides';
 

@@ -7,7 +7,6 @@ import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import SignIn from './signin/SignIn';
 import ResetPassword from './resetPW/ResetPassword';
 import RenewPassword from './renewPW/RenewPassword';
-import AddInfo from './infoBox/AddInfo';
 import Dayview from './dayview/Dayview';
 import { Weekview } from './weekview/Weekview';
 import { Trackview } from './trackview/Trackview';
@@ -23,6 +22,7 @@ import Raffle from './raffle/raffle';
 import { Navbar } from '@/lib/components/Navbar';
 import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
 import { Monthview } from '@/monthview/Monthview';
+import { InfoMessageManagementView } from '@/pages/InfoMessageManagementView';
 
 
 export function App() {
@@ -69,7 +69,7 @@ export function App() {
         <Route path="/tracks" component={TrackCRUD} />
         <Route path="/email-settings" component={EmailSettings} />
         <Route path="/statistics" component={Statistics} />
-        <Route path="/info" component={AddInfo} />
+        <Route path="/info" component={InfoMessageManagementView} />
       </Switch>
     </Router>
   );
