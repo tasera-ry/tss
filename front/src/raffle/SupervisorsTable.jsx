@@ -14,7 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import css from './table.module.scss';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 
 
 const classes = classNames.bind(css);
@@ -36,6 +36,7 @@ export default function SupervisorsTable({
   onSubmitUser,
   isLoading,
 }) {
+  const { t } = useLingui();
   const [hoveredRow, setHoveredRow] = useState(undefined);
   const [editOpen, setEditOpen] = useState(undefined);
   const [editFields, setEditFields] = useState({ members: 0, associations: 0 });

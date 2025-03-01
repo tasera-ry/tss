@@ -13,7 +13,7 @@ import CheckSharpIcon from '@mui/icons-material/CheckSharp';
 import IconButton from '@mui/material/IconButton';
 import { FixedSizeList as List } from 'react-window';
 import css from './table.module.scss';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 
 
 const classes = classNames.bind(css);
@@ -105,6 +105,7 @@ export default function SupervisionResultsTable({
   setResults,
   associations,
 }) {
+  const { t } = useLingui();
   const [hoveredRow, setHoveredRow] = useState(undefined);
   const [editOpen, setEditOpen] = useState(undefined);
   const [editUser, setEditUser] = useState(undefined);

@@ -1,9 +1,10 @@
 import classNames from 'classnames';
 
 import InfoImg from '@/assets/Info.png';
-import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro';
 
 export function TableLegends() {
+  const { t } = useLingui();
   return (
     <div className='flex justify-center'>
       <div className="grid grid-cols-3 gap-2 max-w-7xl">

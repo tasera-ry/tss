@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import classNames from 'classnames';
 import colors from '../colors.module.scss';
@@ -12,11 +12,12 @@ import Container from '@mui/material/Container';
 
 import api from '../api/api';
 import css from './RenewPassword.module.scss';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 
 const classes = classNames.bind(css);
 
 const RenewPassword = (props) => {
+  const { t } = useLingui();
   const history = useHistory();
   const { token } = props.match.params;
 

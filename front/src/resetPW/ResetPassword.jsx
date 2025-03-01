@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import classNames from 'classnames';
 
 // Material UI components
@@ -11,11 +11,12 @@ import colors from '../colors.module.scss';
 import ResetPasswordForm from './ResetPasswordForm';
 import api from '../api/api';
 import css from './ResetPassword.module.scss';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 
 const classes = classNames.bind(css);
 
 const ResetPassword = () => {
+  const { t } = useLingui();
 
   const [showForm, setShowForm] = useState(true);
   const [showNullError, setShowNullError] = useState(false);

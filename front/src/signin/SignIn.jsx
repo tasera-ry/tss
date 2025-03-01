@@ -14,12 +14,13 @@ import { useCookies } from 'react-cookie';
 import colors from '../colors.module.scss';
 import api from '../api/api';
 import css from './SignIn.module.scss';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 
 const classes = classNames.bind(css);
 
 /* Returns a component for signing in to the frontend */
 const SignIn = () => {
+  const { t } = useLingui();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [mistake, setMistake] = useState(false);

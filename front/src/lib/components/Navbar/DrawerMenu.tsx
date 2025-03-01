@@ -22,7 +22,7 @@ interface NavItem {
 const MENU_CONTENT: Record<Role, NavItem[]> = {
   superuser: [
     { to: '/scheduling', label: msg`Schedules` },
-    { to: '/usermanagement', label: msg`User managemenmsg` },
+    { to: '/usermanagement', label: msg`User management` },
     { to: '/tracks', label: msg`Edit tracks` },
     { to: '/tablet', label: msg`Tablet view` },
     { to: '/email-settings', label: msg`Email settings` },

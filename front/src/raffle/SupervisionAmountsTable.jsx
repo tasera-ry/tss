@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { FixedSizeList as List } from 'react-window';
 import css from './table.module.scss';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 
 const classes = classNames.bind(css);
 
@@ -29,6 +29,8 @@ const AmountRow = ({ style, amount }) => (
 );
 
 export default function SupervisionAmountsTable({ amounts }) {
+  const { t } = useLingui();
+
   return (
     <TableContainer
       component={Paper}

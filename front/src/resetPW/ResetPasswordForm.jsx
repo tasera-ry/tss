@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import classNames from 'classnames';
 
 // Material UI components
@@ -8,7 +8,8 @@ import Typography from '@mui/material/Typography';
 
 import { useHistory } from 'react-router-dom';
 import css from './ResetPassword.module.scss';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
+
 const classes = classNames.bind(css);
 
 const ResetPasswordForm = ({
@@ -17,6 +18,7 @@ const ResetPasswordForm = ({
   isWaiting,
   onSubmit,
 }) => {
+  const { t } = useLingui();
   const history = useHistory();
 
   const [email, setEmail] = useState('');

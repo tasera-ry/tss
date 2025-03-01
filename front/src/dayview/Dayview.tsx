@@ -17,13 +17,13 @@ import { DeviceStatusList } from '../DeviceStatusList/DeviceStatusList';
 import { ViewChanger } from '@/lib/components/ViewChanger';
 import { useQuery } from 'react-query';
 import { DateHeader } from '@/lib/components/DateHeader';
-import { Trans } from '@lingui/react/macro';
-import { t } from '@lingui/core/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
+
 
 const classes = classNames.bind(css);
 
 export function Dayview() {
-
+  const { t } = useLingui();
   const history = useHistory();
   const { date: dateParam } = useParams<{ date: string}>();
 
@@ -113,7 +113,7 @@ function TrackList({ tracks, date }) {
 }
 
 function TrackBox({ track, date }) {
-  const lang = localStorage.getItem('language');
+  const { t } = useLingui();
 
   const color = useMemo(() => {
     if (track.state === 'present') {
@@ -152,6 +152,8 @@ function TrackBox({ track, date }) {
 
 
 function OfficerBanner({ rangeSupervision }) {
+  const { t } = useLingui();
+
   const { text, color } = useMemo(() => {
     if (rangeSupervision === 'present') {
       return { text: t`Range officer present`, color: css.greenB };
@@ -171,8 +173,7 @@ function OfficerBanner({ rangeSupervision }) {
 }
 
 function Legends() {
-  const lang = localStorage.getItem('language');
-
+  const { t } = useLingui();
   return (
     <div className='flex justify-center'>
       <div className='grid grid-cols-2 gap-2'>

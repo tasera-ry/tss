@@ -9,13 +9,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 
 const FeedbackWindow = ({ dialogOpen, onCloseDialog }) => {
-
+  const { t } = useLingui();
   const { username } = useLoggedInUser();
 
-  const fin = localStorage.getItem('language');
   const [textFeedback, setTextFeedback] = useState('');
 
   return (

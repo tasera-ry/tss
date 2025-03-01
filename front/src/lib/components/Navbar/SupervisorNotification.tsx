@@ -8,10 +8,10 @@ import {
   checkSupervisorReservations,
 } from '../../../upcomingsupervisions/LoggedIn';
 import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 
 export const SupervisorNotification = () => {
-  const lang = localStorage.getItem('language');
+  const { t } = useLingui();
   const [userHasSupervisors, setUserHasSupervisors] = useState(false);
 
   const { username } = useLoggedInUser();

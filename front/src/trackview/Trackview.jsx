@@ -9,6 +9,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import api from '../api/api';
 import css from './Trackview.module.scss';
 import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 import { useWeekDay } from '../utils/dateUtils';
 
 const classes = classNames.bind(css);
@@ -42,7 +43,7 @@ const getTrackAvailability = (trackSupervision) => {
 };
 
 const Trackview = (props) => {
-
+  const { t } = useLingui();
   const { date: targetDate, track } = useParams();
 
   const [state, setState] = useState({

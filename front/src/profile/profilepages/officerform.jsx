@@ -18,7 +18,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import classNames from 'classnames';
 import css from './ChangePassword.module.scss';
 import api from '../../api/api';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 
 const classes = classNames.bind(css);
 
@@ -28,6 +28,7 @@ const classes = classNames.bind(css);
  * @param {function} handleDelete - Function for deleting a range officer
  */
 function OfficerTable({ rangeOfficers, handleDelete }) {
+  const { t } = useLingui();
   const [open, setOpen] = useState(false);
   const [officerToDelete, setOfficerToDelete] = useState(null);
 
@@ -105,6 +106,7 @@ function OfficerTable({ rangeOfficers, handleDelete }) {
  */
 
 export default function OfficerForm({ id }) {
+  const { t } = useLingui();
   const [rangeOfficers, setRangeOfficers] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
