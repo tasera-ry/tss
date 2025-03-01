@@ -1,13 +1,13 @@
 import { HashRouter as Router, useParams } from 'react-router-dom';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { Dayview } from './Dayview';
 import api from '../api/api';
 import testUtils from '../_TestUtils/TestUtils';
 import { TestProviders } from '@/_TestUtils/TestProvides';
 
 // Mock the InfoBox component
-vi.mock('@/pages/InfoMessageManagementView/InfoBox', () => ({
-  default: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
+vi.mock('@/lib/components/InfoBox', () => ({
+  InfoBox: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
 }));
 
 vi.mock('../api/api')

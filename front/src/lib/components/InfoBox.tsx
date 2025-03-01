@@ -1,13 +1,12 @@
 import { useState, useMemo } from 'react';
 import Close from '@mui/icons-material/Close';
 import Alert from '@mui/lab/Alert';
-import api from '../../api/api';
 import { useQuery } from 'react-query';
-
+import api from '@/api/api';
 
 // TO DO: Take weekly and monthly values into account
 export const InfoBox = ({ tabletMode = false }) => {
-  
+
   const publicMessagesQuery = useQuery({
     queryKey: ['publicMessages'],
     queryFn: () => api.getPublicInfoMessages()

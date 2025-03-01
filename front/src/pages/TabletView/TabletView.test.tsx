@@ -25,7 +25,7 @@ vi.mock('socket.io-client', () => {
   };
 });
 
-vi.mock('@/pages/InfoMessageManagementView/InfoBox', () => ({
+vi.mock('@/lib/components/InfoBox', () => ({
   InfoBox: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
 }));
 
