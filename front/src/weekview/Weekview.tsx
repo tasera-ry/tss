@@ -11,7 +11,7 @@ import {
 } from '../utils/Utils';
 import exclamation from '@/assets/Info.png';
 import { TableLegends } from '../TableLegends/TableLegends';
-import { InfoBox } from '../infoBox/InfoBox';
+import { InfoBox } from '@/pages/InfoMessageManagementView/InfoBox';
 import { ViewChanger } from '@/lib/components/ViewChanger';
 
 import css from './Weekview.module.scss';

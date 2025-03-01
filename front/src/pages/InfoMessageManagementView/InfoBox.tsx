@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import Close from '@mui/icons-material/Close';
 import Alert from '@mui/lab/Alert';
-import api from '../api/api';
+import api from '../../api/api';
 import { useQuery } from 'react-query';
 
 

@@ -25,8 +25,8 @@ vi.mock('socket.io-client', () => {
   };
 });
 
-vi.mock('../../infoBox/InfoBox', () => ({
-  default: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
+vi.mock('@/pages/InfoMessageManagementView/InfoBox', () => ({
+  InfoBox: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
 }));
 
 describe('testing rangeofficer', () => {

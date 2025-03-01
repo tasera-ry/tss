@@ -11,7 +11,7 @@ import { TestProviders } from '@/_TestUtils/TestProvides';
 const { date, week } = testUtils;
 
 // Mock the InfoBox component
-vi.mock('../infoBox/InfoBox', () => ({
+vi.mock('@/pages/InfoMessageManagementView/InfoBox', () => ({
   default: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
 }));
 
