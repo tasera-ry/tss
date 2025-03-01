@@ -5,8 +5,6 @@ import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
 import Container from '@mui/material/Container';
 import LinearProgress from '@mui/material/LinearProgress';
 import Snackbar from '@mui/material/Snackbar';
-// Translations
-import lodash from 'lodash';
 // Axios for calls to backend
 import axios from 'axios';
 // Token validation
@@ -26,7 +24,7 @@ import {
   Alert,
 } from '@mui/material';
 import { Add, Edit, Delete, Save, Cancel } from '@mui/icons-material';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 
 
 const RequestStatusAlert = ({ statusSetter, requestStatus, text }) => {
@@ -50,6 +48,7 @@ const TrackTable = ({
   setRequestText,
   setRefresh,
 }) => {
+  const { t } = useLingui();
   const [editingRow, setEditingRow] = useState(null);
   const [newRow, setNewRow] = useState({ name: '', description: '', short_description: '' });
 

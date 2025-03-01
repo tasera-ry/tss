@@ -36,14 +36,11 @@ import socketIOClient from 'socket.io-client';
 import {
   updateRangeSupervision,
   validateLogin,
-  getLanguage,
 } from '../utils/Utils';
 import api from '../api/api';
 // Translation
-import { t } from '@lingui/core/macro';
-
-const lang = getLanguage();
-moment.locale(lang);
+import { useLingui } from '@lingui/react/macro';
+import { useLanguageContext } from '@/i18n';
 
 async function getRangeSupervisors() {
   try {
@@ -96,6 +93,9 @@ const CustomSwitchGreen = withStyles({
 })(Switch);
 
 function Scheduling(props) {
+  const { t } = useLingui();
+  const [locale] = useLanguageContext();
+
   const [state, setState] = useState('loading');
   const [toast, setToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('Nope');
@@ -1005,7 +1005,7 @@ function Scheduling(props) {
         </Button>
         <form onSubmit={continueWithDate}>
           {/* Datepicker */}
-          <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={lang} key={datePickerKey}>
+          <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={locale} key={datePickerKey}>
             <DatePicker
               closeOnSelect
               label={t`Choose date`}

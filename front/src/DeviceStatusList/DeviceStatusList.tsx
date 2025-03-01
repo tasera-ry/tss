@@ -1,7 +1,7 @@
 import api from '../api/api';
-import { t } from '@lingui/core/macro';
 import { useQuery } from 'react-query';
 import classNames from 'classnames';
+import { useLingui } from '@lingui/react/macro';
 
 export function DeviceStatusList() {
 
@@ -23,6 +23,8 @@ export function DeviceStatusList() {
 }
 
 function DeviceLabel({ device }: { device: any }) {
+  const { t } = useLingui();
+
   return (
     <div
       className={classNames(

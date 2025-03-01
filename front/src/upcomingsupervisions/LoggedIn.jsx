@@ -15,7 +15,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { makeStyles } from '@mui/styles';
 import { useCookies } from 'react-cookie';
 import TextField from '@mui/material/TextField';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 
 // Axios for call-handling to backend
 import axios from 'axios';
@@ -65,6 +65,7 @@ const ArrivalTimeContext = createContext({
 
 // print drop down menus in rows
 const DropDowns = (props) => {
+  const { t } = useLingui();
   const id = props.d;
   const obj = props.changes.find((o) => o.date === id);
   const { rangeofficerList } = props;
@@ -254,6 +255,7 @@ const DropDowns = (props) => {
 
 // prints matkalla-checkbox
 const Check = ({ HandleChange, checked, disable }) => {
+  const { t } = useLingui();
   return (
     <>
       <br />
@@ -281,12 +283,6 @@ const Rows = ({
   sv,
   rangeofficerList,
 }) => {
-  const language = localStorage.getItem('language');
-  let num = 2;
-  if (language === '1') {
-    moment.locale('en-ca');
-    num = 3;
-  }
 
   setDone(true);
 
@@ -538,6 +534,7 @@ const Logic = ({
   sv,
   onCancel,
 }) => {
+  const { t } = useLingui();
   const classes = useStyles();
   const [open, setOpen] = useState(true);
   const [wait, setWait] = useState(false);

@@ -9,7 +9,7 @@ import moment from 'moment';
 import api from '../api/api';
 import { getLanguage } from '../utils/Utils';
 import css from './VisitorLogging.module.scss';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 
 const classes = classNames.bind(css);
 
@@ -19,6 +19,8 @@ const VisitorLogging = ({
   setToastMessage,
   setToastOpen,
 }) => {
+  const { t } = useLingui();
+
   const [tracks, setTracks] = useState([]);
   const [date, setDate] = useState();
 

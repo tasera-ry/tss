@@ -2,9 +2,10 @@ import { useMemo } from 'react';
 import moment from 'moment';
 import 'moment/locale/sv';
 import { Link } from 'react-router-dom';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 
 export function ViewChanger() {
+  const { t } = useLingui();
 
   const time = useMemo(() => {
     const fullUrl = window.location.href.split('/');

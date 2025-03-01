@@ -18,15 +18,15 @@ import css from './Weekview.module.scss';
 import { DaySchedule } from '@/types';
 import { useQuery } from 'react-query';
 import { DateHeader } from '@/lib/components/DateHeader';
-import { t } from '@lingui/core/macro';
 import { Weekday } from '@/utils/dateUtils';
+import { useLingui } from '@lingui/react/macro';
 
 
 const classes = classNames.bind(css);
 
 
 export const Weekview = () => {
-
+  const { t } = useLingui();
   const history = useHistory();
   const { date: dateParam } = useParams<{ date: string}>()
 
@@ -75,7 +75,7 @@ export const Weekview = () => {
 };
 
 function CalenderHeader({days}: {days: DaySchedule[]}) {
-  
+  const { t } = useLingui();
   const weekdays = useMemo(() => {
     if (!days) return [];
     return Array.from({ length: 7 }, (_, i) => {
@@ -119,7 +119,7 @@ function CalenderBody({days}: {days: DaySchedule[]}) {
 
 
 function CalenderCell({day}: { day: DaySchedule }) {
-
+  const { t } = useLingui();
   const color = useMemo(() => {
     const status = day.rangeSupervision;
     if (status === 'present') {

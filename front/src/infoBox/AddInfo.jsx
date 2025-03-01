@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import classNames from 'classnames';
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
@@ -6,16 +6,13 @@ import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import {
   Button,
   TextField,
-  FormControlLabel, 
-  Checkbox,
   Select,
   MenuItem,
 } from '@mui/material';
-
+import { useLingui } from '@lingui/react/macro';
 import { validateLogin } from '../utils/Utils';
 import api from '../api/api';
 import css from './AddInfo.module.scss';
-import { t } from '@lingui/core/macro';
 
 const classes = classNames.bind(css);
 
@@ -38,7 +35,7 @@ const InfoText = ({ message, onDelete }) => {
 };
 
 const AddInfo = () => {
-  const lang = localStorage.getItem('language');
+  const { t } = useLingui();
 
   const [infoText, setInfoTexts] = useState([]);
   const [numOfInfoMessages, setNumOfInfoMessages] = useState(0);

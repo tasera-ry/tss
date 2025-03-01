@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   Typography,
@@ -19,8 +19,7 @@ import moment from 'moment';
 import classNames from 'classnames';
 import css from './ChangePassword.module.scss';
 import api from '../../api/api';
-import { t } from '@lingui/core/macro';
-
+import { useLingui } from '@lingui/react/macro';
 const classes = classNames.bind(css);
 
 /**
@@ -28,6 +27,7 @@ const classes = classNames.bind(css);
  * @param {number} cookies - User cookies
  */
 export default function Supervisions({ cookies }) {
+  const { t } = useLingui();
   const [rangeofficerList, setRangeOfficerList] = useState(null);
   const [supervisions, setSupervisions] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);

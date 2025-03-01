@@ -18,7 +18,7 @@ import { dateToString } from '../utils/dateUtils';
 import SupervisionResultsTable from './SupervisionResultsTable';
 import SupervisionAmountsTable from './SupervisionAmountsTable';
 import css from './raffle.module.scss';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 
 
 const classes = classNames.bind(css);
@@ -37,6 +37,7 @@ const supervisionAmounts = (raffleResults, supervisors) => {
 };
 
 export default function Raffle() {
+  const { t } = useLingui();
   const [supervisorsOpen, setSupervisorsOpen] = useState(true);
   const [supervisors, setSupervisors] = useState([]);
   const [selectedDays, setSelectedDays] = useState([]);

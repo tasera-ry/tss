@@ -1,4 +1,3 @@
-import React from 'react';
 import classNames from 'classnames';
 import { HashRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
@@ -7,12 +6,13 @@ import ChangePassword from './profilepages/changepassword';
 import OfficerForm from './profilepages/officerform';
 import css from './ProfileSettings.module.scss';
 import Supervisions from './profilepages/supervisions';
-import { t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 
 const classes = classNames.bind(css);
 
 const Profile = () => {
   const [cookies] = useCookies(['username']);
+  const { t } = useLingui();
 
   // If user is not logged in, redirect to homepage
   if (!cookies.role) {

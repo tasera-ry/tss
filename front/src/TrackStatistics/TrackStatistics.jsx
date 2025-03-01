@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import classNames from 'classnames';
 import api from '../api/api';
 import Button from '@mui/material/Button';
@@ -7,11 +7,13 @@ import { StyledEngineProvider } from '@mui/material/styles';
 import css from './TrackStatistics.module.scss';
 import { makeStyles } from '@mui/styles';
 import Modal from '@mui/material/Modal';
-import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro';
 
 const classes = classNames.bind(css);
 
 export const TrackStatistics = ({ track, supervision, disabled }) => {
+  const { t } = useLingui();
+
   const isDisabled = Boolean(track.trackSupervision === 'absent' || disabled);
   const { scheduled, id } = track;
   const scheduled_range_supervision_id = scheduled ? scheduled.scheduled_range_supervision_id : null;

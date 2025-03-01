@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 
 // Material UI components
@@ -39,6 +39,7 @@ import { withCookies } from 'react-cookie';
 import { validateLogin } from '../utils/Utils';
 import css from './UserManagementView.module.scss';
 import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro';
 
 import api from '../api/api';
 
@@ -240,6 +241,7 @@ async function addUserRangeofficer(namen, rolen, passwordn, emailn, newAssociati
 }
 
 function UserManagementView(props)  {
+  const { t } = useLingui();
 
   const[state, setState] = useState({
     userList: [],
