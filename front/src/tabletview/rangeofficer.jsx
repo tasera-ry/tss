@@ -29,7 +29,7 @@ import { validateLogin, updateRangeSupervision } from '../utils/Utils';
 import { TrackStatistics } from '../TrackStatistics/TrackStatistics';
 
 // Receiving possible info messages
-import { InfoBox } from '../pages/InfoMessageManagementView/InfoBox';
+import { InfoBox } from '../lib/components/InfoBox';
 import Devices from '../Devices/devices';
 
 import classNames from 'classnames';
