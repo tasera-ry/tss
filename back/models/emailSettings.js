@@ -2,7 +2,6 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 const knex = require(path.join(root, 'knex', 'knex'));
 
-
 const model = {
   /**
    * Gets all the email-related settings from the database.
@@ -51,23 +50,23 @@ const model = {
    */
   update: async function updateEmailSettings(newSettings) {
     return knex.transaction(async trx => {
-      await trx('settings').where({ setting_name: 'email_sender' }).update({ setting_value: { sender: newSettings.sender } });
-      await trx('settings').where({ setting_name: 'email_user' }).update({ setting_value: { user: newSettings.user }});
-      await trx('settings').where({ setting_name: 'email_pass' }).update({ setting_value: { pass: newSettings.pass }});
-      await trx('settings').where({ setting_name: 'email_host' }).update({ setting_value: { host: newSettings.host }});
-      await trx('settings').where({ setting_name: 'email_port' }).update({ setting_value: { port: newSettings.port }});
-      await trx('settings').where({ setting_name: 'email_cc' }).update({ setting_value: { cc: newSettings.cc }});
-      await trx('settings').where({ setting_name: 'email_secure' }).update({ setting_value: { secure: newSettings.secure }});
-      await trx('settings').where({ setting_name: 'email_shouldsend' }).update({ setting_value: { shouldSend: newSettings.shouldSend }});
-      await trx('settings').where({ setting_name: 'email_shouldqueue' }).update({ setting_value: { shouldQueue: newSettings.shouldQueue }});
-      await trx('settings').where({ setting_name: 'email_assigned_msg' }).update({ setting_value: { assignedMsg: newSettings.assignedMsg }});
-      await trx('settings').where({ setting_name: 'email_update_msg' }).update({ setting_value: { updateMsg: newSettings.updateMsg }});
-      await trx('settings').where({ setting_name: 'email_reminder_msg' }).update({ setting_value: { reminderMsg: newSettings.reminderMsg }});
-      await trx('settings').where({ setting_name: 'email_decline_msg' }).update({ setting_value: { declineMsg: newSettings.declineMsg }});
-      await trx('settings').where({ setting_name: 'email_feedback_msg' }).update({ setting_value: { feedbackMsg: newSettings.feedbackMsg }});
-      await trx('settings').where({ setting_name: 'email_resetpass_msg' }).update({ setting_value: { resetpassMsg: newSettings.resetpassMsg }});
-      await trx('settings').where({ setting_name: 'email_collage_msg' }).update({ setting_value: { collageMsg: newSettings.collageMsg }});
-      await trx('settings').where({ setting_name: 'email_sendpending_time' }).update({ setting_value: { sendPendingTime: newSettings.sendPendingTime }});
+      await trx('settings').where({ setting_name: 'email_sender' }).upsert({ setting_value: { sender: newSettings.sender } });
+      await trx('settings').where({ setting_name: 'email_user' }).upsert({ setting_value: { user: newSettings.user }});
+      await trx('settings').where({ setting_name: 'email_pass' }).upsert({ setting_value: { pass: newSettings.pass }});
+      await trx('settings').where({ setting_name: 'email_host' }).upsert({ setting_value: { host: newSettings.host }});
+      await trx('settings').where({ setting_name: 'email_port' }).upsert({ setting_value: { port: newSettings.port }});
+      await trx('settings').where({ setting_name: 'email_cc' }).upsert({ setting_value: { cc: newSettings.cc }});
+      await trx('settings').where({ setting_name: 'email_secure' }).upsert({ setting_value: { secure: newSettings.secure }});
+      await trx('settings').where({ setting_name: 'email_shouldsend' }).upsert({ setting_value: { shouldSend: newSettings.shouldSend }});
+      await trx('settings').where({ setting_name: 'email_shouldqueue' }).upsert({ setting_value: { shouldQueue: newSettings.shouldQueue }});
+      await trx('settings').where({ setting_name: 'email_assigned_msg' }).upsert({ setting_value: { assignedMsg: newSettings.assignedMsg }});
+      await trx('settings').where({ setting_name: 'email_update_msg' }).upsert({ setting_value: { updateMsg: newSettings.updateMsg }});
+      await trx('settings').where({ setting_name: 'email_reminder_msg' }).upsert({ setting_value: { reminderMsg: newSettings.reminderMsg }});
+      await trx('settings').where({ setting_name: 'email_decline_msg' }).upsert({ setting_value: { declineMsg: newSettings.declineMsg }});
+      await trx('settings').where({ setting_name: 'email_feedback_msg' }).upsert({ setting_value: { feedbackMsg: newSettings.feedbackMsg }});
+      await trx('settings').where({ setting_name: 'email_resetpass_msg' }).upsert({ setting_value: { resetpassMsg: newSettings.resetpassMsg }});
+      await trx('settings').where({ setting_name: 'email_collage_msg' }).upsert({ setting_value: { collageMsg: newSettings.collageMsg }});
+      await trx('settings').where({ setting_name: 'email_sendpending_time' }).upsert({ setting_value: { sendPendingTime: newSettings.sendPendingTime }});
     });
   }
 };
