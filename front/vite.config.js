@@ -8,8 +8,6 @@ import { lingui } from "@lingui/vite-plugin";
 export default ({ mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
 
-  console.log(process.env.VITE_PROXY_API)
-
   return defineConfig({
     plugins: [
       tailwindcss(),
