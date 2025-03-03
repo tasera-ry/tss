@@ -39,7 +39,6 @@ const MENU_CONTENT: Record<Role, NavItem[]> = {
     { to: '/profile', label: msg`Account dashboard` },
   ],
   rangemaster: [
-    { to: '/profile/supervisions', label: msg`Supervisions` },
     { to: '/tablet', label: msg`Tablet view` }
   ],
 }
