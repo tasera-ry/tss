@@ -95,14 +95,14 @@ export const TrackStatistics = ({ track, supervision, disabled }) => {
       <div className={classes(css.trackContainer)}>
       <Button
         variant="contained"
-        style={{ color: 'red' }}
+        style={{ color: 'white' , backgroundColor: 'red'}}
         onClick={() => {changeVisitors(visitors - 1); handleClose();}}
         >
         {trackStatisticsModal.messageYes[lang]}
       </Button>
       <Button
         variant="contained"
-        style={{ color: 'green' }}
+        style={{ color: 'white' , backgroundColor: 'green'}}
         onClick={() => handleClose()}>
         {trackStatisticsModal.messageNo[lang]}
       </Button>
