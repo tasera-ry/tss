@@ -8,6 +8,7 @@ import css from './TrackStatistics.module.scss';
 import { makeStyles } from '@mui/styles';
 import Modal from '@mui/material/Modal';
 import { useLingui } from '@lingui/react/macro';
+import clsx from 'clsx';
 
 const classes = classNames.bind(css);
 
@@ -16,7 +17,9 @@ export const TrackStatistics = ({ track, supervision, disabled }) => {
 
   const isDisabled = Boolean(track.trackSupervision === 'absent' || disabled);
   const { scheduled, id } = track;
-  const scheduled_range_supervision_id = scheduled ? scheduled.scheduled_range_supervision_id : null;
+  const scheduled_range_supervision_id = scheduled
+    ? scheduled.scheduled_range_supervision_id
+    : null;
   const lang = localStorage.getItem('language');
   const [visitors, setVisitors] = useState(
     scheduled && scheduled.visitors ? scheduled.visitors : 0,
@@ -48,21 +51,6 @@ export const TrackStatistics = ({ track, supervision, disabled }) => {
     }
   };
 
-  function rand() {
-    return Math.round(Math.random() * 20) - 10;
-  }
-
-  function getModalStyle() {
-    const top = 50 + rand();
-    const left = 50 + rand();
-
-    return {
-      top: `${top}%`,
-      left: `${left}%`,
-      transform: `translate(-${top}%, -${left}%)`,
-    };
-  }
-
   const useStyles = makeStyles((theme) => ({
     paper: {
       position: 'absolute',
@@ -75,7 +63,6 @@ export const TrackStatistics = ({ track, supervision, disabled }) => {
   }));
 
   const classesStyles = useStyles();
-  const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -86,30 +73,6 @@ export const TrackStatistics = ({ track, supervision, disabled }) => {
     setOpen(false);
   };
 
-  const body = (
-    <div style={modalStyle} className={classesStyles.paper}>
-      <h2 id="simple-modal-title">{t`Warning!`}</h2>
-      <p id="simple-modal-description">
-        {t`Users should not be reduced, Do you really want to reduce the number of users?`}
-      </p>
-      <div className={classes(css.trackContainer)}>
-      <Button
-        variant="contained"
-        style={{ color: 'red' }}
-        onClick={() => {changeVisitors(visitors - 1); handleClose();}}
-        >
-        {t`Yes`}
-      </Button>
-      <Button
-        variant="contained"
-        style={{ color: 'green' }}
-        onClick={() => handleClose()}>
-        {t`No`}
-      </Button>
-      </div>
-    </div>
-  );
-
   return (
     <StyledEngineProvider injectFirst>
       <div className={classes(css.trackContainer)}>
@@ -118,19 +81,23 @@ export const TrackStatistics = ({ track, supervision, disabled }) => {
           disabled={isDisabled}
           variant="contained"
           className={classes(css.button)}
-          onClick={() => {handleOpen()}}
-          style= {{backgroundColor: '#d1ccc2'}}
+          onClick={() => {
+            handleOpen();
+          }}
+          style={{ backgroundColor: '#d1ccc2' }}
         >
           -
         </Button>
-        <div className={classes(css.visitorAmount)} name="amount-of-visitors">{visitors}</div>
+        <div className={classes(css.visitorAmount)} name="amount-of-visitors">
+          {visitors}
+        </div>
         <Button
           name="increase-visitors"
           disabled={isDisabled}
           variant="contained"
           className={classes(css.button)}
           onClick={() => changeVisitors(visitors + 1)}
-          style= {{backgroundColor: '#d1ccc2'}}
+          style={{ backgroundColor: '#d1ccc2' }}
         >
           +
         </Button>
@@ -140,8 +107,37 @@ export const TrackStatistics = ({ track, supervision, disabled }) => {
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
         >
-          {body}
-      </Modal>
+          <div
+            className={clsx(
+              classesStyles.paper,
+              'top-1/2 left-1/2 transform translate-x-1/2 translate-y-1/2',
+            )}
+          >
+            <h2 id="simple-modal-title">{t`Warning!`}</h2>
+            <p id="simple-modal-description">
+              {t`Users should not be reduced, Do you really want to reduce the number of users?`}
+            </p>
+            <div className={classes(css.trackContainer)}>
+              <Button
+                variant="contained"
+                style={{ color: 'red' }}
+                onClick={() => {
+                  changeVisitors(visitors - 1);
+                  handleClose();
+                }}
+              >
+                {t`Yes`}
+              </Button>
+              <Button
+                variant="contained"
+                style={{ color: 'green' }}
+                onClick={() => handleClose()}
+              >
+                {t`No`}
+              </Button>
+            </div>
+          </div>
+        </Modal>
       </div>
     </StyledEngineProvider>
   );
