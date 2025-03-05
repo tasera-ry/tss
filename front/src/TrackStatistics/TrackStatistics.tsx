@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import api from '../api/api';
 import Button from '@mui/material/Button';
 // enables overriding material-ui component styles in scss
-import { StyledEngineProvider } from '@mui/material/styles';
+import { StyledEngineProvider, Theme } from '@mui/material/styles';
 import css from './TrackStatistics.module.scss';
 import { makeStyles } from '@mui/styles';
 import Modal from '@mui/material/Modal';
@@ -51,7 +51,7 @@ export const TrackStatistics = ({ track, supervision, disabled }) => {
     }
   };
 
-  const useStyles = makeStyles((theme) => ({
+  const useStyles = makeStyles((theme: Theme) => ({
     paper: {
       position: 'absolute',
       width: 400,
@@ -88,7 +88,7 @@ export const TrackStatistics = ({ track, supervision, disabled }) => {
         >
           -
         </Button>
-        <div className={classes(css.visitorAmount)} name="amount-of-visitors">
+        <div className={classes(css.visitorAmount)} id="amount-of-visitors">
           {visitors}
         </div>
         <Button
