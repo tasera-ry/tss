@@ -7,7 +7,7 @@ import { useCallback, useMemo } from "react";
 import { useQueryClient, useMutation } from "react-query";
 
 import css from '../rangeofficer.module.scss';
-import colors from '../../colors.module.scss';
+import colors from '../../../colors.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -133,15 +133,13 @@ function RangeOfficerStatus({ rangeSupervisionStatus }) {
 
   return (
     <div className={classes(css.rowStyle)}>
-      {/* @ts-ignore reason below */}
       <Button
         className={classes(css.statusStyle)}
         style={{ color: colors.black, backgroundColor: color }}
         size="large"
         variant="outlined"
         disabled
-        // Should be data-testid, needs to be fixed in cypress/units also
-        dataid="rangeOfficerStatus"
+        data-testid="rangeOfficerStatus"
       >
         {i18n._(labelMsg)}
       </Button>

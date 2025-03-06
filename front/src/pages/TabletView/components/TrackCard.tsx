@@ -4,10 +4,10 @@ import css from '../rangeofficer.module.scss';
 import { Button } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { msg } from "@lingui/core/macro";
-import colors from '../../colors.module.scss';
+import colors from '../../../colors.module.scss';
 import { TrackStatistics } from "@/pages/TabletView/components/TrackStatistics/TrackStatistics";
-import axios from "axios";
 import { useMutation, useQueryClient } from "react-query";
+import api from "@/api/api";
 
 const classes = classNames.bind(css);
 
@@ -70,19 +70,18 @@ export function TrackCard({ track, disabled, scheduleId, date, socket }) {
 
   const trackMutation = useMutation({
     mutationFn: (status: string) => {
+      console.log(track)
       const isScheduled = !!track.scheduled
       if (isScheduled) {
-        return axios
-          .put(`/api/track-supervision/${scheduleId}/${track.id}`, {
-            track_supervisor: status
-          })
+        return api.patchScheduledSupervisionTrack(scheduleId, track.id, {
+          track_supervisor: status
+        })
       } else {
-        return axios
-          .post(`/api/track-supervision`, {
-            track_id: track.id,
-            scheduled_range_supervision_id: scheduleId,
-            track_supervisor: status,
-          })
+        return api.postScheduledSupervisionTrack({  
+          track_id: track.id,
+          scheduled_range_supervision_id: scheduleId,
+          track_supervisor: status,
+        })
       }
     },
     onSuccess: (_, status) => {
@@ -126,7 +125,7 @@ export function TrackCard({ track, disabled, scheduleId, date, socket }) {
             variant="contained"
             fullWidth
             onClick={onStatusClick}
-            data-testid="trackSupervisorButton"
+            data-testid={`trackSupervisorButton-${track.id}`}
             disabled={disabled || trackMutation.isLoading}
           >
             {i18n._(buttonState.labelMsg)}

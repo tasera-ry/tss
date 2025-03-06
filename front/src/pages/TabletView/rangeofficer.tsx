@@ -4,6 +4,8 @@ import { useCookies } from 'react-cookie';
 // Date handling
 import moment from 'moment';
 
+import api from '../../api/api';
+
 // Login validation
 import socketIOClient from 'socket.io-client';
 import { validateLogin } from '../../utils/Utils';
@@ -37,10 +39,7 @@ const Tabletview = () => {
 
   const scheduleQuery = useQuery(
     ['schedule', date],
-    async () => {
-      const response = await fetch(`/api/datesupreme/${date}`)
-      return response.json();
-    }
+    async () => api.getSchedulingDate(date)
   );
 
   const {
@@ -125,7 +124,7 @@ const Tabletview = () => {
       </span>
 
       <div className={classes(css.trackRowStyle)}>
-        {scheduleQuery.data?.tracks.map((track) => (
+        {scheduleQuery.data?.tracks?.map((track) => (
           <TrackCard
             key={track.id}
             track={track}

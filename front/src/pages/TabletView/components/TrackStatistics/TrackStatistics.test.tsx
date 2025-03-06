@@ -12,7 +12,6 @@ describe('testing TrackStatistics', () => {
     render(
       <TrackStatistics
         track={testUtils.schedule.tracks[0]}
-        supervision="absent"
         disabled={false}
       />, {wrapper: TestProviders}
     );
@@ -24,7 +23,6 @@ describe('testing TrackStatistics', () => {
     render(
       <TrackStatistics
         track={testUtils.schedule.tracks[3]}
-        supervision="present"
         disabled={false}
       />, {wrapper: TestProviders}
     );
