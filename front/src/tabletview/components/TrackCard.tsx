@@ -119,19 +119,19 @@ export function TrackCard({ track, disabled, scheduleId, date, socket }) {
             {track.short_description}
           </span>
         </div>
-        <div>
+        <div className="flex flex-col gap-2">
           <Button
-            className={classes(css.buttonStyle)}
             style={{ backgroundColor: buttonState.color }}
             size="large"
             variant="contained"
+            fullWidth
             onClick={onStatusClick}
             data-testid="trackSupervisorButton"
             disabled={disabled || trackMutation.isLoading}
           >
             {i18n._(buttonState.labelMsg)}
           </Button>
-          <TrackStatistics track={track} supervision={supervisionState} disabled={disabled} />
+          <TrackStatistics track={track} disabled={disabled} />
         </div>
       </div>
     </div>

@@ -1,148 +1,104 @@
-import { useState } from 'react';
-import classNames from 'classnames';
+import { useCallback, useState } from 'react';
 import api from '../api/api';
 import Button from '@mui/material/Button';
-// enables overriding material-ui component styles in scss
-import { StyledEngineProvider } from '@mui/material/styles';
-import css from './TrackStatistics.module.scss';
-import { makeStyles } from '@mui/styles';
 import Modal from '@mui/material/Modal';
 import { useLingui } from '@lingui/react/macro';
+import { useMutation } from 'react-query';
 
-const classes = classNames.bind(css);
+interface TrackStatisticsProps {
+  track: any;
+  disabled: boolean;
+}
 
-export const TrackStatistics = ({ track, supervision, disabled }) => {
+export function TrackStatistics({ track, disabled }: TrackStatisticsProps) {
   const { t } = useLingui();
 
-  const isDisabled = Boolean(track.trackSupervision === 'absent' || disabled);
   const { scheduled, id } = track;
+
   const scheduled_range_supervision_id = scheduled ? scheduled.scheduled_range_supervision_id : null;
-  const lang = localStorage.getItem('language');
-  const [visitors, setVisitors] = useState(
-    scheduled && scheduled.visitors ? scheduled.visitors : 0,
-  );
 
-  // Raises or lowers the number of visitors in a given track
-  const changeVisitors = async (newVisitors) => {
-    if (!scheduled || newVisitors === -1) return;
-    // TODO FIX: always updates the visitors state regardless of patch success
-    setVisitors(newVisitors);
-    await sendStats(newVisitors);
-  };
-
-  // Sends the changed visitors statistics to backend
-  const sendStats = async (newVisitors) => {
-    if (!scheduled) return;
-    try {
-      await api.patchScheduledSupervisionTrack(
-        scheduled_range_supervision_id,
-        id,
-        {
-          scheduled_range_supervision_id,
-          track_supervisor: supervision,
-          visitors: newVisitors,
-        },
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  function rand() {
-    return Math.round(Math.random() * 20) - 10;
-  }
-
-  function getModalStyle() {
-    const top = 50 + rand();
-    const left = 50 + rand();
-
-    return {
-      top: `${top}%`,
-      left: `${left}%`,
-      transform: `translate(-${top}%, -${left}%)`,
-    };
-  }
-
-  const useStyles = makeStyles((theme) => ({
-    paper: {
-      position: 'absolute',
-      width: 400,
-      backgroundColor: theme.palette.background.paper,
-      border: '2px solid #000',
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-    },
-  }));
-
-  const classesStyles = useStyles();
-  const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
 
-  const handleOpen = () => {
+  const [visitors, setVisitors] = useState<number>(scheduled?.visitors ?? 0);
+
+  const mutateTrackVisitors = useMutation({
+    mutationFn: (newVisitors: number) => {
+      return api.patchScheduledSupervisionTrack(scheduled_range_supervision_id, id, { visitors: newVisitors });
+    },
+    onSuccess: (_, newVisitors) => {
+      setVisitors(newVisitors);
+    },
+  });
+
+
+  const onDecrease = useCallback(() => {
+    if (visitors <= 0) return;
     setOpen(true);
-  };
+  }, [visitors]);
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const onConfirmDecrease = useCallback(() => {
+    mutateTrackVisitors.mutate(visitors - 1);
+  }, [visitors, mutateTrackVisitors]);
 
-  const body = (
-    <div style={modalStyle} className={classesStyles.paper}>
-      <h2 id="simple-modal-title">{t`Warning!`}</h2>
-      <p id="simple-modal-description">
-        {t`Users should not be reduced, Do you really want to reduce the number of users?`}
-      </p>
-      <div className={classes(css.trackContainer)}>
-      <Button
-        variant="contained"
-        style={{ color: 'red' }}
-        onClick={() => {changeVisitors(visitors - 1); handleClose();}}
-        >
-        {t`Yes`}
-      </Button>
-      <Button
-        variant="contained"
-        style={{ color: 'green' }}
-        onClick={() => handleClose()}>
-        {t`No`}
-      </Button>
-      </div>
-    </div>
-  );
+  const onIncrease = useCallback(() => {
+    mutateTrackVisitors.mutate(visitors + 1);
+  }, [visitors, mutateTrackVisitors]);
+
+  const isDisabled = track.trackSupervision === 'absent' || disabled || mutateTrackVisitors.isLoading;
+
 
   return (
-    <StyledEngineProvider injectFirst>
-      <div className={classes(css.trackContainer)}>
-        <Button
-          name="decrease-visitors"
-          disabled={isDisabled}
-          variant="contained"
-          className={classes(css.button)}
-          onClick={() => {handleOpen()}}
-          style= {{backgroundColor: '#d1ccc2'}}
-        >
-          -
-        </Button>
-        <div className={classes(css.visitorAmount)} name="amount-of-visitors">{visitors}</div>
-        <Button
-          name="increase-visitors"
-          disabled={isDisabled}
-          variant="contained"
-          className={classes(css.button)}
-          onClick={() => changeVisitors(visitors + 1)}
-          style= {{backgroundColor: '#d1ccc2'}}
-        >
-          +
-        </Button>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-        >
-          {body}
+    <div className='grid grid-cols-3 gap-2'>
+      <Button
+        name="decrease-visitors"
+        disabled={isDisabled}
+        variant="contained"
+        className='text-2xl! rounded-2xl! bg-[#d1ccc2]!'
+        onClick={onDecrease}
+      >
+        -
+      </Button>
+      <span className='text-2xl flex items-center justify-center'>{visitors}</span>
+      <Button
+        name="increase-visitors"
+        disabled={isDisabled}
+        variant="contained"
+        className='text-2xl! rounded-2xl! bg-[#d1ccc2]!'
+        onClick={onIncrease}
+      >
+        +
+      </Button>
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <div className='absolute top-0 left-0 w-full h-full bg-black/50'>
+          <div className='absolute max-w-[400px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-4 flex flex-col gap-4 shadow-lg'>
+            <h2
+              id="simple-modal-title"
+              className='font-bold text-2xl'
+            >
+              {t`Warning!`}
+            </h2>
+            <p id="simple-modal-description">
+              {t`Users should not be reduced, Do you really want to reduce the number of users?`}
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="contained"
+                className='text-red'
+                onClick={onConfirmDecrease}
+              >
+                {t`Yes`}
+              </Button>
+              <Button
+                variant="contained"
+                className='text-green'
+                onClick={() => setOpen(false)}
+              >
+                {t`No`}
+              </Button>
+            </div>
+          </div>
+        </div>
       </Modal>
-      </div>
-    </StyledEngineProvider>
-  );
+    </div>
+  )
 };
