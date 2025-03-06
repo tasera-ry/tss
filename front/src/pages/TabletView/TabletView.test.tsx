@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import Tabletview from './rangeofficer';
+import Tabletview from './TabletView';
 import * as utils from '../../utils/Utils';
 import testUtils from '../../_TestUtils/TestUtils';
 import { TestProviders } from '@/_TestUtils/TestProvides';
