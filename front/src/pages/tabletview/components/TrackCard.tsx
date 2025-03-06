@@ -5,7 +5,7 @@ import { Button } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { msg } from "@lingui/core/macro";
 import colors from '../../colors.module.scss';
-import { TrackStatistics } from "@/tabletview/components/TrackStatistics/TrackStatistics";
+import { TrackStatistics } from "@/pages/tabletview/components/TrackStatistics/TrackStatistics";
 import axios from "axios";
 import { useMutation, useQueryClient } from "react-query";
 

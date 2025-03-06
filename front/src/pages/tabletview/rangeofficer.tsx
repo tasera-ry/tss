@@ -6,20 +6,20 @@ import moment from 'moment';
 
 // Login validation
 import socketIOClient from 'socket.io-client';
-import { validateLogin } from '../utils/Utils';
+import { validateLogin } from '../../utils/Utils';
 
 // Receiving possible info messages
-import InfoBox from '../infoBox/InfoBox';
-import Devices from '../Devices/devices';
+import InfoBox from '../../infoBox/InfoBox';
+import Devices from '../../Devices/devices';
 
 import classNames from 'classnames';
 import css from './rangeofficer.module.scss';
 import { useLingui } from '@lingui/react/macro';
 import { useQuery, useQueryClient } from 'react-query';
-import { TrackCard } from '@/tabletview/components/TrackCard';
-import { OpenHoursSection } from '@/tabletview/components/OpenHoursSection';
-import { RangeOfficerStatusSection } from '@/tabletview/components/RangeOfficerStatusSection';
-import { Notifications } from '@/tabletview/components/Notifications';
+import { TrackCard } from '@/pages/tabletview/components/TrackCard';
+import { OpenHoursSection } from '@/pages/tabletview/components/OpenHoursSection';
+import { RangeOfficerStatusSection } from '@/pages/tabletview/components/RangeOfficerStatusSection';
+import { Notifications } from '@/pages/tabletview/components/Notifications';
 
 const classes = classNames.bind(css);
 
