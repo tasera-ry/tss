@@ -4,7 +4,7 @@ import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import axios from "axios";
 import moment from "moment";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useQueryClient, useMutation } from "react-query";
 import classNames from 'classnames';
 
@@ -18,6 +18,11 @@ export function OpenHoursSection({ date, hours, scheduleId }) {
   const [startTime, setStartTime] = useState(new Date(0, 0, 0, hours.start?.split(':')[0] || 0, hours.start?.split(':')[1] || 0, 0));
   const [endTime, setEndTime] = useState(new Date(0, 0, 0, hours.end?.split(':')[0] || 0, hours.end?.split(':')[1] || 0, 0));
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    setStartTime(new Date(0, 0, 0, hours.start?.split(':')[0] || 0, hours.start?.split(':')[1] || 0, 0));
+    setEndTime(new Date(0, 0, 0, hours.end?.split(':')[0] || 0, hours.end?.split(':')[1] || 0, 0));
+  }, [hours]);
 
   const queryClient = useQueryClient();
 
@@ -72,8 +77,7 @@ export function OpenHoursSection({ date, hours, scheduleId }) {
             value={moment(startTime)}
             onChange={(time) => setStartTime(time.toDate())}
             minutesStep={5}
-          // renderInput={(params) => <TextField {...params} />}
-          // showTodayButton
+            className="mt-2!"
           />
           <TimePicker
             closeOnSelect
@@ -82,8 +86,7 @@ export function OpenHoursSection({ date, hours, scheduleId }) {
             value={moment(endTime)}
             onChange={(time) => setEndTime(time.toDate())}
             minutesStep={5}
-          // renderInput={(params) => <TextField {...params} />}
-          // showTodayButton
+            className="mt-2!"
           />
         </LocalizationProvider>
         {errorMessage ? <Typography color="error">{errorMessage}</Typography> : ''}
@@ -92,7 +95,7 @@ export function OpenHoursSection({ date, hours, scheduleId }) {
         <Button onClick={() => setDialogOpen(false)} className={classes(css.cancelButtonStyle)}>
           {t`Cancel`}
         </Button>
-        <Button onClick={onTimeChange} className={classes(css.saveButtonStyle)}>
+        <Button onClick={onTimeChange} className={classes(css.saveButtonStyle, "text-white!")}>
           {t`Save`}
         </Button>
       </DialogActions>

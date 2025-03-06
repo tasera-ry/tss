@@ -38,6 +38,7 @@ export function TrackStatistics({ track, disabled }: TrackStatisticsProps) {
 
   const onConfirmDecrease = useCallback(() => {
     mutateTrackVisitors.mutate(visitors - 1);
+    setOpen(false);
   }, [visitors, mutateTrackVisitors]);
 
   const onIncrease = useCallback(() => {
@@ -83,14 +84,14 @@ export function TrackStatistics({ track, disabled }: TrackStatisticsProps) {
             <div className="flex gap-2">
               <Button
                 variant="contained"
-                className='text-red'
+                className='text-red! bg-[#d1ccc2]! hover:bg-[#b3afa6]!'
                 onClick={onConfirmDecrease}
               >
                 {t`Yes`}
               </Button>
               <Button
                 variant="contained"
-                className='text-green'
+                className='text-green! bg-[#d1ccc2]! hover:bg-[#b3afa6]!'
                 onClick={() => setOpen(false)}
               >
                 {t`No`}
