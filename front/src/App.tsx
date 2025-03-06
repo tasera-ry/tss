@@ -12,7 +12,7 @@ import Dayview from './dayview/Dayview';
 import { Weekview } from './weekview/Weekview';
 import { Trackview } from './trackview/Trackview';
 import Scheduling from './scheduling/Scheduling';
-import RangeOfficerView from './pages/TabletView/TabletView';
+import { TabletView } from './pages/TabletView/TabletView';
 import Profile from './profile/profilesettings';
 import UserManagementView from './usermanagement/UserManagementView';
 import TrackCRUD from './edittracks/tracks';
@@ -59,7 +59,7 @@ export function App() {
           component={Trackview}
         />
         <Route path="/scheduling/:date?" component={Scheduling} />
-        <Route path="/tablet" component={RangeOfficerView} />
+        <Route path="/tablet" component={TabletView} />
         <Route path="/profile" component={Profile} />
         <Route
           path="/usermanagement"

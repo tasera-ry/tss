@@ -26,7 +26,7 @@ import { Notifications } from '@/pages/TabletView/components/Notifications';
 const classes = classNames.bind(css);
 
 
-const Tabletview = () => {
+export function TabletView() {
   const { t, i18n } = useLingui();
   const [cookies] = useCookies(['username', 'role']);
 
@@ -147,5 +147,3 @@ const Tabletview = () => {
 function RedirectToWeekview() {
   window.location.href = '/';
 }
-
-export default Tabletview;
