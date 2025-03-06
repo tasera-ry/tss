@@ -19,11 +19,9 @@ import { Add, Edit, Delete, Save, Cancel } from '@mui/icons-material';
 import Styles from './devices.module.scss';
 import api from '../api/api';
 import { useCookies } from 'react-cookie';
-import { useLingui } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 
 const Devices = () => {
-  const { t } = useLingui();
-
   const [devices, setDevices] = useState([]);
   const [editingRow, setEditingRow] = useState(null);
   const [newRow, setNewRow] = useState({ device_name: '', status: 'free' });
