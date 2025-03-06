@@ -1,8 +1,8 @@
 import { waitFor, render, screen, fireEvent } from '@testing-library/react';
 import { TrackStatistics } from './TrackStatistics';
-import testUtils from '../_TestUtils/TestUtils';
+import testUtils from '../../../_TestUtils/TestUtils';
 import { TestProviders } from '@/_TestUtils/TestProvides';
-import api from '../api/api';
+import api from '../../../api/api';
 
 vi.mock('../../../api/api')
 

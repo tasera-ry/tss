@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import api from '../api/api';
+import api from '../../../api/api';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { useLingui } from '@lingui/react/macro';
