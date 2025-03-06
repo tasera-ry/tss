@@ -12,7 +12,7 @@ import { validateLogin } from '../../utils/Utils';
 
 // Receiving possible info messages
 import InfoBox from '../../infoBox/InfoBox';
-import { Devices } from './components/DeviceStatusPanel/DeviceStatusPanel';
+import { DeviceStatusPanel } from './components/DeviceStatusPanel/DeviceStatusPanel';
 
 import classNames from 'classnames';
 import css from './rangeofficer.module.scss';
@@ -135,7 +135,7 @@ export function TabletView() {
           />
         ))}
       </div>
-      <Devices />
+      <DeviceStatusPanel />
       <Notifications
         notification={notification}
         setNotification={setNotification}
