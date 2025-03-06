@@ -1,7 +1,7 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import api from '../api/api';
-import Devices from './devices';
+import api from '../../../../api/api';
+import Devices from './DeviceStatusPanel';
 import { TestProviders } from '@/_TestUtils/TestProvides';
 
 vi.mock('../api/api');

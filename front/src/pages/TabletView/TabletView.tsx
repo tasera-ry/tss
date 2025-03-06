@@ -12,7 +12,7 @@ import { validateLogin } from '../../utils/Utils';
 
 // Receiving possible info messages
 import InfoBox from '../../infoBox/InfoBox';
-import { Devices } from '../../Devices/devices';
+import { Devices } from './components/DeviceStatusPanel/DeviceStatusPanel';
 
 import classNames from 'classnames';
 import css from './rangeofficer.module.scss';

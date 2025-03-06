@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import {
   Button,
 } from '@mui/material';
-import api from '../api/api';
+import api from '../../../../api/api';
 import colors from '../colors.module.scss';
 import { msg } from '@lingui/core/macro';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
