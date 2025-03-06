@@ -16,10 +16,10 @@ import classNames from 'classnames';
 import css from './rangeofficer.module.scss';
 import { useLingui } from '@lingui/react/macro';
 import { useQuery, useQueryClient } from 'react-query';
-import { TrackCard } from '@/pages/tabletview/components/TrackCard';
-import { OpenHoursSection } from '@/pages/tabletview/components/OpenHoursSection';
-import { RangeOfficerStatusSection } from '@/pages/tabletview/components/RangeOfficerStatusSection';
-import { Notifications } from '@/pages/tabletview/components/Notifications';
+import { TrackCard } from '@/pages/TabletView/components/TrackCard';
+import { OpenHoursSection } from '@/pages/TabletView/components/OpenHoursSection';
+import { RangeOfficerStatusSection } from '@/pages/TabletView/components/RangeOfficerStatusSection';
+import { Notifications } from '@/pages/TabletView/components/Notifications';
 
 const classes = classNames.bind(css);
 

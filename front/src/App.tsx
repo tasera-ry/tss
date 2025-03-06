@@ -12,7 +12,7 @@ import Dayview from './dayview/Dayview';
 import { Weekview } from './weekview/Weekview';
 import { Trackview } from './trackview/Trackview';
 import Scheduling from './scheduling/Scheduling';
-import RangeOfficerView from './pages/tabletview/rangeofficer';
+import RangeOfficerView from './pages/TabletView/rangeofficer';
 import Profile from './profile/profilesettings';
 import UserManagementView from './usermanagement/UserManagementView';
 import TrackCRUD from './edittracks/tracks';
