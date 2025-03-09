@@ -1,7 +1,5 @@
-import '@testing-library/jest-dom';
 import { waitFor, render, screen } from '@testing-library/react';
 import { HashRouter as Router } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
 import { act } from 'react-dom/test-utils';
 import { getSchedulingWeek } from '../utils/Utils';
 import { Weekview } from './Weekview';
@@ -11,8 +9,8 @@ import { TestProviders } from '@/_TestUtils/TestProvides';
 const { date, week } = testUtils;
 
 // Mock the InfoBox component
-vi.mock('../infoBox/InfoBox', () => ({
-  default: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
+vi.mock('@/lib/components/InfoBox', () => ({
+  InfoBox: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
 }));
 
 vi.mock(import("../utils/Utils"), async (importOriginal) => {
@@ -26,7 +24,6 @@ vi.mock(import("../utils/Utils"), async (importOriginal) => {
 describe('testing weekview', () => {
   it('should render weekView', async () => {
     vi.mocked(getSchedulingWeek).mockResolvedValue(schedulingWeek as any);
-    localStorage.setItem('language', '1');
     await act(async () => {
       render(
         <Router>
@@ -41,7 +38,6 @@ describe('testing weekview', () => {
 
   it('should render the mocked InfoBox component', async () => {
     vi.mocked(getSchedulingWeek).mockResolvedValue(schedulingWeek as any);
-    localStorage.setItem('language', '1');
     await act(async () => {
       render(
         <Router>

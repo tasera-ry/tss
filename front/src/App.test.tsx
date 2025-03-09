@@ -6,8 +6,8 @@ import { TestProviders } from '@/_TestUtils/TestProvides';
 import { getSchedulingWeek, validateLogin } from '@/utils/Utils';
 import { schedulingWeek } from '@/_TestUtils/TestUtils';
 
-vi.mock('../infoBox/InfoBox', () => ({
-  default: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
+vi.mock('@/lib/components/InfoBox', () => ({
+  InfoBox: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
 }));
 
 vi.mock(import("@/utils/Utils"), async (importOriginal) => {

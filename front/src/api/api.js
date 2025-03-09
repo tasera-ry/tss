@@ -162,8 +162,8 @@ const postInfoMessage = async (infoRequest) => {
   await axios.post(`api/infomessage`, infoRequest);
 };
 
-const deleteInfoMessage = async (info) => {
-  await axios.delete(`api/infomessage/${info.id}`);
+const deleteInfoMessage = async (id) => {
+  await axios.delete(`api/infomessage/${id}`);
 };
 
 /**
