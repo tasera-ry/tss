@@ -1,18 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import classNames from 'classnames';
 
-// Date management
 import moment from 'moment';
 import 'moment/locale/fi';
 
-// Material UI components
-import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
-import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
-import MuiAlert, { AlertColor } from '@mui/material/Alert';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import VisitorLogging from '../../VisitorLogging/VisitorLogging';
 import css from './Statistics.module.scss';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useQuery } from 'react-query';
@@ -22,6 +15,7 @@ import { MonthlyVisitorsByTrackChart } from '@/pages/StatisticsView/components/M
 import { VisitorsTodayChart } from '@/pages/StatisticsView/components/VisitorsTodayChart';
 import { CurrentDayStatistics } from '@/pages/StatisticsView/components/CurrentDayStatistics';
 import { schedulingFreeformQuery } from '@/pages/StatisticsView/components/schedulingFreeformQuery';
+import { useHistory, useParams } from 'react-router';
 
 const classes = classNames.bind(css);
 
@@ -29,17 +23,16 @@ export const StatisticsView = () => {
   const { t, i18n } = useLingui()
   const [locale] = useLanguageContext()
 
-  const [date, setDate] = useState(moment());
-  const [modalOpen, setModalOpen] = useState(false);
+  const history = useHistory()
+  const { date: dateParam } = useParams<{ date: string }>();
 
-  const [toastOpen, setToastOpen] = useState(false);
-  const [toastSeverity, setToastSeverity] = useState<AlertColor>('success');
-  const [toastMessage, setToastMessage] = useState('');
+  const date = useMemo(() => {
+    if (dateParam) {
+      return moment(dateParam)
+    }
+    return moment()
+  }, [dateParam])
 
-  const handleSnackbarClose = (reason: SnackbarCloseReason) => {
-    if (reason === 'clickaway') return;
-    setToastOpen(false);
-  };
 
   const monthQuery = useQuery(
     ['schedulingFreeformMonth', date],
@@ -59,6 +52,10 @@ export const StatisticsView = () => {
     }
   )
 
+  const onDateChange = (newDate: moment.Moment) => {
+    history.replace(`/statistics/${newDate.format('YYYY-MM-DD')}`)
+  }
+
   const formatedMonth = useMemo(() => {
     return i18n.date(date.toDate(), { month: 'long', year: 'numeric' })
   }, [date])
@@ -69,72 +66,24 @@ export const StatisticsView = () => {
 
   return (
     <div className={classes(css.container)}>
-      <Snackbar
-        open={toastOpen}
-        autoHideDuration={5000}
-        onClose={(_, reason) => {
-          if (reason === 'clickaway') return;
-          setToastOpen(false);
-        }}
-      >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          onClose={() => setToastOpen(false)}
-          severity={toastSeverity}
-        >
-          {toastMessage}!
-        </MuiAlert>
-      </Snackbar>
-      {/* Section for selecting date */}
       <div className={classes(css.firstSection)}>
         <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={locale}>
-            <DatePicker
-              closeOnSelect
-              label={t`Choose date`}
-              value={moment(date)}
-              // onChange={(newDate) => setDate(newDate)}
-              onAccept={(newDate) => setDate(newDate)}
-            />
-          </LocalizationProvider>
-      </div>
-      <hr />
-      <div className={classes(css.buttonContainer)}>
-        <Button
-          className={classes(css.openModal)}
-          onClick={() => setModalOpen(true)}
-          style={{ backgroundColor: '#d1ccc2' }}
-          variant="contained"
-        >
-          {t`Open user logging`}
-        </Button>
-      </div>
-      <Modal
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-      >
-        <div>
-          <VisitorLogging
-            handleClose={() => setModalOpen(false)}
-            setToastSeverity={setToastSeverity}
-            setToastMessage={setToastMessage}
-            setToastOpen={setToastOpen}
+          <DatePicker
+            closeOnSelect
+            label={t`Choose date`}
+            value={moment(date)}
+            onAccept={(newDate) => onDateChange(newDate)}
           />
-        </div>
-      </Modal>
+        </LocalizationProvider>
+      </div>
       <DateHeader 
         targetDate={moment(date).format('YYYY-MM-DD')}
-        onPrevious={() => setDate(prev => moment(prev.subtract(1, 'day')))}
-        onNext={() => setDate(prev => moment(prev.add(1, 'day')))}
+        onPrevious={() => onDateChange(date.subtract(1, 'day'))}
+        onNext={() => onDateChange(date.add(1, 'day'))}
       />
       <div className="flex flex-col items-center gap-4">
         <div className='flex flex-col items-center gap-2'>
-          <h2>{t`Day`}</h2>
+          <h2 className='text-2xl font-bold'>{t`Day`}</h2>
           <span>
             <Trans>
               Visitors in total {formatedDay}: {monthQuery.data?.totalVisitorsForDay ?? 0}
@@ -143,7 +92,7 @@ export const StatisticsView = () => {
         </div>
         <CurrentDayStatistics date={date} />
         <div className='flex flex-col items-center gap-2'>
-          <h2>{t`Month`}</h2>
+          <h2 className='text-2xl font-bold'>{t`Month`}</h2>
           <span>
             <Trans>
               Visitors in total {formatedMonth}: {monthQuery.data?.totalVisitors ?? 0}

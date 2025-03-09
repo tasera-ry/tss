@@ -68,7 +68,7 @@ export function App() {
         <Route path="/supervisor-raffle" component={Raffle} />
         <Route path="/tracks" component={TrackCRUD} />
         <Route path="/email-settings" component={EmailSettings} />
-        <Route path="/statistics" component={StatisticsView} />
+        <Route path="/statistics/:date?" component={StatisticsView} />
         <Route path="/info" component={InfoMessageManagementView} />
       </Switch>
     </Router>
