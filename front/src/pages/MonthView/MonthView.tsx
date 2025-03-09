@@ -9,9 +9,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import moment from 'moment';
 import {
   JumpToCurrent,
-} from '../utils/Utils';
-import { TableLegends } from '../TableLegends/TableLegends';
-import { InfoBox } from '../lib/components/InfoBox';
+} from '@/utils/Utils';
+import { TableLegends } from '../../TableLegends/TableLegends';
+import { InfoBox } from '@/lib/components/InfoBox';
 import { ViewChanger } from '@/lib/components/ViewChanger';
 
 import smallInfoIcon from '@/assets/Small-info.png';
@@ -51,15 +51,6 @@ export function Monthview()  {
       }))
     }
   });
-  console.log(schedule)
-  const monthNro = useMemo(() => {
-    // Months are padded to two characters
-    return moment(targetDate).month().toString().padStart(2, '0');
-  }, [targetDate])
-
-  const yearNro = useMemo(() => {
-    return moment(targetDate).year();
-  }, [targetDate])
 
   const previousMonthClick = useCallback(() => {
     history.push(`/monthview/${moment(targetDate).subtract(1, 'month').format('YYYY-MM-DD')}`)
@@ -72,7 +63,12 @@ export function Monthview()  {
   return (
     <div>
       <InfoBox />
-      <DateHeader targetDate={targetDate} onPrevious={previousMonthClick} onNext={nextMonthClick} />
+      <DateHeader
+        targetDate={targetDate}
+        onPrevious={previousMonthClick}
+        onNext={nextMonthClick}
+        type='month'
+      />
       {isSuccess ? (
       <div className="flex flex-col items-center">
         <div className="w-[87.5%] flex justify-between">

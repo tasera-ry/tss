@@ -8,13 +8,13 @@ import moment from 'moment';
 import {
   getSchedulingWeek,
   JumpToCurrent,
-} from '../utils/Utils';
+} from '@/utils/Utils';
 import exclamation from '@/assets/Info.png';
-import { TableLegends } from '../TableLegends/TableLegends';
+import { TableLegends } from '../../TableLegends/TableLegends';
 import { InfoBox } from '@/lib/components/InfoBox';
 import { ViewChanger } from '@/lib/components/ViewChanger';
 
-import css from './Weekview.module.scss';
+import css from './WeekView.module.scss';
 import { DaySchedule } from '@/types';
 import { useQuery } from 'react-query';
 import { DateHeader } from '@/lib/components/DateHeader';
@@ -26,7 +26,6 @@ const classes = classNames.bind(css);
 
 
 export const Weekview = () => {
-  const { t } = useLingui();
   const history = useHistory();
   const { date: dateParam } = useParams<{ date: string}>()
 
@@ -51,7 +50,12 @@ export const Weekview = () => {
     <div>
       <InfoBox />
       <div className={classes(css.container)}>
-      <DateHeader targetDate={targetDate} onPrevious={previousWeekClick} onNext={nextWeekClick} />
+      <DateHeader
+        targetDate={targetDate}
+        onPrevious={previousWeekClick}
+        onNext={nextWeekClick}
+        type='week'
+      />
         <div className={classes(css.bigContainer)}>
           <div className={classes(css.viewChanger)}>
             <JumpToCurrent />

@@ -1,7 +1,8 @@
 import classNames from 'classnames';
-import { useWeekDay } from '../../../utils/dateUtils';
 import css from './DateHeader.module.scss';
 import { useMemo } from 'react';
+import moment from 'moment';
+import { useLingui } from '@lingui/react/macro';
 
 const classes = classNames.bind(css);
 
@@ -9,17 +10,40 @@ export interface DateHeaderProps {
   targetDate: string;
   onPrevious: () => void;
   onNext: () => void;
+  type?: 'week' | 'month' | 'day'
 }
 
-export function DateHeader({targetDate, onPrevious, onNext}: DateHeaderProps) {
+export function DateHeader({targetDate, onPrevious, onNext, type = 'day'}: DateHeaderProps) {
+  const { t, i18n } = useLingui()
 
   const date = useMemo(() => new Date(targetDate), [targetDate])
 
-  const weekDay = useWeekDay(date, 'long')
-
   const dateString = useMemo(() => {
-    return new Date(targetDate).toLocaleDateString('fi-FI');
-  }, [targetDate])
+    const str = i18n.date(date, { weekday: 'long', day: 'numeric', month: 'numeric', year: 'numeric' })
+    return str.charAt(0).toUpperCase() + str.slice(1)
+  }, [date, i18n])
+
+  const weekString = useMemo(() => {
+    const year = moment(date).year()
+    const weekNumber = moment(date).isoWeek()
+    return t`Week ${weekNumber} ${year}`
+  }, [date, i18n])
+
+  const monthString = useMemo(() => {
+    const str = i18n.date(date, { month: 'long', year: 'numeric' })
+    return str.charAt(0).toUpperCase() + str.slice(1)
+  }, [date, i18n])
+
+  const label = useMemo(() => {
+    switch (type) {
+      case 'week':
+        return weekString
+      case 'month':
+        return monthString
+      case 'day':
+        return dateString
+    }
+  }, [type, weekString, monthString, dateString])
 
   return (
     <div className="flex justify-center items-center py-10">
@@ -28,8 +52,8 @@ export function DateHeader({targetDate, onPrevious, onNext}: DateHeaderProps) {
         onClick={onPrevious}
         data-testid="previousDay"
       />
-      <h1 className="font-bold text-[2em] px-5 text-center w-92">
-        {`${weekDay} ${dateString}`}
+      <h1 className="font-bold text-[2em] px-5 text-center w-92 text-nowrap">
+        {label}
       </h1>
       <button
         className={classes(css.hoverHand, css.arrowRight)}
