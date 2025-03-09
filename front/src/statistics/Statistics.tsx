@@ -1,176 +1,71 @@
-import React, { useState, useEffect } from 'react';
-import Chart from 'react-apexcharts';
+import { useState, useMemo } from 'react';
 import classNames from 'classnames';
-import colors from '../colors.module.scss';
 
 // Date management
 import moment from 'moment';
 import 'moment/locale/fi';
 
 // Material UI components
-import Grid from '@mui/material/Grid';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { getLanguage, incrementOrDecrementDate } from '../utils/Utils';
-import api from '../api/api';
 import VisitorLogging from '../VisitorLogging/VisitorLogging';
 import css from './Statistics.module.scss';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { useQuery } from 'react-query';
+import { DateHeader } from '@/lib/components/DateHeader';
+import { useLanguageContext } from '@/i18n';
+import { MonthlyVisitorsByTrackChart } from '@/statistics/components/MonthlyVisitorsByTrackChart';
+import { VisitorsTodayChart } from '@/statistics/components/VisitorsTodayChart';
+import { CurrentDayStatistics } from '@/statistics/components/CurrentDayStatistics';
+import { schedulingFreeformQuery } from '@/statistics/components/schedulingFreeformQuery';
 
 const classes = classNames.bind(css);
 
-const lang = getLanguage();
-moment.locale(lang);
-
-const getChart = (id, categories) => ({
-  chart: { id },
-  xaxis: {
-    categories,
-    title: {
-      text:
-        id === 'monthChart'
-          ? t`Day`
-          : t`Track`,
-      style: {
-        fontSize: '14px',
-      },
-    },
-  },
-  yaxis: {
-    title: {
-      text: t`Number of visitors`,
-      style: {
-        fontSize: '14px',
-      },
-    },
-  },
-  // charts have same options except for the month chart
-  ...(id === 'monthChart'
-    ? {
-        stroke: {
-          curve: 'smooth',
-          colors: [colors.green],
-        },
-      }
-    : {
-        fill: {
-          colors: [colors.green],
-        },
-        dataLabels: {
-          enabled: true,
-          style: {
-            fontSize: '16px',
-          },
-          background: {
-            enabled: true,
-            foreColor: colors.black,
-          },
-        },
-      }),
-});
-
 const Statistics = () => {
-  const [date, setDate] = useState(new Date());
+  const { t, i18n } = useLingui()
+  const [locale] = useLanguageContext()
+
+  const [date, setDate] = useState(moment());
   const [modalOpen, setModalOpen] = useState(false);
-
-  const [monthlyUsers, setMonthlyUsers] = useState([]);
-  const [monthOptions, setMonthOptions] = useState({});
-  const [monthSeries, setMonthSeries] = useState([]);
-
-  const [monthlyTrackUsers, setMonthlyTrackUsers] = useState([]);
-  const [monthlyTrackOptions, setMonthlyTrackOptions] = useState({});
-  const [monthlyTrackSeries, setMonthlyTrackSeries] = useState([]);
-
-  const [dayOptions, setDayOptions] = useState({});
-  const [daySeries, setDaySeries] = useState([]);
-  const [dailyUsers, setDailyUsers] = useState([]);
-
-  const [dayNumber, setDayNumber] = useState([]);
 
   const [toastOpen, setToastOpen] = useState(false);
   const [toastSeverity, setToastSeverity] = useState('success');
   const [toastMessage, setToastMessage] = useState('');
-
-  useEffect(() => {
-    const firstDate = moment(date).startOf('month').format('YYYY-MM-DD');
-    const lastDate = moment(date).endOf('month').format('YYYY-MM-DD');
-    const singleDay = moment(date).format('YYYY-MM-DD');
-
-    // dayNum is used as an index in monthlyUsers[] to define the total visitors of a day
-    const dayNumberSplit = singleDay.split('-');
-    const dayNum = dayNumberSplit[2];
-    setDayNumber(dayNum.startsWith('0') ? dayNum.substring(1) : dayNum);
-
-    const fetchData = async () => {
-      const monthResult = await getMonthlyVisitors(firstDate, lastDate);
-      const dayResult = await getDailyVisitors(singleDay);
-      const monthlyTrackResult = await getMonthlyTrackVisitors(
-        firstDate,
-        lastDate,
-      );
-      setDailyUsers(dayResult);
-      setMonthlyUsers(monthResult);
-      setMonthlyTrackUsers(monthlyTrackResult);
-    };
-    fetchData();
-  }, [date]);
-
-  useEffect(() => {
-    // Count monthly visitors
-    const dayArray = Array.from(
-      { length: monthlyUsers.length },
-      (_, i) => i + 1,
-    );
-
-    setMonthOptions(getChart('monthChart', dayArray));
-    setMonthSeries([{ name: 'visitors', data: monthlyUsers }]);
-  }, [monthlyUsers]);
-
-  useEffect(() => {
-    // Get the short_descriptions of each track in order to use them as a label
-    const firstDate = moment(date).startOf('month').format('YYYY-MM-DD');
-    const lastDate = moment(date).endOf('month').format('YYYY-MM-DD');
-    const labelArray = getShortDescriptions(firstDate, lastDate);
-    labelArray.then((result) => setDayOptions(getChart('dayChart', result)));
-    setDaySeries([
-      {
-        name: 'visitors',
-        data: dailyUsers,
-      },
-    ]);
-  }, [dailyUsers, date]);
-
-  useEffect(() => {
-    // Get the short_descriptions of each track in order to use them as a label
-    const firstDate = moment(date).startOf('month').format('YYYY-MM-DD');
-    const lastDate = moment(date).endOf('month').format('YYYY-MM-DD');
-    const labelArray = getShortDescriptions(firstDate, lastDate);
-
-    labelArray.then((result) =>
-      setMonthlyTrackOptions(getChart('monthlyTrackChart', result)),
-    );
-    setMonthlyTrackSeries([
-      {
-        name: 'visitors',
-        data: monthlyTrackUsers,
-      },
-    ]);
-  }, [monthlyTrackUsers, date]);
 
   const handleSnackbarClose = (reason) => {
     if (reason === 'clickaway') return;
     setToastOpen(false);
   };
 
-  const continueWithDate = (event) => {
-    if (event?.event.type?.event.type === 'submit') event.preventDefault();
-  };
+  const monthQuery = useQuery(
+    ['schedulingFreeformMonth', date],
+    schedulingFreeformQuery,
+    {
+      select: (data) => {
+       const monthVisitors = data.map(({ scheduleId, tracks }) => {
+          if (!scheduleId) return 0;
+          return tracks.reduce((total, { scheduled }) => total + scheduled.visitors, 0)
+        })
+        const currentDay = moment(date).date()
+        return {
+          totalVisitors: monthVisitors.reduce((a, b) => a + b, 0),
+          totalVisitorsForDay: monthVisitors[currentDay - 1]
+        };
+      },
+    }
+  )
 
-  if (monthlyUsers?.length <= 0) return <div />;
-  const totalUsers = monthlyUsers.reduce((a, b) => a + b, 0);
+  const formatedMonth = useMemo(() => {
+    return i18n.date(date.toDate(), { month: 'long', year: 'numeric' })
+  }, [date])
+
+  const formatedDay = useMemo(() => {
+    return i18n.date(date.toDate(), { day: 'numeric', month: 'numeric', year: 'numeric' })
+  }, [date])
 
   return (
     <div className={classes(css.container)}>
@@ -190,32 +85,22 @@ const Statistics = () => {
       </Snackbar>
       {/* Section for selecting date */}
       <div className={classes(css.firstSection)}>
-        <form onSubmit={continueWithDate}>
-          {/* Datepicker */}
-          <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={lang}>
+        <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={locale}>
             <DatePicker
               closeOnSelect
-              margin="normal"
               label={t`Choose date`}
               value={moment(date)}
-              onChange={(newDate) => setDate(newDate)}
-              onAccept={(newDate) => {
-                setDate(new Date(newDate));
-                continueWithDate();
-              }}
-              inputFormat="DD.MM.YYYY"
-              textField={(params) => <TextField {...params} />}
-              showTodayButton
+              // onChange={(newDate) => setDate(newDate)}
+              onAccept={(newDate) => setDate(newDate)}
             />
           </LocalizationProvider>
-        </form>
       </div>
       <hr />
       <div className={classes(css.buttonContainer)}>
         <Button
           className={classes(css.openModal)}
           onClick={() => setModalOpen(true)}
-          style={{backgroundColor: '#d1ccc2'}}
+          style={{ backgroundColor: '#d1ccc2' }}
           variant="contained"
         >
           {t`Open user logging`}
@@ -239,144 +124,34 @@ const Statistics = () => {
           />
         </div>
       </Modal>
-      {/* Header with arrows */}
-      <Grid className={classes(css.dateHeader)}>
-        <div
-          className={classes(css.arrowLeft)}
-          onClick={() => setDate(incrementOrDecrementDate(date, -1))}
-        />
-        <h1 className={classes(css.headerText)}>
-          {date.toLocaleDateString('fi-FI')}
-        </h1>
-        <div
-          className={classes(css.arrowRight)}
-          onClick={() => setDate(incrementOrDecrementDate(date, 1))}
-        />
-      </Grid>
-      {/* Charts */}
-      <div className={classes(css.charts)}>
-        {/* Labels */}
-        <h2>{t`Day`}</h2>
-        <h3>
-          {`${t`Visitors in total`} ${date.toLocaleDateString('fi-FI')}: ${
-            monthlyUsers[dayNumber - 1]
-          }`}
-        </h3>
-        <h3>{t`Visitors per track`}</h3>
-        <Chart
-          options={dayOptions}
-          series={daySeries}
-          type="bar"
-          width="700"
-          height="400"
-        />
-        {/* Labels */}
-        <h2>{t`Month`}</h2>
-        <h3>
-          {`${t`Visitors in total`} ${
-            date.getMonth() + 1
-          }/${date.getFullYear()}: ${totalUsers}`}
-        </h3>
-        <h3>{t`Visitors per day`}</h3>
-        <Chart
-          options={monthOptions}
-          series={monthSeries}
-          type="line"
-          width="700"
-          height="400"
-        />
-        <h3>{t`Monthly visitors per track`}</h3>
-        <Chart
-          options={monthlyTrackOptions}
-          series={monthlyTrackSeries}
-          type="bar"
-          width="700"
-          height="400"
-        />
+      <DateHeader 
+        targetDate={moment(date).format('YYYY-MM-DD')}
+        onPrevious={() => setDate(prev => moment(prev.subtract(1, 'day')))}
+        onNext={() => setDate(prev => moment(prev.add(1, 'day')))}
+      />
+      <div className="flex flex-col items-center gap-4">
+        <div className='flex flex-col items-center gap-2'>
+          <h2>{t`Day`}</h2>
+          <span>
+            <Trans>
+              Visitors in total {formatedDay}: {monthQuery.data?.totalVisitorsForDay ?? 0}
+            </Trans>
+          </span>
+        </div>
+        <CurrentDayStatistics date={date} />
+        <div className='flex flex-col items-center gap-2'>
+          <h2>{t`Month`}</h2>
+          <span>
+            <Trans>
+              Visitors in total {formatedMonth}: {monthQuery.data?.totalVisitors ?? 0}
+            </Trans>
+          </span>
+        </div>
+        <VisitorsTodayChart date={date} />
+        <MonthlyVisitorsByTrackChart date={date} />
       </div>
     </div>
   );
 };
-
-const getMonthlyVisitors = async (firstDate, lastDate) => {
-  try {
-    const data = await api.getSchedulingFreeform(firstDate, lastDate);
-    const visitors = [];
-
-    data.forEach(({ scheduleId, tracks }) => {
-      if (!scheduleId) visitors.push(0);
-      else
-        visitors.push(
-          tracks.reduce(
-            (total, { scheduled }) => total + scheduled.visitors,
-            0,
-          ),
-        );
-    });
-    return visitors;
-  } catch (err) {
-    return [];
-  }
-};
-
-const getDailyVisitors = async (date) => {
-  try {
-    const data = await api.getSchedulingFreeform(date, date);
-    // Form an array including the visitors of a certain day and return it
-    const visitors = [];
-
-    data.forEach(({ scheduleId, tracks }) => {
-      if (!scheduleId) visitors.push(0);
-      else tracks.forEach(({ scheduled }) => visitors.push(scheduled.visitors));
-    });
-    return visitors;
-  } catch (err) {
-    return [];
-  }
-};
-
-async function getMonthlyTrackVisitors(firstDate, lastDate) {
-  try {
-    const data = await api.getSchedulingFreeform(firstDate, lastDate);
-    // Form an array including the visitors of a certain track per month and return it
-    const visitors = [];
-
-    data.forEach(({ scheduleId, tracks }) => {
-      if (!scheduleId) return;
-
-      tracks.forEach(({ id, scheduled }) => {
-        if (visitors.length !== 7)
-          visitors.splice(id - 1, 1, scheduled.visitors);
-        else {
-          const trackPerMonthVisitors = visitors[id - 1];
-          const trackVisitors = scheduled.visitors + trackPerMonthVisitors;
-          visitors.splice(id - 1, 1, trackVisitors);
-        }
-      });
-    });
-    return visitors;
-  } catch (err) {
-    return [];
-  }
-}
-
-async function getShortDescriptions(firstDate, lastDate) {
-  try {
-    const data = await api.getSchedulingFreeform(firstDate, lastDate);
-    // Form an array including the short_descriptions of each track
-    const descriptions = [];
-
-    for (const supervision of data) {
-      if (!supervision?.scheduleId) continue;
-      supervision.tracks.forEach(({ short_description }) =>
-        descriptions.push(short_description),
-      );
-      return descriptions;
-    }
-    return [];
-  } catch (err) {
-    return [];
-  }
-}
 
 export default Statistics;
