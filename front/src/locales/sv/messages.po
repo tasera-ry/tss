@@ -11,10 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#: src/tabletview/components/OpenHoursSection.tsx:42
-msgid "\"Invalid time selected."
-msgstr ""
-
 #: src/upcomingsupervisions/LoggedIn.jsx:83
 #: src/upcomingsupervisions/LoggedIn.jsx:144
 #: src/upcomingsupervisions/LoggedIn.jsx:193
@@ -29,12 +25,10 @@ msgstr "Kontohantering"
 #: src/profile/profilepages/supervisions.jsx:244
 #: src/profile/profilepages/officerform.jsx:53
 #: src/edittracks/tracks.jsx:111
-#: src/Devices/devices.jsx:128
 msgid "Actions"
 msgstr "Funktioner"
 
 #: src/edittracks/tracks.jsx:197
-#: src/Devices/devices.jsx:233
 msgid "Add"
 msgstr "Lägg till"
 
@@ -124,8 +118,8 @@ msgstr "Tillbaka till veckovy"
 #: src/usermanagement/UserManagementView.jsx:1280
 #: src/usermanagement/UserManagementView.jsx:1317
 #: src/upcomingsupervisions/LoggedIn.jsx:620
-#: src/tabletview/components/OpenHoursSection.tsx:93
 #: src/profile/profilepages/officerform.jsx:85
+#: src/pages/TabletView/components/OpenHoursSection.tsx:96
 #: src/lib/components/Navbar/FeedbackWindow.tsx:48
 msgid "Cancel"
 msgstr "Avboka"
@@ -156,9 +150,9 @@ msgstr "Ändra lösenord för användare"
 msgid "Change role for user:"
 msgstr "Ändra roll för användare"
 
-#: src/tabletview/rangeofficer.tsx:123
+#: src/pages/TabletView/TabletView.tsx:123
 msgid "Change track officer status by choosing color. Change number of track users with buttons"
-msgstr ""
+msgstr "Ändra banofficerens status genom att välja färg. Ändra antalet användare med knapparna"
 
 #: src/lib/components/Navbar/SupervisorNotification.tsx:37
 msgid "CHECK"
@@ -185,10 +179,10 @@ msgstr "Stäng alla"
 msgid "Close editing mode"
 msgstr "Stäng redigeringsläge"
 
-#: src/tabletview/components/TrackCard.tsx:20
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:91
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:113
 #: src/scheduling/Scheduling.jsx:949
+#: src/pages/TabletView/components/TrackCard.tsx:20
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:92
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:114
 #: src/dayview/Dayview.tsx:181
 msgid "Closed"
 msgstr "Stängd"
@@ -263,14 +257,13 @@ msgstr "Dag"
 msgid "December"
 msgstr "December"
 
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:22
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:22
 msgid "Define range officer status by choosing color"
 msgstr "Definiera status för banofficer genom att välja färg"
 
 #: src/profile/profilepages/officerform.jsx:69
 #: src/profile/profilepages/officerform.jsx:94
 #: src/edittracks/tracks.jsx:163
-#: src/Devices/devices.jsx:195
 msgid "Delete"
 msgstr "Ta bort"
 
@@ -291,6 +284,10 @@ msgstr "Beskrivning"
 msgid "Details"
 msgstr "Detaljer"
 
+#: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:43
+msgid "Devices"
+msgstr "Enheter"
+
 #: src/resetPW/ResetPasswordForm.jsx:38
 #: src/resetPW/ResetPasswordForm.jsx:40
 msgid "E-mail"
@@ -304,7 +301,6 @@ msgstr "Ange en e-postadress!"
 #: src/usermanagement/UserManagementView.jsx:1506
 #: src/scheduling/Scheduling.jsx:1097
 #: src/edittracks/tracks.jsx:158
-#: src/Devices/devices.jsx:190
 msgid "Edit"
 msgstr "Redigera"
 
@@ -337,8 +333,8 @@ msgstr "E-postinställningar"
 msgid "En route"
 msgstr "På väg"
 
-#: src/tabletview/components/OpenHoursSection.tsx:81
 #: src/scheduling/Scheduling.jsx:1064
+#: src/pages/TabletView/components/OpenHoursSection.tsx:85
 msgid "End"
 msgstr "Slut"
 
@@ -352,19 +348,23 @@ msgstr "Avsluta upprepa efter"
 
 #: src/trackview/Trackview.tsx:40
 msgid "Error"
-msgstr ""
+msgstr "Fel"
+
+#: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:28
+msgid "Error loading devices"
+msgstr "Fel vid laddning av enheter"
 
 #: src/renewPW/RenewPassword.jsx:90
 msgid "Error verifying token!"
 msgstr "Fel vid verifiering av token!"
 
 #: src/Devices/devices.jsx:64
-msgid "Error: Device name cannot be empty"
-msgstr "Fel: Enhetsnamnet får inte vara tomt."
+#~ msgid "Error: Device name cannot be empty"
+#~ msgstr "Fel: Enhetsnamnet får inte vara tomt."
 
 #: src/Devices/devices.jsx:69
-msgid "Error: Device status must be either 'free' or 'reserved'"
-msgstr "Fel: Enhetsstatusen måste vara antigen 'fri' eller 'reserverad'"
+#~ msgid "Error: Device status must be either 'free' or 'reserved'"
+#~ msgstr "Fel: Enhetsstatusen måste vara antigen 'fri' eller 'reserverad'"
 
 #: src/scheduling/Scheduling.jsx:400
 msgid "Estimated time of arrival updated"
@@ -395,6 +395,7 @@ msgstr "Glömt lösenord?"
 msgid "Fr"
 msgstr "Fr"
 
+#: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusCard.tsx:12
 #: src/DeviceStatusList/DeviceStatusList.tsx:36
 msgid "Free"
 msgstr "Fri"
@@ -443,6 +444,10 @@ msgstr "Ange din e-postadress för att återställa ett glömt lösenord"
 msgid "Invalid e-mail address!"
 msgstr "Ogiltig e-postadress!"
 
+#: src/pages/TabletView/components/OpenHoursSection.tsx:47
+msgid "Invalid time selected."
+msgstr "Ogiltigt valt tid"
+
 #: src/raffle/RaffleDatePicker.jsx:26
 msgid "January"
 msgstr "Januari"
@@ -455,13 +460,17 @@ msgstr "Juli"
 msgid "June"
 msgstr "Juni"
 
+#: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:20
+msgid "Loading devices..."
+msgstr "Laddar enheter..."
+
 #: src/renewPW/RenewPassword.jsx:79
 msgid "Loading user data..."
 msgstr "Laddar användarinformation..."
 
 #: src/trackview/Trackview.tsx:50
 msgid "Loading..."
-msgstr ""
+msgstr "Laddar..."
 
 #: src/signin/SignIn.jsx:117
 msgid "Log in"
@@ -529,8 +538,6 @@ msgstr "Månad"
 
 #: src/edittracks/tracks.jsx:108
 #: src/edittracks/tracks.jsx:178
-#: src/Devices/devices.jsx:126
-#: src/Devices/devices.jsx:213
 msgid "Name"
 msgstr "Namn"
 
@@ -541,13 +548,17 @@ msgstr "Namn"
 msgid "New password"
 msgstr "Nytt lösenord"
 
-#: src/TrackStatistics/TrackStatistics.jsx:107
+#: src/pages/TabletView/components/TrackStatistics/TrackStatistics.tsx:97
 msgid "No"
 msgstr "Nej"
 
 #: src/trackview/Trackview.tsx:126
 msgid "No defined track officer"
 msgstr "Banhandledare odefinierad"
+
+#: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:36
+msgid "No devices found"
+msgstr "Inga enheter hittades"
 
 #: src/VisitorLogging/VisitorLogging.jsx:125
 msgid "No reservations found. Set reservation in Schedules page"
@@ -559,7 +570,7 @@ msgstr "Inga reservationer hittades. Ställ in reservation på Schemasidan"
 msgid "No selection"
 msgstr "Inget val"
 
-#: src/tabletview/components/TrackCard.tsx:24
+#: src/pages/TabletView/components/TrackCard.tsx:24
 msgid "No track officer"
 msgstr "Ingen banofficer"
 
@@ -589,14 +600,14 @@ msgstr "nummer"
 msgid "October"
 msgstr "Oktober"
 
-#: src/tabletview/components/TrackCard.tsx:28
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:81
 #: src/scheduling/Scheduling.jsx:1134
+#: src/pages/TabletView/components/TrackCard.tsx:28
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:82
 msgid "On the way"
 msgstr "På väg"
 
-#: src/tabletview/components/OpenHoursSection.tsx:53
 #: src/scheduling/Scheduling.jsx:1032
+#: src/pages/TabletView/components/OpenHoursSection.tsx:58
 #: src/dayview/Dayview.tsx:180
 msgid "Open"
 msgstr "Öppna"
@@ -643,9 +654,9 @@ msgstr "Lösenord matchar inte!"
 msgid "Please give your new email address"
 msgstr "Lägg till din nya e-postadress"
 
-#: src/tabletview/components/TrackCard.tsx:16
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:71
 #: src/scheduling/Scheduling.jsx:1141
+#: src/pages/TabletView/components/TrackCard.tsx:16
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:72
 msgid "Present"
 msgstr "Närvarande"
 
@@ -687,10 +698,10 @@ msgid "Range officer addition failed"
 msgstr "Banofficer tillägg misslyckades"
 
 #: src/trackview/Trackview.tsx:111
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:117
 #: src/scheduling/Scheduling.jsx:351
 #: src/scheduling/Scheduling.jsx:353
 #: src/scheduling/Scheduling.jsx:952
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:118
 #: src/dayview/Dayview.tsx:163
 msgid "Range officer confirmed"
 msgstr "Banofficer bekräftat"
@@ -716,20 +727,20 @@ msgid "Range officer not present"
 msgstr "Banofficer inte närvarande"
 
 #: src/trackview/Trackview.tsx:115
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:105
 #: src/scheduling/Scheduling.jsx:362
 #: src/scheduling/Scheduling.jsx:364
 #: src/scheduling/Scheduling.jsx:943
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:106
 #: src/dayview/Dayview.tsx:167
 #: src/TableLegends/TableLegends.tsx:18
 msgid "Range officer on the way"
 msgstr "Banofficer på väg"
 
 #: src/trackview/Trackview.tsx:113
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:121
 #: src/scheduling/Scheduling.jsx:340
 #: src/scheduling/Scheduling.jsx:342
 #: src/scheduling/Scheduling.jsx:955
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:122
 #: src/dayview/Dayview.tsx:165
 msgid "Range officer predefined"
 msgstr "Banofficer inte bekräftat"
@@ -739,19 +750,19 @@ msgid "Range officer predefined, not confirmed"
 msgstr "Banofficer fördefinierad, men inte bekräftat"
 
 #: src/trackview/Trackview.tsx:107
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:101
 #: src/scheduling/Scheduling.jsx:373
 #: src/scheduling/Scheduling.jsx:375
 #: src/scheduling/Scheduling.jsx:940
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:102
 #: src/dayview/Dayview.tsx:159
 #: src/TableLegends/TableLegends.tsx:12
 msgid "Range officer present"
 msgstr "Banofficer närvarande"
 
 #: src/trackview/Trackview.tsx:109
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:109
 #: src/scheduling/Scheduling.jsx:946
 #: src/scheduling/Scheduling.jsx:958
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:110
 #: src/dayview/Dayview.tsx:161
 #: src/TableLegends/TableLegends.tsx:22
 msgid "Range officer undefined"
@@ -781,6 +792,7 @@ msgstr "Upprepa varje månad"
 msgid "Repeat weekly"
 msgstr "Upprepa varje vecka"
 
+#: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusCard.tsx:16
 #: src/DeviceStatusList/DeviceStatusList.tsx:36
 msgid "Reserved"
 msgstr "Reserverad"
@@ -816,7 +828,7 @@ msgid "Saturday"
 msgstr "Lördag"
 
 #: src/upcomingsupervisions/LoggedIn.jsx:628
-#: src/tabletview/components/OpenHoursSection.tsx:96
+#: src/pages/TabletView/components/OpenHoursSection.tsx:99
 #: src/VisitorLogging/VisitorLogging.jsx:146
 msgid "Save"
 msgstr "Spara"
@@ -877,9 +889,9 @@ msgstr "September"
 msgid "Set"
 msgstr "Spara"
 
-#: src/tabletview/components/OpenHoursSection.tsx:65
+#: src/pages/TabletView/components/OpenHoursSection.tsx:70
 msgid "Set opening hours"
-msgstr ""
+msgstr "Ställ in öppettider"
 
 #: src/edittracks/tracks.jsx:110
 #: src/edittracks/tracks.jsx:192
@@ -922,10 +934,10 @@ msgstr "Något gick fel, roll har inte sparats"
 
 #: src/trackview/Trackview.tsx:41
 msgid "Something went wrong. Please try again later."
-msgstr ""
+msgstr "Något gick fel. Försök igen senare."
 
-#: src/tabletview/components/OpenHoursSection.tsx:71
 #: src/scheduling/Scheduling.jsx:1050
+#: src/pages/TabletView/components/OpenHoursSection.tsx:76
 msgid "Start"
 msgstr "Start"
 
@@ -942,8 +954,8 @@ msgid "Status"
 msgstr "Status"
 
 #: src/Devices/devices.jsx:127
-msgid "Status (free/reserved)"
-msgstr "Status (fri/reserverad)"
+#~ msgid "Status (free/reserved)"
+#~ msgstr "Status (fri/reserverad)"
 
 #: src/raffle/RaffleDatePicker.jsx:17
 msgid "Su"
@@ -1107,7 +1119,7 @@ msgstr "Användarprofiler"
 msgid "Username"
 msgstr "Användarnamn"
 
-#: src/TrackStatistics/TrackStatistics.jsx:93
+#: src/pages/TabletView/components/TrackStatistics/TrackStatistics.tsx:82
 msgid "Users should not be reduced, Do you really want to reduce the number of users?"
 msgstr "Användare ska inte minskas. Vill du verkligen minska antalet användare?"
 
@@ -1115,7 +1127,7 @@ msgstr "Användare ska inte minskas. Vill du verkligen minska antalet användare
 msgid "Values cannot be negative"
 msgstr "Värden kan inte vara negativa"
 
-#: src/TrackStatistics/TrackStatistics.jsx:91
+#: src/pages/TabletView/components/TrackStatistics/TrackStatistics.tsx:79
 msgid "Warning!"
 msgstr "Varning!"
 
@@ -1147,7 +1159,7 @@ msgstr "Skriv i textrutan under den feedback du fått från skjutbanor. Kom ihå
 msgid "Wrong username or password"
 msgstr "Fel användarnamn eller lösenord"
 
-#: src/TrackStatistics/TrackStatistics.jsx:101
+#: src/pages/TabletView/components/TrackStatistics/TrackStatistics.tsx:90
 msgid "Yes"
 msgstr "Ja"
 

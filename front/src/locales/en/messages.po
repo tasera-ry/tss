@@ -13,10 +13,6 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/tabletview/components/OpenHoursSection.tsx:42
-msgid "\"Invalid time selected."
-msgstr "\"Invalid time selected."
-
 #: src/upcomingsupervisions/LoggedIn.jsx:83
 #: src/upcomingsupervisions/LoggedIn.jsx:144
 #: src/upcomingsupervisions/LoggedIn.jsx:193
@@ -31,12 +27,10 @@ msgstr "Account dashboard"
 #: src/profile/profilepages/supervisions.jsx:244
 #: src/profile/profilepages/officerform.jsx:53
 #: src/edittracks/tracks.jsx:111
-#: src/Devices/devices.jsx:128
 msgid "Actions"
 msgstr "Actions"
 
 #: src/edittracks/tracks.jsx:197
-#: src/Devices/devices.jsx:233
 msgid "Add"
 msgstr "Add"
 
@@ -126,8 +120,8 @@ msgstr "Back to weekview"
 #: src/usermanagement/UserManagementView.jsx:1280
 #: src/usermanagement/UserManagementView.jsx:1317
 #: src/upcomingsupervisions/LoggedIn.jsx:620
-#: src/tabletview/components/OpenHoursSection.tsx:93
 #: src/profile/profilepages/officerform.jsx:85
+#: src/pages/TabletView/components/OpenHoursSection.tsx:96
 #: src/lib/components/Navbar/FeedbackWindow.tsx:48
 msgid "Cancel"
 msgstr "Cancel"
@@ -158,7 +152,7 @@ msgstr "Change password for"
 msgid "Change role for user:"
 msgstr "Change role for user:"
 
-#: src/tabletview/rangeofficer.tsx:123
+#: src/pages/TabletView/TabletView.tsx:123
 msgid "Change track officer status by choosing color. Change number of track users with buttons"
 msgstr "Change track officer status by choosing color. Change number of track users with buttons"
 
@@ -187,10 +181,10 @@ msgstr "Close All"
 msgid "Close editing mode"
 msgstr "Close editing mode"
 
-#: src/tabletview/components/TrackCard.tsx:20
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:91
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:113
 #: src/scheduling/Scheduling.jsx:949
+#: src/pages/TabletView/components/TrackCard.tsx:20
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:92
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:114
 #: src/dayview/Dayview.tsx:181
 msgid "Closed"
 msgstr "Closed"
@@ -265,14 +259,13 @@ msgstr "Day"
 msgid "December"
 msgstr "December"
 
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:22
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:22
 msgid "Define range officer status by choosing color"
 msgstr "Define range officer status by choosing color"
 
 #: src/profile/profilepages/officerform.jsx:69
 #: src/profile/profilepages/officerform.jsx:94
 #: src/edittracks/tracks.jsx:163
-#: src/Devices/devices.jsx:195
 msgid "Delete"
 msgstr "Delete"
 
@@ -293,6 +286,10 @@ msgstr "Description"
 msgid "Details"
 msgstr "Details"
 
+#: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:43
+msgid "Devices"
+msgstr "Devices"
+
 #: src/resetPW/ResetPasswordForm.jsx:38
 #: src/resetPW/ResetPasswordForm.jsx:40
 msgid "E-mail"
@@ -306,7 +303,6 @@ msgstr "E-mail address is required!"
 #: src/usermanagement/UserManagementView.jsx:1506
 #: src/scheduling/Scheduling.jsx:1097
 #: src/edittracks/tracks.jsx:158
-#: src/Devices/devices.jsx:190
 msgid "Edit"
 msgstr "Edit"
 
@@ -339,8 +335,8 @@ msgstr "Email settings"
 msgid "En route"
 msgstr "En route"
 
-#: src/tabletview/components/OpenHoursSection.tsx:81
 #: src/scheduling/Scheduling.jsx:1064
+#: src/pages/TabletView/components/OpenHoursSection.tsx:85
 msgid "End"
 msgstr "End"
 
@@ -356,17 +352,21 @@ msgstr "End repeat after"
 msgid "Error"
 msgstr "Error"
 
+#: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:28
+msgid "Error loading devices"
+msgstr "Error loading devices"
+
 #: src/renewPW/RenewPassword.jsx:90
 msgid "Error verifying token!"
 msgstr "Error verifying token!"
 
 #: src/Devices/devices.jsx:64
-msgid "Error: Device name cannot be empty"
-msgstr "Error: Device name cannot be empty"
+#~ msgid "Error: Device name cannot be empty"
+#~ msgstr "Error: Device name cannot be empty"
 
 #: src/Devices/devices.jsx:69
-msgid "Error: Device status must be either 'free' or 'reserved'"
-msgstr "Error: Device status must be either 'free' or 'reserved'"
+#~ msgid "Error: Device status must be either 'free' or 'reserved'"
+#~ msgstr "Error: Device status must be either 'free' or 'reserved'"
 
 #: src/scheduling/Scheduling.jsx:400
 msgid "Estimated time of arrival updated"
@@ -397,6 +397,7 @@ msgstr "Forgot password?"
 msgid "Fr"
 msgstr "Fr"
 
+#: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusCard.tsx:12
 #: src/DeviceStatusList/DeviceStatusList.tsx:36
 msgid "Free"
 msgstr "Free"
@@ -445,6 +446,10 @@ msgstr "Input your e-mail address in order to reset your password"
 msgid "Invalid e-mail address!"
 msgstr "Invalid e-mail address!"
 
+#: src/pages/TabletView/components/OpenHoursSection.tsx:47
+msgid "Invalid time selected."
+msgstr "Invalid time selected."
+
 #: src/raffle/RaffleDatePicker.jsx:26
 msgid "January"
 msgstr "January"
@@ -456,6 +461,10 @@ msgstr "July"
 #: src/raffle/RaffleDatePicker.jsx:31
 msgid "June"
 msgstr "June"
+
+#: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:20
+msgid "Loading devices..."
+msgstr "Loading devices..."
 
 #: src/renewPW/RenewPassword.jsx:79
 msgid "Loading user data..."
@@ -531,8 +540,6 @@ msgstr "Month"
 
 #: src/edittracks/tracks.jsx:108
 #: src/edittracks/tracks.jsx:178
-#: src/Devices/devices.jsx:126
-#: src/Devices/devices.jsx:213
 msgid "Name"
 msgstr "Name"
 
@@ -543,13 +550,17 @@ msgstr "Name"
 msgid "New password"
 msgstr "New password"
 
-#: src/TrackStatistics/TrackStatistics.jsx:107
+#: src/pages/TabletView/components/TrackStatistics/TrackStatistics.tsx:97
 msgid "No"
 msgstr "No"
 
 #: src/trackview/Trackview.tsx:126
 msgid "No defined track officer"
 msgstr "No defined track officer"
+
+#: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:36
+msgid "No devices found"
+msgstr "No devices found"
 
 #: src/VisitorLogging/VisitorLogging.jsx:125
 msgid "No reservations found. Set reservation in Schedules page"
@@ -561,7 +572,7 @@ msgstr "No reservations found. Set reservation in Schedules page"
 msgid "No selection"
 msgstr "No selection"
 
-#: src/tabletview/components/TrackCard.tsx:24
+#: src/pages/TabletView/components/TrackCard.tsx:24
 msgid "No track officer"
 msgstr "No track officer"
 
@@ -591,14 +602,14 @@ msgstr "number"
 msgid "October"
 msgstr "October"
 
-#: src/tabletview/components/TrackCard.tsx:28
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:81
 #: src/scheduling/Scheduling.jsx:1134
+#: src/pages/TabletView/components/TrackCard.tsx:28
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:82
 msgid "On the way"
 msgstr "On the way"
 
-#: src/tabletview/components/OpenHoursSection.tsx:53
 #: src/scheduling/Scheduling.jsx:1032
+#: src/pages/TabletView/components/OpenHoursSection.tsx:58
 #: src/dayview/Dayview.tsx:180
 msgid "Open"
 msgstr "Open"
@@ -645,9 +656,9 @@ msgstr "Passwords don't match!"
 msgid "Please give your new email address"
 msgstr "Please give your new email address"
 
-#: src/tabletview/components/TrackCard.tsx:16
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:71
 #: src/scheduling/Scheduling.jsx:1141
+#: src/pages/TabletView/components/TrackCard.tsx:16
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:72
 msgid "Present"
 msgstr "Present"
 
@@ -689,10 +700,10 @@ msgid "Range officer addition failed"
 msgstr "Range officer addition failed"
 
 #: src/trackview/Trackview.tsx:111
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:117
 #: src/scheduling/Scheduling.jsx:351
 #: src/scheduling/Scheduling.jsx:353
 #: src/scheduling/Scheduling.jsx:952
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:118
 #: src/dayview/Dayview.tsx:163
 msgid "Range officer confirmed"
 msgstr "Range officer confirmed"
@@ -718,20 +729,20 @@ msgid "Range officer not present"
 msgstr "Range officer not present"
 
 #: src/trackview/Trackview.tsx:115
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:105
 #: src/scheduling/Scheduling.jsx:362
 #: src/scheduling/Scheduling.jsx:364
 #: src/scheduling/Scheduling.jsx:943
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:106
 #: src/dayview/Dayview.tsx:167
 #: src/TableLegends/TableLegends.tsx:18
 msgid "Range officer on the way"
 msgstr "Range officer on the way"
 
 #: src/trackview/Trackview.tsx:113
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:121
 #: src/scheduling/Scheduling.jsx:340
 #: src/scheduling/Scheduling.jsx:342
 #: src/scheduling/Scheduling.jsx:955
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:122
 #: src/dayview/Dayview.tsx:165
 msgid "Range officer predefined"
 msgstr "Range officer predefined"
@@ -741,19 +752,19 @@ msgid "Range officer predefined, not confirmed"
 msgstr "Range officer predefined, not confirmed"
 
 #: src/trackview/Trackview.tsx:107
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:101
 #: src/scheduling/Scheduling.jsx:373
 #: src/scheduling/Scheduling.jsx:375
 #: src/scheduling/Scheduling.jsx:940
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:102
 #: src/dayview/Dayview.tsx:159
 #: src/TableLegends/TableLegends.tsx:12
 msgid "Range officer present"
 msgstr "Range officer present"
 
 #: src/trackview/Trackview.tsx:109
-#: src/tabletview/components/RangeOfficerStatusSection.tsx:109
 #: src/scheduling/Scheduling.jsx:946
 #: src/scheduling/Scheduling.jsx:958
+#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:110
 #: src/dayview/Dayview.tsx:161
 #: src/TableLegends/TableLegends.tsx:22
 msgid "Range officer undefined"
@@ -783,6 +794,7 @@ msgstr "Repeat monthly"
 msgid "Repeat weekly"
 msgstr "Repeat weekly"
 
+#: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusCard.tsx:16
 #: src/DeviceStatusList/DeviceStatusList.tsx:36
 msgid "Reserved"
 msgstr "Reserved"
@@ -818,7 +830,7 @@ msgid "Saturday"
 msgstr "Saturday"
 
 #: src/upcomingsupervisions/LoggedIn.jsx:628
-#: src/tabletview/components/OpenHoursSection.tsx:96
+#: src/pages/TabletView/components/OpenHoursSection.tsx:99
 #: src/VisitorLogging/VisitorLogging.jsx:146
 msgid "Save"
 msgstr "Save"
@@ -879,7 +891,7 @@ msgstr "September"
 msgid "Set"
 msgstr "Set"
 
-#: src/tabletview/components/OpenHoursSection.tsx:65
+#: src/pages/TabletView/components/OpenHoursSection.tsx:70
 msgid "Set opening hours"
 msgstr "Set opening hours"
 
@@ -926,8 +938,8 @@ msgstr "Something went wrong, role not saved"
 msgid "Something went wrong. Please try again later."
 msgstr "Something went wrong. Please try again later."
 
-#: src/tabletview/components/OpenHoursSection.tsx:71
 #: src/scheduling/Scheduling.jsx:1050
+#: src/pages/TabletView/components/OpenHoursSection.tsx:76
 msgid "Start"
 msgstr "Start"
 
@@ -944,8 +956,8 @@ msgid "Status"
 msgstr "Status"
 
 #: src/Devices/devices.jsx:127
-msgid "Status (free/reserved)"
-msgstr "Status (free/reserved)"
+#~ msgid "Status (free/reserved)"
+#~ msgstr "Status (free/reserved)"
 
 #: src/raffle/RaffleDatePicker.jsx:17
 msgid "Su"
@@ -1113,7 +1125,7 @@ msgstr "User profiles"
 msgid "Username"
 msgstr "Username"
 
-#: src/TrackStatistics/TrackStatistics.jsx:93
+#: src/pages/TabletView/components/TrackStatistics/TrackStatistics.tsx:82
 msgid "Users should not be reduced, Do you really want to reduce the number of users?"
 msgstr "Users should not be reduced, Do you really want to reduce the number of users?"
 
@@ -1121,7 +1133,7 @@ msgstr "Users should not be reduced, Do you really want to reduce the number of 
 msgid "Values cannot be negative"
 msgstr "Values cannot be negative"
 
-#: src/TrackStatistics/TrackStatistics.jsx:91
+#: src/pages/TabletView/components/TrackStatistics/TrackStatistics.tsx:79
 msgid "Warning!"
 msgstr "Warning!"
 
@@ -1153,7 +1165,7 @@ msgstr "Write in the textbox below the feedback you received from the range. Rem
 msgid "Wrong username or password"
 msgstr "Wrong username or password"
 
-#: src/TrackStatistics/TrackStatistics.jsx:101
+#: src/pages/TabletView/components/TrackStatistics/TrackStatistics.tsx:90
 msgid "Yes"
 msgstr "Yes"
 

@@ -44,7 +44,7 @@ export function OpenHoursSection({ date, hours, scheduleId }) {
 
   const onTimeChange = useCallback(() => {
     if (startTime === null || endTime === null) {
-      setErrorMessage(t`"Invalid time selected.`);
+      setErrorMessage(t`Invalid time selected.`);
       return;
     }
     const start = startTime.toTimeString().split(' ')[0].slice(0, 5);
