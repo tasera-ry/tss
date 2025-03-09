@@ -8,9 +8,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 // Moment for date handling
 import moment from 'moment';
-import { JumpToCurrent } from '../../utils/Utils';
+import { JumpToCurrent } from '@/utils/Utils';
 import info from '@/assets/Info.png';
-import api from '../../api/api';
+import api from '@/api/api';
 import css from './DayView.module.scss';
 import { DeviceStatusList } from '../../DeviceStatusList/DeviceStatusList';
 import { ViewChanger } from '@/lib/components/ViewChanger';

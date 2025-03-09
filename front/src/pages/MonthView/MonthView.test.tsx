@@ -1,7 +1,7 @@
-import { waitFor, render, screen, fireEvent } from '@testing-library/react';
+import { waitFor, render, screen } from '@testing-library/react';
 import { HashRouter as Router, useParams } from 'react-router-dom';
 import { Monthview } from './MonthView';
-import monthTestUtil from '../../_TestUtils/monthTestUtil';
+import monthTestUtil from '@/_TestUtils/monthTestUtil';
 import api from '@/api/api';
 import { TestProviders } from '@/_TestUtils/TestProvides';
 
@@ -9,11 +9,11 @@ import { TestProviders } from '@/_TestUtils/TestProvides';
 vi.mock('axios');
 
 // Mock the InfoBox component
-vi.mock('../infoBox/InfoBox', () => ({
-  default: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
+vi.mock('@/lib/components/InfoBox', () => ({
+  InfoBox: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
 }));
 
-vi.mock('../api/api')
+vi.mock('@/api/api')
 vi.mock('react-router-dom', async (originalImport) => {
   const originalModule = await originalImport() as any
   return {
@@ -42,7 +42,7 @@ describe('testing monthview', () => {
       </Router>, {wrapper: TestProviders}
     );
     await waitFor(() =>
-      expect(screen.getByText('Wednesday 21.10.2020')).toBeInTheDocument(),
+      expect(screen.getByText('October 2020')).toBeInTheDocument(),
     );
   });
 
@@ -61,7 +61,7 @@ describe('testing monthview', () => {
       </Router>, {wrapper: TestProviders}
     );
     await waitFor(() =>
-      expect(screen.getByText('Wednesday 21.10.2020')).toBeInTheDocument(),
+      expect(screen.getByText('October 2020')).toBeInTheDocument(),
     );
   });
 

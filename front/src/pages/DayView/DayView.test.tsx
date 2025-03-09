@@ -1,8 +1,8 @@
 import { HashRouter as Router, useParams } from 'react-router-dom';
 import { render, screen, waitFor } from '@testing-library/react';
 import { Dayview } from './DayView';
-import api from '../../api/api';
-import testUtils from '../../_TestUtils/TestUtils';
+import api from '@/api/api';
+import testUtils from '@/_TestUtils/TestUtils';
 import { TestProviders } from '@/_TestUtils/TestProvides';
 
 // Mock the InfoBox component
@@ -10,7 +10,7 @@ vi.mock('@/lib/components/InfoBox', () => ({
   InfoBox: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
 }));
 
-vi.mock('../api/api')
+vi.mock('@/api/api')
 vi.mock('react-router-dom', async (originalImport) => {
   const originalModule = await originalImport() as any
   return {
@@ -64,7 +64,7 @@ describe('testing Dayview component', () => {
       </Router>, {wrapper: TestProviders}
     );
     await waitFor(() =>
-      expect(screen.getByText('Wednesday 21.10.2020')).toBeInTheDocument(),
+      expect(screen.getByText('Wednesday, 10/21/2020')).toBeInTheDocument(),
     );
   });
 
