@@ -1,7 +1,7 @@
 import { waitFor, render, screen, fireEvent } from '@testing-library/react';
 import { HashRouter as Router, useParams } from 'react-router-dom';
-import { Monthview } from './Monthview';
-import monthTestUtil from '../_TestUtils/monthTestUtil';
+import { Monthview } from './MonthView';
+import monthTestUtil from '../../_TestUtils/monthTestUtil';
 import api from '@/api/api';
 import { TestProviders } from '@/_TestUtils/TestProvides';
 

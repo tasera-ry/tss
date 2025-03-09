@@ -9,9 +9,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import moment from 'moment';
 import {
   JumpToCurrent,
-} from '../utils/Utils';
-import { TableLegends } from '../TableLegends/TableLegends';
-import { InfoBox } from '../lib/components/InfoBox';
+} from '../../utils/Utils';
+import { TableLegends } from '../../TableLegends/TableLegends';
+import { InfoBox } from '../../lib/components/InfoBox';
 import { ViewChanger } from '@/lib/components/ViewChanger';
 
 import smallInfoIcon from '@/assets/Small-info.png';

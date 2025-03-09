@@ -1,8 +1,8 @@
 import { HashRouter as Router, useParams } from 'react-router-dom';
 import { render, screen, waitFor } from '@testing-library/react';
-import { Dayview } from './Dayview';
-import api from '../api/api';
-import testUtils from '../_TestUtils/TestUtils';
+import { Dayview } from './DayView';
+import api from '../../api/api';
+import testUtils from '../../_TestUtils/TestUtils';
 import { TestProviders } from '@/_TestUtils/TestProvides';
 
 // Mock the InfoBox component

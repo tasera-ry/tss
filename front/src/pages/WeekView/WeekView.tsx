@@ -8,13 +8,13 @@ import moment from 'moment';
 import {
   getSchedulingWeek,
   JumpToCurrent,
-} from '../utils/Utils';
+} from '../../utils/Utils';
 import exclamation from '@/assets/Info.png';
-import { TableLegends } from '../TableLegends/TableLegends';
+import { TableLegends } from '../../TableLegends/TableLegends';
 import { InfoBox } from '@/lib/components/InfoBox';
 import { ViewChanger } from '@/lib/components/ViewChanger';
 
-import css from './Weekview.module.scss';
+import css from './WeekView.module.scss';
 import { DaySchedule } from '@/types';
 import { useQuery } from 'react-query';
 import { DateHeader } from '@/lib/components/DateHeader';
