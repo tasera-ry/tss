@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import Tabletview from './TabletView';
+import { TabletView } from './TabletView';
 import * as utils from '../../utils/Utils';
 import testUtils from '../../_TestUtils/TestUtils';
 import { TestProviders } from '@/_TestUtils/TestProvides';
@@ -43,7 +43,7 @@ describe('testing rangeofficer', () => {
   it('should render TabletView', async () => {
     await act(async () => {
       render(
-        <Tabletview />,
+        <TabletView />,
         { wrapper: TestProviders }
       );
     });
@@ -52,7 +52,7 @@ describe('testing rangeofficer', () => {
   });
 
   it('should render tracks', async () => {
-    await act(async() => render(<Tabletview />, { wrapper: TestProviders }));
+    await act(async() => render(<TabletView />, { wrapper: TestProviders }));
 
     await waitFor(() =>
       expect(screen.getByText('Shooting Track 0', {exact: false})).toBeInTheDocument(),
@@ -63,7 +63,7 @@ describe('testing rangeofficer', () => {
   });
 
   it('should render track officer status', async () => {
-    await act(async() => render(<Tabletview />, { wrapper: TestProviders }));
+    await act(async() => render(<TabletView />, { wrapper: TestProviders }));
     testUtils.schedule.tracks.forEach(track => {
       expect(screen.getByTestId(`trackSupervisorButton-${track.id}`)).toBeInTheDocument();
     });

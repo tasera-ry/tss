@@ -4,7 +4,7 @@ import testUtils from '../../../../_TestUtils/TestUtils';
 import { TestProviders } from '@/_TestUtils/TestProvides';
 import api from '../../../../api/api';
 
-vi.mock('../../../api/api')
+vi.mock('../../../../api/api')
 
 describe('testing TrackStatistics', () => {
 
