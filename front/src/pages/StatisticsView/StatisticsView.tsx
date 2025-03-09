@@ -1,12 +1,10 @@
-import { useMemo } from 'react';
-import classNames from 'classnames';
+import { useCallback, useMemo } from 'react';
 
 import moment from 'moment';
 import 'moment/locale/fi';
 
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import css from './Statistics.module.scss';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useQuery } from 'react-query';
 import { DateHeader } from '@/lib/components/DateHeader';
@@ -17,7 +15,6 @@ import { CurrentDayStatistics } from '@/pages/StatisticsView/components/CurrentD
 import { schedulingFreeformQuery } from '@/pages/StatisticsView/components/schedulingFreeformQuery';
 import { useHistory, useParams } from 'react-router';
 
-const classes = classNames.bind(css);
 
 export const StatisticsView = () => {
   const { t, i18n } = useLingui()
@@ -52,9 +49,9 @@ export const StatisticsView = () => {
     }
   )
 
-  const onDateChange = (newDate: moment.Moment) => {
+  const onDateChange = useCallback((newDate: moment.Moment) => {
     history.replace(`/statistics/${newDate.format('YYYY-MM-DD')}`)
-  }
+  }, [history])
 
   const formatedMonth = useMemo(() => {
     return i18n.date(date.toDate(), { month: 'long', year: 'numeric' })
@@ -65,17 +62,15 @@ export const StatisticsView = () => {
   }, [date])
 
   return (
-    <div className={classes(css.container)}>
-      <div className={classes(css.firstSection)}>
-        <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={locale}>
-          <DatePicker
-            closeOnSelect
-            label={t`Choose date`}
-            value={moment(date)}
-            onAccept={(newDate) => onDateChange(newDate)}
-          />
-        </LocalizationProvider>
-      </div>
+    <div className="flex flex-col items-center gap-4 p-4">
+      <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={locale}>
+        <DatePicker
+          closeOnSelect
+          label={t`Choose date`}
+          value={moment(date)}
+          onAccept={(newDate) => onDateChange(newDate)}
+        />
+      </LocalizationProvider>
       <DateHeader 
         targetDate={moment(date).format('YYYY-MM-DD')}
         onPrevious={() => onDateChange(date.subtract(1, 'day'))}
