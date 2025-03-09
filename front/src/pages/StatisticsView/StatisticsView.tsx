@@ -12,20 +12,20 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import VisitorLogging from '../VisitorLogging/VisitorLogging';
+import VisitorLogging from '../../VisitorLogging/VisitorLogging';
 import css from './Statistics.module.scss';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useQuery } from 'react-query';
 import { DateHeader } from '@/lib/components/DateHeader';
 import { useLanguageContext } from '@/i18n';
-import { MonthlyVisitorsByTrackChart } from '@/statistics/components/MonthlyVisitorsByTrackChart';
-import { VisitorsTodayChart } from '@/statistics/components/VisitorsTodayChart';
-import { CurrentDayStatistics } from '@/statistics/components/CurrentDayStatistics';
-import { schedulingFreeformQuery } from '@/statistics/components/schedulingFreeformQuery';
+import { MonthlyVisitorsByTrackChart } from '@/pages/StatisticsView/components/MonthlyVisitorsByTrackChart';
+import { VisitorsTodayChart } from '@/pages/StatisticsView/components/VisitorsTodayChart';
+import { CurrentDayStatistics } from '@/pages/StatisticsView/components/CurrentDayStatistics';
+import { schedulingFreeformQuery } from '@/pages/StatisticsView/components/schedulingFreeformQuery';
 
 const classes = classNames.bind(css);
 
-const Statistics = () => {
+export const StatisticsView = () => {
   const { t, i18n } = useLingui()
   const [locale] = useLanguageContext()
 
@@ -153,5 +153,3 @@ const Statistics = () => {
     </div>
   );
 };
-
-export default Statistics;

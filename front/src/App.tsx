@@ -15,7 +15,6 @@ import { TabletView } from './pages/TabletView/TabletView';
 import Profile from './profile/profilesettings';
 import UserManagementView from './usermanagement/UserManagementView';
 import TrackCRUD from './edittracks/tracks';
-import Statistics from './statistics/Statistics';
 import EmailSettings from './EmailSettings/EmailSettings';
 import Raffle from './raffle/raffle';
 
@@ -23,6 +22,7 @@ import { Navbar } from '@/lib/components/Navbar';
 import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
 import { Monthview } from '@/monthview/Monthview';
 import { InfoMessageManagementView } from '@/pages/InfoMessageManagementView';
+import { StatisticsView } from '@/pages/StatisticsView/StatisticsView';
 
 
 export function App() {
@@ -68,7 +68,7 @@ export function App() {
         <Route path="/supervisor-raffle" component={Raffle} />
         <Route path="/tracks" component={TrackCRUD} />
         <Route path="/email-settings" component={EmailSettings} />
-        <Route path="/statistics" component={Statistics} />
+        <Route path="/statistics" component={StatisticsView} />
         <Route path="/info" component={InfoMessageManagementView} />
       </Switch>
     </Router>

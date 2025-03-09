@@ -1,20 +1,33 @@
-import { schedulingFreeformQuery } from "@/statistics/components/schedulingFreeformQuery";
+import { schedulingFreeformQuery } from "@/pages/StatisticsView/components/schedulingFreeformQuery";
 import { useLingui } from "@lingui/react/macro";
 import { CircularProgress } from "@mui/material";
 import { useQuery } from "react-query";
 import Chart from 'react-apexcharts';
+import api from "@/api/api";
 import colors from '@/colors.module.scss';
 
-interface MonthlyVisitorsByTrackChartProps {
+
+interface CurrentDayStatisticsProps {
   date: moment.Moment;
 }
 
-export function MonthlyVisitorsByTrackChart({ date }: MonthlyVisitorsByTrackChartProps) {
-
+export function CurrentDayStatistics({ date }: CurrentDayStatisticsProps) {
   const { t } = useLingui()
 
+  const dayQuery = useQuery({
+    queryKey: ['schedulingFreeformDay', date.format('YYYY-MM-DD')],
+    queryFn: async () => {
+      const data = await api.getSchedulingFreeform(date, date);
+      const visitors = [];
+      data.forEach(({ scheduleId, tracks }) => {
+        if (!scheduleId) visitors.push(0);
+        else tracks.forEach(({ scheduled }) => visitors.push(scheduled.visitors ?? 0));
+      });
+      return visitors;
+    }
+  })
   const trackQuery = useQuery({
-    queryKey: ['schedulingFreeformMonth', date],
+    queryKey: ['schedulingFreeformMonth', date.format('YYYY-MM-DD')],
     queryFn: schedulingFreeformQuery,
     select: (data) => {
       const tracks = data
@@ -24,44 +37,28 @@ export function MonthlyVisitorsByTrackChart({ date }: MonthlyVisitorsByTrackChar
           return acc;
         }, new Set<string>())
 
-      const visitors = data
-        .filter((supervision) => supervision.scheduleId)
-        .reduce((acc, supervision) => {
-          supervision.tracks.forEach(({ id, scheduled }) => {
-            if (acc.length !== 7) {
-              acc.splice(id - 1, 1, scheduled.visitors);
-            } else {
-              const trackPerMonthVisitors = acc[id - 1];
-              const trackVisitors = scheduled.visitors + trackPerMonthVisitors;
-              acc.splice(id - 1, 1, trackVisitors);
-            }
-          })
-          return acc;
-        }, [])
-
       return {
         tracks: Array.from(tracks.values()),
-        visitors,
       };
     },
   })
 
-  const isPending = trackQuery.isLoading
+  const isPending = dayQuery.isLoading || trackQuery.isLoading
 
   if (isPending) return (
     <div className='flex flex-col items-center gap-2'>
-      <h3 className='text-xl font-bold'>{t`Monthly visitors per track`}</h3>
+      <h3 className='text-xl font-bold'>{t`Visitors per track`}</h3>
       <CircularProgress />
     </div>
   )
 
   return (
     <div>
-      <h3 className='text-xl font-bold'>{t`Monthly visitors per track`}</h3>
+      <h3 className='text-xl font-bold'>{t`Visitors per track`}</h3>
       <Chart
         options={{
           chart: {
-            id: 'monthlyTrackChart',
+            id: 'dayChart',
           },
           dataLabels: {
             enabled: true,
@@ -70,7 +67,6 @@ export function MonthlyVisitorsByTrackChart({ date }: MonthlyVisitorsByTrackChar
             },
             style: {
               colors: [colors.green],
-              fontSize: '16px',
             }
           },
           fill: {
@@ -88,12 +84,10 @@ export function MonthlyVisitorsByTrackChart({ date }: MonthlyVisitorsByTrackChar
             },
           },
         }}
-        series={[
-          {
-            name: 'visitors',
-            data: trackQuery.data?.visitors ?? [],
-          }
-        ]}
+        series={[{
+          name: 'visitors',
+          data: dayQuery.data ?? []
+        }]}
         type="bar"
         width="700"
         height="400"

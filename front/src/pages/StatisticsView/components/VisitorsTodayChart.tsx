@@ -1,4 +1,4 @@
-import { schedulingFreeformQuery } from "@/statistics/components/schedulingFreeformQuery";
+import { schedulingFreeformQuery } from "@/pages/StatisticsView/components/schedulingFreeformQuery";
 import { useLingui } from "@lingui/react/macro";
 import { CircularProgress } from "@mui/material";
 import { useQuery } from "react-query";
