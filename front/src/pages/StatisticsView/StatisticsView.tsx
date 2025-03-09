@@ -8,8 +8,8 @@ import 'moment/locale/fi';
 // Material UI components
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
+import MuiAlert, { AlertColor } from '@mui/material/Alert';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import VisitorLogging from '../../VisitorLogging/VisitorLogging';
@@ -33,10 +33,10 @@ export const StatisticsView = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const [toastOpen, setToastOpen] = useState(false);
-  const [toastSeverity, setToastSeverity] = useState('success');
+  const [toastSeverity, setToastSeverity] = useState<AlertColor>('success');
   const [toastMessage, setToastMessage] = useState('');
 
-  const handleSnackbarClose = (reason) => {
+  const handleSnackbarClose = (reason: SnackbarCloseReason) => {
     if (reason === 'clickaway') return;
     setToastOpen(false);
   };
@@ -72,12 +72,15 @@ export const StatisticsView = () => {
       <Snackbar
         open={toastOpen}
         autoHideDuration={5000}
-        onClose={(_, reason) => handleSnackbarClose(reason)}
+        onClose={(_, reason) => {
+          if (reason === 'clickaway') return;
+          setToastOpen(false);
+        }}
       >
         <MuiAlert
           elevation={6}
           variant="filled"
-          onClose={(_, reason) => handleSnackbarClose(reason)}
+          onClose={() => setToastOpen(false)}
           severity={toastSeverity}
         >
           {toastMessage}!
