@@ -26,7 +26,6 @@ const classes = classNames.bind(css);
 
 
 export const Weekview = () => {
-  const { t } = useLingui();
   const history = useHistory();
   const { date: dateParam } = useParams<{ date: string}>()
 
@@ -51,7 +50,12 @@ export const Weekview = () => {
     <div>
       <InfoBox />
       <div className={classes(css.container)}>
-      <DateHeader targetDate={targetDate} onPrevious={previousWeekClick} onNext={nextWeekClick} />
+      <DateHeader
+        targetDate={targetDate}
+        onPrevious={previousWeekClick}
+        onNext={nextWeekClick}
+        type='week'
+      />
         <div className={classes(css.bigContainer)}>
           <div className={classes(css.viewChanger)}>
             <JumpToCurrent />
