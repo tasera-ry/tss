@@ -3,6 +3,8 @@ import "react-day-picker/lib/style.css";
 import "./RaffleDatePicker.scss";
 import { msg } from '@lingui/core/macro';
 import { useLingui } from "@lingui/react";
+import { useQuery } from 'react-query';
+import { Tooltip } from 'react-tooltip';
 
 const WEEKDAYS_TEXT_LONG = [
   msg`Sunday`,
@@ -93,21 +95,89 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
   const longWeekdays = WEEKDAYS_TEXT_LONG.map((day) => _(day))
   const months = MONTHS_TEXT.map((month) => _(month))
 
-  return (
-    <DayPicker
-      // Set the calendar to start from current month
-      fromMonth={currentDate}
-      showWeekNumbers
-      disabledDays={disabledDays}
-      months={months}
-      weekdaysShort={shortWeekdays}
-      weekdaysLong={longWeekdays}
-      firstDayOfWeek={1}
-      selectedDays={selectedDays}
-      onDayClick={handleDayClick}
-      onWeekClick={handleWeekClick}
-    />
-  );
-};
+  const fetchRaffleData = async (month) => {
+    const response = await fetch(`/api/raffle?month=${month}`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  };
+
+  const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
+    const currentDate = new Date();
+    const [hoveredDay, setHoveredDay] = useState(null);
+
+    const { data: raffleData, status } = useQuery(
+      ['raffleData', currentDate.getMonth()],
+      () => fetchRaffleData(currentDate.getMonth())
+    );
+
+    const isRaffled = (day) => {
+      return raffleData?.some((raffle) => DateUtils.isSameDay(new Date(raffle.date), day));
+    };
+
+    const getRaffledTo = (day) => {
+      const raffle = raffleData?.find((raffle) => DateUtils.isSameDay(new Date(raffle.date), day));
+      return raffle ? raffle.raffledTo : null;
+    };
+
+    const handleDayMouseEnter = (day) => {
+      setHoveredDay(day);
+    };
+
+    const handleDayMouseLeave = () => {
+      setHoveredDay(null);
+    };
+
+    return (
+      <>
+      <DayPicker
+        fromMonth={currentDate}
+        showWeekNumbers
+        disabledDays={disabledDays}
+        months={months}
+        weekdaysShort={shortWeekdays}
+        weekdaysLong={longWeekdays}
+        firstDayOfWeek={1}
+        selectedDays={selectedDays}
+        onDayClick={handleDayClick}
+        onWeekClick={handleWeekClick}
+        modifiers={{
+        raffled: (day) => isRaffled(day),
+        closed: (day) => !isRaffled(day) && DateUtils.isPastDay(day),
+        }}
+        modifiersStyles={{
+        raffled: {
+          backgroundColor: 'lightgreen',
+        },
+        closed: {
+          backgroundColor: 'red',
+        },
+        }}
+        onDayMouseEnter={handleDayMouseEnter}
+        onDayMouseLeave={handleDayMouseLeave}
+      />
+      {hoveredDay && isRaffled(hoveredDay) && (
+        <Tooltip
+        isOpen={true}
+        target={hoveredDay}
+        placement="top"
+        >
+        Raffled to: {getRaffledTo(hoveredDay)}
+        </Tooltip>
+      )}
+      {hoveredDay && !isRaffled(hoveredDay) && DateUtils.isPastDay(hoveredDay) && (
+        <Tooltip
+          isOpen={true}
+          target={hoveredDay}
+          placement="top"
+        >
+          Closed
+        </Tooltip>
+      )}
+      </>
+    );
+    };
+  };
 
 export default RaffleDatePicker;
