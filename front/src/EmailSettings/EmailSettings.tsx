@@ -1,19 +1,14 @@
-import React from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import moment from 'moment';
 import Snackbar from '@mui/material/Snackbar';
 import {
   FormControl,
-  FormControlLabel,
   FormLabel,
-  Radio,
-  RadioGroup,
   Button,
   TextField,
   FormHelperText,
   CircularProgress,
-  Select,
-  MenuItem,
-  InputLabel,
+  AlertColor,
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import {
@@ -21,440 +16,333 @@ import {
   TimePicker,
 } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import './EmailSettings.scss';
+import { useLingui } from '@lingui/react/macro';
+import { useMutation, useQuery } from 'react-query';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ToggleField } from '@/EmailSettings/components/ToggleFIeld';
+import { CollapsibleTextField } from '@/EmailSettings/components/CollapsibleTextField';
 
-const HelperText = (messageSelection) => {
-  switch (messageSelection) {
-    case 'declineMsg':
-      return (
-        <p>
-          {t`Allowed dynamic values:`}
-          <br />
-          {`{user} - ${t`The user who declined`}`}
-          <br />
-          {`{date} - ${t`The date of the user declining`}`}
-        </p>
-      );
-    case 'feedbackMsg':
-      return (
-        <p>
-          {t`Allowed dynamic values:`}
-          <br />
-          {`{user} - ${t`The user who gave feedback`}`}
-          <br />
-          {`{feedback} - ${t`The feedback given by the user`}`}
-        </p>
-      );
-    case 'resetpassMsg':  
-      return (
-        <p>
-          {t`Allowed dynamic values:`}
-          <br />
-          {`{token} - ${t`The password reset link token.`}`}
-          <br />
-          {t`The link can be made like this: http://tss.tasera.fi/#/renew-password/{token}`}
-        </p>
-      );
-    case 'collageMsg':
-      return (
-        <p>
-          {t`Allowed dynamic values:`}
-          <br />
-          {`{assigned} - ${t`The number of assigned shifts`}`}
-          <br />
-          {`{update} - ${t`The number of updated shifts`}`}
-        </p>
-      );
-    case 'assignedMsg':
-    case 'updateMsg':
-    case 'reminderMsg':
-    default:
-      return <p />;
-  }
-};
+export function EmailSettingsView() {
+  const { t } = useLingui();
 
-/**
- * Returns a page for specifying and submitting email-settings.
- * Makes an API call to get the current settings and
- * sets them on the page every time the page loads (ignoring undefined values).
- * On submit it makes another API call to set the specified settings on the server
- */
-const EmailSettings = () => {
-  const [pendingSave, setPendingSave] = React.useState(false);
-  const [pendingSend, setPendingSend] = React.useState(false);
-  const [settings, setSettings] = React.useState({
-    sender: '',
-    user: '',
-    pass: '',
-    host: '',
-    port: 0,
-    cc: '',
-    secure: 'true',
-    shouldQueue: 'false',
-    shouldSend: 'true',
-    assignedMsg: '',
-    updateMsg: '',
-    reminderMsg: '',
-    declineMsg: '',
-    feedbackMsg: '',
-    resetpassMsg: '',
-    collageMsg: '',
-    sendPendingTime: new Date(0),
+  const emailSettingsQuery = useQuery({
+    queryKey: ['email-settings'],
+    queryFn: async () => {
+      const res = await fetch('/api/email-settings');
+      if (!res.ok) {
+        throw new Error('Failed to fetch email settings');
+      }
+      const data = await res.json();
+      return {
+        ...data,
+        sendPendingTime: new Date(data.sendPendingTime),
+      };
+    },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
-  const [messageSelection, setMessageSelection] = React.useState('collageMsg');
-  const [notification, setNotification] = React.useState({ open: false, message: '', type: 'info' });
 
-  const fetchAndSetSettings = () => {
+  if (emailSettingsQuery.isLoading) {
+    return (
+      <div className="w-full h-[80vh] flex flex-col items-center justify-center">
+        <div className="flex flex-col gap-2 items-center justify-center">
+          <CircularProgress />
+          <span>
+            {t`Loading email settings...`}
+          </span>
+        </div>
+      </div>
+    );
+  }
 
-    fetch('/api/email-settings')
-      .then((res) => res.json())
-      .then((data) => {
-        const filteredData = {};
-        Object.keys(settings).forEach((key) => {
-          if (data[key] !== undefined && data[key] !== null)
-            filteredData[key] = data[key];
-          else filteredData[key] = settings[key];
-        });
-        setSettings(filteredData);
-      });
-  };
-
-  // Sends all pending emails
-  const sendPendingRequest = () => {
-    setPendingSend(true);
-    fetch('/api/send-pending')
-      .then(async (res) => {
-        const result = await res.json();
-        setPendingSend(false);
-        // Sending pending emails failed
-        if(res.status === 404) {
-          // no pending emails to send
-          setNotification({ open: true, message: t`No pending messages to send.`, type: 'success' });
-        }
-        else if (res.status !== 200) {
-          setNotification({ open: true, message: t`Sending pending messages failed!`, type: 'error' });
-        }
-        // Sending pending emails was successful
-        else if (res.status === 200 && result.message) {
-          setNotification({ open: true, message: t`No pending messages to send.`, type: 'success' });
-        } else {
-          setNotification({ open: true, message: t`Pending messages sent successfully!`, type: 'success' });
-        }
-        })
-      .catch((error) => {
-        setPendingSave(false);
-        console.error('Sending pending emails failed:', error);
-        setNotification({ open: true, message: t`Sending pending messages failed!`, type: 'error' });
-      });
-  };
-
-  // Runs the above whenever the page loads
-  React.useEffect(fetchAndSetSettings, []);
-
-  const handleChange = (e) => {
-    setSettings({ ...settings, [e.target.name]: e.target.value });
-  };
-  const handleDateChange = (date) => {
-    const newDate = new Date();
-    // FIXME: for whatever reason the number gets decremented by 2 at some point.
-    // No time to fix now
-    newDate.setHours(date.hours(), date.minutes());
-    setSettings({ ...settings, sendPendingTime: newDate });
-  };
-
-  // Checks if email is given in email format. For example includes '@'
-  // and characters before and after if.
-  const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(String(email).toLowerCase());
-  };
-
-  // A function that saves the email settings to the database
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // If email isn't in email format
-    if (!validateEmail(settings.user)) {
-      setNotification({ open: true, message: t`Invalid email!`, type: 'error' });
-      return;
-    }
-    else if (!settings.pass) {
-      setNotification({ open: true, message: t`Password cannot be empty!`, type: 'error' });
-      return;
-    }
-    else if (!settings.host) {
-      setNotification({ open: true, message: t`Host cannot be empty!`, type: 'error' });
-      return;
-    }
-    else if (!settings.port) {
-      setNotification({ open: true, message: t`Port cannot be zero!`, type: 'error' });
-      return;
-    }
-    else if (settings.cc && !validateEmail(settings.cc)) {
-      setNotification({ open: true, message: t`Invalid CC email!`, type: 'error' });
-      return;
-    }
-
-    setPendingSave(true);
-
-    // Verify email credentials and save settings to the database
-    fetch('/api/email-settings', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(settings),
-    })
-      .then(async (res) => {
-        // If veryfying credentials failed
-        if (res.status !== 200) {
-          const data = await res.json();
-          setPendingSave(false);
-          // Handle specific errors
-          if (data.code === 'EAUTH') {
-            setNotification({ open: true, message: t`Wrong email or password!`, type: 'error' });
-          } else if (data.code === 'EDNS') {
-            setNotification({ open: true, message: t`DNS resolution failed. Please check that the SMTP host is correct.`, type: 'error' });
-          } else if (data.code === 'ESOCKET') {
-            setNotification({ open: true, message: t`Connection failed. Please check the server, port, and SSL settings.`, type: 'error' });
-          } else if (data.code === 'ETIMEDOUT') {
-            setNotification({ open: true, message: t`Connection timed out. Check network connectivity.!`, type: 'error' });
-          } else {
-            console.error('Saving email settings failed:', data);
-            throw new Error("Unrecognized error code: " + data.code);
-          }
-        }
-        // Verifying credentials was successful, settings saved
-        else {
-          setPendingSave(false);
-          setNotification({ open: true, message: t`Successfully updated!`, type: 'success' });
-        }
-      })
-      // Unrecognized error
-      .catch((error) => {
-        console.log('Saving email settings failed:', error);
-        setPendingSave(false);
-        setNotification({ open: true, message: t`Something went wrong!`, type: 'error' });
-      });
-  };
-
-  // Closes the pop up notification
-  const handleCloseNotification = () => {
-    setNotification({ open: false, message: '', type: 'info' });
-  };
-  
-  function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  if (emailSettingsQuery.isError || !emailSettingsQuery.data) {
+    return (
+      <div className="w-full h-[80vh] flex flex-col items-center justify-center">
+        <div className="flex flex-col gap-2 items-center justify-center">
+          <span>{t`Error loading email settings`}</span>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="email-settings">
-      <form onSubmit={handleSubmit}>
-        <div className="group">
-          <FormLabel component="legend">{t`Email settings`}</FormLabel>
+    <div className="flex flex-col items-center justify-center">
+      <div className="p-4 max-w-[min(90vw,1000px)]">
+        <EmailSettings emailSettings={emailSettingsQuery.data} />
+      </div>
+    </div>
+  )
+}
+
+
+const EmailSettings = ({ emailSettings }) => {
+  const { t } = useLingui();
+
+  const [notification, setNotification] = useState<{ open: boolean, message: string, type: AlertColor }>({ open: false, message: '', type: 'info' });
+
+  const emailSettingsSchema = useMemo(() => z.object({
+    sender: z.string().email(),
+    user: z.string().email(),
+    pass: z.string().min(1),
+    host: z.string().min(1),
+    port: z.string().min(1),
+    cc: z.string().email().or(z.literal("")),
+    secure: z.string(),
+    shouldQueue: z.string(),
+    shouldSend: z.string(),
+    assignedMsg: z.string(),
+    updateMsg: z.string(),
+    reminderMsg: z.string(),
+    declineMsg: z.string(),
+    feedbackMsg: z.string(),
+    resetpassMsg: z.string(),
+    collageMsg: z.string(),
+    sendPendingTime: z.date(),
+  }), [t]);
+
+  type EmailSettings = z.infer<typeof emailSettingsSchema>;
+
+  const form = useForm<EmailSettings>({
+    defaultValues: emailSettings,
+    resolver: zodResolver(emailSettingsSchema),
+  });
+
+  const sendPendingEmailsMutation = useMutation({
+    mutationFn: async () => fetch('/api/send-pending'),
+    onSuccess: async (res) => {
+      const result = await res.json();
+      // Sending pending emails failed
+      if(res.status === 404) {
+        // no pending emails to send
+        setNotification({ open: true, message: t`No pending messages to send.`, type: 'success' });
+      }
+      else if (res.status !== 200) {
+        setNotification({ open: true, message: t`Sending pending messages failed!`, type: 'error' });
+      }
+      // Sending pending emails was successful
+      else if (res.status === 200 && result.message) {
+        setNotification({ open: true, message: t`No pending messages to send.`, type: 'success' });
+      } else {
+        setNotification({ open: true, message: t`Pending messages sent successfully!`, type: 'success' });
+      }
+    },
+    onError: (error) => {
+      console.error('Sending pending emails failed:', error);
+      setNotification({ open: true, message: t`Sending pending messages failed!`, type: 'error' });
+    },
+  });
+
+  const emailSettingsMutation = useMutation({
+    mutationFn: async (settings: EmailSettings) => {
+      const response = await fetch('/api/email-settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings),
+      });
+      return response
+    },
+    onSuccess: async (res) => {
+      if (res.status !== 200) {
+        const data = await res.json();
+        if (data.code === 'EAUTH') {
+          setNotification({ open: true, message: t`Wrong email or password!`, type: 'error' });
+        } else if (data.code === 'EDNS') {
+          setNotification({ open: true, message: t`DNS resolution failed. Please check that the SMTP host is correct.`, type: 'error' });
+        } else if (data.code === 'ESOCKET') {
+          setNotification({ open: true, message: t`Connection failed. Please check the server, port, and SSL settings.`, type: 'error' });
+        } else if (data.code === 'ETIMEDOUT') {
+          setNotification({ open: true, message: t`Connection timed out. Check network connectivity.!`, type: 'error' });
+        } else {
+          console.error('Saving email settings failed:', data);
+          throw new Error("Unrecognized error code: " + data.code);
+        }
+      }
+      else {
+        setNotification({ open: true, message: t`Successfully updated!`, type: 'success' });
+      }    
+    },
+    onError: () => {
+      setNotification({ open: true, message: t`Something went wrong!`, type: 'error' });
+    },
+  });
+
+
+  const handleSubmit = useCallback(async (e) => {
+    emailSettingsMutation.mutate({
+      ...e,
+      sendPendingTime: e.sendPendingTime.toISOString(),
+    });
+  }, [emailSettingsMutation]);
+
+
+  const handleCloseNotification = () => {
+    setNotification(prev => ({ ...prev, open: false }));
+  };
+  
+
+  return (
+      <form onSubmit={form.handleSubmit(handleSubmit)} className='flex flex-row flex-wrap justify-center gap-4'>
+        <FormLabel component="legend" className='text-2xl!'>
+          {t`Email settings`}
+        </FormLabel>
+        <div className="flex flex-col gap-4 border border-gray-300 bg-gray-100 rounded p-2 shadow w-full">
+          <FormLabel>{t`SMTP settings`}</FormLabel>
+          <TextField
+            {...form.register('host')}
+            label="Host"
+            error={!!form.formState.errors.host}
+            helperText={form.formState.errors.host?.message}
+          />
+          <TextField
+            {...form.register('port')}
+            label="Port"
+            type="number"
+            error={!!form.formState.errors.port}
+            helperText={form.formState.errors.port?.message}
+          />
+          <TextField
+            {...form.register('user')}
+            name="user"
+            label={t`Email`}
+            error={!!form.formState.errors.user}
+            helperText={form.formState.errors.user?.message}
+          />
+          <TextField
+            {...form.register('pass')}
+            label={t`Password`}
+            type="password"
+            error={!!form.formState.errors.pass}
+            helperText={form.formState.errors.pass?.message}
+          />
+          <TextField
+            {...form.register('cc')}
+            label={t`CC`}
+            error={!!form.formState.errors.cc}
+            helperText={form.formState.errors.cc?.message}
+          />
+          <ToggleField 
+            label={t`Use SSL`}
+            helperText={t`Choose "Yes" to use SSL/TLS encryption from the start of the connection (typically with port 465). Choose "No" for unencrypted connections that may upgrade via STARTTLS (typically with port 587). This setting must match your email provider's requirements for the specified port, otherwise connection will fail.`}
+            field="secure"
+            form={form}
+          />
+        </div>
+
+        <div className="flex flex-col gap-4 border border-gray-300 bg-gray-100 rounded p-2 shadow w-full">
+          <FormLabel>{t`Email messages`}</FormLabel>
           <FormControl component="fieldset">
-            <FormLabel>SMTP-asetukset</FormLabel>
             <TextField
+              {...form.register('sender')}
               className="component"
-              name="host"
-              label="Host"
-              value={settings.host}
-              onChange={handleChange}
-            />
-            <TextField
-              className="component"
-              name="port"
-              label="Port"
-              type="number"
-              value={settings.port}
-              onChange={handleChange}
-            />
-            <TextField
-              className="component"
-              name="user"
-              label={t`Email`}
-              value={settings.user}
-              onChange={handleChange}
-            />
-            <TextField
-              className="component"
-              name="pass"
-              label={t`Password`}
-              value={settings.pass}
-              type="password"
-              onChange={handleChange}
-              autoComplete="new-password"
-            />
-            <TextField
-              className="component"
-              name="cc"
-              label={t`CC`}
-              value={settings.cc}
-              onChange={handleChange}
+              label={t`Sender email address`}
+              error={!!form.formState.errors.sender}
+              helperText={
+                form.formState.errors.sender
+                ? form.formState.errors.sender?.message
+                : t`The email address that will be used to send emails from the system.`
+              }
             />
           </FormControl>
+          <CollapsibleTextField
+            label={t`Compiled shift changes`}
+            field="collageMsg"
+            form={form}
+            helperText={t`Allowed dynamic values:\n{assigned} - The number of assigned shifts\n{update} - The number of updated shifts`}
+          />
+          <CollapsibleTextField
+            label={t`Shift assigned`}
+            field="assignedMsg"
+            form={form}
+          />
+          <CollapsibleTextField
+            label={t`Shift updated`}
+            field="updateMsg"
+            form={form}
+          />
+          <CollapsibleTextField
+            label={t`Unconfirmed shift reminder`}
+            field="reminderMsg"
+            form={form}
+          />
+          <CollapsibleTextField
+            label={t`Shift declined`}
+            field="declineMsg"
+            form={form}
+            helperText={t`Allowed dynamic values:\n{user} - The user who declined\n{date} - The date of the user declining`}
+          />
+          <CollapsibleTextField
+            label={t`Feedback received`}
+            field="feedbackMsg"
+            form={form}
+            helperText={t`Allowed dynamic values:\n{user} - The user who gave feedback\n{feedback} - The feedback given by the user`}
+          />
+          <CollapsibleTextField
+            label={t`Password reset link`}
+            field="resetpassMsg"
+            form={form}
+            helperText={t`Allowed dynamic values:\n{token} - The password reset link token\n{date} - The date of the password reset link`}
+          />
         </div>
-        <FormControl component="fieldset">
-          <FormLabel className="settings-label">
-            {t`Use SSL`}
-          </FormLabel>
-          <RadioGroup
-            name="secure"
-            value={settings.secure}
-            onChange={handleChange}
-          >
-            <FormControlLabel
-              value="false"
-              control={<Radio />}
-              label={t`No`}
-            />
-            <FormControlLabel
-              value="true"
-              control={<Radio />}
-              label={t`Yes`}
-            />
-          </RadioGroup>
-        </FormControl>
-        <div className="group">
-          <FormControl component="fieldset">
-            <FormLabel className="settings-label">
-              {t`Sender email address`}
-            </FormLabel>
-            <TextField
-              className="component"
-              name="sender"
-              label={t`Address`}
-              value={settings.sender}
-              onChange={handleChange}
-            />
-          </FormControl>
-        </div>
-        <div className="group">
-            <FormLabel className="settings-label">
-              {t`Email messages`}
-            </FormLabel>
-            <FormControl component="fieldset">
-            <InputLabel id="message-type-label">
-              {t`Message type`}
-            </InputLabel>
-            <Select
-              labelId="message-type-label"
-              label={t`Message type`}
-              value={messageSelection}
-              onChange={(e) => setMessageSelection(e.target.value)}
-            >
-              <MenuItem value="collageMsg">
-                {t`Compiled shift changes`}
-              </MenuItem>
-              <MenuItem value="assignedMsg">
-                {t`Shift assigned`}
-              </MenuItem>
-              <MenuItem value="updateMsg">{t`Shift updated`}</MenuItem>
-              <MenuItem value="reminderMsg">
-                {t`Unconfirmed shift reminder`}
-              </MenuItem>
-              <MenuItem value="declineMsg">
-                {t`Shift declined`}
-              </MenuItem>
-              <MenuItem value="feedbackMsg">
-                {t`Feedback received`}
-              </MenuItem>
-              <MenuItem value="resetpassMsg">
-                {t`Password reset link`}
-              </MenuItem>
-            </Select>
-            <TextField
-              className="component"
-              multiline
-              name={messageSelection}
-              label={t`Message content`}
-              value={settings[messageSelection]}
-              onChange={handleChange}
-            />
-            <FormHelperText display="inline" component="div">
-              {HelperText(messageSelection)}
-            </FormHelperText>
-          </FormControl>
-        </div>
-        <div className="group">
-          <FormControl component="fieldset" className="component">
+
+        <div className="flex flex-col gap-4 border border-gray-300 bg-gray-100 rounded p-2 shadow w-full">
+          <FormLabel>{t`Email queue settings`}</FormLabel>
+          <ToggleField 
+            label={t`Enable email queue`}
+            helperText={t`Enable email queueing, otherwise emails will be sent immediately. If this is enabled, emails will be sent at the time specified in the "Time for sending emails" field.`}
+            field="shouldQueue"
+            form={form}
+          />
+          <FormControl component="fieldset" className="mt-4!">
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <TimePicker
                 className="component"
-                margin="normal"
                 label={t`Time for sending emails`}
-                value={moment(settings.sendPendingTime)}
-                onChange={handleDateChange}
+                onChange={(date) => form.setValue('sendPendingTime', date.toDate())}
+                value={moment(form.watch('sendPendingTime'))}
               />
             </LocalizationProvider>
           </FormControl>
         </div>
-        <FormControl component="fieldset">
-          <FormLabel className="settings-label">
-            {t`Send compiled messages at a certain time`}
-          </FormLabel>
-          <RadioGroup
-            name="shouldQueue"
-            value={settings.shouldQueue}
-            onChange={handleChange}
+
+        <div className="border border-gray-300 bg-gray-100 rounded p-2 shadow w-full">
+          <Button
+            id="send-pending-button"
+            variant="contained"
+            className='text-nowrap'
+            style={{ color: 'black', backgroundColor: '#d1ccc2' }}
+            onClick={() => sendPendingEmailsMutation.mutate()}
+            disabled={sendPendingEmailsMutation.isLoading}
           >
-            <FormControlLabel
-              value="true"
-              control={<Radio />}
-              label={t`Yes`}
-            />
-            <FormControlLabel
-              value="false"
-              control={<Radio />}
-              label={t`No`}
-            />
-          </RadioGroup>
-        </FormControl>
-        <div className="group">
-          <FormControl component="fieldset" className="component">
-            <Button
-              variant="contained"
-              style={{ color: 'black', backgroundColor: '#d1ccc2' }}
-              id="send-pending-button"
-              onClick={sendPendingRequest}
-            >
-              {pendingSend ? (
-                <CircularProgress />
-              ) : (
-                t`Send messages`
-              )}
-            </Button>
-            <FormHelperText display="inline" className="helperText">
-              {t`You can force all pending emails to be sent immediately with the button.`}
-            </FormHelperText>
-          </FormControl>
+            {sendPendingEmailsMutation.isLoading ? (
+              <CircularProgress />
+            ) : (
+              t`Send messages`
+            )}
+          </Button>
+          <FormHelperText className="helperText">
+            {t`Force all pending emails to be sent immediately.`}
+          </FormHelperText>
         </div>
-        <FormControl component="fieldset">
-          <FormLabel className="settings-label">
-            {t`Send email`}
-          </FormLabel>
-          <RadioGroup
-            name="shouldSend"
-            value={settings.shouldSend}
-            onChange={handleChange}
-          >
-            <FormControlLabel
-              value="true"
-              control={<Radio />}
-              label={t`Yes`}
-            />
-            <FormControlLabel
-              value="false"
-              control={<Radio />}
-              label={t`No`}
-            />
-          </RadioGroup>
-        </FormControl>
+        <div className="p-2 border-t border-gray-300 bg-gray-100 shadow w-full">
+          <ToggleField 
+            label={t`Enable emails`}
+            helperText={t`Enable email sending, otherwise emails will not be sent. WARNING: This will stop also password reset emails from being sent.`}
+            field="shouldSend"
+            form={form}
+          />
+        </div>
         <div className="group">
           <FormControl component="fieldset" className="component">
             <Button
               type="submit"
               variant="contained"
               style={{ color: 'black', backgroundColor: '#d1ccc2' }}
+              disabled={emailSettingsMutation.isLoading}
             >
-              {pendingSave ? (
+              {emailSettingsMutation.isLoading ? (
                 <CircularProgress />
               ) : (
                 t`Save settings`
@@ -462,22 +350,21 @@ const EmailSettings = () => {
             </Button>
           </FormControl>
         </div>
-      </form>
-
-      <Snackbar
-        open={notification.open}
-        autoHideDuration={6000}
-        onClose={handleCloseNotification}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <div>
-          <Alert onClose={handleCloseNotification} severity={notification.type}>
+        <Snackbar
+          open={notification.open}
+          autoHideDuration={6000}
+          onClose={handleCloseNotification}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <MuiAlert
+            elevation={6}
+            variant="filled"
+            onClose={handleCloseNotification}
+            severity={notification.type as AlertColor}
+          >
             {notification.message}
-          </Alert>
-        </div>
-      </Snackbar>
-    </div>
+          </MuiAlert>
+        </Snackbar>
+      </form>
   );
 };
-
-export default EmailSettings;
