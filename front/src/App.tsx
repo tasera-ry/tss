@@ -16,7 +16,7 @@ import Profile from './profile/profilesettings';
 import UserManagementView from './usermanagement/UserManagementView';
 import TrackCRUD from './edittracks/tracks';
 import Statistics from './statistics/Statistics';
-import EmailSettings from './EmailSettings/EmailSettings';
+import EmailSettings, { EmailSettingsView } from './EmailSettings/EmailSettings';
 import Raffle from './raffle/raffle';
 
 import { Navbar } from '@/lib/components/Navbar';
@@ -67,7 +67,7 @@ export function App() {
         />
         <Route path="/supervisor-raffle" component={Raffle} />
         <Route path="/tracks" component={TrackCRUD} />
-        <Route path="/email-settings" component={EmailSettings} />
+        <Route path="/email-settings" component={EmailSettingsView} />
         <Route path="/statistics" component={Statistics} />
         <Route path="/info" component={InfoMessageManagementView} />
       </Switch>
