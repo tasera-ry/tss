@@ -1,8 +1,8 @@
+import { TestProviders } from '@/_TestUtils/TestProvides';
+import { EditTracksView } from '@/edittracks/tracks';
+import { validateLogin } from '@/utils/Utils';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import * as axios from 'axios';
-import { act } from 'react-dom/test-utils';
-import { HashRouter as Router } from 'react-router-dom';
-import TrackCRUD from './tracks';
+import axios from 'axios';
 
 const mockTracks = [
   {
@@ -13,182 +13,110 @@ const mockTracks = [
     short_description: '25m testi',
   },
 ];
+const newTrack = {
+  id: 2,
+  range_id: 1,
+  name: 'new name',
+  description: 'new description',
+  short_description: 'new short description',
+};
+
 const data = { data: mockTracks };
 
-vi.mock(import('../utils/Utils'), async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    validateLogin: vi.fn(() => true),
-  };
-});
+vi.mock('../utils/Utils');
 
 vi.mock('axios', () => ({
-  get: vi.fn(),
-  put: vi.fn(),
-  delete: vi.fn(),
-  post: vi.fn(),
+  default: {
+    get: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+    post: vi.fn(),
+  },
 }));
 
-axios.get = vi.fn(() => Promise.resolve(data));
-axios.put = vi.fn(() => Promise.resolve());
-axios.delete = vi.fn(() => Promise.resolve());
-axios.post = vi.fn((url, postable) => {
-  if (postable.name === undefined) {
-    return Promise.reject();
-  }
-  return Promise.resolve({ data: { ...postable, id: 2 } });
-});
-
-localStorage.setItem('language', '1');
-
-// Tests skipped
-// Tests failing with error
-/*
-Unable to find an element with the text: Shooting Track 0. This could be
-because the text is broken up by multiple elements. In this case, you can
-provide a function for your text matcher to make your matcher more flexible.
-*/
-describe.skip('testing TrackCRUD component', () => {
-  it('should render TrackCRUD', async () => {
-    await act(async () => {
-      render(
-        <Router>
-          <TrackCRUD axios={axios} />
-        </Router>,
-      );
-      await waitFor(() =>
-        expect(screen.getByText('Shooting Track 0')).toBeInTheDocument(),
-      );
-    });
+describe('testing TrackCRUD component', () => {
+  beforeEach(() => {
+    vi.mocked(validateLogin).mockResolvedValue(true);
+    vi.mocked(axios.get).mockResolvedValue({ data: mockTracks });
   });
 
-  it('should show modified track in list and call axios post', async () => {
-    await act(async () => {
-      render(
-        <Router>
-          <TrackCRUD axios={axios} />
-        </Router>,
-      );
-      await waitFor(() =>
-        expect(screen.getByTitle('Edit')).toBeInTheDocument(),
-      );
-      fireEvent.click(screen.getByTitle('Edit'));
-      await waitFor(() =>
-        expect(
-          screen.getByPlaceholderText('Short description'),
-        ).toBeInTheDocument(),
-      );
-      fireEvent.change(screen.getByPlaceholderText('Short description'), {
-        target: {
-          value: 'new short description',
-        },
-      });
-      await waitFor(() =>
-        expect(screen.getByTitle('Save')).toBeInTheDocument(),
-      );
-      fireEvent.click(screen.getByTitle('Save'));
-      await waitFor(() =>
-        expect(screen.getByText('new short description')).toBeInTheDocument(),
-      );
-    });
+  it('should render TrackCRUD', async () => {
+    await render(<EditTracksView />, { wrapper: TestProviders });
+
+    await waitFor(() =>
+      expect(screen.getByText('Shooting Track 0')).toBeInTheDocument(),
+    );
   });
 
   it('should add new track in list and call axios post', async () => {
-    await act(async () => {
-      render(
-        <Router>
-          <TrackCRUD axios={axios} />
-        </Router>,
-      );
-      await waitFor(() =>
-        expect(screen.getByText('Shooting Track 0')).toBeInTheDocument(),
-      );
-      await waitFor(() => expect(screen.getByTitle('Add')).toBeInTheDocument());
-      fireEvent.click(screen.getByTitle('Add'));
-      await waitFor(() =>
-        expect(screen.getByPlaceholderText('Name')).toBeInTheDocument(),
-      );
-      fireEvent.change(screen.getByPlaceholderText('Name'), {
-        target: {
-          value: 'new name',
-        },
-      });
-      fireEvent.change(screen.getByPlaceholderText('Description'), {
-        target: {
-          value: 'new description',
-        },
-      });
-      fireEvent.change(screen.getByPlaceholderText('Short description'), {
-        target: {
-          value: 'new short description',
-        },
-      });
-      await waitFor(() =>
-        expect(screen.getByPlaceholderText('Name').value).toBe('new name'),
-      );
-      await waitFor(() =>
-        expect(screen.getByTitle('Save')).toBeInTheDocument(),
-      );
-      fireEvent.click(screen.getByTitle('Save'));
-      await waitFor(() => expect(axios.post).toHaveBeenCalled());
-      await waitFor(() =>
-        expect(screen.getByText('new name')).toBeInTheDocument(),
-      );
+    vi.mocked(axios.post).mockResolvedValue({ data: newTrack });
+
+    await render(<EditTracksView />, { wrapper: TestProviders });
+    await waitFor(() =>
+      expect(screen.getByText('Shooting Track 0')).toBeInTheDocument(),
+    );
+    fireEvent.change(screen.getAllByTestId('new-track-name')[0], {
+      target: {
+        value: newTrack.name,
+      },
     });
+    fireEvent.change(screen.getAllByTestId('new-track-description')[0], {
+      target: {
+        value: newTrack.description,
+      },
+    });
+    fireEvent.change(screen.getAllByTestId('new-track-short-description')[0], {
+      target: {
+        value: newTrack.short_description,
+      },
+    });
+
+    fireEvent.click(screen.getByTestId('new-track-add'));
+    await waitFor(() =>
+      expect(screen.getByText(newTrack.name)).toBeInTheDocument(),
+    );
+  });
+
+  it('should show modified track in list and call axios post', async () => {
+    vi.mocked(axios.put).mockResolvedValue({ data: {} });
+
+    await render(<EditTracksView />, { wrapper: TestProviders });
+    await waitFor(() =>
+      expect(screen.getByText('Shooting Track 0')).toBeInTheDocument(),
+    );
+
+    fireEvent.click(screen.getByTestId(`edit-track-${mockTracks[0].id}`));
+    await waitFor(() =>
+      expect(
+        screen.getAllByTestId(`edit-track-name-${mockTracks[0].id}`)[0],
+      ).toBeInTheDocument(),
+    );
+    fireEvent.change(
+      screen.getAllByTestId(`edit-track-name-${mockTracks[0].id}`)[0],
+      {
+        target: {
+          value: newTrack.name,
+        },
+      },
+    );
+    fireEvent.click(screen.getByTestId(`edit-track-save-${mockTracks[0].id}`));
+    await waitFor(() =>
+      expect(screen.getByText(newTrack.name)).toBeInTheDocument(),
+    );
   });
 
   it('should remove deleted track in list and call axios delete', async () => {
-    await act(async () => {
-      render(
-        <Router>
-          <TrackCRUD axios={axios} />
-        </Router>,
-      );
-      await waitFor(() =>
-        expect(screen.getByText('Shooting Track 0')).toBeInTheDocument(),
-      );
-      fireEvent.click(screen.getByTitle('Delete'));
-      await waitFor(() =>
-        expect(screen.getByTitle('Save')).toBeInTheDocument(),
-      );
-      fireEvent.click(screen.getByTitle('Save'));
+    vi.spyOn(window, 'confirm').mockImplementationOnce(() => true);
+    vi.mocked(axios.delete).mockResolvedValue({ data: {} });
 
-      await waitFor(() =>
-        expect(screen.queryByText('Shooting Track 0')).not.toBeInTheDocument(),
-      );
-      await waitFor(() =>
-        expect(screen.queryByText('Rata poistettu')).toBeInTheDocument(),
-      );
-      await waitFor(() => expect(axios.delete).toHaveBeenCalled());
-    });
-  });
+    await render(<EditTracksView />, { wrapper: TestProviders });
+    await waitFor(() =>
+      expect(screen.getByText('Shooting Track 0')).toBeInTheDocument(),
+    );
 
-  it('should fail if no info given when adding track', async () => {
-    await act(async () => {
-      render(
-        <Router>
-          <TrackCRUD axios={axios} />
-        </Router>,
-      );
-      await waitFor(() =>
-        expect(screen.getByText('Shooting Track 0')).toBeInTheDocument(),
-      );
-      await waitFor(() => expect(screen.getByTitle('Add')).toBeInTheDocument());
-      fireEvent.click(screen.getByTitle('Add'));
-      await waitFor(() =>
-        expect(screen.getByPlaceholderText('Name')).toBeInTheDocument(),
-      );
-      await waitFor(() =>
-        expect(screen.getByTitle('Save')).toBeInTheDocument(),
-      );
-      fireEvent.click(screen.getByTitle('Save'));
-      await waitFor(() => expect(axios.post).toHaveBeenCalled());
-      await waitFor(() =>
-        expect(
-          screen.getByText('Radan lisäys epäonnistui'),
-        ).toBeInTheDocument(),
-      );
-    });
+    fireEvent.click(screen.getByTestId(`delete-track-${mockTracks[0].id}`));
+    await waitFor(() =>
+      expect(screen.queryByText(mockTracks[0].name)).not.toBeInTheDocument(),
+    );
   });
 });
