@@ -15,7 +15,7 @@ import { TabletView } from './pages/TabletView/TabletView';
 import Profile from './profile/profilesettings';
 import UserManagementView from './usermanagement/UserManagementView';
 import TrackCRUD from './edittracks/tracks';
-import EmailSettings from './EmailSettings/EmailSettings';
+import { EmailSettingsView } from './EmailSettings/EmailSettings';
 import Raffle from './raffle/raffle';
 
 import { Navbar } from '@/lib/components/Navbar';
@@ -67,7 +67,7 @@ export function App() {
         />
         <Route path="/supervisor-raffle" component={Raffle} />
         <Route path="/tracks" component={TrackCRUD} />
-        <Route path="/email-settings" component={EmailSettings} />
+        <Route path="/email-settings" component={EmailSettingsView} />
         <Route path="/statistics/:date?" component={StatisticsView} />
         <Route path="/info" component={InfoMessageManagementView} />
       </Switch>
