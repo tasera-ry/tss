@@ -63,7 +63,7 @@ const getUser = async (id) => {
 };
 
 const getUsers = async () => {
-  const response = await axios.get(`api/user`);
+  const response = await axios.get('/api/user');
   return response.data;
 };
 
@@ -117,13 +117,13 @@ const sendFeedback = (feedback, user) =>
   axios.put('api/range-supervision/feedback', { feedback, user });
 
 const postScheduledSupervisionTrack = (data) =>
-  axios.post(`/api/track-supervision`, data);
+  axios.post('/api/track-supervision', data);
 
 const patchScheduledSupervisionTrack = (scheduleId, trackId, data) =>
   axios.put(`/api/track-supervision/${scheduleId}/${trackId}`, data);
 
 const getMembers = async () => {
-  const response = await axios.get(`/api/members`);
+  const response = await axios.get('/api/members');
   return response.data;
 };
 
@@ -139,7 +139,7 @@ const saveRaffledSupervisors = async (results) =>
   axios.post('api/set-raffled-supervisors', { results });
 
 const getPublicInfoMessages = async () => {
-  const response = await axios.get(`api/infomessage`);
+  const response = await axios.get('/api/infomessage');
   return response.data;
 };
 
@@ -161,7 +161,7 @@ const getAllInfoMessages = async () => {
 };
 
 const postInfoMessage = async (infoRequest) => {
-  await axios.post(`api/infomessage`, infoRequest);
+  await axios.post('/api/infomessage', infoRequest);
 };
 
 const deleteInfoMessage = async (id) => {

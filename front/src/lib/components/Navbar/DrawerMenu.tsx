@@ -59,7 +59,7 @@ export function DrawerMenu() {
     (drawerOpen) => {
       setIsDrawerOpen(drawerOpen);
     },
-    [isDrawerOpen],
+    [],
   );
 
   const navItems = useMemo(() => {

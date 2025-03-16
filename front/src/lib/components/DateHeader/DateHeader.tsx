@@ -37,12 +37,12 @@ export function DateHeader({
     const year = moment(date).year();
     const weekNumber = moment(date).isoWeek();
     return t`Week ${weekNumber} ${year}`;
-  }, [date, i18n]);
+  }, [date, t]);
 
   const monthString = useMemo(() => {
     const str = i18n.date(date, { month: 'long', year: 'numeric' });
     return str.charAt(0).toUpperCase() + str.slice(1);
-  }, [date, i18n]);
+  }, [date, i18n.date]);
 
   const label = useMemo(() => {
     switch (type) {
@@ -58,6 +58,7 @@ export function DateHeader({
   return (
     <div className="flex justify-center items-center py-10">
       <button
+        type="button"
         className={classes(css.hoverHand, css.arrowLeft)}
         onClick={onPrevious}
         data-testid="previousDay"
@@ -66,6 +67,7 @@ export function DateHeader({
         {label}
       </h1>
       <button
+        type="button"
         className={classes(css.hoverHand, css.arrowRight)}
         onClick={onNext}
         data-testid="nextDay"

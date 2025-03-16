@@ -37,13 +37,13 @@ export const Weekview = () => {
     history.push(
       `/weekview/${moment(targetDate).subtract(1, 'week').format('YYYY-MM-DD')}`,
     );
-  }, [targetDate]);
+  }, [targetDate, history.push]);
 
   const nextWeekClick = useCallback(() => {
     history.push(
       `/weekview/${moment(targetDate).add(1, 'week').format('YYYY-MM-DD')}`,
     );
-  }, [targetDate]);
+  }, [targetDate, history.push]);
 
   return (
     <div>
@@ -122,21 +122,22 @@ function CalenderBody({ days }: { days: DaySchedule[] }) {
 function CalenderCell({ day }: { day: DaySchedule }) {
   const { t } = useLingui();
   const color = useMemo(() => {
-    const status = day.rangeSupervision;
-    if (status === 'present') {
-      return '#658f60';
-    } else if (status === 'confirmed') {
-      return '#b2d9ad';
-    } else if (status === 'not confirmed') {
-      return '#95d5db';
-    } else if (status === 'en route') {
-      return '#f2c66d';
-    } else if (status === 'closed') {
-      return '#c97b7b';
-    } else if (status === 'absent') {
-      return '#f2f2f2';
+    switch (day.rangeSupervision) {
+      case 'present':
+        return '#658f60';
+      case 'confirmed':
+        return '#b2d9ad';
+      case 'not confirmed':
+        return '#95d5db';
+      case 'en route':
+        return '#f2c66d';
+      case 'closed':
+        return '#c97b7b';
+      case 'absent':
+        return '#f2f2f2';
+      default:
+        return '#f2f2f2';
     }
-    return '#f2f2f2';
   }, [day.rangeSupervision]);
 
   const trackNotice = useMemo(() => {

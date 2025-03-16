@@ -122,7 +122,7 @@ export default function OfficerForm({ id }) {
     };
 
     fetchData();
-  }, []);
+  }, [id]);
 
   // Function for creating notifications. Clears after 3 seconds
   const createNotification = (type, message) => {

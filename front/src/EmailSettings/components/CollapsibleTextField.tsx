@@ -26,6 +26,11 @@ export function CollapsibleTextField({
     <div className="border border-gray-300 rounded-md p-2">
       <div
         onClick={toggleExpanded}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            toggleExpanded();
+          }
+        }}
         className="flex items-center justify-between border-b border-gray-300 py-2"
       >
         <FormLabel className="">{label}</FormLabel>

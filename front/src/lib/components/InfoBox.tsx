@@ -19,7 +19,7 @@ export const InfoBox = ({ tabletMode = false }) => {
 
   const messages = useMemo(() => {
     return rangeMasterMessagesQuery.data ?? publicMessagesQuery.data ?? [];
-  }, [tabletMode, publicMessagesQuery.data, rangeMasterMessagesQuery.data]);
+  }, [publicMessagesQuery.data, rangeMasterMessagesQuery.data]);
 
   if (messages.length === 0) return null;
 

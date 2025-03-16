@@ -74,6 +74,7 @@ const ChangePassword = ({ username, id }) => {
       <form className={t`Change password`} noValidate onSubmit={handleSubmit}>
         {textFields.map(({ name, value, label, changeValue }, idx) => (
           <TextField
+            key={name}
             variant="outlined"
             margin="normal"
             required

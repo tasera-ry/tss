@@ -67,16 +67,16 @@ function InfoMessageCard({ message }) {
         <span>
           {start} {'->'} {end}
         </span>
-        <button onClick={deleteMessage} className="cursor-pointer">
+        <button type="button" onClick={deleteMessage} className="cursor-pointer">
           <DeleteOutlined className="" />
         </button>
       </div>
-      <label className="flex gap-1">
+      <span className="flex gap-1">
         {t`Sender`}:<span>{message.sender}</span>
-      </label>
-      <label className="flex gap-1">
+      </span>
+      <span className="flex gap-1">
         {t`Recipients`}:<span>{message.recipients}</span>
-      </label>
+      </span>
       <div className="h-[2px] bg-gray-300 my-2" />
       <span>{message.message}</span>
     </li>

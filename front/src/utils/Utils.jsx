@@ -84,13 +84,6 @@ export function JumpToCurrent() {
   );
 }
 
-// english, swedish and finnish are supported
-export const getLanguage = () => {
-  if (localStorage.getItem('language') === '1') return 'en';
-  else if (localStorage.getItem('language') === '2') return 'sv';
-  return 'fi';
-};
-
 /*
   Validates the login token (in cookies)
   return: boolean, is token valid (true = yes)
@@ -117,7 +110,7 @@ export const updateRangeSupervision = async (
 ) => {
   const failureText = 'general range supervision failure: Error: ';
   if (rsId === null || srsId === null)
-    return failureText + 'reservation or schedule missing';
+    return `${failureText} reservation or schedule missing`;
 
   // only closed is different from the 6 states
   if (rangeStatus === 'closed') {
@@ -125,7 +118,7 @@ export const updateRangeSupervision = async (
       await api.patchReservation(rsId, { available: 'false' });
       return true;
     } catch (err) {
-      return failureText + 'reservation update failed';
+      return `${failureText} reservation update failed`;
     }
   }
 
@@ -134,14 +127,14 @@ export const updateRangeSupervision = async (
     try {
       await api.patchReservation(rsId, { available: 'true' });
     } catch (err) {
-      return failureText + 'not scheduled reserv fail';
+      return `${failureText} not scheduled reserv fail`;
     }
 
     try {
       await api.addRangeSupervision(srsId, rangeStatus, association);
       return true;
     } catch (err) {
-      return failureText + 'not scheduled superv fail';
+      return `${failureText} not scheduled superv fail`;
     }
   }
 
@@ -149,7 +142,7 @@ export const updateRangeSupervision = async (
   try {
     await api.patchReservation(rsId, { available: 'true' });
   } catch (err) {
-    return failureText + 'scheduled reserv fail';
+    return `${failureText} scheduled reserv fail`;
   }
 
   try {
@@ -165,6 +158,6 @@ export const updateRangeSupervision = async (
     );
     return true;
   } catch (err) {
-    return failureText + 'scheduled superv fail';
+    return `${failureText} scheduled superv fail`;
   }
 };

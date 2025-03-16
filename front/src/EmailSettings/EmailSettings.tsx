@@ -102,7 +102,7 @@ const EmailSettings = ({ emailSettings }) => {
         collageMsg: z.string(),
         sendPendingTime: z.date(),
       }),
-    [t],
+    [],
   );
 
   type EmailSettings = z.infer<typeof emailSettingsSchema>;
@@ -194,7 +194,7 @@ const EmailSettings = ({ emailSettings }) => {
           });
         } else {
           console.error('Saving email settings failed:', data);
-          throw new Error('Unrecognized error code: ' + data.code);
+          throw new Error(`Unrecognized error code: ${data.code}`);
         }
       } else {
         setNotification({

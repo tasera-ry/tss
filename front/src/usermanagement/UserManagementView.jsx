@@ -40,6 +40,7 @@ import { validateLogin } from '../utils/Utils';
 import css from './UserManagementView.module.scss';
 
 import api from '../api/api';
+import { useHistory } from 'react-router-dom';
 
 const classes = classNames.bind(css);
 
@@ -147,7 +148,7 @@ async function changeRoleAndAssociationForRangeofficer(
   newAssociationId,
 ) {
   if (
-    !isNaN(Number.parseInt(newAssociationId)) &&
+    !Number.isNaN(Number.parseInt(newAssociationId)) &&
     Number.parseInt(newAssociationId) !== 0 &&
     Number.parseInt(newAssociationId) !== id
   ) {
@@ -223,7 +224,7 @@ async function addUserRangeofficer(
   newAssociationId,
 ) {
   if (
-    !isNaN(Number.parseInt(newAssociationId)) &&
+    !Number.isNaN(Number.parseInt(newAssociationId)) &&
     Number.parseInt(newAssociationId) !== 0
   ) {
     try {
@@ -254,6 +255,7 @@ async function addUserRangeofficer(
 
 function UserManagementView(props) {
   const { t } = useLingui();
+  const history = useHistory();
 
   const [state, setState] = useState({
     userList: [],
@@ -292,7 +294,7 @@ function UserManagementView(props) {
   useEffect(() => {
     validateLogin().then((logInSuccess) => {
       if (!logInSuccess) {
-        props.history.push('/');
+        history.push('/');
       } else {
         getUsers()
           .then((res) => {
@@ -310,7 +312,7 @@ function UserManagementView(props) {
           });
       }
     });
-  }, []);
+  }, [state, history]);
 
   // run update and fetchAssociation after fetched user data from back-end
   useEffect(() => {
@@ -599,9 +601,8 @@ function UserManagementView(props) {
 
     if (rangeofficer) {
       return rangeofficer.association_name || 'No association';
-    } else {
-      return null;
     }
+    return null;
   };
 
   const makeDataFreshAgain = async () => {
@@ -749,7 +750,7 @@ function UserManagementView(props) {
   useEffect(() => {
     const name = findUserName();
     setState({ ...state, selectedUserName: name });
-  }, [state.selectedROWID]);
+  }, [state]);
 
   // Opens warning for removing user
   const onRemoveClick = (e) => {
@@ -957,8 +958,8 @@ function UserManagementView(props) {
             fullWidth
           />
 
-          <br></br>
-          <br></br>
+          <br />
+          <br />
 
           <NiceInputPassword
             LabelComponent={InputLabel}
@@ -971,15 +972,15 @@ function UserManagementView(props) {
             fullWidth
             securityLevels={[
               {
-                descriptionLabel: t`Minimum` + ' 1 ' + t`number`,
+                descriptionLabel: t`Minimum ${1} number`,
                 validator: /.*[0-9].*/,
               },
               {
-                descriptionLabel: t`Minimum` + ' 1 ' + t`lowercase letter`,
+                descriptionLabel: t`Minimum ${1} lowercase letter`,
                 validator: /.*[a-z].*/,
               },
               {
-                descriptionLabel: t`Minimum` + ' 1 ' + t`uppercase letter`,
+                descriptionLabel: t`Minimum ${1} uppercase letter`,
                 validator: /.*[A-Z].*/,
               },
               {
@@ -1096,8 +1097,8 @@ function UserManagementView(props) {
             fullWidth
           />
 
-          <br></br>
-          <br></br>
+          <br />
+          <br />
 
           <NiceInputPassword
             type="password"
@@ -1111,15 +1112,15 @@ function UserManagementView(props) {
             fullWidth
             securityLevels={[
               {
-                descriptionLabel: t`Minimum` + ' 1 ' + t`number`,
+                descriptionLabel: t`Minimum ${1} number`,
                 validator: /.*[0-9].*/,
               },
               {
-                descriptionLabel: t`Minimum` + ' 1 ' + t`lowercase letter`,
+                descriptionLabel: t`Minimum ${1} lowercase letter`,
                 validator: /.*[a-z].*/,
               },
               {
-                descriptionLabel: t`Minimum` + ' 1 ' + t`uppercase letter`,
+                descriptionLabel: t`Minimum ${1} uppercase letter`,
                 validator: /.*[A-Z].*/,
               },
               {
@@ -1228,15 +1229,15 @@ function UserManagementView(props) {
             fullWidth
             securityLevels={[
               {
-                descriptionLabel: t`Minimum` + ' 1 ' + t`number`,
+                descriptionLabel: t`Minimum ${1} number`,
                 validator: /.*[0-9].*/,
               },
               {
-                descriptionLabel: t`Minimum` + ' 1 ' + t`lowercase letter`,
+                descriptionLabel: t`Minimum ${1} lowercase letter`,
                 validator: /.*[a-z].*/,
               },
               {
-                descriptionLabel: t`Minimum` + ' 1 ' + t`uppercase letter`,
+                descriptionLabel: t`Minimum ${1} uppercase letter`,
                 validator: /.*[A-Z].*/,
               },
               {
@@ -1247,7 +1248,6 @@ function UserManagementView(props) {
             showSecurityLevelBar
             showSecurityLevelDescription
             onChange={(e) => {
-              console.log('password: ' + e.value);
               setState({ ...state, password: e.value });
             }}
           />

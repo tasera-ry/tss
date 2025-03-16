@@ -29,7 +29,7 @@ export function App() {
 
   useEffect(() => {
     validateToken();
-  }, []);
+  }, [validateToken]);
 
   if (localStorage.getItem('language') === null) {
     localStorage.setItem('language', '0');

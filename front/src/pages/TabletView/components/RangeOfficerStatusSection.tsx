@@ -83,7 +83,7 @@ function RangeOfficerStatusToggle({
     (status) => {
       supervisorMutation.mutate(status);
     },
-    [rangeSupervisionScheduled, supervisorMutation, t],
+    [supervisorMutation],
   );
 
   return (

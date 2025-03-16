@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import Alert from '@mui/lab/Alert';
 import Button from '@mui/material/Button';
@@ -14,14 +14,14 @@ export const SupervisorNotification = () => {
 
   const { username } = useLoggedInUser();
 
-  const updateSupervisors = async () => {
+  const updateSupervisors = useCallback(async () => {
     const reservations = await checkSupervisorReservations(username);
     setUserHasSupervisors(!!reservations);
-  };
+  }, [username]);
 
   useEffect(() => {
     updateSupervisors();
-  }, []);
+  }, [updateSupervisors]);
 
   if (!userHasSupervisors) return null;
 

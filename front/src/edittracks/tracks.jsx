@@ -226,11 +226,6 @@ const TrackCRUD = () => {
   const [requestText, setRequestText] = useState(null);
   const [refresh, setRefresh] = useState(false);
 
-  // TODO: this needs to be centralized for best effect
-  function RedirectToWeekview() {
-    window.location.href = '/';
-  }
-
   // run at start
   useEffect(() => {
     (async () => {
@@ -239,10 +234,10 @@ const TrackCRUD = () => {
         updateData();
         setInitFinished(true);
       } else {
-        RedirectToWeekview();
+        window.location.href = '/';
       }
     })();
-  }, [initFinished]);
+  }, []);
 
   // run if changes to users
   useEffect(() => {

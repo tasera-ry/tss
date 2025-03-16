@@ -17,7 +17,7 @@ export function VisitorsTodayChart({ date }: VisitorsTodayChartProps) {
   const monthDays = useMemo(() => {
     const lastDate = moment(date).endOf('month').date();
     return new Array(lastDate).fill(0).map((_, i) => i + 1);
-  }, []);
+  }, [date]);
 
   const visitorsQuery = useQuery({
     queryKey: ['schedulingFreeformMonth', date.format('YYYY-MM-DD')],

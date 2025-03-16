@@ -12,7 +12,7 @@ vi.mock('@/lib/components/InfoBox', () => ({
 
 vi.mock('@/api/api');
 vi.mock('react-router-dom', async (originalImport) => {
-  const originalModule = (await originalImport()) as any;
+  const originalModule = (await originalImport());
   return {
     ...originalModule,
     useParams: vi.fn().mockImplementation(() => ({

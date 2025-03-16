@@ -123,18 +123,20 @@ function TrackBox({ track, date }) {
   const { t } = useLingui();
 
   const color = useMemo(() => {
-    if (track.state === 'present') {
-      return css.greenB;
-    } else if (track.state === 'absent') {
-      return css.whiteB;
-    } else if (track.state === 'confirmed') {
-      return css.lightGreenB;
-    } else if (track.state === 'not confirmed') {
-      return css.blueB;
-    } else if (track.state === 'en route') {
-      return css.yellowB;
+    switch (track.state) {
+      case 'present':
+        return css.greenB;
+      case 'absent':
+        return css.whiteB;
+      case 'confirmed':
+        return css.lightGreenB;
+      case 'not confirmed':
+        return css.blueB;
+      case 'en route':
+        return css.yellowB;
+      default:
+        break;
     }
-    return css.redB;
   }, [track]);
 
   const link = `/trackview/${date}/${track.name}`;
@@ -164,19 +166,21 @@ function OfficerBanner({ rangeSupervision }) {
   const { t } = useLingui();
 
   const { text, color } = useMemo(() => {
-    if (rangeSupervision === 'present') {
-      return { text: t`Range officer present`, color: css.greenB };
-    } else if (rangeSupervision === 'absent') {
-      return { text: t`Range officer undefined`, color: css.whiteB };
-    } else if (rangeSupervision === 'confirmed') {
-      return { text: t`Range officer confirmed`, color: css.lightGreenB };
-    } else if (rangeSupervision === 'not confirmed') {
-      return { text: t`Range officer predefined`, color: css.blueB };
-    } else if (rangeSupervision === 'en route') {
-      return { text: t`Range officer on the way`, color: css.yellowB };
+    switch (rangeSupervision) {
+      case 'present':
+        return { text: t`Range officer present`, color: css.greenB };
+      case 'absent':
+        return { text: t`Range officer undefined`, color: css.whiteB };
+      case 'confirmed':
+        return { text: t`Range officer confirmed`, color: css.lightGreenB };
+      case 'not confirmed':
+        return { text: t`Range officer predefined`, color: css.blueB };
+      case 'en route':
+        return { text: t`Range officer on the way`, color: css.yellowB };
+      default:
+        return { text: t`Range closed`, color: css.redB };
     }
-    return { text: t`Range closed`, color: css.redB };
-  }, []);
+  }, [t, rangeSupervision]);
 
   return <h2 className={classes(css.info, color)}>{text}</h2>;
 }

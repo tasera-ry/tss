@@ -59,7 +59,7 @@ export const StatisticsView = () => {
 
   const formatedMonth = useMemo(() => {
     return i18n.date(date.toDate(), { month: 'long', year: 'numeric' });
-  }, [date]);
+  }, [date, i18n.date]);
 
   const formatedDay = useMemo(() => {
     return i18n.date(date.toDate(), {
@@ -67,7 +67,7 @@ export const StatisticsView = () => {
       month: 'numeric',
       year: 'numeric',
     });
-  }, [date]);
+  }, [date, i18n.date]);
 
   return (
     <div className="flex flex-col items-center gap-4 p-4">

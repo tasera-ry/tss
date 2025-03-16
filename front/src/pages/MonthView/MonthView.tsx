@@ -65,13 +65,13 @@ export function Monthview() {
     history.push(
       `/monthview/${moment(targetDate).subtract(1, 'month').format('YYYY-MM-DD')}`,
     );
-  }, [targetDate]);
+  }, [targetDate, history.push]);
 
   const nextMonthClick = useCallback(() => {
     history.push(
       `/monthview/${moment(targetDate).add(1, 'month').format('YYYY-MM-DD')}`,
     );
-  }, [targetDate]);
+  }, [targetDate, history.push]);
 
   return (
     <div>
@@ -189,7 +189,7 @@ function TableCell({ day }: TableCellProps) {
       default:
         return 'bg-blue';
     }
-  }, []);
+  }, [day.rangeSupervision]);
 
   const hasInfo = useMemo(() => {
     return day.tracks.some(

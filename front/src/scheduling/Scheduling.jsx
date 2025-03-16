@@ -42,6 +42,7 @@ import socketIOClient from 'socket.io-client';
 import api from '../api/api';
 import colors from '../colors.module.scss';
 import { updateRangeSupervision, validateLogin } from '../utils/Utils';
+import { useHistory } from 'react-router-dom';
 
 async function getRangeSupervisors() {
   try {
@@ -96,6 +97,7 @@ const CustomSwitchGreen = withStyles({
 function Scheduling(props) {
   const { t } = useLingui();
   const [locale] = useLanguageContext();
+  const history = useHistory();
 
   const [state, setState] = useState('loading');
   const [toast, setToast] = useState(false);
@@ -138,7 +140,7 @@ function Scheduling(props) {
       if (!isMounted) return;
 
       if (!logInSuccess) {
-        props.history.push('/');
+        history.push('/');
       } else {
         getRangeSupervisors()
           .then((response) => {
@@ -180,7 +182,7 @@ function Scheduling(props) {
       isMounted = false;
       socket.disconnect();
     };
-  }, []);
+  }, [history, rangeSupervisionScheduled]);
 
   // runs after date changed with datePicker
   useEffect(() => {
@@ -237,7 +239,7 @@ function Scheduling(props) {
   };
 
   const continueWithDate = (event) => {
-    if (event && event.type && event.type === 'submit') {
+    if (event?.type === 'submit') {
       event.preventDefault();
     }
     setState('loading');
@@ -562,9 +564,8 @@ function Scheduling(props) {
       statusColor === colors.green
     ) {
       return;
-    } else {
-      return ` (ETA ${arrivalTime})`;
     }
+    return ` (ETA ${arrivalTime})`;
   };
 
   /*
@@ -665,7 +666,7 @@ function Scheduling(props) {
     );
   };
 
-  const updateCall = async (
+  const updateCall = (
     date,
     rsId,
     srsId,
@@ -674,7 +675,7 @@ function Scheduling(props) {
     isRepeat,
   ) => {
     /* eslint-disable-next-line */
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       let reservationMethod;
       let reservationPath = '';
       let scheduledRangeSupervisionMethod;
@@ -888,7 +889,7 @@ function Scheduling(props) {
               params = {
                 ...params,
                 scheduled_range_supervision_id:
-                  srsId && srsId.id ? srsId : srsId,
+                  srsId?.id ? srsId : srsId,
                 track_id: tracks[key].id,
               };
             }

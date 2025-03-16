@@ -21,7 +21,7 @@ export function useLoggedInUser() {
     removeCookie('username');
     removeCookie('role');
     location.reload();
-  }, []);
+  }, [removeCookie]);
 
   const validateToken = useCallback(async () => {
     if (!username) return false;

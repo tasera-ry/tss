@@ -284,11 +284,11 @@ const Rows = ({
   setDone(true);
 
   function getWeekday(day) {
-    day = moment(day).format('dddd'); // eslint-disable-line
+    const localDay = moment(day).format('dddd');
     if (window.innerWidth < 800) {
-      return day.charAt(0).toUpperCase() + day.slice(1, num);
+      return localDay.charAt(0).toUpperCase() + localDay.slice(1, num);
     }
-    return day.charAt(0).toUpperCase() + day.slice(1);
+    return localDay.charAt(0).toUpperCase() + localDay.slice(1);
   }
 
   function getDateString(day) {
@@ -345,11 +345,9 @@ async function getReservations(res, setNoSchedule) {
     }
   }
 
-  res = res.filter((obj) => obj.date >= today); // eslint-disable-line
-
-  res.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  return res;
+  return res
+    .filter((obj) => obj.date >= today)
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
 }
 
 async function checkSupervisorReservations(username) {
@@ -477,7 +475,7 @@ const DialogWindow = ({ onCancel }) => {
       setRangeOfficerList(response);
     };
     myFunc();
-  }, []); // eslint-disable-line
+  }, [cookies.id, cookies.username]);
 
   return (
     <div>

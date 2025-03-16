@@ -76,7 +76,7 @@ export default function Raffle() {
         setIsLoading({ ...isLoading, page: false });
       }
     })();
-  }, []); // eslint-disable-line
+  }, [t, isLoading]);
 
   useEffect(() => {
     if (raffleResults.length > 0) {

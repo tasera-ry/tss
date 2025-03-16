@@ -69,7 +69,7 @@ export default function Supervisions({ cookies }) {
     }
 
     fetchData();
-  }, []);
+  }, [cookies.role, cookies.id]);
 
   // Create a notification message
   const createNotification = (type, message) => {
@@ -245,8 +245,7 @@ export default function Supervisions({ cookies }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {supervisions &&
-            supervisions.map((supervision, rowIndex) => (
+          {supervisions?.map((supervision, rowIndex) => (
               <TableRow key={supervision.id} data-testid="supervisions-row">
                 <TableCell>{supervision.date}</TableCell>
 

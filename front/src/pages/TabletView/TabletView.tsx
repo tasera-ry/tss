@@ -93,7 +93,7 @@ export function TabletView() {
       socketClient.off('rangeUpdate', onUpdate);
       socketClient.off('refresh', onRefresh);
     };
-  }, [date]); // eslint-disable-line
+  }, [date, queryClient, cookies.role]); // eslint-disable-line
 
   const formatedDate = useMemo(() => {
     return i18n.date(date, {
