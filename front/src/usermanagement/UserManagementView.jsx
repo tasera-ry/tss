@@ -3,7 +3,6 @@ import classNames from 'classnames';
 
 // Material UI components
 import {
-  Divider,
   Button,
   FormControl,
   IconButton,
@@ -38,7 +37,6 @@ import axios from 'axios';
 import { withCookies } from 'react-cookie';
 import { validateLogin } from '../utils/Utils';
 import css from './UserManagementView.module.scss';
-import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro';
 
 import api from '../api/api';
@@ -514,7 +512,7 @@ function UserManagementView(props)  {
     });
   };
 
-  const returnRemoveButton = (id, manage, fin) => {
+  const returnRemoveButton = (id) => {
     return (
       <Button
         data-testid={`del-${id}`}
@@ -529,7 +527,7 @@ function UserManagementView(props)  {
     );
   }
 
-  const returnPassButton = (id, manage, fin) => {
+  const returnPassButton = (id) => {
     return (
       <Button
         data-testid={`pw-${id}`}
@@ -1462,10 +1460,10 @@ function UserManagementView(props)  {
                       <br />  
                       <div className={classes(css.buttonsMobile)}>
                         {state.editingRows[row.id] && (
-                          returnPassButton(row.id, manage, fin)
+                          returnPassButton(row.id)
                         )}
                         {state.editingRows[row.id] && (
-                          returnRemoveButton(row.id, manage, fin)
+                          returnRemoveButton(row.id)
                         )}
                       </div>
                     </div>
@@ -1490,10 +1488,10 @@ function UserManagementView(props)  {
                   <TableCell align="right" className={classes(css.tableCellDesk)}>
                     <div className={classes(css.buttonCell)}>
                       {state.editingRows[row.id] && (
-                        returnPassButton(row.id, manage, fin)
+                        returnPassButton(row.id)
                       )}
                       {state.editingRows[row.id] && (
-                        returnRemoveButton(row.id, manage, fin)
+                        returnRemoveButton(row.id)
                       )}
                     </div>
                   </TableCell>
