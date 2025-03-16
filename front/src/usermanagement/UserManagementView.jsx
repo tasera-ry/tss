@@ -1,48 +1,47 @@
-import { useState, useEffect } from 'react';
 import classNames from 'classnames';
+import { useEffect, useState } from 'react';
 
+import EditIcon from '@mui/icons-material/Edit';
+import EditOffIcon from '@mui/icons-material/EditOff';
 // Material UI components
 import {
+  Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControl,
   IconButton,
   InputLabel,
+  MenuItem,
+  Paper,
   Select,
-  Box,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
-  Paper,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   TextField,
-  MenuItem
+  Tooltip,
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import EditOffIcon from '@mui/icons-material/EditOff';
 import NiceInputPassword from 'react-nice-input-password';
 import 'react-nice-input-password/dist/react-nice-input-password.css';
 
 // axios for calls to backend
 import axios from 'axios';
 
+import { useLingui } from '@lingui/react/macro';
 // Token validation
 import { withCookies } from 'react-cookie';
 import { validateLogin } from '../utils/Utils';
 import css from './UserManagementView.module.scss';
-import { useLingui } from '@lingui/react/macro';
 
 import api from '../api/api';
 
 const classes = classNames.bind(css);
-
 
 // Finds all users from database
 async function getUsers() {
@@ -142,10 +141,16 @@ async function changeRoleNotRangeofficer(id, newRole) {
 }
 
 // Changes role to rangeofficer and links an association to user in database
-async function changeRoleAndAssociationForRangeofficer(id, newRole, newAssociationId) {
-  if (!isNaN(parseInt(newAssociationId)) && 
-      parseInt(newAssociationId) !== 0 && 
-      parseInt(newAssociationId) !== id) {
+async function changeRoleAndAssociationForRangeofficer(
+  id,
+  newRole,
+  newAssociationId,
+) {
+  if (
+    !isNaN(Number.parseInt(newAssociationId)) &&
+    Number.parseInt(newAssociationId) !== 0 &&
+    Number.parseInt(newAssociationId) !== id
+  ) {
     try {
       const response = await fetch(`/api/user/${id}`, {
         method: 'PUT',
@@ -210,8 +215,17 @@ async function addUserNotRangeofficer(namen, rolen, passwordn, emailn) {
 }
 
 // Add rangeofficer to database
-async function addUserRangeofficer(namen, rolen, passwordn, emailn, newAssociationId) {
-  if (!isNaN(parseInt(newAssociationId)) && parseInt(newAssociationId) !== 0) {
+async function addUserRangeofficer(
+  namen,
+  rolen,
+  passwordn,
+  emailn,
+  newAssociationId,
+) {
+  if (
+    !isNaN(Number.parseInt(newAssociationId)) &&
+    Number.parseInt(newAssociationId) !== 0
+  ) {
     try {
       const response = await fetch('/api/user/', {
         method: 'POST',
@@ -238,13 +252,13 @@ async function addUserRangeofficer(namen, rolen, passwordn, emailn, newAssociati
   }
 }
 
-function UserManagementView(props)  {
+function UserManagementView(props) {
   const { t } = useLingui();
 
-  const[state, setState] = useState({
+  const [state, setState] = useState({
     userList: [],
     rows: [],
-    openPassWarning: false, 
+    openPassWarning: false,
     openRemoveWarning: false,
     changeOwnPassDialogOpen: false,
     changeOwnEmailDialogOpen: false,
@@ -277,22 +291,23 @@ function UserManagementView(props)  {
   // is ran when component mounts
   useEffect(() => {
     validateLogin().then((logInSuccess) => {
-      if(!logInSuccess){
+      if (!logInSuccess) {
         props.history.push('/');
-      }
-      else{
-        getUsers().then((res) => {
-          if(res !== false){
-            res.sort((a, b) => {
-              if(a.name < b.name) return -1;
-              if(a.name > b.name) return 1;
-              return 0;
-            });
-            setState({...state, userList: res});
-          }
-        }).catch((err) => {
-          console.error('init failed', err);
-        });
+      } else {
+        getUsers()
+          .then((res) => {
+            if (res !== false) {
+              res.sort((a, b) => {
+                if (a.name < b.name) return -1;
+                if (a.name > b.name) return 1;
+                return 0;
+              });
+              setState({ ...state, userList: res });
+            }
+          })
+          .catch((err) => {
+            console.error('init failed', err);
+          });
       }
     });
   }, []);
@@ -302,18 +317,17 @@ function UserManagementView(props)  {
     update();
 
     const rangeofficerIds = state.userList
-    .filter((user) => user.role === 'rangeofficer')
-    .map((user) => user.id);
+      .filter((user) => user.role === 'rangeofficer')
+      .map((user) => user.id);
 
     if (rangeofficerIds.length > 0) {
       fetchAssociation(rangeofficerIds);
     }
-
   }, [state.userList]);
 
   // run if changes to users
   useEffect(() => {
-    if(state.refresh){
+    if (state.refresh) {
       makeDataFreshAgain();
     }
   }, [state.refresh]);
@@ -324,9 +338,9 @@ function UserManagementView(props)  {
    */
 
   // handles changing own password
-  const handleChangeOwnPassDialogCloseAgree = async() => {
+  const handleChangeOwnPassDialogCloseAgree = async () => {
     const secure = window.location.protocol === 'https:';
-    setState({...state, changeOwnPassFailed: false});
+    setState({ ...state, changeOwnPassFailed: false });
     let success = true;
     let response = await axios
       .post('api/sign', {
@@ -342,33 +356,34 @@ function UserManagementView(props)  {
       if (response) {
         handleChangeOwnPassDialogClose();
       } else {
-        setState({...state, changeOwnPassFailed: true});
+        setState({ ...state, changeOwnPassFailed: true });
       }
     } else {
-      setState({...state, changeOwnPassFailed: true});
+      setState({ ...state, changeOwnPassFailed: true });
     }
-  }
+  };
 
   // handles changing own email address
-  const handleChangeOwnEmailDialogCloseAgree = async() => {
-    setState({...state, changeOwnEmailFailed: false});
+  const handleChangeOwnEmailDialogCloseAgree = async () => {
+    setState({ ...state, changeOwnEmailFailed: false });
     const response = await changeEmail(findOwnID(), state.email);
     if (response) {
-      setState({...state, 
+      setState({
+        ...state,
         changeOwnEmailFailed: false,
         changeOwnEmailDialogOpen: false,
         refresh: true,
       });
     } else {
-      setState({...state, changeOwnEmailFailed: true, refresh: true});
+      setState({ ...state, changeOwnEmailFailed: true, refresh: true });
     }
-  }
+  };
 
   // Handles adding new users
-  const handleAddNewUserDialogCloseConfirmed = async() => {
-    setState({...state, requestErrors: false});
+  const handleAddNewUserDialogCloseConfirmed = async () => {
+    setState({ ...state, requestErrors: false });
     let req;
-    if (state.role === "rangeofficer") {
+    if (state.role === 'rangeofficer') {
       req = await addUserRangeofficer(
         state.newUserName,
         state.role,
@@ -385,9 +400,10 @@ function UserManagementView(props)  {
       );
     }
     if (!req || req.errors !== undefined) {
-      setState({...state, requestErrors: true});
+      setState({ ...state, requestErrors: true });
     } else {
-      setState({...state, 
+      setState({
+        ...state,
         requestErrors: false,
         newUserName: '',
         newUserPass: '',
@@ -397,104 +413,118 @@ function UserManagementView(props)  {
         refresh: true,
       });
     }
-  }
+  };
 
   // Removes the user
-  const handleRemoveWarningCloseAgree = async() => {
-    setState({...state, deleteErrors: false});
+  const handleRemoveWarningCloseAgree = async () => {
+    setState({ ...state, deleteErrors: false });
     const response = await deleteUser(findUserId());
     if (response?.errors !== undefined) {
-      setState({...state, deleteErrors: true});
+      setState({ ...state, deleteErrors: true });
     } else {
-      setState({...state, 
-        openRemoveWarning: false, 
+      setState({
+        ...state,
+        openRemoveWarning: false,
         deleteErrors: false,
-        refresh: true});
+        refresh: true,
+      });
     }
-  }
+  };
 
   // Closes dialog for changing password for some1 else
   const handleChangePassClose = (e) => {
-    setState({...state,
+    setState({
+      ...state,
       password: '',
       changePassDialogOpen: false,
-      changeErrors: false});
-  }
+      changeErrors: false,
+    });
+  };
 
   // Changes password for some1 else by their ID
-  const handleChangePassCloseConfirm = async() => {
-    setState({...state, changeErrors: false});
-    const response = await changePassword(
-      findUserId(),
-      state.password,
-    );
+  const handleChangePassCloseConfirm = async () => {
+    setState({ ...state, changeErrors: false });
+    const response = await changePassword(findUserId(), state.password);
     if (!response) {
-      setState({...state, changeErrors: true});
+      setState({ ...state, changeErrors: true });
     } else {
-      setState({...state, 
-        password: '', 
-        changePassDialogOpen: false, 
-        changeErrors: false});
+      setState({
+        ...state,
+        password: '',
+        changePassDialogOpen: false,
+        changeErrors: false,
+      });
     }
-  }
+  };
 
   // Closes dialog for adding email for some1 else
   const handleaddEmailClose = (e) => {
-    setState({...state,
+    setState({
+      ...state,
       email: '',
       addEmailDialogOpen: false,
-      changeErrors: false});
-  }
+      changeErrors: false,
+    });
+  };
 
   // Adds email for some1 else by their ID
-  const handleaddEmailCloseConfirm = async() => {
-    setState({...state, changeErrors: false});
+  const handleaddEmailCloseConfirm = async () => {
+    setState({ ...state, changeErrors: false });
     const response = await addEmail(findUserId(), state.email);
     if (!response) {
-      setState({...state, changeErrors: true});
+      setState({ ...state, changeErrors: true });
     } else {
-      setState({...state, 
-        email: '', 
-        addEmailDialogOpen: false, 
+      setState({
+        ...state,
+        email: '',
+        addEmailDialogOpen: false,
         refresh: true,
-        changeErrors: false});
+        changeErrors: false,
+      });
     }
-  }
+  };
 
   // Closes dialog for adding role for some1 else
   const handleChangeRoleClose = (e) => {
-    setState({...state, 
+    setState({
+      ...state,
       role: 'association',
       associationId: 0,
       changeRoleDialogOpen: false,
-      changeErrors: false});
-  }
+      changeErrors: false,
+    });
+  };
 
   // Adds role for some1 else by their ID
-  const handleChangeRoleCloseConfirm = async() => {
-    setState({...state, changeErrors: false});
+  const handleChangeRoleCloseConfirm = async () => {
+    setState({ ...state, changeErrors: false });
     let response;
-    if (state.role === "rangeofficer") {
-      response = await changeRoleAndAssociationForRangeofficer(findUserId(), state.role, state.associationId);
+    if (state.role === 'rangeofficer') {
+      response = await changeRoleAndAssociationForRangeofficer(
+        findUserId(),
+        state.role,
+        state.associationId,
+      );
     } else {
       response = await changeRoleNotRangeofficer(findUserId(), state.role);
     }
     if (!response) {
-      setState({...state, changeErrors: true});
+      setState({ ...state, changeErrors: true });
     } else {
-      setState({...state, 
-        role: 'association', 
+      setState({
+        ...state,
+        role: 'association',
         associationId: 0,
-        changeRoleDialogOpen: false, 
+        changeRoleDialogOpen: false,
         refresh: true,
-        changeErrors: false});
+        changeErrors: false,
+      });
     }
-  }
+  };
 
   // Handles the edit mode of the rows in the table of users
   // when edit button is clicked
   const handleEditClick = (rowId) => {
-
     // Checks the edit state of the selected row
     setState((prevState) => {
       const editState = !!prevState.editingRows[rowId];
@@ -507,7 +537,7 @@ function UserManagementView(props)  {
         editingRows: {
           ...prevState.editingRows,
           [rowId]: !editState,
-        }
+        },
       };
     });
   };
@@ -525,7 +555,7 @@ function UserManagementView(props)  {
         {t`Delete profile`}
       </Button>
     );
-  }
+  };
 
   const returnPassButton = (id) => {
     return (
@@ -540,24 +570,19 @@ function UserManagementView(props)  {
         {t`Change password`}
       </Button>
     );
-  }
+  };
 
-  const createData = (
-    name,
-    role,
-    email,
-    id,
-  ) => {
+  const createData = (name, role, email, id) => {
     const roleToPrint =
       role === 'superuser'
         ? t`Superuser`
         : role === 'association'
-        ? t`Association`
-        : role === 'rangeofficer'
-        ? t`Range officer`
-        : role === 'rangemaster'
-        ? t`Range master`
-        : null;
+          ? t`Association`
+          : role === 'rangeofficer'
+            ? t`Range officer`
+            : role === 'rangemaster'
+              ? t`Range master`
+              : null;
 
     return {
       name,
@@ -565,10 +590,12 @@ function UserManagementView(props)  {
       email,
       id,
     };
-  }
+  };
 
   const printAssociationName = (id) => {
-    const rangeofficer = state.rangeOfficers.find((officer) => officer.id === id);
+    const rangeofficer = state.rangeOfficers.find(
+      (officer) => officer.id === id,
+    );
 
     if (rangeofficer) {
       return rangeofficer.association_name || 'No association';
@@ -577,16 +604,16 @@ function UserManagementView(props)  {
     }
   };
 
-  const makeDataFreshAgain = async() => {
+  const makeDataFreshAgain = async () => {
     try {
       const response = await getUsers();
       if (response !== false) {
         response.sort((a, b) => {
-          if(a.name < b.name) return -1;
-          if(a.name > b.name) return 1;
+          if (a.name < b.name) return -1;
+          if (a.name > b.name) return 1;
           return 0;
         });
-        setState({...state, userList: response, refresh: false});
+        setState({ ...state, userList: response, refresh: false });
       } else {
         console.error(
           'getting users failed, most likely sign in token invalid -> kicking to root',
@@ -596,69 +623,72 @@ function UserManagementView(props)  {
     } catch (error) {
       console.error('init failed', error);
     }
-  }
+  };
 
   // Close dialog for changing password
   const handlePassWarningClose = () => {
-    setState({...state, openPassWarning: false});
-  }
+    setState({ ...state, openPassWarning: false });
+  };
 
   // Close dialog for removing user
   const handleRemoveWarningClose = () => {
-    setState({...state, openRemoveWarning: false, deleteErrors: false});
-  }
+    setState({ ...state, openRemoveWarning: false, deleteErrors: false });
+  };
 
   // Open dialog for adding new users
   const handleAddUserOpenDialog = () => {
-    setState({...state, openAddNewUserDialog: true});
-  }
+    setState({ ...state, openAddNewUserDialog: true });
+  };
 
   // closes dialog for adding users
   const handleAddNewUserDialogClose = () => {
-    setState({...state, 
+    setState({
+      ...state,
       requestErrors: false,
       newUserName: '',
       newUserPass: '',
       role: 'association',
       openAddNewUserDialog: false,
     });
-  }
+  };
 
   // opens dialog for changing logged in users password
   const handleOpenOwnPassChangeDialog = () => {
-    setState({...state, changeOwnPassDialogOpen: true});
-  }
+    setState({ ...state, changeOwnPassDialogOpen: true });
+  };
 
   // opens dialog for changing logged in users email
   const handleOpenOwnEmailChangeDialog = () => {
-    setState({...state, changeOwnEmailDialogOpen: true});
-  }
+    setState({ ...state, changeOwnEmailDialogOpen: true });
+  };
 
   // opens dialog for adding email
   const handleaddEmailDialog = () => {
-    setState({...state, addEmailDialogOpen: true});
-  }
+    setState({ ...state, addEmailDialogOpen: true });
+  };
 
   // Closes dialog for adding email
   const handleaddEmailDialogClose = () => {
-    setState({...state, addEmailDialogOpen: false});
-  }
+    setState({ ...state, addEmailDialogOpen: false });
+  };
 
   // closes dialog for changing own password
   const handleChangeOwnPassDialogClose = () => {
-    setState({...state,
-      changeOwnPassFailed: false, 
+    setState({
+      ...state,
+      changeOwnPassFailed: false,
       changeOwnPassDialogOpen: false,
     });
-  }
+  };
 
   // closes dialog for changing own email
   const handleChangeOwnEmailDialogClose = () => {
-    setState({...state, 
+    setState({
+      ...state,
       changeOwnEmailFailed: false,
       changeOwnEmailDialogOpen: false,
     });
-  }
+  };
 
   /**
    **  HANDLE STATE CHANGES
@@ -666,50 +696,50 @@ function UserManagementView(props)  {
 
   // handles state change for oldpassword
   const handleOldpassStringChange = (e) => {
-    setState({...state, oldPassword: e.target.value});
-  }
+    setState({ ...state, oldPassword: e.target.value });
+  };
 
   // handles state change for newpassword
   const handleNewpassStringChange = (e) => {
-    setState({...state, newPassword: e.target.value});
-  }
+    setState({ ...state, newPassword: e.target.value });
+  };
 
   // handles state change for newpassword securely
   const handleNewSecurePassStringChange = (data) => {
     console.log('Password:', data.value);
-    setState({...state, newPassword: data.value});
-  }
+    setState({ ...state, newPassword: data.value });
+  };
 
   // handle state email change
   const handleNewEmailChange = (e) => {
-    setState({...state, email: e.target.value});
-  }
+    setState({ ...state, email: e.target.value });
+  };
 
   // handles state change for new users name
   const handleNewuserNameChange = (e) => {
-    setState({...state, newUserName: e.target.value});
-  }
+    setState({ ...state, newUserName: e.target.value });
+  };
 
   // handles state change for new users role
   const handleChangeUserRole = (e) => {
-    setState({...state, role: e.target.value});
-  }
+    setState({ ...state, role: e.target.value });
+  };
 
   // handles state change for rangeofficer association
   const handleChangeAssociation = (e) => {
-    setState({...state, associationId: e.target.value});
-  }
+    setState({ ...state, associationId: e.target.value });
+  };
 
   // handles state change for new users password
   const handleNewuserPassChange = (e) => {
-    setState({...state, newUserPass: e.target.value});
-  }
+    setState({ ...state, newUserPass: e.target.value });
+  };
 
   // handles state change for new users password securely
   const handleNewuserSecurePassChange = (data) => {
     //console.log('Password:', data.value);
-    setState({...state, newUserPass: data.value});
-  }
+    setState({ ...state, newUserPass: data.value });
+  };
 
   /**
    **  FUNCTIONS
@@ -718,28 +748,44 @@ function UserManagementView(props)  {
   // changes selectedUserName after selectedROWID changes
   useEffect(() => {
     const name = findUserName();
-    setState({...state, selectedUserName: name});
+    setState({ ...state, selectedUserName: name });
   }, [state.selectedROWID]);
 
   // Opens warning for removing user
   const onRemoveClick = (e) => {
-    setState({...state, selectedROWID: e.currentTarget.id, openRemoveWarning: true});
-  }
+    setState({
+      ...state,
+      selectedROWID: e.currentTarget.id,
+      openRemoveWarning: true,
+    });
+  };
 
   // Opens dialog for changing password for some1 else
   const onChangePassClick = (e) => {
-    setState({...state, selectedROWID: e.currentTarget.id, changePassDialogOpen: true});
-  }
+    setState({
+      ...state,
+      selectedROWID: e.currentTarget.id,
+      changePassDialogOpen: true,
+    });
+  };
 
   // Opens dialog for adding or changing email for someone else
   const onaddEmailClick = (e) => {
-    setState({...state, selectedROWID: e.currentTarget.id, addEmailDialogOpen: true});
-  }
+    setState({
+      ...state,
+      selectedROWID: e.currentTarget.id,
+      addEmailDialogOpen: true,
+    });
+  };
 
   // Opens dialog for changing user role for someone else
   const onRoleClick = (e) => {
-    setState({...state, selectedROWID: e.currentTarget.id, changeRoleDialogOpen: true});
-  }
+    setState({
+      ...state,
+      selectedROWID: e.currentTarget.id,
+      changeRoleDialogOpen: true,
+    });
+  };
 
   /**
    **ALGORITHMS
@@ -747,21 +793,21 @@ function UserManagementView(props)  {
 
   const findUserName = () => {
     for (const i in state.userList) {
-      if (state.userList[i].id === parseInt(state.selectedROWID)) {
+      if (state.userList[i].id === Number.parseInt(state.selectedROWID)) {
         return state.userList[i].name;
       }
     }
     return 'Username not found';
-  }
+  };
 
   const findUserId = () => {
     for (const i in state.userList) {
-      if (state.userList[i].id === parseInt(state.selectedROWID)) {
+      if (state.userList[i].id === Number.parseInt(state.selectedROWID)) {
         return state.userList[i].id;
       }
     }
     return undefined;
-  }
+  };
 
   const findOwnID = () => {
     for (const i in state.userList) {
@@ -770,7 +816,7 @@ function UserManagementView(props)  {
       }
     }
     return null;
-  }
+  };
 
   const findOwnEmail = () => {
     for (const i in state.userList) {
@@ -779,7 +825,7 @@ function UserManagementView(props)  {
       }
     }
     return null;
-  }
+  };
 
   const update = () => {
     const tempRows = [];
@@ -794,10 +840,10 @@ function UserManagementView(props)  {
         tempRows.push(row);
       }
     }
-    setState({...state, rows: tempRows});
-  }
+    setState({ ...state, rows: tempRows });
+  };
 
-  // Fetch the id of the association which range officer 
+  // Fetch the id of the association which range officer
   // is associated with and update the state
   const fetchAssociation = async (rangeofficerIds) => {
     const rangeofficers = [];
@@ -808,22 +854,26 @@ function UserManagementView(props)  {
         const associationId = response[0].association_id;
 
         // Find the association in the userList
-        const association = state.userList.find((user) => user.id === associationId);
+        const association = state.userList.find(
+          (user) => user.id === associationId,
+        );
 
         // Add data into an array
-        rangeofficers.push ({
+        rangeofficers.push({
           id,
           name: rangeOfficer.name, // range officer's name
           association_name: association.name || null, // association's name
         });
-   
       } catch (error) {
-        console.log(`Failed to fetch association for range officer ${id}`, error);
+        console.log(
+          `Failed to fetch association for range officer ${id}`,
+          error,
+        );
       }
     }
     // Update the state for range officers when associations are fetched
-    setState((prevState) => ({...prevState, rangeOfficers: rangeofficers}));
-  }
+    setState((prevState) => ({ ...prevState, rangeOfficers: rangeofficers }));
+  };
 
   const roleSelect = () => (
     <div className="roleSelect">
@@ -841,18 +891,18 @@ function UserManagementView(props)  {
           <MenuItem value="superuser">{t`Superuser`}</MenuItem>
         </Select>
       </FormControl>
-        <br />
-        <br />
-        {associationSelect()}    
+      <br />
+      <br />
+      {associationSelect()}
     </div>
-  )
+  );
 
   // handles selecting association for range officer
   const associationSelect = () => (
     <div>
       <FormControl className={classes(css.selectAssociation)}>
         {/** Only shown when selected role is range officer */}
-        {state.role === "rangeofficer" && (
+        {state.role === 'rangeofficer' && (
           <>
             <InputLabel id="association-select-label">{t`Select association`}</InputLabel>
             <Select
@@ -863,13 +913,13 @@ function UserManagementView(props)  {
               value={state.associationId || ''}
               onChange={handleChangeAssociation}
             >
-              {state.userList.map(user => {
-                if (user.role === "association") {
+              {state.userList.map((user) => {
+                if (user.role === 'association') {
                   return (
                     <MenuItem key={user.id} value={user.id}>
                       {user.name}
                     </MenuItem>
-                  )
+                  );
                 }
               })}
             </Select>
@@ -877,7 +927,7 @@ function UserManagementView(props)  {
         )}
       </FormControl>
     </div>
-  )
+  );
 
   /**
    **  ACTUAL PAGE RENDERING
@@ -921,18 +971,15 @@ function UserManagementView(props)  {
             fullWidth
             securityLevels={[
               {
-                descriptionLabel:
-                  t`Minimum` + ' 1 ' + t`number`,
+                descriptionLabel: t`Minimum` + ' 1 ' + t`number`,
                 validator: /.*[0-9].*/,
               },
               {
-                descriptionLabel:
-                  t`Minimum` + ' 1 ' + t`lowercase letter`,
+                descriptionLabel: t`Minimum` + ' 1 ' + t`lowercase letter`,
                 validator: /.*[a-z].*/,
               },
               {
-                descriptionLabel:
-                  t`Minimum` + ' 1 ' + t`uppercase letter`,
+                descriptionLabel: t`Minimum` + ' 1 ' + t`uppercase letter`,
                 validator: /.*[A-Z].*/,
               },
               {
@@ -997,13 +1044,12 @@ function UserManagementView(props)  {
           className={classes(css.dialogStyle)}
         >
           <DialogContentText id="dialog-remove-user-text">
-            {t`This action will permanently remove user`} {state.selectedUserName}
+            {t`This action will permanently remove user`}{' '}
+            {state.selectedUserName}
           </DialogContentText>
 
           {state.deleteErrors ? (
-            <p className={classes(css.errorText)}>
-              {t`Something went wrong`}{' '}
-            </p>
+            <p className={classes(css.errorText)}>{t`Something went wrong`} </p>
           ) : (
             <p />
           )}
@@ -1065,18 +1111,15 @@ function UserManagementView(props)  {
             fullWidth
             securityLevels={[
               {
-                descriptionLabel:
-                  t`Minimum` + ' 1 ' + t`number`,
+                descriptionLabel: t`Minimum` + ' 1 ' + t`number`,
                 validator: /.*[0-9].*/,
               },
               {
-                descriptionLabel:
-                  t`Minimum` + ' 1 ' + t`lowercase letter`,
+                descriptionLabel: t`Minimum` + ' 1 ' + t`lowercase letter`,
                 validator: /.*[a-z].*/,
               },
               {
-                descriptionLabel:
-                  t`Minimum` + ' 1 ' + t`uppercase letter`,
+                descriptionLabel: t`Minimum` + ' 1 ' + t`uppercase letter`,
                 validator: /.*[A-Z].*/,
               },
               {
@@ -1143,7 +1186,7 @@ function UserManagementView(props)  {
           {state.changeOwnEmailFailed ? (
             <p className={classes(css.errorText)}>
               {t`Something went wrong, remember that the password has to meet the listed requirements and the name needs to be unique`}
-              </p>
+            </p>
           ) : (
             <p />
           )}
@@ -1165,10 +1208,7 @@ function UserManagementView(props)  {
       </Dialog>
 
       {/* Dialog to change password of other users */}
-      <Dialog
-        open={state.changePassDialogOpen}
-        onClose={handleChangePassClose}
-      >
+      <Dialog open={state.changePassDialogOpen} onClose={handleChangePassClose}>
         <DialogTitle
           id="dialog-change-pass-title"
           className={classes(css.dialogStyle)}
@@ -1188,18 +1228,15 @@ function UserManagementView(props)  {
             fullWidth
             securityLevels={[
               {
-                descriptionLabel:
-                  t`Minimum` + ' 1 ' + t`number`,
+                descriptionLabel: t`Minimum` + ' 1 ' + t`number`,
                 validator: /.*[0-9].*/,
               },
               {
-                descriptionLabel:
-                  t`Minimum` + ' 1 ' + t`lowercase letter`,
+                descriptionLabel: t`Minimum` + ' 1 ' + t`lowercase letter`,
                 validator: /.*[a-z].*/,
               },
               {
-                descriptionLabel:
-                  t`Minimum` + ' 1 ' + t`uppercase letter`,
+                descriptionLabel: t`Minimum` + ' 1 ' + t`uppercase letter`,
                 validator: /.*[A-Z].*/,
               },
               {
@@ -1211,7 +1248,7 @@ function UserManagementView(props)  {
             showSecurityLevelDescription
             onChange={(e) => {
               console.log('password: ' + e.value);
-              setState({...state, password: e.value });
+              setState({ ...state, password: e.value });
             }}
           />
 
@@ -1240,10 +1277,7 @@ function UserManagementView(props)  {
       </Dialog>
 
       {/* Dialog to Add Email for users */}
-      <Dialog
-        open={state.addEmailDialogOpen}
-        onClose={handleaddEmailClose}
-      >
+      <Dialog open={state.addEmailDialogOpen} onClose={handleaddEmailClose}>
         <DialogTitle
           id="dialog-add-email-title"
           className={classes(css.dialogStyle)}
@@ -1258,7 +1292,7 @@ function UserManagementView(props)  {
             id="name"
             label={t`Change email address`}
             onChange={(e) => {
-              setState({...state, email: e.target.value });
+              setState({ ...state, email: e.target.value });
             }}
             fullWidth
           />
@@ -1287,10 +1321,7 @@ function UserManagementView(props)  {
       </Dialog>
 
       {/* Dialog to change role for users */}
-      <Dialog
-        open={state.changeRoleDialogOpen}
-        onClose={handleChangeRoleClose}
-      >
+      <Dialog open={state.changeRoleDialogOpen} onClose={handleChangeRoleClose}>
         <DialogTitle
           id="dialog-change-role-title"
           className={classes(css.dialogStyle)}
@@ -1327,9 +1358,9 @@ function UserManagementView(props)  {
       <h1 className={classes(css.header)}>{t`User management`}</h1>
       <Box className={classes(css.LoggedIn)}>
         <div>
-          {t`You are logged in as`}: 
+          {t`You are logged in as`}:
           <br />
-          <span style={{fontWeight:"bold"}}>{state.username}</span>
+          <span style={{ fontWeight: 'bold' }}>{state.username}</span>
         </div>
         <div className={classes(css.buttonContainer)}>
           <Button
@@ -1374,38 +1405,41 @@ function UserManagementView(props)  {
           <Table aria-label="table of users" className={classes(css.table)}>
             <TableHead className={classes(css.tableHead)}>
               <TableRow>
-                <TableCell align="left" style={{fontWeight: 'bold', width: '300px'}}>
+                <TableCell
+                  align="left"
+                  style={{ fontWeight: 'bold', width: '300px' }}
+                >
                   {t`User`}
                 </TableCell>
-                <TableCell 
-                  align="left" 
-                  style={{fontWeight: 'bold', width: '200px'}} 
+                <TableCell
+                  align="left"
+                  style={{ fontWeight: 'bold', width: '200px' }}
                   className={classes(css.tableCellDesk)}
                 >
                   {t`Role`}
                 </TableCell>
-                <TableCell 
-                  align="left" 
-                  style={{fontWeight: 'bold', width: '100px'}} 
+                <TableCell
+                  align="left"
+                  style={{ fontWeight: 'bold', width: '100px' }}
                   className={classes(css.tableCellDesk)}
                 >
                   {t`Association`}
                 </TableCell>
-                <TableCell 
-                  align="right" 
-                  className={classes(css.tableCellDesk)} 
-                  style= {{color: '#f2f2f2'}}
-                > 
+                <TableCell
+                  align="right"
+                  className={classes(css.tableCellDesk)}
+                  style={{ color: '#f2f2f2' }}
+                >
                   {t`Edit`}
                 </TableCell>
-                <TableCell 
-                  align="right" 
-                  style={{width: '100px'}}
-                >
+                <TableCell align="right" style={{ width: '100px' }}>
                   <Button
                     onClick={handleAddUserOpenDialog}
                     variant="contained"
-                    className={classes(css.addUserButtonDesk, css.lightgreenButton)}
+                    className={classes(
+                      css.addUserButtonDesk,
+                      css.lightgreenButton,
+                    )}
                   >
                     {t`Create new user`}
                   </Button>
@@ -1413,20 +1447,20 @@ function UserManagementView(props)  {
               </TableRow>
             </TableHead>
             <TableBody>
-              {state.rows.map((row) => 
+              {state.rows.map((row) => (
                 <TableRow key={row.name} hover>
                   <TableCell align="justify" component="th" scope="row">
                     {row.name}
-                    <br /> 
-                    {row.email} 
+                    <br />
+                    {row.email}
                     {state.editingRows[row.id] && (
                       <Tooltip title={t`Edit email address`}>
-                        <IconButton 
+                        <IconButton
                           id={row.id}
                           onClick={onaddEmailClick}
                           aria-label="Edit email"
-                        > 
-                          <EditIcon style={{fontSize: 'large'}}/>
+                        >
+                          <EditIcon style={{ fontSize: 'large' }} />
                         </IconButton>
                       </Tooltip>
                     )}
@@ -1434,50 +1468,52 @@ function UserManagementView(props)  {
                     <div className={classes(css.tableCellMobile)}>
                       <br />
                       <div>
-                        <span style={{fontWeight:'bold'}}>{t`Role`}: </span> {row.roleToPrint}
+                        <span style={{ fontWeight: 'bold' }}>{t`Role`}: </span>{' '}
+                        {row.roleToPrint}
                         {state.editingRows[row.id] && (
                           <Tooltip title={t`Edit role`}>
-                            <IconButton 
+                            <IconButton
                               id={row.id}
                               onClick={onRoleClick}
                               aria-label="Edit role"
-                            > 
-                              <EditIcon style={{fontSize: 'large'}}/>
+                            >
+                              <EditIcon style={{ fontSize: 'large' }} />
                             </IconButton>
                           </Tooltip>
                         )}
                       </div>
                       {/* print association if the role is range officer */}
-                      {(row.roleToPrint === 'Valvoja' || 
-                        row.roleToPrint === 'Range officer' || 
-                        row.roleToPrint === 'Banofficer'
-                      ) &&(
+                      {(row.roleToPrint === 'Valvoja' ||
+                        row.roleToPrint === 'Range officer' ||
+                        row.roleToPrint === 'Banofficer') && (
                         <div>
-                          <span style={{fontWeight:'bold'}}>{t`Association`}: </span> 
+                          <span style={{ fontWeight: 'bold' }}>
+                            {t`Association`}:{' '}
+                          </span>
                           {printAssociationName(row.id)}
                         </div>
                       )}
-                      <br />  
+                      <br />
                       <div className={classes(css.buttonsMobile)}>
-                        {state.editingRows[row.id] && (
-                          returnPassButton(row.id)
-                        )}
-                        {state.editingRows[row.id] && (
-                          returnRemoveButton(row.id)
-                        )}
+                        {state.editingRows[row.id] && returnPassButton(row.id)}
+                        {state.editingRows[row.id] &&
+                          returnRemoveButton(row.id)}
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell align="justify" className={classes(css.tableCellDesk)}>
+                  <TableCell
+                    align="justify"
+                    className={classes(css.tableCellDesk)}
+                  >
                     {row.roleToPrint}
                     {state.editingRows[row.id] && (
                       <Tooltip title={t`Edit role`}>
-                        <IconButton 
+                        <IconButton
                           id={row.id}
                           onClick={onRoleClick}
                           aria-label="Edit role"
-                        > 
-                          <EditIcon style={{fontSize: 'large'}}/>
+                        >
+                          <EditIcon style={{ fontSize: 'large' }} />
                         </IconButton>
                       </Tooltip>
                     )}
@@ -1485,29 +1521,33 @@ function UserManagementView(props)  {
                   <TableCell className={classes(css.tableCellDesk)}>
                     {printAssociationName(row.id)}
                   </TableCell>
-                  <TableCell align="right" className={classes(css.tableCellDesk)}>
+                  <TableCell
+                    align="right"
+                    className={classes(css.tableCellDesk)}
+                  >
                     <div className={classes(css.buttonCell)}>
-                      {state.editingRows[row.id] && (
-                        returnPassButton(row.id)
-                      )}
-                      {state.editingRows[row.id] && (
-                        returnRemoveButton(row.id)
-                      )}
+                      {state.editingRows[row.id] && returnPassButton(row.id)}
+                      {state.editingRows[row.id] && returnRemoveButton(row.id)}
                     </div>
                   </TableCell>
                   <TableCell align="right">
-                    <IconButton 
+                    <IconButton
                       onClick={() => handleEditClick(row.id)}
                       aria-label="Edit"
                     >
-                      {!state.editingRows[row.id] 
-                        ? <Tooltip title={t`Edit`}><EditIcon/></Tooltip>
-                        : <Tooltip title={t`Close editing mode`}><EditOffIcon/></Tooltip>
-                      }
+                      {!state.editingRows[row.id] ? (
+                        <Tooltip title={t`Edit`}>
+                          <EditIcon />
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title={t`Close editing mode`}>
+                          <EditOffIcon />
+                        </Tooltip>
+                      )}
                     </IconButton>
                   </TableCell>
                 </TableRow>
-              )}
+              ))}
             </TableBody>
           </Table>
         </TableContainer>

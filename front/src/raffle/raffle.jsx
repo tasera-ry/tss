@@ -1,25 +1,24 @@
-import { useState, useEffect } from 'react';
 import classNames from 'classnames';
+import { useEffect, useState } from 'react';
 import api from '../api/api';
 
-import { StyledEngineProvider } from '@mui/material/styles';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import MuiAlert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+import { StyledEngineProvider } from '@mui/material/styles';
 
-import RaffleDatePicker from './RaffleDatePicker';
-import SupervisorsTable from './SupervisorsTable';
+import { useLingui } from '@lingui/react/macro';
 import { validateLogin } from '../utils/Utils';
 import { dateToString } from '../utils/dateUtils';
-import SupervisionResultsTable from './SupervisionResultsTable';
+import RaffleDatePicker from './RaffleDatePicker';
 import SupervisionAmountsTable from './SupervisionAmountsTable';
+import SupervisionResultsTable from './SupervisionResultsTable';
+import SupervisorsTable from './SupervisorsTable';
 import css from './raffle.module.scss';
-import { useLingui } from '@lingui/react/macro';
-
 
 const classes = classNames.bind(css);
 
@@ -62,8 +61,8 @@ export default function Raffle() {
       try {
         const res = await api.getMembers();
         res.sort((a, b) => {
-          if(a.name < b.name) return -1;
-          if(a.name > b.name) return 1;
+          if (a.name < b.name) return -1;
+          if (a.name > b.name) return 1;
           return 0;
         });
         setSupervisors(res);
@@ -90,7 +89,11 @@ export default function Raffle() {
 
   const handleSubmitUser = async (user_id, data) => {
     if (data.members < 0 || data.associations < 0) {
-      setToast({ open: true, msg: t`Values cannot be negative`, severity: 'error' });
+      setToast({
+        open: true,
+        msg: t`Values cannot be negative`,
+        severity: 'error',
+      });
       return;
     }
     setIsLoading({ ...isLoading, table: true });

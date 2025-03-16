@@ -30,8 +30,12 @@
       "E-postinställningar"
     ],
     "Raffle": ["Valvojien arvonta", "Supervisor raffle", "Handledare tombola"],
-    "Info": ["Lisää infoviesti", "Add info message", "Tillägga info meddelande"], 
-    "Devices":["Ratojen varaus", "Track book", "Bokning av spår"]   
+    "Info": [
+      "Lisää infoviesti",
+      "Add info message",
+      "Tillägga info meddelande"
+    ],
+    "Devices": ["Ratojen varaus", "Track book", "Bokning av spår"]
   },
 
   "banner": {
@@ -42,18 +46,29 @@
     ],
     "Check": ["TARKISTA", "CHECK", "KONTROLLERA"]
   },
-  
+
   "devicesList": {
     "DeviceActions": ["Toiminnot", "Actions", "Verksamheter"],
     "DeviceList": ["Laitteet", "Device List", "Enhetslista"],
     "DeviceName": ["Nimi", "Name", "Namn"],
-    "DeviceStatus": ["Tila (vapaa/varattu)", "Status (free/reserved)", "Status (fri/reserverad)"],
+    "DeviceStatus": [
+      "Tila (vapaa/varattu)",
+      "Status (free/reserved)",
+      "Status (fri/reserverad)"
+    ],
     "FreeStatus": ["Vapaa", "Free", "Fri"],
     "AddButton": ["Lisää", "Add", "Lägg till"],
     "ReservedStatus": ["Varattu", "Reserved", "Reserverad"],
-    "AddError": ["Virhe: Laitteen nimi ei voi olla tyhjä.", "Error: Device name cannot be empty", "Fel: Enhetsnamnet får inte vara tomt."],
-    "StatusError": ["Virhe: Laitteen tilan on oltava joko 'vapaa' tai 'varattu'",
-     "Error: Device status must be either 'free' or 'reserved'", "Fel: Enhetsstatusen måste vara antigen 'fri' eller 'reserverad'"]
+    "AddError": [
+      "Virhe: Laitteen nimi ei voi olla tyhjä.",
+      "Error: Device name cannot be empty",
+      "Fel: Enhetsnamnet får inte vara tomt."
+    ],
+    "StatusError": [
+      "Virhe: Laitteen tilan on oltava joko 'vapaa' tai 'varattu'",
+      "Error: Device status must be either 'free' or 'reserved'",
+      "Fel: Enhetsstatusen måste vara antigen 'fri' eller 'reserverad'"
+    ]
   },
 
   "signin": {
@@ -322,8 +337,8 @@
       "Redigera status för banofficer genom att välja färg"
     ],
     "AddETA": [
-      "Lisää arvioitu saapumisaika", 
-      "Add estimated time of arrival", 
+      "Lisää arvioitu saapumisaika",
+      "Add estimated time of arrival",
       "Lägg till beräknad ankomsttid"
     ],
     "SuccessfulUpdate": [
@@ -337,14 +352,22 @@
       "Uppdatering av beräknad ankomsttid misslyckades"
     ],
     "ConfirmTime": ["Vahvista aika", "Confirm time", "Bekräfta tid"],
-    "ManageTracks": ["Hallitse ratoja", "Manage shooting tracks", "Hantera skjutbanor"],
+    "ManageTracks": [
+      "Hallitse ratoja",
+      "Manage shooting tracks",
+      "Hantera skjutbanor"
+    ],
     "ShootingTrack": ["Ampumarata", "Shooting track", "Skjutbana"],
     "Closed": ["Rata suljettu", "Track closed", "Bana stängd"],
     "Notice": ["Lisätiedot", "Details", "Detaljer"],
     "OpenAll": ["Avaa kaikki", "Open All", "Öppna alla"],
     "ClearAll": ["Tyhjennä kaikki", "Clear All", "Rensa alla"],
     "CloseAll": ["Sulje kaikki", "Close All", "Stäng alla"],
-    "AdvancedOptions": ["Lisäasetukset", "Advanced options", "Avancerade alternativ"],
+    "AdvancedOptions": [
+      "Lisäasetukset",
+      "Advanced options",
+      "Avancerade alternativ"
+    ],
     "RepeatDaily": ["Toista päivittäin", "Repeat daily", "Upprepa dagligen"],
     "RepeatWeekly": [
       "Toista viikottain",
@@ -391,14 +414,18 @@
       "Change email address",
       "Ändra e-postadress"
     ],
-    "ChangeRole": [
-      "Vaihda rooli",
-      "Change role",
-      "Ändra roll"
-    ],
+    "ChangeRole": ["Vaihda rooli", "Change role", "Ändra roll"],
     "Edit": ["Muokkaa", "Edit", "Redigera"],
-    "EditOff": ["Sulje muokkaustila", "Close editing mode", "Stäng redigeringsläge"],
-    "EditEmail": ["Muokkaa sähköpostiosoitetta", "Edit email address", "Redigera e-postadress"],
+    "EditOff": [
+      "Sulje muokkaustila",
+      "Close editing mode",
+      "Stäng redigeringsläge"
+    ],
+    "EditEmail": [
+      "Muokkaa sähköpostiosoitetta",
+      "Edit email address",
+      "Redigera e-postadress"
+    ],
     "EditRole": ["Muokka roolia", "Edit role", "Redigera roll"],
     "CreateUser": ["Lisää käyttäjä", "Create new user", "Skapa ny användare"],
     "Users": ["Käyttäjät", "User profiles", "Användarprofiler"],
@@ -453,7 +480,11 @@
     "Rangeofficer": ["Valvoja", "Range officer", "Banofficer"],
     "Association": ["Yhdistys", "Association", "Förening"],
     "Rangemaster": ["Päävalvoja", "Range master", "Banmästare"],
-    "SelectAssociation": ["Valitse yhdistys", "Select association", "Välja förening"],
+    "SelectAssociation": [
+      "Valitse yhdistys",
+      "Select association",
+      "Välja förening"
+    ],
     "SelectRole": ["Valitse rooli", "Select role", "Välj roll"],
     "ChangeFor": [
       "Vaihda salasana käyttäjälle",
@@ -685,7 +716,6 @@
     "lastTooltip": ["Viimeinen sivu", "Last page", "Sista sidan"],
     "addButton": ["Lisää", "Add", "Lägg till"]
   },
-
 
   "month": {
     "0": ["Err", "Err", "Err"],

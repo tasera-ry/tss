@@ -1,7 +1,7 @@
-import { FormLabel, TextField, FormHelperText } from "@mui/material";
-import classNames from "classnames";
-import { ReactNode, useState } from "react";
-import { UseFormReturn, Controller } from "react-hook-form";
+import { FormHelperText, FormLabel, TextField } from '@mui/material';
+import classNames from 'classnames';
+import { type ReactNode, useState } from 'react';
+import { Controller, type UseFormReturn } from 'react-hook-form';
 
 interface CollapsibleTextFieldProps {
   label: string;
@@ -10,7 +10,12 @@ interface CollapsibleTextFieldProps {
   helperText?: ReactNode;
 }
 
-export function CollapsibleTextField({ label, field, form, helperText }: CollapsibleTextFieldProps) {
+export function CollapsibleTextField({
+  label,
+  field,
+  form,
+  helperText,
+}: CollapsibleTextFieldProps) {
   const [expanded, setExpanded] = useState(false);
 
   const toggleExpanded = () => {
@@ -19,21 +24,21 @@ export function CollapsibleTextField({ label, field, form, helperText }: Collaps
 
   return (
     <div className="border border-gray-300 rounded-md p-2">
-      <div 
+      <div
         onClick={toggleExpanded}
         className="flex items-center justify-between border-b border-gray-300 py-2"
       >
         <FormLabel className="">{label}</FormLabel>
         <span
           className={classNames(
-            "transition-transform duration-300 text-light-grey",
-            expanded ? "" : "rotate-180"
+            'transition-transform duration-300 text-light-grey',
+            expanded ? '' : 'rotate-180',
           )}
         >
           ▲
         </span>
       </div>
-      
+
       {expanded && (
         <>
           <Controller

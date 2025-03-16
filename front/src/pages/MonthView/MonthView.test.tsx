@@ -1,10 +1,9 @@
-import { waitFor, render, screen } from '@testing-library/react';
-import { HashRouter as Router, useParams } from 'react-router-dom';
-import { Monthview } from './MonthView';
+import { TestProviders } from '@/_TestUtils/TestProvides';
 import monthTestUtil from '@/_TestUtils/monthTestUtil';
 import api from '@/api/api';
-import { TestProviders } from '@/_TestUtils/TestProvides';
-
+import { render, screen, waitFor } from '@testing-library/react';
+import { HashRouter as Router, useParams } from 'react-router-dom';
+import { Monthview } from './MonthView';
 
 vi.mock('axios');
 
@@ -13,23 +12,21 @@ vi.mock('@/lib/components/InfoBox', () => ({
   InfoBox: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
 }));
 
-vi.mock('@/api/api')
+vi.mock('@/api/api');
 vi.mock('react-router-dom', async (originalImport) => {
-  const originalModule = await originalImport() as any
+  const originalModule = (await originalImport()) as any;
   return {
     ...originalModule,
     useParams: vi.fn().mockImplementation(() => ({
       date: undefined,
     })),
-  }
+  };
 });
 
 const mockMonth = monthTestUtil.month;
 
 describe('testing monthview', () => {
-
   it('should render monthView when URL is broken/invalid', async () => {
-
     vi.mocked(api.getSchedulingFreeform).mockResolvedValue({
       month: mockMonth('09', '28'),
     });
@@ -39,7 +36,8 @@ describe('testing monthview', () => {
     render(
       <Router>
         <Monthview />
-      </Router>, {wrapper: TestProviders}
+      </Router>,
+      { wrapper: TestProviders },
     );
     await waitFor(() =>
       expect(screen.getByText('October 2020')).toBeInTheDocument(),
@@ -58,11 +56,11 @@ describe('testing monthview', () => {
     render(
       <Router>
         <Monthview />
-      </Router>, {wrapper: TestProviders}
+      </Router>,
+      { wrapper: TestProviders },
     );
     await waitFor(() =>
       expect(screen.getByText('October 2020')).toBeInTheDocument(),
     );
   });
-
 });

@@ -1,68 +1,79 @@
-import { useMemo } from 'react';
 import classNames from 'classnames';
+import { useMemo } from 'react';
 
-// Material UI components
-import { Link, useHistory, useParams } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CircularProgress from '@mui/material/CircularProgress';
+// Material UI components
+import { Link, useHistory, useParams } from 'react-router-dom';
 
+import api from '@/api/api';
+import info from '@/assets/Info.png';
+import { DateHeader } from '@/lib/components/DateHeader';
+import { InfoBox } from '@/lib/components/InfoBox';
+import { ViewChanger } from '@/lib/components/ViewChanger';
+import { JumpToCurrent } from '@/utils/Utils';
+import { Trans, useLingui } from '@lingui/react/macro';
 // Moment for date handling
 import moment from 'moment';
-import { JumpToCurrent } from '@/utils/Utils';
-import info from '@/assets/Info.png';
-import api from '@/api/api';
-import css from './DayView.module.scss';
-import { DeviceStatusList } from '../../DeviceStatusList/DeviceStatusList';
-import { ViewChanger } from '@/lib/components/ViewChanger';
 import { useQuery } from 'react-query';
-import { DateHeader } from '@/lib/components/DateHeader';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { InfoBox } from '@/lib/components/InfoBox';
-
+import { DeviceStatusList } from '../../DeviceStatusList/DeviceStatusList';
+import css from './DayView.module.scss';
 
 const classes = classNames.bind(css);
 
 export function Dayview() {
   const { t } = useLingui();
   const history = useHistory();
-  const { date: dateParam } = useParams<{ date: string}>();
+  const { date: dateParam } = useParams<{ date: string }>();
 
   const targetDate = useMemo(() => {
     return dateParam ?? moment().format('YYYY-MM-DD');
-  }, [dateParam])
+  }, [dateParam]);
 
   const { data } = useQuery({
     queryKey: ['dayview', targetDate],
-    queryFn: () => api.getSchedulingDate(targetDate)
+    queryFn: () => api.getSchedulingDate(targetDate),
   });
 
   const previousDayClick = () => {
-    history.push(`/dayview/${moment(targetDate).subtract(1, 'day').format('YYYY-MM-DD')}`)
-  }; 
+    history.push(
+      `/dayview/${moment(targetDate).subtract(1, 'day').format('YYYY-MM-DD')}`,
+    );
+  };
 
   const nextDayClick = () => {
-    history.push(`/dayview/${moment(targetDate).add(1, 'day').format('YYYY-MM-DD')}`)
+    history.push(
+      `/dayview/${moment(targetDate).add(1, 'day').format('YYYY-MM-DD')}`,
+    );
   };
 
   const opensAt = useMemo(() => {
     if (!data) return undefined;
     return moment(data.open, 'HH:mm').format('H.mm');
-  }, [data])
+  }, [data]);
 
   const closesAt = useMemo(() => {
     if (!data) return undefined;
     return moment(data.close, 'HH:mm').format('H.mm');
-  }, [data])
+  }, [data]);
 
   return (
     <div>
       <InfoBox tabletMode={true} />
       <div className={classes(css.dayviewContainer)}>
-        <DateHeader targetDate={targetDate} onPrevious={previousDayClick} onNext={nextDayClick} />
+        <DateHeader
+          targetDate={targetDate}
+          onPrevious={previousDayClick}
+          onNext={nextDayClick}
+        />
         {data && <OfficerBanner rangeSupervision={data.rangeSupervision} />}
-        {data && <h2 className={classes(css.headerText)}>
-          <Trans>Opening hours: {opensAt}-{closesAt}</Trans>
-        </h2>}
+        {data && (
+          <h2 className={classes(css.headerText)}>
+            <Trans>
+              Opening hours: {opensAt}-{closesAt}
+            </Trans>
+          </h2>
+        )}
         {/* Whole view */}
         <div className={classes(css.dayviewBigContainer)}>
           <div className={classes(css.viewChanger)}>
@@ -100,13 +111,9 @@ export default Dayview;
 
 function TrackList({ tracks, date }) {
   return (
-    <div className='flex p-2 gap-2'>
+    <div className="flex p-2 gap-2">
       {tracks.map((track) => (
-        <TrackBox
-          key={track.id}
-          track={track}
-          date={date}
-        />
+        <TrackBox key={track.id} track={track} date={date} />
       ))}
     </div>
   );
@@ -128,13 +135,16 @@ function TrackBox({ track, date }) {
       return css.yellowB;
     }
     return css.redB;
-  }, [track])
+  }, [track]);
 
-  const link = `/trackview/${date}/${track.name}`
-
+  const link = `/trackview/${date}/${track.name}`;
 
   return (
-    <Link className="bg-white rounded p-2 flex flex-col justify-start" style={{backgroundColor: color}} to={link}>
+    <Link
+      className="bg-white rounded p-2 flex flex-col justify-start"
+      style={{ backgroundColor: color }}
+      to={link}
+    >
       <span className={classes(css.bold)}>{track.name}</span>
       <span className={classes(css.overflowHidden)}>
         {track.short_description}
@@ -149,7 +159,6 @@ function TrackBox({ track, date }) {
     </Link>
   );
 }
-
 
 function OfficerBanner({ rangeSupervision }) {
   const { t } = useLingui();
@@ -167,7 +176,7 @@ function OfficerBanner({ rangeSupervision }) {
       return { text: t`Range officer on the way`, color: css.yellowB };
     }
     return { text: t`Range closed`, color: css.redB };
-  }, [])
+  }, []);
 
   return <h2 className={classes(css.info, color)}>{text}</h2>;
 }
@@ -175,31 +184,34 @@ function OfficerBanner({ rangeSupervision }) {
 function Legends() {
   const { t } = useLingui();
   return (
-    <div className='flex justify-center'>
-      <div className='grid grid-cols-2 gap-2'>
+    <div className="flex justify-center">
+      <div className="grid grid-cols-2 gap-2">
         <LegendItem label={t`Open`} colorClass={css.greenB} />
         <LegendItem label={t`Closed`} colorClass={css.redB} />
-        <LegendItem label={t`No track officer available`} colorClass={css.whiteB} />
-        <div className='flex gap-1 justify-start items-center pl-2.5'>
+        <LegendItem
+          label={t`No track officer available`}
+          colorClass={css.whiteB}
+        />
+        <div className="flex gap-1 justify-start items-center pl-2.5">
           <img
             className="size-5"
             src={info}
             alt={t`Track has additional information`}
           />
-          <p>
-            {t`Track has additional information`}
-          </p>
+          <p>{t`Track has additional information`}</p>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-
-function LegendItem({ label, colorClass }: { label: string; colorClass: string }) {
+function LegendItem({
+  label,
+  colorClass,
+}: { label: string; colorClass: string }) {
   return (
-    <div className='flex gap-1 justify-start items-center pl-2.5'>
-      <p className={classNames("size-5 border", colorClass)} />
+    <div className="flex gap-1 justify-start items-center pl-2.5">
+      <p className={classNames('size-5 border', colorClass)} />
       <p>{label}</p>
     </div>
   );

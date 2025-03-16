@@ -90,26 +90,26 @@ const addRangeSupervision = (
   rangeSupervisor,
   association,
 ) => {
-
   axios.post('/api/range-supervision', {
-    scheduled_range_supervision_id: scheduledRangeSupervisionId.scheduled_range_supervision_id,
+    scheduled_range_supervision_id:
+      scheduledRangeSupervisionId.scheduled_range_supervision_id,
     range_supervisor: rangeSupervisor,
     association,
   });
-}
+};
 
 const patchRangeSupervision = (id, rangeSupervisor) => {
   if (rangeSupervisor.association) {
     return axios.put(`api/range-supervision/${id}`, {
       range_supervisor: rangeSupervisor.range_supervisor,
       association: rangeSupervisor.association,
-      arriving_at: rangeSupervisor.arriving_at
+      arriving_at: rangeSupervisor.arriving_at,
     });
   }
 
   return axios.put(`api/range-supervision/${id}`, {
     range_supervisor: rangeSupervisor.range_supervisor,
-    arriving_at: rangeSupervisor.arriving_at
+    arriving_at: rangeSupervisor.arriving_at,
   });
 };
 
@@ -148,7 +148,9 @@ const getRangeMasterInfoMessages = async () => {
     const response = await axios.get('api/infomessage/tablet');
     return response.data;
   } catch (err) {
-    console.error("Error in getting range master info message. User is not logged in.");
+    console.error(
+      'Error in getting range master info message. User is not logged in.',
+    );
     return;
   }
 };
@@ -184,17 +186,20 @@ const createDevice = async (newDevice) => {
   return response.data;
 };
 
-const deleteDevice = async (id) => {  
+const deleteDevice = async (id) => {
   await axios.delete(`api/devices/${id}`);
 };
 
 async function getSupervisions(associationId) {
   try {
-    const response = await axios.get(`api/range-supervision/association/${associationId}`);
+    const response = await axios.get(
+      `api/range-supervision/association/${associationId}`,
+    );
 
     return response.data.map((supervision) => ({
       id: supervision.scheduled_range_supervision_id,
-      scheduled_range_supervision_id: supervision.scheduled_range_supervision_id,
+      scheduled_range_supervision_id:
+        supervision.scheduled_range_supervision_id,
       date: moment(supervision.date).format('YYYY-MM-DD'),
       range_supervisor: supervision.range_supervisor,
       rangeofficer_id: supervision.rangeofficer_id,

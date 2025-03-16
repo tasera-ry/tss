@@ -1,8 +1,8 @@
-import classNames from 'classnames';
-import css from './DateHeader.module.scss';
-import { useMemo } from 'react';
-import moment from 'moment';
 import { useLingui } from '@lingui/react/macro';
+import classNames from 'classnames';
+import moment from 'moment';
+import { useMemo } from 'react';
+import css from './DateHeader.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -10,40 +10,50 @@ export interface DateHeaderProps {
   targetDate: string;
   onPrevious: () => void;
   onNext: () => void;
-  type?: 'week' | 'month' | 'day'
+  type?: 'week' | 'month' | 'day';
 }
 
-export function DateHeader({targetDate, onPrevious, onNext, type = 'day'}: DateHeaderProps) {
-  const { t, i18n } = useLingui()
+export function DateHeader({
+  targetDate,
+  onPrevious,
+  onNext,
+  type = 'day',
+}: DateHeaderProps) {
+  const { t, i18n } = useLingui();
 
-  const date = useMemo(() => new Date(targetDate), [targetDate])
+  const date = useMemo(() => new Date(targetDate), [targetDate]);
 
   const dateString = useMemo(() => {
-    const str = i18n.date(date, { weekday: 'long', day: 'numeric', month: 'numeric', year: 'numeric' })
-    return str.charAt(0).toUpperCase() + str.slice(1)
-  }, [date, i18n])
+    const str = i18n.date(date, {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+    });
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }, [date, i18n]);
 
   const weekString = useMemo(() => {
-    const year = moment(date).year()
-    const weekNumber = moment(date).isoWeek()
-    return t`Week ${weekNumber} ${year}`
-  }, [date, i18n])
+    const year = moment(date).year();
+    const weekNumber = moment(date).isoWeek();
+    return t`Week ${weekNumber} ${year}`;
+  }, [date, i18n]);
 
   const monthString = useMemo(() => {
-    const str = i18n.date(date, { month: 'long', year: 'numeric' })
-    return str.charAt(0).toUpperCase() + str.slice(1)
-  }, [date, i18n])
+    const str = i18n.date(date, { month: 'long', year: 'numeric' });
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }, [date, i18n]);
 
   const label = useMemo(() => {
     switch (type) {
       case 'week':
-        return weekString
+        return weekString;
       case 'month':
-        return monthString
+        return monthString;
       case 'day':
-        return dateString
+        return dateString;
     }
-  }, [type, weekString, monthString, dateString])
+  }, [type, weekString, monthString, dateString]);
 
   return (
     <div className="flex justify-center items-center py-10">
@@ -61,5 +71,5 @@ export function DateHeader({targetDate, onPrevious, onNext, type = 'day'}: DateH
         data-testid="nextDay"
       />
     </div>
-  )
+  );
 }

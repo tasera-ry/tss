@@ -1,18 +1,18 @@
+import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import classNames from 'classnames';
 import colors from '../colors.module.scss';
 
 // Material UI components
 import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
 
+import { useLingui } from '@lingui/react/macro';
 import api from '../api/api';
 import css from './RenewPassword.module.scss';
-import { useLingui } from '@lingui/react/macro';
 
 const classes = classNames.bind(css);
 

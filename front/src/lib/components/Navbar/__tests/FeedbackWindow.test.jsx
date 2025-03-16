@@ -1,8 +1,7 @@
-import { waitFor, render, screen, fireEvent } from '@testing-library/react';
+import { TestProviders } from '@/_TestUtils/TestProvides';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import FeedbackWindow from '../FeedbackWindow';
-import { TestProviders } from '@/_TestUtils/TestProvides';
-
 
 axios.put = vi.fn(() => Promise.resolve());
 localStorage.setItem('language', '1');
@@ -17,7 +16,8 @@ describe('testing FeedbackWindow', () => {
         user="dummyUser"
         dialogOpen={dialogOpen}
         onCloseDialog={() => {}}
-      />, { wrapper: TestProviders }
+      />,
+      { wrapper: TestProviders },
     );
     await waitFor(() =>
       expect(screen.getByText('Give feedback')).toBeInTheDocument(),
@@ -32,7 +32,8 @@ describe('testing FeedbackWindow', () => {
         user="dummyUser"
         dialogOpen={dialogOpen}
         onCloseDialog={() => {}}
-      />, { wrapper: TestProviders }
+      />,
+      { wrapper: TestProviders },
     );
     await waitFor(() =>
       expect(screen.getByTestId('feedback-field')).toBeInTheDocument(),

@@ -1,20 +1,20 @@
 import { useCallback } from 'react';
 import { useCookies } from 'react-cookie';
 
+import api from '@/api/api';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useLingui } from '@lingui/react/macro';
 import {
   Button,
-  TextField,
-  Select,
-  MenuItem,
   CircularProgress,
+  MenuItem,
+  Select,
+  TextField,
 } from '@mui/material';
-import { useLingui } from '@lingui/react/macro';
+import moment from 'moment';
+import { useForm } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import moment from 'moment';
-import api from '@/api/api';
 
 export const newMessageSchema = z.object({
   message: z.string().min(1),
@@ -47,23 +47,24 @@ export function NewMessageForm() {
   const userQuery = useQuery({
     queryKey: ['users'],
     queryFn: () => api.getUsers(),
-    initialData: []
+    initialData: [],
   });
 
   const newMessageMutation = useMutation({
-    mutationFn: (data: NewMessage) => api.postInfoMessage({
-      ...data,
-      sender: cookies.username,
-      show_weekly: false,
-      show_monthly: false,
-    }),
+    mutationFn: (data: NewMessage) =>
+      api.postInfoMessage({
+        ...data,
+        sender: cookies.username,
+        show_weekly: false,
+        show_monthly: false,
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['infoMessages'] });
       form.reset();
     },
     onError: () => {
       alert(t`Error sending message`);
-    }
+    },
   });
 
   const onSubmit = useCallback((data: NewMessage) => {
@@ -71,7 +72,10 @@ export function NewMessageForm() {
   }, []);
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-4 items-start pb-2'>
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className="flex flex-col gap-4 items-start pb-2"
+    >
       <TextField
         label={t`Message`}
         multiline
@@ -79,7 +83,7 @@ export function NewMessageForm() {
         fullWidth
         error={!!form.formState.errors.message}
         helperText={form.formState.errors.message?.message?.toString()}
-        {...form.register("message")}
+        {...form.register('message')}
       />
       <fieldset className="flex flex-col sm:flex-row gap-2 w-full">
         <TextField
@@ -87,13 +91,13 @@ export function NewMessageForm() {
           type="date"
           fullWidth
           label={t`Start date`}
-          {...form.register("start")}
+          {...form.register('start')}
           error={!!form.formState.errors.start}
           helperText={form.formState.errors.start?.message?.toString()}
           slotProps={{
             htmlInput: {
-              min: moment().format('YYYY-MM-DD')
-            }
+              min: moment().format('YYYY-MM-DD'),
+            },
           }}
         />
         <TextField
@@ -101,31 +105,30 @@ export function NewMessageForm() {
           type="date"
           fullWidth
           label={t`End date`}
-          {...form.register("end")}
+          {...form.register('end')}
           error={!!form.formState.errors.end}
           helperText={form.formState.errors.end?.message?.toString()}
           slotProps={{
             htmlInput: {
-              min: moment().format('YYYY-MM-DD')
-            }
+              min: moment().format('YYYY-MM-DD'),
+            },
           }}
         />
       </fieldset>
       <Select
         fullWidth
-        value={form.watch("recipients")}
+        value={form.watch('recipients')}
         MenuProps={{ style: { maxHeight: 400 } }}
-        {...form.register("recipients")}
+        {...form.register('recipients')}
         error={!!form.formState.errors.recipients}
       >
         <MenuItem value={'all'}>{t`Send public message`}</MenuItem>
         <MenuItem value={'rangemaster'}>{t`Rangemaster`}</MenuItem>
-        {userQuery.data.map((user) => <MenuItem
-          key={user.id}
-          value={user.name}
-        >
-          {user.name}
-        </MenuItem>)}
+        {userQuery.data.map((user) => (
+          <MenuItem key={user.id} value={user.name}>
+            {user.name}
+          </MenuItem>
+        ))}
       </Select>
       <Button
         type="submit"
@@ -133,8 +136,12 @@ export function NewMessageForm() {
         variant="contained"
         disabled={!form.formState.isValid || newMessageMutation.isLoading}
       >
-        {newMessageMutation.isLoading ? <CircularProgress size={20} /> : t`Send`}
+        {newMessageMutation.isLoading ? (
+          <CircularProgress size={20} />
+        ) : (
+          t`Send`
+        )}
       </Button>
     </form>
-  )
+  );
 }

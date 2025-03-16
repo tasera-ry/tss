@@ -1,24 +1,24 @@
-import { HashRouter as Router, useParams } from 'react-router-dom';
-import { render, screen, waitFor } from '@testing-library/react';
-import { Dayview } from './DayView';
-import api from '@/api/api';
-import testUtils from '@/_TestUtils/TestUtils';
 import { TestProviders } from '@/_TestUtils/TestProvides';
+import testUtils from '@/_TestUtils/TestUtils';
+import api from '@/api/api';
+import { render, screen, waitFor } from '@testing-library/react';
+import { HashRouter as Router, useParams } from 'react-router-dom';
+import { Dayview } from './DayView';
 
 // Mock the InfoBox component
 vi.mock('@/lib/components/InfoBox', () => ({
   InfoBox: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
 }));
 
-vi.mock('@/api/api')
+vi.mock('@/api/api');
 vi.mock('react-router-dom', async (originalImport) => {
-  const originalModule = await originalImport() as any
+  const originalModule = (await originalImport()) as any;
   return {
     ...originalModule,
     useParams: vi.fn().mockImplementation(() => ({
       date: undefined,
     })),
-  }
+  };
 });
 
 const { schedule } = testUtils;
@@ -31,7 +31,8 @@ describe('testing Dayview component', () => {
     render(
       <Router>
         <Dayview />
-      </Router>, {wrapper: TestProviders}
+      </Router>,
+      { wrapper: TestProviders },
     );
     await waitFor(() =>
       expect(screen.getByText('Back to weekview')).toBeInTheDocument(),
@@ -44,8 +45,9 @@ describe('testing Dayview component', () => {
 
     render(
       <Router>
-        <Dayview/>
-      </Router>, {wrapper: TestProviders}
+        <Dayview />
+      </Router>,
+      { wrapper: TestProviders },
     );
     await waitFor(() =>
       expect(screen.getByText('Range closed')).toBeInTheDocument(),
@@ -61,7 +63,8 @@ describe('testing Dayview component', () => {
     render(
       <Router>
         <Dayview />
-      </Router>, {wrapper: TestProviders}
+      </Router>,
+      { wrapper: TestProviders },
     );
     await waitFor(() =>
       expect(screen.getByText('Wednesday, 10/21/2020')).toBeInTheDocument(),
@@ -74,7 +77,8 @@ describe('testing Dayview component', () => {
     render(
       <Router>
         <Dayview />
-      </Router>, {wrapper: TestProviders}
+      </Router>,
+      { wrapper: TestProviders },
     );
     await waitFor(() =>
       expect(screen.getByTestId('mockInfoBox')).toBeInTheDocument(),

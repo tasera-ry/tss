@@ -1,17 +1,17 @@
-import { useState } from 'react';
 import classNames from 'classnames';
+import { useState } from 'react';
 
+import Container from '@mui/material/Container';
 // Material UI components
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
 
 import colors from '../colors.module.scss';
 
-import ResetPasswordForm from './ResetPasswordForm';
+import { useLingui } from '@lingui/react/macro';
 import api from '../api/api';
 import css from './ResetPassword.module.scss';
-import { useLingui } from '@lingui/react/macro';
+import ResetPasswordForm from './ResetPasswordForm';
 
 const classes = classNames.bind(css);
 

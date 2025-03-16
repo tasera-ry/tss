@@ -1,31 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import './tracks.scss';
-// Material UI components
-import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
-import Container from '@mui/material/Container';
-import LinearProgress from '@mui/material/LinearProgress';
-import Snackbar from '@mui/material/Snackbar';
-// Axios for calls to backend
-import axios from 'axios';
-// Token validation
-import { validateLogin } from '../utils/Utils';
+import { useLingui } from '@lingui/react/macro';
+import { Add, Cancel, Delete, Edit, Save } from '@mui/icons-material';
 import {
+  Alert,
+  Button,
+  IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Button,
   TextField,
-  IconButton,
   Tooltip,
-  Alert,
 } from '@mui/material';
-import { Add, Edit, Delete, Save, Cancel } from '@mui/icons-material';
-import { useLingui } from '@lingui/react/macro';
-
+import Container from '@mui/material/Container';
+import LinearProgress from '@mui/material/LinearProgress';
+// Material UI components
+import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
+import Snackbar from '@mui/material/Snackbar';
+// Axios for calls to backend
+import axios from 'axios';
+// Token validation
+import { validateLogin } from '../utils/Utils';
 
 const RequestStatusAlert = ({ statusSetter, requestStatus, text }) => {
   if (requestStatus === null) {
@@ -50,7 +49,11 @@ const TrackTable = ({
 }) => {
   const { t } = useLingui();
   const [editingRow, setEditingRow] = useState(null);
-  const [newRow, setNewRow] = useState({ name: '', description: '', short_description: '' });
+  const [newRow, setNewRow] = useState({
+    name: '',
+    description: '',
+    short_description: '',
+  });
 
   const handleAddRow = async () => {
     try {
@@ -74,11 +77,11 @@ const TrackTable = ({
     try {
       await axios.put(`/api/track/${trackInfo.id}`, editingRow);
       const updatedData = trackData.map((track, i) =>
-        i === index ? { ...track, ...editingRow } : track
+        i === index ? { ...track, ...editingRow } : track,
       );
       setTrackData(updatedData);
       setRequestStatus('success');
-      setRequestText(t`Track updated`	);
+      setRequestText(t`Track updated`);
       setEditingRow(null);
       setRefresh(true);
     } catch (e) {
@@ -128,7 +131,10 @@ const TrackTable = ({
                     <TextField
                       value={editingRow.description}
                       onChange={(e) =>
-                        setEditingRow({ ...editingRow, description: e.target.value })
+                        setEditingRow({
+                          ...editingRow,
+                          description: e.target.value,
+                        })
                       }
                     />
                   </TableCell>
@@ -136,7 +142,10 @@ const TrackTable = ({
                     <TextField
                       value={editingRow.short_description}
                       onChange={(e) =>
-                        setEditingRow({ ...editingRow, short_description: e.target.value })
+                        setEditingRow({
+                          ...editingRow,
+                          short_description: e.target.value,
+                        })
                       }
                     />
                   </TableCell>
@@ -156,7 +165,9 @@ const TrackTable = ({
                   <TableCell>{row.short_description}</TableCell>
                   <TableCell>
                     <Tooltip title={t`Edit`}>
-                      <IconButton onClick={() => setEditingRow({ ...row, index })}>
+                      <IconButton
+                        onClick={() => setEditingRow({ ...row, index })}
+                      >
                         <Edit />
                       </IconButton>
                     </Tooltip>
@@ -181,14 +192,18 @@ const TrackTable = ({
             <TableCell>
               <TextField
                 value={newRow.description}
-                onChange={(e) => setNewRow({ ...newRow, description: e.target.value })}
+                onChange={(e) =>
+                  setNewRow({ ...newRow, description: e.target.value })
+                }
                 placeholder={t`Description`}
               />
             </TableCell>
             <TableCell>
               <TextField
                 value={newRow.short_description}
-                onChange={(e) => setNewRow({ ...newRow, short_description: e.target.value })}
+                onChange={(e) =>
+                  setNewRow({ ...newRow, short_description: e.target.value })
+                }
                 placeholder={t`Short description`}
               />
             </TableCell>
@@ -231,12 +246,12 @@ const TrackCRUD = () => {
 
   // run if changes to users
   useEffect(() => {
-    if(refresh){
+    if (refresh) {
       updateData();
     }
   }, [refresh]);
 
-  const updateData = async() => {
+  const updateData = async () => {
     try {
       const response = await axios.get('/api/track');
       setTrackData(response.data);
@@ -246,7 +261,7 @@ const TrackCRUD = () => {
       // server code
       setTrackData([]);
     }
-  }
+  };
 
   return (
     <ScopedCssBaseline>

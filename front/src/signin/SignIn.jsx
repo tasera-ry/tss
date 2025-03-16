@@ -1,20 +1,20 @@
-import { useState } from 'react';
 import classNames from 'classnames';
+import { useState } from 'react';
 
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 // Material UI components
 import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-import { useHistory } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
-import colors from '../colors.module.scss';
-import api from '../api/api';
-import css from './SignIn.module.scss';
 import { useLingui } from '@lingui/react/macro';
+import { useCookies } from 'react-cookie';
+import { useHistory } from 'react-router-dom';
+import api from '../api/api';
+import colors from '../colors.module.scss';
+import css from './SignIn.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -80,7 +80,7 @@ const SignIn = () => {
             slotProps={{
               htmlInput: {
                 'data-testid': 'nameField',
-              }
+              },
             }}
           />
           <TextField
@@ -100,13 +100,13 @@ const SignIn = () => {
             slotProps={{
               htmlInput: {
                 'data-testid': 'passwordField',
-              }
+              },
             }}
           />
           {mistake && (
-          <Typography align="center" className={classes(css.error)}>
-            {t`Wrong username or password`}
-          </Typography>
+            <Typography align="center" className={classes(css.error)}>
+              {t`Wrong username or password`}
+            </Typography>
           )}
           <Button
             onClick={login}

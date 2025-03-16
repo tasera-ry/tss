@@ -1,11 +1,10 @@
-import api from "@/api/api";
-import { msg,  } from "@lingui/core/macro";
-import { Button } from "@mui/material";
-import { useMemo } from "react";
-import { useQueryClient, useMutation } from "react-query";
-import colors from "../../../../colors.module.scss";
-import { useLingui } from "@lingui/react";
-
+import api from '@/api/api';
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
+import { Button } from '@mui/material';
+import { useMemo } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
+import colors from '../../../../colors.module.scss';
 
 const deviceStatuses = {
   free: {
@@ -15,24 +14,33 @@ const deviceStatuses = {
   reserved: {
     statusMsg: msg`Reserved`,
     color: colors.redLight,
-  }
-}
+  },
+};
 
 export function DeviceStatusCard({ device }) {
   const { i18n } = useLingui();
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
-  const buttonState = useMemo(() => deviceStatuses[device.status], [device.status])
+  const buttonState = useMemo(
+    () => deviceStatuses[device.status],
+    [device.status],
+  );
 
   const deviceStatusMutation = useMutation({
-    mutationFn: () => api.patchDevice(device.id, { status: device.status === 'free' ? 'reserved' : 'free' }),
+    mutationFn: () =>
+      api.patchDevice(device.id, {
+        status: device.status === 'free' ? 'reserved' : 'free',
+      }),
     onSuccess: () => {
       queryClient.setQueryData(['devices'], (old: any) => {
-        return old.map((d) => d.id === device.id ? { ...d, status: device.status === 'free' ? 'reserved' : 'free' } : d)
-      })
-    }
-  })
-
+        return old.map((d) =>
+          d.id === device.id
+            ? { ...d, status: device.status === 'free' ? 'reserved' : 'free' }
+            : d,
+        );
+      });
+    },
+  });
 
   return (
     <Button
@@ -45,7 +53,7 @@ export function DeviceStatusCard({ device }) {
       data-testid={`device-card-${device.id}`}
     >
       <span>{device.device_name}</span>
-      <span className='text-sm'>{i18n._(buttonState.statusMsg)}</span>
+      <span className="text-sm">{i18n._(buttonState.statusMsg)}</span>
     </Button>
-  )
+  );
 }

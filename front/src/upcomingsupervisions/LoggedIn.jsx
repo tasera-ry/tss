@@ -1,21 +1,21 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
+import { useLingui } from '@lingui/react/macro';
 // Material UI components
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import CircularProgress from '@mui/material/CircularProgress';
+import TextField from '@mui/material/TextField';
 import { makeStyles } from '@mui/styles';
 import { useCookies } from 'react-cookie';
-import TextField from '@mui/material/TextField';
-import { useLingui } from '@lingui/react/macro';
 
 // Axios for call-handling to backend
 import axios from 'axios';
@@ -84,9 +84,7 @@ const DropDowns = (props) => {
     color = '#c97b7b';
   }
   const [buttonText, setButtonText] = useState(text);
-  const [officerButtonText, setOfficerButtonText] = useState(
-    t`Select officer`,
-  );
+  const [officerButtonText, setOfficerButtonText] = useState(t`Select officer`);
   const [buttonColor, setButtonColor] = useState(color);
   const [anchorEl, setAnchorEl] = useState(null);
   const [officerAnchorEl, setOfficerAnchorEl] = useState(null);
@@ -283,7 +281,6 @@ const Rows = ({
   sv,
   rangeofficerList,
 }) => {
-
   setDone(true);
 
   function getWeekday(day) {
@@ -467,8 +464,7 @@ const DialogWindow = ({ onCancel }) => {
 
   // starting point
   useEffect(() => {
-    
-    const myFunc = async() => {
+    const myFunc = async () => {
       getSchedule(
         setSchedules,
         setNoSchedule,

@@ -1,7 +1,7 @@
-import { HashRouter as Router } from 'react-router-dom';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as axios from 'axios';
 import { act } from 'react-dom/test-utils';
+import { HashRouter as Router } from 'react-router-dom';
 import TrackCRUD from './tracks';
 
 const mockTracks = [
@@ -15,13 +15,13 @@ const mockTracks = [
 ];
 const data = { data: mockTracks };
 
-vi.mock(import("../utils/Utils"), async (importOriginal) => {
-  const actual = await importOriginal()
+vi.mock(import('../utils/Utils'), async (importOriginal) => {
+  const actual = await importOriginal();
   return {
     ...actual,
     validateLogin: vi.fn(() => true),
-  }
-})
+  };
+});
 
 vi.mock('axios', () => ({
   get: vi.fn(),

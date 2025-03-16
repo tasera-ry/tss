@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react';
 
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import { Alert } from '@mui/lab';
 import {
   Table,
+  TableBody,
+  TableCell,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody,
 } from '@mui/material';
+import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
-import classNames from 'classnames';
-import css from './ChangePassword.module.scss';
-import api from '../../api/api';
 import { useLingui } from '@lingui/react/macro';
+import classNames from 'classnames';
+import api from '../../api/api';
+import css from './ChangePassword.module.scss';
 
 const classes = classNames.bind(css);
 
@@ -81,9 +81,7 @@ function OfficerTable({ rangeOfficers, handleDelete }) {
             {t`Delete range officer`} {officerToDelete.name}?
           </DialogTitle>
           <DialogActions>
-            <Button onClick={() => setOpen(false)}>
-              {t`Cancel`}
-            </Button>
+            <Button onClick={() => setOpen(false)}>{t`Cancel`}</Button>
             <Button
               onClick={() => {
                 handleDelete(officerToDelete.id);

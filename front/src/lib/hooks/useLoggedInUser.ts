@@ -1,10 +1,14 @@
-import { useCallback, useMemo } from "react";
-import { useCookies } from "react-cookie";
+import { validateLogin } from '@/utils/Utils';
+import { useCallback, useMemo } from 'react';
+import { useCookies } from 'react-cookie';
 import api from '../../api/api';
-import { validateLogin } from "@/utils/Utils";
 
-
-export type Role = 'superuser' | 'association' | 'rangeofficer' | 'rangemaster' | undefined;
+export type Role =
+  | 'superuser'
+  | 'association'
+  | 'rangeofficer'
+  | 'rangemaster'
+  | undefined;
 
 export function useLoggedInUser() {
   const [cookies, setCookie, removeCookie] = useCookies(['username', 'role']);
@@ -21,14 +25,13 @@ export function useLoggedInUser() {
 
   const validateToken = useCallback(async () => {
     if (!username) return false;
-    const isTokenValid = await validateLogin()
+    const isTokenValid = await validateLogin();
     if (!isTokenValid) {
       await logout();
       return false;
     }
     return true;
   }, [username, logout]);
-
 
   const isLoggedIn = useMemo(() => !!username, [username]);
 
@@ -38,5 +41,5 @@ export function useLoggedInUser() {
     role,
     logout,
     validateToken,
-  }
+  };
 }

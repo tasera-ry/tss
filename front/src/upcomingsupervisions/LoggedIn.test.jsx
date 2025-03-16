@@ -1,14 +1,14 @@
-import { waitFor, render, screen } from '@testing-library/react';
-import { HashRouter as Router } from 'react-router-dom';
-import { act } from 'react-dom/test-utils';
-import { DialogWindow } from './LoggedIn';
-import axios from 'axios';
 import { TestProviders } from '@/_TestUtils/TestProvides';
+import { render, screen, waitFor } from '@testing-library/react';
+import axios from 'axios';
+import { act } from 'react-dom/test-utils';
+import { HashRouter as Router } from 'react-router-dom';
+import { DialogWindow } from './LoggedIn';
 
 vi.mock('axios', () => ({
   default: {
     get: vi.fn(),
-  }
+  },
 }));
 axios.get.mockResolvedValue({
   data: [],

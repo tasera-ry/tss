@@ -1,25 +1,25 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
+import { Alert } from '@mui/lab';
 import {
-  Typography,
   Button,
   Menu,
   MenuItem,
   Table,
+  TableBody,
+  TableCell,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody,
   TextField,
+  Typography,
 } from '@mui/material';
-import { Alert } from '@mui/lab';
 
 import moment from 'moment';
 
-import classNames from 'classnames';
-import css from './ChangePassword.module.scss';
-import api from '../../api/api';
 import { useLingui } from '@lingui/react/macro';
+import classNames from 'classnames';
+import api from '../../api/api';
+import css from './ChangePassword.module.scss';
 const classes = classNames.bind(css);
 
 /**

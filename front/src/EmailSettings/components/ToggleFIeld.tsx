@@ -1,6 +1,12 @@
-import { useLingui } from "@lingui/react/macro";
-import { FormControl, FormLabel, FormControlLabel, FormHelperText, Switch } from "@mui/material";
-import { UseFormReturn, Controller } from "react-hook-form";
+import { useLingui } from '@lingui/react/macro';
+import {
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  FormLabel,
+  Switch,
+} from '@mui/material';
+import { Controller, type UseFormReturn } from 'react-hook-form';
 
 interface ToggleFieldProps {
   label: string;
@@ -9,11 +15,16 @@ interface ToggleFieldProps {
   helperText?: string;
 }
 
-export function ToggleField({ label, field, form, helperText }: ToggleFieldProps) {
+export function ToggleField({
+  label,
+  field,
+  form,
+  helperText,
+}: ToggleFieldProps) {
   const { t } = useLingui();
   return (
     <FormControl component="fieldset">
-      <FormLabel className='text-sm!'>{label}</FormLabel>
+      <FormLabel className="text-sm!">{label}</FormLabel>
       <Controller
         name={field}
         control={form.control}
@@ -32,10 +43,8 @@ export function ToggleField({ label, field, form, helperText }: ToggleFieldProps
         )}
       />
       {helperText && (
-        <FormHelperText className="helperText">
-          {helperText}
-        </FormHelperText>
+        <FormHelperText className="helperText">{helperText}</FormHelperText>
       )}
     </FormControl>
-  )
+  );
 }

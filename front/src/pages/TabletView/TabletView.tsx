@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useCookies } from 'react-cookie';
 
 // Date handling
@@ -14,39 +14,41 @@ import { validateLogin } from '../../utils/Utils';
 import { InfoBox } from '@/lib/components/InfoBox';
 import { DeviceStatusPanel } from './components/DeviceStatusPanel/DeviceStatusPanel';
 
-import classNames from 'classnames';
-import css from './rangeofficer.module.scss';
-import { useLingui } from '@lingui/react/macro';
-import { useQuery, useQueryClient } from 'react-query';
-import { TrackCard } from '@/pages/TabletView/components/TrackCard';
+import { Notifications } from '@/pages/TabletView/components/Notifications';
 import { OpenHoursSection } from '@/pages/TabletView/components/OpenHoursSection';
 import { RangeOfficerStatusSection } from '@/pages/TabletView/components/RangeOfficerStatusSection';
-import { Notifications } from '@/pages/TabletView/components/Notifications';
+import { TrackCard } from '@/pages/TabletView/components/TrackCard';
+import { useLingui } from '@lingui/react/macro';
+import classNames from 'classnames';
+import { useQuery, useQueryClient } from 'react-query';
+import css from './rangeofficer.module.scss';
 
 const classes = classNames.bind(css);
-
 
 export function TabletView() {
   const { t, i18n } = useLingui();
   const [cookies] = useCookies(['username', 'role']);
 
   const [socket, setSocket] = useState();
-  const [notification, setNotification] = useState({ open: false, message: '', type: '' });
+  const [notification, setNotification] = useState({
+    open: false,
+    message: '',
+    type: '',
+  });
 
   const date = useMemo(() => moment(Date.now()).format('YYYY-MM-DD'), []);
 
   const queryClient = useQueryClient();
 
-  const scheduleQuery = useQuery(
-    ['schedule', date],
-    async () => api.getSchedulingDate(date)
+  const scheduleQuery = useQuery(['schedule', date], async () =>
+    api.getSchedulingDate(date),
   );
 
   const {
     scheduleId,
     reservationId,
     rangeSupervision,
-    rangeSupervisionScheduled: isScheduled
+    rangeSupervisionScheduled: isScheduled,
   } = scheduleQuery.data ?? {};
 
   const areTracksDisabled = rangeSupervision === 'closed';
@@ -56,8 +58,8 @@ export function TabletView() {
     return {
       start: moment(scheduleQuery.data.open, 'h:mm').format('HH:mm'),
       end: moment(scheduleQuery.data.close, 'h:mm').format('HH:mm'),
-    }
-  }, [scheduleQuery.data])
+    };
+  }, [scheduleQuery.data]);
 
   useEffect(() => {
     (async () => {
@@ -68,46 +70,45 @@ export function TabletView() {
       if (cookies.role !== 'rangemaster' && cookies.role !== 'superuser') {
         RedirectToWeekview();
       }
-    })()
+    })();
 
-    const socketClient = socketIOClient()
-    setSocket(socketClient)
+    const socketClient = socketIOClient();
+    setSocket(socketClient);
 
     const onUpdate = (msg: any) => {
       queryClient.setQueryData(['schedule', date], (old: any) => {
         return {
           ...old,
           rangeSupervision: msg.status,
-        }
-      })
-    }
+        };
+      });
+    };
     const onRefresh = () => {
       window.location.reload();
-    }
+    };
 
-    socketClient
-      .on('rangeUpdate', onUpdate)
-      .on('refresh', onRefresh)
+    socketClient.on('rangeUpdate', onUpdate).on('refresh', onRefresh);
 
     return () => {
-      socketClient.off('rangeUpdate', onUpdate)
-      socketClient.off('refresh', onRefresh)
-    }
+      socketClient.off('rangeUpdate', onUpdate);
+      socketClient.off('refresh', onRefresh);
+    };
   }, [date]); // eslint-disable-line
 
   const formatedDate = useMemo(() => {
-    return i18n.date(date, { weekday: 'short', year: 'numeric', month: 'numeric', day: 'numeric' })
-  }, [date, i18n])
+    return i18n.date(date, {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    });
+  }, [date, i18n]);
 
   return (
     <div>
       <InfoBox tabletMode={true} />
       <span className={classes(css.Text)}>{formatedDate}</span>
-      <OpenHoursSection
-        date={date}
-        hours={hours}
-        scheduleId={scheduleId}
-      />
+      <OpenHoursSection date={date} hours={hours} scheduleId={scheduleId} />
 
       <RangeOfficerStatusSection
         rangeSupervision={rangeSupervision}
@@ -142,7 +143,7 @@ export function TabletView() {
       />
     </div>
   );
-};
+}
 
 function RedirectToWeekview() {
   window.location.href = '/';

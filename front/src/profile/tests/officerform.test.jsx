@@ -1,14 +1,14 @@
+import { TestProviders } from '@/_TestUtils/TestProvides';
 import {
+  act,
+  fireEvent,
   render,
   screen,
-  fireEvent,
   waitFor,
-  act,
 } from '@testing-library/react';
-import OfficerForm from '../profilepages/officerform';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import { TestProviders } from '@/_TestUtils/TestProvides';
+import OfficerForm from '../profilepages/officerform';
 // Mock axios
 vi.mock('axios');
 
@@ -16,14 +16,21 @@ vi.mock('axios');
 axios.post.mockResolvedValue();
 
 describe('OfficerForm', () => {
-  it('renders form inputs correctly', async() => {
+  it('renders form inputs correctly', async () => {
+    render(<OfficerForm id={1} />, { wrapper: TestProviders });
 
-    render(<OfficerForm id={1} />, { wrapper: TestProviders } );
-
-    await waitFor(() => expect(screen.getByTestId('username')).toBeInTheDocument());
-    await waitFor(() => expect(screen.getByTestId('password')).toBeInTheDocument());
-    await waitFor(() => expect(screen.getByTestId('passwordConfirm')).toBeInTheDocument());
-    await waitFor(() => expect(screen.getByTestId('submit-button')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByTestId('username')).toBeInTheDocument(),
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId('password')).toBeInTheDocument(),
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId('passwordConfirm')).toBeInTheDocument(),
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId('submit-button')).toBeInTheDocument(),
+    );
   });
 
   test('displays error notification when form is submitted with empty fields', async () => {

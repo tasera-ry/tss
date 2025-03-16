@@ -1,22 +1,21 @@
-import { useState, useMemo } from 'react';
+import api from '@/api/api';
 import Close from '@mui/icons-material/Close';
 import Alert from '@mui/lab/Alert';
+import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-import api from '@/api/api';
 
 // TO DO: Take weekly and monthly values into account
 export const InfoBox = ({ tabletMode = false }) => {
-
   const publicMessagesQuery = useQuery({
     queryKey: ['publicMessages'],
-    queryFn: () => api.getPublicInfoMessages()
+    queryFn: () => api.getPublicInfoMessages(),
   });
 
   const rangeMasterMessagesQuery = useQuery({
     queryKey: ['rangeMasterMessages'],
     queryFn: () => api.getRangeMasterInfoMessages(),
-    enabled: tabletMode
-  })
+    enabled: tabletMode,
+  });
 
   const messages = useMemo(() => {
     return rangeMasterMessagesQuery.data ?? publicMessagesQuery.data ?? [];
@@ -24,13 +23,18 @@ export const InfoBox = ({ tabletMode = false }) => {
 
   if (messages.length === 0) return null;
 
-  return messages.map((message) => <InfoMessage key={message.id} message={message}/>);
+  return messages.map((message) => (
+    <InfoMessage key={message.id} message={message} />
+  ));
 };
 
 function InfoMessage({ message }) {
-
   const severity = useMemo(() => {
-    return message.level === 'error' ? 'error' : message.level === 'warning' ? 'warning' : 'info';
+    return message.level === 'error'
+      ? 'error'
+      : message.level === 'warning'
+        ? 'warning'
+        : 'info';
   }, [message.level]);
 
   // TO DO: Fix -> Visibility resets every time you reload / change page
@@ -48,10 +52,8 @@ function InfoMessage({ message }) {
           className="absolute right-1 top-1 cursor-pointer"
           onClick={() => setVisible(false)}
         />
-        <Alert severity={severity}>
-          {message.message}
-        </Alert>
+        <Alert severity={severity}>{message.message}</Alert>
       </div>
     </div>
   );
-};
+}

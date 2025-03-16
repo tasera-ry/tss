@@ -1,1 +1,1 @@
-export { InfoMessageManagementView } from "./InfoMessageManagementView";
+export { InfoMessageManagementView } from './InfoMessageManagementView';

@@ -1,22 +1,28 @@
-import { updateRangeSupervision } from "@/utils/Utils";
-import { t, msg } from "@lingui/core/macro";
-import { useLingui } from "@lingui/react/macro";
-import { Button } from "@mui/material";
-import classNames from "classnames";
-import { useCallback, useMemo } from "react";
-import { useQueryClient, useMutation } from "react-query";
+import { updateRangeSupervision } from '@/utils/Utils';
+import { msg, t } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
+import { Button } from '@mui/material';
+import classNames from 'classnames';
+import { useCallback, useMemo } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 
-import css from '../rangeofficer.module.scss';
 import colors from '../../../colors.module.scss';
+import css from '../rangeofficer.module.scss';
 
 const classes = classNames.bind(css);
 
-export function RangeOfficerStatusSection({ rangeSupervision, rangeSupervisionScheduled, reservationId, scheduleId, socket, date, setNotification }) {
+export function RangeOfficerStatusSection({
+  rangeSupervision,
+  rangeSupervisionScheduled,
+  reservationId,
+  scheduleId,
+  socket,
+  date,
+  setNotification,
+}) {
   return (
     <>
-      <RangeOfficerStatus
-        rangeSupervisionStatus={rangeSupervision}
-      />
+      <RangeOfficerStatus rangeSupervisionStatus={rangeSupervision} />
 
       <span className={classes(css.Text)}>
         {t`Define range officer status by choosing color`}
@@ -31,33 +37,54 @@ export function RangeOfficerStatusSection({ rangeSupervision, rangeSupervisionSc
         setNotification={setNotification}
       />
     </>
-  )
+  );
 }
 
-function RangeOfficerStatusToggle({ reservationId, scheduleId, rangeSupervisionScheduled, socket, date, setNotification }) {
+function RangeOfficerStatusToggle({
+  reservationId,
+  scheduleId,
+  rangeSupervisionScheduled,
+  socket,
+  date,
+  setNotification,
+}) {
   const { t } = useLingui();
   const queryClient = useQueryClient();
 
-
   const supervisorMutation = useMutation({
     mutationFn: (status: string) => {
-      console.log(reservationId, scheduleId, status, rangeSupervisionScheduled, null)
-      return updateRangeSupervision(reservationId, scheduleId, status, rangeSupervisionScheduled, null);
+      console.log(
+        reservationId,
+        scheduleId,
+        status,
+        rangeSupervisionScheduled,
+        null,
+      );
+      return updateRangeSupervision(
+        reservationId,
+        scheduleId,
+        status,
+        rangeSupervisionScheduled,
+        null,
+      );
     },
     onSuccess: (_, status) => {
       queryClient.setQueryData(['schedule', date], (old: any) => {
         return {
           ...old,
           rangeSupervision: status,
-        }
-      })
+        };
+      });
       socket.emit('rangeUpdate', { status });
-    }
-  })
+    },
+  });
 
-  const updateSupervisor = useCallback((status) => {
-    supervisorMutation.mutate(status);
-  }, [rangeSupervisionScheduled, supervisorMutation, t])
+  const updateSupervisor = useCallback(
+    (status) => {
+      supervisorMutation.mutate(status);
+    },
+    [rangeSupervisionScheduled, supervisorMutation, t],
+  );
 
   return (
     <div className={classes(css.rowStyle)}>
@@ -92,9 +119,8 @@ function RangeOfficerStatusToggle({ reservationId, scheduleId, rangeSupervisionS
         {t`Closed`}
       </Button>
     </div>
-  )
+  );
 }
-
 
 const rangeOfficerStates = {
   present: {
@@ -121,15 +147,15 @@ const rangeOfficerStates = {
     color: colors.turquoise,
     labelMsg: msg`Range officer predefined`,
   },
-} as const
+} as const;
 
 function RangeOfficerStatus({ rangeSupervisionStatus }) {
   const { i18n } = useLingui();
 
   const { color, labelMsg } = useMemo(() => {
     if (!rangeSupervisionStatus) return rangeOfficerStates.absent;
-    return rangeOfficerStates[rangeSupervisionStatus]
-  }, [rangeSupervisionStatus])
+    return rangeOfficerStates[rangeSupervisionStatus];
+  }, [rangeSupervisionStatus]);
 
   return (
     <div className={classes(css.rowStyle)}>
@@ -144,5 +170,5 @@ function RangeOfficerStatus({ rangeSupervisionStatus }) {
         {i18n._(labelMsg)}
       </Button>
     </div>
-  )
+  );
 }

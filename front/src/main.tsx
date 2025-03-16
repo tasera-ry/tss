@@ -1,15 +1,19 @@
-import ReactDOM from 'react-dom';
-import { StyledEngineProvider, ThemeProvider, createTheme } from '@mui/material/styles'
-import { App } from './App';
-import { CookiesProvider } from 'react-cookie';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import {
+  StyledEngineProvider,
+  ThemeProvider,
+  createTheme,
+} from '@mui/material/styles';
 import moment from 'moment';
+import { CookiesProvider } from 'react-cookie';
+import ReactDOM from 'react-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { App } from './App';
 import { LinguiProvider } from './i18n';
 
 moment.locale('fi', {
   week: {
-      dow: 6
-  }
+    dow: 6,
+  },
 });
 
 // TO DO: Move this to scss if possible.
@@ -22,7 +26,7 @@ const theme = createTheme({
   },
 });
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 ReactDOM.render(
   <StyledEngineProvider injectFirst>
@@ -36,5 +40,5 @@ ReactDOM.render(
       </QueryClientProvider>
     </LinguiProvider>
   </StyledEngineProvider>,
-  document.getElementById('root')
-); 
+  document.getElementById('root'),
+);

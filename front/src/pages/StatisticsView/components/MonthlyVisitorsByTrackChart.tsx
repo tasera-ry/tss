@@ -1,17 +1,18 @@
-import { schedulingFreeformQuery } from "@/pages/StatisticsView/components/schedulingFreeformQuery";
-import { useLingui } from "@lingui/react/macro";
-import { CircularProgress } from "@mui/material";
-import { useQuery } from "react-query";
-import Chart from 'react-apexcharts';
 import colors from '@/colors.module.scss';
+import { schedulingFreeformQuery } from '@/pages/StatisticsView/components/schedulingFreeformQuery';
+import { useLingui } from '@lingui/react/macro';
+import { CircularProgress } from '@mui/material';
+import Chart from 'react-apexcharts';
+import { useQuery } from 'react-query';
 
 interface MonthlyVisitorsByTrackChartProps {
   date: moment.Moment;
 }
 
-export function MonthlyVisitorsByTrackChart({ date }: MonthlyVisitorsByTrackChartProps) {
-
-  const { t } = useLingui()
+export function MonthlyVisitorsByTrackChart({
+  date,
+}: MonthlyVisitorsByTrackChartProps) {
+  const { t } = useLingui();
 
   const trackQuery = useQuery({
     queryKey: ['schedulingFreeformMonth', date],
@@ -20,9 +21,11 @@ export function MonthlyVisitorsByTrackChart({ date }: MonthlyVisitorsByTrackChar
       const tracks = data
         .filter((supervision) => supervision.scheduleId)
         .reduce((acc, supervision) => {
-          supervision.tracks.forEach((track) => acc.add(track.short_description))
+          supervision.tracks.forEach((track) =>
+            acc.add(track.short_description),
+          );
           return acc;
-        }, new Set<string>())
+        }, new Set<string>());
 
       const visitors = data
         .filter((supervision) => supervision.scheduleId)
@@ -35,29 +38,30 @@ export function MonthlyVisitorsByTrackChart({ date }: MonthlyVisitorsByTrackChar
               const trackVisitors = scheduled.visitors + trackPerMonthVisitors;
               acc.splice(id - 1, 1, trackVisitors);
             }
-          })
+          });
           return acc;
-        }, [])
+        }, []);
 
       return {
         tracks: Array.from(tracks.values()),
         visitors,
       };
     },
-  })
+  });
 
-  const isPending = trackQuery.isLoading
+  const isPending = trackQuery.isLoading;
 
-  if (isPending) return (
-    <div className='flex flex-col items-center gap-2'>
-      <h3 className='text-xl font-bold'>{t`Monthly visitors per track`}</h3>
-      <CircularProgress />
-    </div>
-  )
+  if (isPending)
+    return (
+      <div className="flex flex-col items-center gap-2">
+        <h3 className="text-xl font-bold">{t`Monthly visitors per track`}</h3>
+        <CircularProgress />
+      </div>
+    );
 
   return (
     <div>
-      <h3 className='text-xl font-bold'>{t`Monthly visitors per track`}</h3>
+      <h3 className="text-xl font-bold">{t`Monthly visitors per track`}</h3>
       <Chart
         options={{
           chart: {
@@ -71,7 +75,7 @@ export function MonthlyVisitorsByTrackChart({ date }: MonthlyVisitorsByTrackChar
             style: {
               colors: [colors.green],
               fontSize: '16px',
-            }
+            },
           },
           fill: {
             colors: [colors.green],
@@ -92,12 +96,12 @@ export function MonthlyVisitorsByTrackChart({ date }: MonthlyVisitorsByTrackChar
           {
             name: 'visitors',
             data: trackQuery.data?.visitors ?? [],
-          }
+          },
         ]}
         type="bar"
         width="700"
         height="400"
       />
     </div>
-  )
+  );
 }
