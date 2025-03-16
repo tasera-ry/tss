@@ -56,6 +56,46 @@ msgstr "Lisää valvoja"
 msgid "Advanced options"
 msgstr "Lisäasetukset"
 
+#: src/EmailSettings/EmailSettings.tsx:253
+msgid ""
+"Allowed dynamic values:\n"
+"{assigned} - The number of assigned shifts\n"
+"{update} - The number of updated shifts"
+msgstr ""
+"Sallitut dynaamiset arvot:\n"
+"{assigned} - Määritettyjen vuorojen määrä\n"
+"{update} - Päivitysten määrä"
+
+#: src/EmailSettings/EmailSettings.tsx:286
+msgid ""
+"Allowed dynamic values:\n"
+"{token} - The password reset link token\n"
+"{date} - The date of the password reset link"
+msgstr ""
+"Sallitut dynaamiset arvot:\n"
+"{token} - Salasanan palautuslinkin token\n"
+"{date} - Salasanan palautuslinkin päivämäärä"
+
+#: src/EmailSettings/EmailSettings.tsx:274
+msgid ""
+"Allowed dynamic values:\n"
+"{user} - The user who declined\n"
+"{date} - The date of the user declining"
+msgstr ""
+"Sallitut dynaamiset arvot:\n"
+"{user} - Käyttäjä, joka hylkäsi\n"
+"{date} - Käyttäjän hylkämisen päivämäärä"
+
+#: src/EmailSettings/EmailSettings.tsx:280
+msgid ""
+"Allowed dynamic values:\n"
+"{user} - The user who gave feedback\n"
+"{feedback} - The feedback given by the user"
+msgstr ""
+"Sallitut dynaamiset arvot:\n"
+"{user} - Käyttäjä, joka antoi palautetta\n"
+"{feedback} - Käyttäjän antama palaute"
+
 #: src/raffle/SupervisionAmountsTable.jsx:49
 msgid "Amount of supervisions"
 msgstr "Vuorojen määrä"
@@ -68,7 +108,7 @@ msgstr "Huhtikuu"
 msgid "Are you sure you want to delete this message?"
 msgstr "Haluatko varmasti poistaa tämän viestin?"
 
-#: src/usermanagement/UserManagementView.jsx:995
+#: src/usermanagement/UserManagementView.jsx:993
 msgid "Are you sure?"
 msgstr "Haluatko varmasti jatkaa?"
 
@@ -76,10 +116,10 @@ msgstr "Haluatko varmasti jatkaa?"
 msgid "Assigned officer"
 msgstr "Asetettu valvoja"
 
-#: src/usermanagement/UserManagementView.jsx:557
-#: src/usermanagement/UserManagementView.jsx:842
-#: src/usermanagement/UserManagementView.jsx:1394
-#: src/usermanagement/UserManagementView.jsx:1458
+#: src/usermanagement/UserManagementView.jsx:555
+#: src/usermanagement/UserManagementView.jsx:840
+#: src/usermanagement/UserManagementView.jsx:1392
+#: src/usermanagement/UserManagementView.jsx:1456
 #: src/raffle/SupervisorsTable.jsx:55
 #: src/raffle/SupervisionResultsTable.jsx:141
 #: src/raffle/SupervisionAmountsTable.jsx:47
@@ -110,17 +150,17 @@ msgstr "Elokuu"
 msgid "Back to dayview"
 msgstr "Takaisin päivänäkymään"
 
-#: src/dayview/Dayview.tsx:89
+#: src/pages/DayView/DayView.tsx:89
 msgid "Back to weekview"
 msgstr "Takaisin viikkonäkymään"
 
-#: src/usermanagement/UserManagementView.jsx:974
-#: src/usermanagement/UserManagementView.jsx:1018
-#: src/usermanagement/UserManagementView.jsx:1107
-#: src/usermanagement/UserManagementView.jsx:1158
-#: src/usermanagement/UserManagementView.jsx:1233
-#: src/usermanagement/UserManagementView.jsx:1280
-#: src/usermanagement/UserManagementView.jsx:1317
+#: src/usermanagement/UserManagementView.jsx:972
+#: src/usermanagement/UserManagementView.jsx:1016
+#: src/usermanagement/UserManagementView.jsx:1105
+#: src/usermanagement/UserManagementView.jsx:1156
+#: src/usermanagement/UserManagementView.jsx:1231
+#: src/usermanagement/UserManagementView.jsx:1278
+#: src/usermanagement/UserManagementView.jsx:1315
 #: src/upcomingsupervisions/LoggedIn.jsx:620
 #: src/profile/profilepages/officerform.jsx:85
 #: src/pages/TabletView/components/OpenHoursSection.tsx:96
@@ -128,29 +168,33 @@ msgstr "Takaisin viikkonäkymään"
 msgid "Cancel"
 msgstr "Peruuta"
 
-#: src/usermanagement/UserManagementView.jsx:1127
-#: src/usermanagement/UserManagementView.jsx:1140
-#: src/usermanagement/UserManagementView.jsx:1261
-#: src/usermanagement/UserManagementView.jsx:1342
+#: src/EmailSettings/EmailSettings.tsx:222
+msgid "CC"
+msgstr "CC"
+
+#: src/usermanagement/UserManagementView.jsx:1125
+#: src/usermanagement/UserManagementView.jsx:1138
+#: src/usermanagement/UserManagementView.jsx:1259
+#: src/usermanagement/UserManagementView.jsx:1340
 msgid "Change email address"
 msgstr "Vaihda sähköpostiosoite"
 
-#: src/usermanagement/UserManagementView.jsx:1253
+#: src/usermanagement/UserManagementView.jsx:1251
 msgid "Change Email for user:"
 msgstr "Vaihda sähköposti käyttäjälle:"
 
-#: src/usermanagement/UserManagementView.jsx:542
-#: src/usermanagement/UserManagementView.jsx:1038
-#: src/usermanagement/UserManagementView.jsx:1349
+#: src/usermanagement/UserManagementView.jsx:540
+#: src/usermanagement/UserManagementView.jsx:1036
+#: src/usermanagement/UserManagementView.jsx:1347
 #: src/profile/profilesettings.jsx:26
 msgid "Change password"
 msgstr "Vaihda salasana"
 
-#: src/usermanagement/UserManagementView.jsx:1178
+#: src/usermanagement/UserManagementView.jsx:1176
 msgid "Change password for"
 msgstr "Vaihda salasana käyttäjälle"
 
-#: src/usermanagement/UserManagementView.jsx:1300
+#: src/usermanagement/UserManagementView.jsx:1298
 msgid "Change role for user:"
 msgstr "Vaihda rooli käyttäjälle:"
 
@@ -161,6 +205,10 @@ msgstr "Vaihda ratavalvojien statuksia napauttamalla värejä alta. Muuta radan 
 #: src/lib/components/Navbar/SupervisorNotification.tsx:37
 msgid "CHECK"
 msgstr "TARKISTA"
+
+#: src/EmailSettings/EmailSettings.tsx:228
+msgid "Choose \"Yes\" to use SSL/TLS encryption from the start of the connection (typically with port 465). Choose \"No\" for unencrypted connections that may upgrade via STARTTLS (typically with port 587). This setting must match your email provider's requirements for the specified port, otherwise connection will fail."
+msgstr "Valitse \"Kyllä\" käyttääksesi SSL/TLS-salausta yhteyden alusta alkaen (tyypillisesti portissa 465). Valitse \"Ei\" salaamattomille yhteyksille, jotka voivat päivittyä STARTTLS:n kautta (tyypillisesti portissa 587). Tämän asetuksen on vastattava sähköpostipalveluntarjoajasi vaatimuksia määritetylle portille, muuten yhteys epäonnistuu."
 
 #: src/scheduling/Scheduling.jsx:1011
 #: src/pages/StatisticsView/StatisticsView.tsx:69
@@ -179,7 +227,7 @@ msgstr "Valitse arvottavat päivämäärät"
 msgid "Close All"
 msgstr "Sulje kaikki"
 
-#: src/usermanagement/UserManagementView.jsx:1507
+#: src/usermanagement/UserManagementView.jsx:1505
 msgid "Close editing mode"
 msgstr "Sulje muokkaustila"
 
@@ -187,11 +235,15 @@ msgstr "Sulje muokkaustila"
 #: src/pages/TabletView/components/TrackCard.tsx:20
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:92
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:114
-#: src/dayview/Dayview.tsx:181
+#: src/pages/DayView/DayView.tsx:181
 msgid "Closed"
 msgstr "Suljettu"
 
-#: src/usermanagement/UserManagementView.jsx:1024
+#: src/EmailSettings/EmailSettings.tsx:250
+msgid "Compiled shift changes"
+msgstr "Kootut vuoromuutokset"
+
+#: src/usermanagement/UserManagementView.jsx:1022
 msgid "Confirm"
 msgstr "Vahvista"
 
@@ -230,21 +282,29 @@ msgstr "Vahvista aika"
 msgid "Confirmed"
 msgstr "Varmistettu"
 
+#: src/EmailSettings/EmailSettings.tsx:155
+msgid "Connection failed. Please check the server, port, and SSL settings."
+msgstr "Yhteys epäonnistui. Tarkista palvelin-, portti- ja SSL-asetukset."
+
+#: src/EmailSettings/EmailSettings.tsx:157
+msgid "Connection timed out. Check network connectivity.!"
+msgstr "Yhteys aika katkaisiin. Tarkista verkkoyhteys."
+
 #: src/raffle/raffle.jsx:73
 msgid "Could not load associations"
 msgstr "Yhteisöjen lataus epäonnistui"
 
-#: src/usermanagement/UserManagementView.jsx:900
-#: src/usermanagement/UserManagementView.jsx:1368
-#: src/usermanagement/UserManagementView.jsx:1412
+#: src/usermanagement/UserManagementView.jsx:898
+#: src/usermanagement/UserManagementView.jsx:1366
+#: src/usermanagement/UserManagementView.jsx:1410
 msgid "Create new user"
 msgstr "Luo uusi käyttäjä"
 
-#: src/usermanagement/UserManagementView.jsx:1134
+#: src/usermanagement/UserManagementView.jsx:1132
 msgid "Current email address"
 msgstr "Nykyinen sähköpostiosoite"
 
-#: src/usermanagement/UserManagementView.jsx:1050
+#: src/usermanagement/UserManagementView.jsx:1048
 msgid "Current password"
 msgstr "Nykyinen salasana"
 
@@ -272,7 +332,7 @@ msgstr "Valitse päävalvojan status napauttamalla väriä alta"
 msgid "Delete"
 msgstr "Poista"
 
-#: src/usermanagement/UserManagementView.jsx:527
+#: src/usermanagement/UserManagementView.jsx:525
 msgid "Delete profile"
 msgstr "Poista käyttäjä"
 
@@ -293,6 +353,10 @@ msgstr "Lisätiedot"
 msgid "Devices"
 msgstr "Laitteet"
 
+#: src/EmailSettings/EmailSettings.tsx:153
+msgid "DNS resolution failed. Please check that the SMTP host is correct."
+msgstr "DNS-resoluutio epäonnistui. Tarkista, että SMTP-palvelin on oikein."
+
 #: src/resetPW/ResetPasswordForm.jsx:38
 #: src/resetPW/ResetPasswordForm.jsx:40
 msgid "E-mail"
@@ -302,14 +366,14 @@ msgstr "Sähköposti"
 msgid "E-mail address is required!"
 msgstr "Syötä sähköpostiosoite!"
 
-#: src/usermanagement/UserManagementView.jsx:1401
-#: src/usermanagement/UserManagementView.jsx:1506
+#: src/usermanagement/UserManagementView.jsx:1399
+#: src/usermanagement/UserManagementView.jsx:1504
 #: src/scheduling/Scheduling.jsx:1097
 #: src/edittracks/tracks.jsx:158
 msgid "Edit"
 msgstr "Muokkaa"
 
-#: src/usermanagement/UserManagementView.jsx:1425
+#: src/usermanagement/UserManagementView.jsx:1423
 msgid "Edit email address"
 msgstr "Muokkaa sähköpostiosoitetta"
 
@@ -317,8 +381,8 @@ msgstr "Muokkaa sähköpostiosoitetta"
 msgid "Edit range officer status by choosing color"
 msgstr "Muokkaa päävalvojan statusta napauttamalla väriä alta"
 
-#: src/usermanagement/UserManagementView.jsx:1441
-#: src/usermanagement/UserManagementView.jsx:1476
+#: src/usermanagement/UserManagementView.jsx:1439
+#: src/usermanagement/UserManagementView.jsx:1474
 msgid "Edit role"
 msgstr "Muokka roolia"
 
@@ -326,17 +390,43 @@ msgstr "Muokka roolia"
 msgid "Edit tracks"
 msgstr "Ratojen päivitys"
 
-#: src/usermanagement/UserManagementView.jsx:954
+#: src/usermanagement/UserManagementView.jsx:952
+#: src/EmailSettings/EmailSettings.tsx:209
 msgid "Email"
 msgstr "Sähköposti"
 
+#: src/EmailSettings/EmailSettings.tsx:235
+msgid "Email messages"
+msgstr "Sähköpostiviestit"
+
+#: src/EmailSettings/EmailSettings.tsx:291
+msgid "Email queue settings"
+msgstr "Sähköpostiviestien jonon asetukset"
+
 #: src/lib/components/Navbar/DrawerMenu.tsx:28
+#: src/EmailSettings/EmailSettings.tsx:189
 msgid "Email settings"
 msgstr "Sähköpostiasetukset"
 
 #: src/upcomingsupervisions/LoggedIn.jsx:263
 msgid "En route"
 msgstr "Matkalla"
+
+#: src/EmailSettings/EmailSettings.tsx:293
+msgid "Enable email queue"
+msgstr "Ota sähköpostiviestien jono käyttöön"
+
+#: src/EmailSettings/EmailSettings.tsx:294
+msgid "Enable email queueing, otherwise emails will be sent immediately. If this is enabled, emails will be sent at the time specified in the \"Time for sending emails\" field."
+msgstr "Ota sähköpostiviestien jonon käyttöön, muuten viestit lähetetään välittömästi. Jos tämä on käytössä, viestit lähetetään ajan mukaan, joka on määritelty \"Sähköpostiviestien lähetysaika\" -kentässä."
+
+#: src/EmailSettings/EmailSettings.tsx:332
+msgid "Enable email sending, otherwise emails will not be sent. WARNING: This will stop also password reset emails from being sent."
+msgstr "Ota sähköpostiviestien lähetys käyttöön, muuten viestejä ei lähetetä. HUOM: Tämä pysäyttää myös salasanan palautusviestien lähetyksen."
+
+#: src/EmailSettings/EmailSettings.tsx:331
+msgid "Enable emails"
+msgstr "Ota sähköpostiviestien lähetys käyttöön"
 
 #: src/scheduling/Scheduling.jsx:1064
 #: src/pages/TabletView/components/OpenHoursSection.tsx:85
@@ -358,6 +448,10 @@ msgstr "Virhe"
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:28
 msgid "Error loading devices"
 msgstr "Virhe ladattaessa laitteita"
+
+#: src/EmailSettings/EmailSettings.tsx:65
+msgid "Error loading email settings"
+msgstr "Virhe ladattaessa sähköpostiasetuksia"
 
 #: src/pages/InfoMessageManagementView/components/NewMessageForm.tsx:65
 msgid "Error sending message"
@@ -391,9 +485,17 @@ msgstr "Helmikuu"
 msgid "Feedback"
 msgstr "Palaute"
 
+#: src/EmailSettings/EmailSettings.tsx:277
+msgid "Feedback received"
+msgstr "Palaute vastaanotettu"
+
 #: src/profile/profilepages/officerform.jsx:144
 msgid "Fill all the text fields"
 msgstr "Täytä kaikki tekstikentät"
+
+#: src/EmailSettings/EmailSettings.tsx:326
+msgid "Force all pending emails to be sent immediately."
+msgstr "Pakota kaikki odottavat sähköpostit lähetettäväksi välittömästi."
 
 #: src/signin/SignIn.jsx:124
 #: src/renewPW/RenewPassword.jsx:102
@@ -409,7 +511,7 @@ msgstr "Su"
 msgid "Free"
 msgstr "Vapaa"
 
-#: src/monthview/Monthview.tsx:103
+#: src/pages/MonthView/MonthView.tsx:99
 msgid "Fri"
 msgstr "Pe"
 
@@ -421,7 +523,7 @@ msgstr "Perjantai"
 msgid "Give feedback"
 msgstr "Anna palautetta"
 
-#: src/usermanagement/UserManagementView.jsx:1042
+#: src/usermanagement/UserManagementView.jsx:1040
 msgid "Give your current and new password"
 msgstr "Vaihtaaksesi salasanasi sinun tulee antaa nykyinen salasanasi sekä uusi joksi haluat sen vaihtaa"
 
@@ -473,6 +575,10 @@ msgstr "Kesäkuu"
 msgid "Loading devices..."
 msgstr "Ladataan laitteita..."
 
+#: src/EmailSettings/EmailSettings.tsx:54
+msgid "Loading email settings..."
+msgstr "Ladataan sähköpostiasetuksia..."
+
 #: src/renewPW/RenewPassword.jsx:79
 msgid "Loading user data..."
 msgstr "Ladataan käyttäjätietoja..."
@@ -485,9 +591,9 @@ msgstr "Ladataan..."
 msgid "Log in"
 msgstr "Kirjaudu"
 
-#: src/usermanagement/UserManagementView.jsx:932
-#: src/usermanagement/UserManagementView.jsx:1076
-#: src/usermanagement/UserManagementView.jsx:1199
+#: src/usermanagement/UserManagementView.jsx:930
+#: src/usermanagement/UserManagementView.jsx:1074
+#: src/usermanagement/UserManagementView.jsx:1197
 msgid "lowercase letter"
 msgstr "pieni kirjain"
 
@@ -511,21 +617,21 @@ msgstr "Valikko"
 msgid "Message"
 msgstr "Viesti"
 
-#: src/usermanagement/UserManagementView.jsx:927
-#: src/usermanagement/UserManagementView.jsx:932
-#: src/usermanagement/UserManagementView.jsx:937
-#: src/usermanagement/UserManagementView.jsx:1071
-#: src/usermanagement/UserManagementView.jsx:1076
-#: src/usermanagement/UserManagementView.jsx:1081
-#: src/usermanagement/UserManagementView.jsx:1194
-#: src/usermanagement/UserManagementView.jsx:1199
-#: src/usermanagement/UserManagementView.jsx:1204
+#: src/usermanagement/UserManagementView.jsx:925
+#: src/usermanagement/UserManagementView.jsx:930
+#: src/usermanagement/UserManagementView.jsx:935
+#: src/usermanagement/UserManagementView.jsx:1069
+#: src/usermanagement/UserManagementView.jsx:1074
+#: src/usermanagement/UserManagementView.jsx:1079
+#: src/usermanagement/UserManagementView.jsx:1192
+#: src/usermanagement/UserManagementView.jsx:1197
+#: src/usermanagement/UserManagementView.jsx:1202
 msgid "Minimum"
 msgstr "Vähintään"
 
-#: src/usermanagement/UserManagementView.jsx:941
-#: src/usermanagement/UserManagementView.jsx:1085
-#: src/usermanagement/UserManagementView.jsx:1208
+#: src/usermanagement/UserManagementView.jsx:939
+#: src/usermanagement/UserManagementView.jsx:1083
+#: src/usermanagement/UserManagementView.jsx:1206
 msgid "Minimum length of password is 6 characters"
 msgstr "Salasanan minimipituus on 6 merkkiä"
 
@@ -533,7 +639,7 @@ msgstr "Salasanan minimipituus on 6 merkkiä"
 msgid "Mo"
 msgstr "Ma"
 
-#: src/monthview/Monthview.tsx:99
+#: src/pages/MonthView/MonthView.tsx:95
 msgid "Mon"
 msgstr "Ma"
 
@@ -556,14 +662,15 @@ msgstr "Kuukauden kävijät radoittain"
 msgid "Name"
 msgstr "Nimi"
 
-#: src/usermanagement/UserManagementView.jsx:1065
-#: src/usermanagement/UserManagementView.jsx:1188
+#: src/usermanagement/UserManagementView.jsx:1063
+#: src/usermanagement/UserManagementView.jsx:1186
 #: src/renewPW/RenewPassword.jsx:118
 #: src/renewPW/RenewPassword.jsx:120
 msgid "New password"
 msgstr "Uusi salasana"
 
 #: src/pages/TabletView/components/TrackStatistics/TrackStatistics.tsx:97
+#: src/EmailSettings/components/ToggleFIeld.tsx:30
 msgid "No"
 msgstr "Ei"
 
@@ -574,6 +681,11 @@ msgstr "Ratavalvojaa ei asetettu"
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:36
 msgid "No devices found"
 msgstr "Laitteita ei löytynyt"
+
+#: src/EmailSettings/EmailSettings.tsx:120
+#: src/EmailSettings/EmailSettings.tsx:127
+msgid "No pending messages to send."
+msgstr "Ei lähetettäviä viestejä jonossa."
 
 #: src/VisitorLogging/VisitorLogging.jsx:125
 #~ msgid "No reservations found. Set reservation in Schedules page"
@@ -589,7 +701,7 @@ msgstr "Ei valintaa"
 msgid "No track officer"
 msgstr "Ei valvojaa"
 
-#: src/dayview/Dayview.tsx:182
+#: src/pages/DayView/DayView.tsx:182
 msgid "No track officer available"
 msgstr "Ei valvojaa"
 
@@ -605,9 +717,9 @@ msgstr "Sinulla ei ole vahvistettavia vuoroja"
 msgid "November"
 msgstr "Marraskuu"
 
-#: src/usermanagement/UserManagementView.jsx:927
-#: src/usermanagement/UserManagementView.jsx:1071
-#: src/usermanagement/UserManagementView.jsx:1194
+#: src/usermanagement/UserManagementView.jsx:925
+#: src/usermanagement/UserManagementView.jsx:1069
+#: src/usermanagement/UserManagementView.jsx:1192
 msgid "number"
 msgstr "numero"
 
@@ -629,7 +741,7 @@ msgstr "Tulossa"
 
 #: src/scheduling/Scheduling.jsx:1032
 #: src/pages/TabletView/components/OpenHoursSection.tsx:58
-#: src/dayview/Dayview.tsx:180
+#: src/pages/DayView/DayView.tsx:180
 msgid "Open"
 msgstr "Avoinna"
 
@@ -641,7 +753,7 @@ msgstr "Avaa kaikki"
 msgid "Opening hours"
 msgstr "Aukioloaika"
 
-#: src/dayview/Dayview.tsx:64
+#: src/pages/DayView/DayView.tsx:64
 msgid "Opening hours: {opensAt}-{closesAt}"
 msgstr "Aukioloaika: {opensAt}-{closesAt}"
 
@@ -649,15 +761,20 @@ msgstr "Aukioloaika: {opensAt}-{closesAt}"
 msgid "Organization updated"
 msgstr "Yhteisö päivitetty"
 
-#: src/usermanagement/UserManagementView.jsx:921
+#: src/usermanagement/UserManagementView.jsx:919
 #: src/signin/SignIn.jsx:93
 #: src/profile/profilepages/officerform.jsx:232
+#: src/EmailSettings/EmailSettings.tsx:215
 msgid "Password"
 msgstr "Salasana"
 
 #: src/resetPW/ResetPassword.jsx:72
 msgid "Password reset e-mail succesfully sent!"
 msgstr "Salasanan palautusviesti lähetetty onnistuneesti!"
+
+#: src/EmailSettings/EmailSettings.tsx:283
+msgid "Password reset link"
+msgstr "Salasanan palautuslinkki"
 
 #: src/renewPW/RenewPassword.jsx:179
 msgid "Password updated succesfully!"
@@ -671,7 +788,11 @@ msgstr "Salasanat eivät täsmää"
 msgid "Passwords don't match!"
 msgstr "Salasanat eivät täsmää!"
 
-#: src/usermanagement/UserManagementView.jsx:1131
+#: src/EmailSettings/EmailSettings.tsx:129
+msgid "Pending messages sent successfully!"
+msgstr "Lähetetty viestit onnistuneesti!"
+
+#: src/usermanagement/UserManagementView.jsx:1129
 msgid "Please give your new email address"
 msgstr "Anna uusi sähköpostiosoite"
 
@@ -691,17 +812,17 @@ msgid "Raffle supervisors"
 msgstr "Arvo valvojat"
 
 #: src/trackview/Trackview.tsx:128
-#: src/dayview/Dayview.tsx:169
+#: src/pages/DayView/DayView.tsx:169
 #: src/TableLegends/TableLegends.tsx:20
 msgid "Range closed"
 msgstr "Rata suljettu"
 
-#: src/usermanagement/UserManagementView.jsx:561
+#: src/usermanagement/UserManagementView.jsx:559
 msgid "Range master"
 msgstr "Päävalvoja"
 
-#: src/usermanagement/UserManagementView.jsx:559
-#: src/usermanagement/UserManagementView.jsx:841
+#: src/usermanagement/UserManagementView.jsx:557
+#: src/usermanagement/UserManagementView.jsx:839
 #: src/scheduling/Scheduling.jsx:1076
 msgid "Range officer"
 msgstr "Valvoja"
@@ -723,7 +844,7 @@ msgstr "Valvojan lisäys epäonnistui"
 #: src/scheduling/Scheduling.jsx:353
 #: src/scheduling/Scheduling.jsx:952
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:118
-#: src/dayview/Dayview.tsx:163
+#: src/pages/DayView/DayView.tsx:163
 msgid "Range officer confirmed"
 msgstr "Päävalvoja varmistettu"
 
@@ -752,7 +873,7 @@ msgstr "Päävalvoja ei paikalla"
 #: src/scheduling/Scheduling.jsx:364
 #: src/scheduling/Scheduling.jsx:943
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:106
-#: src/dayview/Dayview.tsx:167
+#: src/pages/DayView/DayView.tsx:167
 #: src/TableLegends/TableLegends.tsx:18
 msgid "Range officer on the way"
 msgstr "Päävalvoja matkalla"
@@ -762,7 +883,7 @@ msgstr "Päävalvoja matkalla"
 #: src/scheduling/Scheduling.jsx:342
 #: src/scheduling/Scheduling.jsx:955
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:122
-#: src/dayview/Dayview.tsx:165
+#: src/pages/DayView/DayView.tsx:165
 msgid "Range officer predefined"
 msgstr "Päävalvoja ei varmistettu"
 
@@ -775,7 +896,7 @@ msgstr "Päävalvoja määritetty, mutta ei varmistettu"
 #: src/scheduling/Scheduling.jsx:375
 #: src/scheduling/Scheduling.jsx:940
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:102
-#: src/dayview/Dayview.tsx:159
+#: src/pages/DayView/DayView.tsx:159
 #: src/TableLegends/TableLegends.tsx:12
 msgid "Range officer present"
 msgstr "Päävalvoja paikalla"
@@ -784,7 +905,7 @@ msgstr "Päävalvoja paikalla"
 #: src/scheduling/Scheduling.jsx:946
 #: src/scheduling/Scheduling.jsx:958
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:110
-#: src/dayview/Dayview.tsx:161
+#: src/pages/DayView/DayView.tsx:161
 #: src/TableLegends/TableLegends.tsx:22
 msgid "Range officer undefined"
 msgstr "Päävalvojaa ei asetettu"
@@ -835,8 +956,8 @@ msgstr "Tulokset tallennettu"
 msgid "Retrieving information..."
 msgstr "Haetaan vuoroja..."
 
-#: src/usermanagement/UserManagementView.jsx:1387
-#: src/usermanagement/UserManagementView.jsx:1439
+#: src/usermanagement/UserManagementView.jsx:1385
+#: src/usermanagement/UserManagementView.jsx:1437
 msgid "Role"
 msgstr "Rooli"
 
@@ -844,7 +965,7 @@ msgstr "Rooli"
 msgid "Sa"
 msgstr "La"
 
-#: src/monthview/Monthview.tsx:104
+#: src/pages/MonthView/MonthView.tsx:100
 msgid "Sat"
 msgstr "La"
 
@@ -857,12 +978,12 @@ msgstr "Lauantai"
 msgid "Save"
 msgstr "Tallenna"
 
-#: src/usermanagement/UserManagementView.jsx:980
-#: src/usermanagement/UserManagementView.jsx:1113
-#: src/usermanagement/UserManagementView.jsx:1164
-#: src/usermanagement/UserManagementView.jsx:1239
-#: src/usermanagement/UserManagementView.jsx:1286
-#: src/usermanagement/UserManagementView.jsx:1323
+#: src/usermanagement/UserManagementView.jsx:978
+#: src/usermanagement/UserManagementView.jsx:1111
+#: src/usermanagement/UserManagementView.jsx:1162
+#: src/usermanagement/UserManagementView.jsx:1237
+#: src/usermanagement/UserManagementView.jsx:1284
+#: src/usermanagement/UserManagementView.jsx:1321
 #: src/scheduling/Scheduling.jsx:1258
 msgid "Save changes"
 msgstr "Tallenna"
@@ -871,13 +992,17 @@ msgstr "Tallenna"
 msgid "Save results"
 msgstr "Tallenna tulokset"
 
+#: src/EmailSettings/EmailSettings.tsx:348
+msgid "Save settings"
+msgstr "Tallenna asetukset"
+
 #: src/scheduling/Scheduling.jsx:995
 #: src/lib/components/Navbar/DrawerMenu.tsx:24
 msgid "Schedules"
 msgstr "Aikataulut"
 
-#: src/usermanagement/UserManagementView.jsx:859
-#: src/usermanagement/UserManagementView.jsx:864
+#: src/usermanagement/UserManagementView.jsx:857
+#: src/usermanagement/UserManagementView.jsx:862
 msgid "Select association"
 msgstr "Valitse yhdistys"
 
@@ -891,8 +1016,8 @@ msgstr "Valitse valvoja"
 msgid "Select range officer"
 msgstr "Valitse valvoja"
 
-#: src/usermanagement/UserManagementView.jsx:833
-#: src/usermanagement/UserManagementView.jsx:836
+#: src/usermanagement/UserManagementView.jsx:831
+#: src/usermanagement/UserManagementView.jsx:834
 msgid "Select role"
 msgstr "Valitse rooli"
 
@@ -901,6 +1026,10 @@ msgstr "Valitse rooli"
 msgid "Send"
 msgstr "Lähetä"
 
+#: src/EmailSettings/EmailSettings.tsx:322
+msgid "Send messages"
+msgstr "Lähetä viestit"
+
 #: src/pages/InfoMessageManagementView/components/NewMessageForm.tsx:121
 msgid "Send public message"
 msgstr "Lähetä julkinen viesti"
@@ -908,6 +1037,15 @@ msgstr "Lähetä julkinen viesti"
 #: src/pages/InfoMessageManagementView/components/ActiveMessagesList.tsx:69
 msgid "Sender"
 msgstr "Lähettäjä"
+
+#: src/EmailSettings/EmailSettings.tsx:240
+msgid "Sender email address"
+msgstr "Lähettäjän sähköpostiosoite"
+
+#: src/EmailSettings/EmailSettings.tsx:123
+#: src/EmailSettings/EmailSettings.tsx:134
+msgid "Sending pending messages failed!"
+msgstr "Jonon viestien lähetys epäonnistui!"
 
 #: src/raffle/RaffleDatePicker.jsx:34
 msgid "September"
@@ -920,6 +1058,18 @@ msgstr "Aseta"
 #: src/pages/TabletView/components/OpenHoursSection.tsx:70
 msgid "Set opening hours"
 msgstr "Aseta aukioloaika"
+
+#: src/EmailSettings/EmailSettings.tsx:256
+msgid "Shift assigned"
+msgstr "Vuoro määrittetty"
+
+#: src/EmailSettings/EmailSettings.tsx:271
+msgid "Shift declined"
+msgstr "Vuoro hylätty"
+
+#: src/EmailSettings/EmailSettings.tsx:261
+msgid "Shift updated"
+msgstr "Vuoro päivitetty"
 
 #: src/edittracks/tracks.jsx:110
 #: src/edittracks/tracks.jsx:192
@@ -935,30 +1085,38 @@ msgstr "Kirjaudu sisään"
 msgid "Sign Out"
 msgstr "Kirjaudu ulos"
 
-#: src/usermanagement/UserManagementView.jsx:1007
+#: src/EmailSettings/EmailSettings.tsx:192
+msgid "SMTP settings"
+msgstr "SMTP-asetukset"
+
+#: src/usermanagement/UserManagementView.jsx:1005
 #: src/scheduling/Scheduling.jsx:446
 #: src/profile/profilepages/supervisions.jsx:183
 #: src/profile/profilepages/supervisions.jsx:211
 msgid "Something went wrong"
 msgstr "Päivitys epäonnistui"
 
-#: src/usermanagement/UserManagementView.jsx:1269
+#: src/usermanagement/UserManagementView.jsx:1267
 msgid "Something went wrong, email not saved"
 msgstr "Jokin meni pieleen, sähköpostia ei tallennettu"
 
-#: src/usermanagement/UserManagementView.jsx:1096
-#: src/usermanagement/UserManagementView.jsx:1222
+#: src/usermanagement/UserManagementView.jsx:1094
+#: src/usermanagement/UserManagementView.jsx:1220
 msgid "Something went wrong, remember that the password has to meet the listed requirements"
 msgstr "Jokin meni pieleen, huomaathan että salasanan on täytettävä listatut vaatimukset"
 
-#: src/usermanagement/UserManagementView.jsx:963
-#: src/usermanagement/UserManagementView.jsx:1147
+#: src/usermanagement/UserManagementView.jsx:961
+#: src/usermanagement/UserManagementView.jsx:1145
 msgid "Something went wrong, remember that the password has to meet the listed requirements and the name needs to be unique"
 msgstr "Jokin meni pieleen, huomaathan että salasanan on täytettävä listatut vaatimukset ja nimen oltava uniikki"
 
-#: src/usermanagement/UserManagementView.jsx:1306
+#: src/usermanagement/UserManagementView.jsx:1304
 msgid "Something went wrong, role not saved"
 msgstr "Jokin meni pieleen, roolia ei tallennettu"
+
+#: src/EmailSettings/EmailSettings.tsx:168
+msgid "Something went wrong!"
+msgstr "Jokin meni pieleen!"
 
 #: src/trackview/Trackview.tsx:41
 msgid "Something went wrong. Please try again later."
@@ -993,7 +1151,11 @@ msgstr "Su"
 msgid "Submit"
 msgstr "Lähetä"
 
-#: src/monthview/Monthview.tsx:105
+#: src/EmailSettings/EmailSettings.tsx:164
+msgid "Successfully updated!"
+msgstr "Päivitys onnistui!"
+
+#: src/pages/MonthView/MonthView.tsx:101
 msgid "Sun"
 msgstr "Su"
 
@@ -1001,8 +1163,8 @@ msgstr "Su"
 msgid "Sunday"
 msgstr "Sunnuntai"
 
-#: src/usermanagement/UserManagementView.jsx:555
-#: src/usermanagement/UserManagementView.jsx:843
+#: src/usermanagement/UserManagementView.jsx:553
+#: src/usermanagement/UserManagementView.jsx:841
 msgid "Superuser"
 msgstr "Superuser"
 
@@ -1034,6 +1196,10 @@ msgstr "Tablettinäkymä"
 msgid "Th"
 msgstr "To"
 
+#: src/EmailSettings/EmailSettings.tsx:245
+msgid "The email address that will be used to send emails from the system."
+msgstr "Sähköpostiosoite, joka käytetään lähettämään sähköpostiviestit järjestelmästä."
+
 #: src/raffle/raffle.jsx:133
 msgid "The execution of the raffle failed"
 msgstr "Arvonnan suoritus epäonnistui"
@@ -1046,17 +1212,21 @@ msgstr "Linkki ei kelpaa tai se on vanhentunut. Lähetä uusi salasananpalautusl
 msgid "The saving of the results failed"
 msgstr "Tuloksien tallennus epäonnistui"
 
-#: src/usermanagement/UserManagementView.jsx:1002
+#: src/usermanagement/UserManagementView.jsx:1000
 msgid "This action will permanently remove user"
 msgstr "Tämä poistaa pysyvästi käyttäjän"
 
-#: src/monthview/Monthview.tsx:102
+#: src/pages/MonthView/MonthView.tsx:98
 msgid "Thu"
 msgstr "To"
 
 #: src/raffle/RaffleDatePicker.jsx:12
 msgid "Thursday"
 msgstr "Torstai"
+
+#: src/EmailSettings/EmailSettings.tsx:302
+msgid "Time for sending emails"
+msgstr "Sähköpostiviestien lähetysaika"
 
 #: src/utils/Utils.jsx:85
 msgid "Today"
@@ -1078,11 +1248,11 @@ msgstr "Rata poistettu"
 msgid "Track deletion failed"
 msgstr "Rata poiston epäonnistui"
 
-#: src/weekview/Weekview.tsx:169
-#: src/monthview/Monthview.tsx:204
-#: src/dayview/Dayview.tsx:146
-#: src/dayview/Dayview.tsx:187
-#: src/dayview/Dayview.tsx:190
+#: src/pages/WeekView/WeekView.tsx:173
+#: src/pages/MonthView/MonthView.tsx:200
+#: src/pages/DayView/DayView.tsx:146
+#: src/pages/DayView/DayView.tsx:187
+#: src/pages/DayView/DayView.tsx:190
 #: src/TableLegends/TableLegends.tsx:28
 #: src/TableLegends/TableLegends.tsx:31
 msgid "Track has additional information"
@@ -1108,7 +1278,7 @@ msgstr "Rataa muokattu"
 msgid "Tu"
 msgstr "Ti"
 
-#: src/monthview/Monthview.tsx:100
+#: src/pages/MonthView/MonthView.tsx:96
 msgid "Tue"
 msgstr "Ti"
 
@@ -1116,31 +1286,39 @@ msgstr "Ti"
 msgid "Tuesday"
 msgstr "Tiistai"
 
+#: src/EmailSettings/EmailSettings.tsx:266
+msgid "Unconfirmed shift reminder"
+msgstr "Muistutus vahvistamattomasta vuorosta"
+
 #: src/scheduling/Scheduling.jsx:435
 msgid "Update successful"
 msgstr "Päivitys onnistui"
 
-#: src/usermanagement/UserManagementView.jsx:937
-#: src/usermanagement/UserManagementView.jsx:1081
-#: src/usermanagement/UserManagementView.jsx:1204
+#: src/usermanagement/UserManagementView.jsx:935
+#: src/usermanagement/UserManagementView.jsx:1079
+#: src/usermanagement/UserManagementView.jsx:1202
 msgid "uppercase letter"
 msgstr "iso kirjain"
 
-#: src/usermanagement/UserManagementView.jsx:1380
+#: src/EmailSettings/EmailSettings.tsx:227
+msgid "Use SSL"
+msgstr "Käytä SSL"
+
+#: src/usermanagement/UserManagementView.jsx:1378
 msgid "User"
 msgstr "Käyttäjä"
 
-#: src/usermanagement/UserManagementView.jsx:1329
+#: src/usermanagement/UserManagementView.jsx:1327
 #: src/lib/components/Navbar/DrawerMenu.tsx:25
 msgid "User management"
 msgstr "Käyttäjienhallinta"
 
-#: src/usermanagement/UserManagementView.jsx:1358
-#: src/usermanagement/UserManagementView.jsx:1362
+#: src/usermanagement/UserManagementView.jsx:1356
+#: src/usermanagement/UserManagementView.jsx:1360
 msgid "User profiles"
 msgstr "Käyttäjät"
 
-#: src/usermanagement/UserManagementView.jsx:907
+#: src/usermanagement/UserManagementView.jsx:905
 #: src/signin/SignIn.jsx:74
 #: src/signin/SignIn.jsx:75
 #: src/profile/profilepages/officerform.jsx:215
@@ -1183,7 +1361,7 @@ msgstr "Varoitus!"
 msgid "We"
 msgstr "Ke"
 
-#: src/monthview/Monthview.tsx:101
+#: src/pages/MonthView/MonthView.tsx:97
 msgid "Wed"
 msgstr "Ke"
 
@@ -1195,7 +1373,11 @@ msgstr "Keskiviikko"
 msgid "Week"
 msgstr "Viikko"
 
-#: src/monthview/Monthview.tsx:113
+#: src/lib/components/DateHeader/DateHeader.tsx:29
+msgid "Week {weekNumber} {year}"
+msgstr "Viikko {weekNumber} {year}"
+
+#: src/pages/MonthView/MonthView.tsx:109
 msgid "Wk"
 msgstr "Vko"
 
@@ -1203,15 +1385,20 @@ msgstr "Vko"
 msgid "Write in the textbox below the feedback you received from the range. Remember to identify the track if the feedback is for a certain track. The feedback will be sent to the superusers."
 msgstr "Kirjoita allaolevaan kenttään radoilta saamastasi palautteesta. Muista kirjoittaa viestiin radan nimi, jos palaute koskee tiettyä rataa. Palaute lähetetään suoraan pääkäyttäjille."
 
+#: src/EmailSettings/EmailSettings.tsx:151
+msgid "Wrong email or password!"
+msgstr "Väärä sähköpostiosoite tai salasana!"
+
 #: src/signin/SignIn.jsx:108
 msgid "Wrong username or password"
 msgstr "Väärä käyttäjänimi tai salasana"
 
 #: src/pages/TabletView/components/TrackStatistics/TrackStatistics.tsx:90
+#: src/EmailSettings/components/ToggleFIeld.tsx:30
 msgid "Yes"
 msgstr "Kyllä"
 
-#: src/usermanagement/UserManagementView.jsx:1332
+#: src/usermanagement/UserManagementView.jsx:1330
 msgid "You are logged in as"
 msgstr "Olet kirjautunut sisään käyttäjänä"
 

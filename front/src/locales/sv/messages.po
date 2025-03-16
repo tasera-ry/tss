@@ -56,6 +56,47 @@ msgstr "Lägg till banofficer"
 msgid "Advanced options"
 msgstr "Avancerade alternativ"
 
+#: src/EmailSettings/EmailSettings.tsx:253
+msgid ""
+"Allowed dynamic values:\n"
+"{assigned} - The number of assigned shifts\n"
+"{update} - The number of updated shifts"
+msgstr ""
+"Tillåtna dynamiska värden:\n"
+"{assigned} - Antalet tilldelade skift\n"
+"{update} - Antalet uppdaterade skift"
+
+
+#: src/EmailSettings/EmailSettings.tsx:286
+msgid ""
+"Allowed dynamic values:\n"
+"{token} - The password reset link token\n"
+"{date} - The date of the password reset link"
+msgstr ""
+"Tillåtna dynamiska värden:\n"
+"{token} - Länken för att återställa lösenordet\n"
+"{date} - Datum för länken för att återställa lösenordet"
+
+#: src/EmailSettings/EmailSettings.tsx:274
+msgid ""
+"Allowed dynamic values:\n"
+"{user} - The user who declined\n"
+"{date} - The date of the user declining"
+msgstr ""
+"Tillåtna dynamiska värden:\n"
+"{user} - Användaren som avvisade\n"
+"{date} - Datum för användarens avvisning"
+
+#: src/EmailSettings/EmailSettings.tsx:280
+msgid ""
+"Allowed dynamic values:\n"
+"{user} - The user who gave feedback\n"
+"{feedback} - The feedback given by the user"
+msgstr ""
+"Tillåtna dynamiska värden:\n"
+"{user} - Användaren som gav feedback\n"
+"{feedback} - Feedbacken som användaren gav"
+
 #: src/raffle/SupervisionAmountsTable.jsx:49
 msgid "Amount of supervisions"
 msgstr "Antalet av handledare skift"
@@ -68,7 +109,7 @@ msgstr "April"
 msgid "Are you sure you want to delete this message?"
 msgstr "Är du säker på att du vill ta bort detta meddelande?"
 
-#: src/usermanagement/UserManagementView.jsx:995
+#: src/usermanagement/UserManagementView.jsx:993
 msgid "Are you sure?"
 msgstr "Är du säker?"
 
@@ -76,10 +117,10 @@ msgstr "Är du säker?"
 msgid "Assigned officer"
 msgstr "Tilldelad övervakare"
 
-#: src/usermanagement/UserManagementView.jsx:557
-#: src/usermanagement/UserManagementView.jsx:842
-#: src/usermanagement/UserManagementView.jsx:1394
-#: src/usermanagement/UserManagementView.jsx:1458
+#: src/usermanagement/UserManagementView.jsx:555
+#: src/usermanagement/UserManagementView.jsx:840
+#: src/usermanagement/UserManagementView.jsx:1392
+#: src/usermanagement/UserManagementView.jsx:1456
 #: src/raffle/SupervisorsTable.jsx:55
 #: src/raffle/SupervisionResultsTable.jsx:141
 #: src/raffle/SupervisionAmountsTable.jsx:47
@@ -110,17 +151,17 @@ msgstr "Augusti"
 msgid "Back to dayview"
 msgstr "Tillbaka till dagvy"
 
-#: src/dayview/Dayview.tsx:89
+#: src/pages/DayView/DayView.tsx:89
 msgid "Back to weekview"
 msgstr "Tillbaka till veckovy"
 
-#: src/usermanagement/UserManagementView.jsx:974
-#: src/usermanagement/UserManagementView.jsx:1018
-#: src/usermanagement/UserManagementView.jsx:1107
-#: src/usermanagement/UserManagementView.jsx:1158
-#: src/usermanagement/UserManagementView.jsx:1233
-#: src/usermanagement/UserManagementView.jsx:1280
-#: src/usermanagement/UserManagementView.jsx:1317
+#: src/usermanagement/UserManagementView.jsx:972
+#: src/usermanagement/UserManagementView.jsx:1016
+#: src/usermanagement/UserManagementView.jsx:1105
+#: src/usermanagement/UserManagementView.jsx:1156
+#: src/usermanagement/UserManagementView.jsx:1231
+#: src/usermanagement/UserManagementView.jsx:1278
+#: src/usermanagement/UserManagementView.jsx:1315
 #: src/upcomingsupervisions/LoggedIn.jsx:620
 #: src/profile/profilepages/officerform.jsx:85
 #: src/pages/TabletView/components/OpenHoursSection.tsx:96
@@ -128,29 +169,33 @@ msgstr "Tillbaka till veckovy"
 msgid "Cancel"
 msgstr "Avboka"
 
-#: src/usermanagement/UserManagementView.jsx:1127
-#: src/usermanagement/UserManagementView.jsx:1140
-#: src/usermanagement/UserManagementView.jsx:1261
-#: src/usermanagement/UserManagementView.jsx:1342
+#: src/EmailSettings/EmailSettings.tsx:222
+msgid "CC"
+msgstr "CC"
+
+#: src/usermanagement/UserManagementView.jsx:1125
+#: src/usermanagement/UserManagementView.jsx:1138
+#: src/usermanagement/UserManagementView.jsx:1259
+#: src/usermanagement/UserManagementView.jsx:1340
 msgid "Change email address"
 msgstr "Ändra e-postadress"
 
-#: src/usermanagement/UserManagementView.jsx:1253
+#: src/usermanagement/UserManagementView.jsx:1251
 msgid "Change Email for user:"
 msgstr "Ändra e-postadress för användare"
 
-#: src/usermanagement/UserManagementView.jsx:542
-#: src/usermanagement/UserManagementView.jsx:1038
-#: src/usermanagement/UserManagementView.jsx:1349
+#: src/usermanagement/UserManagementView.jsx:540
+#: src/usermanagement/UserManagementView.jsx:1036
+#: src/usermanagement/UserManagementView.jsx:1347
 #: src/profile/profilesettings.jsx:26
 msgid "Change password"
 msgstr "Ändra lösenord"
 
-#: src/usermanagement/UserManagementView.jsx:1178
+#: src/usermanagement/UserManagementView.jsx:1176
 msgid "Change password for"
 msgstr "Ändra lösenord för användare"
 
-#: src/usermanagement/UserManagementView.jsx:1300
+#: src/usermanagement/UserManagementView.jsx:1298
 msgid "Change role for user:"
 msgstr "Ändra roll för användare"
 
@@ -161,6 +206,10 @@ msgstr "Ändra banofficerens status genom att välja färg. Ändra antalet anvä
 #: src/lib/components/Navbar/SupervisorNotification.tsx:37
 msgid "CHECK"
 msgstr "KONTROLLERA"
+
+#: src/EmailSettings/EmailSettings.tsx:228
+msgid "Choose \"Yes\" to use SSL/TLS encryption from the start of the connection (typically with port 465). Choose \"No\" for unencrypted connections that may upgrade via STARTTLS (typically with port 587). This setting must match your email provider's requirements for the specified port, otherwise connection will fail."
+msgstr "Välj \"Ja\" för att använda SSL/TLS-kryptering från början av anslutningen (vanligtvis med port 465). Välj \"Nej\" för oförsäkrade anslutningar som kan uppgradera via STARTTLS (vanligtvis med port 587). Denna inställning måste matcha dina e-postleverantörers krav för den angivna porten, annars kommer anslutningen att misslyckas."
 
 #: src/scheduling/Scheduling.jsx:1011
 #: src/pages/StatisticsView/StatisticsView.tsx:69
@@ -179,7 +228,7 @@ msgstr "Välj datum för tombola"
 msgid "Close All"
 msgstr "Stäng alla"
 
-#: src/usermanagement/UserManagementView.jsx:1507
+#: src/usermanagement/UserManagementView.jsx:1505
 msgid "Close editing mode"
 msgstr "Stäng redigeringsläge"
 
@@ -187,11 +236,15 @@ msgstr "Stäng redigeringsläge"
 #: src/pages/TabletView/components/TrackCard.tsx:20
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:92
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:114
-#: src/dayview/Dayview.tsx:181
+#: src/pages/DayView/DayView.tsx:181
 msgid "Closed"
 msgstr "Stängd"
 
-#: src/usermanagement/UserManagementView.jsx:1024
+#: src/EmailSettings/EmailSettings.tsx:250
+msgid "Compiled shift changes"
+msgstr "Sammanställda skiftändringar"
+
+#: src/usermanagement/UserManagementView.jsx:1022
 msgid "Confirm"
 msgstr "Bekräfta"
 
@@ -230,21 +283,29 @@ msgstr "Bekräfta tid"
 msgid "Confirmed"
 msgstr "bekräftat"
 
+#: src/EmailSettings/EmailSettings.tsx:155
+msgid "Connection failed. Please check the server, port, and SSL settings."
+msgstr "Anslutning misslyckades. Kontrollera servern, porten och SSL-inställningarna."
+
+#: src/EmailSettings/EmailSettings.tsx:157
+msgid "Connection timed out. Check network connectivity.!"
+msgstr "Anslutningen timeoutade. Kontrollera nätverksanslutningen."
+
 #: src/raffle/raffle.jsx:73
 msgid "Could not load associations"
 msgstr "Kunde inte ladda föreningar"
 
-#: src/usermanagement/UserManagementView.jsx:900
-#: src/usermanagement/UserManagementView.jsx:1368
-#: src/usermanagement/UserManagementView.jsx:1412
+#: src/usermanagement/UserManagementView.jsx:898
+#: src/usermanagement/UserManagementView.jsx:1366
+#: src/usermanagement/UserManagementView.jsx:1410
 msgid "Create new user"
 msgstr "Skapa ny användare"
 
-#: src/usermanagement/UserManagementView.jsx:1134
+#: src/usermanagement/UserManagementView.jsx:1132
 msgid "Current email address"
 msgstr "Nuvarande e-postadress"
 
-#: src/usermanagement/UserManagementView.jsx:1050
+#: src/usermanagement/UserManagementView.jsx:1048
 msgid "Current password"
 msgstr "Nuvarande lösenord"
 
@@ -272,7 +333,7 @@ msgstr "Definiera status för banofficer genom att välja färg"
 msgid "Delete"
 msgstr "Ta bort"
 
-#: src/usermanagement/UserManagementView.jsx:527
+#: src/usermanagement/UserManagementView.jsx:525
 msgid "Delete profile"
 msgstr "Ta bort användare"
 
@@ -293,6 +354,10 @@ msgstr "Detaljer"
 msgid "Devices"
 msgstr "Enheter"
 
+#: src/EmailSettings/EmailSettings.tsx:153
+msgid "DNS resolution failed. Please check that the SMTP host is correct."
+msgstr "DNS-resolvering misslyckades. Kontrollera att SMTP-värden är korrekt."
+
 #: src/resetPW/ResetPasswordForm.jsx:38
 #: src/resetPW/ResetPasswordForm.jsx:40
 msgid "E-mail"
@@ -302,14 +367,14 @@ msgstr "E-postadress"
 msgid "E-mail address is required!"
 msgstr "Ange en e-postadress!"
 
-#: src/usermanagement/UserManagementView.jsx:1401
-#: src/usermanagement/UserManagementView.jsx:1506
+#: src/usermanagement/UserManagementView.jsx:1399
+#: src/usermanagement/UserManagementView.jsx:1504
 #: src/scheduling/Scheduling.jsx:1097
 #: src/edittracks/tracks.jsx:158
 msgid "Edit"
 msgstr "Redigera"
 
-#: src/usermanagement/UserManagementView.jsx:1425
+#: src/usermanagement/UserManagementView.jsx:1423
 msgid "Edit email address"
 msgstr "Redigera e-postadress"
 
@@ -317,8 +382,8 @@ msgstr "Redigera e-postadress"
 msgid "Edit range officer status by choosing color"
 msgstr "Redigera status för banofficer genom att välja färg"
 
-#: src/usermanagement/UserManagementView.jsx:1441
-#: src/usermanagement/UserManagementView.jsx:1476
+#: src/usermanagement/UserManagementView.jsx:1439
+#: src/usermanagement/UserManagementView.jsx:1474
 msgid "Edit role"
 msgstr "Redigera roll"
 
@@ -326,17 +391,43 @@ msgstr "Redigera roll"
 msgid "Edit tracks"
 msgstr "Uppdatera banor"
 
-#: src/usermanagement/UserManagementView.jsx:954
+#: src/usermanagement/UserManagementView.jsx:952
+#: src/EmailSettings/EmailSettings.tsx:209
 msgid "Email"
 msgstr "E-post"
 
+#: src/EmailSettings/EmailSettings.tsx:235
+msgid "Email messages"
+msgstr "E-postmeddelanden"
+
+#: src/EmailSettings/EmailSettings.tsx:291
+msgid "Email queue settings"
+msgstr "E-postköinställningar"
+
 #: src/lib/components/Navbar/DrawerMenu.tsx:28
+#: src/EmailSettings/EmailSettings.tsx:189
 msgid "Email settings"
 msgstr "E-postinställningar"
 
 #: src/upcomingsupervisions/LoggedIn.jsx:263
 msgid "En route"
 msgstr "På väg"
+
+#: src/EmailSettings/EmailSettings.tsx:293
+msgid "Enable email queue"
+msgstr "Aktivera e-postkö"
+
+#: src/EmailSettings/EmailSettings.tsx:294
+msgid "Enable email queueing, otherwise emails will be sent immediately. If this is enabled, emails will be sent at the time specified in the \"Time for sending emails\" field."
+msgstr "Aktivera e-postkö, annars skickas e-post direkt. Om detta är aktiverat, skickas e-post vid den tid som anges i \"Tid för att skicka e-post\" fältet."
+
+#: src/EmailSettings/EmailSettings.tsx:332
+msgid "Enable email sending, otherwise emails will not be sent. WARNING: This will stop also password reset emails from being sent."
+msgstr "Aktivera e-postskickning, annars skickas e-post inte. VARNING: Detta kommer att stoppa även lösenordsåterställningsmeddelanden från att skickas."
+
+#: src/EmailSettings/EmailSettings.tsx:331
+msgid "Enable emails"
+msgstr "Aktivera e-post"
 
 #: src/scheduling/Scheduling.jsx:1064
 #: src/pages/TabletView/components/OpenHoursSection.tsx:85
@@ -358,6 +449,10 @@ msgstr "Fel"
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:28
 msgid "Error loading devices"
 msgstr "Fel vid laddning av enheter"
+
+#: src/EmailSettings/EmailSettings.tsx:65
+msgid "Error loading email settings"
+msgstr "Fel vid laddning av e-postinställningar"
 
 #: src/pages/InfoMessageManagementView/components/NewMessageForm.tsx:65
 msgid "Error sending message"
@@ -391,9 +486,17 @@ msgstr "Februari"
 msgid "Feedback"
 msgstr "Respons"
 
+#: src/EmailSettings/EmailSettings.tsx:277
+msgid "Feedback received"
+msgstr "Feedback mottagen"
+
 #: src/profile/profilepages/officerform.jsx:144
 msgid "Fill all the text fields"
 msgstr "Fyll i alla textfält"
+
+#: src/EmailSettings/EmailSettings.tsx:326
+msgid "Force all pending emails to be sent immediately."
+msgstr "Tvinga alla väntande e-postmeddelanden att skickas omedelbart."
 
 #: src/signin/SignIn.jsx:124
 #: src/renewPW/RenewPassword.jsx:102
@@ -409,7 +512,7 @@ msgstr "Fr"
 msgid "Free"
 msgstr "Fri"
 
-#: src/monthview/Monthview.tsx:103
+#: src/pages/MonthView/MonthView.tsx:99
 msgid "Fri"
 msgstr "Fre"
 
@@ -421,7 +524,7 @@ msgstr "Fredag"
 msgid "Give feedback"
 msgstr "Ge feedback"
 
-#: src/usermanagement/UserManagementView.jsx:1042
+#: src/usermanagement/UserManagementView.jsx:1040
 msgid "Give your current and new password"
 msgstr "Ge ditt nuvarande och nya lösenord"
 
@@ -473,6 +576,10 @@ msgstr "Juni"
 msgid "Loading devices..."
 msgstr "Laddar enheter..."
 
+#: src/EmailSettings/EmailSettings.tsx:54
+msgid "Loading email settings..."
+msgstr "Laddar e-postinställningar..."
+
 #: src/renewPW/RenewPassword.jsx:79
 msgid "Loading user data..."
 msgstr "Laddar användarinformation..."
@@ -485,9 +592,9 @@ msgstr "Laddar..."
 msgid "Log in"
 msgstr "Logga in"
 
-#: src/usermanagement/UserManagementView.jsx:932
-#: src/usermanagement/UserManagementView.jsx:1076
-#: src/usermanagement/UserManagementView.jsx:1199
+#: src/usermanagement/UserManagementView.jsx:930
+#: src/usermanagement/UserManagementView.jsx:1074
+#: src/usermanagement/UserManagementView.jsx:1197
 msgid "lowercase letter"
 msgstr "liten bokstav"
 
@@ -511,21 +618,21 @@ msgstr "Meny"
 msgid "Message"
 msgstr "Meddelande"
 
-#: src/usermanagement/UserManagementView.jsx:927
-#: src/usermanagement/UserManagementView.jsx:932
-#: src/usermanagement/UserManagementView.jsx:937
-#: src/usermanagement/UserManagementView.jsx:1071
-#: src/usermanagement/UserManagementView.jsx:1076
-#: src/usermanagement/UserManagementView.jsx:1081
-#: src/usermanagement/UserManagementView.jsx:1194
-#: src/usermanagement/UserManagementView.jsx:1199
-#: src/usermanagement/UserManagementView.jsx:1204
+#: src/usermanagement/UserManagementView.jsx:925
+#: src/usermanagement/UserManagementView.jsx:930
+#: src/usermanagement/UserManagementView.jsx:935
+#: src/usermanagement/UserManagementView.jsx:1069
+#: src/usermanagement/UserManagementView.jsx:1074
+#: src/usermanagement/UserManagementView.jsx:1079
+#: src/usermanagement/UserManagementView.jsx:1192
+#: src/usermanagement/UserManagementView.jsx:1197
+#: src/usermanagement/UserManagementView.jsx:1202
 msgid "Minimum"
 msgstr "Minst"
 
-#: src/usermanagement/UserManagementView.jsx:941
-#: src/usermanagement/UserManagementView.jsx:1085
-#: src/usermanagement/UserManagementView.jsx:1208
+#: src/usermanagement/UserManagementView.jsx:939
+#: src/usermanagement/UserManagementView.jsx:1083
+#: src/usermanagement/UserManagementView.jsx:1206
 msgid "Minimum length of password is 6 characters"
 msgstr "Lösenord måste vara minst 6 tecken långt"
 
@@ -533,7 +640,7 @@ msgstr "Lösenord måste vara minst 6 tecken långt"
 msgid "Mo"
 msgstr "Må"
 
-#: src/monthview/Monthview.tsx:99
+#: src/pages/MonthView/MonthView.tsx:95
 msgid "Mon"
 msgstr "Mån"
 
@@ -556,14 +663,15 @@ msgstr "Månadsbesök per bana"
 msgid "Name"
 msgstr "Namn"
 
-#: src/usermanagement/UserManagementView.jsx:1065
-#: src/usermanagement/UserManagementView.jsx:1188
+#: src/usermanagement/UserManagementView.jsx:1063
+#: src/usermanagement/UserManagementView.jsx:1186
 #: src/renewPW/RenewPassword.jsx:118
 #: src/renewPW/RenewPassword.jsx:120
 msgid "New password"
 msgstr "Nytt lösenord"
 
 #: src/pages/TabletView/components/TrackStatistics/TrackStatistics.tsx:97
+#: src/EmailSettings/components/ToggleFIeld.tsx:30
 msgid "No"
 msgstr "Nej"
 
@@ -574,6 +682,11 @@ msgstr "Banhandledare odefinierad"
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:36
 msgid "No devices found"
 msgstr "Inga enheter hittades"
+
+#: src/EmailSettings/EmailSettings.tsx:120
+#: src/EmailSettings/EmailSettings.tsx:127
+msgid "No pending messages to send."
+msgstr "Inga väntande e-postmeddelanden att skicka."
 
 #: src/VisitorLogging/VisitorLogging.jsx:125
 #~ msgid "No reservations found. Set reservation in Schedules page"
@@ -589,7 +702,7 @@ msgstr "Inget val"
 msgid "No track officer"
 msgstr "Ingen banofficer"
 
-#: src/dayview/Dayview.tsx:182
+#: src/pages/DayView/DayView.tsx:182
 msgid "No track officer available"
 msgstr "Inte banhandledare tillgängliga"
 
@@ -605,9 +718,9 @@ msgstr "Inget att bekräfta"
 msgid "November"
 msgstr "November"
 
-#: src/usermanagement/UserManagementView.jsx:927
-#: src/usermanagement/UserManagementView.jsx:1071
-#: src/usermanagement/UserManagementView.jsx:1194
+#: src/usermanagement/UserManagementView.jsx:925
+#: src/usermanagement/UserManagementView.jsx:1069
+#: src/usermanagement/UserManagementView.jsx:1192
 msgid "number"
 msgstr "nummer"
 
@@ -629,7 +742,7 @@ msgstr "På väg"
 
 #: src/scheduling/Scheduling.jsx:1032
 #: src/pages/TabletView/components/OpenHoursSection.tsx:58
-#: src/dayview/Dayview.tsx:180
+#: src/pages/DayView/DayView.tsx:180
 msgid "Open"
 msgstr "Öppna"
 
@@ -641,7 +754,7 @@ msgstr "Öppna alla"
 msgid "Opening hours"
 msgstr "Öppettider"
 
-#: src/dayview/Dayview.tsx:64
+#: src/pages/DayView/DayView.tsx:64
 msgid "Opening hours: {opensAt}-{closesAt}"
 msgstr "Öppettider: {opensAt}-{closesAt}"
 
@@ -649,15 +762,20 @@ msgstr "Öppettider: {opensAt}-{closesAt}"
 msgid "Organization updated"
 msgstr "Föreningar uppdaterats"
 
-#: src/usermanagement/UserManagementView.jsx:921
+#: src/usermanagement/UserManagementView.jsx:919
 #: src/signin/SignIn.jsx:93
 #: src/profile/profilepages/officerform.jsx:232
+#: src/EmailSettings/EmailSettings.tsx:215
 msgid "Password"
 msgstr "Lösenord"
 
 #: src/resetPW/ResetPassword.jsx:72
 msgid "Password reset e-mail succesfully sent!"
 msgstr "E-postmeddelande om lösenordåterställning har skickats!"
+
+#: src/EmailSettings/EmailSettings.tsx:283
+msgid "Password reset link"
+msgstr "Länk för lösenordåterställning"
 
 #: src/renewPW/RenewPassword.jsx:179
 msgid "Password updated succesfully!"
@@ -671,7 +789,11 @@ msgstr "Lösenorden matchar inte"
 msgid "Passwords don't match!"
 msgstr "Lösenord matchar inte!"
 
-#: src/usermanagement/UserManagementView.jsx:1131
+#: src/EmailSettings/EmailSettings.tsx:129
+msgid "Pending messages sent successfully!"
+msgstr "Väntande meddelanden har skickats!"
+
+#: src/usermanagement/UserManagementView.jsx:1129
 msgid "Please give your new email address"
 msgstr "Lägg till din nya e-postadress"
 
@@ -691,17 +813,17 @@ msgid "Raffle supervisors"
 msgstr "Värdera handledare"
 
 #: src/trackview/Trackview.tsx:128
-#: src/dayview/Dayview.tsx:169
+#: src/pages/DayView/DayView.tsx:169
 #: src/TableLegends/TableLegends.tsx:20
 msgid "Range closed"
 msgstr "Skjutbana stängd"
 
-#: src/usermanagement/UserManagementView.jsx:561
+#: src/usermanagement/UserManagementView.jsx:559
 msgid "Range master"
 msgstr "Banmästare"
 
-#: src/usermanagement/UserManagementView.jsx:559
-#: src/usermanagement/UserManagementView.jsx:841
+#: src/usermanagement/UserManagementView.jsx:557
+#: src/usermanagement/UserManagementView.jsx:839
 #: src/scheduling/Scheduling.jsx:1076
 msgid "Range officer"
 msgstr "Banofficer"
@@ -723,7 +845,7 @@ msgstr "Banofficer tillägg misslyckades"
 #: src/scheduling/Scheduling.jsx:353
 #: src/scheduling/Scheduling.jsx:952
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:118
-#: src/dayview/Dayview.tsx:163
+#: src/pages/DayView/DayView.tsx:163
 msgid "Range officer confirmed"
 msgstr "Banofficer bekräftat"
 
@@ -752,7 +874,7 @@ msgstr "Banofficer inte närvarande"
 #: src/scheduling/Scheduling.jsx:364
 #: src/scheduling/Scheduling.jsx:943
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:106
-#: src/dayview/Dayview.tsx:167
+#: src/pages/DayView/DayView.tsx:167
 #: src/TableLegends/TableLegends.tsx:18
 msgid "Range officer on the way"
 msgstr "Banofficer på väg"
@@ -762,7 +884,7 @@ msgstr "Banofficer på väg"
 #: src/scheduling/Scheduling.jsx:342
 #: src/scheduling/Scheduling.jsx:955
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:122
-#: src/dayview/Dayview.tsx:165
+#: src/pages/DayView/DayView.tsx:165
 msgid "Range officer predefined"
 msgstr "Banofficer inte bekräftat"
 
@@ -775,7 +897,7 @@ msgstr "Banofficer fördefinierad, men inte bekräftat"
 #: src/scheduling/Scheduling.jsx:375
 #: src/scheduling/Scheduling.jsx:940
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:102
-#: src/dayview/Dayview.tsx:159
+#: src/pages/DayView/DayView.tsx:159
 #: src/TableLegends/TableLegends.tsx:12
 msgid "Range officer present"
 msgstr "Banofficer närvarande"
@@ -784,7 +906,7 @@ msgstr "Banofficer närvarande"
 #: src/scheduling/Scheduling.jsx:946
 #: src/scheduling/Scheduling.jsx:958
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:110
-#: src/dayview/Dayview.tsx:161
+#: src/pages/DayView/DayView.tsx:161
 #: src/TableLegends/TableLegends.tsx:22
 msgid "Range officer undefined"
 msgstr "Banofficer odefinierad"
@@ -835,8 +957,8 @@ msgstr "Resultat sparats"
 msgid "Retrieving information..."
 msgstr "Hämta information..."
 
-#: src/usermanagement/UserManagementView.jsx:1387
-#: src/usermanagement/UserManagementView.jsx:1439
+#: src/usermanagement/UserManagementView.jsx:1385
+#: src/usermanagement/UserManagementView.jsx:1437
 msgid "Role"
 msgstr "Roll"
 
@@ -844,7 +966,7 @@ msgstr "Roll"
 msgid "Sa"
 msgstr "Lö"
 
-#: src/monthview/Monthview.tsx:104
+#: src/pages/MonthView/MonthView.tsx:100
 msgid "Sat"
 msgstr "Lör"
 
@@ -857,12 +979,12 @@ msgstr "Lördag"
 msgid "Save"
 msgstr "Spara"
 
-#: src/usermanagement/UserManagementView.jsx:980
-#: src/usermanagement/UserManagementView.jsx:1113
-#: src/usermanagement/UserManagementView.jsx:1164
-#: src/usermanagement/UserManagementView.jsx:1239
-#: src/usermanagement/UserManagementView.jsx:1286
-#: src/usermanagement/UserManagementView.jsx:1323
+#: src/usermanagement/UserManagementView.jsx:978
+#: src/usermanagement/UserManagementView.jsx:1111
+#: src/usermanagement/UserManagementView.jsx:1162
+#: src/usermanagement/UserManagementView.jsx:1237
+#: src/usermanagement/UserManagementView.jsx:1284
+#: src/usermanagement/UserManagementView.jsx:1321
 #: src/scheduling/Scheduling.jsx:1258
 msgid "Save changes"
 msgstr "Spara"
@@ -871,13 +993,17 @@ msgstr "Spara"
 msgid "Save results"
 msgstr "Spara resultat"
 
+#: src/EmailSettings/EmailSettings.tsx:348
+msgid "Save settings"
+msgstr "Spara inställningar"
+
 #: src/scheduling/Scheduling.jsx:995
 #: src/lib/components/Navbar/DrawerMenu.tsx:24
 msgid "Schedules"
 msgstr "Schema"
 
-#: src/usermanagement/UserManagementView.jsx:859
-#: src/usermanagement/UserManagementView.jsx:864
+#: src/usermanagement/UserManagementView.jsx:857
+#: src/usermanagement/UserManagementView.jsx:862
 msgid "Select association"
 msgstr "Välja förening"
 
@@ -891,8 +1017,8 @@ msgstr "Välj övervakare"
 msgid "Select range officer"
 msgstr "Välja banofficer"
 
-#: src/usermanagement/UserManagementView.jsx:833
-#: src/usermanagement/UserManagementView.jsx:836
+#: src/usermanagement/UserManagementView.jsx:831
+#: src/usermanagement/UserManagementView.jsx:834
 msgid "Select role"
 msgstr "Välj roll"
 
@@ -901,6 +1027,10 @@ msgstr "Välj roll"
 msgid "Send"
 msgstr "Skicka"
 
+#: src/EmailSettings/EmailSettings.tsx:322
+msgid "Send messages"
+msgstr "Skicka meddelanden"
+
 #: src/pages/InfoMessageManagementView/components/NewMessageForm.tsx:121
 msgid "Send public message"
 msgstr "Skicka offentligt meddelande"
@@ -908,6 +1038,15 @@ msgstr "Skicka offentligt meddelande"
 #: src/pages/InfoMessageManagementView/components/ActiveMessagesList.tsx:69
 msgid "Sender"
 msgstr "Skickare"
+
+#: src/EmailSettings/EmailSettings.tsx:240
+msgid "Sender email address"
+msgstr "Skickarens e-postadress"
+
+#: src/EmailSettings/EmailSettings.tsx:123
+#: src/EmailSettings/EmailSettings.tsx:134
+msgid "Sending pending messages failed!"
+msgstr "Skickning av väntande meddelanden misslyckades!"
 
 #: src/raffle/RaffleDatePicker.jsx:34
 msgid "September"
@@ -920,6 +1059,18 @@ msgstr "Spara"
 #: src/pages/TabletView/components/OpenHoursSection.tsx:70
 msgid "Set opening hours"
 msgstr "Ställ in öppettider"
+
+#: src/EmailSettings/EmailSettings.tsx:256
+msgid "Shift assigned"
+msgstr "Skift tilldelat"
+
+#: src/EmailSettings/EmailSettings.tsx:271
+msgid "Shift declined"
+msgstr "Skift avvisat"
+
+#: src/EmailSettings/EmailSettings.tsx:261
+msgid "Shift updated"
+msgstr "Skift uppdaterat"
 
 #: src/edittracks/tracks.jsx:110
 #: src/edittracks/tracks.jsx:192
@@ -935,30 +1086,38 @@ msgstr "Logga in"
 msgid "Sign Out"
 msgstr "Logga ut"
 
-#: src/usermanagement/UserManagementView.jsx:1007
+#: src/EmailSettings/EmailSettings.tsx:192
+msgid "SMTP settings"
+msgstr "SMTP-inställningar"
+
+#: src/usermanagement/UserManagementView.jsx:1005
 #: src/scheduling/Scheduling.jsx:446
 #: src/profile/profilepages/supervisions.jsx:183
 #: src/profile/profilepages/supervisions.jsx:211
 msgid "Something went wrong"
 msgstr "Uppdatering misslyckades"
 
-#: src/usermanagement/UserManagementView.jsx:1269
+#: src/usermanagement/UserManagementView.jsx:1267
 msgid "Something went wrong, email not saved"
 msgstr "Något gick fel, e-postadress har inte sparats"
 
-#: src/usermanagement/UserManagementView.jsx:1096
-#: src/usermanagement/UserManagementView.jsx:1222
+#: src/usermanagement/UserManagementView.jsx:1094
+#: src/usermanagement/UserManagementView.jsx:1220
 msgid "Something went wrong, remember that the password has to meet the listed requirements"
 msgstr "Något gick fel, kom ihåg att lösenordet måste uppfylla de angivna kraven"
 
-#: src/usermanagement/UserManagementView.jsx:963
-#: src/usermanagement/UserManagementView.jsx:1147
+#: src/usermanagement/UserManagementView.jsx:961
+#: src/usermanagement/UserManagementView.jsx:1145
 msgid "Something went wrong, remember that the password has to meet the listed requirements and the name needs to be unique"
 msgstr "Något gick fel, kom ihåg att lösenordet måste uppfylla de angivna kraven och att namnet måste vara unikt"
 
-#: src/usermanagement/UserManagementView.jsx:1306
+#: src/usermanagement/UserManagementView.jsx:1304
 msgid "Something went wrong, role not saved"
 msgstr "Något gick fel, roll har inte sparats"
+
+#: src/EmailSettings/EmailSettings.tsx:168
+msgid "Something went wrong!"
+msgstr "Något gick fel!"
 
 #: src/trackview/Trackview.tsx:41
 msgid "Something went wrong. Please try again later."
@@ -993,7 +1152,11 @@ msgstr "Sö"
 msgid "Submit"
 msgstr "Skicka in"
 
-#: src/monthview/Monthview.tsx:105
+#: src/EmailSettings/EmailSettings.tsx:164
+msgid "Successfully updated!"
+msgstr "Uppdaterat!"
+
+#: src/pages/MonthView/MonthView.tsx:101
 msgid "Sun"
 msgstr "Sön"
 
@@ -1001,8 +1164,8 @@ msgstr "Sön"
 msgid "Sunday"
 msgstr "Söndag"
 
-#: src/usermanagement/UserManagementView.jsx:555
-#: src/usermanagement/UserManagementView.jsx:843
+#: src/usermanagement/UserManagementView.jsx:553
+#: src/usermanagement/UserManagementView.jsx:841
 msgid "Superuser"
 msgstr "Superuser"
 
@@ -1034,6 +1197,10 @@ msgstr "Surfplattavy"
 msgid "Th"
 msgstr "To"
 
+#: src/EmailSettings/EmailSettings.tsx:245
+msgid "The email address that will be used to send emails from the system."
+msgstr "E-postadressen som kommer att användas för att skicka e-post från systemet."
+
 #: src/raffle/raffle.jsx:133
 msgid "The execution of the raffle failed"
 msgstr "Genomförandet av tombola misslyckades"
@@ -1046,17 +1213,21 @@ msgstr "Länken är felaktig eller så har den gått ut. Skicka en ny återstäl
 msgid "The saving of the results failed"
 msgstr "Misslyckats att spara resultat"
 
-#: src/usermanagement/UserManagementView.jsx:1002
+#: src/usermanagement/UserManagementView.jsx:1000
 msgid "This action will permanently remove user"
 msgstr "Denna åtgärd kommer att ta bort användaren permanent"
 
-#: src/monthview/Monthview.tsx:102
+#: src/pages/MonthView/MonthView.tsx:98
 msgid "Thu"
 msgstr "Tor"
 
 #: src/raffle/RaffleDatePicker.jsx:12
 msgid "Thursday"
 msgstr "Torsdag"
+
+#: src/EmailSettings/EmailSettings.tsx:302
+msgid "Time for sending emails"
+msgstr "Tid för att skicka e-post"
 
 #: src/utils/Utils.jsx:85
 msgid "Today"
@@ -1078,11 +1249,11 @@ msgstr "Bana borttagen"
 msgid "Track deletion failed"
 msgstr "Bana borttagning misslyckades"
 
-#: src/weekview/Weekview.tsx:169
-#: src/monthview/Monthview.tsx:204
-#: src/dayview/Dayview.tsx:146
-#: src/dayview/Dayview.tsx:187
-#: src/dayview/Dayview.tsx:190
+#: src/pages/WeekView/WeekView.tsx:173
+#: src/pages/MonthView/MonthView.tsx:200
+#: src/pages/DayView/DayView.tsx:146
+#: src/pages/DayView/DayView.tsx:187
+#: src/pages/DayView/DayView.tsx:190
 #: src/TableLegends/TableLegends.tsx:28
 #: src/TableLegends/TableLegends.tsx:31
 msgid "Track has additional information"
@@ -1108,7 +1279,7 @@ msgstr "Bana uppdaterats"
 msgid "Tu"
 msgstr "Ti"
 
-#: src/monthview/Monthview.tsx:100
+#: src/pages/MonthView/MonthView.tsx:96
 msgid "Tue"
 msgstr "Tis"
 
@@ -1116,31 +1287,39 @@ msgstr "Tis"
 msgid "Tuesday"
 msgstr "Tisdag"
 
+#: src/EmailSettings/EmailSettings.tsx:266
+msgid "Unconfirmed shift reminder"
+msgstr "Påminnelse om obekräftat skift"
+
 #: src/scheduling/Scheduling.jsx:435
 msgid "Update successful"
 msgstr "Uppdatering lyckades"
 
-#: src/usermanagement/UserManagementView.jsx:937
-#: src/usermanagement/UserManagementView.jsx:1081
-#: src/usermanagement/UserManagementView.jsx:1204
+#: src/usermanagement/UserManagementView.jsx:935
+#: src/usermanagement/UserManagementView.jsx:1079
+#: src/usermanagement/UserManagementView.jsx:1202
 msgid "uppercase letter"
 msgstr "stor bokstav"
 
-#: src/usermanagement/UserManagementView.jsx:1380
+#: src/EmailSettings/EmailSettings.tsx:227
+msgid "Use SSL"
+msgstr "Använd SSL"
+
+#: src/usermanagement/UserManagementView.jsx:1378
 msgid "User"
 msgstr "Användare"
 
-#: src/usermanagement/UserManagementView.jsx:1329
+#: src/usermanagement/UserManagementView.jsx:1327
 #: src/lib/components/Navbar/DrawerMenu.tsx:25
 msgid "User management"
 msgstr "Användarhantering"
 
-#: src/usermanagement/UserManagementView.jsx:1358
-#: src/usermanagement/UserManagementView.jsx:1362
+#: src/usermanagement/UserManagementView.jsx:1356
+#: src/usermanagement/UserManagementView.jsx:1360
 msgid "User profiles"
 msgstr "Användarprofiler"
 
-#: src/usermanagement/UserManagementView.jsx:907
+#: src/usermanagement/UserManagementView.jsx:905
 #: src/signin/SignIn.jsx:74
 #: src/signin/SignIn.jsx:75
 #: src/profile/profilepages/officerform.jsx:215
@@ -1183,7 +1362,7 @@ msgstr "Varning!"
 msgid "We"
 msgstr "On"
 
-#: src/monthview/Monthview.tsx:101
+#: src/pages/MonthView/MonthView.tsx:97
 msgid "Wed"
 msgstr "Ons"
 
@@ -1195,7 +1374,11 @@ msgstr "Onsdag"
 msgid "Week"
 msgstr "Vecka"
 
-#: src/monthview/Monthview.tsx:113
+#: src/lib/components/DateHeader/DateHeader.tsx:29
+msgid "Week {weekNumber} {year}"
+msgstr "Vecka {weekNumber} {year}"
+
+#: src/pages/MonthView/MonthView.tsx:109
 msgid "Wk"
 msgstr "V"
 
@@ -1203,15 +1386,20 @@ msgstr "V"
 msgid "Write in the textbox below the feedback you received from the range. Remember to identify the track if the feedback is for a certain track. The feedback will be sent to the superusers."
 msgstr "Skriv i textrutan under den feedback du fått från skjutbanor. Kom ihåg att skriva namn av den skjutbanan i meddelandet om feedbacken är av visst bana. Feedbacken kommer att skickas till superanvändare."
 
+#: src/EmailSettings/EmailSettings.tsx:151
+msgid "Wrong email or password!"
+msgstr "Fel e-postadress eller lösenord!"
+
 #: src/signin/SignIn.jsx:108
 msgid "Wrong username or password"
 msgstr "Fel användarnamn eller lösenord"
 
 #: src/pages/TabletView/components/TrackStatistics/TrackStatistics.tsx:90
+#: src/EmailSettings/components/ToggleFIeld.tsx:30
 msgid "Yes"
 msgstr "Ja"
 
-#: src/usermanagement/UserManagementView.jsx:1332
+#: src/usermanagement/UserManagementView.jsx:1330
 msgid "You are logged in as"
 msgstr "Du är inloggad som"
 
