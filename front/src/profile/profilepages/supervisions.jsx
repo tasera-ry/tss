@@ -246,119 +246,118 @@ export default function Supervisions({ cookies }) {
         </TableHead>
         <TableBody>
           {supervisions?.map((supervision, rowIndex) => (
-              <TableRow key={supervision.id} data-testid="supervisions-row">
-                <TableCell>{supervision.date}</TableCell>
+            <TableRow key={supervision.id} data-testid="supervisions-row">
+              <TableCell>{supervision.date}</TableCell>
 
-                {/* Range supervisor status selection */}
-                <TableCell data-testid="status-cell">
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={(event) => handleStatusClick(event)}
-                    data-rowindex={rowIndex}
+              {/* Range supervisor status selection */}
+              <TableCell data-testid="status-cell">
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={(event) => handleStatusClick(event)}
+                  data-rowindex={rowIndex}
+                >
+                  {supervisions[rowIndex].range_supervisor}
+                </Button>
+                <Menu
+                  open={Boolean(anchorEl)}
+                  anchorEl={anchorEl}
+                  onClose={handleStatusSelect}
+                  keepMounted
+                >
+                  <MenuItem
+                    onClick={() => handleStatusSelect('not confirmed')}
+                    style={{ color: '#b3b3b3' }}
                   >
-                    {supervisions[rowIndex].range_supervisor}
-                  </Button>
-                  <Menu
-                    open={Boolean(anchorEl)}
-                    anchorEl={anchorEl}
-                    onClose={handleStatusSelect}
-                    keepMounted
-                  >
-                    <MenuItem
-                      onClick={() => handleStatusSelect('not confirmed')}
-                      style={{ color: '#b3b3b3' }}
-                    >
-                      {t`Confirm date`}
-                    </MenuItem>
-                    <MenuItem onClick={() => handleStatusSelect('confirmed')}>
-                      {t`Confirmed`}
-                    </MenuItem>
-                    <MenuItem onClick={() => handleStatusSelect('absent')}>
-                      {t`Absent`}
-                    </MenuItem>
-                  </Menu>
-                </TableCell>
+                    {t`Confirm date`}
+                  </MenuItem>
+                  <MenuItem onClick={() => handleStatusSelect('confirmed')}>
+                    {t`Confirmed`}
+                  </MenuItem>
+                  <MenuItem onClick={() => handleStatusSelect('absent')}>
+                    {t`Absent`}
+                  </MenuItem>
+                </Menu>
+              </TableCell>
 
-                {/* Range officer selection menu. Only showed to association users */}
-                {rangeofficerList !== null && (
-                  <TableCell data-testid="officer-cell">
-                    <div>
-                      <Button
-                        onClick={(event) => handleOfficerClick(event)}
-                        variant="outlined"
-                        size="small"
-                        data-rowindex={rowIndex}
-                      >
-                        {rangeofficerList.find(
-                          (officer) =>
-                            officer.id ===
-                            supervisions[rowIndex].rangeofficer_id,
-                        )?.name || t`Select officer`}
-                      </Button>
-                      <Menu
-                        open={Boolean(officerAnchorEl)}
-                        anchorEl={officerAnchorEl}
-                        onClose={handleOfficerSelect}
-                        keepMounted
-                      >
-                        <MenuItem onClick={() => handleOfficerSelect(null)}>
-                          {t`No selection`}
-                        </MenuItem>
-                        {rangeofficerList.map((officer) => (
-                          <MenuItem
-                            key={officer.id}
-                            onClick={() => handleOfficerSelect(officer.id)}
-                          >
-                            {officer.name}
-                          </MenuItem>
-                        ))}
-                      </Menu>
-                    </div>
-                  </TableCell>
-                )}
-
-                {/* Arrival time selection */}
-                <TableCell data-testid="time-cell">
+              {/* Range officer selection menu. Only showed to association users */}
+              {rangeofficerList !== null && (
+                <TableCell data-testid="officer-cell">
                   <div>
-                    <TextField
-                      id="time"
-                      type="time"
-                      value={supervision.arriving_at || ''}
-                      onChange={(event) => handleTimeChange(event, rowIndex)}
-                    />
+                    <Button
+                      onClick={(event) => handleOfficerClick(event)}
+                      variant="outlined"
+                      size="small"
+                      data-rowindex={rowIndex}
+                    >
+                      {rangeofficerList.find(
+                        (officer) =>
+                          officer.id === supervisions[rowIndex].rangeofficer_id,
+                      )?.name || t`Select officer`}
+                    </Button>
+                    <Menu
+                      open={Boolean(officerAnchorEl)}
+                      anchorEl={officerAnchorEl}
+                      onClose={handleOfficerSelect}
+                      keepMounted
+                    >
+                      <MenuItem onClick={() => handleOfficerSelect(null)}>
+                        {t`No selection`}
+                      </MenuItem>
+                      {rangeofficerList.map((officer) => (
+                        <MenuItem
+                          key={officer.id}
+                          onClick={() => handleOfficerSelect(officer.id)}
+                        >
+                          {officer.name}
+                        </MenuItem>
+                      ))}
+                    </Menu>
                   </div>
                 </TableCell>
+              )}
 
-                {/* Submit button */}
-                <TableCell data-testid="actions-cell">
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    className={classes(css.acceptButton)}
-                    onClick={() => handleSubmit(rowIndex)}
-                    data-testid="submit-button"
-                  >
-                    {t`Set`}
-                  </Button>
-                </TableCell>
+              {/* Arrival time selection */}
+              <TableCell data-testid="time-cell">
+                <div>
+                  <TextField
+                    id="time"
+                    type="time"
+                    value={supervision.arriving_at || ''}
+                    onChange={(event) => handleTimeChange(event, rowIndex)}
+                  />
+                </div>
+              </TableCell>
 
-                {/* Reset button */}
-                <TableCell>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    className={classes(css.removeButton)}
-                    onClick={() => handleReset(rowIndex)}
-                    data-testid="reset-button"
-                  >
-                    {t`Reset`}
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+              {/* Submit button */}
+              <TableCell data-testid="actions-cell">
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  className={classes(css.acceptButton)}
+                  onClick={() => handleSubmit(rowIndex)}
+                  data-testid="submit-button"
+                >
+                  {t`Set`}
+                </Button>
+              </TableCell>
+
+              {/* Reset button */}
+              <TableCell>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  className={classes(css.removeButton)}
+                  onClick={() => handleReset(rowIndex)}
+                  data-testid="reset-button"
+                >
+                  {t`Reset`}
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>

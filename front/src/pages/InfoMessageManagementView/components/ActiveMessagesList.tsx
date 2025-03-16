@@ -67,7 +67,11 @@ function InfoMessageCard({ message }) {
         <span>
           {start} {'->'} {end}
         </span>
-        <button type="button" onClick={deleteMessage} className="cursor-pointer">
+        <button
+          type="button"
+          onClick={deleteMessage}
+          className="cursor-pointer"
+        >
           <DeleteOutlined className="" />
         </button>
       </div>

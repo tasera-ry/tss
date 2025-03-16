@@ -38,11 +38,11 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useLanguageContext } from '@/i18n';
 // Translation
 import { useLingui } from '@lingui/react/macro';
+import { useHistory } from 'react-router-dom';
 import socketIOClient from 'socket.io-client';
 import api from '../api/api';
 import colors from '../colors.module.scss';
 import { updateRangeSupervision, validateLogin } from '../utils/Utils';
-import { useHistory } from 'react-router-dom';
 
 async function getRangeSupervisors() {
   try {

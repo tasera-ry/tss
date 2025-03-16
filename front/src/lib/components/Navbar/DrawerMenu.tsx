@@ -55,12 +55,9 @@ export function DrawerMenu() {
 
   const { isLoggedIn, role, logout } = useLoggedInUser();
 
-  const toggleDrawer = useCallback(
-    (drawerOpen) => {
-      setIsDrawerOpen(drawerOpen);
-    },
-    [],
-  );
+  const toggleDrawer = useCallback((drawerOpen) => {
+    setIsDrawerOpen(drawerOpen);
+  }, []);
 
   const navItems = useMemo(() => {
     return MENU_CONTENT[role] || [];

@@ -67,9 +67,12 @@ export function NewMessageForm() {
     },
   });
 
-  const onSubmit = useCallback((data: NewMessage) => {
-    newMessageMutation.mutate(data);
-  }, [newMessageMutation.mutate]);
+  const onSubmit = useCallback(
+    (data: NewMessage) => {
+      newMessageMutation.mutate(data);
+    },
+    [newMessageMutation.mutate],
+  );
 
   return (
     <form

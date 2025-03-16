@@ -39,8 +39,8 @@ import { withCookies } from 'react-cookie';
 import { validateLogin } from '../utils/Utils';
 import css from './UserManagementView.module.scss';
 
-import api from '../api/api';
 import { useHistory } from 'react-router-dom';
+import api from '../api/api';
 
 const classes = classNames.bind(css);
 
