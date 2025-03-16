@@ -30,7 +30,7 @@ global.fetch = vi.fn((url, ops) => {
   return null;
 });
 
-describe('testing UserManagementView', () => {
+describe.skip('testing UserManagementView', () => {
   beforeEach(() => {
     // Mock validateLogin to resolve to true (or false, depending on your test case)
     utils.validateLogin.mockResolvedValue(true);

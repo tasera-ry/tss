@@ -724,7 +724,7 @@ function Scheduling(props) {
           .then((res) => {
             // 400 and so on
             if (!res.ok) {
-              return reject(new Error('update reservation failed'));
+              throw new Error('update reservation failed');
             }
             if (res.status !== 204) {
               return res.json();
@@ -736,13 +736,13 @@ function Scheduling(props) {
               rsId = json.id; // eslint-disable-line
             }
             if (typeof rsId !== 'number') {
-              return reject(new Error('no reservation id for schedule'));
+              new Error('no reservation id for schedule');
             }
             return rsId;
           });
       } catch (error) {
         console.error('reservation', error);
-        return reject(new Error('general reservation failure'));
+        throw new Error('general reservation failure');
       }
     };
 
@@ -770,7 +770,7 @@ function Scheduling(props) {
           ...params,
           association_id: rangeSupervisorId,
         };
-      } else return reject(new Error('Range officer enabled but no id'));
+      } else throw new Error('Range officer enabled but no id');
     }
 
     /* eslint-disable-next-line */
@@ -788,7 +788,7 @@ function Scheduling(props) {
           .then((res) => {
             // 400 and so on
             if (res.ok === false) {
-              return reject(new Error('update schedule failed'));
+              throw new Error('update schedule failed');
             }
             if (res.status !== 204) {
               return res.json();
@@ -799,13 +799,13 @@ function Scheduling(props) {
               srsId = json.id; // eslint-disable-line
             }
             if (typeof srsId !== 'number') {
-              return reject(new Error('no schedule id for track supervision'));
+              throw new Error('no schedule id for track supervision');
             }
             return srsId;
           });
       } catch (error) {
         console.error('schedule', error);
-        return reject(new Error('general schedule failure'));
+        throw new Error('general schedule failure');
       }
     };
 
@@ -848,7 +848,7 @@ function Scheduling(props) {
         arrivalTime,
       );
       if (rangeSupervisionRes !== true) {
-        return reject(new Error(rangeSupervisionRes));
+        throw new Error(rangeSupervisionRes);
       }
     }
 
@@ -900,7 +900,7 @@ function Scheduling(props) {
             .then((res) => {
               // 400 and so on
               if (res.ok === false) {
-                return reject(new Error('update track supervision failed'));
+                throw new Error('update track supervision failed');
               }
               if (res.status !== 204) {
                 return res.json();
@@ -909,7 +909,7 @@ function Scheduling(props) {
         }
       } catch (error) {
         console.error('track supervision', error);
-        return reject(new Error('general track supervision failure'));
+        throw new Error('general track supervision failure');
       }
     };
     for (const key in tracks) {
