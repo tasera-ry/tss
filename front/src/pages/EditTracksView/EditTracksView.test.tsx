@@ -1,5 +1,5 @@
 import { TestProviders } from '@/_TestUtils/TestProvides';
-import { EditTracksView } from '@/edittracks/tracks';
+import { EditTracksView } from '@/pages/EditTracksView/EditTracksView';
 import { validateLogin } from '@/utils/Utils';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import axios from 'axios';

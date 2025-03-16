@@ -17,9 +17,9 @@ import { Trackview } from './trackview/Trackview';
 import UserManagementView from './usermanagement/UserManagementView';
 
 import { EmailSettingsView } from '@/EmailSettings/EmailSettings';
-import { EditTracksView } from '@/edittracks/tracks';
 import { Navbar } from '@/lib/components/Navbar';
 import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
+import { EditTracksView } from '@/pages/EditTracksView/EditTracksView';
 import { InfoMessageManagementView } from '@/pages/InfoMessageManagementView';
 import { Monthview } from '@/pages/MonthView/MonthView';
 import { StatisticsView } from '@/pages/StatisticsView/StatisticsView';

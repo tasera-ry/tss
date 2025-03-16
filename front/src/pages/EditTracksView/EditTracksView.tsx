@@ -1,5 +1,5 @@
-import { NewTrackRow } from '@/edittracks/components/NewTrackRow';
-import { TrackRow } from '@/edittracks/components/TrackRow';
+import { NewTrackRow } from '@/pages/EditTracksView/components/NewTrackRow';
+import { TrackRow } from '@/pages/EditTracksView/components/TrackRow';
 import { useLingui } from '@lingui/react/macro';
 import {
   Alert,
@@ -16,7 +16,7 @@ import Snackbar from '@mui/material/Snackbar';
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-import { validateLogin } from '../utils/Utils';
+import { validateLogin } from '../../utils/Utils';
 
 export function EditTracksView() {
   const { t } = useLingui();
