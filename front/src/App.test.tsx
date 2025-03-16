@@ -1,8 +1,7 @@
-import '@testing-library/jest-dom';
 import { TestProviders } from '@/_TestUtils/TestProvides';
 import { schedulingWeek } from '@/_TestUtils/TestUtils';
 import { getSchedulingWeek, validateLogin } from '@/utils/Utils';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import { App } from './App';
 
@@ -33,7 +32,6 @@ describe('testing App', () => {
     vi.mocked(getSchedulingWeek).mockResolvedValue(schedulingWeek as any);
     vi.mocked(validateLogin).mockResolvedValue(true);
 
-    localStorage.setItem('language', '1');
     await act(async () => {
       render(<App />, { wrapper: TestProviders });
     });

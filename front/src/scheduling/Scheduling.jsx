@@ -666,7 +666,7 @@ function Scheduling(props) {
     );
   };
 
-  const updateCall = (
+  const updateCall = async (
     date,
     rsId,
     srsId,
@@ -674,112 +674,222 @@ function Scheduling(props) {
     paramTracks,
     isRepeat,
   ) => {
-    /* eslint-disable-next-line */
-    return new Promise((resolve, reject) => {
-      let reservationMethod;
-      let reservationPath = '';
-      let scheduledRangeSupervisionMethod;
-      let scheduledRangeSupervisionPath = '';
+    let reservationMethod;
+    let reservationPath = '';
+    let scheduledRangeSupervisionMethod;
+    let scheduledRangeSupervisionPath = '';
 
-      // determine exist or not with:
-      // reservationId: '',
-      // scheduledRangeSupervisionId: '',
-      // trackSupervisionId: '',
-      if (rsId !== null) {
-        reservationMethod = 'PUT';
-        reservationPath = `/${rsId}`;
-      } else reservationMethod = 'POST';
+    // determine exist or not with:
+    // reservationId: '',
+    // scheduledRangeSupervisionId: '',
+    // trackSupervisionId: '',
+    if (rsId !== null) {
+      reservationMethod = 'PUT';
+      reservationPath = `/${rsId}`;
+    } else reservationMethod = 'POST';
 
-      if (srsId !== null) {
-        scheduledRangeSupervisionMethod = 'PUT';
-        scheduledRangeSupervisionPath = `/${srsId}`;
-      } else scheduledRangeSupervisionMethod = 'POST';
+    if (srsId !== null) {
+      scheduledRangeSupervisionMethod = 'PUT';
+      scheduledRangeSupervisionPath = `/${srsId}`;
+    } else scheduledRangeSupervisionMethod = 'POST';
 
-      let params = {
-        range_id: rangeId,
-        available: available,
-        supervisor: rangeSupervisorId,
-        originalSupervisor: rangeSupervisorOriginal,
-        scheduleId: srsId,
+    let params = {
+      range_id: rangeId,
+      available: available,
+      supervisor: rangeSupervisorId,
+      originalSupervisor: rangeSupervisorOriginal,
+      scheduleId: srsId,
+    };
+
+    if (reservationMethod === 'POST') {
+      // reservation can result in a duplicate which causes http 500
+      params = {
+        ...params,
+        date: moment(date).format('YYYY-MM-DD'),
       };
+    }
 
-      if (reservationMethod === 'POST') {
-        // reservation can result in a duplicate which causes http 500
+    /* eslint-disable-next-line */
+    const reservation = async (rsId, params, method, path) => {
+      try {
+        return await fetch(`/api/reservation${path}`, {
+          method,
+          body: JSON.stringify(params),
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        })
+          /* eslint-disable-next-line */
+          .then((res) => {
+            // 400 and so on
+            if (!res.ok) {
+              return reject(new Error('update reservation failed'));
+            }
+            if (res.status !== 204) {
+              return res.json();
+            }
+          })
+          .then((json) => {
+            // pretty sure the code paths could be done better
+            if (typeof rsId !== 'number' && json) {
+              rsId = json.id; // eslint-disable-line
+            }
+            if (typeof rsId !== 'number') {
+              return reject(new Error('no reservation id for schedule'));
+            }
+            return rsId;
+          });
+      } catch (error) {
+        console.error('reservation', error);
+        return reject(new Error('general reservation failure'));
+      }
+    };
+
+    const reservationRes = await reservation(
+      rsId,
+      params,
+      reservationMethod,
+      reservationPath,
+    );
+    // if res grabbed from previous post
+    if (reservationRes) {
+      rsId = reservationRes; // eslint-disable-line
+    }
+
+    params = {
+      range_reservation_id: rsId,
+      open: moment(open).format('HH:mm'),
+      close: moment(close).format('HH:mm'),
+      supervisor_id: null,
+    };
+
+    if (rangeSupervisorSwitch) {
+      if (rangeSupervisorId !== null) {
         params = {
           ...params,
-          date: moment(date).format('YYYY-MM-DD'),
+          association_id: rangeSupervisorId,
         };
-      }
+      } else return reject(new Error('Range officer enabled but no id'));
+    }
 
-      /* eslint-disable-next-line */
-      const reservation = async (rsId, params, method, path) => {
-        try {
-          return await fetch(`/api/reservation${path}`, {
-            method,
-            body: JSON.stringify(params),
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
+    /* eslint-disable-next-line */
+    const schedule = async (rsId, srsId, params, method, path) => {
+      try {
+        return await fetch(`/api/schedule${path}`, {
+          method,
+          body: JSON.stringify(params),
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        })
+          /* eslint-disable-next-line */
+          .then((res) => {
+            // 400 and so on
+            if (res.ok === false) {
+              return reject(new Error('update schedule failed'));
+            }
+            if (res.status !== 204) {
+              return res.json();
+            }
           })
-            /* eslint-disable-next-line */
-            .then((res) => {
-              // 400 and so on
-              if (!res.ok) {
-                return reject(new Error('update reservation failed'));
-              }
-              if (res.status !== 204) {
-                return res.json();
-              }
-            })
-            .then((json) => {
-              // pretty sure the code paths could be done better
-              if (typeof rsId !== 'number' && json) {
-                rsId = json.id; // eslint-disable-line
-              }
-              if (typeof rsId !== 'number') {
-                return reject(new Error('no reservation id for schedule'));
-              }
-              return rsId;
-            });
-        } catch (error) {
-          console.error('reservation', error);
-          return reject(new Error('general reservation failure'));
-        }
-      };
+          .then((json) => {
+            if (typeof srsId !== 'number' && json) {
+              srsId = json.id; // eslint-disable-line
+            }
+            if (typeof srsId !== 'number') {
+              return reject(new Error('no schedule id for track supervision'));
+            }
+            return srsId;
+          });
+      } catch (error) {
+        console.error('schedule', error);
+        return reject(new Error('general schedule failure'));
+      }
+    };
 
-      const reservationRes = await reservation(
+    const scheduleRes = await schedule(
+      rsId,
+      srsId,
+      params,
+      scheduledRangeSupervisionMethod,
+      scheduledRangeSupervisionPath,
+    );
+    // if res grabbed from previous post
+    if (scheduleRes) {
+      srsId = scheduleRes; // eslint-disable-line
+    }
+
+    /*
+     *  Range supervision
+     */
+
+    let rangeStatus = null;
+
+    if (!available) {
+      rangeStatus = 'closed';
+    } else if (!rangeSupervisorSwitch) {
+      rangeStatus = 'absent';
+    } else if (
+      rangeSupervisorId !== null &&
+      rangeSupervisorOriginal !== rangeSupervisorId
+    ) {
+      rangeStatus = 'not confirmed';
+    }
+
+    if (rangeStatus !== null) {
+      const rangeSupervisionRes = await updateRangeSupervision(
         rsId,
-        params,
-        reservationMethod,
-        reservationPath,
+        srsId,
+        rangeStatus,
+        rangeSupervisionScheduled,
+        rangeSupervisorId,
+        arrivalTime,
       );
-      // if res grabbed from previous post
-      if (reservationRes) {
-        rsId = reservationRes; // eslint-disable-line
+      if (rangeSupervisionRes !== true) {
+        return reject(new Error(rangeSupervisionRes));
       }
+    }
 
-      params = {
-        range_reservation_id: rsId,
-        open: moment(open).format('HH:mm'),
-        close: moment(close).format('HH:mm'),
-        supervisor_id: null,
-      };
+    /* eslint-disable-next-line */
+    const trackSupervision = async (srsId, key) => {
+      try {
+        // update only ones changed in state
+        if (trackStates[tracks[key].id] || isRepeat) {
+          const statusInState = trackStates[tracks[key].id];
+          // if coming from repeat and status was cleared
+          const supervisorStatus = statusInState ? statusInState : 'absent';
 
-      if (rangeSupervisorSwitch) {
-        if (rangeSupervisorId !== null) {
-          params = {
-            ...params,
-            association_id: rangeSupervisorId,
+          let { notice } = tracks[key];
+          if (notice === null) {
+            // undefined gets removed in object
+            notice = undefined;
+          }
+
+          /* eslint-disable-next-line */
+          let params = {
+            track_supervisor: supervisorStatus,
+            notice,
+            association: rangeSupervisorId,
           };
-        } else return reject(new Error('Range officer enabled but no id'));
-      }
 
-      /* eslint-disable-next-line */
-      const schedule = async (rsId, srsId, params, method, path) => {
-        try {
-          return await fetch(`/api/schedule${path}`, {
-            method,
+          let srsp = '';
+          let trackSupervisionMethod = '';
+          // if scheduled track supervision exists -> put, otherwise -> post
+          if (paramTracks[key].scheduled) {
+            trackSupervisionMethod = 'PUT';
+            srsp = `/${srsId}/${tracks[key].id}`;
+          } else {
+            trackSupervisionMethod = 'POST';
+            params = {
+              ...params,
+              scheduled_range_supervision_id: srsId?.id ? srsId : srsId,
+              track_id: tracks[key].id,
+            };
+          }
+          return await fetch(`/api/track-supervision${srsp}`, {
+            method: trackSupervisionMethod,
             body: JSON.stringify(params),
             headers: {
               Accept: 'application/json',
@@ -790,143 +900,23 @@ function Scheduling(props) {
             .then((res) => {
               // 400 and so on
               if (res.ok === false) {
-                return reject(new Error('update schedule failed'));
+                return reject(new Error('update track supervision failed'));
               }
               if (res.status !== 204) {
                 return res.json();
               }
-            })
-            .then((json) => {
-              if (typeof srsId !== 'number' && json) {
-                srsId = json.id; // eslint-disable-line
-              }
-              if (typeof srsId !== 'number') {
-                return reject(
-                  new Error('no schedule id for track supervision'),
-                );
-              }
-              return srsId;
             });
-        } catch (error) {
-          console.error('schedule', error);
-          return reject(new Error('general schedule failure'));
         }
-      };
-
-      const scheduleRes = await schedule(
-        rsId,
-        srsId,
-        params,
-        scheduledRangeSupervisionMethod,
-        scheduledRangeSupervisionPath,
-      );
-      // if res grabbed from previous post
-      if (scheduleRes) {
-        srsId = scheduleRes; // eslint-disable-line
+      } catch (error) {
+        console.error('track supervision', error);
+        return reject(new Error('general track supervision failure'));
       }
+    };
+    for (const key in tracks) {
+      await trackSupervision(srsId, key);
+    }
 
-      /*
-       *  Range supervision
-       */
-
-      let rangeStatus = null;
-
-      if (!available) {
-        rangeStatus = 'closed';
-      } else if (!rangeSupervisorSwitch) {
-        rangeStatus = 'absent';
-      } else if (
-        rangeSupervisorId !== null &&
-        rangeSupervisorOriginal !== rangeSupervisorId
-      ) {
-        rangeStatus = 'not confirmed';
-      }
-
-      if (rangeStatus !== null) {
-        const rangeSupervisionRes = await updateRangeSupervision(
-          rsId,
-          srsId,
-          rangeStatus,
-          rangeSupervisionScheduled,
-          rangeSupervisorId,
-          arrivalTime,
-        );
-        if (rangeSupervisionRes !== true) {
-          return reject(new Error(rangeSupervisionRes));
-        }
-      }
-
-      /* eslint-disable-next-line */
-      const trackSupervision = async (srsId, key) => {
-        try {
-          // update only ones changed in state
-          if (trackStates[tracks[key].id] || isRepeat) {
-            const statusInState = trackStates[tracks[key].id];
-            // if coming from repeat and status was cleared
-            const supervisorStatus = statusInState ? statusInState : 'absent';
-
-            let { notice } = tracks[key];
-            if (notice === null) {
-              // undefined gets removed in object
-              notice = undefined;
-            }
-
-            /* eslint-disable-next-line */
-            let params = {
-              track_supervisor: supervisorStatus,
-              notice,
-              association: rangeSupervisorId,
-            };
-
-            let srsp = '';
-            let trackSupervisionMethod = '';
-            // if scheduled track supervision exists -> put, otherwise -> post
-            if (paramTracks[key].scheduled) {
-              trackSupervisionMethod = 'PUT';
-              srsp = `/${srsId}/${tracks[key].id}`;
-            } else {
-              trackSupervisionMethod = 'POST';
-              params = {
-                ...params,
-                scheduled_range_supervision_id:
-                  srsId?.id ? srsId : srsId,
-                track_id: tracks[key].id,
-              };
-            }
-            return await fetch(`/api/track-supervision${srsp}`, {
-              method: trackSupervisionMethod,
-              body: JSON.stringify(params),
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-            })
-              /* eslint-disable-next-line */
-              .then((res) => {
-                // 400 and so on
-                if (res.ok === false) {
-                  return reject(new Error('update track supervision failed'));
-                }
-                if (res.status !== 204) {
-                  return res.json();
-                }
-              });
-          }
-        } catch (error) {
-          console.error('track supervision', error);
-          return reject(new Error('general track supervision failure'));
-        }
-      };
-      for (const key in tracks) {
-        try {
-          await trackSupervision(srsId, key);
-        } catch (error) {
-          return reject(error);
-        }
-      }
-
-      return resolve('update success');
-    });
+    return 'update success';
   };
 
   const update = async () => {

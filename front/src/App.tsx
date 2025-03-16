@@ -4,8 +4,6 @@ import './shared.module.scss';
 import './App.css';
 
 import { Route, HashRouter as Router, Switch } from 'react-router-dom';
-import { EmailSettingsView } from './EmailSettings/EmailSettings';
-import TrackCRUD from './edittracks/tracks';
 import Dayview from './pages/DayView/DayView';
 import { TabletView } from './pages/TabletView/TabletView';
 import { Weekview } from './pages/WeekView/WeekView';
@@ -18,8 +16,10 @@ import SignIn from './signin/SignIn';
 import { Trackview } from './trackview/Trackview';
 import UserManagementView from './usermanagement/UserManagementView';
 
+import { EmailSettingsView } from '@/EmailSettings/EmailSettings';
 import { Navbar } from '@/lib/components/Navbar';
 import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
+import { EditTracksView } from '@/pages/EditTracksView/EditTracksView';
 import { InfoMessageManagementView } from '@/pages/InfoMessageManagementView';
 import { Monthview } from '@/pages/MonthView/MonthView';
 import { StatisticsView } from '@/pages/StatisticsView/StatisticsView';
@@ -52,9 +52,9 @@ export function App() {
         <Route path="/profile" component={Profile} />
         <Route path="/usermanagement" component={UserManagementView} />
         <Route path="/supervisor-raffle" component={Raffle} />
-        <Route path="/tracks" component={TrackCRUD} />
+        <Route path="/tracks" component={EditTracksView} />
         <Route path="/email-settings" component={EmailSettingsView} />
-        <Route path="/statistics/:date?" component={StatisticsView} />
+        <Route path="/statistics" component={StatisticsView} />
         <Route path="/info" component={InfoMessageManagementView} />
       </Switch>
     </Router>
