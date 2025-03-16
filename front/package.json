@@ -8,10 +8,10 @@
     "build": "vite build",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
-    "eject": "react-scripts eject",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
-    "format": "prettier --write .",
+    "format": "biome format --write .",
+    "lint": "biome lint --write ./src",
+    "check": "biome check ./src",
+    "check:fix": "biome check --write ./src",
     "lingui:extract": "lingui extract",
     "lingui:compile": "lingui compile"
   },
@@ -47,6 +47,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@lingui/babel-plugin-lingui-macro": "^5.2.0",
     "@lingui/vite-plugin": "^5.2.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -55,13 +56,8 @@
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "^3.0.4",
     "@vitest/ui": "^3.0.4",
-    "babel-eslint": "^10.1.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-plugin-only-warn": "^1.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
     "jest-environment-jsdom": "^29.7.0",
     "jsdom": "^26.0.0",
-    "prettier": "^3.3.3",
     "vite": "^6.0.7",
     "vitest": "^3.0.4"
   },
