@@ -23,7 +23,7 @@ const newTrack = {
 
 const data = { data: mockTracks };
 
-vi.mock('../utils/Utils');
+vi.mock('@/utils/Utils');
 
 vi.mock('axios', () => ({
   default: {
