@@ -7,8 +7,8 @@ import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import SignIn from './signin/SignIn';
 import ResetPassword from './resetPW/ResetPassword';
 import RenewPassword from './renewPW/RenewPassword';
-import Dayview from './dayview/Dayview';
-import { Weekview } from './weekview/Weekview';
+import Dayview from './pages/DayView/DayView';
+import { Weekview } from './pages/WeekView/WeekView';
 import { Trackview } from './trackview/Trackview';
 import Scheduling from './scheduling/Scheduling';
 import { TabletView } from './pages/TabletView/TabletView';
@@ -20,7 +20,7 @@ import Raffle from './raffle/raffle';
 
 import { Navbar } from '@/lib/components/Navbar';
 import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
-import { Monthview } from '@/monthview/Monthview';
+import { Monthview } from '@/pages/MonthView/MonthView';
 import { InfoMessageManagementView } from '@/pages/InfoMessageManagementView';
 import { StatisticsView } from '@/pages/StatisticsView/StatisticsView';
 
