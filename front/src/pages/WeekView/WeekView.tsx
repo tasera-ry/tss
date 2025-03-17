@@ -6,10 +6,10 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 
 import exclamation from '@/assets/Info.png';
 import { InfoBox } from '@/lib/components/InfoBox';
+import { TableLegends } from '@/lib/components/TableLegends';
 import { ViewChanger } from '@/lib/components/ViewChanger';
 import { JumpToCurrent, getSchedulingWeek } from '@/utils/Utils';
 import moment from 'moment';
-import { TableLegends } from '../../TableLegends/TableLegends';
 
 import { DateHeader } from '@/lib/components/DateHeader';
 import type { DaySchedule } from '@/types';

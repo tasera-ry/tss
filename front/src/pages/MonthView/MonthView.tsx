@@ -6,11 +6,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
 import { InfoBox } from '@/lib/components/InfoBox';
+import { TableLegends } from '@/lib/components/TableLegends';
 import { ViewChanger } from '@/lib/components/ViewChanger';
 import { JumpToCurrent } from '@/utils/Utils';
 // Moment for date management
 import moment from 'moment';
-import { TableLegends } from '../../TableLegends/TableLegends';
 
 import api from '@/api/api';
 import smallInfoIcon from '@/assets/Small-info.png';
