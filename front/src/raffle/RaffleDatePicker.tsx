@@ -37,7 +37,7 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
   const scheduledDays = useMemo(() => scheduleQuery.data?.filter((s) => s.rangeSupervisionScheduled).map((day) => new Date(day.date)) || [], [scheduleQuery.data]);
 
   const localeDayPicker = LOCALE[locale];
-
+  // datepicker
   return (
     <DayPicker
     animate
