@@ -12,14 +12,13 @@ import Snackbar from '@mui/material/Snackbar';
 import { StyledEngineProvider } from '@mui/material/styles';
 
 import { useLingui } from '@lingui/react/macro';
+import { validateLogin } from '../utils/Utils';
 import { dateToString } from '../utils/dateUtils';
 import RaffleDatePicker from './RaffleDatePicker';
 import SupervisionAmountsTable from './SupervisionAmountsTable';
 import SupervisionResultsTable from './SupervisionResultsTable';
 import SupervisorsTable from './SupervisorsTable';
 import css from './raffle.module.scss';
-import { useQuery, useQueryClient } from 'react-query';
-
 
 const classes = classNames.bind(css);
 
@@ -38,7 +37,6 @@ const supervisionAmounts = (raffleResults, supervisors) => {
 
 export default function Raffle() {
   const { t } = useLingui();
-  const queryClient = useQueryClient();
   const [supervisorsOpen, setSupervisorsOpen] = useState(true);
   const [supervisors, setSupervisors] = useState([]);
   const [selectedDays, setSelectedDays] = useState([]);
@@ -56,29 +54,29 @@ export default function Raffle() {
     severity: 'success',
   });
 
-  const membersQuery = useQuery({
-    queryKey: ['members'],
-    queryFn: async () => {
-      const res = await api.getMembers();
-      res.sort((a, b) => {
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-      });
-      return res;
-    },
-    onSuccess: (data) => {
-      setSupervisors(data);
-      setIsLoading({ ...isLoading, page: false });
-    },
-    onError: (error) => {
-      setToast({
-        open: true,
-        msg: t`Could not load associations`,
-        severity: 'error',
-      });
-    },
-  });
+  useEffect(() => {
+    (async () => {
+      const logInSuccess = await validateLogin();
+      if (!logInSuccess) window.location.href = '/';
+      try {
+        const res = await api.getMembers();
+        res.sort((a, b) => {
+          if (a.name < b.name) return -1;
+          if (a.name > b.name) return 1;
+          return 0;
+        });
+        setSupervisors(res);
+      } catch (err) {
+        setToast({
+          open: true,
+          msg: t`Could not load associations`,
+          severity: 'error',
+        });
+      } finally {
+        setIsLoading({ ...isLoading, page: false });
+      }
+    })();
+  }, [t, isLoading]);
 
   useEffect(() => {
     if (raffleResults.length > 0) {
@@ -161,7 +159,6 @@ export default function Raffle() {
       });
       setSelectedDays([]);
       setRaffleResults([]);
-      queryClient.invalidateQueries('schedulingFreeform');
     } catch (err) {
       setToast({
         open: true,
