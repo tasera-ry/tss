@@ -16,6 +16,8 @@
     "lingui:compile": "lingui compile"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@hookform/resolvers": "^4.1.2",
     "@lingui/core": "^5.2.0",
     "@lingui/react": "^5.2.0",
