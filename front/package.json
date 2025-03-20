@@ -46,6 +46,7 @@
     "sass": "^1.42.1",
     "socket.io-client": "^2.3.1",
     "tailwindcss": "^4.0.2",
+    "yaml": "2.7.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
