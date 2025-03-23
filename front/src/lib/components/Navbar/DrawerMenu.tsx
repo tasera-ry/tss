@@ -43,10 +43,7 @@ const MENU_CONTENT: Record<Role, NavItem[]> = {
     { to: '/profile/supervisions', label: msg`Supervisions` },
     { to: '/profile', label: msg`Account dashboard` },
   ],
-  rangemaster: [
-    { to: '/profile/supervisions', label: msg`Supervisions` },
-    { to: '/tablet', label: msg`Tablet view` },
-  ],
+  rangemaster: [{ to: '/tablet', label: msg`Tablet view` }],
 };
 
 export function DrawerMenu() {
