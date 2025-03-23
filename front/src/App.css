@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-lato: 'Lato', sans-serif; 
+  --font-lato: "Lato", sans-serif;
 
   --color-green: #658f60;
   --color-green-light: #b2d9ad;

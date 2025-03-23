@@ -9,38 +9,40 @@ import '../shared.module.scss';
 import moment from 'moment';
 import 'moment/locale/fi';
 
-// Material UI components
-import { LocalizationProvider, TimePicker, DatePicker } from '@mui/x-date-pickers';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import Switch from '@mui/material/Switch';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MuiAlert from '@mui/material/Alert';
+import Backdrop from '@mui/material/Backdrop';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import FormLabel from '@mui/material/FormLabel';
-import CircularProgress from '@mui/material/CircularProgress';
-import Backdrop from '@mui/material/Backdrop';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 import Modal from '@mui/material/Modal';
+import Select from '@mui/material/Select';
+import Snackbar from '@mui/material/Snackbar';
+import Switch from '@mui/material/Switch';
+import TextField from '@mui/material/TextField';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { withStyles } from '@mui/styles';
-import Box from '@mui/material/Box';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-
-import colors from '../colors.module.scss';
-import socketIOClient from 'socket.io-client';
+// Material UI components
 import {
-  updateRangeSupervision,
-  validateLogin,
-} from '../utils/Utils';
-import api from '../api/api';
+  DatePicker,
+  LocalizationProvider,
+  TimePicker,
+} from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+
+import { useLanguageContext } from '@/i18n';
 // Translation
 import { useLingui } from '@lingui/react/macro';
-import { useLanguageContext } from '@/i18n';
+import { useHistory } from 'react-router-dom';
+import socketIOClient from 'socket.io-client';
+import api from '../api/api';
+import colors from '../colors.module.scss';
+import { updateRangeSupervision, validateLogin } from '../utils/Utils';
 
 async function getRangeSupervisors() {
   try {
@@ -95,6 +97,7 @@ const CustomSwitchGreen = withStyles({
 function Scheduling(props) {
   const { t } = useLingui();
   const [locale] = useLanguageContext();
+  const history = useHistory();
 
   const [state, setState] = useState('loading');
   const [toast, setToast] = useState(false);
@@ -111,7 +114,8 @@ function Scheduling(props) {
   const [rangeSupervisorSwitch, setRangeSupervisorSwitch] = useState(false);
   const [rangeSupervisorId, setRangeSupervisorId] = useState('');
   const [rangeSupervisorOriginal, setRangeSupervisorOriginal] = useState('');
-  const [rangeSupervisionScheduled, setRangeSupervisionScheduled] = useState(false);
+  const [rangeSupervisionScheduled, setRangeSupervisionScheduled] =
+    useState(false);
   const [daily, setDaily] = useState(false);
   const [weekly, setWeekly] = useState(false);
   const [monthly, setMonthly] = useState(false);
@@ -136,7 +140,7 @@ function Scheduling(props) {
       if (!isMounted) return;
 
       if (!logInSuccess) {
-        props.history.push('/');
+        history.push('/');
       } else {
         getRangeSupervisors()
           .then((response) => {
@@ -178,7 +182,7 @@ function Scheduling(props) {
       isMounted = false;
       socket.disconnect();
     };
-  }, []);
+  }, [history, rangeSupervisionScheduled]);
 
   // runs after date changed with datePicker
   useEffect(() => {
@@ -201,7 +205,8 @@ function Scheduling(props) {
 
       // Update the trackStates
       setTrackStates((prevStates) => ({
-        ...prevStates, ...updatedTrackStates,
+        ...prevStates,
+        ...updatedTrackStates,
       }));
     }
   };
@@ -218,7 +223,8 @@ function Scheduling(props) {
 
       // Update the trackStates
       setTrackStates((prevStates) => ({
-        ...prevStates, ...updatedTrackStates,
+        ...prevStates,
+        ...updatedTrackStates,
       }));
     }
   };
@@ -233,7 +239,7 @@ function Scheduling(props) {
   };
 
   const continueWithDate = (event) => {
-    if (event && event.type && event.type === 'submit') {
+    if (event?.type === 'submit') {
       event.preventDefault();
     }
     setState('loading');
@@ -257,7 +263,7 @@ function Scheduling(props) {
       setAvailable(event.target.checked);
       closeAllTracks();
     }
-    
+
     if (event.target.name === 'rangeSupervisorSwitch') {
       setRangeSupervisorSwitch(event.target.checked);
     }
@@ -282,7 +288,7 @@ function Scheduling(props) {
     setToast(false);
   };
 
-  // Handles the toggle switches for the tracks 
+  // Handles the toggle switches for the tracks
   // and updates the track states and events
   const handleTrackSwitchChange = (event) => {
     // having the name be a int causes
@@ -291,11 +297,13 @@ function Scheduling(props) {
     const { name, checked } = event.target;
 
     setTrackStates((prevStates) => ({
-      ...prevStates, [name]: checked ? 'closed' : 'absent',
+      ...prevStates,
+      [name]: checked ? 'closed' : 'absent',
     }));
 
     setEvents((prevEvents) => ({
-      ...prevEvents, [name]: checked ? 'closed' : 'absent',
+      ...prevEvents,
+      [name]: checked ? 'closed' : 'absent',
     }));
   };
 
@@ -319,9 +327,9 @@ function Scheduling(props) {
     const maxLength = 255;
     const value = event.target.value.slice(0, maxLength); // limit to 255 characters
     const idx = tracks.findIndex(
-      (findItem) => findItem.id === parseInt(event.target.id),
+      (findItem) => findItem.id === Number.parseInt(event.target.id),
     );
-    let newTracks = [...tracks];
+    const newTracks = [...tracks];
     newTracks[idx] = { ...newTracks[idx], notice: value };
     setTracks(newTracks);
   };
@@ -339,7 +347,11 @@ function Scheduling(props) {
       color: colors.turquoise,
       text: t`Range officer predefined`,
     });
-    updateSupervisor('not confirmed', colors.turquoise, t`Range officer predefined`);
+    updateSupervisor(
+      'not confirmed',
+      colors.turquoise,
+      t`Range officer predefined`,
+    );
   };
 
   // Emits a 'rangeUpdate' event with the status 'confirmed'
@@ -350,8 +362,12 @@ function Scheduling(props) {
       color: colors.greenLight,
       text: t`Range officer confirmed`,
     });
-    updateSupervisor('confirmed', colors.greenLight, t`Range officer confirmed`);
-  };  
+    updateSupervisor(
+      'confirmed',
+      colors.greenLight,
+      t`Range officer confirmed`,
+    );
+  };
 
   // Emits a 'rangeUpdate' event with the status 'en route'
   // and updates the supervisor's status in the UI
@@ -385,7 +401,7 @@ function Scheduling(props) {
   const confirmArrivalTime = async () => {
     const rangeStatus = determineRangeStatus();
 
-    // Updates information of the range supervision if the arrival time is valid 
+    // Updates information of the range supervision if the arrival time is valid
     if (arrivalTime) {
       try {
         await updateRangeSupervision(
@@ -395,23 +411,23 @@ function Scheduling(props) {
           rangeSupervisionScheduled,
           rangeSupervisorId,
           arrivalTime,
-        )
+        );
         // If the arrival time is successfully updated, set a success message
         setToastMessage(t`Estimated time of arrival updated`);
         setToastSeverity('success');
         setToast(true);
-        } // If there is an error, set an error message
-          catch(error) {
-            setToastMessage(t`Failed to update estimated time of arrival`);
-            setToastSeverity('error');
-            setToast(true);
-        }
-    } 
+      } catch (error) {
+        // If there is an error, set an error message
+        setToastMessage(t`Failed to update estimated time of arrival`);
+        setToastSeverity('error');
+        setToast(true);
+      }
+    }
   };
 
   const saveChanges = async () => {
     setExpand(false);
-    setState('loading');  
+    setState('loading');
 
     // update call/error handling
     const updateSC = async (
@@ -506,18 +522,18 @@ function Scheduling(props) {
   const determineRangeStatus = () => {
     let rangeStatus = null;
 
-      if (!available) {
-        rangeStatus = 'closed';
-      } else if (!rangeSupervisorSwitch) {
-        rangeStatus = 'absent';
-      } else if (statusColor === colors.turquoise) {
-        rangeStatus = 'not confirmed';
-      } else if (statusColor === colors.orange) {
-        rangeStatus = 'en route';
-      } else if (statusColor === colors.greenLight) {
-        rangeStatus = 'confirmed';
-      }
-      return rangeStatus;
+    if (!available) {
+      rangeStatus = 'closed';
+    } else if (!rangeSupervisorSwitch) {
+      rangeStatus = 'absent';
+    } else if (statusColor === colors.turquoise) {
+      rangeStatus = 'not confirmed';
+    } else if (statusColor === colors.orange) {
+      rangeStatus = 'en route';
+    } else if (statusColor === colors.greenLight) {
+      rangeStatus = 'confirmed';
+    }
+    return rangeStatus;
   };
 
   // Updates the status of range supervisor's status on the backend
@@ -538,15 +554,18 @@ function Scheduling(props) {
         setRangeSupervisionScheduled(true);
       }
     }
-  };
+  }
 
   // creates status message for coloured status bar
   const createStatusMessage = () => {
-    if (!arrivalTime || arrivalTime === 'Invalid date' || statusColor === colors.green) {
+    if (
+      !arrivalTime ||
+      arrivalTime === 'Invalid date' ||
+      statusColor === colors.green
+    ) {
       return;
-    } else {
-      return ` (ETA ${arrivalTime})`;
     }
+    return ` (ETA ${arrivalTime})`;
   };
 
   /*
@@ -560,11 +579,13 @@ function Scheduling(props) {
   const createTrackList = () => {
     const items = [];
 
-    for (const key in tracks) {   
+    for (const key in tracks) {
       items.push(
-        <React.Fragment key = {key}>
-          <Box className={`trackBox ${trackStates[tracks[key].id] === 'closed' ? 'track-closed' : 'track-open'}`}>
-            <FormControl component="fieldset" style={{padding:'5px'}}>
+        <React.Fragment key={key}>
+          <Box
+            className={`trackBox ${trackStates[tracks[key].id] === 'closed' ? 'track-closed' : 'track-open'}`}
+          >
+            <FormControl component="fieldset" style={{ padding: '5px' }}>
               <FormLabel component="legend">{tracks[key].name}</FormLabel>
               <div className="trackSwitchRow">
                 <div>{t`Track closed`}</div>
@@ -599,19 +620,18 @@ function Scheduling(props) {
 
   // builds range officer select
   const createSupervisorSelect = () => {
-
     const items = [];
     let sortedSupervisors;
     let disabled = false;
-    
-    if(rangeSupervisors){
+
+    if (rangeSupervisors) {
       // sort supervisors in alphabetical order
-       sortedSupervisors = rangeSupervisors.sort((a,b) => {
+      sortedSupervisors = rangeSupervisors.sort((a, b) => {
         return a.name.localeCompare(b.name);
       });
     }
 
-    if(rangeSupervisors){
+    if (rangeSupervisors) {
       sortedSupervisors.forEach((supervisor) => {
         items.push(
           <MenuItem key={supervisor.id} value={supervisor.id}>
@@ -654,112 +674,222 @@ function Scheduling(props) {
     paramTracks,
     isRepeat,
   ) => {
-    /* eslint-disable-next-line */
-    return new Promise(async (resolve, reject) => {
-      let reservationMethod;
-      let reservationPath = '';
-      let scheduledRangeSupervisionMethod;
-      let scheduledRangeSupervisionPath = '';
+    let reservationMethod;
+    let reservationPath = '';
+    let scheduledRangeSupervisionMethod;
+    let scheduledRangeSupervisionPath = '';
 
-      // determine exist or not with:
-      // reservationId: '',
-      // scheduledRangeSupervisionId: '',
-      // trackSupervisionId: '',
-      if (rsId !== null) {
-        reservationMethod = 'PUT';
-        reservationPath = `/${rsId}`;
-      } else reservationMethod = 'POST';
+    // determine exist or not with:
+    // reservationId: '',
+    // scheduledRangeSupervisionId: '',
+    // trackSupervisionId: '',
+    if (rsId !== null) {
+      reservationMethod = 'PUT';
+      reservationPath = `/${rsId}`;
+    } else reservationMethod = 'POST';
 
-      if (srsId !== null) {
-        scheduledRangeSupervisionMethod = 'PUT';
-        scheduledRangeSupervisionPath = `/${srsId}`;
-      } else scheduledRangeSupervisionMethod = 'POST';
+    if (srsId !== null) {
+      scheduledRangeSupervisionMethod = 'PUT';
+      scheduledRangeSupervisionPath = `/${srsId}`;
+    } else scheduledRangeSupervisionMethod = 'POST';
 
-      let params = {
-        range_id: rangeId,
-        available: available,
-        supervisor: rangeSupervisorId,
-        originalSupervisor: rangeSupervisorOriginal,
-        scheduleId: srsId
+    let params = {
+      range_id: rangeId,
+      available: available,
+      supervisor: rangeSupervisorId,
+      originalSupervisor: rangeSupervisorOriginal,
+      scheduleId: srsId,
+    };
+
+    if (reservationMethod === 'POST') {
+      // reservation can result in a duplicate which causes http 500
+      params = {
+        ...params,
+        date: moment(date).format('YYYY-MM-DD'),
       };
+    }
 
-      if (reservationMethod === 'POST') {
-        // reservation can result in a duplicate which causes http 500
+    /* eslint-disable-next-line */
+    const reservation = async (rsId, params, method, path) => {
+      try {
+        return await fetch(`/api/reservation${path}`, {
+          method,
+          body: JSON.stringify(params),
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        })
+          /* eslint-disable-next-line */
+          .then((res) => {
+            // 400 and so on
+            if (!res.ok) {
+              throw new Error('update reservation failed');
+            }
+            if (res.status !== 204) {
+              return res.json();
+            }
+          })
+          .then((json) => {
+            // pretty sure the code paths could be done better
+            if (typeof rsId !== 'number' && json) {
+              rsId = json.id; // eslint-disable-line
+            }
+            if (typeof rsId !== 'number') {
+              new Error('no reservation id for schedule');
+            }
+            return rsId;
+          });
+      } catch (error) {
+        console.error('reservation', error);
+        throw new Error('general reservation failure');
+      }
+    };
+
+    const reservationRes = await reservation(
+      rsId,
+      params,
+      reservationMethod,
+      reservationPath,
+    );
+    // if res grabbed from previous post
+    if (reservationRes) {
+      rsId = reservationRes; // eslint-disable-line
+    }
+
+    params = {
+      range_reservation_id: rsId,
+      open: moment(open).format('HH:mm'),
+      close: moment(close).format('HH:mm'),
+      supervisor_id: null,
+    };
+
+    if (rangeSupervisorSwitch) {
+      if (rangeSupervisorId !== null) {
         params = {
           ...params,
-          date: moment(date).format('YYYY-MM-DD'),
+          association_id: rangeSupervisorId,
         };
-      }
+      } else throw new Error('Range officer enabled but no id');
+    }
 
-      /* eslint-disable-next-line */
-      const reservation = async (rsId, params, method, path) => {
-        try {
-          return await fetch(`/api/reservation${path}`, {
-            method,
-            body: JSON.stringify(params),
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
+    /* eslint-disable-next-line */
+    const schedule = async (rsId, srsId, params, method, path) => {
+      try {
+        return await fetch(`/api/schedule${path}`, {
+          method,
+          body: JSON.stringify(params),
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        })
+          /* eslint-disable-next-line */
+          .then((res) => {
+            // 400 and so on
+            if (res.ok === false) {
+              throw new Error('update schedule failed');
+            }
+            if (res.status !== 204) {
+              return res.json();
+            }
           })
-            /* eslint-disable-next-line */
-            .then((res) => {
-              // 400 and so on
-              if (!res.ok) {
-                return reject(new Error('update reservation failed'));
-              }
-              if (res.status !== 204) {
-                return res.json();
-              }
-            })
-            .then((json) => {
-              // pretty sure the code paths could be done better
-              if (typeof rsId !== 'number' && json) {
-                rsId = json.id; // eslint-disable-line
-              }
-              if (typeof rsId !== 'number') {
-                return reject(new Error('no reservation id for schedule'));
-              }
-              return rsId;
-            });
-        } catch (error) {
-          console.error('reservation', error);
-          return reject(new Error('general reservation failure'));
-        }
-      };
+          .then((json) => {
+            if (typeof srsId !== 'number' && json) {
+              srsId = json.id; // eslint-disable-line
+            }
+            if (typeof srsId !== 'number') {
+              throw new Error('no schedule id for track supervision');
+            }
+            return srsId;
+          });
+      } catch (error) {
+        console.error('schedule', error);
+        throw new Error('general schedule failure');
+      }
+    };
 
-      const reservationRes = await reservation(
+    const scheduleRes = await schedule(
+      rsId,
+      srsId,
+      params,
+      scheduledRangeSupervisionMethod,
+      scheduledRangeSupervisionPath,
+    );
+    // if res grabbed from previous post
+    if (scheduleRes) {
+      srsId = scheduleRes; // eslint-disable-line
+    }
+
+    /*
+     *  Range supervision
+     */
+
+    let rangeStatus = null;
+
+    if (!available) {
+      rangeStatus = 'closed';
+    } else if (!rangeSupervisorSwitch) {
+      rangeStatus = 'absent';
+    } else if (
+      rangeSupervisorId !== null &&
+      rangeSupervisorOriginal !== rangeSupervisorId
+    ) {
+      rangeStatus = 'not confirmed';
+    }
+
+    if (rangeStatus !== null) {
+      const rangeSupervisionRes = await updateRangeSupervision(
         rsId,
-        params,
-        reservationMethod,
-        reservationPath,
+        srsId,
+        rangeStatus,
+        rangeSupervisionScheduled,
+        rangeSupervisorId,
+        arrivalTime,
       );
-      // if res grabbed from previous post
-      if (reservationRes) {
-        rsId = reservationRes; // eslint-disable-line
+      if (rangeSupervisionRes !== true) {
+        throw new Error(rangeSupervisionRes);
       }
+    }
 
-      params = {
-        range_reservation_id: rsId,
-        open: moment(open).format('HH:mm'),
-        close: moment(close).format('HH:mm'),
-        supervisor_id: null,
-      };
+    /* eslint-disable-next-line */
+    const trackSupervision = async (srsId, key) => {
+      try {
+        // update only ones changed in state
+        if (trackStates[tracks[key].id] || isRepeat) {
+          const statusInState = trackStates[tracks[key].id];
+          // if coming from repeat and status was cleared
+          const supervisorStatus = statusInState ? statusInState : 'absent';
 
-      if (rangeSupervisorSwitch) {
-        if (rangeSupervisorId !== null) {
-          params = {
-            ...params,
-            association_id: rangeSupervisorId,
+          let { notice } = tracks[key];
+          if (notice === null) {
+            // undefined gets removed in object
+            notice = undefined;
+          }
+
+          /* eslint-disable-next-line */
+          let params = {
+            track_supervisor: supervisorStatus,
+            notice,
+            association: rangeSupervisorId,
           };
-        } else return reject(new Error('Range officer enabled but no id'));
-      }
 
-      /* eslint-disable-next-line */
-      const schedule = async (rsId, srsId, params, method, path) => {
-        try {
-          return await fetch(`/api/schedule${path}`, {
-            method,
+          let srsp = '';
+          let trackSupervisionMethod = '';
+          // if scheduled track supervision exists -> put, otherwise -> post
+          if (paramTracks[key].scheduled) {
+            trackSupervisionMethod = 'PUT';
+            srsp = `/${srsId}/${tracks[key].id}`;
+          } else {
+            trackSupervisionMethod = 'POST';
+            params = {
+              ...params,
+              scheduled_range_supervision_id: srsId?.id ? srsId : srsId,
+              track_id: tracks[key].id,
+            };
+          }
+          return await fetch(`/api/track-supervision${srsp}`, {
+            method: trackSupervisionMethod,
             body: JSON.stringify(params),
             headers: {
               Accept: 'application/json',
@@ -770,143 +900,23 @@ function Scheduling(props) {
             .then((res) => {
               // 400 and so on
               if (res.ok === false) {
-                return reject(new Error('update schedule failed'));
+                throw new Error('update track supervision failed');
               }
               if (res.status !== 204) {
                 return res.json();
               }
-            })
-            .then((json) => {
-              if (typeof srsId !== 'number' && json) {
-                srsId = json.id; // eslint-disable-line
-              }
-              if (typeof srsId !== 'number') {
-                return reject(
-                  new Error('no schedule id for track supervision'),
-                );
-              }
-              return srsId;
             });
-        } catch (error) {
-          console.error('schedule', error);
-          return reject(new Error('general schedule failure'));
         }
-      };
-
-      const scheduleRes = await schedule(
-        rsId,
-        srsId,
-        params,
-        scheduledRangeSupervisionMethod,
-        scheduledRangeSupervisionPath,
-      );
-      // if res grabbed from previous post
-      if (scheduleRes) {
-        srsId = scheduleRes; // eslint-disable-line
+      } catch (error) {
+        console.error('track supervision', error);
+        throw new Error('general track supervision failure');
       }
+    };
+    for (const key in tracks) {
+      await trackSupervision(srsId, key);
+    }
 
-      /*
-       *  Range supervision
-       */
-
-      let rangeStatus = null;
-
-      if (!available) {
-        rangeStatus = 'closed';
-      } else if (!rangeSupervisorSwitch) {
-        rangeStatus = 'absent';
-      } else if (
-        rangeSupervisorId !== null &&
-        rangeSupervisorOriginal !== rangeSupervisorId
-      ) {
-        rangeStatus = 'not confirmed';
-      }
-
-      if (rangeStatus !== null) {
-        const rangeSupervisionRes = await updateRangeSupervision(
-          rsId,
-          srsId,
-          rangeStatus,
-          rangeSupervisionScheduled,
-          rangeSupervisorId,
-          arrivalTime
-        );
-        if (rangeSupervisionRes !== true) {
-          return reject(new Error(rangeSupervisionRes));
-        }
-      }
-
-      /* eslint-disable-next-line */
-      const trackSupervision = async (srsId, key) => {
-        try {
-          // update only ones changed in state
-          if (trackStates[tracks[key].id] || isRepeat) {
-            const statusInState = trackStates[tracks[key].id];
-            // if coming from repeat and status was cleared
-            const supervisorStatus =
-              statusInState ? statusInState : 'absent';
-
-            let { notice } = tracks[key];
-            if (notice === null) {
-              // undefined gets removed in object
-              notice = undefined;
-            }
-
-            /* eslint-disable-next-line */
-            let params = {
-              track_supervisor: supervisorStatus,
-              notice,
-              association: rangeSupervisorId,
-            };
-
-            let srsp = '';
-            let trackSupervisionMethod = '';
-            // if scheduled track supervision exists -> put, otherwise -> post
-            if (paramTracks[key].scheduled) {
-              trackSupervisionMethod = 'PUT';
-              srsp = `/${srsId}/${tracks[key].id}`;
-            } else {
-              trackSupervisionMethod = 'POST';
-              params = {
-                ...params,
-                scheduled_range_supervision_id: srsId && srsId.id ? srsId: srsId,
-                track_id: tracks[key].id,
-              };
-            }
-            return await fetch(`/api/track-supervision${srsp}`, {
-              method: trackSupervisionMethod,
-              body: JSON.stringify(params),
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-            })
-              /* eslint-disable-next-line */
-              .then((res) => {
-                // 400 and so on
-                if (res.ok === false) {
-                  return reject(new Error('update track supervision failed'));
-                }
-                if (res.status !== 204) {
-                  return res.json();
-                }
-              });
-          }
-        } catch (error) {
-          console.error('track supervision', error);
-          return reject(new Error('general track supervision failure'));
-        }
-      };
-      for (const key in tracks) {
-        try {
-          await trackSupervision(srsId, key);
-        } catch (error) {
-          return reject(error);
-        }
-      }
-
-      return resolve('update success');
-    });
+    return 'update success';
   };
 
   const update = async () => {
@@ -992,57 +1002,68 @@ function Scheduling(props) {
         </Backdrop>
       </Modal>
 
-      <h1 className ="heading">{t`Schedules`}</h1>
+      <h1 className="heading">{t`Schedules`}</h1>
 
       {/* Section for selecting date, setting range officer status, and open/close times of the tracks*/}
       <Box className="firstSection">
-      <div className="dateNavigation">
-        <Button onClick={() => {
-          handleDateChange(moment(date).subtract(1, 'days'));
-          handleDatePickChange(moment(date).subtract(1, 'days'));
-        }}>
-          &#11013; {/* Left arrow */}
-        </Button>
-        <form onSubmit={continueWithDate}>
-          {/* Datepicker */}
-          <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale={locale} key={datePickerKey}>
-            <DatePicker
-              closeOnSelect
-              label={t`Choose date`}
-              value={moment(date)}
-              onChange={(newDate) => handleDateChange(newDate)}
-              onAccept={(newDate) => handleDatePickChange(newDate)}
-              format="DD.MM.YYYY"
-              slots={{ textField: TextField }}
-              showTodayButton
-              data-testid="datePicker"
-            />
-          </LocalizationProvider>
-        </form>
-        <Button onClick={() => {
-          handleDateChange(moment(date).add(1, 'days'));
-          handleDatePickChange(moment(date).add(1, 'days'));
-        }}>
-          &#11157; {/* Right arrow */}
-        </Button>
-      </div>
-        <FormControl component="fieldset" style={{padding:'5px'}}>
+        <div className="dateNavigation">
+          <Button
+            onClick={() => {
+              handleDateChange(moment(date).subtract(1, 'days'));
+              handleDatePickChange(moment(date).subtract(1, 'days'));
+            }}
+          >
+            &#11013; {/* Left arrow */}
+          </Button>
+          <form onSubmit={continueWithDate}>
+            {/* Datepicker */}
+            <LocalizationProvider
+              dateAdapter={AdapterMoment}
+              adapterLocale={locale}
+              key={datePickerKey}
+            >
+              <DatePicker
+                closeOnSelect
+                label={t`Choose date`}
+                value={moment(date)}
+                onChange={(newDate) => handleDateChange(newDate)}
+                onAccept={(newDate) => handleDatePickChange(newDate)}
+                format="DD.MM.YYYY"
+                slots={{ textField: TextField }}
+                showTodayButton
+                data-testid="datePicker"
+              />
+            </LocalizationProvider>
+          </form>
+          <Button
+            onClick={() => {
+              handleDateChange(moment(date).add(1, 'days'));
+              handleDatePickChange(moment(date).add(1, 'days'));
+            }}
+          >
+            &#11157; {/* Right arrow */}
+          </Button>
+        </div>
+        <FormControl component="fieldset" style={{ padding: '5px' }}>
           <div className="options">
             <div className="topRow">
-            <div className="text">{t`Open`}</div>
+              <div className="text">{t`Open`}</div>
 
-            <CustomSwitchGreen
-              checked={available}
-              onChange={handleSwitchChange}
-              name="available"
-              data-testid="available"
-            /> 
+              <CustomSwitchGreen
+                checked={available}
+                onChange={handleSwitchChange}
+                name="available"
+                data-testid="available"
+              />
             </div>
             <hr />
             <div className="middleRow">
               <div className="text">{t`Opening hours`}</div>
-              <div className='timePicker'>
-                <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="fi">
+              <div className="timePicker">
+                <LocalizationProvider
+                  dateAdapter={AdapterMoment}
+                  adapterLocale="fi"
+                >
                   <TimePicker
                     disabled={!available}
                     closeOnSelect
@@ -1051,12 +1072,15 @@ function Scheduling(props) {
                     value={moment(open)}
                     onChange={handleTimeStartChange}
                     minutesStep={5}
-                    slots={{textField: TextField}}
+                    slots={{ textField: TextField }}
                     showTodayButton
                   />
                 </LocalizationProvider>
                 <div className="dash">-</div>
-                <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="fi">
+                <LocalizationProvider
+                  dateAdapter={AdapterMoment}
+                  adapterLocale="fi"
+                >
                   <TimePicker
                     disabled={!available}
                     closeOnSelect
@@ -1065,7 +1089,7 @@ function Scheduling(props) {
                     value={moment(close)}
                     onChange={handleTimeEndChange}
                     minutesStep={5}
-                    slots={{textField: TextField}}
+                    slots={{ textField: TextField }}
                     showTodayButton
                   />
                 </LocalizationProvider>
@@ -1073,102 +1097,119 @@ function Scheduling(props) {
             </div>
             <hr />
             <div className="bottomRow">
-                <div className="text">{t`Range officer`}</div>
-                <CustomSwitchGreen
-                  disabled={!available}
-                  checked={rangeSupervisorSwitch}
-                  onChange={handleSwitchChange}
-                  name="rangeSupervisorSwitch"
-                  data-testid="rangeSupervisorSwitch"
-                />
-            </div> 
-            {rangeSupervisorSwitch && ( 
-              <div className='selectOfficer'>{createSupervisorSelect()}</div>
-            )}  
-          </div>
-          </FormControl>
-          <FormControl component="fieldset" style={{padding:'5px'}}>
-            <div className="rangeOfficerStatus" style={{backgroundColor: `${statusColor}`}}>
-                <div className="statusText">
-                  <span style={{ fontWeight: 'bold', fontSize: '1.1rem'}}>{statusText}</span>{createStatusMessage()}
-                </div>
-                  {cookies.role === 'superuser' && (
-                    <div className="expandMore">
-                      <span className="edit">{t`Edit`}</span>
-                      <Button
-                        disabled={!available || !rangeSupervisorSwitch || !rangeSupervisorId}
-                        className="expandMoreButton"
-                        onClick={handleExpandClick}
-                        aria-expanded={expand}
-                        aria-label={expand ? "Collapse options" : "Expand options"}
-                      >
-                        {!expand ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-                      </Button>
-                    </div>
-                  )}
-                </div>
-            {expand && (
-              <Box>
-                <div className="dropDownContent">
-                  <div className="helperText"><p>{t`Edit range officer status by choosing color`}</p></div>
-                  <div className="statusButtons">
-                    <Button
-                      className="notConfirmed"
-                      variant="contained"
-                      style={{ backgroundColor: colors.turquoise }}
-                      onClick={handleNotConfirmed}>
-                      {t`Not confirmed`}
-                    </Button>
-                    <Button
-                      className="confirmed"
-                      variant="contained"
-                      style={{ backgroundColor: colors.greenLight }}
-                      onClick={handleConfirmed}>
-                      {t`Confirmed`}
-                    </Button>
-                    <Button
-                      className="onTheWay"
-                      variant="contained"
-                      style={{ backgroundColor: colors.orange }}
-                      onClick={handleEnRouteClick}>
-                      {t`On the way`}
-                    </Button>
-                    <Button
-                      className="present"
-                      variant="contained"
-                      style={{ backgroundColor: colors.green }}
-                      onClick={handlePresentClick}>
-                      {t`Present`}
-                    </Button>
-                  </div>
-                  <hr />
-                  <div className="eta">
-                    <p>{t`Add estimated time of arrival`}:</p>
-                    <TextField
-                      disabled={statusColor === colors.green}
-                      id="time"
-                      type="time"
-                      defaultValue={arrivalTime ? arrivalTime : "00:00:00"}
-                      onChange={(event) => handleArrivalTime(event)} 
-                      style={{minWidth:'112px'}}
-                    />
-                    <Button
-                      disabled={statusColor === colors.green}
-                      className="confirmTimeButton"
-                      variant="contained"
-                      onClick={confirmArrivalTime}
-                    >{t`Confirm time`}
-                    </Button>
-                  </div>
-                </div>
-              </Box>
+              <div className="text">{t`Range officer`}</div>
+              <CustomSwitchGreen
+                disabled={!available}
+                checked={rangeSupervisorSwitch}
+                onChange={handleSwitchChange}
+                name="rangeSupervisorSwitch"
+                data-testid="rangeSupervisorSwitch"
+              />
+            </div>
+            {rangeSupervisorSwitch && (
+              <div className="selectOfficer">{createSupervisorSelect()}</div>
             )}
-          </FormControl>
+          </div>
+        </FormControl>
+        <FormControl component="fieldset" style={{ padding: '5px' }}>
+          <div
+            className="rangeOfficerStatus"
+            style={{ backgroundColor: `${statusColor}` }}
+          >
+            <div className="statusText">
+              <span style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
+                {statusText}
+              </span>
+              {createStatusMessage()}
+            </div>
+            {cookies.role === 'superuser' && (
+              <div className="expandMore">
+                <span className="edit">{t`Edit`}</span>
+                <Button
+                  disabled={
+                    !available || !rangeSupervisorSwitch || !rangeSupervisorId
+                  }
+                  className="expandMoreButton"
+                  onClick={handleExpandClick}
+                  aria-expanded={expand}
+                  aria-label={expand ? 'Collapse options' : 'Expand options'}
+                >
+                  {!expand ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                </Button>
+              </div>
+            )}
+          </div>
+          {expand && (
+            <Box>
+              <div className="dropDownContent">
+                <div className="helperText">
+                  <p>{t`Edit range officer status by choosing color`}</p>
+                </div>
+                <div className="statusButtons">
+                  <Button
+                    className="notConfirmed"
+                    variant="contained"
+                    style={{ backgroundColor: colors.turquoise }}
+                    onClick={handleNotConfirmed}
+                  >
+                    {t`Not confirmed`}
+                  </Button>
+                  <Button
+                    className="confirmed"
+                    variant="contained"
+                    style={{ backgroundColor: colors.greenLight }}
+                    onClick={handleConfirmed}
+                  >
+                    {t`Confirmed`}
+                  </Button>
+                  <Button
+                    className="onTheWay"
+                    variant="contained"
+                    style={{ backgroundColor: colors.orange }}
+                    onClick={handleEnRouteClick}
+                  >
+                    {t`On the way`}
+                  </Button>
+                  <Button
+                    className="present"
+                    variant="contained"
+                    style={{ backgroundColor: colors.green }}
+                    onClick={handlePresentClick}
+                  >
+                    {t`Present`}
+                  </Button>
+                </div>
+                <hr />
+                <div className="eta">
+                  <p>{t`Add estimated time of arrival`}:</p>
+                  <TextField
+                    disabled={statusColor === colors.green}
+                    id="time"
+                    type="time"
+                    defaultValue={arrivalTime ? arrivalTime : '00:00:00'}
+                    onChange={(event) => handleArrivalTime(event)}
+                    style={{ minWidth: '112px' }}
+                  />
+                  <Button
+                    disabled={statusColor === colors.green}
+                    className="confirmTimeButton"
+                    variant="contained"
+                    onClick={confirmArrivalTime}
+                  >
+                    {t`Confirm time`}
+                  </Button>
+                </div>
+              </div>
+            </Box>
+          )}
+        </FormControl>
       </Box>
 
       {/* Section for setting track-specific open/close statuses */}
       <Box className="secondSection">
-        <div><h3 className="headingTracks">{t`Manage shooting tracks`}</h3></div>
+        <div>
+          <h3 className="headingTracks">{t`Manage shooting tracks`}</h3>
+        </div>
         <div className="tracks">{createTrackList()}</div>
         <div className="buttons">
           <Button
@@ -1177,12 +1218,12 @@ function Scheduling(props) {
             variant="contained"
             color="primary"
             onClick={openAllTracks}
-            style={{ color: 'black', backgroundColor: '#FFFFFF'}}
+            style={{ color: 'black', backgroundColor: '#FFFFFF' }}
             data-testid="openAll"
           >
             {t`Open All`}
           </Button>
-          
+
           <Button
             disabled={!available}
             className="closeAll"
@@ -1199,8 +1240,10 @@ function Scheduling(props) {
 
       {/* Section for Advanced options */}
       <Box className="thirdSection">
-        <div><h3 className="headingAdvanced">{t`Advanced options`}</h3></div>
-        <FormControl component="fieldset" style={{padding:'5px'}}>
+        <div>
+          <h3 className="headingAdvanced">{t`Advanced options`}</h3>
+        </div>
+        <FormControl component="fieldset" style={{ padding: '5px' }}>
           <Box className="repeat">
             <div className="daily">
               {t`Repeat daily`}
@@ -1235,43 +1278,43 @@ function Scheduling(props) {
               />
             </div>
           </Box>
-            <Box className="repeatCount">
-              {t`End repeat after`}
-              <TextField
-                disabled={!available}
-                name="repeatCount"
-                type="number"
-                value={repeatCount}
-                onChange={handleValueChange}
-                InputProps={{ inputProps: { min: 1, max: 100 } }}
-              />
-            </Box>
+          <Box className="repeatCount">
+            {t`End repeat after`}
+            <TextField
+              disabled={!available}
+              name="repeatCount"
+              type="number"
+              value={repeatCount}
+              onChange={handleValueChange}
+              InputProps={{ inputProps: { min: 1, max: 100 } }}
+            />
+          </Box>
         </FormControl>
       </Box>
 
       <div className="save">
-          <Button
-            variant="contained"
-            onClick={saveChanges}
-            style={{ backgroundColor: '#d1ccc2' }}
+        <Button
+          variant="contained"
+          onClick={saveChanges}
+          style={{ backgroundColor: '#d1ccc2' }}
+        >
+          {t`Save changes`}
+        </Button>
+
+        <div className="toast">
+          <Snackbar
+            open={toast}
+            autoHideDuration={5000}
+            onClose={handleSnackbarClose}
           >
-            {t`Save changes`}
-          </Button>
-      
-          <div className="toast">
-            <Snackbar
-              open={toast}
-              autoHideDuration={5000}
-              onClose={handleSnackbarClose}
-            >
-              <div>
-                <Alert onClose={handleSnackbarClose} severity={toastSeverity}>
-                  {toastMessage}!
-                </Alert>
-              </div>
-            </Snackbar>
-          </div>
+            <div>
+              <Alert onClose={handleSnackbarClose} severity={toastSeverity}>
+                {toastMessage}!
+              </Alert>
+            </div>
+          </Snackbar>
         </div>
+      </div>
     </div>
   );
 }

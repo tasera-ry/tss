@@ -1,0 +1,1 @@
+export { InfoMessageManagementView } from './InfoMessageManagementView';

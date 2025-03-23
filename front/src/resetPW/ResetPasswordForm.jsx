@@ -1,14 +1,14 @@
-import { useState } from 'react';
 import classNames from 'classnames';
+import { useState } from 'react';
 
 // Material UI components
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import { useLingui } from '@lingui/react/macro';
 import { useHistory } from 'react-router-dom';
 import css from './ResetPassword.module.scss';
-import { useLingui } from '@lingui/react/macro';
 
 const classes = classNames.bind(css);
 

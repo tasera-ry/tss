@@ -1,9 +1,9 @@
 import moment from 'moment';
 import 'moment/locale/sv';
+import { t } from '@lingui/macro';
 import { Link } from 'react-router-dom';
 import api from '../api/api';
 import colors from '../colors.module.scss';
-import { t } from '@lingui/macro';
 
 /**
  * Increments or decrements the date by the param amount
@@ -68,31 +68,21 @@ export const checkColor = (days, oneDay) => {
   }
 };
 
-
-
 export function JumpToCurrent() {
-
   const fullUrl = window.location.href.split('/');
   const urlParamDate = fullUrl[4];
   const date = new Date().toISOString().split('T')[0];
 
   return (
     <Link
-      className='bg-black-tint-70 rounded-t-lg p-2 flex justify-center items-center text-white text-lg font-bold'
+      className="bg-black-tint-70 rounded-t-lg p-2 flex justify-center items-center text-white text-lg font-bold"
       data-testid="jumpToCur"
       to={`/${urlParamDate}/${date}`}
     >
       <div>{t`Today`}</div>
     </Link>
   );
-};
-
-// english, swedish and finnish are supported
-export const getLanguage = () => {
-  if (localStorage.getItem('language') === '1') return 'en';
-  else if (localStorage.getItem('language') === '2') return 'sv';
-  return 'fi';
-};
+}
 
 /*
   Validates the login token (in cookies)
@@ -116,11 +106,11 @@ export const updateRangeSupervision = async (
   rangeStatus,
   rsScheduled,
   association,
-  arrivalTime
+  arrivalTime,
 ) => {
   const failureText = 'general range supervision failure: Error: ';
   if (rsId === null || srsId === null)
-    return failureText + 'reservation or schedule missing';
+    return `${failureText} reservation or schedule missing`;
 
   // only closed is different from the 6 states
   if (rangeStatus === 'closed') {
@@ -128,7 +118,7 @@ export const updateRangeSupervision = async (
       await api.patchReservation(rsId, { available: 'false' });
       return true;
     } catch (err) {
-      return failureText + 'reservation update failed';
+      return `${failureText} reservation update failed`;
     }
   }
 
@@ -137,14 +127,14 @@ export const updateRangeSupervision = async (
     try {
       await api.patchReservation(rsId, { available: 'true' });
     } catch (err) {
-      return failureText + 'not scheduled reserv fail';
+      return `${failureText} not scheduled reserv fail`;
     }
 
     try {
       await api.addRangeSupervision(srsId, rangeStatus, association);
       return true;
     } catch (err) {
-      return failureText + 'not scheduled superv fail';
+      return `${failureText} not scheduled superv fail`;
     }
   }
 
@@ -152,18 +142,22 @@ export const updateRangeSupervision = async (
   try {
     await api.patchReservation(rsId, { available: 'true' });
   } catch (err) {
-    return failureText + 'scheduled reserv fail';
+    return `${failureText} scheduled reserv fail`;
   }
 
   try {
     await api.patchRangeSupervision(
       srsId,
       association
-        ? { range_supervisor: rangeStatus, association, arriving_at: arrivalTime }
+        ? {
+            range_supervisor: rangeStatus,
+            association,
+            arriving_at: arrivalTime,
+          }
         : { range_supervisor: rangeStatus, arriving_at: arrivalTime },
     );
     return true;
   } catch (err) {
-    return failureText + 'scheduled superv fail';
+    return `${failureText} scheduled superv fail`;
   }
 };

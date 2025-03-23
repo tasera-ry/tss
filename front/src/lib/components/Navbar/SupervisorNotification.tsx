@@ -1,14 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import Alert from '@mui/lab/Alert';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 
-import {
-  checkSupervisorReservations,
-} from '../../../upcomingsupervisions/LoggedIn';
 import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
 import { useLingui } from '@lingui/react/macro';
+import { checkSupervisorReservations } from '../../../upcomingsupervisions/LoggedIn';
 
 export const SupervisorNotification = () => {
   const { t } = useLingui();
@@ -16,16 +14,16 @@ export const SupervisorNotification = () => {
 
   const { username } = useLoggedInUser();
 
-  const updateSupervisors = async () => {
+  const updateSupervisors = useCallback(async () => {
     const reservations = await checkSupervisorReservations(username);
     setUserHasSupervisors(!!reservations);
-  };
+  }, [username]);
 
   useEffect(() => {
     updateSupervisors();
-  }, []);
+  }, [updateSupervisors]);
 
-  if (!userHasSupervisors) return null
+  if (!userHasSupervisors) return null;
 
   return (
     <Alert
@@ -34,7 +32,7 @@ export const SupervisorNotification = () => {
       action={
         <Link to="/profile/supervisions">
           <Button color="inherit" size="small">
-              {t`CHECK`}
+            {t`CHECK`}
           </Button>
         </Link>
       }

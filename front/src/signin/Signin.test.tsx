@@ -1,14 +1,14 @@
-import userEvent from '@testing-library/user-event';
-import axios from 'axios';
 import {
+  act,
+  fireEvent,
   render,
   screen,
   waitFor,
-  fireEvent,
-  act,
 } from '@testing-library/react';
-import SignIn from './SignIn';
+import userEvent from '@testing-library/user-event';
+import axios from 'axios';
 import { TestProviders } from '../_TestUtils/TestProvides';
+import SignIn from './SignIn';
 
 vi.mock('axios', () => ({
   default: {
@@ -17,9 +17,7 @@ vi.mock('axios', () => ({
 }));
 
 describe('testing SignIn component', () => {
-
-  beforeAll(() => {
-  })
+  beforeAll(() => {});
 
   it('should render SignIn', async () => {
     render(<SignIn />, { wrapper: TestProviders });
@@ -35,8 +33,8 @@ describe('testing SignIn component', () => {
       await render(<SignIn />, { wrapper: TestProviders });
 
       await waitFor(() => {
-        expect(screen.getByTestId('nameField')).toBeInTheDocument()
-        expect(screen.getByTestId('passwordField')).toBeInTheDocument()
+        expect(screen.getByTestId('nameField')).toBeInTheDocument();
+        expect(screen.getByTestId('passwordField')).toBeInTheDocument();
       });
       await userEvent.type(screen.getByTestId('nameField'), 'wrong_username');
       await userEvent.type(screen.getByTestId('passwordField'), 'wrong_pw');
@@ -55,8 +53,8 @@ describe('testing SignIn component', () => {
       await render(<SignIn />, { wrapper: TestProviders });
 
       await waitFor(() => {
-        expect(screen.getByTestId('nameField')).toBeInTheDocument()
-        expect(screen.getByTestId('passwordField')).toBeInTheDocument()
+        expect(screen.getByTestId('nameField')).toBeInTheDocument();
+        expect(screen.getByTestId('passwordField')).toBeInTheDocument();
       });
       userEvent.type(screen.getByTestId('nameField'), 'correct_name');
       userEvent.type(screen.getByTestId('passwordField'), 'correct_pw');

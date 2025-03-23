@@ -149,11 +149,14 @@ export const schedulingWeek = {
   weekNum: 1,
   weekBegin: '2020-10-21',
   weekEnd: '2020-10-27',
-  week: new Array(7).fill(0).map(() => structuredClone(schedule)).map((day, index) => ({
-    ...day,
-    date: moment('2020-10-21').add(index, 'day').format('YYYY-MM-DD')
-  }))
-}
+  week: new Array(7)
+    .fill(0)
+    .map(() => structuredClone(schedule))
+    .map((day, index) => ({
+      ...day,
+      date: moment('2020-10-21').add(index, 'day').format('YYYY-MM-DD'),
+    })),
+};
 
 const reservation = [
   {

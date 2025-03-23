@@ -1,8 +1,8 @@
-import DayPicker, { DateUtils, ModifiersUtils } from "react-day-picker";
-import "react-day-picker/lib/style.css";
-import "./RaffleDatePicker.scss";
+import DayPicker, { DateUtils, ModifiersUtils } from 'react-day-picker';
+import 'react-day-picker/lib/style.css';
+import './RaffleDatePicker.scss';
 import { msg } from '@lingui/core/macro';
-import { useLingui } from "@lingui/react";
+import { useLingui } from '@lingui/react';
 
 const WEEKDAYS_TEXT_LONG = [
   msg`Sunday`,
@@ -64,11 +64,11 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
   const handleWeekClick = (_, allWeekDays) => {
     // filter out disabled days
     const days = allWeekDays.filter(
-      (day) => !ModifiersUtils.dayMatchesModifier(day, disabledDays)
+      (day) => !ModifiersUtils.dayMatchesModifier(day, disabledDays),
     );
     // filter out not selected days
     const newDays = days.filter(
-      (day) => !ModifiersUtils.dayMatchesModifier(day, selectedDays)
+      (day) => !ModifiersUtils.dayMatchesModifier(day, selectedDays),
     );
     if (newDays.length > 0) setSelectedDays([...selectedDays, ...newDays]);
     else {
@@ -89,9 +89,9 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
 
   const { _ } = useLingui();
 
-  const shortWeekdays = WEEKDAYS_TEXT_SHORT.map((day) => _(day))
-  const longWeekdays = WEEKDAYS_TEXT_LONG.map((day) => _(day))
-  const months = MONTHS_TEXT.map((month) => _(month))
+  const shortWeekdays = WEEKDAYS_TEXT_SHORT.map((day) => _(day));
+  const longWeekdays = WEEKDAYS_TEXT_LONG.map((day) => _(day));
+  const months = MONTHS_TEXT.map((month) => _(month));
 
   return (
     <DayPicker

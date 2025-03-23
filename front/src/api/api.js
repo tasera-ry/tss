@@ -63,7 +63,7 @@ const getUser = async (id) => {
 };
 
 const getUsers = async () => {
-  const response = await axios.get(`api/user`);
+  const response = await axios.get('/api/user');
   return response.data;
 };
 
@@ -90,37 +90,40 @@ const addRangeSupervision = (
   rangeSupervisor,
   association,
 ) => {
-
   axios.post('/api/range-supervision', {
-    scheduled_range_supervision_id: scheduledRangeSupervisionId.scheduled_range_supervision_id,
+    scheduled_range_supervision_id:
+      scheduledRangeSupervisionId.scheduled_range_supervision_id,
     range_supervisor: rangeSupervisor,
     association,
   });
-}
+};
 
 const patchRangeSupervision = (id, rangeSupervisor) => {
   if (rangeSupervisor.association) {
     return axios.put(`api/range-supervision/${id}`, {
       range_supervisor: rangeSupervisor.range_supervisor,
       association: rangeSupervisor.association,
-      arriving_at: rangeSupervisor.arriving_at
+      arriving_at: rangeSupervisor.arriving_at,
     });
   }
 
   return axios.put(`api/range-supervision/${id}`, {
     range_supervisor: rangeSupervisor.range_supervisor,
-    arriving_at: rangeSupervisor.arriving_at
+    arriving_at: rangeSupervisor.arriving_at,
   });
 };
 
 const sendFeedback = (feedback, user) =>
   axios.put('api/range-supervision/feedback', { feedback, user });
 
+const postScheduledSupervisionTrack = (data) =>
+  axios.post('/api/track-supervision', data);
+
 const patchScheduledSupervisionTrack = (scheduleId, trackId, data) =>
   axios.put(`/api/track-supervision/${scheduleId}/${trackId}`, data);
 
 const getMembers = async () => {
-  const response = await axios.get(`/api/members`);
+  const response = await axios.get('/api/members');
   return response.data;
 };
 
@@ -136,7 +139,7 @@ const saveRaffledSupervisors = async (results) =>
   axios.post('api/set-raffled-supervisors', { results });
 
 const getPublicInfoMessages = async () => {
-  const response = await axios.get(`api/infomessage`);
+  const response = await axios.get('/api/infomessage');
   return response.data;
 };
 
@@ -145,7 +148,9 @@ const getRangeMasterInfoMessages = async () => {
     const response = await axios.get('api/infomessage/tablet');
     return response.data;
   } catch (err) {
-    console.error("Error in getting range master info message. User is not logged in.");
+    console.error(
+      'Error in getting range master info message. User is not logged in.',
+    );
     return;
   }
 };
@@ -156,11 +161,11 @@ const getAllInfoMessages = async () => {
 };
 
 const postInfoMessage = async (infoRequest) => {
-  await axios.post(`api/infomessage`, infoRequest);
+  await axios.post('/api/infomessage', infoRequest);
 };
 
-const deleteInfoMessage = async (info) => {
-  await axios.delete(`api/infomessage/${info.id}`);
+const deleteInfoMessage = async (id) => {
+  await axios.delete(`api/infomessage/${id}`);
 };
 
 /**
@@ -181,17 +186,20 @@ const createDevice = async (newDevice) => {
   return response.data;
 };
 
-const deleteDevice = async (id) => {  
+const deleteDevice = async (id) => {
   await axios.delete(`api/devices/${id}`);
 };
 
 async function getSupervisions(associationId) {
   try {
-    const response = await axios.get(`api/range-supervision/association/${associationId}`);
+    const response = await axios.get(
+      `api/range-supervision/association/${associationId}`,
+    );
 
     return response.data.map((supervision) => ({
       id: supervision.scheduled_range_supervision_id,
-      scheduled_range_supervision_id: supervision.scheduled_range_supervision_id,
+      scheduled_range_supervision_id:
+        supervision.scheduled_range_supervision_id,
       date: moment(supervision.date).format('YYYY-MM-DD'),
       range_supervisor: supervision.range_supervisor,
       rangeofficer_id: supervision.rangeofficer_id,
@@ -234,6 +242,7 @@ export default {
   addRangeSupervision,
   patchRangeSupervision,
   sendFeedback,
+  postScheduledSupervisionTrack,
   patchScheduledSupervisionTrack,
   getMembers,
   patchMembers,

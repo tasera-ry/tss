@@ -8,14 +8,17 @@
     "build": "vite build",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
-    "eject": "react-scripts eject",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
-    "format": "prettier --write .",
+    "format": "biome format --write .",
+    "lint": "biome lint --write ./src",
+    "check": "biome check ./src",
+    "check:fix": "biome check --write ./src",
     "lingui:extract": "lingui extract",
     "lingui:compile": "lingui compile"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@hookform/resolvers": "^4.1.2",
     "@lingui/core": "^5.2.0",
     "@lingui/react": "^5.2.0",
     "@mui/icons-material": "^6.1.6",
@@ -35,6 +38,7 @@
     "react-cookie": "^4.0.3",
     "react-day-picker": "^7.4.10",
     "react-dom": "^17.0.2",
+    "react-hook-form": "^7.54.2",
     "react-nice-input-password": "^2.7.0",
     "react-query": "^3.39.3",
     "react-router": "^5.2.0",
@@ -42,9 +46,12 @@
     "react-window": "^1.8.6",
     "sass": "^1.42.1",
     "socket.io-client": "^2.3.1",
-    "tailwindcss": "^4.0.2"
+    "tailwindcss": "^4.0.2",
+    "yaml": "2.7.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@lingui/babel-plugin-lingui-macro": "^5.2.0",
     "@lingui/vite-plugin": "^5.2.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -59,7 +66,6 @@
     "eslint-plugin-prettier": "^5.2.1",
     "jest-environment-jsdom": "^29.7.0",
     "jsdom": "^26.0.0",
-    "prettier": "^3.3.3",
     "vite": "^6.0.7",
     "vitest": "^3.0.4"
   },

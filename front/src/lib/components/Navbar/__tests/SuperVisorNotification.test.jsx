@@ -1,17 +1,20 @@
-import { waitFor, render, screen } from '@testing-library/react';
-import { HashRouter as Router } from 'react-router-dom';
-import { act } from 'react-dom/test-utils';
-import { SupervisorNotification } from '../SupervisorNotification';
-import * as checkSuper from '../../../../upcomingsupervisions/LoggedIn';
 import { TestProviders } from '@/_TestUtils/TestProvides';
+import { render, screen, waitFor } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
+import { HashRouter as Router } from 'react-router-dom';
+import * as checkSuper from '../../../../upcomingsupervisions/LoggedIn';
+import { SupervisorNotification } from '../SupervisorNotification';
 
-vi.mock(import('../../../../upcomingsupervisions/LoggedIn'), async (importOriginal) => {
-  const actual = await importOriginal()
-  return {
-    ...actual,
-    checkSuper: vi.fn(),
-  }
-})
+vi.mock(
+  import('../../../../upcomingsupervisions/LoggedIn'),
+  async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+      ...actual,
+      checkSuper: vi.fn(),
+    };
+  },
+);
 
 describe('testing SupervisorNotification', () => {
   it('should render SupervisorNotification', async () => {
@@ -23,7 +26,7 @@ describe('testing SupervisorNotification', () => {
         <Router>
           <SupervisorNotification />
         </Router>,
-        { wrapper: TestProviders }
+        { wrapper: TestProviders },
       );
     });
     await waitFor(() =>

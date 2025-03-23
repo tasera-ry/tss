@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import api from '../../../api/api';
 
+import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
+import { useLingui } from '@lingui/react/macro';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -8,8 +10,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
-import { useLoggedInUser } from '@/lib/hooks/useLoggedInUser';
-import { useLingui } from '@lingui/react/macro';
 
 const FeedbackWindow = ({ dialogOpen, onCloseDialog }) => {
   const { t } = useLingui();
@@ -21,7 +21,7 @@ const FeedbackWindow = ({ dialogOpen, onCloseDialog }) => {
     <Dialog
       aria-labelledby="title"
       open={dialogOpen}
-      classes={{ paper: "bg-black-tint-05" }}
+      classes={{ paper: 'bg-black-tint-05' }}
     >
       <DialogTitle id="title">{t`Give feedback`}</DialogTitle>
       <DialogContent>
@@ -41,10 +41,7 @@ const FeedbackWindow = ({ dialogOpen, onCloseDialog }) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button
-          variant="contained"
-          onClick={onCloseDialog}
-        >
+        <Button variant="contained" onClick={onCloseDialog}>
           {t`Cancel`}
         </Button>
         <Button

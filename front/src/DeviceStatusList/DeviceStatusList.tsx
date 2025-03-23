@@ -1,14 +1,14 @@
-import api from '../api/api';
-import { useQuery } from 'react-query';
-import classNames from 'classnames';
 import { useLingui } from '@lingui/react/macro';
+import classNames from 'classnames';
+import { useQuery } from 'react-query';
+import api from '../api/api';
 
 export function DeviceStatusList() {
-
   const devices = useQuery({
     queryKey: ['devices'],
     queryFn: () => api.getAllDevices(),
-    select: (data) => data.sort((a, b) => a.device_name.localeCompare(b.device_name)),
+    select: (data) =>
+      data.sort((a, b) => a.device_name.localeCompare(b.device_name)),
   });
 
   if (!devices.data) return null;
@@ -19,7 +19,7 @@ export function DeviceStatusList() {
         <DeviceLabel key={device.id} device={device} />
       ))}
     </div>
-    )
+  );
 }
 
 function DeviceLabel({ device }: { device: any }) {
@@ -28,16 +28,14 @@ function DeviceLabel({ device }: { device: any }) {
   return (
     <div
       className={classNames(
-        "rounded-xl flex flex-col text-nowrap w-full items-center justify-center font-medium py-1 px-2", 
-        device.status === 'reserved' ? 'bg-red-light' : 'bg-green'
+        'rounded-xl flex flex-col text-nowrap w-full items-center justify-center font-medium py-1 px-2',
+        device.status === 'reserved' ? 'bg-red-light' : 'bg-green',
       )}
     >
       <span>{device.device_name}</span>
-      <span className="text-sm">{device.status === 'reserved' ? t`Reserved` : t`Free`}</span>
+      <span className="text-sm">
+        {device.status === 'reserved' ? t`Reserved` : t`Free`}
+      </span>
     </div>
-  )
+  );
 }
-
-
-
-

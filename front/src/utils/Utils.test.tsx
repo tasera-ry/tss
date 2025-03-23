@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom';
-import * as utils from './Utils';
+import type { AxiosResponse } from 'axios';
 import testUtils from '../_TestUtils/TestUtils';
-import api from '../api/api'; 
-import { validateLogin, updateRangeSupervision } from './Utils'; // Import validateLogin
-import { AxiosResponse } from 'axios';
+import api from '../api/api';
+import * as utils from './Utils';
+import { updateRangeSupervision, validateLogin } from './Utils'; // Import validateLogin
 
 vi.mock('../api/api');
 
@@ -14,7 +14,7 @@ describe('testing weekview', () => {
 
     const { date } = testUtils;
     const result = await utils.getSchedulingWeek(date);
-    
+
     expect(result.weekNum).toBe(43);
     expect(result.weekBegin).toBe('2020-10-19');
     expect(result.weekEnd).toBe('2020-10-25');
@@ -39,10 +39,16 @@ describe('testing weekview', () => {
 
   it('should return failure text if rsId or srsId is null', async () => {
     const result = await updateRangeSupervision(null, 1, 'open', true, 'assoc');
-    expect(result).toBe(failureText + 'reservation or schedule missing');
+    expect(result).toBe(`${failureText} reservation or schedule missing`);
 
-    const result2 = await updateRangeSupervision(1, null, 'open', true, 'assoc');
-    expect(result2).toBe(failureText + 'reservation or schedule missing');
+    const result2 = await updateRangeSupervision(
+      1,
+      null,
+      'open',
+      true,
+      'assoc',
+    );
+    expect(result2).toBe(`${failureText} reservation or schedule missing`);
   });
 
   it('should handle closed range status', async () => {
@@ -53,7 +59,7 @@ describe('testing weekview', () => {
 
     vi.mocked(api.patchReservation).mockRejectedValue(new Error('API error'));
     const result2 = await updateRangeSupervision(1, 1, 'closed', true, 'assoc');
-    expect(result2).toBe(failureText + 'reservation update failed');
+    expect(result2).toBe(`${failureText} reservation update failed`);
   });
 
   it('should handle adding new supervision when not scheduled', async () => {
@@ -65,12 +71,14 @@ describe('testing weekview', () => {
 
     vi.mocked(api.patchReservation).mockRejectedValue(new Error('API error'));
     const result2 = await updateRangeSupervision(1, 1, 'open', false, 'assoc');
-    expect(result2).toBe(failureText + 'not scheduled reserv fail');
+    expect(result2).toBe(`${failureText} not scheduled reserv fail`);
 
     vi.mocked(api.patchReservation).mockResolvedValue({} as AxiosResponse);
-    vi.mocked(api.addRangeSupervision).mockRejectedValue(new Error('API error'));
+    vi.mocked(api.addRangeSupervision).mockRejectedValue(
+      new Error('API error'),
+    );
     const result3 = await updateRangeSupervision(1, 1, 'open', false, 'assoc');
-    expect(result3).toBe(failureText + 'not scheduled superv fail');
+    expect(result3).toBe(`${failureText} not scheduled superv fail`);
   });
 
   it('should handle updating existing supervision', async () => {
@@ -82,11 +90,13 @@ describe('testing weekview', () => {
 
     vi.mocked(api.patchReservation).mockRejectedValue(new Error('API error'));
     const result2 = await updateRangeSupervision(1, 1, 'open', true, 'assoc');
-    expect(result2).toBe(failureText + 'scheduled reserv fail');
+    expect(result2).toBe(`${failureText} scheduled reserv fail`);
 
     vi.mocked(api.patchReservation).mockResolvedValue({} as AxiosResponse);
-    vi.mocked(api.patchRangeSupervision).mockRejectedValue(new Error('API error'));
+    vi.mocked(api.patchRangeSupervision).mockRejectedValue(
+      new Error('API error'),
+    );
     const result3 = await updateRangeSupervision(1, 1, 'open', true, 'assoc');
-    expect(result3).toBe(failureText + 'scheduled superv fail');
+    expect(result3).toBe(`${failureText} scheduled superv fail`);
   });
 });

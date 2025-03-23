@@ -1,14 +1,14 @@
-import userEvent from '@testing-library/user-event';
-import axios from 'axios';
+import { TestProviders } from '@/_TestUtils/TestProvides';
 import {
+  act,
+  fireEvent,
   render,
   screen,
   waitFor,
-  fireEvent,
-  act,
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios from 'axios';
 import ResetPassword from './ResetPassword';
-import { TestProviders } from '@/_TestUtils/TestProvides';
 
 axios.get = vi.fn(() => Promise.resolve({ data: [{ role: 'association' }] }));
 axios.post = vi.fn((url, credentials) => {

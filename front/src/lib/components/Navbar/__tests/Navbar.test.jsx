@@ -1,15 +1,15 @@
 import '@testing-library/jest-dom';
+import { TestProviders } from '@/_TestUtils/TestProvides';
 import {
-  waitFor,
   render,
   screen,
+  waitFor,
   // fireEvent,
 } from '@testing-library/react';
-import { HashRouter as Router } from 'react-router-dom';
-import { act } from 'react-dom/test-utils';
 import axios from 'axios';
+import { act } from 'react-dom/test-utils';
+import { HashRouter as Router } from 'react-router-dom';
 import { Navbar } from '../Navbar';
-import { TestProviders } from '@/_TestUtils/TestProvides';
 
 localStorage.setItem('token', 'foobar');
 localStorage.setItem('taseraUserName', 'testName');

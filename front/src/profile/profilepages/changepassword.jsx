@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import classNames from 'classnames';
-import api from '../../api/api';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import classNames from 'classnames';
+import React, { useState } from 'react';
+import api from '../../api/api';
 import css from './ChangePassword.module.scss';
 
 const classes = classNames.bind(css);
@@ -71,13 +71,10 @@ const ChangePassword = ({ username, id }) => {
           {t`Change password`}
         </Typography>
       </div>
-      <form
-        className={t`Change password`}
-        noValidate
-        onSubmit={handleSubmit}
-      >
+      <form className={t`Change password`} noValidate onSubmit={handleSubmit}>
         {textFields.map(({ name, value, label, changeValue }, idx) => (
           <TextField
+            key={name}
             variant="outlined"
             margin="normal"
             required
