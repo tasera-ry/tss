@@ -215,7 +215,7 @@ export default function Supervisions({ cookies }) {
   return (
     <div className={classes(css.title)}>
       <Typography component="h1" variant="h5">
-        {t`Confirm supervisions`}
+        {t`Confirm supervisions`}asdasd
       </Typography>
 
       {cookies.role === 'association' ? (
