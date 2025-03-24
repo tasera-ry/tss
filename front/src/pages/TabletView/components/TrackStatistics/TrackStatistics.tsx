@@ -90,14 +90,14 @@ export function TrackStatistics({ track, disabled }: TrackStatisticsProps) {
             <div className="flex gap-2">
               <Button
                 variant="contained"
-                className="text-red! bg-[#d1ccc2]! hover:bg-[#b3afa6]!"
+                className="bg-[#d1ccc2] text-black hover:bg-[#b3afa6]"
                 onClick={onConfirmDecrease}
               >
                 {t`Yes`}
               </Button>
               <Button
                 variant="contained"
-                className="text-green! bg-[#d1ccc2]! hover:bg-[#b3afa6]!"
+                className="bg-[#4caf50] text-black hover:bg-[#388e3c]"
                 onClick={() => setOpen(false)}
               >
                 {t`No`}
