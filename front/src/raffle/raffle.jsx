@@ -19,6 +19,7 @@ import SupervisionResultsTable from './SupervisionResultsTable';
 import SupervisorsTable from './SupervisorsTable';
 import css from './raffle.module.scss';
 import { useQuery, useQueryClient } from 'react-query';
+import { ExplanationBox } from '@/lib/components/ExplanationBox';
 
 
 const classes = classNames.bind(css);
@@ -205,6 +206,9 @@ export default function Raffle() {
               selectedDays={selectedDays}
               setSelectedDays={setSelectedDays}
             />
+            <div style={{ padding : '10px' }}>
+              <ExplanationBox />
+            </div>
             <div className={classes(css.submitContainer)}>
               {!isLoading.raffle ? (
                 <Button

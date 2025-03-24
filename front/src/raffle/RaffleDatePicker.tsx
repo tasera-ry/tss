@@ -7,7 +7,7 @@ import { useQuery } from 'react-query';
 import api from '@/api/api';
 import moment from "moment";
 import { Language, useLanguageContext } from "@/i18n";
-import { enGB, fi, sv, Locale } from "react-day-picker/locale";
+import { enGB, fi, sv, Locale, is } from "react-day-picker/locale";
 
 const LOCALE: Record<Language, Locale> = {
   en: enGB,
@@ -34,7 +34,17 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
   }
   });
 
-  const scheduledDays = useMemo(() => scheduleQuery.data?.filter((s) => s.rangeSupervisionScheduled).map((day) => new Date(day.date)) || [], [scheduleQuery.data]);
+  const scheduledDays = useMemo(() => 
+    scheduleQuery.data?.filter((s) => s.rangeSupervisionScheduled && s.rangeSupervision !== "confirmed")
+    .map((day) => new Date(day.date)) || [], 
+    [scheduleQuery.data]
+  );
+  const notScheduledDays = useMemo(() => scheduleQuery.data?.filter((s) => !s.rangeSupervisionScheduled).map((day) => new Date(day.date)) || [], [scheduleQuery.data]);
+  const isConfirmedDays = useMemo(() => 
+    scheduleQuery.data?.filter((s) => s.rangeSupervision === "confirmed")
+    .map((day) => new Date(day.date)) || [], 
+    [scheduleQuery.data]
+  );
 
   const localeDayPicker = LOCALE[locale];
   // datepicker
@@ -48,11 +58,15 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
     onMonthChange={setMonth}
     locale={localeDayPicker}
     modifiers={{
-      scheduled: scheduledDays
+      scheduled: scheduledDays,
+      notScheduled: notScheduledDays,
+      isConfirmed: isConfirmedDays,
     }}
     modifiersClassNames={{
       scheduled: 'bg-turquoise rounded-full',
-      today: "text-red-500 font-bold"
+      notScheduled: 'bg-red-500 rounded-full',
+      isConfirmed: 'bg-green-500 rounded-full',
+      today: 'text-black-500 font-bold ring-2 ring-black-500',
     }}
   />
   );
