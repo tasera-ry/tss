@@ -116,7 +116,3 @@ const { runDistribution } = require('./shiftDistributor');
     allDates.push(d.toISOString().split('T')[0]); // e.g. "2024-01-01"
   }
 
-  // Run it
-  const finalAssignments = await runDistribution(totalShifts, allDates);
-  console.log(finalAssignments);
-})();
