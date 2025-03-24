@@ -38,3 +38,26 @@
     background-color: lighten($COLOR_ORANGE, 26%) !important;
   }
 }
+
+.custom-day {
+  position: relative; /* Ensure the main element is positioned relatively */
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px; /* Adjust the width as needed */
+  height: 30px; /* Adjust the height as needed */
+  line-height: 30px; /* Adjust the line height to match the height */
+  border-radius: 50%; /* Make the element a circle */
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: inherit; /* Inherit the background color from the parent */
+    z-index: -1; /* Ensure the pseudo-element is behind the main content */
+  }
+}
