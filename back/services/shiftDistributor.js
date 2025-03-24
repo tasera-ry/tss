@@ -101,16 +101,5 @@ module.exports = {
   runDistribution
 };
 
-(async () => {
-  // Suppose you have 250 shifts
-  const totalShifts = 250;
 
-  // Build an array of 250 dates (one for each shift)
-  const start = new Date('2024-01-01');
-  const allDates = [];
-  for (let i = 0; i < totalShifts; i++) {
-    const d = new Date(start);
-    d.setDate(d.getDate() + i);
-    allDates.push(d.toISOString().split('T')[0]); // e.g. "2024-01-01"
-  }
 
