@@ -362,4 +362,12 @@ router
   .delete(validators.devices.delete, middlewares.devices.delete, controllers.devices.delete);
 
 
-module.exports = router;
+  const raffle = require('./controllers/raffle');
+
+  router
+    .route('/raffle/distribute')
+    .post(raffle.distributeShifts);
+  
+  module.exports = router;
+
+app.post('/api/raffle/distribute', raffle.distributeShifts);
