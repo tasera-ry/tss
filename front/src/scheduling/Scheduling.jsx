@@ -583,7 +583,11 @@ function Scheduling(props) {
       items.push(
         <React.Fragment key={key}>
           <Box
-            className={`trackBox ${trackStates[tracks[key].id] === 'closed' ? 'track-closed' : 'track-open'}`}
+            className={`trackBox ${
+              trackStates[tracks[key].id] === 'closed'
+                ? 'track-closed'
+                : 'track-open'
+            }`}
           >
             <FormControl component="fieldset" style={{ padding: '5px' }}>
               <FormLabel component="legend">{tracks[key].name}</FormLabel>
@@ -1005,7 +1009,7 @@ function Scheduling(props) {
       <h1 className="heading">{t`Schedules`}</h1>
 
       {/* Section for selecting date, setting range officer status, and open/close times of the tracks*/}
-      <Box className="firstSection">
+      <Box className="firstSection flex items-center justify-center">
         <div className="dateNavigation">
           <Button
             onClick={() => {
@@ -1044,165 +1048,152 @@ function Scheduling(props) {
             &#11157; {/* Right arrow */}
           </Button>
         </div>
-        <FormControl component="fieldset" style={{ padding: '5px' }}>
-          <div className="options">
-            <div className="topRow">
-              <div className="text">{t`Open`}</div>
-
-              <CustomSwitchGreen
-                checked={available}
-                onChange={handleSwitchChange}
-                name="available"
-                data-testid="available"
-              />
-            </div>
-            <hr />
-            <div className="middleRow">
-              <div className="text">{t`Opening hours`}</div>
-              <div className="timePicker">
-                <LocalizationProvider
-                  dateAdapter={AdapterMoment}
-                  adapterLocale="fi"
-                >
-                  <TimePicker
-                    disabled={!available}
-                    closeOnSelect
-                    ampm={false}
-                    label={t`Start`}
-                    value={moment(open)}
-                    onChange={handleTimeStartChange}
-                    minutesStep={5}
-                    slots={{ textField: TextField }}
-                    showTodayButton
-                  />
-                </LocalizationProvider>
-                <div className="dash">-</div>
-                <LocalizationProvider
-                  dateAdapter={AdapterMoment}
-                  adapterLocale="fi"
-                >
-                  <TimePicker
-                    disabled={!available}
-                    closeOnSelect
-                    ampm={false}
-                    label={t`End`}
-                    value={moment(close)}
-                    onChange={handleTimeEndChange}
-                    minutesStep={5}
-                    slots={{ textField: TextField }}
-                    showTodayButton
-                  />
-                </LocalizationProvider>
+        <div className="flex flex-wrap size-full gap-8 items-center justify-center">
+          <div className="flex flex-col flex-grow h-full p-2.5 rounded-[10px] bg-[#eeee]">
+            <FormControl component="fieldset">
+              <div className="topRow">
+                <div className="text">{t`Open`}</div>
+                <CustomSwitchGreen
+                  checked={available}
+                  onChange={handleSwitchChange}
+                  name="available"
+                  data-testid="available"
+                />
               </div>
-            </div>
-            <hr />
-            <div className="bottomRow">
-              <div className="text">{t`Range officer`}</div>
-              <CustomSwitchGreen
-                disabled={!available}
-                checked={rangeSupervisorSwitch}
-                onChange={handleSwitchChange}
-                name="rangeSupervisorSwitch"
-                data-testid="rangeSupervisorSwitch"
-              />
-            </div>
-            {rangeSupervisorSwitch && (
-              <div className="selectOfficer">{createSupervisorSelect()}</div>
-            )}
+              <hr />
+              <div className="middleRow">
+                <div className="text">{t`Opening hours`}</div>
+                <div className="timePicker">
+                  <LocalizationProvider
+                    dateAdapter={AdapterMoment}
+                    adapterLocale="fi"
+                  >
+                    <TimePicker
+                      disabled={!available}
+                      closeOnSelect
+                      ampm={false}
+                      label={t`Start`}
+                      value={moment(open)}
+                      onChange={handleTimeStartChange}
+                      minutesStep={5}
+                      slots={{ textField: TextField }}
+                      showTodayButton
+                    />
+                  </LocalizationProvider>
+                  <div className="dash">-</div>
+                  <LocalizationProvider
+                    dateAdapter={AdapterMoment}
+                    adapterLocale="fi"
+                  >
+                    <TimePicker
+                      disabled={!available}
+                      closeOnSelect
+                      ampm={false}
+                      label={t`End`}
+                      value={moment(close)}
+                      onChange={handleTimeEndChange}
+                      minutesStep={5}
+                      slots={{ textField: TextField }}
+                      showTodayButton
+                    />
+                  </LocalizationProvider>
+                </div>
+              </div>
+              <hr />
+              <div className="bottomRow">
+                <div className="text">{t`Range officer`}</div>
+                <CustomSwitchGreen
+                  disabled={!available}
+                  checked={rangeSupervisorSwitch}
+                  onChange={handleSwitchChange}
+                  name="rangeSupervisorSwitch"
+                  data-testid="rangeSupervisorSwitch"
+                />
+              </div>
+              {rangeSupervisorSwitch && (
+                <div className="selectOfficer">{createSupervisorSelect()}</div>
+              )}
+            </FormControl>
           </div>
-        </FormControl>
-        <FormControl component="fieldset" style={{ padding: '5px' }}>
-          <div
-            className="rangeOfficerStatus"
-            style={{ backgroundColor: `${statusColor}` }}
-          >
-            <div className="statusText">
-              <span style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
-                {statusText}
-              </span>
-              {createStatusMessage()}
-            </div>
-            {cookies.role === 'superuser' && (
-              <div className="expandMore">
-                <span className="edit">{t`Edit`}</span>
-                <Button
-                  disabled={
-                    !available || !rangeSupervisorSwitch || !rangeSupervisorId
-                  }
-                  className="expandMoreButton"
-                  onClick={handleExpandClick}
-                  aria-expanded={expand}
-                  aria-label={expand ? 'Collapse options' : 'Expand options'}
-                >
-                  {!expand ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-                </Button>
+          <div className="flex flex-col rounded-[10px] flex-grow h-full">
+            <FormControl component="fieldset">
+              <div
+                className="flex rounded-[10px] p-[10px] items-center justify-center"
+                style={{ backgroundColor: `${statusColor}` }}
+              >
+                <div className="statusText">
+                  <span style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
+                    {statusText}
+                  </span>
+                  {createStatusMessage()}
+                </div>
               </div>
-            )}
+              <Box>
+                <div className="dropDownContent">
+                  <div className="helperText">
+                    <p>{t`Edit range officer status by choosing color`}</p>
+                  </div>
+                  <div className="statusButtons">
+                    <Button
+                      className="notConfirmed"
+                      variant="contained"
+                      style={{ backgroundColor: colors.turquoise }}
+                      onClick={handleNotConfirmed}
+                    >
+                      {t`Not confirmed`}
+                    </Button>
+                    <Button
+                      className="confirmed"
+                      variant="contained"
+                      style={{ backgroundColor: colors.greenLight }}
+                      onClick={handleConfirmed}
+                    >
+                      {t`Confirmed`}
+                    </Button>
+                    <Button
+                      className="onTheWay"
+                      variant="contained"
+                      style={{ backgroundColor: colors.orange }}
+                      onClick={handleEnRouteClick}
+                    >
+                      {t`On the way`}
+                    </Button>
+                    <Button
+                      className="present"
+                      variant="contained"
+                      style={{ backgroundColor: colors.green }}
+                      onClick={handlePresentClick}
+                    >
+                      {t`Present`}
+                    </Button>
+                  </div>
+                  <hr />
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <p>{t`Add estimated time of arrival`}:</p>
+                    <div className="flex items-center justify-center gap-4">
+                      <TextField
+                        disabled={statusColor === colors.green}
+                        id="time"
+                        type="time"
+                        defaultValue={arrivalTime ? arrivalTime : '00:00:00'}
+                        onChange={(event) => handleArrivalTime(event)}
+                        style={{ minWidth: '112px' }}
+                      />
+                      <Button
+                        disabled={statusColor === colors.green}
+                        className="confirmTimeButton"
+                        variant="contained"
+                        onClick={confirmArrivalTime}
+                      >
+                        {t`Confirm time`}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </Box>
+            </FormControl>
           </div>
-          {expand && (
-            <Box>
-              <div className="dropDownContent">
-                <div className="helperText">
-                  <p>{t`Edit range officer status by choosing color`}</p>
-                </div>
-                <div className="statusButtons">
-                  <Button
-                    className="notConfirmed"
-                    variant="contained"
-                    style={{ backgroundColor: colors.turquoise }}
-                    onClick={handleNotConfirmed}
-                  >
-                    {t`Not confirmed`}
-                  </Button>
-                  <Button
-                    className="confirmed"
-                    variant="contained"
-                    style={{ backgroundColor: colors.greenLight }}
-                    onClick={handleConfirmed}
-                  >
-                    {t`Confirmed`}
-                  </Button>
-                  <Button
-                    className="onTheWay"
-                    variant="contained"
-                    style={{ backgroundColor: colors.orange }}
-                    onClick={handleEnRouteClick}
-                  >
-                    {t`On the way`}
-                  </Button>
-                  <Button
-                    className="present"
-                    variant="contained"
-                    style={{ backgroundColor: colors.green }}
-                    onClick={handlePresentClick}
-                  >
-                    {t`Present`}
-                  </Button>
-                </div>
-                <hr />
-                <div className="eta">
-                  <p>{t`Add estimated time of arrival`}:</p>
-                  <TextField
-                    disabled={statusColor === colors.green}
-                    id="time"
-                    type="time"
-                    defaultValue={arrivalTime ? arrivalTime : '00:00:00'}
-                    onChange={(event) => handleArrivalTime(event)}
-                    style={{ minWidth: '112px' }}
-                  />
-                  <Button
-                    disabled={statusColor === colors.green}
-                    className="confirmTimeButton"
-                    variant="contained"
-                    onClick={confirmArrivalTime}
-                  >
-                    {t`Confirm time`}
-                  </Button>
-                </div>
-              </div>
-            </Box>
-          )}
-        </FormControl>
+        </div>
       </Box>
 
       {/* Section for setting track-specific open/close statuses */}
