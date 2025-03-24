@@ -101,8 +101,6 @@ module.exports = {
   runDistribution
 };
 
-const { runDistribution } = require('./shiftDistributor');
-
 (async () => {
   // Suppose you have 250 shifts
   const totalShifts = 250;
