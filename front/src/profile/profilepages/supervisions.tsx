@@ -15,20 +15,19 @@ import {
 
 import { useLingui } from '@lingui/react/macro';
 import classNames from 'classnames';
-import api from '../../api/api';
+import api from '@/api/api';
 import css from './ChangePassword.module.scss';
 import { useMutation, useQuery } from 'react-query';
+import { useCookies } from 'react-cookie';
 
 const classes = classNames.bind(css);
 
-/**
- * Component for displaying association supervisions in a table
- * @param {number} cookies - User cookies
- */
-export default function Supervisions({ cookies }) {
+export default function Supervisions() {
   const { t } = useLingui();
   const [notification, setNotification] = useState(null);
 
+  const [cookies] = useCookies(['role', 'id']);
+  
   const query = useQuery({
     queryKey: ['supervisions'],
     queryFn: async () => {
@@ -49,7 +48,6 @@ export default function Supervisions({ cookies }) {
 
         // Get all supervisions for the association
         const supervisionResponse = await api.getSupervisions(associationId);
-
         // Filter supervisions available for the range officer,
         // or ones where they have been already assigned
         const availableSupervisions = supervisionResponse.filter(
@@ -100,7 +98,7 @@ export default function Supervisions({ cookies }) {
           <TableRow>
             <TableCell>{t`Date`}</TableCell>
             <TableCell>{t`Status`}</TableCell>
-            <TableCell>{t`Assigned officer`}</TableCell>
+            {cookies.role !== 'rangeofficer' && <TableCell>{t`Assigned officer`}</TableCell>}
             <TableCell>{t`ETA`}</TableCell>
             <TableCell>{t`Actions`}</TableCell>
           </TableRow>
@@ -122,6 +120,8 @@ export default function Supervisions({ cookies }) {
 
 function SupervisionRow({ supervision, officers, createNotification }) {
   const { t, i18n } = useLingui();
+
+  const [cookies] = useCookies(['role']);
 
   const [status, _setStatus] = useState(supervision.range_supervisor);
   const [officer, setOfficer] = useState(supervision.rangeofficer_id);
@@ -178,16 +178,19 @@ function SupervisionRow({ supervision, officers, createNotification }) {
     },
   });
 
+
   return (
     <TableRow key={supervision.id} data-testid="supervisions-row">
       <TableCell>{formatedDate}</TableCell>
-      <StatusCell status={status} setStatus={setStatus} />
-      <OfficerCell
-        officer={officer}
-        setOfficer={setOfficer}
-        officers={officers}
-        disabled={status !== 'confirmed'}
-      />
+      <StatusCell status={status} setStatus={setStatus} dataTestId={`status-cell-${supervision.id}`} />
+      {cookies.role !== 'rangeofficer' && (
+        <OfficerCell
+          officer={officer}
+          setOfficer={setOfficer}
+          officers={officers}
+          disabled={status !== 'confirmed'}
+        />
+      )}
       <TableCell data-testid="time-cell">
         <TextField
           id="time"
@@ -232,14 +235,15 @@ const statusColors = {
   absent: 'bg-red-light',
 };
 
-function StatusCell({ status, setStatus }) {
+function StatusCell({ status, setStatus, dataTestId }) {
   const { t } = useLingui();
   return (
-    <TableCell data-testid="status-cell" className="w-full">
+    <TableCell className="w-full">
       <Select
         className={`w-full ${statusColors[status]}`}
         value={status}
         onChange={(event) => setStatus(event.target.value)}
+        inputProps={{ 'data-testid': dataTestId }}
       >
         <MenuItem value="not confirmed">{t`Confirm date`}</MenuItem>
         <MenuItem value="confirmed">{t`Confirmed`}</MenuItem>
