@@ -39,6 +39,13 @@
   }
 }
 
+.DayPicker-Day--selected {
+  outline: 1px solid #3b82f6; /* or box-shadow if that's what's used */
+  outline-offset: 0px; /* reduce space between ring and element */
+  /* or use box-shadow instead if needed */
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
 .custom-day {
   position: relative; /* Ensure the main element is positioned relatively */
   display: inline-flex;

@@ -7,14 +7,16 @@ export function ExplanationBox() {
     <div className="flex justify-center">
       <div className="flex gap-4 max-w-7xl">
         {/* Open */}
-        <LegendItem label={t`Range officer confirmed`} colorClass="bg-green-500" />
-        {/* Closed */}
+        <LegendItem label={t`Range officer confirmed`} colorClass="bg-green-400" />
+        {/* Range officer predefined, not confirmed */}
+        <LegendItem label={t`Range officer predefined, not confirmed`} colorClass="bg-teal-200" />
+        {/* Not set */}
         <LegendItem
-          label={t`Range officer not confirmed`}
-          colorClass="bg-light-gray-500"
+          label={t`Range officer undefined`}
+          colorClass="bg-gray-300"
         />
         {/* Range closed */}
-        <LegendItem label={t`Range closed`} colorClass="bg-red-500" />
+        <LegendItem label={t`Range closed`} colorClass="bg-red-400" />
       </div>
     </div>
   );

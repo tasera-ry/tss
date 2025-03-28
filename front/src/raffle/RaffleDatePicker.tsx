@@ -34,14 +34,26 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
   }
   });
 
-  const scheduledDays = useMemo(() => 
-    scheduleQuery.data?.filter((s) => s.rangeSupervisionScheduled && s.rangeSupervision !== "confirmed")
+  const notSetDays = useMemo(() => 
+    scheduleQuery.data?.filter((s) => s.rangeSupervisionScheduled && s.rangeSupervision === "absent")
     .map((day) => new Date(day.date)) || [], 
     [scheduleQuery.data]
   );
-  const notScheduledDays = useMemo(() => scheduleQuery.data?.filter((s) => !s.rangeSupervisionScheduled).map((day) => new Date(day.date)) || [], [scheduleQuery.data]);
+
+  const notConfirmedButSetDays = useMemo(() => 
+    scheduleQuery.data?.filter((s) => s.rangeSupervisionScheduled && s.rangeSupervision === 'not confirmed')
+    .map((day) => new Date(day.date)) || [], 
+    [scheduleQuery.data]
+  );
+
+  const closedDays = useMemo(() => 
+    scheduleQuery.data?.filter((s) => !s.rangeSupervisionScheduled || s.rangeSupervision === 'closed')
+    .map((day) => new Date(day.date)) || [], 
+    [scheduleQuery.data]
+  );
+
   const isConfirmedDays = useMemo(() => 
-    scheduleQuery.data?.filter((s) => s.rangeSupervision === "confirmed")
+    scheduleQuery.data?.filter((s) => s.rangeSupervision === "confirmed" && s.rangeSupervisionScheduled)
     .map((day) => new Date(day.date)) || [], 
     [scheduleQuery.data]
   );
@@ -50,25 +62,27 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
   // datepicker
   return (
     <DayPicker
-    animate
-    mode="multiple"
-    selected={selectedDays}
-    onSelect={setSelectedDays}
-    month={month}
-    onMonthChange={setMonth}
-    locale={localeDayPicker}
-    modifiers={{
-      scheduled: scheduledDays,
-      notScheduled: notScheduledDays,
-      isConfirmed: isConfirmedDays,
-    }}
-    modifiersClassNames={{
-      scheduled: 'bg-light-gray-500 rounded-full',
-      notScheduled: 'bg-red-500 rounded-full',
-      isConfirmed: 'bg-green-500 rounded-full',
-      today: 'text-black-500 font-bold ring-2 ring-black-500',
-    }}
-  />
+      animate
+      mode="multiple"
+      selected={selectedDays}
+      onSelect={setSelectedDays}
+      month={month}
+      onMonthChange={setMonth}
+      locale={localeDayPicker}
+      modifiers={{
+        closed: closedDays,
+        notSet: notSetDays,
+        isConfirmed: isConfirmedDays,
+        notConfirmedButSet: notConfirmedButSetDays,
+      }}
+      modifiersClassNames={{
+        closed: 'bg-red-400 rounded-full',
+        notSet: 'bg-gray-300 rounded-full',
+        isConfirmed: 'bg-green-400 rounded-full',
+        notConfirmedButSet: 'bg-teal-200 rounded-full',
+        today: 'text-black font-extrabold underline font-size-2xl',
+      }}
+    />
   );
 };
 
