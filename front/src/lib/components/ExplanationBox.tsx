@@ -10,8 +10,8 @@ export function ExplanationBox() {
         <LegendItem label={t`Range officer confirmed`} colorClass="bg-green-500" />
         {/* Closed */}
         <LegendItem
-          label={t`Range officer predefined, not confirmed`}
-          colorClass="bg-turquoise"
+          label={t`Range officer not confirmed`}
+          colorClass="bg-light-gray-500"
         />
         {/* Range closed */}
         <LegendItem label={t`Range closed`} colorClass="bg-red-500" />

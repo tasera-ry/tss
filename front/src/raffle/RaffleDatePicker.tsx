@@ -63,7 +63,7 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
       isConfirmed: isConfirmedDays,
     }}
     modifiersClassNames={{
-      scheduled: 'bg-turquoise rounded-full',
+      scheduled: 'bg-light-gray-500 rounded-full',
       notScheduled: 'bg-red-500 rounded-full',
       isConfirmed: 'bg-green-500 rounded-full',
       today: 'text-black-500 font-bold ring-2 ring-black-500',
