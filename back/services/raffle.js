@@ -197,32 +197,4 @@ const service = {
   }
 };
 
-const shiftDistributor = require('../services/shiftDistributor');
-
-async function distributeShifts(req, res) {
-  try {
-    console.log("✅ distributeShifts was called!");
-
-    const totalShifts = 20;
-    const start = new Date();
-    const allDates = [];
-
-    for (let i = 0; i < totalShifts; i++) {
-      const d = new Date(start);
-      d.setDate(d.getDate() + i);
-      allDates.push(d.toISOString().split('T')[0]);
-    }
-
-    const results = await shiftDistributor.runDistribution(totalShifts, allDates);
-
-    return res.status(200).json({ success: true, data: results });
-  } catch (err) {
-    console.error("Error in distributeShifts:", err);
-    return res.status(500).json({ error: err.message });
-  }
-}
-
-module.exports = {
-  ...service,
-  distributeShifts
-};
+module.exports = service;
