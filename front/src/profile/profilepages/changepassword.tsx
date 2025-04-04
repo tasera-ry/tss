@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import api from '../../api/api';
 import css from './ChangePassword.module.scss';
+import { useLingui } from '@lingui/react/macro';
 
 const classes = classNames.bind(css);
 
@@ -12,6 +13,8 @@ const ChangePassword = ({ username, id }) => {
   const [oldPass, setOldPass] = useState('');
   const [newPass, setNewPass] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
+
+  const { t } = useLingui();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -95,7 +98,7 @@ const ChangePassword = ({ username, id }) => {
           variant="contained"
           className={classes(css.acceptButton)}
         >
-          {passwordSettings.confirm[lang]}
+          {t`Confirm`}
         </Button>
       </form>
     </div>
