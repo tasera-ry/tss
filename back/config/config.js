@@ -21,8 +21,8 @@ const config = {
     users: 10,
     ranges: 1,
     tracks: 7,
-    startDate: '2025-01-01',
-    endDate: '2029-12-31',
+    startDate: new Date().toISOString().slice(0,10),
+    endDate: new Date(Date.now() + 365 * 24*60*60*1000).toISOString().slice(0,10),
     // chunkSize = how many rows are inserted in a single insertion, larger
     // chunk size equals faster insertions, but a value that is too high causes
     // errors. In case of errors, try dropping the factor down.
