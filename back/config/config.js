@@ -21,10 +21,8 @@ const config = {
     users: 10,
     ranges: 1,
     tracks: 7,
-    // TODO fix dates to use for example start:(current date - 60 days) - end:(current date + 90 days)
-    // TODO document this seed data date range and that dev only works fo this date range in README
-    startDate: '2025-04-01',
-    endDate: '2025-12-31',
+    startDate: new Date(Date.now() - 365 * 24*60*60*1000).toISOString().slice(0,10),
+    endDate: new Date(Date.now() + 365 * 24*60*60*1000).toISOString().slice(0,10),
     // chunkSize = how many rows are inserted in a single insertion, larger
     // chunk size equals faster insertions, but a value that is too high causes
     // errors. In case of errors, try dropping the factor down.
