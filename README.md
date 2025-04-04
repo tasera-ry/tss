@@ -48,7 +48,7 @@ Program for management and scheduling of Tasera managed shooting ranges in Pirka
 #### Note!
 Using Docker this way may cause unexpected *"works on my machine"* type issues. **Deleting containers, images, volumes** and `node_modules` folder usually fix these issues, but a dedicated enviroment would be preferable.
 
-Seed data for dev environment works **only** if the current date is between startDate and endDate in back/config/config.js.
+Config for seed data is set plus minus one year in back/config/config.js 
 
 ### Production test
 
