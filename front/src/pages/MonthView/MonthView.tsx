@@ -98,7 +98,7 @@ export function Monthview() {
           <CircularProgress disableShrink />
         </div>
       )}
-      <TableLegends />
+      <TableLegends showAdditionalInfo={true} />
     </div>
   );
 }

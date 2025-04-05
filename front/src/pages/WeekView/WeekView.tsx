@@ -72,7 +72,7 @@ export const Weekview = () => {
           )}
         </div>
       </div>
-      <TableLegends />
+      <TableLegends showAdditionalInfo={true} />
     </div>
   );
 };

@@ -852,6 +852,10 @@ msgstr "Päävalvoja varmistettu"
 msgid "Range officer confirmed, estimated time of arrival"
 msgstr "Päävalvoja varmistettu, arvioitu saapumisaika"
 
+#: src/TableLegends/TableLegends.tsx:25
+msgid "Range officer confirmed, not present"
+msgstr "Päävalvoja varmistettu, ei paikalla"
+
 #: src/profile/profilepages/officerform.jsx:192
 msgid "Range officer deleted successfully"
 msgstr "Valvojan poisto onnistui"
