@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import { jest } from '@jest/globals';
 import userEvent from '@testing-library/user-event';
 import RaffleDatePicker from '../RaffleDatePicker';
 
