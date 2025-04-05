@@ -52,11 +52,24 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
     [scheduleQuery.data]
   );
 
-  const isConfirmedDays = useMemo(() => 
+  const isSetDays = useMemo(() => 
     scheduleQuery.data?.filter((s) => s.rangeSupervision === "confirmed" && s.rangeSupervisionScheduled)
     .map((day) => new Date(day.date)) || [], 
     [scheduleQuery.data]
   );
+
+  const isPresent = useMemo(() => 
+    scheduleQuery.data?.filter((s) => s.rangeSupervision === "present" && s.rangeSupervisionScheduled)
+    .map((day) => new Date(day.date)) || [], 
+    [scheduleQuery.data]
+  );
+
+  const isOnTheWay = useMemo(() => 
+    scheduleQuery.data?.filter((s) => s.rangeSupervision === "en route" && s.rangeSupervisionScheduled)
+    .map((day) => new Date(day.date)) || [], 
+    [scheduleQuery.data]
+  );
+
 
   const localeDayPicker = LOCALE[locale];
   // datepicker
@@ -72,14 +85,18 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
       modifiers={{
         closed: closedDays,
         notSet: notSetDays,
-        isConfirmed: isConfirmedDays,
+        isSet: isSetDays,
         notConfirmedButSet: notConfirmedButSetDays,
+        isPresent: isPresent,
+        isOnTheWay: isOnTheWay,
       }}
       modifiersClassNames={{
-        closed: 'bg-red-400 rounded-full',
-        notSet: 'bg-gray-300 rounded-full',
-        isConfirmed: 'bg-green-400 rounded-full',
-        notConfirmedButSet: 'bg-teal-200 rounded-full',
+        closed: 'bg-red-light rounded-full',
+        notSet: 'bg-black-tint-05 rounded-full',
+        isSet: 'bg-green-light rounded-full',
+        isPresent: 'bg-green rounded-full',
+        notConfirmedButSet: 'bg-turquoise rounded-full',
+        isOnTheWay: 'bg-orange rounded-full',
         today: 'text-black font-extrabold underline font-size-2xl',
       }}
     />
