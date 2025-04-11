@@ -14,6 +14,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Cache Docker layers (improves Docker build time)
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: ~/.docker
+          key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile', '**/docker-compose.dev.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
+      # Cache node_modules to speed up npm install
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Set up Docker Buildx and Docker Compose
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -24,6 +45,7 @@ jobs:
       - name: Wait for frontend to be ready
         run: npx wait-on http://localhost:5173
 
+      # Run Cypress tests
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
@@ -31,4 +53,6 @@ jobs:
           start: echo "App already started via Docker Compose"
           wait-on: http://localhost:5173
           wait-on-timeout: 120
+          record: false
+          publish-summary: true
 
