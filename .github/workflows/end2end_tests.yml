@@ -27,6 +27,7 @@ jobs:
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
+          working-directory: ./test
           start: echo "App already started via Docker Compose"
           wait-on: http://localhost:5173
           wait-on-timeout: 120
