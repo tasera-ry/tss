@@ -5,7 +5,7 @@ const superuser = {
   email: 'DevSuperuser@email.com',
 };
 
-describe.skip('Basic scheduling test suite', () => {
+describe('Basic scheduling test suite', () => {
   beforeEach(() => {
     cy.visit('/');
     cy.contains('EN').click();
@@ -68,3 +68,4 @@ describe.skip('Basic scheduling test suite', () => {
     );
   });
 });
+
