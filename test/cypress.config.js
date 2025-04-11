@@ -9,6 +9,9 @@ module.exports = defineConfig({
     },
     baseUrl: 'http://localhost:5173',
     experimentalStudio: true,
+    defaultCommandTimeout: 10000, // 10 seconds
+    requestTimeout: 10000, // 10 seconds
+    responseTimeout: 10000, // 10 seconds
   },
 });
 

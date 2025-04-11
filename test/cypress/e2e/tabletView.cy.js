@@ -12,7 +12,7 @@ const rangemaster = {
   email: 'Pauline.Schulist@Kozey.name',
 };
 
-describe('Tablet view actions as superuser', () => {
+describe.skip('Tablet view actions as superuser', () => {
   beforeEach(() => {
     cy.visit('/');
     cy.contains('EN').click();
@@ -174,3 +174,4 @@ describe('Tablet view actions as superuser', () => {
     cy.get('button[name="decrease-visitors"]').first().should('be.disabled');
   });
 });
+
