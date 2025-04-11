@@ -3,12 +3,12 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { act } from 'react-dom/test-utils';
 import { HashRouter as Router } from 'react-router-dom';
-import testUtils from '../_TestUtils/TestUtils';
-import * as utils from '../utils/Utils';
+import testUtils from '../../_TestUtils/TestUtils';
+import * as utils from '../../utils/Utils';
 import UserManagementView from './UserManagementView';
 
 // Mock validateLogin before your tests
-vi.mock(import('../utils/Utils'), async (importOriginal) => {
+vi.mock(import('../../utils/Utils'), async (importOriginal) => {
   const actual = await importOriginal();
   return {
     ...actual,

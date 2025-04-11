@@ -1,6 +1,6 @@
 import api from '@/api/api';
-import { SelectAssociation } from '@/usermanagement/components/SelectAssociation';
-import { SelectRole } from '@/usermanagement/components/SelectRole';
+import { SelectAssociation } from '@/pages/UserManagement/components/SelectAssociation';
+import { SelectRole } from '@/pages/UserManagement/components/SelectRole';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
 import {

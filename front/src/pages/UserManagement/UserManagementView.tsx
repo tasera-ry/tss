@@ -12,14 +12,14 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useCookies } from 'react-cookie';
 
 import api from '@/api/api';
-import { AddUserDialog } from '@/usermanagement/components/dialogs/AddUserDialog';
-import { ChangeEmailSelfDialog } from '@/usermanagement/components/dialogs/ChangeEmailSelfDialog';
-import { ChangePasswordSelfDialog } from '@/usermanagement/components/dialogs/ChangePasswordSelfDialog';
-import { EditUserDialog } from '@/usermanagement/components/dialogs/EditUserDialog';
+import { AddUserDialog } from '@/pages/UserManagement/components/dialogs/AddUserDialog';
+import { ChangeEmailSelfDialog } from '@/pages/UserManagement/components/dialogs/ChangeEmailSelfDialog';
+import { ChangePasswordSelfDialog } from '@/pages/UserManagement/components/dialogs/ChangePasswordSelfDialog';
+import { EditUserDialog } from '@/pages/UserManagement/components/dialogs/EditUserDialog';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
-function UserManagementView() {
+export function UserManagementView() {
   const { t } = useLingui();
 
   const [{ username }] = useCookies(['username']);
@@ -186,5 +186,3 @@ function UserRow({ user, associationList }) {
     </TableRow>
   );
 }
-
-export default UserManagementView;
