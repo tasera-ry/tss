@@ -27,7 +27,7 @@ export default function Supervisions() {
   const [notification, setNotification] = useState(null);
 
   const [cookies] = useCookies(['role', 'id']);
-  
+
   const query = useQuery({
     queryKey: ['supervisions'],
     queryFn: async () => {
@@ -98,7 +98,9 @@ export default function Supervisions() {
           <TableRow>
             <TableCell>{t`Date`}</TableCell>
             <TableCell>{t`Status`}</TableCell>
-            {cookies.role !== 'rangeofficer' && <TableCell>{t`Assigned officer`}</TableCell>}
+            {cookies.role !== 'rangeofficer' && (
+              <TableCell>{t`Assigned officer`}</TableCell>
+            )}
             <TableCell>{t`ETA`}</TableCell>
             <TableCell>{t`Actions`}</TableCell>
           </TableRow>
@@ -178,17 +180,20 @@ function SupervisionRow({ supervision, officers, createNotification }) {
     },
   });
 
-
   return (
     <TableRow key={supervision.id} data-testid="supervisions-row">
       <TableCell>{formatedDate}</TableCell>
-      <StatusCell status={status} setStatus={setStatus} dataTestId={`status-cell-${supervision.id}`} />
+      <StatusCell
+        status={status}
+        setStatus={setStatus}
+        dataTestId={`status-cell-${supervision.id}`}
+      />
       {cookies.role !== 'rangeofficer' && (
         <OfficerCell
           officer={officer}
           setOfficer={setOfficer}
           officers={officers}
-          disabled={status !== 'confirmed'}
+          disabled={status === 'not confirmed' || status === 'absent'}
         />
       )}
       <TableCell data-testid="time-cell">
@@ -196,8 +201,11 @@ function SupervisionRow({ supervision, officers, createNotification }) {
           id="time"
           type="time"
           value={time || ''}
-          onChange={(event) => setTime(event.target.value)}
-          disabled={status !== 'confirmed'}
+          onChange={(event) => {
+            const value = event.target.value;
+            setTime(value.length === 5 ? `${value}:00` : value);
+          }}
+          disabled={status !== 'confirmed' && status !== 'en route'}
         />
       </TableCell>
 
@@ -233,6 +241,8 @@ const statusColors = {
   'not confirmed': '',
   confirmed: 'bg-green-light',
   absent: 'bg-red-light',
+  present: 'bg-green',
+  'en route': 'bg-orange',
 };
 
 function StatusCell({ status, setStatus, dataTestId }) {
@@ -245,8 +255,12 @@ function StatusCell({ status, setStatus, dataTestId }) {
         onChange={(event) => setStatus(event.target.value)}
         inputProps={{ 'data-testid': dataTestId }}
       >
-        <MenuItem value="not confirmed">{t`Confirm date`}</MenuItem>
+        <MenuItem key="not-confirmed" value="not confirmed">
+          {t`Not confirmed`}
+        </MenuItem>
         <MenuItem value="confirmed">{t`Confirmed`}</MenuItem>
+        <MenuItem value="present">{t`Present`}</MenuItem>
+        <MenuItem value="en route">{t`En route`}</MenuItem>
         <MenuItem value="absent">{t`Absent`}</MenuItem>
       </Select>
     </TableCell>

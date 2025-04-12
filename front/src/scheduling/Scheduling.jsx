@@ -393,8 +393,8 @@ function Scheduling(props) {
 
   // Parses and formats the time user entered and set it as arrival time
   const handleArrivalTime = (event) => {
-    const parsedTime = moment(event.target.value, 'HH:mm:ss', true);
-    setArrivalTime(parsedTime.format('HH:mm:ss'));
+    const value = event.target.value;
+    setArrivalTime(value.length === 5 ? `${value}:00` : value);
   };
 
   // Confirms the set arrival time when confirm time button is clicked
