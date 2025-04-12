@@ -1,0 +1,10 @@
+# Cypress configuration and output files
+cypress/screenshots/
+cypress/videos/
+cypress/reports/
+
+# Cypress environment files
+cypress.env.json
+cypress.env.*.json
+
+/node_modules/
