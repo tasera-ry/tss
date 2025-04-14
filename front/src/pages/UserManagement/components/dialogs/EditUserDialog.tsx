@@ -254,7 +254,7 @@ function ChangePasswordTab({ tabValue, user, setIsDialogOpen }) {
           />
         </DialogContent>
         <DialogActions>
-          <Button type="submit" variant="contained" color="primary">
+          <Button type="submit" variant="contained" color="success">
             {t`Save`}
           </Button>
         </DialogActions>
