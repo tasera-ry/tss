@@ -7,10 +7,15 @@ import api from '../../../../api/api';
 
 interface TrackStatisticsProps {
   track: any;
+  superVisionState: string;
   disabled: boolean;
 }
 
-export function TrackStatistics({ track, disabled }: TrackStatisticsProps) {
+export function TrackStatistics({
+  track,
+  superVisionState,
+  disabled,
+}: TrackStatisticsProps) {
   const { t } = useLingui();
 
   const { scheduled, id } = track;
@@ -51,9 +56,7 @@ export function TrackStatistics({ track, disabled }: TrackStatisticsProps) {
   }, [visitors, mutateTrackVisitors]);
 
   const isDisabled =
-    track.trackSupervision === 'absent' ||
-    disabled ||
-    mutateTrackVisitors.isLoading;
+    superVisionState !== 'present' || disabled || mutateTrackVisitors.isLoading;
 
   return (
     <div className="grid grid-cols-3 gap-2">
