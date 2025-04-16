@@ -9,7 +9,11 @@ vi.mock('../../../../api/api');
 describe('testing TrackStatistics', () => {
   it('should render TrackStatistics', async () => {
     render(
-      <TrackStatistics track={testUtils.schedule.tracks[0]} disabled={false} />,
+      <TrackStatistics
+        track={testUtils.schedule.tracks[0]}
+        superVisionState={testUtils.schedule.tracks[0].trackSupervision}
+        disabled={false}
+      />,
       { wrapper: TestProviders },
     );
     await waitFor(() => expect(screen.getByText('5')).toBeInTheDocument());
@@ -18,7 +22,11 @@ describe('testing TrackStatistics', () => {
   it('should increment visitor number', async () => {
     vi.mocked(api.patchScheduledSupervisionTrack).mockResolvedValue(undefined);
     render(
-      <TrackStatistics track={testUtils.schedule.tracks[3]} disabled={false} />,
+      <TrackStatistics
+        track={testUtils.schedule.tracks[3]}
+        superVisionState={testUtils.schedule.tracks[3].trackSupervision}
+        disabled={false}
+      />,
       { wrapper: TestProviders },
     );
     await waitFor(() => expect(screen.getByText('0')).toBeInTheDocument());
