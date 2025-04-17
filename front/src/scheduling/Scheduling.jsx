@@ -41,6 +41,7 @@ import socketIOClient from 'socket.io-client';
 import api from '../api/api';
 import colors from '../colors.module.scss';
 import { updateRangeSupervision, validateLogin } from '../utils/Utils';
+import { DefaultOpeningForm } from '@/trackview/DefaultOpeningForm';
 
 async function getRangeSupervisors() {
   try {
@@ -127,6 +128,12 @@ function Scheduling() {
   const [statusColor, setStatusColor] = useState();
   const [statusText, setStatusText] = useState();
   const [arrivalTime, setArrivalTime] = useState(new Date());
+  const [defaultOpen, setDefaultOpen] = useState(
+    moment().hour(17).minute(0).second(0),
+  );
+  const [defaultClose, setDefaultClose] = useState(
+    moment().hour(20).minute(0).second(0),
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -187,6 +194,25 @@ function Scheduling() {
       setCallUpdate(false);
     }
   }, [callUpdate]);
+
+  // TODO use query
+  useEffect(() => {
+    const fetchDefaultHours = async () => {
+      try {
+        const response = await fetch('/api/default-hours');
+        console.log(response);
+        const data = await response.json();
+        if (data) {
+          setDefaultOpen(moment(data.open, 'HH:mm'));
+          setDefaultClose(moment(data.close, 'HH:mm'));
+        }
+      } catch (error) {
+        console.error('Failed to fetch default hours', error);
+      }
+    };
+
+    fetchDefaultHours();
+  }, []);
 
   // Sets all tracks to open, but no track officer
   const openAllTracks = () => {
@@ -921,13 +947,23 @@ function Scheduling() {
       setOpen(
         response.open !== null
           ? moment(response.open, 'h:mm:ss').format()
-          : moment(response.date).hour(17).minute(0).second(0),
+          : defaultOpen,
       );
       setClose(
         response.close !== null
           ? moment(response.close, 'h:mm:ss').format()
-          : moment(response.date).hour(20).minute(0).second(0),
+          : defaultClose,
       );
+      // setOpen(
+      //   response.open !== null
+      //     ? moment(response.open, 'h:mm:ss').format()
+      //     : moment(response.date).hour(17).minute(0).second(0),
+      // );
+      // setClose(
+      //   response.close !== null
+      //     ? moment(response.close, 'h:mm:ss').format()
+      //     : moment(response.date).hour(20).minute(0).second(0),
+      // );
       setAvailable(response.available !== null ? response.available : false);
       setRangeSupervisorSwitch(response.rangeSupervisorId !== null);
       setRangeSupervisorId(response.rangeSupervisorId);
@@ -1184,6 +1220,8 @@ function Scheduling() {
         </div>
       </Box>
 
+      <DefaultOpeningForm />
+
       {/* Section for setting track-specific open/close statuses */}
       <Box className="secondSection">
         <div>
@@ -1297,4 +1335,5 @@ function Scheduling() {
     </div>
   );
 }
+
 export default Scheduling;

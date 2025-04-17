@@ -6,13 +6,15 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { t } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { CircularProgress } from '@mui/material';
+import { Box, Button, CircularProgress } from '@mui/material';
 import classNames from 'classnames';
 import moment from 'moment';
 import { useQuery } from 'react-query';
 import api from '../api/api';
 import { useWeekDay } from '../utils/dateUtils';
 import css from './Trackview.module.scss';
+import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
+import { DefaultOpeningForm } from './DefaultOpeningForm';
 
 export function Trackview() {
   const { t } = useLingui();
@@ -66,30 +68,36 @@ export function Trackview() {
   }
 
   return (
-    <TrackViewContainer>
-      <div className="flex flex-col items-center">
-        <h1 className="text-2xl font-bold">{selectedTrack.name}</h1>
-        <span> {selectedTrack.description}</span>
-      </div>
-      <span>{`${weekDay} ${date.toLocaleDateString('fi-FI')}`}</span>
-      <ColoredBox status={rangeStatus.status}>{rangeStatus.text}</ColoredBox>
-      <ColoredBox status={trackAvailability.status}>
-        {trackAvailability.text}
-      </ColoredBox>
-      {selectedTrack.notice && (
-        <div className="bg-black-tint-20 p-3 rounded-lg border border-black max-w-[50%]">
-          <p className="font-bold">{t`Info`}:</p>
-          <div>{selectedTrack.notice}</div>
+    <>
+      <TrackViewContainer>
+        <div className="flex flex-col items-center">
+          <h1 className="text-2xl font-bold">{selectedTrack.name}</h1>
+          <span> {selectedTrack.description}</span>
         </div>
-      )}
-    </TrackViewContainer>
+        <span>{`${weekDay} ${date.toLocaleDateString('fi-FI')}`}</span>
+        <ColoredBox status={rangeStatus.status}>{rangeStatus.text}</ColoredBox>
+        <ColoredBox status={trackAvailability.status}>
+          {trackAvailability.text}
+        </ColoredBox>
+        {selectedTrack.notice && (
+          <div className="bg-black-tint-20 p-3 rounded-lg border border-black max-w-[50%]">
+            <p className="font-bold">{t`Info`}:</p>
+            <div>{selectedTrack.notice}</div>
+          </div>
+        )}
+      </TrackViewContainer>
+      <DefaultOpeningForm />
+    </>
   );
 }
 
 function TrackViewContainer({
   className,
   children,
-}: { className?: string; children: React.ReactNode }) {
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
   const { date: targetDate } = useParams<{ date: string; track: string }>();
   const date = useMemo(() => new Date(targetDate), [targetDate]);
   return (
@@ -136,7 +144,10 @@ function getTrackAvailability(trackSupervision: string) {
 function ColoredBox({
   status,
   children,
-}: { status: string; children: React.ReactNode }) {
+}: {
+  status: string;
+  children: React.ReactNode;
+}) {
   return (
     <span
       className={classNames(
