@@ -233,7 +233,7 @@ export default function Raffle() {
               <SupervisionResultsTable
                 results={raffleResults}
                 setResults={setRaffleResults}
-                supervisors={supervisors.filter(({ raffle }) => raffle)}
+                associations={supervisors.filter(({ raffle }) => raffle)}
               />
               {raffleResultAmounts.length > 0 && (
                 <SupervisionAmountsTable amounts={raffleResultAmounts} />
