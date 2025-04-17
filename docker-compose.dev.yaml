@@ -16,7 +16,7 @@ services:
     image: dpage/pgadmin4
     restart: always
     ports:
-      - "8888:80"
+      - '8888:80'
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
@@ -46,6 +46,8 @@ services:
       /bin/sh -c "npx knex migrate:latest
       && npx knex seed:run
       && nodemon --inspect=0.0.0.0:5858 --legacy-watch server.js"
+    stdin_open: true
+    tty: true
   frontend:
     build:
       context: ./front
@@ -61,3 +63,4 @@ services:
     stdin_open: true
     links:
       - backend
+
