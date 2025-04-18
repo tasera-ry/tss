@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useCookies } from 'react-cookie';
 
 // Style and colors
@@ -227,6 +227,16 @@ function Scheduling(props) {
       },
     },
   );
+
+  const { defaultOpen, defaultClosed } = useMemo(() => {
+    const weekday = moment(date).format('dddd').toLowerCase();
+    console.log('weekday', weekday);
+    console.log('defaultHours', defaultHours[weekday]);
+    return {
+      defaultOpen: defaultHours[weekday]?.open,
+      defaultClosed: defaultHours[weekday]?.close,
+    };
+  }, [defaultHours, date]);
 
   // Sets all tracks to open, but no track officer
   const openAllTracks = () => {
@@ -967,23 +977,15 @@ function Scheduling(props) {
       setReservationId(response.reservationId);
       setScheduleId(response.scheduleId);
       setOpen(
-        response.open !== null ? moment(response.open, 'h:mm:ss').format() : '',
+        response.open !== null
+          ? moment(response.open, 'h:mm:ss').format()
+          : defaultOpen,
       );
       setClose(
         response.close !== null
           ? moment(response.close, 'h:mm:ss').format()
-          : '',
+          : defaultClosed,
       );
-      // setOpen(
-      //   response.open !== null
-      //     ? moment(response.open, 'h:mm:ss').format()
-      //     : moment(response.date).hour(17).minute(0).second(0),
-      // );
-      // setClose(
-      //   response.close !== null
-      //     ? moment(response.close, 'h:mm:ss').format()
-      //     : moment(response.date).hour(20).minute(0).second(0),
-      // );
       setAvailable(response.available !== null ? response.available : false);
       setRangeSupervisorSwitch(response.rangeSupervisorId !== null);
       setRangeSupervisorId(response.rangeSupervisorId);
