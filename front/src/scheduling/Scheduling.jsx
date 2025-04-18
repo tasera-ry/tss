@@ -214,7 +214,7 @@ function Scheduling(props) {
               close: moment(dayHours.close, 'HH:mm'),
             };
             return acc;
-          }),
+          }, {}),
         );
       },
       onError: (error) => {
@@ -230,11 +230,9 @@ function Scheduling(props) {
 
   const { defaultOpen, defaultClosed } = useMemo(() => {
     const weekday = moment(date).format('dddd').toLowerCase();
-    console.log('weekday', weekday);
-    console.log('defaultHours', defaultHours[weekday]);
     return {
-      defaultOpen: defaultHours[weekday]?.open,
-      defaultClosed: defaultHours[weekday]?.close,
+      defaultOpen: defaultHours[weekday]?.open || moment('17:00', 'HH:mm'),
+      defaultClosed: defaultHours[weekday]?.close || moment('20:00', 'HH:mm'),
     };
   }, [defaultHours, date]);
 

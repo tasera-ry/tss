@@ -17,7 +17,7 @@ import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
 
 import Snackbar from '@mui/material/Snackbar';
 import moment from 'moment';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useLingui } from '@lingui/react/macro';
 
 export const weekdays = [
@@ -45,15 +45,17 @@ export const DefaultHoursTable = () => {
     },
     {
       onSuccess: (data) => {
-        setDefaultHours(
-          data.reduce((acc, dayHours) => {
+        const defHours = () => {
+          return data.reduce((acc, dayHours) => {
             acc[dayHours.day] = {
               open: moment(dayHours.open, 'HH:mm'),
               close: moment(dayHours.close, 'HH:mm'),
             };
             return acc;
-          }, {} as Record<string, { open: moment.Moment; close: moment.Moment }>),
-        );
+          }, {});
+        };
+
+        setDefaultHours(defHours());
       },
       onError: (error) => {
         console.error(error);
@@ -66,15 +68,9 @@ export const DefaultHoursTable = () => {
     },
   );
 
-  const [defaultHours, setDefaultHours] = useState(
-    weekdays.reduce((acc, day) => {
-      acc[day] = {
-        open: moment().hour(17).minute(0).second(0),
-        close: moment().hour(20).minute(0).second(0),
-      };
-      return acc;
-    }, {} as Record<string, { open: moment.Moment; close: moment.Moment }>),
-  );
+  const [defaultHours, setDefaultHours] = useState<
+    Record<string, { open: moment.Moment; close: moment.Moment }>
+  >({});
 
   const handleTimeChange = (
     day: string,
@@ -149,6 +145,10 @@ export const DefaultHoursTable = () => {
     },
   );
 
+  if (isLoading) {
+    return <div>{t`Loading...`}</div>;
+  }
+
   return (
     <ScopedCssBaseline>
       {/* {trackQuery.isLoading && <LinearProgress variant="query" />} */}
@@ -165,45 +165,48 @@ export const DefaultHoursTable = () => {
             </TableHead>
             <TableBody>
               {weekdays.map((day) => (
-                <>
-                  <TableRow key={day}>
-                    <TableCell>
-                      {t`${day.charAt(0).toUpperCase() + day.slice(1)}`}
-                    </TableCell>
-                    <TableCell>
-                      <LocalizationProvider
-                        dateAdapter={AdapterMoment}
-                        adapterLocale="fi"
-                      >
-                        <TimePicker
-                          value={defaultHours[day].open}
-                          onChange={(newTime) =>
-                            handleTimeChange(day, 'open', newTime)
-                          }
-                          minutesStep={5}
-                          ampm={false}
-                          slots={{ textField: TextField }}
-                        />
-                      </LocalizationProvider>
-                    </TableCell>
-                    <TableCell>
-                      <LocalizationProvider
-                        dateAdapter={AdapterMoment}
-                        adapterLocale="fi"
-                      >
-                        <TimePicker
-                          value={defaultHours[day].close}
-                          onChange={(newTime) =>
-                            handleTimeChange(day, 'close', newTime)
-                          }
-                          minutesStep={5}
-                          ampm={false}
-                          slots={{ textField: TextField }}
-                        />
-                      </LocalizationProvider>
-                    </TableCell>
-                  </TableRow>
-                </>
+                <TableRow key={day}>
+                  <TableCell>
+                    {t`${day.charAt(0).toUpperCase() + day.slice(1)}`}
+                  </TableCell>
+                  <TableCell>
+                    <LocalizationProvider
+                      dateAdapter={AdapterMoment}
+                      adapterLocale="fi"
+                    >
+                      <TimePicker
+                        value={
+                          defaultHours[day]?.open ?? moment().hour(17).minute(0)
+                        }
+                        onChange={(newTime) =>
+                          handleTimeChange(day, 'open', newTime)
+                        }
+                        minutesStep={5}
+                        ampm={false}
+                        slots={{ textField: TextField }}
+                      />
+                    </LocalizationProvider>
+                  </TableCell>
+                  <TableCell>
+                    <LocalizationProvider
+                      dateAdapter={AdapterMoment}
+                      adapterLocale="fi"
+                    >
+                      <TimePicker
+                        value={
+                          defaultHours[day]?.close ??
+                          moment().hour(20).minute(0)
+                        }
+                        onChange={(newTime) =>
+                          handleTimeChange(day, 'close', newTime)
+                        }
+                        minutesStep={5}
+                        ampm={false}
+                        slots={{ textField: TextField }}
+                      />
+                    </LocalizationProvider>
+                  </TableCell>
+                </TableRow>
               ))}
             </TableBody>
           </Table>
