@@ -16,14 +16,27 @@ const controller = {
 
   update: async function updateDefaultHours(request, response) {
     try {
-      const { open, close } = request.body;
-      if (!open || !close) {
+      const { default_hours } = request.body;
+      if (!default_hours || typeof default_hours !== 'object') {
         return response
           .status(400)
-          .send({ error: 'Open and close times are required' });
+          .send({
+            error: 'Default hours with open and close times are required',
+          });
       }
 
-      await services.upsert({ open, close });
+      const weekdays = [];
+      for (const [day, times] of Object.entries(default_hours)) {
+        const { open, close } = times;
+        if (!open || !close) {
+          return response.status(400).send({
+            error: `Each day (${day}) must have open and close times`,
+          });
+        }
+        weekdays.push({ day, open, close });
+      }
+
+      await services.upsert(weekdays);
       return response.status(204).send();
     } catch (error) {
       console.error('Failed to update default hours:', error);
