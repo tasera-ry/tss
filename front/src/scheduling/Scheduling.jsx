@@ -41,7 +41,7 @@ import socketIOClient from 'socket.io-client';
 import api from '../api/api';
 import colors from '../colors.module.scss';
 import { updateRangeSupervision, validateLogin } from '../utils/Utils';
-import { DefaultOpeningForm } from '@/trackview/DefaultOpeningForm';
+import { useQuery } from 'react-query';
 
 async function getRangeSupervisors() {
   try {
@@ -128,12 +128,7 @@ function Scheduling() {
   const [statusColor, setStatusColor] = useState();
   const [statusText, setStatusText] = useState();
   const [arrivalTime, setArrivalTime] = useState(new Date());
-  const [defaultOpen, setDefaultOpen] = useState(
-    moment().hour(17).minute(0).second(0),
-  );
-  const [defaultClose, setDefaultClose] = useState(
-    moment().hour(20).minute(0).second(0),
-  );
+  const [defaultHours, setDefaultHours] = useState({});
 
   useEffect(() => {
     let isMounted = true;
@@ -196,23 +191,37 @@ function Scheduling() {
   }, [callUpdate]);
 
   // TODO use query
-  useEffect(() => {
-    const fetchDefaultHours = async () => {
-      try {
-        const response = await fetch('/api/default-hours');
-        console.log(response);
-        const data = await response.json();
-        if (data) {
-          setDefaultOpen(moment(data.open, 'HH:mm'));
-          setDefaultClose(moment(data.close, 'HH:mm'));
-        }
-      } catch (error) {
-        console.error('Failed to fetch default hours', error);
+  const { data: fetchedDefaultHours, isLoading } = useQuery(
+    'fetchDefaultHours',
+    async () => {
+      const response = await fetch('/api/default-hours');
+      if (!response.ok) {
+        throw new Error('Failed to fetch default hours');
       }
-    };
-
-    fetchDefaultHours();
-  }, []);
+      return response.json();
+    },
+    {
+      onSuccess: (data) => {
+        setDefaultHours(
+          data.reduce((acc, dayHours) => {
+            acc[dayHours.day] = {
+              open: moment(dayHours.open, 'HH:mm'),
+              close: moment(dayHours.close, 'HH:mm'),
+            };
+            return acc;
+          }),
+        );
+      },
+      onError: (error) => {
+        console.error(error);
+        setToast({
+          open: true,
+          message: t`Failed to fetch default hours`,
+          severity: 'error',
+        });
+      },
+    },
+  );
 
   // Sets all tracks to open, but no track officer
   const openAllTracks = () => {
@@ -945,14 +954,12 @@ function Scheduling() {
       setReservationId(response.reservationId);
       setScheduleId(response.scheduleId);
       setOpen(
-        response.open !== null
-          ? moment(response.open, 'h:mm:ss').format()
-          : defaultOpen,
+        response.open !== null ? moment(response.open, 'h:mm:ss').format() : '',
       );
       setClose(
         response.close !== null
           ? moment(response.close, 'h:mm:ss').format()
-          : defaultClose,
+          : '',
       );
       // setOpen(
       //   response.open !== null
@@ -1219,8 +1226,6 @@ function Scheduling() {
           </div>
         </div>
       </Box>
-
-      <DefaultOpeningForm />
 
       {/* Section for setting track-specific open/close statuses */}
       <Box className="secondSection">

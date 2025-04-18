@@ -14,7 +14,7 @@ import api from '../api/api';
 import { useWeekDay } from '../utils/dateUtils';
 import css from './Trackview.module.scss';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
-import { DefaultOpeningForm } from './DefaultOpeningForm';
+import { DefaultHoursTable } from './DefaultHoursTable';
 
 export function Trackview() {
   const { t } = useLingui();
@@ -86,7 +86,6 @@ export function Trackview() {
           </div>
         )}
       </TrackViewContainer>
-      <DefaultOpeningForm />
     </>
   );
 }
