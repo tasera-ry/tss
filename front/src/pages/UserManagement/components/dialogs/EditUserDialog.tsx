@@ -141,9 +141,15 @@ function EditUserTab({ tabValue, user, associationList, setIsDialogOpen }) {
       t`Are you sure you want to delete ${user.name}?`,
     );
     if (!confirm) return;
-    await api.deleteUser(user.id);
-    queryClient.invalidateQueries({ queryKey: ['userList'] });
-    setIsDialogOpen(false);
+    try {
+      await api.deleteUser(user.id);
+      queryClient.invalidateQueries({ queryKey: ['userList'] });
+      setIsDialogOpen(false);
+    } catch (error) {
+      window.alert(
+        t`Failed to delete user, user might be range officer for reservation`,
+      );
+    }
   }, [user, queryClient, t, setIsDialogOpen]);
 
   return (
