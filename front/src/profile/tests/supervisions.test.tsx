@@ -1,8 +1,8 @@
 import { TestProviders } from '@/_TestUtils/TestProvides';
-import { render, screen, waitFor } from '@testing-library/react';
 import api from '@/api/api';
-import Supervisions from '../profilepages/supervisions';
+import { render, screen, waitFor } from '@testing-library/react';
 import { useCookies } from 'react-cookie';
+import Supervisions from '../profilepages/supervisions';
 
 vi.mock('react-cookie', async (originalModule) => {
   const originalImport = (await originalModule()) as any;
@@ -44,9 +44,7 @@ const rangeofficerListMock = [
   { id: 5, name: 'Jane Smith' },
 ];
 
-const associationMock = [
-  { association_id: 1 },
-];
+const associationMock = [{ association_id: 1 }];
 
 describe('Supervisions component', () => {
   beforeEach(() => {
@@ -132,9 +130,7 @@ describe('Supervisions component', () => {
 
     // Check that the officer selection menu is not rendered for the rangeofficer user
     const table = screen.getByTestId('supervisions-table');
-    const officerCells = table.querySelectorAll(
-      '[data-testid="officer-cell"]',
-    );
+    const officerCells = table.querySelectorAll('[data-testid="officer-cell"]');
     expect(officerCells.length).toBe(0);
   });
 });

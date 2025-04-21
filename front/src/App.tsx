@@ -14,7 +14,6 @@ import ResetPassword from './resetPW/ResetPassword';
 import Scheduling from './scheduling/Scheduling';
 import SignIn from './signin/SignIn';
 import { Trackview } from './trackview/Trackview';
-import UserManagementView from './usermanagement/UserManagementView';
 
 import { EmailSettingsView } from '@/EmailSettings/EmailSettings';
 import { Navbar } from '@/lib/components/Navbar';
@@ -23,6 +22,7 @@ import { EditTracksView } from '@/pages/EditTracksView/EditTracksView';
 import { InfoMessageManagementView } from '@/pages/InfoMessageManagementView';
 import { Monthview } from '@/pages/MonthView/MonthView';
 import { StatisticsView } from '@/pages/StatisticsView/StatisticsView';
+import { UserManagementView } from '@/pages/UserManagement/UserManagementView';
 
 export function App() {
   const { validateToken } = useLoggedInUser();
