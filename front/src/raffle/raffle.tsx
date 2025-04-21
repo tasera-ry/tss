@@ -11,16 +11,15 @@ import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/material/Snackbar';
 import { StyledEngineProvider } from '@mui/material/styles';
 
+import { TableLegends } from '@/lib/components/TableLegends';
 import { useLingui } from '@lingui/react/macro';
+import { useQuery, useQueryClient } from 'react-query';
 import { dateToString } from '../utils/dateUtils';
 import RaffleDatePicker from './RaffleDatePicker';
 import SupervisionAmountsTable from './SupervisionAmountsTable';
 import SupervisionResultsTable from './SupervisionResultsTable';
 import SupervisorsTable from './SupervisorsTable';
 import css from './raffle.module.scss';
-import { useQuery, useQueryClient } from 'react-query';
-import { TableLegends } from '@/lib/components/TableLegends';
-
 
 const classes = classNames.bind(css);
 
@@ -207,8 +206,8 @@ export default function Raffle() {
               selectedDays={selectedDays}
               setSelectedDays={setSelectedDays}
             />
-            <div style={{ padding : '10px' }}>
-            <TableLegends showAdditionalInfo={false} />
+            <div style={{ padding: '10px' }}>
+              <TableLegends showAdditionalInfo={false} />
             </div>
             <div className={classes(css.submitContainer)}>
               {!isLoading.raffle ? (

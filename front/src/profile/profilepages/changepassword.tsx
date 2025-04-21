@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -5,7 +6,6 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import api from '../../api/api';
 import css from './ChangePassword.module.scss';
-import { useLingui } from '@lingui/react/macro';
 
 const classes = classNames.bind(css);
 

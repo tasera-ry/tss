@@ -168,9 +168,7 @@ function UserRow({ user, associationList }) {
           </div>
           {user.role === 'rangeofficer' && (
             <div className="lg:hidden flex gap-1">
-              <span className="font-bold">
-                {t`Association`}:
-              </span>
+              <span className="font-bold">{t`Association`}:</span>
               {user.associationName}
             </div>
           )}

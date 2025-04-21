@@ -3,7 +3,9 @@ import classNames from 'classnames';
 import InfoImg from '@/assets/Info.png';
 import { useLingui } from '@lingui/react/macro';
 
-export function TableLegends({ showAdditionalInfo = true }: { showAdditionalInfo?: boolean }) {
+export function TableLegends({
+  showAdditionalInfo = true,
+}: { showAdditionalInfo?: boolean }) {
   const { t } = useLingui();
   return (
     <div className="flex justify-center">
