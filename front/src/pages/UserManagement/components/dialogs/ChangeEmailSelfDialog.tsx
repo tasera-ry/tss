@@ -87,10 +87,16 @@ export function ChangeEmailSelfDialog({ currentUser }) {
               onClick={() => setIsDialogOpen(false)}
               variant="contained"
               color="inherit"
+              data-testid="ChangeEmailSelfDialog-Cancel"
             >
               {t`Cancel`}
             </Button>
-            <Button type="submit" variant="contained" color="success">
+            <Button
+              type="submit"
+              variant="contained"
+              color="success"
+              data-testid="ChangeEmailSelfDialog-Save"
+            >
               {t`Save changes`}
             </Button>
           </DialogActions>

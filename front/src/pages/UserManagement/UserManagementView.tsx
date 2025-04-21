@@ -162,14 +162,17 @@ function UserRow({ user, associationList }) {
         <div className="flex flex-col">
           <span>{user.name}</span>
           <span>{user.email}</span>
-          <div className="lg:hidden">
-            <span className="font-bold">{t`Role`}: </span>
+          <div className="lg:hidden flex gap-1">
+            <span className="font-bold">{t`Role`}:</span>
             {roleLabel}
           </div>
           {user.role === 'rangeofficer' && (
-            <span className="font-bold lg:hidden">
-              {t`Association:`} {user.associationName}
-            </span>
+            <div className="lg:hidden flex gap-1">
+              <span className="font-bold">
+                {t`Association`}:
+              </span>
+              {user.associationName}
+            </div>
           )}
         </div>
       </TableCell>

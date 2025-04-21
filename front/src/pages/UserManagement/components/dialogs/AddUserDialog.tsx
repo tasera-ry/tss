@@ -162,10 +162,16 @@ export function AddUserDialog({ associationList }) {
               onClick={() => setIsDialogOpen(false)}
               variant="contained"
               color="inherit"
+              data-testid="AddUserDialog-Cancel"
             >
               {t`Cancel`}
             </Button>
-            <Button type="submit" variant="contained" color="success">
+            <Button
+              type="submit"
+              variant="contained"
+              color="success"
+              data-testid="AddUserDialog-Save"
+            >
               {t`Save changes`}
             </Button>
           </DialogActions>

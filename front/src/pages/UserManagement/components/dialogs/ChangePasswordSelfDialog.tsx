@@ -128,10 +128,16 @@ export function ChangePasswordSelfDialog({ currentUser }) {
               onClick={() => setIsDialogOpen(false)}
               variant="contained"
               color="inherit"
+              data-testid="ChangePasswordSelfDialog-Cancel"
             >
               {t`Cancel`}
             </Button>
-            <Button type="submit" variant="contained" color="success">
+            <Button
+              type="submit"
+              variant="contained"
+              color="success"
+              data-testid="ChangePasswordSelfDialog-Save"
+            >
               {t`Save changes`}
             </Button>
           </DialogActions>
