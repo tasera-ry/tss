@@ -27,6 +27,7 @@ import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { withStyles } from '@mui/styles';
+
 // Material UI components
 import {
   DatePicker,
@@ -1011,14 +1012,14 @@ function Scheduling(props) {
       {/* Section for selecting date, setting range officer status, and open/close times of the tracks*/}
       <Box className="firstSection flex items-center justify-center">
         <div className="dateNavigation">
-          <Button
+          <button
+            type="button"
             onClick={() => {
               handleDateChange(moment(date).subtract(1, 'days'));
               handleDatePickChange(moment(date).subtract(1, 'days'));
             }}
-          >
-            &#11013; {/* Left arrow */}
-          </Button>
+            className="leftButton">
+          </button>
           <form onSubmit={continueWithDate}>
             {/* Datepicker */}
             <LocalizationProvider
@@ -1039,14 +1040,15 @@ function Scheduling(props) {
               />
             </LocalizationProvider>
           </form>
-          <Button
+          <button
+            type="button"
             onClick={() => {
               handleDateChange(moment(date).add(1, 'days'));
               handleDatePickChange(moment(date).add(1, 'days'));
             }}
-          >
-            &#11157; {/* Right arrow */}
-          </Button>
+            className="rightButton"
+            >
+          </button>
         </div>
         <div className="flex flex-wrap size-full gap-8 items-center justify-center">
           <div className="flex flex-col flex-grow h-full p-2.5 rounded-[10px] bg-[#eeee]">
