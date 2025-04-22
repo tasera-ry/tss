@@ -57,6 +57,11 @@ const createUser = async (newUser) => {
   return response.data;
 };
 
+const updateUser = async (updatedUser) => {
+  const response = await axios.put(`/api/user/${updatedUser.id}`, updatedUser);
+  return response.data;
+};
+
 const getUser = async (id) => {
   const response = await axios.get(`api/user/${id}`);
   return response.data;
@@ -233,6 +238,7 @@ export default {
   resetPassword,
   renewPassword,
   createUser,
+  updateUser,
   getUser,
   getUsers,
   deleteUser,
