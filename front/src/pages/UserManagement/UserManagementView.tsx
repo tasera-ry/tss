@@ -103,7 +103,7 @@ function CurrentUserCard({ currentUser }) {
       </div>
       <div className="flex gap-2">
         <ChangeEmailSelfDialog currentUser={currentUser} />
-        <ChangePasswordSelfDialog currentUser={currentUser} />
+        <ChangePasswordSelfDialog currentUser={{...currentUser, username: username}} />
       </div>
     </div>
   );
