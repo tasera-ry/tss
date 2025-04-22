@@ -7,7 +7,7 @@ const superuser = {
 
 describe('Basic scheduling test suite', () => {
   beforeEach(() => {
-    cy.visit('/');
+    cy.visit('http://localhost:5173/#');
     cy.contains('EN').click();
     cy.contains('Sign In').click();
     cy.get('input[name=username]').type(superuser.name);

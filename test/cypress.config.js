@@ -14,4 +14,3 @@ module.exports = defineConfig({
     responseTimeout: 10000, // 10 seconds
   },
 });
-
