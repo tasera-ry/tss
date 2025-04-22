@@ -7,7 +7,7 @@ const superuser = {
 
 describe('Navigation Tests', () => {
 	beforeEach(() => {
-    cy.visit('/');
+    cy.visit('http://localhost:5173/#');
     cy.contains('EN').click();
     cy.contains('Sign In').click();
     cy.get('input[name=username]').type(superuser.name);
@@ -20,21 +20,22 @@ describe('Navigation Tests', () => {
   });
 
   const pages = [
-    { path: '/#/', name: 'Home', expectedText: 'Viikko' },
-    { path: '/#/scheduling', name: 'Scheduling', expectedText: 'Aikataulut' },
-    { path: '/#/dayview', name: 'Day View', expectedText: 'Aukioloaika' },
-    { path: '/#/tablet', name: 'Tablet', expectedText: 'Laitteet' },
-		{ path: '/#/usermanagement', name: 'User management', expectedText: 'Käyttäjienhallinta' },
-		{ path: '/#/tracks', name: 'Tracks', expectedText: 'Radat' },
-		{ path: '/#/email-settings', name: 'Email settings', expectedText: 'Sähköpostiasetukset' },
-		{ path: '/#/statistics', name: 'Statistics', expectedText: 'Vieraita radoittain' },
-		{ path: '/#/supervisor-raffle', name: 'Supervisor raffle', expectedText: 'Arvro valvojat' },
-		{ path: '/#/info', name: 'Info', expectedText: 'Lisää viesti' },
+    { path: '/#/', name: 'Home', expectedText: 'Week' },
+    { path: '/#/scheduling', name: 'Scheduling', expectedText: 'Schedules' },
+    { path: '/#/dayview', name: 'Day View', expectedText: 'Back to weekview' },
+    { path: '/#/tablet', name: 'Tablet', expectedText: 'Devices' },
+		{ path: '/#/usermanagement', name: 'User management', expectedText: 'User management' },
+		{ path: '/#/tracks', name: 'Tracks', expectedText: 'Tracks' },
+		{ path: '/#/email-settings', name: 'Email settings', expectedText: 'Email settings' },
+		{ path: '/#/statistics', name: 'Statistics', expectedText: 'Visitors per track' },
+		{ path: '/#/supervisor-raffle', name: 'Supervisor raffle', expectedText: 'Raffle supervisors' },
+		{ path: '/#/info', name: 'Info', expectedText: 'Add info' },
   ];
 
   pages.forEach(({ path, name, expectedText }) => {
     it(`should navigate to the ${name} page`, () => {
-      cy.visit(path); 
+      cy.visit(path);
+      cy.wait(1000);
       cy.contains(expectedText).should('be.visible');
     })
   });
