@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useCookies } from 'react-cookie';
 
 // Style and colors
 import './Scheduling.scss';
@@ -9,8 +8,6 @@ import '../shared.module.scss';
 import moment from 'moment';
 import 'moment/locale/fi';
 
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MuiAlert from '@mui/material/Alert';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
@@ -95,7 +92,7 @@ const CustomSwitchGreen = withStyles({
   track: {},
 })(Switch);
 
-function Scheduling(props) {
+function Scheduling() {
   const { t } = useLingui();
   const [locale] = useLanguageContext();
   const history = useHistory();
@@ -127,10 +124,8 @@ function Scheduling(props) {
   const [trackStates, setTrackStates] = useState({});
   const [events, setEvents] = useState({});
   const [callUpdate, setCallUpdate] = useState(false);
-  const [expand, setExpand] = useState(false);
   const [statusColor, setStatusColor] = useState();
   const [statusText, setStatusText] = useState();
-  const [cookies] = useCookies(['role']);
   const [arrivalTime, setArrivalTime] = useState(new Date());
 
   useEffect(() => {
@@ -190,7 +185,6 @@ function Scheduling(props) {
     if (callUpdate) {
       continueWithDate();
       setCallUpdate(false);
-      setExpand(false);
     }
   }, [callUpdate]);
 
@@ -269,8 +263,6 @@ function Scheduling(props) {
       setRangeSupervisorSwitch(event.target.checked);
     }
 
-    setExpand(false);
-
     setEvents({ ...events, [event.target.name]: event.target.checked });
   };
 
@@ -333,11 +325,6 @@ function Scheduling(props) {
     const newTracks = [...tracks];
     newTracks[idx] = { ...newTracks[idx], notice: value };
     setTracks(newTracks);
-  };
-
-  // Handles the expansion of the status bar
-  const handleExpandClick = () => {
-    setExpand(!expand);
   };
 
   // Emits a 'rangeUpdate' event with the status 'not confirmed'
@@ -427,7 +414,6 @@ function Scheduling(props) {
   };
 
   const saveChanges = async () => {
-    setExpand(false);
     setState('loading');
 
     // update call/error handling

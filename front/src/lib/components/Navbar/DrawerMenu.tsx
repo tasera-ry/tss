@@ -18,6 +18,7 @@ import type { MessageDescriptor } from '@lingui/core';
 import { msg, t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react';
 import FeedbackWindow from './FeedbackWindow';
+import { useLingui } from '@lingui/react/macro';
 
 interface NavItem {
   to: string;
@@ -47,6 +48,7 @@ const MENU_CONTENT: Record<Role, NavItem[]> = {
 };
 
 export function DrawerMenu() {
+  const { t } = useLingui();
   const lang = localStorage.getItem('language');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -82,7 +84,7 @@ export function DrawerMenu() {
           {navItems.map(({ to, label }) => (
             <DrawerLink
               to={to}
-              key={label[lang]}
+              key={label.id}
               onClick={() => setIsDrawerOpen(false)}
             >
               <Trans {...label} />

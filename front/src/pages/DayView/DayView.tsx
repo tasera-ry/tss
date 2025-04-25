@@ -22,7 +22,6 @@ import css from './DayView.module.scss';
 const classes = classNames.bind(css);
 
 export function Dayview() {
-  const { t } = useLingui();
   const history = useHistory();
   const { date: dateParam } = useParams<{ date: string }>();
 
@@ -88,7 +87,6 @@ export function Dayview() {
             ) : (
               <TrackList tracks={data.tracks} date={targetDate} />
             )}
-            {/* <ButtonComponent /> */}
             <DeviceStatusList />
           </div>
         </div>
