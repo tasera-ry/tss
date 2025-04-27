@@ -6,17 +6,10 @@ const superuser = {
 };
 
 describe('Navigation Tests', () => {
-	beforeEach(() => {
-    cy.visit('http://localhost:5173/#');
+  beforeEach(() => {
+    cy.visit('/');
     cy.contains('EN').click();
-    cy.contains('Sign In').click();
-    cy.get('input[name=username]').type(superuser.name);
-    cy.get('input[name=password]').type(superuser.password);
-    cy.contains('Log in').click();
-    cy.contains('Menu').click();
-    cy.contains('Schedules').click();
-    // Give time for the page to load
-    cy.wait(1000);
+    cy.login('superuser');
   });
 
   const pages = [
