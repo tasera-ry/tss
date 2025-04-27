@@ -17,7 +17,7 @@ import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
 
 import Snackbar from '@mui/material/Snackbar';
 import moment from 'moment';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useLingui } from '@lingui/react/macro';
 
 export const weekdays = [
@@ -33,6 +33,7 @@ import { useQuery } from 'react-query';
 
 export const DefaultHoursTable = () => {
   const { t } = useLingui();
+  const [updateMade, setUpdateMade] = useState(false);
 
   const { data: fetchedDefaultHours, isLoading } = useQuery(
     'fetchDefaultHours',
@@ -45,6 +46,15 @@ export const DefaultHoursTable = () => {
     },
     {
       onSuccess: (data) => {
+        if (data.length === 0) {
+          setToast({
+            open: true,
+            message: t`No default hours found, make sure to save default hours`,
+            severity: 'warning',
+          });
+          setUpdateMade(true);
+          return;
+        }
         const defHours = () => {
           return data.reduce((acc, dayHours) => {
             acc[dayHours.day] = {
@@ -70,7 +80,36 @@ export const DefaultHoursTable = () => {
 
   const [defaultHours, setDefaultHours] = useState<
     Record<string, { open: moment.Moment; close: moment.Moment }>
-  >({});
+  >({
+    monday: {
+      open: moment().hour(17).minute(0),
+      close: moment().hour(20).minute(0),
+    },
+    tuesday: {
+      open: moment().hour(17).minute(0),
+      close: moment().hour(20).minute(0),
+    },
+    wednesday: {
+      open: moment().hour(17).minute(0),
+      close: moment().hour(20).minute(0),
+    },
+    thursday: {
+      open: moment().hour(17).minute(0),
+      close: moment().hour(20).minute(0),
+    },
+    friday: {
+      open: moment().hour(17).minute(0),
+      close: moment().hour(20).minute(0),
+    },
+    saturday: {
+      open: moment().hour(17).minute(0),
+      close: moment().hour(20).minute(0),
+    },
+    sunday: {
+      open: moment().hour(17).minute(0),
+      close: moment().hour(20).minute(0),
+    },
+  });
 
   const handleTimeChange = (
     day: string,
@@ -78,6 +117,7 @@ export const DefaultHoursTable = () => {
     newTime: moment.Moment | null,
   ) => {
     if (newTime) {
+      setUpdateMade(true);
       setDefaultHours((prev) => ({
         ...prev,
         [day]: {
@@ -122,8 +162,6 @@ export const DefaultHoursTable = () => {
       if (!response.ok) {
         throw new Error('Failed to save default hours');
       }
-
-      return response.json();
     },
     {
       enabled: false, // Disable automatic execution
@@ -218,6 +256,7 @@ export const DefaultHoursTable = () => {
                 saveDefaultHours();
               }}
               style={{ backgroundColor: '#d1ccc2' }}
+              disabled={!updateMade}
             >
               {t`Save All`}
             </Button>
