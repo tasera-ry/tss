@@ -1,25 +1,9 @@
-const superuser = {
-  name: 'DevSuperuser',
-  role: 'superuser',
-  password: '2Gordon62',
-  email: 'DevSuperuser@email.com',
-};
-
-const rangemaster = {
-  name: 'Ruthie_Leuschke',
-  role: 'rangemaster',
-  password: '3Katelynn54',
-  email: 'Pauline.Schulist@Kozey.name',
-};
 
 describe.skip('Tablet view actions as superuser', () => {
   beforeEach(() => {
     cy.visit('/');
     cy.contains('EN').click();
-    cy.contains('Sign In').click();
-    cy.get('input[name=username]').type(superuser.name);
-    cy.get('input[name=password]').type(superuser.password);
-    cy.contains('Log in').click();
+    cy.login('superuser');
     cy.contains('Menu').click();
     cy.contains('Tablet view').click();
     cy.wait(1000);
