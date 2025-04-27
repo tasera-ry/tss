@@ -2,6 +2,7 @@
 cypress/screenshots/
 cypress/videos/
 cypress/reports/
+cypress/downloads/
 
 # Cypress environment files
 cypress.env.json
