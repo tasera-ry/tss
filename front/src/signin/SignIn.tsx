@@ -1,41 +1,38 @@
-import classNames from 'classnames';
 import { useState } from 'react';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-// Material UI components
 import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useCookies } from 'react-cookie';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import api from '../api/api';
-import colors from '../colors.module.scss';
-import css from './SignIn.module.scss';
 import { useForm } from 'react-hook-form';
+import { useMutation } from 'react-query';
 
-const classes = classNames.bind(css);
-
-/* Returns a component for signing in to the frontend */
-const SignIn = () => {
+export function SignIn() {
   const { t } = useLingui();
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const [mistake, setMistake] = useState(false);
+  const [, setCookie] = useCookies(['id', 'username', 'role']);
   const history = useHistory();
-  const [cookies, setCookie] = useCookies(['username', 'role']); // eslint-disable-line
-  const secure = window.location.protocol === 'https:';
+
+  const [isError, setIsError] = useState(false);
+
 
   const signInMutation = useMutation({
-    mutationFn: ({ name, password }) => {
+    mutationFn: ({ username, password }: { username: string, password: string }) => {
       const secure = window.location.protocol === 'https:';
-      return api.signIn(name, password, secure);
+      return api.signIn(username, password, secure);
     },
-    onSuccess: (data) => {
-      setInfo(data);
+    onSuccess: (user) => {
+      const secure = window.location.protocol === 'https:';
+      setCookie('username', user.name, { sameSite: true, secure });
+      setCookie('role', user.role, { sameSite: true, secure });
+      setCookie('id', user.id, { sameSite: true, secure });
+      history.replace('/');
+    },
+    onError: () => {
+      setIsError(true);
     },
   });
 
@@ -45,109 +42,87 @@ const SignIn = () => {
       password: '',
     },
   });
-  
-
-
-  const setInfo = async (user) => {
-    setCookie('username', user.name, { sameSite: true, secure });
-    setCookie('role', user.role, { sameSite: true, secure });
-    setCookie('id', user.id, { sameSite: true, secure });
-    // TODO: try to be SPA and remove this refresh
-    window.location.href = '/';
-  };
-
-  const login = async (e) => {
-    e.preventDefault();
-
-    try {
-      const data = await api.signIn(name, password, secure);
-      setInfo(data);
-    } catch (err) {
-      setMistake(true);
-    }
-  };
 
   return (
-    <>
-    
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes(css.paper)}>
-        <div className={classes(css.flexWrap)}>
-          <ArrowBackIcon
-            className={classes(css.arrowBackIcon)}
-            onClick={() => history.push('/')}
-          />
-          <Typography component="h1" variant="h5">
+    <div className='relative p-8'>
+      <Link to="/" className="absolute top-4 left-4 flex items-center gap-1">
+        <ArrowBackIcon />
+        <Trans>Back</Trans>
+      </Link>
+      <div className="max-w-xs mx-auto">
+        <div className="flex flex-col gap-2 items-center">
+          <h1 className='text-2xl font-medium'>
             {t`Sign In`}
-          </Typography>
+          </h1>
+          <form
+            noValidate
+            className="w-full mt-2 flex flex-col gap-4"
+            onSubmit={form.handleSubmit((data) => signInMutation.mutate(data))}
+          >
+            <div className='flex flex-col'>
+              <TextField
+                {...form.register('username')}
+                autoFocus
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                name="username"
+                label={t`Username`}
+                autoComplete={t`Username`}
+                error={isError}
+                slotProps={{
+                  inputLabel: {
+                    shrink: form.watch('username') !== '',
+                  },
+                  htmlInput: {
+                    'data-testid': 'nameField',
+                  },
+                }}
+              />
+              <TextField
+                {...form.register('password')}
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="password"
+                name="password"
+                label={t`Password`}
+                type="password"
+                autoComplete="current-password"
+                error={isError}
+                helperText={isError ? t`Wrong username or password` : ''}
+                slotProps={{
+                  inputLabel: {
+                    shrink: form.watch('password') !== '',
+                  },
+                  htmlInput: {
+                    'data-testid': 'passwordField',
+                  },
+                }}
+              />
+            </div>
+            <div className='flex flex-col gap-2'>
+              <Button
+                type='submit'
+                fullWidth
+                variant="contained"
+                className="bg-sand!"
+              >
+                {t`Log in`}
+              </Button>
+              <Link
+                to="/signin/reset-password"
+                className="italic text-black mt-2"
+              >
+                {t`Forgot password?`}
+              </Link>
+            </div>
+          </form>
         </div>
-        <form noValidate className={classes(css.wideForm)}>
-          <TextField
-            autoFocus
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            name="username"
-            label={t`Username`}
-            autoComplete={t`Username`}
-            value={name}
-            error={mistake}
-            onInput={(e) => setName(e.target.value)}
-            className={classes(css.text)}
-            slotProps={{
-              htmlInput: {
-                'data-testid': 'nameField',
-              },
-            }}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="password"
-            name="password"
-            label={t`Password`}
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            error={mistake}
-            onInput={(e) => setPassword(e.target.value)}
-            className={classes(css.text)}
-            slotProps={{
-              htmlInput: {
-                'data-testid': 'passwordField',
-              },
-            }}
-          />
-          {mistake && (
-            <Typography align="center" className={classes(css.error)}>
-              {t`Wrong username or password`}
-            </Typography>
-          )}
-          <Button
-            onClick={login}
-            fullWidth
-            variant="contained"
-            className={classes(css.submitButton, css.acceptButton)}
-          >
-            {t`Log in`}
-          </Button>
-          <Button
-            onClick={() => history.push('/signin/reset-password')}
-            fullWidth
-            className={classes(css.secondaryButton)}
-          >
-            {t`Forgot password?`}
-          </Button>
-        </form>
       </div>
-    </Container>
-    </>
+    </div>
   );
 };
-
-export default SignIn;

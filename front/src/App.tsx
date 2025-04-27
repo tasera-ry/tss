@@ -12,7 +12,7 @@ import Raffle from './raffle/raffle';
 import RenewPassword from './renewPW/RenewPassword';
 import ResetPassword from './resetPW/ResetPassword';
 import Scheduling from './scheduling/Scheduling';
-import SignIn from './signin/SignIn';
+import { SignIn } from './signin/SignIn';
 import { Trackview } from './trackview/Trackview';
 
 import { EmailSettingsView } from '@/EmailSettings/EmailSettings';
