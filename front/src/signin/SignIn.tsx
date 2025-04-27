@@ -15,6 +15,7 @@ import { useHistory } from 'react-router-dom';
 import api from '../api/api';
 import colors from '../colors.module.scss';
 import css from './SignIn.module.scss';
+import { useForm } from 'react-hook-form';
 
 const classes = classNames.bind(css);
 
@@ -28,7 +29,24 @@ const SignIn = () => {
   const [cookies, setCookie] = useCookies(['username', 'role']); // eslint-disable-line
   const secure = window.location.protocol === 'https:';
 
-  document.body.style = `background: ${colors.blackTint20};`;
+  const signInMutation = useMutation({
+    mutationFn: ({ name, password }) => {
+      const secure = window.location.protocol === 'https:';
+      return api.signIn(name, password, secure);
+    },
+    onSuccess: (data) => {
+      setInfo(data);
+    },
+  });
+
+  const form = useForm({
+    defaultValues: {
+      username: '',
+      password: '',
+    },
+  });
+  
+
 
   const setInfo = async (user) => {
     setCookie('username', user.name, { sameSite: true, secure });
@@ -50,6 +68,8 @@ const SignIn = () => {
   };
 
   return (
+    <>
+    
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes(css.paper)}>
@@ -126,6 +146,7 @@ const SignIn = () => {
         </form>
       </div>
     </Container>
+    </>
   );
 };
 
