@@ -7,11 +7,11 @@ import TextField from '@mui/material/TextField';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useCookies } from 'react-cookie';
 import { Link, useHistory } from 'react-router-dom';
-import api from '../api/api';
+import api from '../../api/api';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 
-export function SignIn() {
+export function SignInView() {
   const { t } = useLingui();
   const [, setCookie] = useCookies(['id', 'username', 'role']);
   const history = useHistory();
