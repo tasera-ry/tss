@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useCookies } from 'react-cookie';
 
 // Style and colors
 import './Scheduling.scss';
@@ -9,8 +8,6 @@ import '../shared.module.scss';
 import moment from 'moment';
 import 'moment/locale/fi';
 
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MuiAlert from '@mui/material/Alert';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
@@ -27,6 +24,7 @@ import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { withStyles } from '@mui/styles';
+
 // Material UI components
 import {
   DatePicker,
@@ -94,7 +92,7 @@ const CustomSwitchGreen = withStyles({
   track: {},
 })(Switch);
 
-function Scheduling(props) {
+function Scheduling() {
   const { t } = useLingui();
   const [locale] = useLanguageContext();
   const history = useHistory();
@@ -126,10 +124,8 @@ function Scheduling(props) {
   const [trackStates, setTrackStates] = useState({});
   const [events, setEvents] = useState({});
   const [callUpdate, setCallUpdate] = useState(false);
-  const [expand, setExpand] = useState(false);
   const [statusColor, setStatusColor] = useState();
   const [statusText, setStatusText] = useState();
-  const [cookies] = useCookies(['role']);
   const [arrivalTime, setArrivalTime] = useState(new Date());
 
   useEffect(() => {
@@ -189,7 +185,6 @@ function Scheduling(props) {
     if (callUpdate) {
       continueWithDate();
       setCallUpdate(false);
-      setExpand(false);
     }
   }, [callUpdate]);
 
@@ -268,8 +263,6 @@ function Scheduling(props) {
       setRangeSupervisorSwitch(event.target.checked);
     }
 
-    setExpand(false);
-
     setEvents({ ...events, [event.target.name]: event.target.checked });
   };
 
@@ -334,11 +327,6 @@ function Scheduling(props) {
     setTracks(newTracks);
   };
 
-  // Handles the expansion of the status bar
-  const handleExpandClick = () => {
-    setExpand(!expand);
-  };
-
   // Emits a 'rangeUpdate' event with the status 'not confirmed'
   // and updates the supervisor's status in the UI
   const handleNotConfirmed = () => {
@@ -393,8 +381,8 @@ function Scheduling(props) {
 
   // Parses and formats the time user entered and set it as arrival time
   const handleArrivalTime = (event) => {
-    const parsedTime = moment(event.target.value, 'HH:mm:ss', true);
-    setArrivalTime(parsedTime.format('HH:mm:ss'));
+    const value = event.target.value;
+    setArrivalTime(value.length === 5 ? `${value}:00` : value);
   };
 
   // Confirms the set arrival time when confirm time button is clicked
@@ -426,7 +414,6 @@ function Scheduling(props) {
   };
 
   const saveChanges = async () => {
-    setExpand(false);
     setState('loading');
 
     // update call/error handling
@@ -1011,14 +998,14 @@ function Scheduling(props) {
       {/* Section for selecting date, setting range officer status, and open/close times of the tracks*/}
       <Box className="firstSection flex items-center justify-center">
         <div className="dateNavigation">
-          <Button
+          <button
+            type="button"
             onClick={() => {
               handleDateChange(moment(date).subtract(1, 'days'));
               handleDatePickChange(moment(date).subtract(1, 'days'));
             }}
-          >
-            &#11013; {/* Left arrow */}
-          </Button>
+            className="leftButton">
+          </button>
           <form onSubmit={continueWithDate}>
             {/* Datepicker */}
             <LocalizationProvider
@@ -1039,14 +1026,15 @@ function Scheduling(props) {
               />
             </LocalizationProvider>
           </form>
-          <Button
+          <button
+            type="button"
             onClick={() => {
               handleDateChange(moment(date).add(1, 'days'));
               handleDatePickChange(moment(date).add(1, 'days'));
             }}
-          >
-            &#11157; {/* Right arrow */}
-          </Button>
+            className="rightButton"
+            >
+          </button>
         </div>
         <div className="flex flex-wrap size-full gap-8 items-center justify-center">
           <div className="flex flex-col flex-grow h-full p-2.5 rounded-[10px] bg-[#eeee]">

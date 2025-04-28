@@ -1,7 +1,7 @@
 import moment from 'moment';
 import 'moment/locale/sv';
-import { t } from '@lingui/macro';
 import { Link } from 'react-router-dom';
+import { Trans } from '@lingui/react/macro';
 import api from '../api/api';
 import colors from '../colors.module.scss';
 
@@ -79,7 +79,7 @@ export function JumpToCurrent() {
       data-testid="jumpToCur"
       to={`/${urlParamDate}/${date}`}
     >
-      <div>{t`Today`}</div>
+      <Trans>Today</Trans>
     </Link>
   );
 }

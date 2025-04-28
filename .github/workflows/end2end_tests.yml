@@ -1,81 +1,58 @@
-name: End-to-end Tests
-
-# This workflow is used for running the e2e-tests against whole web application whenever a pull request or a merge is made.
-# This workflow is disabled because the frontend and backend containers were not able to communicate together after numerous
-# trials when this workflow was made in 05/22. If some future developer has experience with github actions, this would be
-# a good feedback tool for all developers. The tests can and should be ran locally with command "npx cypress run"
-
-env: 
-  DB: postgres
-  DB_USER: postgres
-  DB_PASSWORD: postgres
-  DB_HOST: localhost
-  SENDER_EMAIL: noreply@tasera.fi
-  SERVER_HOST: http://localhost:3000
-  PROXY_HOSTNAME: localhost
-  PROXY_PORT: 8000
-  DB_PORT: 5432
+name: E2E Tests with Docker Compose
 
 on:
   push:
-    branches-ignore:
-      - '**'
-
-# on:
-#   push:
-#     branches: [master]
-#   pull_request:
-#     branches: [master]
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
-  cypress-run:
-    runs-on: ubuntu-20.04
-    services:
-      postgres:
-        image: postgres:12
-        env:
-          DB: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
-          POSTGRES_PORT: 5432
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+  e2e:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Install app dependencies
-        run: npm install && cd ../front && yarn
-        working-directory: ./back
-
-      - name: Run DB Migrations
-        run: npx knex migrate:latest && npx knex seed:run
-        working-directory: ./back
-
-      - name: Install Cypress dependencies
-        uses: cypress-io/github-action@v2
+      # Cache Docker layers (improves Docker build time)
+      - name: Cache Docker layers
+        uses: actions/cache@v3
         with:
-          runTests: false
-          working-directory: back
+          path: ~/.docker
+          key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile', '**/docker-compose.dev.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
 
-      - name: run backend
-        run: |
-          npm run start &
-          sleep 20s
-        working-directory: ./back
-
-      - name: run frontend
-        run: |
-          npm run start &
-          npx wait-on http://localhost:3000
-        working-directory: ./front
-
-
-      - name: Run Integration Tests
-        uses: cypress-io/github-action@v2
+      # Cache node_modules to speed up npm install
+      - name: Cache node_modules
+        uses: actions/cache@v3
         with:
-          install: false
-          working-directory: back
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Set up Docker Buildx and Docker Compose
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up Docker Compose
+        run: |
+          docker compose -f docker-compose.dev.yaml up -d --build
+
+      - name: Wait for frontend to be ready
+        run: npx wait-on http://localhost:5173
+
+      # Run Cypress tests
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./test
+          start: echo "App already started via Docker Compose"
+          wait-on: http://localhost:5173
+          wait-on-timeout: 120
+          record: false
+          publish-summary: true
+

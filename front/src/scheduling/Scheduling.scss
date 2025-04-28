@@ -49,12 +49,28 @@
     }
     .dateNavigation {
       display: flex;
-      align-items: left;
-      justify-content: left;
+      align-items: center;
+      justify-content: center;
+      gap: 50px;
     }
     
-    .dateNavigation Button {
-      margin: 0 10px;
+    .dateNavigation .rightButton,
+    .dateNavigation .leftButton {
+      width: 0;
+      height: 0;
+      cursor: pointer;
+    }
+    
+    .dateNavigation .rightButton {
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 10px solid #000000;
+    }
+    
+    .dateNavigation .leftButton {
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 10px solid #000000;
     }
     
     .datePickerForm {

@@ -22,7 +22,6 @@ import css from './DayView.module.scss';
 const classes = classNames.bind(css);
 
 export function Dayview() {
-  const { t } = useLingui();
   const history = useHistory();
   const { date: dateParam } = useParams<{ date: string }>();
 
@@ -48,12 +47,12 @@ export function Dayview() {
   };
 
   const opensAt = useMemo(() => {
-    if (!data) return undefined;
+    if (!data?.open) return undefined;
     return moment(data.open, 'HH:mm').format('H.mm');
   }, [data]);
 
   const closesAt = useMemo(() => {
-    if (!data) return undefined;
+    if (!data?.close) return undefined;
     return moment(data.close, 'HH:mm').format('H.mm');
   }, [data]);
 
@@ -67,7 +66,7 @@ export function Dayview() {
           onNext={nextDayClick}
         />
         {data && <OfficerBanner rangeSupervision={data.rangeSupervision} />}
-        {data && (
+        {closesAt && opensAt && (
           <h2 className={classes(css.headerText)}>
             <Trans>
               Opening hours: {opensAt}-{closesAt}
@@ -88,7 +87,6 @@ export function Dayview() {
             ) : (
               <TrackList tracks={data.tracks} date={targetDate} />
             )}
-            {/* <ButtonComponent /> */}
             <DeviceStatusList />
           </div>
         </div>
@@ -123,7 +121,7 @@ function TrackBox({ track, date }) {
   const { t } = useLingui();
 
   const color = useMemo(() => {
-    switch (track.state) {
+    switch (track.trackSupervision) {
       case 'present':
         return css.greenB;
       case 'absent':
@@ -134,6 +132,8 @@ function TrackBox({ track, date }) {
         return css.blueB;
       case 'en route':
         return css.yellowB;
+      case 'closed':
+        return css.redB;
       default:
         break;
     }
@@ -143,8 +143,7 @@ function TrackBox({ track, date }) {
 
   return (
     <Link
-      className="bg-white rounded p-2 flex flex-col justify-start"
-      style={{ backgroundColor: color }}
+      className={classes('rounded p-2 flex flex-col justify-start', color)}
       to={link}
     >
       <span className={classes(css.bold)}>{track.name}</span>
@@ -212,7 +211,10 @@ function Legends() {
 function LegendItem({
   label,
   colorClass,
-}: { label: string; colorClass: string }) {
+}: {
+  label: string;
+  colorClass: string;
+}) {
   return (
     <div className="flex gap-1 justify-start items-center pl-2.5">
       <p className={classNames('size-5 border', colorClass)} />

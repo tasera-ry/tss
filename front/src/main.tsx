@@ -12,7 +12,12 @@ import { LinguiProvider } from './i18n';
 
 moment.locale('fi', {
   week: {
-    dow: 6,
+    dow: 1,
+  },
+});
+moment.locale('sv', {
+  week: {
+    dow: 1,
   },
 });
 

@@ -132,7 +132,11 @@ export function TrackCard({ track, disabled, scheduleId, date, socket }) {
           >
             {i18n._(buttonState.labelMsg)}
           </Button>
-          <TrackStatistics track={track} disabled={disabled} />
+          <TrackStatistics
+            track={track}
+            superVisionState={supervisionState}
+            disabled={disabled}
+          />
         </div>
       </div>
     </div>
