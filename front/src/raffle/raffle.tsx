@@ -20,9 +20,11 @@ import SupervisionAmountsTable from './SupervisionAmountsTable';
 import SupervisionResultsTable from './SupervisionResultsTable';
 import SupervisorsTable from './SupervisorsTable';
 import css from './raffle.module.scss';
+
 import { useQuery, useQueryClient } from 'react-query';
 import { TableLegends } from '@/lib/components/TableLegends';
 import RaffleAnalytics from './RaffleAnalytics';
+
 
 const classes = classNames.bind(css);
 
