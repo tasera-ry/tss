@@ -33,7 +33,14 @@ export default function RaffleAnalytics() {
     const endStr = end.format('YYYY-MM-DD');
     
     try {
-      const response = await axios.get(`/api/raffle-analytics?startDate=${startStr}&endDate=${endStr}`);
+      const response = await axios.get(
+        `/api/raffle-analytics?startDate=${startStr}&endDate=${endStr}&_=${Date.now()}`,
+        {
+          headers: {
+            'Cache-Control': 'no-store',
+          },
+        }
+      );
       const rows = response.data.map((row: any) => ({
         ...row,
         shifts_per_card: row.card_count ? row.shifts / row.card_count : 0,
@@ -52,6 +59,7 @@ export default function RaffleAnalytics() {
   };
 
   const handleConfirmDates = () => {
+    console.log("Confirmed start:", tempStartDate.format('YYYY-MM-DD'), "end:", tempEndDate.format('YYYY-MM-DD'));
     setConfirmedDates({
       start: tempStartDate,
       end: tempEndDate,
@@ -61,7 +69,7 @@ export default function RaffleAnalytics() {
 
   useEffect(() => {
     fetchData(confirmedDates.start, confirmedDates.end);
-  }, []); // Hakee alustusdatan komponentin latautuessa
+  }, [confirmedDates]); // Hakee alustusdatan ja hakee uudestaan kun confirmedDates muuttuu
 
   return (
     <div>

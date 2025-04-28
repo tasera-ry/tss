@@ -1,4 +1,3 @@
-// back/controllers/raffle.js
 const knex = require('../knex/knex');
 
 const controller = {
@@ -10,6 +9,7 @@ const controller = {
     console.log('Analytics endpoint hit');
 
     try {
+
       const startDate = req.query.startDate || new Date(new Date().getFullYear(), 0, 1).toISOString();
       const endDate = req.query.endDate || new Date().toISOString();
 
@@ -33,8 +33,16 @@ const controller = {
         .groupBy('user.id', 'user.name', 'members.members')
         .timeout(5000);
 
-      console.log(`Found ${results.length} organizations`);
-      res.json(results);
+      const coercedResults = results.map(row => {
+        const shifts = Number(row.shifts);
+        return {
+          ...row,
+          shifts,
+        };
+      });
+
+      console.log(`Found ${coercedResults.length} organizations`);
+      res.json(coercedResults);
     } catch (error) {
       console.error('Analytics error:', error);
       res.status(500).json({
