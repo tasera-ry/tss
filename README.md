@@ -7,27 +7,35 @@
 
 ## Table of Contents
 
-- [About](#about)
-- [Tech Stack](#tech-stack)
-- [Dependencies](#dependencies)
-- [Running the Application](#running-the-application)
-  - [Using Docker Compose](#using-docker-compose)
-  - [Without Docker Compose (Development)](#without-docker-compose-development)
-- [Production and Staging](#production-and-staging)
-- [Configuration Options](#configuration-options)
-- [Conventions](#conventions)
-  - [TypeScript Migration](#typescript-migration)
-  - [React Query](#react-query)
-  - [Tailwind CSS](#tailwind-css)
-  - [UI Component Library](#ui-component-library)
-  - [File Structure](#file-structure)
-  - [Localization](#localization)
-- [CI/CD Workflows](#cicd-workflows)
-  - [Frontend Tests](#frontend-tests)
-  - [Backend Tests](#backend-tests)
-  - [End-to-End Tests](#end-to-end-tests)
-  - [Docker Images](#docker-images)
-- [Contributing](#contributing)
+- [Tasera Scheduling Software (TSS)](#tasera-scheduling-software-tss)
+  - [Table of Contents](#table-of-contents)
+  - [About](#about)
+  - [Tech Stack](#tech-stack)
+  - [Dependencies](#dependencies)
+    - [Using mise for Version Management](#using-mise-for-version-management)
+  - [Running the Application](#running-the-application)
+    - [Using Docker Compose](#using-docker-compose)
+      - [Development](#development)
+  - [Production and Staging](#production-and-staging)
+    - [Without Docker Compose (Development)](#without-docker-compose-development)
+    - [First steps](#first-steps)
+    - [Starting up the app using an .env file](#starting-up-the-app-using-an-env-file)
+    - [Starting the app with command line variables](#starting-the-app-with-command-line-variables)
+  - [Configuration Options](#configuration-options)
+  - [Conventions](#conventions)
+    - [TypeScript Migration](#typescript-migration)
+    - [React Query](#react-query)
+    - [Tailwind CSS](#tailwind-css)
+    - [UI Component Library](#ui-component-library)
+    - [File Structure](#file-structure)
+    - [Localization](#localization)
+  - [CI/CD Workflows](#cicd-workflows)
+    - [Frontend Tests](#frontend-tests)
+    - [Backend Tests](#backend-tests)
+    - [End-to-End Tests](#end-to-end-tests)
+    - [Docker Images](#docker-images)
+      - [Releases](#releases)
+  - [License](#license)
 
 ## About
 
@@ -44,12 +52,12 @@ Tasera Scheduling Software (TSS) is a management system for Tasera-operated shoo
 
 ## Dependencies
 
-| Requirement  | Version |
-|:-------------|--------:|
-| Node.js      | 20+     |
-| PostgreSQL   | 13+     |
-| Docker       | Latest  |
-| Docker Compose | Latest |
+| Requirement    | Version |
+| :------------- | ------: |
+| Node.js        |     20+ |
+| PostgreSQL     |     13+ |
+| Docker         |  Latest |
+| Docker Compose |  Latest |
 
 ### Using mise for Version Management
 
@@ -79,12 +87,12 @@ The easiest way to run the application is with Docker Compose, which sets up all
    docker-compose -f docker-compose.dev.yaml up
    ```
 3. Access the application:
-   - Frontend: http://localhost:3000
+   - Frontend: http://localhost:5173
    - Backend API: http://localhost:8000
 
 > **Note:** If you encounter "works on my machine" issues, try removing containers, images, volumes, and the `node_modules` folders before rebuilding.
 
-> **Note:** Config for seed data is set plus minus one year in back/config/config.js   
+> **Note:** Config for seed data is set plus minus one year in back/config/config.js
 
 ## Production and Staging
 
@@ -92,27 +100,32 @@ Production and staging environments are running on virtual machines using docker
 Staging environment is updated along latest docker image from `master` branch.
 Updates are handled by [watchtower](https://github.com/containrrr/watchtower).
 
-Productioin environment update is done manually.
+Production environment update is done manually.
 
 ---
 
 ### Without Docker Compose (Development)
 
 ### First steps
+
 1. Install project dependencies
+
    - https://nodejs.org/ (tested using the `LTS 20` release)
    - https://www.postgresql.org/
 
      Easiest way to set up a PSQL database is using docker:
+
      ```sh
      docker run --env POSTGRES_PASSWORD=some_password -d -p 5432:5432 postgres:14
      ```
+
 2. Clone this repository
    - `git clone https://github.com/tasera-ry/tss.git`
 3. Install project packages
    - `cd back && npm install && cd ../front && npm install && cd ..`
 
 ### Starting up the app using an .env file
+
 1. Create a `.env` file into the `back/` directory (an .env.example file is included in the folder, which can be copied and renamed).
 2. Write the runtime variables into the `.env` file.
 3. When using `.env` file you can run the commands without the environment variables,
@@ -127,6 +140,7 @@ Productioin environment update is done manually.
 6. The application should start at http://localhost:3000 (default host)
 
 ### Starting the app with command line variables
+
 1. Run database migrations
    ```sh
    env DB_USER=postgres \
@@ -148,23 +162,23 @@ Productioin environment update is done manually.
 
 The following environment variables can be set either in a `.env` file in the `back/` directory or as runtime environment variables:
 
-| Variable        | Description                                         | Default                 |
-|-----------------|-----------------------------------------------------|-------------------------|
-| `DB`            | Database name                                       | undefined               |
-| `DB_HOST`       | Database address                                    | `127.0.0.1`             |
-| `DB_USER`       | Database username                                   | `tssuser`               |
-| `DB_PASSWORD`   | Database password                                   | undefined               |
-| `SENDER_EMAIL`  | Email address used for sending notifications        | undefined               |
-| `EMAIL_HOST`    | SMTP server hostname                                | undefined               |
-| `EMAIL_PORT`    | SMTP server port                                    | undefined               |
-| `EMAIL_CC`      | Email address to CC on all sent emails              | undefined               |
-| `EMAIL_SECURE`  | Whether to use TLS for SMTP (true/false)            | undefined               |
-| `EMAIL_USER`    | SMTP authentication username (if required)          | undefined               |
-| `EMAIL_PASSWORD`| SMTP authentication password (if required)          | undefined               |
-| `DB_DEBUG`      | Enable database query debugging                     | `false`                 |
-| `NODE_ENV`      | Environment mode (`development` or `stable`)        | `development`           |
-| `SERVER_HOST`   | Server hostname                                     | `http://localhost:3000` |
-| `JWT_SECRET`    | Secret key for JWT token generation                 | Random on startup       |
+| Variable         | Description                                  | Default                 |
+| ---------------- | -------------------------------------------- | ----------------------- |
+| `DB`             | Database name                                | undefined               |
+| `DB_HOST`        | Database address                             | `127.0.0.1`             |
+| `DB_USER`        | Database username                            | `tssuser`               |
+| `DB_PASSWORD`    | Database password                            | undefined               |
+| `SENDER_EMAIL`   | Email address used for sending notifications | undefined               |
+| `EMAIL_HOST`     | SMTP server hostname                         | undefined               |
+| `EMAIL_PORT`     | SMTP server port                             | undefined               |
+| `EMAIL_CC`       | Email address to CC on all sent emails       | undefined               |
+| `EMAIL_SECURE`   | Whether to use TLS for SMTP (true/false)     | undefined               |
+| `EMAIL_USER`     | SMTP authentication username (if required)   | undefined               |
+| `EMAIL_PASSWORD` | SMTP authentication password (if required)   | undefined               |
+| `DB_DEBUG`       | Enable database query debugging              | `false`                 |
+| `NODE_ENV`       | Environment mode (`development` or `stable`) | `development`           |
+| `SERVER_HOST`    | Server hostname                              | `http://localhost:3000` |
+| `JWT_SECRET`     | Secret key for JWT token generation          | Random on startup       |
 
 ## Conventions
 
@@ -235,16 +249,17 @@ The application uses [Lingui](https://lingui.dev/) for internationalization (i18
 - **Supported Languages**: Finnish (fi), Swedish (sv), and English (en)
 
 > **⚠️ Important:** When using Lingui in React, remember to keep localization reactive:
+>
 > - `<Trans>` components handle reactivity automatically
 > - For programmatic localization, always use the `useLingui()` hook inside components
-> 
+>
 > ```tsx
 > // ✅ Correct: Using useLingui() hook
 > function MyComponent() {
 >   const { t } = useLingui();
 >   return <p>{t`Welcome`}</p>;
 > }
-> 
+>
 > // ❌ Incorrect: Direct i18n calls
 > import { t } from '@lingui/macro';
 >
@@ -274,6 +289,7 @@ Backend tests run automatically on every push and pull request. We use Jest for 
 End-to-end tests are implemented with Cypress and run automatically on every push and pull request via GitHub Actions. The tests are located in the `test` folder at the root of the project.
 
 To run Cypress tests locally:
+
 ```sh
 cd test && npm install && npm run cypress:open
 ```
@@ -285,11 +301,13 @@ cd test && npm install && npm run cypress:open
 Docker images are automatically built and published to GitHub Container Registry:
 
 The latest production image is always available at
+
 ```
 ghcr.io/tasera-ry/tss:master
 ```
 
 Individual production images are avaliable by their release tag, such as:
+
 ```
 ghcr.io/tasera-ry/tss:7.0.0
 ```
@@ -301,3 +319,4 @@ Tagged release images are created, when a release is created through GitHub. Usi
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
