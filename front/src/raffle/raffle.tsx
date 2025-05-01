@@ -20,9 +20,12 @@ import SupervisionAmountsTable from './SupervisionAmountsTable';
 import SupervisionResultsTable from './SupervisionResultsTable';
 import SupervisorsTable from './SupervisorsTable';
 import css from './raffle.module.scss';
+<<<<<<< HEAD
 
 import { useQuery, useQueryClient } from 'react-query';
 import { TableLegends } from '@/lib/components/TableLegends';
+=======
+>>>>>>> d645073f (Deleted duplicate imports from raffle.tsx)
 import RaffleAnalytics from './RaffleAnalytics';
 
 
