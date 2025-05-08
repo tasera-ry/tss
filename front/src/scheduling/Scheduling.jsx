@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useCookies } from 'react-cookie';
 
 // Style and colors
 import './Scheduling.scss';
@@ -41,6 +42,7 @@ import socketIOClient from 'socket.io-client';
 import api from '../api/api';
 import colors from '../colors.module.scss';
 import { updateRangeSupervision, validateLogin } from '../utils/Utils';
+import { useQuery } from 'react-query';
 
 async function getRangeSupervisors() {
   try {
@@ -127,6 +129,7 @@ function Scheduling() {
   const [statusColor, setStatusColor] = useState();
   const [statusText, setStatusText] = useState();
   const [arrivalTime, setArrivalTime] = useState(new Date());
+  const [defaultHours, setDefaultHours] = useState({});
 
   useEffect(() => {
     let isMounted = true;
@@ -187,6 +190,47 @@ function Scheduling() {
       setCallUpdate(false);
     }
   }, [callUpdate]);
+
+  // TODO use query
+  const { data: fetchedDefaultHours, isLoading } = useQuery(
+    'fetchDefaultHours',
+    async () => {
+      const response = await fetch('/api/default-hours');
+      if (!response.ok) {
+        throw new Error('Failed to fetch default hours');
+      }
+      return response.json();
+    },
+    {
+      onSuccess: (data) => {
+        setDefaultHours(
+          data.reduce((acc, dayHours) => {
+            acc[dayHours.day] = {
+              open: moment(dayHours.open, 'HH:mm'),
+              close: moment(dayHours.close, 'HH:mm'),
+            };
+            return acc;
+          }, {}),
+        );
+      },
+      onError: (error) => {
+        console.error(error);
+        setToast({
+          open: true,
+          message: t`Failed to fetch default hours`,
+          severity: 'error',
+        });
+      },
+    },
+  );
+
+  const { defaultOpen, defaultClosed } = useMemo(() => {
+    const weekday = moment(date).format('dddd').toLowerCase();
+    return {
+      defaultOpen: defaultHours[weekday]?.open || moment('17:00', 'HH:mm'),
+      defaultClosed: defaultHours[weekday]?.close || moment('20:00', 'HH:mm'),
+    };
+  }, [defaultHours, date]);
 
   // Sets all tracks to open, but no track officer
   const openAllTracks = () => {
@@ -921,12 +965,12 @@ function Scheduling() {
       setOpen(
         response.open !== null
           ? moment(response.open, 'h:mm:ss').format()
-          : moment(response.date).hour(17).minute(0).second(0),
+          : defaultOpen,
       );
       setClose(
         response.close !== null
           ? moment(response.close, 'h:mm:ss').format()
-          : moment(response.date).hour(20).minute(0).second(0),
+          : defaultClosed,
       );
       setAvailable(response.available !== null ? response.available : false);
       setRangeSupervisorSwitch(response.rangeSupervisorId !== null);
@@ -1004,8 +1048,8 @@ function Scheduling() {
               handleDateChange(moment(date).subtract(1, 'days'));
               handleDatePickChange(moment(date).subtract(1, 'days'));
             }}
-            className="leftButton">
-          </button>
+            className="leftButton"
+          ></button>
           <form onSubmit={continueWithDate}>
             {/* Datepicker */}
             <LocalizationProvider
@@ -1033,8 +1077,7 @@ function Scheduling() {
               handleDatePickChange(moment(date).add(1, 'days'));
             }}
             className="rightButton"
-            >
-          </button>
+          ></button>
         </div>
         <div className="flex flex-wrap size-full gap-8 items-center justify-center">
           <div className="flex flex-col flex-grow h-full p-2.5 rounded-[10px] bg-[#eeee]">
@@ -1297,4 +1340,5 @@ function Scheduling() {
     </div>
   );
 }
+
 export default Scheduling;
