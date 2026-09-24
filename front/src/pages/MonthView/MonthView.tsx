@@ -57,7 +57,8 @@ export function Monthview() {
       return Object.entries(weeks).map(([week, days]) => ({
         week: Number(week),
         days: days.sort((a, b) => a.date.localeCompare(b.date)),
-      }));
+      }))
+      .sort((a, b) => a.days[0].date.localeCompare(b.days[0].date));
     },
   });
 
