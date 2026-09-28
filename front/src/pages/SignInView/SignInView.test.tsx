@@ -7,8 +7,8 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import { TestProviders } from '../_TestUtils/TestProvides';
-import SignIn from './SignIn';
+import { TestProviders } from '../../_TestUtils/TestProvides';
+import SignIn from './SignInView';
 
 vi.mock('axios', () => ({
   default: {

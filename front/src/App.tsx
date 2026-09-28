@@ -12,7 +12,7 @@ import Raffle from './raffle/raffle';
 import RenewPassword from './renewPW/RenewPassword';
 import ResetPassword from './resetPW/ResetPassword';
 import Scheduling from './scheduling/Scheduling';
-import SignIn from './signin/SignIn';
+import { SignInView } from './pages/SignInView/SignInView';
 import { Trackview } from './trackview/Trackview';
 
 import { EmailSettingsView } from '@/EmailSettings/EmailSettings';
@@ -40,7 +40,7 @@ export function App() {
       <Navbar />
       <Switch>
         <Route exact path="/" component={Weekview} />
-        <Route exact path="/signin" component={SignIn} />
+        <Route exact path="/signin" component={SignInView} />
         <Route path="/signin/reset-password" component={ResetPassword} />
         <Route path="/renew-password/:token?" component={RenewPassword} />
         <Route path="/dayview/:date?" component={Dayview} />
