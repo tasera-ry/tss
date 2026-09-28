@@ -150,7 +150,7 @@ function TrackBox({ track, date }) {
       <span className={classes(css.overflowHidden)}>
         {track.short_description}
       </span>
-      {track.notice.length > 0 && (
+      {track.notice && track.notice.length > 0 && (
         <img
           className="size-11 self-center mt-auto"
           src={info}
