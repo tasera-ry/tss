@@ -115,8 +115,6 @@ function getRangeStatus(rangeSupervision: string) {
       return { status: 'confirmed', text: t`Range officer confirmed` };
     case 'not confirmed':
       return { status: 'notConfirmed', text: t`Range officer predefined` };
-    case 'en route':
-      return { status: 'enRoute', text: t`Range officer on the way` };
     default:
       return { status: 'closed', text: t`Range officer not present` };
   }

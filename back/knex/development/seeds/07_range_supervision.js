@@ -31,7 +31,7 @@ exports.seed = async function (knex) {
 };
 
 casual.define('range_supervision', async (supervisionId) => {
-	const state = ['absent', 'confirmed', 'not confirmed', 'en route', 'present'];
+	const state = ['absent', 'confirmed', 'not confirmed', 'present'];
 
 	return {
 		scheduled_range_supervision_id: supervisionId,
