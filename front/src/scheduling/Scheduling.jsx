@@ -241,11 +241,11 @@ function Scheduling() {
     update();
   };
 
-  const handleTimeStartChange = () => {
+  const handleTimeStartChange = (date) => {
     setOpen(date);
   };
 
-  const handleTimeEndChange = () => {
+  const handleTimeEndChange = (date) => {
     setClose(date);
   };
 
