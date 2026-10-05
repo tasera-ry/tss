@@ -181,8 +181,6 @@ function TableCell({ day }: TableCellProps) {
         return 'bg-green-light';
       case 'not confirmed':
         return 'bg-turquoise';
-      case 'en route':
-        return 'bg-orange';
       case 'closed':
         return 'bg-red-light';
       case 'absent':

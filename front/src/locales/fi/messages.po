@@ -446,11 +446,6 @@ msgstr "Sähköpostiviestien jonon asetukset"
 msgid "Email settings"
 msgstr "Sähköpostiasetukset"
 
-#: src/upcomingsupervisions/LoggedIn.jsx:261
-#: src/profile/profilepages/supervisions.tsx:263
-msgid "En route"
-msgstr "Matkalla"
-
 #: src/EmailSettings/EmailSettings.tsx:340
 msgid "Enable email queue"
 msgstr "Ota sähköpostiviestien jono käyttöön"
@@ -874,12 +869,6 @@ msgstr "Vanha salasana on pakollinen"
 msgid "Old password isn't valid"
 msgstr "Vanha salasana ei kelpaa"
 
-#: src/scheduling/Scheduling.jsx:1159
-#: src/pages/TabletView/components/TrackCard.tsx:28
-#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:109
-msgid "On the way"
-msgstr "Tulossa"
-
 #: src/scheduling/Scheduling.jsx:1055
 #: src/pages/TabletView/components/OpenHoursSection.tsx:101
 #: src/pages/DayView/DayView.tsx:193
@@ -1026,16 +1015,6 @@ msgstr "Valvojien hallinta"
 #: src/trackview/Trackview.tsx:121
 msgid "Range officer not present"
 msgstr "Päävalvoja ei paikalla"
-
-#: src/trackview/Trackview.tsx:119
-#: src/scheduling/Scheduling.jsx:378
-#: src/scheduling/Scheduling.jsx:380
-#: src/scheduling/Scheduling.jsx:957
-#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:132
-#: src/pages/DayView/DayView.tsx:179
-#: src/lib/components/TableLegends.tsx:35
-msgid "Range officer on the way"
-msgstr "Päävalvoja matkalla"
 
 #: src/trackview/Trackview.tsx:117
 #: src/scheduling/Scheduling.jsx:348

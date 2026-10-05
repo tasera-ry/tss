@@ -446,11 +446,6 @@ msgstr "E-postköinställningar"
 msgid "Email settings"
 msgstr "E-postinställningar"
 
-#: src/upcomingsupervisions/LoggedIn.jsx:261
-#: src/profile/profilepages/supervisions.tsx:263
-msgid "En route"
-msgstr "På väg"
-
 #: src/EmailSettings/EmailSettings.tsx:340
 msgid "Enable email queue"
 msgstr "Aktivera e-postkö"
@@ -874,12 +869,6 @@ msgstr "Gammalt lösenord är obligatoriskt"
 msgid "Old password isn't valid"
 msgstr "Gammalt lösenord är ogiltigt"
 
-#: src/scheduling/Scheduling.jsx:1159
-#: src/pages/TabletView/components/TrackCard.tsx:28
-#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:109
-msgid "On the way"
-msgstr "På väg"
-
 #: src/scheduling/Scheduling.jsx:1055
 #: src/pages/TabletView/components/OpenHoursSection.tsx:101
 #: src/pages/DayView/DayView.tsx:193
@@ -1026,16 +1015,6 @@ msgstr "Banofficerhantering"
 #: src/trackview/Trackview.tsx:121
 msgid "Range officer not present"
 msgstr "Banofficer inte närvarande"
-
-#: src/trackview/Trackview.tsx:119
-#: src/scheduling/Scheduling.jsx:378
-#: src/scheduling/Scheduling.jsx:380
-#: src/scheduling/Scheduling.jsx:957
-#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:132
-#: src/pages/DayView/DayView.tsx:179
-#: src/lib/components/TableLegends.tsx:35
-msgid "Range officer on the way"
-msgstr "Banofficer på väg"
 
 #: src/trackview/Trackview.tsx:117
 #: src/scheduling/Scheduling.jsx:348

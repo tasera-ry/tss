@@ -99,16 +99,6 @@ function RangeOfficerStatusToggle({
         {t`Present`}
       </Button>
       <Button
-        className={classes(css.orangeButtonStyle)}
-        size="large"
-        variant="contained"
-        onClick={() => updateSupervisor('en route')}
-        data-testid="tracksupervisorOnWay"
-        disabled={supervisorMutation.isLoading}
-      >
-        {t`On the way`}
-      </Button>
-      <Button
         className={classes(css.redButtonStyle)}
         size="large"
         variant="contained"
@@ -126,10 +116,6 @@ const rangeOfficerStates = {
   present: {
     color: colors.green,
     labelMsg: msg`Range officer present`,
-  },
-  'en route': {
-    color: colors.orange,
-    labelMsg: msg`Range officer on the way`,
   },
   absent: {
     color: colors.white,
