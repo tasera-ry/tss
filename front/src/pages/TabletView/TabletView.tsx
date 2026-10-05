@@ -104,45 +104,65 @@ export function TabletView() {
     });
   }, [date, i18n]);
 
-  return (
-    <div>
-      <InfoBox tabletMode={true} />
-      <span className={classes(css.Text)}>{formatedDate}</span>
-      <OpenHoursSection date={date} hours={hours} scheduleId={scheduleId} />
+  useEffect(() => {
+    const checkDate = () => {
+      const today = moment(Date.now()).format('YYYY-MM-DD');
+      if (today !== date) {
+        window.location.reload();
+      }
+    };
 
-      <RangeOfficerStatusSection
-        rangeSupervision={rangeSupervision}
-        rangeSupervisionScheduled={isScheduled}
-        reservationId={reservationId}
-        scheduleId={scheduleId}
-        socket={socket}
-        date={date}
-        setNotification={setNotification}
-      />
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        checkDate();
+      }
+    });
 
-      <span className={classes(css.Text)}>
-        {t`Change track officer status by choosing color. Change number of track users with buttons`}
-      </span>
+    setInterval(() => {
+      checkDate();
+    }, 30 * 1000); // 30 seconds
 
-      <div className={classes(css.trackRowStyle)}>
-        {scheduleQuery.data?.tracks?.map((track) => (
-          <TrackCard
-            key={track.id}
-            track={track}
-            disabled={areTracksDisabled}
-            scheduleId={scheduleId}
-            date={date}
-            socket={socket}
-          />
-        ))}
-      </div>
-      <DeviceStatusPanel />
-      <Notifications
-        notification={notification}
-        setNotification={setNotification}
-      />
+}, [])
+
+return (
+  <div>
+    <InfoBox tabletMode={true} />
+    <span className={classes(css.Text)}>{formatedDate}</span>
+    <OpenHoursSection date={date} hours={hours} scheduleId={scheduleId} />
+
+    <RangeOfficerStatusSection
+      rangeSupervision={rangeSupervision}
+      rangeSupervisionScheduled={isScheduled}
+      reservationId={reservationId}
+      scheduleId={scheduleId}
+      socket={socket}
+      date={date}
+      setNotification={setNotification}
+    />
+
+    <span className={classes(css.Text)}>
+      {t`Change track officer status by choosing color. Change number of track users with buttons`}
+    </span>
+
+    <div className={classes(css.trackRowStyle)}>
+      {scheduleQuery.data?.tracks?.map((track) => (
+        <TrackCard
+          key={track.id}
+          track={track}
+          disabled={areTracksDisabled}
+          scheduleId={scheduleId}
+          date={date}
+          socket={socket}
+        />
+      ))}
     </div>
-  );
+    <DeviceStatusPanel />
+    <Notifications
+      notification={notification}
+      setNotification={setNotification}
+    />
+  </div>
+);
 }
 
 function RedirectToWeekview() {
