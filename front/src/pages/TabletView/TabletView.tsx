@@ -107,7 +107,7 @@ export function TabletView() {
   useEffect(() => {
     const checkDate = () => {
       const today = moment(Date.now()).format('YYYY-MM-DD');
-      if (today !== date) {
+      if (today !== date && navigator.onLine) {
         window.location.reload();
       }
     };
