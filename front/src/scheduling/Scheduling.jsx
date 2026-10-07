@@ -757,11 +757,12 @@ function Scheduling() {
 
     if (rangeSupervisorSwitch) {
       if (rangeSupervisorId !== null) {
-        params = {
-          ...params,
-          association_id: rangeSupervisorId,
-        };
-      } else throw new Error('Range officer enabled but no id');
+        params.association_id = rangeSupervisorId;
+      } else {
+        throw new Error('Range officer enabled but no id');
+      }
+    } else {
+      params.association_id = null;
     }
 
     /* eslint-disable-next-line */
