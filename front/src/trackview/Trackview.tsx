@@ -106,6 +106,9 @@ export function Trackview() {
 
       <div className="w-full max-w-3xl flex flex-col gap-4 px-4">
         <TrackHeader track={selectedTrack} />
+        <p className="-mb-2">
+          <DevFlag kind="placeholder" />
+        </p>
         {day.open !== null && day.close !== null && (
           <Timeline
             track={selectedTrack}
@@ -275,7 +278,7 @@ function DevFlag({ kind }: { kind: 'description' | 'notice' | 'placeholder' }) {
     description:
       'awaiting the real track description, maintained in Radat. Database text, never translated.',
     notice:
-      'awaiting a real range officer notice. Dev seeds fill this with faker Latin (08_track_supervision.js:52). Database text, never translated.',
+      'a range officer notice for this track on this day. Dev seed text (08_track_supervision.js). Database text, never translated.',
     placeholder:
       'placeholder data, the backend does not provide this yet (#420, #421).',
   }[kind];
@@ -354,9 +357,6 @@ function Timeline({
     // Hidden on phones: the list carries everything, so there is no sideways
     // scrolling at any width.
     <div className="hidden sm:block" data-testid="timeline">
-      <p className="mb-1 text-right">
-        <DevFlag kind="placeholder" />
-      </p>
       <div
         className="relative h-5 border-black-tint-20 border-b"
         style={{ marginLeft: named ? '7.5rem' : 0 }}
