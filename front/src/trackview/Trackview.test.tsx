@@ -53,7 +53,7 @@ describe('testing Trackview', () => {
   it('marks free time as unavailable rather than free while the range is unsupervised', async () => {
     await renderTrackview();
 
-    expect(screen.getAllByText('Not available').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('No shooting').length).toBeGreaterThan(0);
     expect(screen.queryByText('Free')).not.toBeInTheDocument();
   });
 

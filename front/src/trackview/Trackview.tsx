@@ -123,7 +123,11 @@ export function Trackview() {
             blocked={blocked}
           />
         )}
-        <SegmentList track={selectedTrack} blocked={blocked} />
+        <SegmentList
+          track={selectedTrack}
+          blocked={blocked}
+          arrivingAt={day.rangeOfficerArrivingAt}
+        />
       </div>
     </TrackViewContainer>
   );
@@ -335,7 +339,7 @@ function useSegmentLabel() {
       case 'closed':
         return t`Closed`;
       default:
-        return t`Not available`;
+        return t`No shooting`;
     }
   };
 }
@@ -456,15 +460,25 @@ function Timeline({
 function SegmentList({
   track,
   blocked,
-}: { track: TrackDetail; blocked: UnavailableReason }) {
+  arrivingAt,
+}: {
+  track: TrackDetail;
+  blocked: UnavailableReason;
+  arrivingAt: number | null;
+}) {
   const { t } = useLingui();
   const label = useSegmentLabel();
   const grouped = track.sections.some((s) => s.name);
 
-  const reasonText = (reason: UnavailableReason) =>
-    reason === 'noRangeOfficer'
-      ? t`No range officer present`
-      : t`No track officer present`;
+  // The cause, and where it is known, when it changes. "Should I come later?"
+  // is the question a member actually has.
+  const reasonText = (reason: UnavailableReason) => {
+    if (reason === 'noTrackOfficer') return t`No track officer present`;
+    if (arrivingAt !== null) {
+      return t`Range officer arriving at ${formatTime(arrivingAt)}`;
+    }
+    return t`No range officer present`;
+  };
 
   const rows = (section: LaneSection) =>
     section.segments.map((segment) => {
