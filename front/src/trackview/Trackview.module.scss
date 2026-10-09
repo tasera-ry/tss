@@ -1,107 +1,69 @@
-@import '../shared.module.scss';
+@use '../colors.module.scss' as colors;
 
-.available {
-  background-color: $COLOR_GREEN;
-}
-.closed {
-  background-color: $COLOR_RED_LIGHT;
-}
-.unavailable {
-  background-color: $COLOR_BLACK_TINT_05;
-}
-.enRoute {
-  background-color: $COLOR_ORANGE;
-}
-.confirmed {
-  background-color: $COLOR_GREEN_LIGHT;
-}
-.notConfirmed {
-  background-color: $COLOR_TURQUOISE;
-}
+/**
+ * Only the things Tailwind cannot express with the project's tokens live here:
+ * the segment fill patterns. Layout and spacing are Tailwind.
+ *
+ * Status is carried by text first and pattern second. Colour is deliberately
+ * absent until the palette work (#432) lands — the accessibility audit measured
+ * the current fills at dE2000 5.6 between "open" and "closed" under deuteranopia,
+ * so this view is built to work without hue and have colour added on top.
+ */
 
-.wholeScreenDiv {
-  text-align: center;
-  align-items: center;
+.segPrivate {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 5px,
+    colors.$COLOR_BLACK_TINT_40 5px 7px
+  );
 }
 
-.trackNameAndType {
-  @extend .layout-row;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-end;
-  text-align: center;
-  padding: 8px;
+.segOfficial {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0 3px,
+    colors.$COLOR_BLACK_TINT_40 3px 6px
+  );
 }
 
-.infoBox {
-  background-color: $COLOR_BLACK_TINT_20;
-  outline: 2px solid $COLOR_BLACK;
-  color: $COLOR_BLACK;
-  width: fit-content;
-  min-width: 50%;
-  max-width: 50%;
-  height: fit-content;
-  border: 1px;
-  margin: 0 auto;
-  margin-bottom: 15px;
-  text-align: center;
-  align-items: center;
-  padding: 12px;
-  min-height: 48px;
+.segClosed {
+  background-color: colors.$COLOR_BLACK_TINT_60;
 }
 
-.preWrap {
-  white-space: pre-wrap;
+/** Unavailable because a supervisor is missing, not because it is reserved. */
+.segBlocked {
+  background-image: repeating-linear-gradient(
+    90deg,
+    colors.$COLOR_BLACK_TINT_05 0 6px,
+    colors.$COLOR_BLACK_TINT_20 6px 7px
+  );
 }
 
-.trackStyles {
-  color: $COLOR_BLACK;
-  padding: 12px;
-  text-align: center;
-  align-items: center;
-  width: 60vw;
-  margin-left: 19vw;
-  font-weight: bold;
-  font-size: larger;
+/** Small versions of the same patterns, for the key beside each list row. */
+.markPrivate {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 3px,
+    colors.$COLOR_BLACK_TINT_40 3px 4px
+  );
 }
 
-.backLink > svg {
-  margin-bottom: -7px;
-  margin-right: 5px;
-  text-align: center;
-  align-items: center;
-  color: $COLOR_BLACK;
+.markOfficial {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0 2px,
+    colors.$COLOR_BLACK_TINT_40 2px 4px
+  );
 }
 
-@media only screen and (max-width: 768px) {
-  .wholeScreenDiv {
-    text-align: center;
-    align-items: left;
-  }
-  .infoBox {
-    background-color: $COLOR_BLACK_TINT_20;
-    outline: 2px solid $COLOR_BLACK;
-    color: $COLOR_BLACK;
-    width: 80%;
-    border: 1px;
-    height: 10%;
-    margin-bottom: 15px;
-    margin-right: 10%;
-  }
-  .trackNameAndType {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-end;
-    text-align: center;
-    padding: 8px;
-  }
+.markClosed {
+  background-color: colors.$COLOR_BLACK_TINT_60;
+}
 
-  .trackStyles {
-    color: $COLOR_BLACK;
-    padding: 12px;
-    width: 80vw;
-    margin-left: 8vw;
-  }
+.markBlocked {
+  background-image: repeating-linear-gradient(
+    90deg,
+    colors.$COLOR_BLACK_TINT_05 0 3px,
+    colors.$COLOR_BLACK_TINT_30 3px 4px
+  );
 }

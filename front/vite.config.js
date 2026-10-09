@@ -32,6 +32,10 @@ export default ({ mode }) => {
       environment: 'jsdom',
       globals: true,
       setupFiles: './src/setupTests.ts',
+      // Several component tests legitimately take 3-4s (Scheduling renders a
+      // large form and waits on the Lingui catalog), which left almost no
+      // headroom under the 5s default once more test files ran in parallel.
+      testTimeout: 15000,
       coverage: {
         provider: 'v8',
         reporter: ['text', 'json', 'html'],
