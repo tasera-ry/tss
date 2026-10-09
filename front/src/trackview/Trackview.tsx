@@ -100,6 +100,12 @@ export function Trackview() {
             {t`Open`} {formatTime(day.open)}–{formatTime(day.close)}
           </>
         )}
+        {day.sunset !== null && (
+          <>
+            {' · '}
+            {t`Sunset`} <DevValue>{formatTime(day.sunset)}</DevValue>
+          </>
+        )}
       </p>
 
       <RangeOfficerBanner day={day} />
@@ -271,6 +277,20 @@ function TrackHeader({ track }: { track: TrackDetail }) {
  * `placeholder` — time segments and lane counts, invented in
  *   trackViewPlaceholder.ts because the API does not carry them. See #420, #421.
  */
+/**
+ * A single invented value shown inline, marked in place rather than with a
+ * sentence after it. Used for the sunset time, which has nowhere else to sit.
+ * In production the value renders plainly.
+ */
+function DevValue({ children }: { children: React.ReactNode }) {
+  if (!import.meta.env.DEV) return <>{children}</>;
+  return (
+    <span className={css.devValue} title="Placeholder — awaiting #437">
+      {children}
+    </span>
+  );
+}
+
 function DevFlag({ kind }: { kind: 'description' | 'notice' | 'placeholder' }) {
   if (!import.meta.env.DEV) return null;
 

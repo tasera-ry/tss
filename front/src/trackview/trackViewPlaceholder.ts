@@ -116,6 +116,9 @@ const LANE_CONFIG: {
 
 const DEFAULT_CONFIG = { lanes: 20, notes: [] as string[] };
 
+/** PLACEHOLDER for #437. Deliberately one fixed time rather than a real one. */
+export const PLACEHOLDER_SUNSET = 18 * 60 + 32;
+
 function laneConfig(index: number) {
   return LANE_CONFIG[index] ?? DEFAULT_CONFIG;
 }
@@ -245,7 +248,11 @@ export function toTrackViewDay(api: ApiDay | undefined): TrackViewDay | null {
     rangeOfficer: toRangeOfficer(api.rangeSupervision),
     rangeOfficerArrivingAt: toMinutes(api.arrivingAt),
     // PLACEHOLDER until #437. Null renders nothing rather than a wrong time.
-    sunset: null,
+    // PLACEHOLDER until #437. A fixed time, not a real one for this date, so
+    // nobody mistakes it for the feature working. The view marks it as such.
+    // The real value would come from Ilmatieteen laitos or similar, and matters
+    // on tracks 5 and 6 where shooting is barred after dark.
+    sunset: PLACEHOLDER_SUNSET,
     tracks,
   };
 }

@@ -90,7 +90,13 @@
  * from production builds by the import.meta.env.DEV guard in the component.
  */
 .devFlag {
-  color: #a4483c;
+  color: var(--color-status-official);
   font-style: italic;
   font-size: 0.75rem;
+}
+
+/** An invented value shown inline, marked where it sits. */
+.devValue {
+  color: var(--color-status-official);
+  font-style: italic;
 }
