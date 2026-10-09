@@ -27,9 +27,9 @@ describe('unavailableReason', () => {
   ] as const)(
     'blocks every track when the range officer is %s, even with a track officer present',
     (rangeOfficer) => {
-      expect(
-        unavailableReason({ rangeOfficer }, { officer: 'present' }),
-      ).toBe('noRangeOfficer');
+      expect(unavailableReason({ rangeOfficer }, { officer: 'present' })).toBe(
+        'noRangeOfficer',
+      );
     },
   );
 

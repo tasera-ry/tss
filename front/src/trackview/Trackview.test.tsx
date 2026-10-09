@@ -42,7 +42,9 @@ describe('testing Trackview', () => {
     await renderTrackview();
 
     // Appears both in the banner and beside every blocked stretch of time.
-    expect(screen.getAllByText('No range officer present').length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText('No range officer present').length,
+    ).toBeGreaterThan(0);
     expect(
       screen.getByText('No track can be used until the range officer arrives.'),
     ).toBeInTheDocument();
@@ -59,7 +61,9 @@ describe('testing Trackview', () => {
     await renderTrackview();
 
     // The reason is written out, never left to colour or to a hover.
-    expect(screen.getAllByText('No range officer present').length).toBeGreaterThan(1);
+    expect(
+      screen.getAllByText('No range officer present').length,
+    ).toBeGreaterThan(1);
   });
 
   it('lists the three lohkot of the pistol track separately', async () => {

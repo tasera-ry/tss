@@ -167,7 +167,7 @@ function RangeOfficerBanner({ day }: { day: TrackViewDay }) {
       <span
         className={classNames(
           'mt-1.5 size-2.5 shrink-0 rounded-full',
-          present ? 'bg-green' : 'border-2 border-grey',
+          present ? css.dotPresent : 'border-2 border-grey',
         )}
       />
       <span className="text-sm">
@@ -198,7 +198,10 @@ function TrackHeader({ track }: { track: TrackDetail }) {
   return (
     <div className="flex flex-col gap-2">
       {track.description && (
-        <p className="whitespace-pre-wrap text-sm">{track.description}</p>
+        <p className="whitespace-pre-wrap text-sm">
+          {track.description}
+          <DevFlag kind="content" />
+        </p>
       )}
       <p className="text-grey text-sm tabular-nums">
         {lanes} {t`lanes`}
@@ -214,7 +217,7 @@ function TrackHeader({ track }: { track: TrackDetail }) {
         <span
           className={classNames(
             'relative top-0.5 size-2 shrink-0 rounded-full',
-            officerPresent ? 'bg-green' : 'border-2 border-grey',
+            officerPresent ? css.dotPresent : 'border-2 border-grey',
           )}
         />
         <b className="font-semibold">
@@ -230,6 +233,7 @@ function TrackHeader({ track }: { track: TrackDetail }) {
       {track.notice && (
         <p className="border-grey border-l-3 bg-black-tint-05 py-2 pr-3 pl-3 text-sm">
           {track.notice}
+          <DevFlag kind="content" />
         </p>
       )}
       {track.notes.map((note) => (
@@ -238,6 +242,28 @@ function TrackHeader({ track }: { track: TrackDetail }) {
         </p>
       ))}
     </div>
+  );
+}
+
+/**
+ * Development-only marker. Nothing here reaches a production build.
+ *
+ * "content" marks text that comes from the database. There is no translation
+ * path for it at all, so it stays Finnish whatever language the interface is
+ * set to. In the dev environment it is also faker-generated Latin, which is
+ * seed data rather than a defect.
+ *
+ * "placeholder" marks data the backend does not provide yet, invented in
+ * trackViewPlaceholder.ts. See #420 and #421.
+ */
+function DevFlag({ kind }: { kind: 'content' | 'placeholder' }) {
+  if (!import.meta.env.DEV) return null;
+  return (
+    <span className={css.devFlag}>
+      {kind === 'content'
+        ? ' — from the database, no translation available in any language'
+        : ' — placeholder data, backend does not provide this yet (#420, #421)'}
+    </span>
   );
 }
 
@@ -250,7 +276,7 @@ const SEGMENT_FILL: Record<SegmentStatus | 'blocked', string> = {
 };
 
 const SEGMENT_MARK: Record<SegmentStatus | 'blocked', string> = {
-  free: 'bg-white',
+  free: css.markFree,
   private: css.markPrivate,
   official: css.markOfficial,
   closed: css.markClosed,
@@ -312,6 +338,9 @@ function Timeline({
     // Hidden on phones: the list carries everything, so there is no sideways
     // scrolling at any width.
     <div className="hidden sm:block" data-testid="timeline">
+      <p className="mb-1 text-right">
+        <DevFlag kind="placeholder" />
+      </p>
       <div
         className="relative h-5 border-black-tint-20 border-b"
         style={{ marginLeft: named ? '7.5rem' : 0 }}
@@ -354,7 +383,6 @@ function Timeline({
                   className={classNames(
                     'absolute top-0 bottom-0 flex items-center justify-center overflow-hidden rounded-xs border border-black-tint-30 text-xs',
                     partial ? '' : SEGMENT_FILL[state],
-                    state === 'closed' ? 'text-white' : 'text-black',
                   )}
                   style={{
                     left: `${pct(segment.start)}%`,

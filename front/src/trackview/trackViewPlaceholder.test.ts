@@ -100,7 +100,11 @@ describe('toTrackViewDay', () => {
     const day = toTrackViewDay(apiDay);
     const segments = day?.tracks[1].sections[0].segments ?? [];
     expect(segments).toHaveLength(1);
-    expect(segments[0]).toMatchObject({ start: 600, end: 1140, status: 'closed' });
+    expect(segments[0]).toMatchObject({
+      start: 600,
+      end: 1140,
+      status: 'closed',
+    });
   });
 
   it('produces segments that tile the opening hours without gaps or overlaps', () => {
@@ -108,7 +112,9 @@ describe('toTrackViewDay', () => {
     for (const track of day?.tracks ?? []) {
       for (const section of track.sections) {
         expect(section.segments[0].start).toBe(day?.open);
-        expect(section.segments[section.segments.length - 1].end).toBe(day?.close);
+        expect(section.segments[section.segments.length - 1].end).toBe(
+          day?.close,
+        );
         for (let i = 1; i < section.segments.length; i += 1) {
           expect(section.segments[i].start).toBe(section.segments[i - 1].end);
         }

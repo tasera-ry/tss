@@ -1,69 +1,96 @@
-@use '../colors.module.scss' as colors;
-
 /**
- * Only the things Tailwind cannot express with the project's tokens live here:
- * the segment fill patterns. Layout and spacing are Tailwind.
+ * Segment fills for the track view.
  *
- * Status is carried by text first and pattern second. Colour is deliberately
- * absent until the palette work (#432) lands — the accessibility audit measured
- * the current fills at dE2000 5.6 between "open" and "closed" under deuteranopia,
- * so this view is built to work without hue and have colour added on top.
+ * Colour comes from the --color-status-* tokens in App.css, read at runtime so
+ * the values live in one place rather than being copied here the way the older
+ * palette is copied between colors.module.scss and App.css.
+ *
+ * Every fill also carries a pattern, and every segment carries its status as
+ * text. Colour is the third channel, not the first: the accessibility audit
+ * measured the current "open" and "closed" fills at dE2000 6.6 under
+ * deuteranopia, so nothing here may depend on hue alone.
  */
 
-.segPrivate {
+@mixin hatch($angle, $colour) {
   background-image: repeating-linear-gradient(
-    45deg,
+    $angle,
     transparent 0 5px,
-    colors.$COLOR_BLACK_TINT_40 5px 7px
+    $colour 5px 8px
   );
+}
+
+.segPrivate {
+  background-color: var(--color-status-private);
+  @include hatch(45deg, rgba(0, 0, 0, 0.28));
+  color: #000;
 }
 
 .segOfficial {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    transparent 0 3px,
-    colors.$COLOR_BLACK_TINT_40 3px 6px
-  );
+  background-color: var(--color-status-official);
+  @include hatch(-45deg, rgba(255, 255, 255, 0.3));
+  color: #fff;
 }
 
 .segClosed {
-  background-color: colors.$COLOR_BLACK_TINT_60;
+  background-color: var(--color-status-closed);
+  color: #fff;
 }
 
 /** Unavailable because a supervisor is missing, not because it is reserved. */
 .segBlocked {
-  background-image: repeating-linear-gradient(
-    90deg,
-    colors.$COLOR_BLACK_TINT_05 0 6px,
-    colors.$COLOR_BLACK_TINT_20 6px 7px
-  );
+  background-color: var(--color-status-blocked);
+  @include hatch(90deg, rgba(255, 255, 255, 0.45));
+  color: #000;
 }
 
-/** Small versions of the same patterns, for the key beside each list row. */
+/** Small keys beside each row of the list. Same patterns, smaller. */
 .markPrivate {
+  background-color: var(--color-status-private);
   background-image: repeating-linear-gradient(
     45deg,
     transparent 0 3px,
-    colors.$COLOR_BLACK_TINT_40 3px 4px
+    rgba(0, 0, 0, 0.28) 3px 4px
   );
 }
 
 .markOfficial {
+  background-color: var(--color-status-official);
   background-image: repeating-linear-gradient(
     -45deg,
     transparent 0 2px,
-    colors.$COLOR_BLACK_TINT_40 2px 4px
+    rgba(255, 255, 255, 0.3) 2px 4px
   );
 }
 
 .markClosed {
-  background-color: colors.$COLOR_BLACK_TINT_60;
+  background-color: var(--color-status-closed);
 }
 
 .markBlocked {
+  background-color: var(--color-status-blocked);
   background-image: repeating-linear-gradient(
     90deg,
-    colors.$COLOR_BLACK_TINT_05 0 3px,
-    colors.$COLOR_BLACK_TINT_30 3px 4px
+    transparent 0 3px,
+    rgba(255, 255, 255, 0.45) 3px 4px
   );
+}
+
+.markFree {
+  background-color: var(--color-status-free);
+}
+
+/** Supervisor present. A dot beside text, never the only signal. */
+.dotPresent {
+  background-color: var(--color-status-present);
+}
+
+/**
+ * Development-only marker for text that comes from the database and has no
+ * translation path, and for data the backend does not provide yet. Stripped
+ * from production builds by the import.meta.env.DEV guard in the component.
+ */
+.devFlag {
+  color: #a4483c;
+  font-style: italic;
+  font-size: 0.75rem;
 }
