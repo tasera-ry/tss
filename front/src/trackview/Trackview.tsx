@@ -200,7 +200,7 @@ function TrackHeader({ track }: { track: TrackDetail }) {
       {track.description && (
         <p className="whitespace-pre-wrap text-sm">
           {track.description}
-          <DevFlag kind="content" />
+          <DevFlag kind="description" />
         </p>
       )}
       <p className="text-grey text-sm tabular-nums">
@@ -233,7 +233,7 @@ function TrackHeader({ track }: { track: TrackDetail }) {
       {track.notice && (
         <p className="border-grey border-l-3 bg-black-tint-05 py-2 pr-3 pl-3 text-sm">
           {track.notice}
-          <DevFlag kind="content" />
+          <DevFlag kind="notice" />
         </p>
       )}
       {track.notes.map((note) => (
@@ -246,25 +246,41 @@ function TrackHeader({ track }: { track: TrackDetail }) {
 }
 
 /**
- * Development-only marker. Nothing here reaches a production build.
+ * Development-only marker, stripped from production builds.
  *
- * "content" marks text that comes from the database. There is no translation
- * path for it at all, so it stays Finnish whatever language the interface is
- * set to. In the dev environment it is also faker-generated Latin, which is
- * seed data rather than a defect.
+ * Three things on this page look like defects in the dev environment and are
+ * not. Each gets its own wording so nobody has to work out which is which.
  *
- * "placeholder" marks data the backend does not provide yet, invented in
- * trackViewPlaceholder.ts. See #420 and #421.
+ * `description` — track.description. The track's permanent physical
+ *   description, maintained by an admin in the Radat view. Real content reads
+ *   like "75m / 100m Hirvirata - 20 ampumapaikkaa". The dev seed generates a
+ *   short label instead ("Pistol 300m"), from 04_tracks.js:38.
+ *
+ * `notice` — track_supervision.notice. The free-text note a range officer
+ *   writes for one track on one day; it is what the "Radalla lisätietoja" icon
+ *   announces. Real content reads like "Taustavalli huollossa". The dev seed
+ *   fills it with faker Latin, from 08_track_supervision.js:52, which is where
+ *   the lorem ipsum on this page comes from.
+ *
+ * Both are database text, and there is no translation path for database text at
+ * all — it stays as entered whatever language the interface is set to.
+ *
+ * `placeholder` — time segments and lane counts, invented in
+ *   trackViewPlaceholder.ts because the API does not carry them. See #420, #421.
  */
-function DevFlag({ kind }: { kind: 'content' | 'placeholder' }) {
+function DevFlag({ kind }: { kind: 'description' | 'notice' | 'placeholder' }) {
   if (!import.meta.env.DEV) return null;
-  return (
-    <span className={css.devFlag}>
-      {kind === 'content'
-        ? ' — from the database, no translation available in any language'
-        : ' — placeholder data, backend does not provide this yet (#420, #421)'}
-    </span>
-  );
+
+  const text = {
+    description:
+      'awaiting the real track description, maintained in Radat. Database text, never translated.',
+    notice:
+      'awaiting a real range officer notice. Dev seeds fill this with faker Latin (08_track_supervision.js:52). Database text, never translated.',
+    placeholder:
+      'placeholder data, the backend does not provide this yet (#420, #421).',
+  }[kind];
+
+  return <span className={css.devFlag}> — {text}</span>;
 }
 
 const SEGMENT_FILL: Record<SegmentStatus | 'blocked', string> = {
