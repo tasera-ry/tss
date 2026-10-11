@@ -130,8 +130,6 @@ function TrackBox({ track, date }) {
         return css.lightGreenB;
       case 'not confirmed':
         return css.blueB;
-      case 'en route':
-        return css.yellowB;
       case 'closed':
         return css.redB;
       default:
@@ -174,8 +172,6 @@ function OfficerBanner({ rangeSupervision }) {
         return { text: t`Range officer confirmed`, color: css.lightGreenB };
       case 'not confirmed':
         return { text: t`Range officer predefined`, color: css.blueB };
-      case 'en route':
-        return { text: t`Range officer on the way`, color: css.yellowB };
       default:
         return { text: t`Range closed`, color: css.redB };
     }

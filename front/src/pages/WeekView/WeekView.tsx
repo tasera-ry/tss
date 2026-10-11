@@ -129,8 +129,6 @@ function CalenderCell({ day }: { day: DaySchedule }) {
         return '#b2d9ad';
       case 'not confirmed':
         return '#95d5db';
-      case 'en route':
-        return '#f2c66d';
       case 'closed':
         return '#c97b7b';
       case 'absent':

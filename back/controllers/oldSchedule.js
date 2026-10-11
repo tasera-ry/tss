@@ -23,7 +23,6 @@ const _ = require('lodash');
         //present=green,            from range_supervision.range_supervisor
         //absent=white,             from range_supervision.range_supervisor
         //confirmed=lightGreen,     from range_supervision.range_supervisor
-        //en route=yellow,          from range_supervision.range_supervisor
         //closed=red                from reservation.available === false
         //not confirmed=blue        from range_supervision.range_supervisor
       tracks: [

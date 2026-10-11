@@ -357,17 +357,6 @@ function Scheduling() {
     );
   };
 
-  // Emits a 'rangeUpdate' event with the status 'en route'
-  // and updates the supervisor's status in the UI
-  const handleEnRouteClick = () => {
-    socket.emit('rangeUpdate', {
-      status: 'en route',
-      color: colors.orange,
-      text: t`Range officer on the way`,
-    });
-    updateSupervisor('en route', colors.orange, t`Range officer on the way`);
-  };
-
   // Emits a 'rangeUpdate' event with the status 'present'
   // and updates the supervisor's status in the UI
   const handlePresentClick = () => {
@@ -515,8 +504,6 @@ function Scheduling() {
       rangeStatus = 'absent';
     } else if (statusColor === colors.turquoise) {
       rangeStatus = 'not confirmed';
-    } else if (statusColor === colors.orange) {
-      rangeStatus = 'en route';
     } else if (statusColor === colors.greenLight) {
       rangeStatus = 'confirmed';
     }
@@ -940,9 +927,6 @@ function Scheduling() {
       if (response.rangeSupervision === 'present') {
         setStatusText(t`Range officer present`);
         setStatusColor(colors.green);
-      } else if (response.rangeSupervision === 'en route') {
-        setStatusText(t`Range officer on the way`);
-        setStatusColor(colors.orange);
       } else if (response.rangeSupervision === 'absent') {
         setStatusText(t`Range officer undefined`);
         setStatusColor(colors.white);
@@ -1137,14 +1121,6 @@ function Scheduling() {
                       onClick={handleConfirmed}
                     >
                       {t`Confirmed`}
-                    </Button>
-                    <Button
-                      className="onTheWay"
-                      variant="contained"
-                      style={{ backgroundColor: colors.orange }}
-                      onClick={handleEnRouteClick}
-                    >
-                      {t`On the way`}
                     </Button>
                     <Button
                       className="present"

@@ -3,14 +3,12 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useLingui } from '@lingui/react/macro';
 // Material UI components
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
 import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
@@ -34,9 +32,6 @@ const dialogStyle = {
 /* eslint-disable-next-line */
 const discardChanges = {
   color: 'gray',
-};
-const checkboxStyle = {
-  color: '#f2c66d',
 };
 const styleA = {
   padding: 25,
@@ -72,10 +67,7 @@ const DropDowns = (props) => {
 
   let text = t`Confirm date`;
   let color = '#f2f2f2';
-  if (
-    obj.range_supervisor === 'confirmed' ||
-    obj.range_supervisor === 'en route'
-  ) {
+  if (obj.range_supervisor === 'confirmed') {
     text = t`Confirmed`;
     color = '#658f60';
   }
@@ -88,7 +80,6 @@ const DropDowns = (props) => {
   const [buttonColor, setButtonColor] = useState(color);
   const [anchorEl, setAnchorEl] = useState(null);
   const [officerAnchorEl, setOfficerAnchorEl] = useState(null);
-  const [disable, setDisable] = useState(buttonColor !== '#658f60');
   const [provideTime, setProvideTimeText] = useState('');
   const { arrivalTime, setArrivalTime, rangeofficer, setRangeOfficer } =
     useContext(ArrivalTimeContext);
@@ -126,14 +117,12 @@ const DropDowns = (props) => {
     if (event.currentTarget.dataset.info === '') {
       setButtonText(t`Confirm date`);
       setButtonColor('#f2f2f2');
-      setDisable(true);
       obj.range_supervisor = 'not confirmed';
       setProvideTimeText('');
     }
     if (event.currentTarget.dataset.info === 'y') {
       setButtonText(t`Confirmed`);
       setButtonColor('#658f60');
-      setDisable(false);
       obj.range_supervisor = 'confirmed';
 
       setProvideTimeText(t`Your estimated time of arrival:`);
@@ -141,7 +130,6 @@ const DropDowns = (props) => {
     if (event.currentTarget.dataset.info === 'n') {
       setButtonText(t`Absent`);
       setButtonColor('#c97b7b');
-      setDisable(true);
       obj.range_supervisor = 'absent';
       setProvideTimeText('');
     }
@@ -236,51 +224,12 @@ const DropDowns = (props) => {
           />
         )}
       </div>
-      &nbsp;
-      {props.today === props.d ? (
-        <Check
-          HandleChange={props.HandleChange}
-          checked={props.checked}
-          sv={props.sv}
-          disable={disable}
-        />
-      ) : (
-        ''
-      )}
     </span>
   );
 };
 
-// prints matkalla-checkbox
-const Check = ({ HandleChange, checked, disable }) => {
-  const { t } = useLingui();
-  return (
-    <>
-      <br />
-      <FormControlLabel
-        label={t`En route`}
-        disabled={disable}
-        control={
-          <Checkbox
-            checked={checked}
-            style={checkboxStyle}
-            onChange={HandleChange}
-          />
-        }
-      />
-    </>
-  );
-};
-
 // prints date info in rows
-const Rows = ({
-  HandleChange,
-  changes,
-  checked,
-  setDone,
-  sv,
-  rangeofficerList,
-}) => {
+const Rows = ({ changes, setDone, sv, rangeofficerList }) => {
   setDone(true);
 
   function getWeekday(day) {
@@ -296,17 +245,12 @@ const Rows = ({
     return `${parts[2]}.${parts[1]}.${parts[0]}`;
   }
 
-  const today = moment().format().split('T')[0];
-
   return changes.map((d) => (
     <div key={d.date} style={styleA}>
       {getWeekday(d.date)} {getDateString(d.date)} &nbsp;
       <DropDowns
         d={d.date}
-        today={today}
         changes={changes}
-        HandleChange={HandleChange}
-        checked={checked}
         sv={sv}
         rangeofficerList={rangeofficerList}
       />
@@ -381,13 +325,7 @@ async function checkSupervisorReservations(username) {
 }
 
 // obtain users schedule and range supervision states
-async function getSchedule(
-  setSchedules,
-  setNoSchedule,
-  setChecked,
-  setDone,
-  username,
-) {
+async function getSchedule(setSchedules, setNoSchedule, setDone, username) {
   const userID = await getId(username);
   let res = [];
   let temp = [];
@@ -443,14 +381,12 @@ async function getSchedule(
   }
 
   setSchedules(res);
-  setChecked(res[0].range_supervisor === 'en route');
 }
 
 const DialogWindow = ({ onCancel }) => {
   const [noSchedule, setNoSchedule] = useState(false);
   const [schedules, setSchedules] = useState([]);
   const [done, setDone] = useState(false);
-  const [checked, setChecked] = useState(false);
   const [cookies] = useCookies(['username']);
   const [arrivalTime, setArrivalTime] = useState('');
   const [rangeofficer, setRangeOfficer] = useState('');
@@ -463,13 +399,7 @@ const DialogWindow = ({ onCancel }) => {
   // starting point
   useEffect(() => {
     const myFunc = async () => {
-      getSchedule(
-        setSchedules,
-        setNoSchedule,
-        setChecked,
-        setDone,
-        cookies.username,
-      );
+      getSchedule(setSchedules, setNoSchedule, setDone, cookies.username);
 
       const response = await api.getRangeOfficers(cookies.id);
       setRangeOfficerList(response);
@@ -487,8 +417,6 @@ const DialogWindow = ({ onCancel }) => {
           schedules={schedules}
           setSchedules={setSchedules}
           noSchedule={noSchedule}
-          checked={checked}
-          setChecked={setChecked}
           done={done}
           setDone={setDone}
           onCancel={onCancel}
@@ -521,8 +449,6 @@ const Logic = ({
   rangeofficerList,
   schedules,
   noSchedule,
-  checked,
-  setChecked,
   done,
   setDone,
   sv,
@@ -536,23 +462,7 @@ const Logic = ({
 
   const { arrivalTime, rangeofficer } = useContext(ArrivalTimeContext);
 
-  /* eslint-disable-next-line */
-  const HandleChange = (event) => {
-    setChecked(!checked);
-  };
-
   async function HandleClose() {
-    if (checked && changes[0].range_supervisor === 'confirmed') {
-      const today = moment().format().split('T')[0];
-      const obj = changes.find((o) => o.date === today);
-      obj.range_supervisor = 'en route';
-      changes.map((o) => (o.date === today ? obj : o));
-    }
-
-    if (!checked && changes[0].range_supervisor === 'en route') {
-      changes[0].range_supervisor = 'confirmed';
-    }
-
     if (arrivalTime) {
       changes[0].arriving_at = arrivalTime;
     }
@@ -584,9 +494,7 @@ const Logic = ({
           </DialogContentText>
           {schedules.length !== 0 ? (
             <Rows
-              HandleChange={HandleChange}
               changes={changes}
-              checked={checked}
               setDone={setDone}
               sv={sv}
               rangeofficerList={rangeofficerList}

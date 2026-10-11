@@ -190,7 +190,6 @@
     "Confirmed": ["Saavun paikalle", "Confirmed", "Bekräftat"],
     "Present": ["Vahvista saapuminen", "Confirm date", "Bekräfta datum"],
     "Absent": ["En pääse paikalle", "Absent", "Frånvarande"],
-    "EnRoute": ["Matkalla", "En route", "På väg"],
     "OfficerSelect": ["Valitse valvoja", "Select officer", "Välj övervakare"],
     "NoOfficer": ["Ei valintaa", "No selection", "Inget val"],
     "Cancel": ["Sulje", "Cancel", "Avboka"],
@@ -260,11 +259,6 @@
       "Banofficer fördefinierad, men inte bekräftat"
     ],
     "Red": ["Keskus suljettu", "Range closed", "Skjutbana stängd"],
-    "Orange": [
-      "Päävalvoja matkalla",
-      "Range officer on the way",
-      "Banofficer på väg"
-    ],
     "White": [
       "Päävalvojaa ei asetettu",
       "Range officer undefined",
@@ -315,11 +309,6 @@
       "Range officer predefined",
       "Banofficer inte bekräftat"
     ],
-    "SuperOrange": [
-      "Päävalvoja matkalla",
-      "Range officer on the way",
-      "Banofficer på väg"
-    ],
     "SuperWhite": [
       "Päävalvojaa ei asetettu",
       "Range officer undefined",
@@ -329,7 +318,6 @@
     "Blue": ["Ei varmistettu", "Not confirmed", "Inte bekräftat"],
     "LightGreen": ["Varmistettu", "Confirmed", "bekräftat"],
     "Green": ["Paikalla", "Present", "Närvarande"],
-    "Orange": ["Tulossa", "On the way", "På väg"],
     "Edit": ["Muokkaa", "Edit", "Redigera"],
     "Helper": [
       "Muokkaa päävalvojan statusta napauttamalla väriä alta",
@@ -540,18 +528,12 @@
       "Range officer present",
       "Banofficer närvarande"
     ],
-    "SuperOrange": [
-      "Päävalvoja tulossa",
-      "Range officer on the way",
-      "Banofficer på väg"
-    ],
     "SuperWhite": [
       "Päävalvoja ei asetettu",
       "Range officer undefined",
       "Banofficer odefinierad"
     ],
     "Green": ["Paikalla", "Present", "Närvarande"],
-    "Orange": ["Tulossa", "On the way", "På väg"],
     "Red": ["Suljettu", "Closed", "Stängd"],
     "White": ["Ei valvojaa", "No track officer", "Inget banhandledare"],
     "HelperFirst": [
@@ -610,11 +592,6 @@
       "Banofficer inte bekräftat"
     ],
     "Red": ["Ampumakeskus suljettu", "Range closed", "Skjutbana stängd"],
-    "Orange": [
-      "Päävalvoja matkalla",
-      "Range officer on the way",
-      "Banofficer på väg"
-    ],
     "White": [
       "Päävalvojaa ei asetettu",
       "Range officer undefined",
@@ -646,11 +623,6 @@
       "Päävalvoja ei varmistettu",
       "Range officer predefined",
       "Banofficer inte bekräftat"
-    ],
-    "SuperOrange": [
-      "Päävalvoja matkalla",
-      "Range officer on the way",
-      "Banofficer på väg"
     ],
     "SuperWhite": [
       "Päävalvojaa ei asetettu",
