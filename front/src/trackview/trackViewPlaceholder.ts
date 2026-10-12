@@ -116,6 +116,15 @@ const LANE_CONFIG: {
 
 const DEFAULT_CONFIG = { lanes: 20, notes: [] as string[] };
 
+/**
+ * PLACEHOLDER. Which tracks may be used without a range officer on site.
+ *
+ * Only track 6, the 50 m .22LR range, by position in the list. Pasi Autio,
+ * 12.10.2026. The backend should carry this as a column on the track, because
+ * keying it to a position breaks the moment tracks are reordered.
+ */
+const NO_RANGE_OFFICER_NEEDED = new Set([5]);
+
 /** PLACEHOLDER for #437. Deliberately one fixed time rather than a real one. */
 export const PLACEHOLDER_SUNSET = 18 * 60 + 32;
 
@@ -237,6 +246,7 @@ export function toTrackViewDay(api: ApiDay | undefined): TrackViewDay | null {
     shortDescription: track.short_description ?? '',
     notice: track.notice ?? null,
     officer: toTrackOfficer(track.trackSupervision),
+    requiresRangeOfficer: !NO_RANGE_OFFICER_NEEDED.has(index),
     sections: buildSections(track, index, open, close),
     notes: laneConfig(index).notes,
   }));

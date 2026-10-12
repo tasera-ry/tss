@@ -84,6 +84,19 @@ export interface TrackDetail {
   /** Free-text notice from `track_supervision.notice`. May be null in the API. */
   notice: string | null;
   officer: TrackOfficerState;
+  /**
+   * Whether this track needs a range officer on site to be usable.
+   *
+   * True for every track but one. Pasi Autio, 12.10.2026: track 6 may be set to
+   * "track officer present" while the range officer is away, and no other track
+   * may. The exception is rare and concerns about half a dozen members.
+   *
+   * Modelled as a property of the track rather than as a check on its id,
+   * because an id check would be silently wrong the moment tracks are renamed
+   * or reordered. The backend should carry this as a column; until then it is
+   * set in trackViewPlaceholder.ts.
+   */
+  requiresRangeOfficer: boolean;
   sections: LaneSection[];
   /** Standing rules, e.g. "no shooting after dark", ".22LR only". */
   notes: string[];
@@ -116,9 +129,16 @@ export type UnavailableReason = 'noRangeOfficer' | 'noTrackOfficer' | null;
 
 export function unavailableReason(
   day: Pick<TrackViewDay, 'rangeOfficer'>,
-  track: Pick<TrackDetail, 'officer'>,
+  track: Pick<TrackDetail, 'officer' | 'requiresRangeOfficer'>,
 ): UnavailableReason {
-  if (day.rangeOfficer !== 'present') return 'noRangeOfficer';
+  // Range officer first, because it is the broader fact: on a normal track it
+  // explains every other track on the page too. For track 6 the check is
+  // skipped, and the track's own officer decides.
+  if (track.requiresRangeOfficer && day.rangeOfficer !== 'present') {
+    return 'noRangeOfficer';
+  }
+  // Every track needs its own officer. The exception above is about the range
+  // officer, not about going unsupervised altogether.
   if (track.officer === 'absent') return 'noTrackOfficer';
   return null;
 }
