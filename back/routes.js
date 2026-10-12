@@ -341,6 +341,10 @@ router
   .post(validators.raffle.create, middlewares.raffle.create, controllers.raffle.create);
 
 router
+  .route('/raffle-analytics')
+  .get(controllers.raffle.getAnalytics);
+
+router
   .route('/devices')
   .get(validators.devices.readAll, middlewares.devices.read, controllers.devices.read)
   .post(

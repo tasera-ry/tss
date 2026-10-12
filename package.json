@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "knex": "^3.1.0",
+    "react-datepicker": "^8.3.0"
+  },
+  "devDependencies": {
+    "@types/react-datepicker": "^6.2.0"
+  }
+}

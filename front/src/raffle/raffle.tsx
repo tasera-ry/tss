@@ -20,6 +20,8 @@ import SupervisionAmountsTable from './SupervisionAmountsTable';
 import SupervisionResultsTable from './SupervisionResultsTable';
 import SupervisorsTable from './SupervisorsTable';
 import css from './raffle.module.scss';
+import RaffleAnalytics from './RaffleAnalytics';
+
 
 const classes = classNames.bind(css);
 
@@ -252,6 +254,7 @@ export default function Raffle() {
             )}
           </>
         )}
+        <RaffleAnalytics />
         <Snackbar
           open={toast.open}
           autoHideDuration={5000}
