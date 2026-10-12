@@ -7,6 +7,16 @@
  * from `trackViewPlaceholder.ts` until the backend catches up. The shapes here are
  * what the frontend expects; the placeholder exists only to satisfy them.
  *
+ * How far off the backend is, measured rather than assumed. The whole schema has
+ * three time columns: scheduled_range_supervision.open and .close, and
+ * range_supervision.arriving_at. `range_reservation` is one row per range per
+ * day, unique on (range_id, date), carrying a single boolean. `track_supervision`
+ * is a status, a visitor count and a notice — not a booking, and with no link to
+ * an association.
+ *
+ * So #421 is not two columns on an existing row. There is no per-track
+ * reservation to put them on, and nothing below day level anywhere.
+ *
  * Deliberately not reusing `src/types.ts` — its `Track` types every field as
  * `null`, which only compiles because strict mode is off.
  */

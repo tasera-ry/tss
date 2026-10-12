@@ -10,9 +10,15 @@
  * WHAT THE BACKEND NEEDS TO ADD, to let this file be deleted:
  *   - `track.lane_count` (integer) and a lane-section table, or a JSON column —
  *     see LANE_CONFIG below for the real figures the customer gave on 7.10.2026.
- *   - reservations with `start_time` / `end_time` rather than whole-day only (#421).
- *   - `lanes_used` on a reservation (#420). Lanes within a track are identical, so
- *     this is a count, never a set of lane ids.
+ *   - a per-track reservation with a start and an end (#421). Note this is a new
+ *     table, not two columns: `range_reservation` is one row per range per day,
+ *     unique on (range_id, date), and nothing in the schema is finer than a day
+ *     except the range's own opening hours.
+ *   - `lanes_used` on that reservation (#420). Lanes within a track are identical,
+ *     so this is a count, never a set of lane ids.
+ *   - a link from a reservation to the association holding it. Today the only
+ *     association link is at range level, so "reserved for X" per track has no
+ *     data behind it.
  *   - `'private'` added to the `track_supervisor` enum (#419).
  *
  * Nothing here writes. The view is read-only; creating reservations is an admin
