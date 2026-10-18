@@ -617,7 +617,7 @@ function Scheduling() {
                   checked={trackStates[tracks[key].id] === 'private_event'}
                   onChange={handleTrackPrivateEventSwitchChange}
                   name={tracks[key].id.toString()}
-                  data-testid={`track-${tracks[key].id.toString()}`}
+                  data-testid={`private-event-${tracks[key].id}`}
                 />
               </div>
               <TextareaAutosize
