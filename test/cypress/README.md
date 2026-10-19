@@ -1,25 +1,25 @@
-# End-to-end testing framework Cypress
+# End-to-end testing with Cypress
 
-Testing complicated use cases in the application can be tedious to do by hand and Cypress offers a natural language-ish
-solution to the problem. If you don't have a lot of experiaence with testing, this caould be a good way to write some
-cases for your application. Sample test case is in ./test/cypress/integration/login.spec.js
+Cypress tests exercise application workflows that involve the frontend, backend, and database. Test specs are in `test/cypress/e2e`.
 
-Cypress only runs cases from this folder unless told otherwise. Jest has been configured to skip this folder.
+## Run locally
 
-The application uses Cypress in the GitHub Actions pipeline to test complicated use cases that
-require backend, frontend and database functionality. (pipeline disabled 05/22)
+1. Install Docker and Docker Compose.
+2. From the repository root, start the application:
 
-## How to run the end-to-end tests in GitHub Actions
+   ```sh
+   docker compose -f docker-compose.dev.yaml up --build
+   ```
 
-1. create a pull request to master or push to master
+3. In another terminal, run Cypress from the `test` directory:
 
-For testing purposes you can change the branch identifier in .github/workflows/end2end_tests.yml to your own branch and run tests by pushing to that
+   ```sh
+   cd test
+   npx cypress run
+   ```
 
-## How to run the end-to-end tests locally
+To open the interactive runner, run `npx cypress open` from `test`.
 
-1. Have docker and docker-compose installed
-2. Run application startup command
-   `docker-compose -f docker-compose.dev.yaml up`
-3. While the application is running, run command
-   `npx cypress run`
+## GitHub Actions
 
+The `end2end_tests.yml` workflow starts the development Compose stack and runs Cypress on pushes and pull requests targeting `master`.
