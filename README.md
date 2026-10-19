@@ -133,11 +133,15 @@ Production environment update is done manually.
    ```sh
        bash -c 'cd back && npx knex migrate:latest && npx knex seed:run && cd ..
    ```
-5. Run the project
+5. Starting the backend
    ```sh
-      bash -c 'cd back && npm run dev:withFront'
+      bash -c 'cd back && npm run dev'
    ```
-6. The application should start at http://localhost:3000 (default host)
+6. Starting the frontend
+    ```sh
+      bash -c 'cd front && npm run dev'
+   ```
+7. The application should start at http://localhost:3000 (default host)
 
 ### Starting the app with command line variables
 
@@ -154,9 +158,11 @@ Production environment update is done manually.
        DB_PASSWORD=some_password \
        DB=postgres \
        SENDER_EMAIL=noreply@tasera.fi \
-       bash -c 'cd back && npm run dev:withFront'
-   ```
-3. The program should start up at http://localhost:3000 (default host)
+       bash -c 'cd back && npm run dev'
+3. Start the frontend in a separate terminal
+    ```sh
+   cd front && npm run dev
+4. The program should start up at http://localhost:3000 (default host)
 
 ## Configuration Options
 
@@ -287,7 +293,7 @@ Backend tests run automatically on every push and pull request. We use Jest for 
 [![Cypress Test Run](https://github.com/tasera-ry/tss/actions/workflows/end2end_tests.yml/badge.svg)](https://github.com/tasera-ry/tss/actions/workflows/end2end_tests.yml)
 
 End-to-end tests are implemented with Cypress and run automatically on every push and pull request via GitHub Actions. The tests are located in the `test` folder at the root of the project.
-
+to master using Cypress and run automatically on every push to and pull request targeting the `master` branch via GitHub Actions. The tests are located in the `test/` directory at the project roo
 To run Cypress tests locally:
 
 ```sh
