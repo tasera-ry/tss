@@ -58,12 +58,25 @@ casual.define('track_description', function() {
   return `${name} ${distance}`;
 });
 
+// The short descriptions production shows on the day view's track cards. The
+// cards size to their text, so placeholder text makes them collapse.
+const shortDescriptions = [
+  '25m rata (pistoolirata)',
+  '150m rata (RK-rata)',
+  '300m rata (300m kiv-rata)',
+  '75/100m rata (hirvirata)',
+  '100m rata (kohdistusrata)',
+  '50m .22LR (piekkarirata)',
+  '50m rata (toimintarata)'
+];
+
 casual.define('range', async function(rangeId) {
   const tracks = config.seeds.tracks;
   return _.times(tracks, (i) => ({
     range_id: rangeId,
-    name: `Shooting Track ${i}`,
+    // Same names as production (stable seed), numbered from 1.
+    name: `Rata ${i + 1}`,
     description: casual.track_description,
-    short_description: `s ${i}`
+    short_description: shortDescriptions[i] ?? `s ${i}`
   }));
 });

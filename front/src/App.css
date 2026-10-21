@@ -28,3 +28,40 @@
   --color-black-tint-10: #e5e5e5;
   --color-black-tint-05: #f2f2f2;
 }
+
+/*
+ * Status tokens live in their own `@theme static` block because they are read
+ * as plain var() from Trackview.module.scss rather than through a utility
+ * class. Tailwind v4 drops theme variables it sees no usage for, so a plain
+ * @theme block would emit nothing.
+ */
+@theme static {
+  /*
+   * Status palette (#432). Proposed values — expect these to change once the
+   * palette work is finished. Defined here only, and read from SCSS with
+   * var(--color-status-*), so they are not duplicated into colors.module.scss
+   * the way the older tokens are.
+   *
+   * Built as a lightness ramp rather than as a set of hues: L* 93 / 73 / 55 /
+   * 43 / 21. That means the five states stay distinguishable with no colour
+   * perception at all, which picking a better green and a better red cannot
+   * achieve — those two collapse to dE2000 6.6 under deuteranopia today, and
+   * any green/red pair would.
+   *
+   * Measured against the #ebebeb page background:
+   *   private  3.17:1   official  4.93:1   closed  10.69:1   (SC 1.4.11 wants 3:1)
+   * "free" and "blocked" sit below that deliberately: they carry no information
+   * on their own, the text does.
+   *
+   * Two pairs stay close under simulation — free/blocked at dE 14 and
+   * private/official at dE 14 — so both also differ by pattern and by wording.
+   * With five states on a light ground there is no palette where every pair
+   * clears the threshold on hue alone.
+   */
+  --color-status-free: #ebebeb;
+  --color-status-blocked: #afb3ad;
+  --color-status-private: #b4761f;
+  --color-status-official: #a4483c;
+  --color-status-closed: #2e342f;
+  --color-status-present: #2e6b3e;
+}
