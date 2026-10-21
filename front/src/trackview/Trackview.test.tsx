@@ -1,5 +1,5 @@
 import { TestProviders } from '@/_TestUtils/TestProvides';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import testUtils from '../_TestUtils/TestUtils';
 import api from '../api/api';
 import { Trackview } from './Trackview';
@@ -21,8 +21,8 @@ vi.mock('react-router-dom', async (originalImport) => {
  * of Testing Library does not reliably settle a second `findBy*` afterwards. So
  * each test awaits the track name once, then asserts synchronously.
  */
-async function renderTrackview() {
-  vi.mocked(api.getSchedulingDate).mockResolvedValue(testUtils.schedule);
+async function renderTrackview(schedule = testUtils.schedule) {
+  vi.mocked(api.getSchedulingDate).mockResolvedValue(schedule);
   const result = render(<Trackview />, { wrapper: TestProviders });
   await screen.findByText('Shooting Track 0', {}, { timeout: 5000 });
   return result;
@@ -72,5 +72,75 @@ describe('testing Trackview', () => {
     expect(screen.getAllByText('Lohko 1').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Lohko 2').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Lohko 3').length).toBeGreaterThan(0);
+  });
+
+  it('says where each lohko is', async () => {
+    await renderTrackview();
+
+    expect(screen.getByText('Vasemmanpuoleisin loossi')).toBeInTheDocument();
+    expect(screen.getByText('Keskimmäinen loossi')).toBeInTheDocument();
+    expect(screen.getByText('Oikeanpuoleisin loossi')).toBeInTheDocument();
+  });
+
+  it('labels the notice as the notice for the day', async () => {
+    await renderTrackview();
+
+    expect(screen.getByText('Notice for the day')).toBeInTheDocument();
+  });
+
+  describe('with both supervisors present', () => {
+    // The placeholder books half of Lohko 1 for a club on this fixture.
+    const supervised = {
+      ...testUtils.schedule,
+      rangeSupervision: 'present',
+      tracks: testUtils.schedule.tracks.map((track, i) =>
+        i === 0 ? { ...track, trackSupervision: 'present' } : track,
+      ),
+    };
+
+    it('shows a part-booked stretch as partly available, with the booking named', async () => {
+      await renderTrackview(supervised);
+
+      expect(screen.getAllByText('Partially available').length).toBeGreaterThan(
+        0,
+      );
+      expect(
+        screen.getByText(
+          'Private event · Varattu seuran vuorolle · 10 lanes booked',
+        ),
+      ).toBeInTheDocument();
+      expect(screen.getByText('10/20 free')).toBeInTheDocument();
+    });
+
+    it('counts free lanes on the bar, the same figure as the list', async () => {
+      await renderTrackview(supervised);
+
+      const bar = within(screen.getByTestId('timeline'));
+      expect(bar.getByText('Partially available')).toBeInTheDocument();
+      expect(bar.getByText('10/20')).toBeInTheDocument();
+    });
+  });
+
+  it('offers no free lanes on a part-booked stretch while a supervisor is missing', async () => {
+    await renderTrackview();
+
+    expect(screen.queryByText('Partially available')).not.toBeInTheDocument();
+    expect(screen.queryByText('10/20 free')).not.toBeInTheDocument();
+    // The bar draws the booking whole, so nothing below it reads as open.
+    const bar = within(screen.getByTestId('timeline'));
+    expect(bar.queryByText('10/20')).not.toBeInTheDocument();
+    expect(bar.getAllByText('Private event').length).toBeGreaterThan(0);
+  });
+
+  it('offers no free lanes while the track officer alone is missing', async () => {
+    await renderTrackview({
+      ...testUtils.schedule,
+      rangeSupervision: 'present',
+    });
+
+    expect(screen.queryByText('Partially available')).not.toBeInTheDocument();
+    expect(
+      screen.getAllByText('No track officer present').length,
+    ).toBeGreaterThan(1);
   });
 });

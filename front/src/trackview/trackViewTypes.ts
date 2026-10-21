@@ -81,6 +81,13 @@ export interface LaneSection {
   id: string;
   /** Empty for tracks that are not subdivided. */
   name: string;
+  /**
+   * Where the section sits, in the words members use on site, e.g.
+   * "Vasemmanpuoleisin loossi". Asked for by TASERA in review, 10/2026, because
+   * "Lohko 1" alone does not say which bay it is.
+   * BACKEND(B1, #420): part of the section data.
+   */
+  position?: string;
   laneCount: number;
   segments: TimeSegment[];
 }
@@ -134,6 +141,8 @@ export interface TrackViewDay {
  * backend does not enforce this today — the two statuses are independent columns
  * with no constraint between them — so the view derives it rather than trusting
  * the payload.
+ *
+ * BACKEND(B10): enforce the rule on write; keep this as the display rule.
  */
 export type UnavailableReason = 'noRangeOfficer' | 'noTrackOfficer' | null;
 

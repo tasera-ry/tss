@@ -96,6 +96,31 @@ describe('toTrackViewDay', () => {
     expect(day?.tracks[1].sections[0].name).toBe('');
   });
 
+  it('names each lohko by where it sits, and leaves undivided tracks without', () => {
+    // TASERA review, 10/2026.
+    const day = toTrackViewDay(apiDay);
+    expect(day?.tracks[0].sections.map((s) => s.position)).toEqual([
+      'Vasemmanpuoleisin loossi',
+      'Keskimmäinen loossi',
+      'Oikeanpuoleisin loossi',
+    ]);
+    expect(day?.tracks[1].sections[0].position).toBeUndefined();
+  });
+
+  it('opens tracks 5 and 6 in winter while it is light, not only on Saturdays', () => {
+    // Pasi Autio, review 10/2026.
+    const tracks = Array.from({ length: 6 }, (_, i) => ({
+      ...apiDay.tracks[0],
+      id: i + 1,
+      name: `Rata ${i + 1}`,
+    }));
+    const day = toTrackViewDay({ ...apiDay, tracks });
+    const rule =
+      'Ei ammuntaa pimeällä. Talvikaudella rata on käytössä vain valoisaan aikaan.';
+    expect(day?.tracks[4].notes).toEqual([rule]);
+    expect(day?.tracks[5].notes).toEqual(['Vain .22LR.', rule]);
+  });
+
   it('renders a closed track as closed for the whole day', () => {
     const day = toTrackViewDay(apiDay);
     const segments = day?.tracks[1].sections[0].segments ?? [];

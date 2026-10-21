@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { CircularProgress } from '@mui/material';
@@ -30,7 +31,8 @@ import { unavailableReason } from './trackViewTypes';
  * scheduling view.
  *
  * Time segments, lane counts and sections come from `trackViewPlaceholder` until
- * the backend provides them; everything else is live data.
+ * the backend provides them; everything else is live data. The backend work
+ * needed is listed at the top of that file as B1–B10.
  */
 export function Trackview() {
   const { t } = useLingui();
@@ -245,6 +247,7 @@ function TrackHeader({ track }: { track: TrackDetail }) {
 
       {track.notice && (
         <p className="border-grey border-l-3 bg-black-tint-05 py-2 pr-3 pl-3 text-sm">
+          <b className="font-semibold">{t`Notice for the day`}</b>{' '}
           {track.notice}
           <DevFlag kind="notice" />
         </p>
@@ -369,6 +372,7 @@ function Timeline({
   close: number;
   blocked: UnavailableReason;
 }) {
+  const { t } = useLingui();
   const label = useSegmentLabel();
   const span = close - open;
   const named = track.sections.some((s) => s.name);
@@ -414,7 +418,12 @@ function Timeline({
             {section.segments.map((segment) => {
               const state = effectiveStatus(segment, blocked);
               if (state === 'free') return null;
-              const partial =
+              // The lanes a booking leaves free are only on offer while the
+              // track is usable (see unavailableReason). Otherwise the booking
+              // is drawn whole, like any other, and the list says '—'.
+              const partlyFree =
+                !blocked &&
+                state !== 'closed' &&
                 segment.lanesUsed !== undefined &&
                 segment.lanesUsed < section.laneCount;
               return (
@@ -422,14 +431,14 @@ function Timeline({
                   key={`${segment.start}-${segment.end}`}
                   className={classNames(
                     'absolute top-0 bottom-0 flex items-center justify-center overflow-hidden rounded-xs border border-black-tint-30 text-xs',
-                    partial ? '' : SEGMENT_FILL[state],
+                    partlyFree ? '' : SEGMENT_FILL[state],
                   )}
                   style={{
                     left: `${pct(segment.start)}%`,
                     width: `${pct(segment.end) - pct(segment.start)}%`,
                   }}
                 >
-                  {partial && (
+                  {partlyFree && (
                     // The reserved share is drawn from the top; what is left
                     // below it is still open track.
                     <i
@@ -442,9 +451,20 @@ function Timeline({
                       }}
                     />
                   )}
-                  <em className="relative truncate px-1.5 font-medium not-italic">
-                    {label(state)}
-                    {partial && ` ${segment.lanesUsed}/${section.laneCount}`}
+                  <em className="relative flex min-w-0 px-1.5 font-medium not-italic">
+                    <span className="truncate">
+                      {partlyFree ? t`Partially available` : label(state)}
+                    </span>
+                    {partlyFree && (
+                      // Free lanes out of all, the same figure as the list.
+                      // Kept out of the truncation so a short bar loses the
+                      // words first, never the number.
+                      <span className="shrink-0 tabular-nums">
+                        &nbsp;
+                        {section.laneCount - (segment.lanesUsed ?? 0)}/
+                        {section.laneCount}
+                      </span>
+                    )}
                   </em>
                 </div>
               );
@@ -483,13 +503,31 @@ function SegmentList({
   const rows = (section: LaneSection) =>
     section.segments.map((segment) => {
       const state = effectiveStatus(segment, blocked);
-      const usable = state !== 'closed' && state !== 'blocked';
+      // While the track is unusable (see unavailableReason) nothing on it can
+      // be used, including the lanes a booking leaves free.
+      const usable = !blocked && state !== 'closed';
       const free =
         state === 'free'
           ? section.laneCount
           : section.laneCount - (segment.lanesUsed ?? section.laneCount);
-      const detail =
-        state === 'blocked' ? reasonText(blocked) : segment.reservedFor;
+      // A booking that leaves lanes free reads as open to others, with the
+      // booking itself in the detail line. TASERA, review 10/2026: clubs often
+      // book 10-20 lanes and everyone else is welcome on the rest.
+      const partlyFree = usable && state !== 'free' && free > 0;
+      const booked = segment.lanesUsed ?? 0;
+      let detail: string | undefined = segment.reservedFor;
+      if (state === 'blocked') detail = reasonText(blocked);
+      else if (partlyFree) {
+        const bookedText = t({
+          message: plural(booked, {
+            one: '# lane booked',
+            other: '# lanes booked',
+          }),
+        });
+        detail = [label(state), segment.reservedFor, bookedText]
+          .filter(Boolean)
+          .join(' · ');
+      }
 
       return (
         <li
@@ -503,11 +541,21 @@ function SegmentList({
             <b className="font-medium">
               <i
                 className={classNames(
-                  'relative top-0.5 mr-2 inline-block size-3 rounded-xs border border-black-tint-30',
-                  SEGMENT_MARK[state],
+                  'relative top-0.5 mr-2 inline-block size-3 overflow-hidden rounded-xs border border-black-tint-30',
+                  partlyFree ? css.markFree : SEGMENT_MARK[state],
                 )}
-              />
-              {label(state)}
+              >
+                {partlyFree && (
+                  // Top half in the booking's pattern, the rest free, as on the bar.
+                  <i
+                    className={classNames(
+                      'absolute inset-x-0 top-0 h-1/2',
+                      SEGMENT_MARK[state],
+                    )}
+                  />
+                )}
+              </i>
+              {partlyFree ? t`Partially available` : label(state)}
             </b>
             {detail && (
               <small className="block text-grey text-xs">{detail}</small>
@@ -536,8 +584,19 @@ function SegmentList({
           className="overflow-hidden rounded-md border border-black-tint-20"
         >
           <h2 className="flex justify-between gap-2 border-black-tint-20 border-b bg-black-tint-05 px-3 py-2 font-semibold text-grey text-xs uppercase tracking-wider">
-            <span>{section.name}</span>
-            <span className="font-normal normal-case tabular-nums">
+            <span>
+              {section.name}
+              {section.position && (
+                <>
+                  {' '}
+                  {/* Own line on phones, beside the name from sm up. */}
+                  <span className="block font-normal normal-case tracking-normal sm:ml-1 sm:inline">
+                    {section.position}
+                  </span>
+                </>
+              )}
+            </span>
+            <span className="shrink-0 whitespace-nowrap font-normal normal-case tabular-nums">
               {section.laneCount} {t`lanes`}
             </span>
           </h2>
