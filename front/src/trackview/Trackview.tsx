@@ -4,13 +4,14 @@ import { Link, useParams } from 'react-router-dom';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { CircularProgress } from '@mui/material';
 import classNames from 'classnames';
 import moment from 'moment';
 import { useQuery } from 'react-query';
 
 import api from '../api/api';
-import { useWeekDay } from '../utils/dateUtils';
 import css from './Trackview.module.scss';
 import { formatTime, toTrackViewDay } from './trackViewPlaceholder';
 import type {
@@ -36,15 +37,19 @@ import { unavailableReason } from './trackViewTypes';
  */
 export function Trackview() {
   const { t } = useLingui();
-  const { date: targetDate, track } = useParams<{
-    date: string;
+  const { date: dateParam, track } = useParams<{
+    date?: string;
     track: string;
   }>();
+  // The date is optional in the route; default to today, as the other views do.
+  const targetDate = dateParam ?? moment().format('YYYY-MM-DD');
 
   const { data: schedule, status } = useQuery({
     queryKey: ['trackview', targetDate],
     queryFn: () => api.getSchedulingDate(targetDate),
-    enabled: !!targetDate,
+    // Keep the day on screen while the next one loads, so stepping through days
+    // does not unmount the arrows and drop keyboard focus.
+    keepPreviousData: true,
   });
 
   const day = useMemo(() => toTrackViewDay(schedule), [schedule]);
@@ -56,9 +61,6 @@ export function Trackview() {
     () => day?.tracks.find((item) => item.name === track),
     [day, track],
   );
-
-  const date = useMemo(() => new Date(targetDate), [targetDate]);
-  const weekDay = useWeekDay(date, 'short');
 
   if (status === 'error') {
     return (
@@ -91,20 +93,19 @@ export function Trackview() {
 
   return (
     <TrackViewContainer date={targetDate}>
-      <h1 className="font-bold text-2xl text-center text-balance">
-        {selectedTrack.name}
-      </h1>
-      <p className="text-grey text-sm">
-        {weekDay} {moment(date).format('DD.MM.YYYY')}
+      <DateNav date={targetDate} track={selectedTrack.name} />
+      <p className="-mt-3 text-center text-grey text-sm">
         {day.open !== null && day.close !== null && (
           <>
-            {' · '}
             {t`Open`} {formatTime(day.open)}–{formatTime(day.close)}
           </>
         )}
+        {day.open !== null &&
+          day.close !== null &&
+          day.sunset !== null &&
+          ' · '}
         {day.sunset !== null && (
           <>
-            {' · '}
             {t`Sunset`} <DevValue>{formatTime(day.sunset)}</DevValue>
           </>
         )}
@@ -112,24 +113,35 @@ export function Trackview() {
 
       <RangeOfficerBanner day={day} />
 
-      <div className="w-full max-w-3xl flex flex-col gap-4 px-4">
-        <TrackHeader track={selectedTrack} />
-        <p className="-mb-2">
-          <DevFlag kind="placeholder" />
-        </p>
-        {day.open !== null && day.close !== null && (
-          <Timeline
-            track={selectedTrack}
-            open={day.open}
-            close={day.close}
-            blocked={blocked}
-          />
-        )}
-        <SegmentList
-          track={selectedTrack}
-          blocked={blocked}
-          arrivingAt={day.rangeOfficerArrivingAt}
+      {/* Desktop: the tracks become a sidebar beside the track, so the page
+          uses the screen's width and every track stays in view. */}
+      <div className="flex flex-col gap-5 lg:grid lg:grid-cols-[12rem_minmax(0,1fr)] lg:items-start lg:gap-6">
+        <TrackChips
+          date={targetDate}
+          tracks={day.tracks}
+          selected={selectedTrack.name}
         />
+
+        <section className="flex min-w-0 flex-col gap-4 rounded-xl border border-black-tint-20 bg-white p-4 sm:p-5 lg:p-6">
+          <h2 className="font-semibold text-xl">{selectedTrack.name}</h2>
+          <TrackHeader track={selectedTrack} />
+          <p className="-mb-2">
+            <DevFlag kind="placeholder" />
+          </p>
+          {day.open !== null && day.close !== null && (
+            <Timeline
+              track={selectedTrack}
+              open={day.open}
+              close={day.close}
+              blocked={blocked}
+            />
+          )}
+          <SegmentList
+            track={selectedTrack}
+            blocked={blocked}
+            arrivingAt={day.rangeOfficerArrivingAt}
+          />
+        </section>
       </div>
     </TrackViewContainer>
   );
@@ -140,8 +152,13 @@ function TrackViewContainer({
   children,
 }: { date: string; children: React.ReactNode }) {
   return (
-    <div className="relative flex flex-col items-center gap-2 pt-12 pb-16">
-      <BackLink date={date} />
+    // A readable column on phones and tablets; on desktop the full width of the
+    // screen, up to 1920px, beyond which rows would stretch too far apart to read.
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 pt-4 pb-16 sm:px-6 lg:max-w-[1920px] lg:px-8">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <BackLink date={date} />
+        <ViewTabs date={date} />
+      </div>
       {children}
     </div>
   );
@@ -151,12 +168,117 @@ function BackLink({ date }: { date: string }) {
   const { t } = useLingui();
   return (
     <Link
-      className="absolute top-2 left-2 flex items-center gap-1 p-2 text-grey hover:text-black"
+      className="-ml-2 flex items-center gap-1 p-2 text-grey hover:text-black"
       to={`/dayview/${moment(date).format('YYYY-MM-DD')}`}
     >
       <ArrowBackIcon fontSize="small" />
       {t`Back to day view`}
     </Link>
+  );
+}
+
+/*
+ * Navigation. Until this redesign the track view had none: seeing another day,
+ * another track or another view meant going back to the day view first (M-61).
+ * Everything here is a link rather than a button, so it can be opened in a new
+ * tab and the browser's back button works as members expect.
+ */
+
+/** Month / Week / Day / Track, all for the date being shown. */
+function ViewTabs({ date }: { date: string }) {
+  const { t } = useLingui();
+  const tab =
+    'rounded-md border border-black-tint-20 bg-white px-3 py-1.5 text-grey text-sm hover:border-black-tint-40 hover:text-black';
+
+  return (
+    <nav aria-label={t`Views`} className="flex gap-1">
+      <Link className={tab} to={`/monthview/${date}`}>{t`Month`}</Link>
+      <Link className={tab} to={`/weekview/${date}`}>{t`Week`}</Link>
+      <Link className={tab} to={`/dayview/${date}`}>{t`Day`}</Link>
+      <span
+        aria-current="page"
+        className="rounded-md border border-black-tint-70 bg-black-tint-70 px-3 py-1.5 font-medium text-sm text-white"
+      >
+        {t`Track`}
+      </span>
+    </nav>
+  );
+}
+
+/** The date, with the previous and next day on the same track either side. */
+function DateNav({ date, track }: { date: string; track: string }) {
+  const { t, i18n } = useLingui();
+
+  // Same wording as the other views' DateHeader, e.g. "Keskiviikkona 7.10.2026".
+  const label = useMemo(() => {
+    const text = i18n.date(new Date(date), {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+    });
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }, [date, i18n]);
+
+  const shift = (days: number) =>
+    `/trackview/${moment(date).add(days, 'day').format('YYYY-MM-DD')}/${track}`;
+  const arrow =
+    'flex size-9 shrink-0 items-center justify-center rounded-lg border border-black-tint-20 bg-white text-grey hover:border-black-tint-40 hover:text-black';
+
+  return (
+    <div className="flex items-center justify-center gap-3">
+      <Link className={arrow} to={shift(-1)} aria-label={t`Previous day`}>
+        <ChevronLeftIcon fontSize="small" />
+      </Link>
+      <h1 className="text-center font-semibold text-xl">{label}</h1>
+      <Link className={arrow} to={shift(1)} aria-label={t`Next day`}>
+        <ChevronRightIcon fontSize="small" />
+      </Link>
+    </div>
+  );
+}
+
+/**
+ * Every track on this day. The chips wrap onto a second line rather than
+ * scrolling sideways: tracks hidden past the edge of a phone screen with nothing
+ * to say they exist was the worst finding in the evaluation (M-04). On desktop
+ * they stack into a sidebar that stays in view while the track scrolls.
+ */
+function TrackChips({
+  date,
+  tracks,
+  selected,
+}: { date: string; tracks: TrackDetail[]; selected: string }) {
+  const { t } = useLingui();
+
+  return (
+    <nav
+      aria-label={t`Tracks`}
+      className="flex flex-wrap gap-2 lg:sticky lg:top-4 lg:max-h-[calc(100dvh-2rem)] lg:flex-col lg:overflow-y-auto lg:flex-nowrap lg:gap-1"
+    >
+      <h2 className="mb-1 hidden px-3 font-semibold text-grey text-xs uppercase tracking-wider lg:block">
+        {t`Tracks`}
+      </h2>
+      {tracks.map((item) =>
+        item.name === selected ? (
+          <span
+            key={item.id}
+            aria-current="page"
+            className="rounded-full border border-black bg-black-tint-05 px-3 py-1.5 font-medium text-sm lg:rounded-md lg:py-2"
+          >
+            {item.name}
+          </span>
+        ) : (
+          <Link
+            key={item.id}
+            className="rounded-full border border-black-tint-20 bg-white px-3 py-1.5 text-grey text-sm hover:border-black-tint-40 hover:text-black lg:rounded-md lg:py-2"
+            to={`/trackview/${date}/${item.name}`}
+          >
+            {item.name}
+          </Link>
+        ),
+      )}
+    </nav>
   );
 }
 
@@ -172,7 +294,7 @@ function RangeOfficerBanner({ day }: { day: TrackViewDay }) {
   return (
     <div
       className={classNames(
-        'w-full max-w-3xl mx-4 flex items-start gap-3 rounded-md border p-3',
+        'flex items-start gap-3 rounded-md border p-3',
         present
           ? 'border-black-tint-20 bg-white'
           : 'border-black-tint-40 bg-black-tint-05',
@@ -500,6 +622,9 @@ function SegmentList({
     return t`No range officer present`;
   };
 
+  // Rows follow the width of their own list (container queries), not the
+  // screen's: time on its own line when narrow, which is both a phone and a
+  // lohko column on a wide desktop.
   const rows = (section: LaneSection) =>
     section.segments.map((segment) => {
       const state = effectiveStatus(segment, blocked);
@@ -532,9 +657,9 @@ function SegmentList({
       return (
         <li
           key={`${segment.start}-${segment.end}`}
-          className="grid grid-cols-[1fr_auto] items-baseline gap-x-3 gap-y-1 border-black-tint-10 border-b py-3 last:border-b-0 sm:grid-cols-[auto_1fr_auto]"
+          className="grid grid-cols-[1fr_auto] items-baseline gap-x-3 gap-y-1 border-black-tint-10 border-b py-3 last:border-b-0 @sm:grid-cols-[auto_1fr_auto]"
         >
-          <span className="col-span-full text-grey text-sm tabular-nums sm:col-span-1 sm:text-black">
+          <span className="col-span-full text-grey text-sm tabular-nums @sm:col-span-1 @sm:text-black">
             {formatTime(segment.start)}–{formatTime(segment.end)}
           </span>
           <span className="min-w-0">
@@ -570,20 +695,23 @@ function SegmentList({
 
   if (!grouped) {
     return (
-      <ul className="list-none border-black-tint-10 border-t p-0">
+      <ul className="@container list-none border-black-tint-10 border-t p-0">
         {rows(track.sections[0])}
       </ul>
     );
   }
 
   return (
-    <div className="flex flex-col gap-2.5">
+    // Side by side on wide screens: track 1's lohkot read left, middle, right,
+    // the way they sit on the range.
+    <div className="grid gap-2.5 xl:grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] xl:items-start">
       {track.sections.map((section) => (
         <div
           key={section.id}
           className="overflow-hidden rounded-md border border-black-tint-20"
         >
-          <h2 className="flex justify-between gap-2 border-black-tint-20 border-b bg-black-tint-05 px-3 py-2 font-semibold text-grey text-xs uppercase tracking-wider">
+          {/* h3: a section belongs to the track, whose name is the h2. */}
+          <h3 className="flex justify-between gap-2 border-black-tint-20 border-b bg-black-tint-05 px-3 py-2 font-semibold text-grey text-xs uppercase tracking-wider">
             <span>
               {section.name}
               {section.position && (
@@ -599,8 +727,8 @@ function SegmentList({
             <span className="shrink-0 whitespace-nowrap font-normal normal-case tabular-nums">
               {section.laneCount} {t`lanes`}
             </span>
-          </h2>
-          <ul className="list-none px-3 py-0">{rows(section)}</ul>
+          </h3>
+          <ul className="@container list-none px-3 py-0">{rows(section)}</ul>
         </div>
       ))}
     </div>

@@ -1,5 +1,7 @@
 import { TestProviders } from '@/_TestUtils/TestProvides';
 import { render, screen, within } from '@testing-library/react';
+import moment from 'moment';
+import { useParams } from 'react-router-dom';
 import testUtils from '../_TestUtils/TestUtils';
 import api from '../api/api';
 import { Trackview } from './Trackview';
@@ -19,19 +21,105 @@ vi.mock('react-router-dom', async (originalImport) => {
 /**
  * LinguiProvider renders null until its catalog import resolves, and this version
  * of Testing Library does not reliably settle a second `findBy*` afterwards. So
- * each test awaits the track name once, then asserts synchronously.
+ * each test awaits the track's heading once, then asserts synchronously.
  */
 async function renderTrackview(schedule = testUtils.schedule) {
   vi.mocked(api.getSchedulingDate).mockResolvedValue(schedule);
   const result = render(<Trackview />, { wrapper: TestProviders });
-  await screen.findByText('Shooting Track 0', {}, { timeout: 5000 });
+  await screen.findByRole(
+    'heading',
+    { level: 2, name: 'Shooting Track 0' },
+    { timeout: 5000 },
+  );
   return result;
 }
 
 describe('testing Trackview', () => {
   it('should render Trackview', async () => {
     await renderTrackview();
-    expect(screen.getByText('Shooting Track 0')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Shooting Track 0' }),
+    ).toBeInTheDocument();
+  });
+
+  describe('navigation', () => {
+    it('links to the previous and next day on the same track', async () => {
+      await renderTrackview();
+
+      expect(
+        screen.getByRole('link', { name: 'Previous day' }),
+      ).toHaveAttribute(
+        'href',
+        expect.stringMatching(
+          /\/trackview\/2020-02-19\/Shooting(%20| )Track(%20| )0$/,
+        ),
+      );
+      expect(screen.getByRole('link', { name: 'Next day' })).toHaveAttribute(
+        'href',
+        expect.stringMatching(
+          /\/trackview\/2020-02-21\/Shooting(%20| )Track(%20| )0$/,
+        ),
+      );
+    });
+
+    it('links to every other track on the same day, and marks the current one', async () => {
+      await renderTrackview();
+
+      const tracks = within(screen.getByRole('navigation', { name: 'Tracks' }));
+      expect(tracks.getAllByRole('link')).toHaveLength(
+        testUtils.schedule.tracks.length - 1,
+      );
+      expect(
+        tracks.getByRole('link', { name: 'Shooting Track 1' }),
+      ).toHaveAttribute(
+        'href',
+        expect.stringMatching(
+          /\/trackview\/2020-02-20\/Shooting(%20| )Track(%20| )1$/,
+        ),
+      );
+      expect(tracks.getByText('Shooting Track 0')).toHaveAttribute(
+        'aria-current',
+        'page',
+      );
+    });
+
+    it('links to the month, week and day views for the same date', async () => {
+      await renderTrackview();
+
+      const views = within(screen.getByRole('navigation', { name: 'Views' }));
+      expect(views.getByRole('link', { name: 'Month' })).toHaveAttribute(
+        'href',
+        expect.stringMatching(/\/monthview\/2020-02-20$/),
+      );
+      expect(views.getByRole('link', { name: 'Week' })).toHaveAttribute(
+        'href',
+        expect.stringMatching(/\/weekview\/2020-02-20$/),
+      );
+      expect(views.getByRole('link', { name: 'Day' })).toHaveAttribute(
+        'href',
+        expect.stringMatching(/\/dayview\/2020-02-20$/),
+      );
+      expect(views.getByText('Track')).toHaveAttribute('aria-current', 'page');
+    });
+
+    it('defaults to today when the route has no date', async () => {
+      // /trackview/:date? — without this the tabs would link to /monthview/undefined.
+      vi.mocked(useParams).mockReturnValue({ track: 'Shooting Track 0' });
+      try {
+        await renderTrackview();
+        const today = moment().format('YYYY-MM-DD');
+        const views = within(screen.getByRole('navigation', { name: 'Views' }));
+        expect(views.getByRole('link', { name: 'Month' })).toHaveAttribute(
+          'href',
+          expect.stringMatching(new RegExp(`/monthview/${today}$`)),
+        );
+      } finally {
+        vi.mocked(useParams).mockReturnValue({
+          date: '2020-02-20',
+          track: 'Shooting Track 0',
+        });
+      }
+    });
   });
 
   it('reports that no track can be used when the range officer is away', async () => {

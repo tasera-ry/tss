@@ -1454,6 +1454,10 @@ msgstr "Bana uppdaterad"
 #~ msgid "Track visitors successfully upded"
 #~ msgstr "Användarinformationen har loggats"
 
+#: src/trackview/Trackview.tsx:196
+msgid "Track"
+msgstr "Bana"
+
 #: src/pages/EditTracksView/EditTracksView.tsx:64
 msgid "Tracks"
 msgstr "Banor"

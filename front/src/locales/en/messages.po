@@ -1460,6 +1460,10 @@ msgstr "Track updated successfully"
 #~ msgid "Track visitors successfully upded"
 #~ msgstr "Track visitors successfully upded"
 
+#: src/trackview/Trackview.tsx:196
+msgid "Track"
+msgstr "Track"
+
 #: src/pages/EditTracksView/EditTracksView.tsx:64
 msgid "Tracks"
 msgstr "Tracks"
