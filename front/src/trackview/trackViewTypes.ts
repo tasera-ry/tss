@@ -26,7 +26,6 @@ export type RangeOfficerState =
   | 'present'
   | 'confirmed'
   | 'not confirmed'
-  | 'en route'
   | 'absent'
   | 'closed';
 

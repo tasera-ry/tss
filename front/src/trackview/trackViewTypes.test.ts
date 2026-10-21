@@ -24,13 +24,7 @@ describe('unavailableReason', () => {
     expect(unavailableReason({ rangeOfficer: 'present' }, normal)).toBeNull();
   });
 
-  it.each([
-    ['absent'],
-    ['confirmed'],
-    ['not confirmed'],
-    ['en route'],
-    ['closed'],
-  ] as const)(
+  it.each([['absent'], ['confirmed'], ['not confirmed'], ['closed']] as const)(
     'blocks a normal track when the range officer is %s, even with a track officer present',
     (rangeOfficer) => {
       expect(unavailableReason({ rangeOfficer }, normal)).toBe(
@@ -76,7 +70,7 @@ describe('unavailableReason', () => {
   });
 
   describe('the track 6 exception', () => {
-    it.each([['absent'], ['confirmed'], ['en route']] as const)(
+    it.each([['absent'], ['confirmed']] as const)(
       'stays usable with its own officer while the range officer is %s',
       (rangeOfficer) => {
         expect(unavailableReason({ rangeOfficer }, track6)).toBeNull();

@@ -57,8 +57,6 @@ export const checkColor = (days, oneDay) => {
       return colors.greenLight;
     case 'not confirmed':
       return colors.turquoise;
-    case 'en route':
-      return colors.orange;
     case 'closed':
       return colors.redLight;
     case 'absent':

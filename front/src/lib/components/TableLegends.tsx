@@ -30,11 +30,6 @@ export function TableLegends({
             colorClass="bg-green-light"
           />
         )}
-        {/* Range officer on the way */}
-        <LegendItem
-          label={t`Range officer on the way`}
-          colorClass="bg-orange"
-        />
         {/* Range closed */}
         <LegendItem label={t`Range closed`} colorClass="bg-red-light" />
         {/* Range officer undefined  */}

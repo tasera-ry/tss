@@ -193,7 +193,6 @@ function toRangeOfficer(value: string | null): RangeOfficerState {
     case 'present':
     case 'confirmed':
     case 'not confirmed':
-    case 'en route':
     case 'closed':
       return value;
     default:

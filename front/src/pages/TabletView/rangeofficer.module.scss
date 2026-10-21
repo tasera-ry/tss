@@ -65,11 +65,6 @@
   background-color: $COLOR_GREEN;
 }
 
-.rowStyle > .orangeButtonStyle {
-  @extend .colorButton;
-  background-color: $COLOR_ORANGE;
-}
-
 .rowStyle > .redButtonStyle {
   @extend .colorButton;
   background-color: $COLOR_RED_LIGHT;

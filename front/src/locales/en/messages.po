@@ -448,11 +448,6 @@ msgstr "Email queue settings"
 msgid "Email settings"
 msgstr "Email settings"
 
-#: src/upcomingsupervisions/LoggedIn.jsx:261
-#: src/profile/profilepages/supervisions.tsx:263
-msgid "En route"
-msgstr "En route"
-
 #: src/EmailSettings/EmailSettings.tsx:340
 msgid "Enable email queue"
 msgstr "Enable email queue"
@@ -876,12 +871,6 @@ msgstr "Old password is required"
 msgid "Old password isn't valid"
 msgstr "Old password isn't valid"
 
-#: src/scheduling/Scheduling.jsx:1159
-#: src/pages/TabletView/components/TrackCard.tsx:28
-#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:109
-msgid "On the way"
-msgstr "On the way"
-
 #: src/scheduling/Scheduling.jsx:1055
 #: src/pages/TabletView/components/OpenHoursSection.tsx:101
 #: src/pages/DayView/DayView.tsx:193
@@ -1028,16 +1017,6 @@ msgstr "Range officer management"
 #: src/trackview/Trackview.tsx:121
 msgid "Range officer not present"
 msgstr "Range officer not present"
-
-#: src/trackview/Trackview.tsx:119
-#: src/scheduling/Scheduling.jsx:378
-#: src/scheduling/Scheduling.jsx:380
-#: src/scheduling/Scheduling.jsx:957
-#: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:132
-#: src/pages/DayView/DayView.tsx:179
-#: src/lib/components/TableLegends.tsx:35
-msgid "Range officer on the way"
-msgstr "Range officer on the way"
 
 #: src/trackview/Trackview.tsx:117
 #: src/scheduling/Scheduling.jsx:348
