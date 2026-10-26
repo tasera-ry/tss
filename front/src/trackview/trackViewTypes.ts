@@ -141,9 +141,24 @@ export interface TrackViewDay {
  * with no constraint between them — so the view derives it rather than trusting
  * the payload.
  *
+ * A range officer who is booked but not yet on site ('confirmed', 'not
+ * confirmed') does not block the track: that is how every future day looks,
+ * because 'present' is only set at the range. Members plan ahead, so those days
+ * show what will be open, and the view says the officer is still to arrive
+ * (see awaitingRangeOfficer). Raised in review of #453.
+ *
  * BACKEND(B10): enforce the rule on write; keep this as the display rule.
  */
 export type UnavailableReason = 'noRangeOfficer' | 'noTrackOfficer' | null;
+
+/** A range officer is booked for the day but not on site yet. */
+export function awaitingRangeOfficer(
+  day: Pick<TrackViewDay, 'rangeOfficer'>,
+): boolean {
+  return (
+    day.rangeOfficer === 'confirmed' || day.rangeOfficer === 'not confirmed'
+  );
+}
 
 export function unavailableReason(
   day: Pick<TrackViewDay, 'rangeOfficer'>,
@@ -152,7 +167,11 @@ export function unavailableReason(
   // Range officer first, because it is the broader fact: on a normal track it
   // explains every other track on the page too. For track 6 the check is
   // skipped, and the track's own officer decides.
-  if (track.requiresRangeOfficer && day.rangeOfficer !== 'present') {
+  if (
+    track.requiresRangeOfficer &&
+    day.rangeOfficer !== 'present' &&
+    !awaitingRangeOfficer(day)
+  ) {
     return 'noRangeOfficer';
   }
   // Every track needs its own officer. The exception above is about the range

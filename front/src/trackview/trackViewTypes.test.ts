@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { unavailableReason } from './trackViewTypes';
+import { awaitingRangeOfficer, unavailableReason } from './trackViewTypes';
 
 /**
  * The rule, as the customer stated it.
@@ -24,12 +24,29 @@ describe('unavailableReason', () => {
     expect(unavailableReason({ rangeOfficer: 'present' }, normal)).toBeNull();
   });
 
-  it.each([['absent'], ['confirmed'], ['not confirmed'], ['closed']] as const)(
+  it.each([['absent'], ['closed']] as const)(
     'blocks a normal track when the range officer is %s, even with a track officer present',
     (rangeOfficer) => {
       expect(unavailableReason({ rangeOfficer }, normal)).toBe(
         'noRangeOfficer',
       );
+    },
+  );
+
+  it.each([['confirmed'], ['not confirmed']] as const)(
+    'does not block a track while a booked range officer is still to arrive (%s)',
+    (rangeOfficer) => {
+      // Every future day looks like this, because 'present' is only set at the
+      // range. Blocking it would show every coming day as closed. Review of #453.
+      expect(unavailableReason({ rangeOfficer }, normal)).toBeNull();
+      expect(awaitingRangeOfficer({ rangeOfficer })).toBe(true);
+    },
+  );
+
+  it.each([['present'], ['absent'], ['closed']] as const)(
+    'is not awaiting a range officer who is %s',
+    (rangeOfficer) => {
+      expect(awaitingRangeOfficer({ rangeOfficer })).toBe(false);
     },
   );
 

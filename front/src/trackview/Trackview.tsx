@@ -16,13 +16,14 @@ import css from './Trackview.module.scss';
 import { formatTime, toTrackViewDay } from './trackViewPlaceholder';
 import type {
   LaneSection,
+  RangeOfficerState,
   SegmentStatus,
   TimeSegment,
   TrackDetail,
   TrackViewDay,
   UnavailableReason,
 } from './trackViewTypes';
-import { unavailableReason } from './trackViewTypes';
+import { awaitingRangeOfficer, unavailableReason } from './trackViewTypes';
 
 /**
  * Track view (#432 redesign, with placeholders for #419, #420 and #421).
@@ -140,6 +141,11 @@ export function Trackview() {
             track={selectedTrack}
             blocked={blocked}
             arrivingAt={day.rangeOfficerArrivingAt}
+            awaiting={
+              selectedTrack.requiresRangeOfficer && awaitingRangeOfficer(day)
+                ? day.rangeOfficer
+                : null
+            }
           />
         </section>
       </div>
@@ -290,12 +296,21 @@ function TrackChips({
 function RangeOfficerBanner({ day }: { day: TrackViewDay }) {
   const { t } = useLingui();
   const present = day.rangeOfficer === 'present';
+  // Booked but not on site yet: how every future day looks.
+  const awaiting = awaitingRangeOfficer(day);
+
+  let title = t`No range officer present`;
+  if (present) title = t`Range officer present`;
+  else if (day.rangeOfficer === 'confirmed') title = t`Range officer confirmed`;
+  else if (day.rangeOfficer === 'not confirmed') {
+    title = t`Range officer predefined`;
+  }
 
   return (
     <div
       className={classNames(
         'flex items-start gap-3 rounded-md border p-3',
-        present
+        present || awaiting
           ? 'border-black-tint-20 bg-white'
           : 'border-black-tint-40 bg-black-tint-05',
       )}
@@ -308,13 +323,13 @@ function RangeOfficerBanner({ day }: { day: TrackViewDay }) {
         )}
       />
       <span className="text-sm">
-        <b className="font-semibold">
-          {present ? t`Range officer present` : t`No range officer present`}
-        </b>
+        <b className="font-semibold">{title}</b>
         <span className="block text-grey">
-          {present
-            ? t`Tracks can be used during opening hours.`
-            : t`No track can be used until the range officer arrives.`}
+          {present && t`Tracks can be used during opening hours.`}
+          {awaiting && t`Tracks can be used once the range officer arrives.`}
+          {!present &&
+            !awaiting &&
+            t`No track can be used until the range officer arrives.`}
           {!present && day.rangeOfficerArrivingAt !== null && (
             <>
               {' '}
@@ -603,24 +618,36 @@ function SegmentList({
   track,
   blocked,
   arrivingAt,
+  awaiting,
 }: {
   track: TrackDetail;
   blocked: UnavailableReason;
   arrivingAt: number | null;
+  /** Set when a range officer is booked for this track's day but not on site. */
+  awaiting: RangeOfficerState | null;
 }) {
   const { t } = useLingui();
   const label = useSegmentLabel();
   const grouped = track.sections.some((s) => s.name);
 
+  const arrival =
+    arrivingAt !== null
+      ? t`Range officer arriving at ${formatTime(arrivingAt)}`
+      : null;
+
   // The cause, and where it is known, when it changes. "Should I come later?"
   // is the question a member actually has.
   const reasonText = (reason: UnavailableReason) => {
     if (reason === 'noTrackOfficer') return t`No track officer present`;
-    if (arrivingAt !== null) {
-      return t`Range officer arriving at ${formatTime(arrivingAt)}`;
-    }
-    return t`No range officer present`;
+    return arrival ?? t`No range officer present`;
   };
+
+  // Free time on a day whose range officer is still to arrive: open, but say so.
+  let awaitingText: string | null = null;
+  if (awaiting === 'confirmed')
+    awaitingText = arrival ?? t`Range officer confirmed`;
+  else if (awaiting === 'not confirmed')
+    awaitingText = t`Range officer predefined`;
 
   // Rows follow the width of their own list (container queries), not the
   // screen's: time on its own line when narrow, which is both a phone and a
@@ -649,10 +676,10 @@ function SegmentList({
             other: '# lanes booked',
           }),
         });
-        detail = [label(state), segment.reservedFor, bookedText]
+        detail = [label(state), segment.reservedFor, bookedText, awaitingText]
           .filter(Boolean)
           .join(' · ');
-      }
+      } else if (state === 'free' && awaitingText) detail = awaitingText;
 
       return (
         <li

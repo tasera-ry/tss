@@ -209,6 +209,42 @@ describe('testing Trackview', () => {
     });
   });
 
+  describe('on a day whose range officer is booked but not on site yet', () => {
+    // How every future day looks: 'present' is only set at the range. Review of #453.
+    const booked = (rangeSupervision: string) => ({
+      ...testUtils.schedule,
+      rangeSupervision,
+      tracks: testUtils.schedule.tracks.map((track, i) =>
+        i === 0 ? { ...track, trackSupervision: 'present' } : track,
+      ),
+    });
+
+    it('shows free time as free, and says the range officer is confirmed', async () => {
+      await renderTrackview(booked('confirmed'));
+
+      expect(screen.queryByText('No shooting')).not.toBeInTheDocument();
+      expect(screen.getAllByText('Free').length).toBeGreaterThan(0);
+      const banner = within(screen.getByTestId('range-officer-banner'));
+      expect(banner.getByText('Range officer confirmed')).toBeInTheDocument();
+      expect(
+        banner.getByText('Tracks can be used once the range officer arrives.'),
+      ).toBeInTheDocument();
+      // Beside each free stretch too, so the reason is never only in the banner.
+      expect(
+        screen.getAllByText('Range officer confirmed').length,
+      ).toBeGreaterThan(1);
+    });
+
+    it('says so when the range officer is not confirmed yet', async () => {
+      await renderTrackview(booked('not confirmed'));
+
+      expect(screen.queryByText('No shooting')).not.toBeInTheDocument();
+      expect(
+        screen.getAllByText('Range officer predefined').length,
+      ).toBeGreaterThan(1);
+    });
+  });
+
   it('offers no free lanes on a part-booked stretch while a supervisor is missing', async () => {
     await renderTrackview();
 
