@@ -33,9 +33,23 @@ exports.seed = async function (knex) {
 casual.define('range_supervision', async (supervisionId) => {
 	const state = ['absent', 'confirmed', 'not confirmed', 'present'];
 
+	const supervisor = state[casual.integer(0, state.length - 1)];
+
+	// The public legend calls the 'confirmed' state "Päävalvoja varmistettu,
+	// arvioitu saapumisaika", so it only makes sense with a time attached. The
+	// seed never set one, which left that whole path unreachable in development.
+	const expectsArrival = supervisor === 'confirmed';
+	let arrivingAt = null;
+	if (expectsArrival) {
+		const hour = String(casual.integer(9, 19)).padStart(2, '0');
+		const minute = ['00', '15', '30', '45'][casual.integer(0, 3)];
+		arrivingAt = `${hour}:${minute}:00`;
+	}
+
 	return {
 		scheduled_range_supervision_id: supervisionId,
-		range_supervisor: state[casual.integer(0, state.length - 1)],
+		range_supervisor: supervisor,
+		arriving_at: arrivingAt,
 		notice: casual.description.substring(0, 255),
 	};
 });

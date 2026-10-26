@@ -37,11 +37,15 @@ exports.seed = async function (knex) {
 };
 
 casual.define('supervision', function (reservationId, association) {
-	const openingHour = casual.integer(0, 22);
-	const closingHour = casual.integer(openingHour + 1, 23);
+	// Daytime or evening hours on the hour or half hour, like Tasera's real ones.
+	const openingHour = casual.integer(9, 17);
+	const closingHour = Math.min(openingHour + casual.integer(3, 8), 22);
+	const half = () => (casual.integer(0, 1) ? '30' : '00');
 
-	const open = `${openingHour}:${casual.integer(0, 59)}:00`;
-	const close = `${closingHour}:${casual.integer(0, 59)}:00`;
+	const open = `${String(openingHour).padStart(2, '0')}:${half()}:00`;
+	// At the 22:00 cap the half hour would push closing past it.
+	const closeMinute = closingHour === 22 ? '00' : half();
+	const close = `${String(closingHour).padStart(2, '0')}:${closeMinute}:00`;
 	const useAssociation = !!casual.integer(0, 3);
 
 	return {
