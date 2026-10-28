@@ -14,7 +14,7 @@ export function DeviceStatusList() {
   if (!devices.data) return null;
 
   return (
-    <div className="flex flex-col items-center gap-2 p-2">
+    <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-2 w-full">
       {devices.data.map((device) => (
         <DeviceLabel key={device.id} device={device} />
       ))}
@@ -28,11 +28,11 @@ function DeviceLabel({ device }: { device: any }) {
   return (
     <div
       className={classNames(
-        'rounded-xl flex flex-col text-nowrap w-full items-center justify-center font-medium py-1 px-2',
+        'rounded-xl flex flex-col text-center w-full items-center w-full min-w-0 items-center justify-center font-medium py-1 px-2',
         device.status === 'reserved' ? 'bg-red-light' : 'bg-green',
       )}
     >
-      <span>{device.device_name}</span>
+      <span className="max-w-full break-words">{device.device_name}</span>
       <span className="text-sm">
         {device.status === 'reserved' ? t`Reserved` : t`Free`}
       </span>
