@@ -1,294 +1,204 @@
 @import '../../shared.module.scss';
 
-.sevenGrid {
+.dayviewContainer {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  align-items: center;
+  padding: 16px;
+  min-height: 100vh;
 }
 
-.DayviewInfo {
-  position: absolute;
-  bottom: 0;
+.viewChangerWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.mainCard {
   width: 100%;
-  text-align: center;
+  max-width: 100%;
+  background: $COLOR_WHITE;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid $COLOR_BLACK_TINT_20;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.summaryText {
+  font-size: 13px;
+  color: $COLOR_BLACK_TINT_60;
+  margin-bottom: 12px;
+}
+
+.supervisorBanner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+  padding: 14px 20px;
+  margin-bottom: 24px;
+  border: 3px solid #23261F;
+}
+
+.supervisorLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bannerClockIcon {
+  font-size: 28px !important;
+}
+
+.supervisorTitle {
   margin: 0;
-  
+  font-size: 16px;
+  font-weight: bold;
 }
 
-.overflowHidden {
+.supervisorRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.openHoursLabel {
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.openHoursTime {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.greenB {
+  background-color: $COLOR_GREEN !important;
+  color: $COLOR_WHITE !important;
+}
+
+.lightGreenB {
+  background-color: $COLOR_GREEN_LIGHT !important;
+  color: $COLOR_BLACK !important;
+}
+
+.blueB {
+  background-color: $COLOR_TURQUOISE !important;
+  color: $COLOR_BLACK !important;
+}
+
+.redB {
+  background-color: $COLOR_RED_LIGHT !important;
+  color: $COLOR_WHITE !important;
+}
+
+.whiteB {
+  background-color: $COLOR_BLACK_TINT_05 !important;
+  color: $COLOR_BLACK_TINT_70 !important;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 20px 0 12px 0;
+  color: $COLOR_BLACK;
+}
+
+.tracksGrid {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 24px;
+
+  grid-template-columns: 1fr;
+
+  @media only screen and (min-width: 600px) {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+}
+
+.trackCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid $COLOR_BLACK_TINT_20;
+  border-radius: 10px;
   overflow: hidden;
-  display: inline;
+  background: $COLOR_WHITE;
+  min-height: 150px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: $COLOR_BLACK_TINT_50;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.trackDetails {
+  flex: 1;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.trackHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .bold {
   font-weight: bold;
+  font-size: 14px;
 }
 
-.hidden {
-  margin-right: 8px;
-  margin-left: 8px;
-  font-weight: bold;
+.infoIcon {
+  font-size: 18px !important;
+  color: $COLOR_BLACK_TINT_60;
 }
 
-.linebreak {
-  display: none;
+.trackDesc {
+  font-size: 12px;
+  color: $COLOR_BLACK_TINT_70;
+  margin-top: 2px;
 }
 
-.Track {
-  font-size: 32px;
+.trackSub {
+  font-size: 10px;
+  color: $COLOR_BLACK_TINT_50;
 }
 
-h1.headerText {
-  font-size: 24px;
-}
-
-h2.headerText {
-  font-size: 16px;
-  text-align: center;
-}
-
-.infoImg {
-  position: absolute;
-  bottom: 1px;
-  height: 22px;
-  width: 22px;
-  margin-right: 8px;
-  margin-bottom: 0px;
-  clear: both;
-  min-height: 22px;
-  min-width: 22px;
-}
-
-.infoImg2 {
-  position: relative;
-  margin: 0;
-  width: 32px;
-  max-height: 32px;
-  max-width: 32px;
-}
-
-.dayviewContainer h1 {
-  margin: 2vmin;
-}
-
-.dayviewContainer h2 {
-  margin: 10px;
-}
-
-.dayviewContainer .dateHeader {
-  flex-wrap: nowrap;
-  justify-content: center;
-  margin-top: 12px;
-  margin-bottom: 12px;
-}
-
-.dayviewTrackContainer {
-  display: flex;
-  margin-bottom: 16px;
-  justify-content: center;
-  border: 2px solid $COLOR_BLACK_TINT_70;
-  background-color: $COLOR_BLACK_TINT_70;
-  border-radius: 5px;
-  margin-top: -5px;
-}
-
-.dayviewContainer .dateHeader .titleContainer {
+.statusBadge {
+  width: 100%;
   display: flex;
   align-items: center;
-  text-align: start;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  width: 360px;
-}
-
-.dayviewContainer .info {
-  text-align: center;
-  background: $COLOR_GREEN_LIGHT;
-}
-
-.dayviewContainer .sevenGrid > div {
-  max-width: 100%;
-  margin: 3px;
-  border-radius: 5px;
-}
-
-.dayviewContainer .track {
-  position: relative;
-  box-sizing: border-box;
-  min-height: 100px;
-}
-
-.dayviewContainer .clickableBox {
-  box-sizing: border-box;
-  background: $COLOR_WHITE;
-  padding: 25% 0vh 25% 0vh;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 8px;
   text-align: center;
 }
 
-.dayviewContainer .greenB {
-  background: $COLOR_GREEN;
+.statusIcon {
+  font-size: 16px !important;
 }
 
-.infoItem .greenB {
-  background: $COLOR_GREEN;
-}
-
-.dayviewContainer .lightGreenB {
-  background: $COLOR_GREEN_LIGHT;
-}
-
-.dayviewContainer .blueB {
-  background: $COLOR_TURQUOISE;
-}
-
-.dayviewContainer .redB {
-  background: $COLOR_RED_LIGHT;
-}
-
-.infoItem .redB {
-  background: $COLOR_RED_LIGHT;
-}
-
-.dayviewContainer .whiteB {
-  background: $COLOR_BLACK_TINT_05;
-}
-
-.infoItem .whiteB {
-  background: $COLOR_BLACK_TINT_05;
-}
-
-.dayviewContainer .arrowRight {
-  @extend .arrow;
-  padding: 0;
-  margin: 0;
-
+.backLink {
   display: flex;
-}
-
-.dayviewContainer .arrowLeft {
-  @extend .arrow;
-  padding: 0;
-  margin: 0;
-
-  display: flex;
-}
-
-.back {
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
   color: $COLOR_BLACK;
-}
-
-.dayviewContainer .back > svg {
-  margin-bottom: -7px;
-  margin-right: 5px;
-}
-
-.dayviewContainer .hoverHand:hover {
-  cursor: pointer;
-}
-
-.dayviewContainer .trackBoxLink {
-  display: block;
-  width: 96%;
-  height: 100%;
   text-decoration: none;
-  color: $COLOR_BLACK_TINT_80;
-  padding-left: 2%;
-  padding-right: 2%;
-}
+  font-size: 14px;
+  padding-bottom: 12px;
 
-.dayviewBigContainer {
-  width: 100vw;
-  max-width: 1025px;
-  margin: auto;
-}
-
-/* media files */
-
-/* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
-@media only screen and (min-width: 320px) {
-}
-/* smartphones, Android phones, landscape iPhone */
-@media only screen and (min-width: 480px) {
-  .dayviewContainer .dateHeader {
-    flex-wrap: nowrap;
-    justify-content: center;
-    margin-top: 4px;
-    margin-bottom: 0;
+  &:hover {
+    text-decoration: underline;
   }
-
-  h1.headerText {
-    font-size: 32px;
-  }
-
-  h2.headerText {
-    font-size: 24px;
-    margin: 4px;
-  }
-
-  .dayviewContainer .arrowRight {
-    margin-left: 2vw;
-  }
-
-  .dayviewContainer .arrowLeft {
-    margin-right: 2vw;
-  }
-}
-/* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
-@media only screen and (min-width: 600px) {
-  .dayviewContainer .dateHeader {
-    margin-top: 0;
-  }
-  .sevenGrid {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    width: 100%;
-  }
-  /* To have 7 boxes force size 100 / 7 = 14.28571428571429 */
-  .dayviewContainer .sevenGrid > div {
-    width: 14.28571428571429%;
-    max-width: 150px;
-    height: 150px;
-  }
-
-  .hidden {
-    display: none;
-  }
-
-  .linebreak {
-    display: inline;
-  }
-
-  .dayviewContainer .trackBoxLink {
-    width: 90%;
-    padding-left: 5%;
-    padding-right: 5%;
-  }
-
-  .overflowHidden {
-    overflow: hidden;
-    max-height: 60%;
-    display: inline-block;
-  }
-}
-/* tablet, landscape iPad, lo-res laptops ands desktops */
-@media only screen and (min-width: 801px) {
-}
-/* big landscape tablets, laptops, and desktops */
-@media only screen and (min-width: 1025px) {
-  .infoImg2 {
-    width: 44px;
-    max-height: 44px;
-    max-width: 44px;
-  }
-}
-/* hi-res laptops and desktops */
-@media only screen and (min-width: 1281px) {
-  .dayviewContainer .sevenGrid > div {
-    max-width: 150px;
-    height: 150px;
-  }
-}
-
-@media only screen and (orientation: landscape) {
 }
