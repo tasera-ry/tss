@@ -4,6 +4,7 @@ const config = require('../config/config');
 const moment = require('moment-timezone');
 const fetch = require('node-fetch');
 const _ = require('lodash');
+const getSunset = require('../services/sunset');
 
 /*
 *  Get complete scheduling for a date
@@ -202,6 +203,7 @@ exports.getScheduleDate = async (req, res) => {
       available: available,
       rangeSupervisorId: rangeSupervisorId,
       arrivingAt: arrivingAt,
+      sunset: getSunset(date),
       rangeSupervision: (!available ? 'closed' : rangeSupervisionState),
       rangeSupervisionScheduled: rangeSupervisionScheduled,
       tracks: tracks

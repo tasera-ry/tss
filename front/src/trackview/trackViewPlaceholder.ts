@@ -50,6 +50,7 @@ interface ApiDay {
   close: string | null;
   rangeSupervision: string | null;
   arrivingAt: string | null;
+  sunset?: string | null;
   tracks: ApiTrack[];
 }
 
@@ -130,9 +131,6 @@ const DEFAULT_CONFIG = { lanes: 20, notes: [] as string[] };
  * keying it to a position breaks the moment tracks are reordered.
  */
 const NO_RANGE_OFFICER_NEEDED = new Set([5]);
-
-/** PLACEHOLDER for #437. Deliberately one fixed time rather than a real one. */
-export const PLACEHOLDER_SUNSET = 18 * 60 + 32;
 
 function laneConfig(index: number) {
   return LANE_CONFIG[index] ?? DEFAULT_CONFIG;
@@ -237,7 +235,7 @@ function buildSections(
 /**
  * Map the live payload into what the redesigned view needs, filling the gaps.
  * Real: name, description, notice, both supervisor statuses, opening hours.
- * Placeholder: lane counts, sections, time segments, sunset.
+ * Placeholder: lane counts, sections and time segments.
  */
 export function toTrackViewDay(api: ApiDay | undefined): TrackViewDay | null {
   if (!api) return null;
@@ -263,12 +261,7 @@ export function toTrackViewDay(api: ApiDay | undefined): TrackViewDay | null {
     close,
     rangeOfficer: toRangeOfficer(api.rangeSupervision),
     rangeOfficerArrivingAt: toMinutes(api.arrivingAt),
-    // PLACEHOLDER until #437. Null renders nothing rather than a wrong time.
-    // PLACEHOLDER until #437. A fixed time, not a real one for this date, so
-    // nobody mistakes it for the feature working. The view marks it as such.
-    // The real value would come from Ilmatieteen laitos or similar, and matters
-    // on tracks 5 and 6 where shooting is barred after dark.
-    sunset: PLACEHOLDER_SUNSET,
+    sunset: toMinutes(api.sunset),
     tracks,
   };
 }

@@ -121,7 +121,7 @@ export interface TrackViewDay {
   rangeOfficer: RangeOfficerState;
   /** Estimated arrival, minutes from midnight, when one has been given. */
   rangeOfficerArrivingAt: number | null;
-  /** For #437. Null until the sunset integration exists. */
+  /** Local sunset time in minutes from midnight; null when unavailable. */
   sunset: number | null;
   tracks: TrackDetail[];
 }
