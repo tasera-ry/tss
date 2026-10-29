@@ -63,27 +63,22 @@ export function Dayview() {
     <div>
       <InfoBox tabletMode={true} />
       <div className={classes(css.dayviewContainer)}>
-        
-        {/* Yläosan vaihdin ja JumpToCurrent */}
         <div className={classes(css.viewChangerWrapper)}>
           <JumpToCurrent />
           <ViewChanger />
         </div>
 
-        {/* Päivämääränavigaattori */}
         <DateHeader
           targetDate={targetDate}
           onPrevious={previousDayClick}
           onNext={nextDayClick}
         />
 
-        {/* Pääkortti uutta leiskaa varten */}
         <div className={classes(css.mainCard)}>
           <div className={classes(css.summaryText)}>
             <Trans>{tracksCount} rataa</Trans>
           </div>
 
-          {/* Päävalvojan tilapalkki / banneri */}
           {data && (
             <OfficerBanner
               rangeSupervision={data.rangeSupervision}
@@ -92,7 +87,6 @@ export function Dayview() {
             />
           )}
 
-          {/* Radat-osio */}
           <h3 className={classes(css.sectionTitle)}>
             <Trans>Radat</Trans>
           </h3>
@@ -105,7 +99,6 @@ export function Dayview() {
             <TrackList tracks={data.tracks} date={targetDate} />
           )}
 
-          {/* Välineet-osio */}
           <h3 className={classes(css.sectionTitle)}>
             <Trans>Välineet</Trans>
           </h3>

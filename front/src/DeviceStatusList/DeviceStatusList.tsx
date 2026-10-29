@@ -28,12 +28,17 @@ function DeviceLabel({ device }: { device: any }) {
   return (
     <div
       className={classNames(
-        'rounded-xl flex flex-col text-center w-full items-center w-full min-w-0 items-center justify-center font-medium py-1 px-2',
-        device.status === 'reserved' ? 'bg-red-light' : 'bg-green',
+        'rounded-xl flex flex-col text-left w-full min-w-0  border-2 font-medium py-1 px-2',
+        'bg-[#e3e4df]',
+        device.status === 'reserved' ? 'border-red-800' : 'border-[#a2a79c]',
       )}
     >
-      <span className="max-w-full break-words">{device.device_name}</span>
-      <span className="text-sm">
+      <span className="font-bold text-slate-900 max-w-full break-words">{device.device_name}</span>
+      <span className={classNames(
+        'text-sm', 
+        device.status === 'reserved' ? 'font-bold' : 'text-slate-600'
+      )}
+      >
         {device.status === 'reserved' ? t`Reserved` : t`Free`}
       </span>
     </div>
