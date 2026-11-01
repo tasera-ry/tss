@@ -97,7 +97,8 @@ const addRangeSupervision = (
 ) => {
   axios.post('/api/range-supervision', {
     scheduled_range_supervision_id:
-      scheduledRangeSupervisionId.scheduled_range_supervision_id,
+      scheduledRangeSupervisionId?.scheduled_range_supervision_id ??
+      scheduledRangeSupervisionId,
     range_supervisor: rangeSupervisor,
     association,
   });
