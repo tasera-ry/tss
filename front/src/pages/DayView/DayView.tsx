@@ -35,6 +35,11 @@ export function Dayview() {
     queryFn: () => api.getSchedulingDate(targetDate),
   });
 
+  const devicesQuery = useQuery({
+    queryKey: ['devices'],
+    queryFn: () => api.getAllDevices(),
+  });
+
   const previousDayClick = () => {
     history.push(
       `/dayview/${moment(targetDate).subtract(1, 'day').format('YYYY-MM-DD')}`,
@@ -57,7 +62,10 @@ export function Dayview() {
     return moment(data.close, 'HH:mm').format('H.mm');
   }, [data]);
 
+  
+
   const tracksCount = data?.tracks?.length ?? 0;
+  const equipmentCount = devicesQuery.data?.length ?? 0;
 
   return (
     <div>
@@ -77,6 +85,8 @@ export function Dayview() {
         <div className={classes(css.mainCard)}>
           <div className={classes(css.summaryText)}>
             <Trans>{tracksCount} rataa</Trans>
+            {' • '}
+            <Trans>{equipmentCount} välinettä</Trans>
           </div>
 
           {data && (
@@ -126,18 +136,20 @@ function TrackList({ tracks, date }: { tracks: any[]; date: string }) {
 function TrackBox({ track, date }: { track: any; date: string }) {
   const { t } = useLingui();
 
-  const { statusClass, statusText, icon } = useMemo(() => {
+  const { statusClass, borderClass, statusText, icon } = useMemo(() => {
     switch (track.trackSupervision) {
       case 'present':
       case 'confirmed':
         return {
           statusClass: css.greenB,
+          borderClass: css.greenBorder,
           statusText: t`Avoinna`,
           icon: <CheckCircleOutlineIcon className={css.statusIcon} />,
         };
       case 'closed':
         return {
           statusClass: css.redB,
+          borderClass: css.redBorder,
           statusText: t`Suljettu`,
           icon: <HighlightOffIcon className={css.statusIcon} />,
         };
@@ -155,7 +167,7 @@ function TrackBox({ track, date }: { track: any; date: string }) {
   const link = `/trackview/${date}/${track.name}`;
 
   return (
-    <Link to={link} className={classes(css.trackCard)}>
+    <Link to={link} className={classes(css.trackCard, borderClass)}>
       <div className={classes(css.trackDetails)}>
         <div className={classes(css.trackHeader)}>
           <span className={classes(css.bold)}>{track.name}</span>

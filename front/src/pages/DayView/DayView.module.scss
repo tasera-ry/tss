@@ -20,7 +20,7 @@
   width: 100%;
   max-width: 100%;
   background: $COLOR_WHITE;
-  border-radius: 12px;
+  border-radius: 12px; 
   padding: 20px;
   border: 1px solid $COLOR_BLACK_TINT_20;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -91,13 +91,29 @@
 }
 
 .redB {
-  background-color: $COLOR_RED_LIGHT !important;
+  background-color: $COLOR_RED_LIGHT;
   color: $COLOR_WHITE !important;
 }
 
 .whiteB {
-  background-color: $COLOR_BLACK_TINT_05 !important;
+    background-color: $COLOR_WHITE;
   color: $COLOR_BLACK_TINT_70 !important;
+}
+
+.greenBorder {
+  border: 2px solid $COLOR_GREEN !important;
+  
+  &:hover {
+      border-color: darken($COLOR_GREEN, 20%) !important; 
+    }
+}
+
+.redBorder {
+  border: 2px solid $COLOR_RED_LIGHT !important;
+
+  &:hover{
+    border-color: darken($COLOR_RED_LIGHT, 20%) !important;
+  }
 }
 
 .sectionTitle {
@@ -115,7 +131,7 @@
   grid-template-columns: 1fr;
 
   @media only screen and (min-width: 600px) {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(136px, 1fr));
   }
 }
 
@@ -125,15 +141,23 @@
   justify-content: space-between;
   text-decoration: none;
   color: inherit;
-  border: 1px solid $COLOR_BLACK_TINT_20;
-  border-radius: 10px;
+  border: 2px solid $COLOR_BLACK_TINT_20;
+  border-radius: 10px; 
   overflow: hidden;
   background: $COLOR_WHITE;
   min-height: 150px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
+  &:has(.greenB) {
+    background-color: $COLOR_GREEN;
+  }
+
+  &:has(.redB) {
+    background-color: $COLOR_RED_LIGHT;
+  }
+
   &:hover {
-    border-color: $COLOR_BLACK_TINT_50;
+    border-color: darken($COLOR_BLACK_TINT_20, 15%);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   }
 }
@@ -143,6 +167,7 @@
   padding: 12px;
   display: flex;
   flex-direction: column;
+  background-color: $COLOR_WHITE;
 }
 
 .trackHeader {
@@ -182,6 +207,7 @@
   font-weight: bold;
   padding: 8px;
   text-align: center;
+  border-top: 1px solid $COLOR_BLACK_TINT_20;
 }
 
 .statusIcon {
