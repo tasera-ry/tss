@@ -1,196 +1,339 @@
 @import '../../shared.module.scss';
 
-.hoverHand:hover {
-  cursor: pointer;
-}
+$desktop: 768px;
+$cell-gap: 6px;
 
-.arrowLeft {
-  margin-right: 1vw;
-}
-
-.arrowRight {
-  margin-left: 1vw;
-}
-
-.progress {
-  display: flex;
-  margin: auto;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  height: 80vh;
-}
-
-.notCurMonth {
-  opacity: 0.6;
-}
-
-.weekdays {
-  text-align: center;
-  justify-content: center;
-  display: flex;
-  width: 100%;
-  background-color: $COLOR_BLACK_TINT_70;
-  border-bottom: 1px solid $COLOR_BLACK_TINT_70;
-  border-radius: 5px;
-  margin-top: -5px;
-  margin-bottom: -5px;
-}
-
-.weekdays > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: calc(100% / 7 - 2px);
-  height: 5vh;
-  min-height: 48px;
+@mixin desktop {
+  @media only screen and (min-width: $desktop) {
+    @content;
+  }
 }
 
 .monthContainer {
-  justify-content: center;
-  text-align: center;
-  margin: auto;
   display: flex;
-  width: 100vw;
-  max-width: 1025px;
-  flex-wrap: wrap;
-  font-size: large;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
 }
 
-.monthDays {
-  display: flex;
-  background-color: $COLOR_BLACK_TINT_70;
-  text-align: center;
-  justify-content: center;
-  font-weight: bold;
-  flex-wrap: wrap;
-  width: 100%;
-  //border: 1px solid red;
-  border-bottom: 2px solid $COLOR_BLACK_TINT_70;
-  margin-left: -4px;
-  border-left: 4px solid $COLOR_BLACK_TINT_70;
-}
-.monthDays > a {
-  color: $COLOR_BLACK_TINT_80;
-  font-weight: bold;
-  text-decoration: none;
+.toolbar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: calc(100% / 7 - 5px);
-  height: 10vh;
-  min-height: 48px;
-  font-weight: normal;
-  margin: 2px;
-  border-radius: 3px;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+
+.calendar {
+  --week-col: 24px;
+
+  display: grid;
+  grid-template-columns: var(--week-col) repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  background: $COLOR_WHITE;
+  border: 1px solid $COLOR_BLACK_TINT_20;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+  @include desktop {
+    --week-col: 40px;
+    gap: $cell-gap;
+    padding: 20px;
+  }
+}
+
+.headerCell {
+  padding: 4px 0 8px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: bold;
+  color: $COLOR_BLACK_TINT_60;
+
+  @include desktop {
+    font-size: 13px;
+  }
 }
 
 .weekNumber {
-  background-color: $COLOR_BLACK_TINT_70;
-  display: none;
-  text-align: center;
-  justify-content: left;
-  flex-wrap: wrap;
-  width: calc(100% / 8);
-  border-radius: 5px;
-  //margin-right: -5px;
-}
-
-.weekdays .weekNumber {
+  display: flex;
+  align-items: center;
   justify-content: center;
-  display: none;
-  background-color: $COLOR_BLACK_TINT_70;
-  width: calc(100% / 8 - 6px);
-  border-radius: 4px;
+  font-size: 11px;
+  color: $COLOR_BLACK_TINT_60;
+
+  @include desktop {
+    font-size: 13px;
+  }
 }
 
-.weekNumber > a {
+.dayCell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  box-sizing: border-box;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  padding: 2px;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid $COLOR_BLACK_TINT_20;
+  border-radius: 8px;
+  background-clip: padding-box;
+  background-color: $COLOR_WHITE;
+  color: $COLOR_BLACK;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  -webkit-appearance: none;
+  appearance: none;
+
+  &:hover {
+    border-color: $COLOR_BLACK_TINT_50;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $COLOR_BLACK;
+    outline-offset: 2px;
+  }
+
+  @include desktop {
+    aspect-ratio: auto;
+    min-height: 96px;
+    align-items: stretch;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 10px;
+    text-align: left;
+  }
+}
+
+
+.statusPresent {
+  background-color: $COLOR_GREEN;
   color: $COLOR_WHITE;
-  text-decoration: none;
+}
+
+.statusConfirmed {
+  background-color: $COLOR_GREEN_LIGHT;
+  color: $COLOR_BLACK;
+}
+
+.statusNotConfirmed {
+  background-color: $COLOR_TURQUOISE;
+  color: $COLOR_BLACK;
+}
+
+.statusAbsent {
+  background-color: $COLOR_WHITE;
+  color: $COLOR_BLACK_TINT_70;
+}
+
+.statusClosed {
+  background-color: $COLOR_RED_LIGHT;
+  color: $COLOR_WHITE;
+}
+
+.otherMonth {
+  background-color: $COLOR_BLACK_TINT_05;
+  color: $COLOR_BLACK_TINT_50;
+  border-color: $COLOR_BLACK_TINT_05;
+}
+
+.today {
+  border-color: $COLOR_BLACK;
+
+  &:hover {
+    border-color: $COLOR_BLACK;
+  }
+}
+
+.selected {
+  box-shadow: 0 0 0 2px $COLOR_WHITE, 0 0 0 4px $COLOR_BLACK_TINT_70;
+}
+
+
+.cellTop {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 10vh;
-  min-height: 48px;
-  border: 1px solid $COLOR_BLACK_TINT_70;
-  
+  gap: 4px;
+
+  @include desktop {
+    justify-content: space-between;
+  }
 }
 
-.dateHeaderM {
-  height: 10em;
-  width: 99vw;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+.dayNumber {
+  font-size: 14px;
+  font-weight: bold;
+
+  @include desktop {
+    font-size: 16px;
+  }
 }
 
-.MonthviewInfo {
+.statusIcon {
+  font-size: 18px !important;
+
+  @include desktop {
+    display: none !important;
+  }
+}
+
+.infoIcon {
   position: absolute;
-  margin-top: 2pt;
-  width: 20px;
-  height: 20px;
+  top: 2px;
+  right: 2px;
+  font-size: 12px !important;
+
+  @include desktop {
+    position: static;
+    font-size: 18px !important;
+  }
 }
 
-.monthviewDayText {
+.cellBottom {
+  display: none;
+
+  @include desktop {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 12px;
+    line-height: 1.25;
+  }
+}
+
+.statusText {
   font-weight: bold;
 }
-.monthviewDayImg {
-  margin-right: 22px;
+
+.timeText {
+  font-size: 11px;
+  opacity: 0.85;
 }
 
-/* media files */
+.todayBadge {
+  display: none;
 
-/* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
-@media only screen and (min-width: 320px) {
-}
-
-/* smartphones, Android phones, landscape iPhone */
-@media only screen and (min-width: 480px) {
-  .MonthviewInfo {
-    margin-left: 3px;
-  }
-  .monthviewDayImg {
-    margin-right: 16px;
-  }
-
-  .weekNumber {
-    display: flex;
-  }
-
-  .monthDays {
-    width: calc(100% / 8 * 7);
-  }
-
-  .weekdays .weekNumber {
-    display: flex;
-  }
-
-  .weekdays > a {
-    width: calc(100% / 8 - 2px);
-  }
-
-  .weekdays > div {
-    background-color: $COLOR_BLACK_TINT_70;
+  @include desktop {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 1px 6px;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
     color: $COLOR_WHITE;
-    width: calc(100% / 8 - 2px);
+    background: $COLOR_BLACK;
+    border-radius: 4px;
   }
 }
 
-/* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
-@media only screen and (min-width: 600px) {
+
+.mobileOnly {
+  width: 100%;
+
+  @include desktop {
+    display: none;
+  }
 }
 
-/* tablet, landscape iPad, lo-res laptops ands desktops */
-@media only screen and (min-width: 801px) {
+.detailCard,
+.legendCard {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 16px;
+  padding: 16px;
+  background: $COLOR_WHITE;
+  border: 1px solid $COLOR_BLACK_TINT_20;
+  border-radius: 12px;
 }
 
-/* big landscape tablets, laptops, and desktops */
-@media only screen and (min-width: 1025px) {
+.detailTitle {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
-/* hi-res laptops and desktops */
-@media only screen and (min-width: 1281px) {
+.detailStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid $COLOR_BLACK_TINT_20;
+  border-radius: 10px;
+  background-clip: padding-box;
+  font-weight: bold;
+}
+
+.openButton {
+  display: block;
+  padding: 12px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+  color: $COLOR_WHITE;
+  background: $COLOR_BLACK_TINT_70;
+  border-radius: 10px;
+}
+
+
+.legendTitle {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.legendList {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.legendSwatch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  box-sizing: border-box;
+  border: 2px solid $COLOR_BLACK_TINT_20;
+  border-radius: 6px;
+  background-clip: padding-box;
+}
+
+.legendIcon {
+  font-size: 16px !important;
+}
+
+.desktopLegend {
+  display: none;
+
+  @include desktop {
+    display: block;
+    width: 100%;
+    margin-top: 16px;
+  }
 }
