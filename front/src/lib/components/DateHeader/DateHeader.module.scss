@@ -12,7 +12,6 @@
   width: 100%;
   text-align: center;
   margin: 0;
-  
 }
 
 .overflowHidden {
@@ -75,13 +74,15 @@ h2.headerText {
   margin: 10px;
 }
 
+/* Uudistettu joustava otsikkoalue */
 .dayviewContainer .dateHeader {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 12px;
   margin-top: 12px;
   margin-bottom: 12px;
+  width: 100%;
 }
 
 .dayviewTrackContainer {
@@ -92,15 +93,6 @@ h2.headerText {
   background-color: $COLOR_BLACK_TINT_70;
   border-radius: 5px;
   margin-top: -5px;
-}
-
-.dayviewContainer .dateHeader .titleContainer {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  justify-content: center;
-  flex-wrap: nowrap;
-  width: 220px;
 }
 
 .dayviewContainer .info {
@@ -159,22 +151,6 @@ h2.headerText {
   background: $COLOR_BLACK_TINT_05;
 }
 
-.dayviewContainer .arrowRight {
-  @extend .arrow;
-  padding: 0;
-  margin: 0;
-
-  display: flex;
-}
-
-.dayviewContainer .arrowLeft {
-  @extend .arrow;
-  padding: 0;
-  margin: 0;
-
-  display: flex;
-}
-
 .back {
   color: $COLOR_BLACK;
 }
@@ -204,12 +180,8 @@ h2.headerText {
   margin: auto;
 }
 
-/* media files */
+/* Mediakyselyt */
 
-/* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
-@media only screen and (min-width: 320px) {
-}
-/* smartphones, Android phones, landscape iPhone */
 @media only screen and (min-width: 480px) {
   .dayviewContainer .dateHeader {
     flex-wrap: nowrap;
@@ -226,24 +198,20 @@ h2.headerText {
     font-size: 24px;
     margin: 4px;
   }
-
-  .dayviewContainer .arrowRight,
-  .dayviewContainer .arrowLeft {
-    margin: 0;
-  }
 }
-/* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
+
 @media only screen and (min-width: 600px) {
   .dayviewContainer .dateHeader {
     margin-top: 0;
   }
+
   .sevenGrid {
     display: flex;
     flex-direction: row;
     justify-content: center;
     width: 100%;
   }
-  /* To have 7 boxes force size 100 / 7 = 14.28571428571429 */
+
   .dayviewContainer .sevenGrid > div {
     width: 14.28571428571429%;
     max-width: 150px;
@@ -270,10 +238,7 @@ h2.headerText {
     display: inline-block;
   }
 }
-/* tablet, landscape iPad, lo-res laptops ands desktops */
-@media only screen and (min-width: 801px) {
-}
-/* big landscape tablets, laptops, and desktops */
+
 @media only screen and (min-width: 1025px) {
   .infoImg2 {
     width: 44px;
@@ -281,7 +246,7 @@ h2.headerText {
     max-width: 44px;
   }
 }
-/* hi-res laptops and desktops */
+
 @media only screen and (min-width: 1281px) {
   .dayviewContainer .sevenGrid > div {
     max-width: 150px;
@@ -289,5 +254,84 @@ h2.headerText {
   }
 }
 
-@media only screen and (orientation: landscape) {
+
+@mixin hatch($angle, $colour) {
+  background-image: repeating-linear-gradient(
+    $angle,
+    transparent 0 5px,
+    $colour 5px 8px
+  );
+}
+
+.segPrivate {
+  background-color: var(--color-status-private);
+  @include hatch(45deg, rgba(0, 0, 0, 0.28));
+  color: #000;
+}
+
+.segOfficial {
+  background-color: var(--color-status-official);
+  @include hatch(-45deg, rgba(255, 255, 255, 0.3));
+  color: #fff;
+}
+
+.segClosed {
+  background-color: var(--color-status-closed);
+  color: #fff;
+}
+
+.segBlocked {
+  background-color: var(--color-status-blocked);
+  @include hatch(90deg, rgba(255, 255, 255, 0.45));
+  color: #000;
+}
+
+.markPrivate {
+  background-color: var(--color-status-private);
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 3px,
+    rgba(0, 0, 0, 0.28) 3px 4px
+  );
+}
+
+.markOfficial {
+  background-color: var(--color-status-official);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0 2px,
+    rgba(255, 255, 255, 0.3) 2px 4px
+  );
+}
+
+.markClosed {
+  background-color: var(--color-status-closed);
+}
+
+.markBlocked {
+  background-color: var(--color-status-blocked);
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 3px,
+    rgba(255, 255, 255, 0.45) 3px 4px
+  );
+}
+
+.markFree {
+  background-color: var(--color-status-free);
+}
+
+.dotPresent {
+  background-color: var(--color-status-present);
+}
+
+.devFlag {
+  color: var(--color-status-official);
+  font-style: italic;
+  font-size: 0.75rem;
+}
+
+.devValue {
+  color: var(--color-status-official);
+  font-style: italic;
 }
