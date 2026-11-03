@@ -165,11 +165,13 @@ $cell-gap: 6px;
 
 .cellTop {
   display: flex;
+  flex-direction: column; 
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 2px;
 
   @include desktop {
+    flex-direction: row;
     justify-content: space-between;
   }
 }
@@ -184,22 +186,13 @@ $cell-gap: 6px;
 }
 
 .statusIcon {
-  font-size: 18px !important;
-
-  @include desktop {
-    display: none !important;
-  }
-}
-
-.infoIcon {
+  font-size: 13px !important;
   position: absolute;
-  top: 2px;
-  right: 2px;
-  font-size: 12px !important;
+  right: 1px;
+  top: 1px;
 
   @include desktop {
-    position: static;
-    font-size: 18px !important;
+    font-size: 20px !important;
   }
 }
 

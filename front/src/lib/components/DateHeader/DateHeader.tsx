@@ -56,14 +56,14 @@ export function DateHeader({
   }, [type, weekString, monthString, dateString]);
 
   return (
-    <div className="flex justify-center items-center py-10">
+    <div className="grid grid-cols-[44px_1fr_44px] items-center justify-center w-full max-w-lg mx-auto py-4">
       <button
         type="button"
         className={classes(css.hoverHand, css.arrowLeft)}
         onClick={onPrevious}
         data-testid="previousDay"
       />
-      <h1 className="font-bold text-[2em] px-5 text-center w-92 text-nowrap">
+      <h1 className="font-bold text-base sm:text-2xl text-center px-2 min-w-0 w-full">
         {label}
       </h1>
       <button

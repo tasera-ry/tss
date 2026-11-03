@@ -76,8 +76,10 @@ h2.headerText {
 }
 
 .dayviewContainer .dateHeader {
-  flex-wrap: nowrap;
+  display: flex;
+  align-items: center;
   justify-content: center;
+  gap: 16px;
   margin-top: 12px;
   margin-bottom: 12px;
 }
@@ -95,10 +97,10 @@ h2.headerText {
 .dayviewContainer .dateHeader .titleContainer {
   display: flex;
   align-items: center;
-  text-align: start;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  width: 360px;
+  text-align: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  width: 220px;
 }
 
 .dayviewContainer .info {
@@ -225,12 +227,9 @@ h2.headerText {
     margin: 4px;
   }
 
-  .dayviewContainer .arrowRight {
-    margin-left: 2vw;
-  }
-
+  .dayviewContainer .arrowRight,
   .dayviewContainer .arrowLeft {
-    margin-right: 2vw;
+    margin: 0;
   }
 }
 /* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
