@@ -42,13 +42,29 @@ exports.seed = async function (knex) {
 	await insertSupervisions;
 };
 
+// A notice is the free-text note a range officer writes about one track on one
+// day, and it is what the "Radalla lisätietoja" icon announces. Most tracks on
+// most days have none. Previously every row got a paragraph of faker Latin,
+// which made the icon appear everywhere and filled the views with text that
+// looks like a defect.
+const NOTICES = [
+	'Taustavalli huollossa',
+	'Kilpailu klo 11-13, rata varattu',
+	'Ampumakoppi jäinen, varo liukastumista',
+	'Katos korjataan, käytä rataa varoen',
+	'Vain .22LR tänään',
+	'Hirviradan laite huollossa',
+];
+
 casual.define('track_supervision', async (trackId, supervisionId) => {
 	const state = ['absent', 'present', 'closed'];
+	// Roughly one day in four carries a notice.
+	const hasNotice = casual.integer(0, 3) === 0;
 	return {
 		scheduled_range_supervision_id: supervisionId,
 		track_id: trackId,
 		track_supervisor: state[casual.integer(0, state.length - 1)],
 		visitors: casual.integer(0, 1000),
-		notice: casual.description.substring(0, 255),
+		notice: hasNotice ? NOTICES[casual.integer(0, NOTICES.length - 1)] : null,
 	};
 });

@@ -1433,6 +1433,10 @@ msgstr "Rata päivitetty"
 #~ msgid "Track visitors successfully upded"
 #~ msgstr "Käyttäjätiedot kirjattu"
 
+#: src/trackview/Trackview.tsx:196
+msgid "Track"
+msgstr "Rata"
+
 #: src/pages/EditTracksView/EditTracksView.tsx:64
 msgid "Tracks"
 msgstr "Radat"

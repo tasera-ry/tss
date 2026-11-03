@@ -1,104 +1,102 @@
-@import '../shared.module.scss';
+/**
+ * Segment fills for the track view.
+ *
+ * Colour comes from the --color-status-* tokens in App.css, read at runtime so
+ * the values live in one place rather than being copied here the way the older
+ * palette is copied between colors.module.scss and App.css.
+ *
+ * Every fill also carries a pattern, and every segment carries its status as
+ * text. Colour is the third channel, not the first: the accessibility audit
+ * measured the current "open" and "closed" fills at dE2000 6.6 under
+ * deuteranopia, so nothing here may depend on hue alone.
+ */
 
-.available {
-  background-color: $COLOR_GREEN;
-}
-.closed {
-  background-color: $COLOR_RED_LIGHT;
-}
-.unavailable {
-  background-color: $COLOR_BLACK_TINT_05;
-}
-.confirmed {
-  background-color: $COLOR_GREEN_LIGHT;
-}
-.notConfirmed {
-  background-color: $COLOR_TURQUOISE;
-}
-
-.wholeScreenDiv {
-  text-align: center;
-  align-items: center;
+@mixin hatch($angle, $colour) {
+  background-image: repeating-linear-gradient(
+    $angle,
+    transparent 0 5px,
+    $colour 5px 8px
+  );
 }
 
-.trackNameAndType {
-  @extend .layout-row;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-end;
-  text-align: center;
-  padding: 8px;
+.segPrivate {
+  background-color: var(--color-status-private);
+  @include hatch(45deg, rgba(0, 0, 0, 0.28));
+  color: #000;
 }
 
-.infoBox {
-  background-color: $COLOR_BLACK_TINT_20;
-  outline: 2px solid $COLOR_BLACK;
-  color: $COLOR_BLACK;
-  width: fit-content;
-  min-width: 50%;
-  max-width: 50%;
-  height: fit-content;
-  border: 1px;
-  margin: 0 auto;
-  margin-bottom: 15px;
-  text-align: center;
-  align-items: center;
-  padding: 12px;
-  min-height: 48px;
+.segOfficial {
+  background-color: var(--color-status-official);
+  @include hatch(-45deg, rgba(255, 255, 255, 0.3));
+  color: #fff;
 }
 
-.preWrap {
-  white-space: pre-wrap;
+.segClosed {
+  background-color: var(--color-status-closed);
+  color: #fff;
 }
 
-.trackStyles {
-  color: $COLOR_BLACK;
-  padding: 12px;
-  text-align: center;
-  align-items: center;
-  width: 60vw;
-  margin-left: 19vw;
-  font-weight: bold;
-  font-size: larger;
+/** Unavailable because a supervisor is missing, not because it is reserved. */
+.segBlocked {
+  background-color: var(--color-status-blocked);
+  @include hatch(90deg, rgba(255, 255, 255, 0.45));
+  color: #000;
 }
 
-.backLink > svg {
-  margin-bottom: -7px;
-  margin-right: 5px;
-  text-align: center;
-  align-items: center;
-  color: $COLOR_BLACK;
+/** Small keys beside each row of the list. Same patterns, smaller. */
+.markPrivate {
+  background-color: var(--color-status-private);
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 3px,
+    rgba(0, 0, 0, 0.28) 3px 4px
+  );
 }
 
-@media only screen and (max-width: 768px) {
-  .wholeScreenDiv {
-    text-align: center;
-    align-items: left;
-  }
-  .infoBox {
-    background-color: $COLOR_BLACK_TINT_20;
-    outline: 2px solid $COLOR_BLACK;
-    color: $COLOR_BLACK;
-    width: 80%;
-    border: 1px;
-    height: 10%;
-    margin-bottom: 15px;
-    margin-right: 10%;
-  }
-  .trackNameAndType {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-end;
-    text-align: center;
-    padding: 8px;
-  }
+.markOfficial {
+  background-color: var(--color-status-official);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0 2px,
+    rgba(255, 255, 255, 0.3) 2px 4px
+  );
+}
 
-  .trackStyles {
-    color: $COLOR_BLACK;
-    padding: 12px;
-    width: 80vw;
-    margin-left: 8vw;
-  }
+.markClosed {
+  background-color: var(--color-status-closed);
+}
+
+.markBlocked {
+  background-color: var(--color-status-blocked);
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 3px,
+    rgba(255, 255, 255, 0.45) 3px 4px
+  );
+}
+
+.markFree {
+  background-color: var(--color-status-free);
+}
+
+/** Supervisor present. A dot beside text, never the only signal. */
+.dotPresent {
+  background-color: var(--color-status-present);
+}
+
+/**
+ * Development-only marker for text that comes from the database and has no
+ * translation path, and for data the backend does not provide yet. Stripped
+ * from production builds by the import.meta.env.DEV guard in the component.
+ */
+.devFlag {
+  color: var(--color-status-official);
+  font-style: italic;
+  font-size: 0.75rem;
+}
+
+/** An invented value shown inline, marked where it sits. */
+.devValue {
+  color: var(--color-status-official);
+  font-style: italic;
 }
