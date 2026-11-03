@@ -137,7 +137,8 @@
 
 .trackCard {
   display: flex;
-  flex-direction: column;
+  flex-direction: row; 
+  align-items: center;
   justify-content: space-between;
   text-decoration: none;
   color: inherit;
@@ -145,7 +146,7 @@
   border-radius: 10px; 
   overflow: hidden;
   background: $COLOR_WHITE;
-  min-height: 150px;
+  min-height: auto; 
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:has(.greenB) {
@@ -160,10 +161,17 @@
     border-color: darken($COLOR_BLACK_TINT_20, 15%);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   }
+
+  @media only screen and (min-width: 600px) {
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    min-height: 150px;
+  }
 }
 
 .trackDetails {
-  flex: 1;
+  flex: 1; 
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -198,20 +206,33 @@
 }
 
 .statusBadge {
-  width: 100%;
+  flex: 1; 
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; 
   gap: 6px;
   font-size: 12px;
   font-weight: bold;
-  padding: 8px;
-  text-align: center;
-  border-top: 1px solid $COLOR_BLACK_TINT_20;
-}
+  padding: 12px;
+  border-top: none;
+  height: 100%;
 
-.statusIcon {
-  font-size: 16px !important;
+  &.whiteB {
+    @media only screen and (max-width: 600px) {
+      border-left: 2px solid $COLOR_BLACK_TINT_20;
+    }
+  }
+
+
+
+  @media only screen and (min-width: 600px) {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    padding: 8px;
+    border-top: 1px solid $COLOR_BLACK_TINT_20;
+    height: auto;
+  }
 }
 
 .backLink {
