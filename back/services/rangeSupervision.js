@@ -5,6 +5,14 @@ const models = require(path.join(root, 'models'));
 
 const _ = require('lodash');
 
+// Returns a plain id even if it is wrapped like { scheduled_range_supervision_id: 123 }
+function unwrapId(value, field) {
+  if (value !== null && typeof value === 'object' && field in value) {
+    return value[field];
+  }
+  return value;
+}
+
 const service = {
   /**
    * Create a new supervision.
@@ -21,12 +29,32 @@ const service = {
   /**
    * Get the supervisions matching a key.
    *
+   * The scheduled_range_supervision_id may be given either as a plain number
+   * or wrapped in an object like { scheduled_range_supervision_id: 123 }.
+   * A wrapped id is unwrapped to a plain number before the query, because
+   * the database column is an integer.
+   *
    * @param {object} key - Identifying key, { scheduled_range_supervision_id?, range_supervisor?, notice? }
    * @return {Promise<object[]>} Supervisions that matched the key
    *
    */
   read: async function readSupervision(key) {
-    return (await models.rangeSupervision.read(_.pick(key, 'scheduled_range_supervision_id', 'range_supervisor', 'notice')));
+    const picked = _.pick(
+      key,
+      'scheduled_range_supervision_id',
+      'range_supervisor',
+      'notice',
+    );
+
+    // Make sure the id is a plain number and not a wrapped object
+    if (picked.scheduled_range_supervision_id !== undefined) {
+      picked.scheduled_range_supervision_id = unwrapId(
+        picked.scheduled_range_supervision_id,
+        'scheduled_range_supervision_id',
+      );
+    }
+
+    return models.rangeSupervision.read(picked);
   },
 
   /**

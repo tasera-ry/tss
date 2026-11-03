@@ -126,7 +126,14 @@ const service = {
    * @return {Promise<string>} - Email address of the user
    */
   getEmail: async function getUserEmail(key) {
-    return (await models.user.getEmail(key)).email;
+    const user = await models.user.getEmail(key);
+
+    // No user found for this key, so there is no email address either
+    if (!user) {
+      return null;
+    }
+
+    return user.email;
   },
 
   /**
