@@ -24,22 +24,35 @@ export function DeviceStatusList() {
 
 function DeviceLabel({ device }: { device: any }) {
   const { t } = useLingui();
+  const isReserved = device.status === 'reserved';
 
   return (
     <div
+      style={{
+        border: isReserved
+          ? '2px solid var(--color-status-closed, #2e342f)'
+          : '2px solid var(--color-black-tint-20, #cccccc)',
+        backgroundColor: isReserved
+          ? 'var(--color-status-closed, #2e342f)'
+          : 'var(--color-status-free, #ebebeb)',
+        color: isReserved
+          ? 'var(--color-white, #ffffff)'
+          : 'var(--color-black-tint-70, #4d4d4d)',
+      }}
       className={classNames(
-        'rounded-xl flex flex-col text-left w-full min-w-0  border-2 font-medium py-1 px-2',
-        'bg-[#e3e4df]',
-        device.status === 'reserved' ? 'border-red-800' : 'border-[#a2a79c]',
+        'rounded-xl flex flex-col text-left w-full min-w-0 font-medium py-1 px-2 transition-colors'
       )}
     >
-      <span className="font-bold text-slate-900 max-w-full break-words">{device.device_name}</span>
-      <span className={classNames(
-        'text-sm', 
-        device.status === 'reserved' ? 'font-bold' : 'text-slate-600'
-      )}
+      <span className="font-bold max-w-full break-words">
+        {device.device_name}
+      </span>
+      <span
+        className={classNames(
+          'text-sm',
+          isReserved ? 'font-bold' : 'opacity-80'
+        )}
       >
-        {device.status === 'reserved' ? t`Reserved` : t`Free`}
+        {isReserved ? t`Reserved` : t`Free`}
       </span>
     </div>
   );
