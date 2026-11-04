@@ -19,16 +19,16 @@
 .mainCard {
   width: 100%;
   max-width: 100%;
-  background: $COLOR_WHITE;
+  background: var(--color-white, #ffffff);
   border-radius: 12px; 
   padding: 20px;
-  border: 1px solid $COLOR_BLACK_TINT_20;
+  border: 1px solid var(--color-black-tint-20, #cccccc);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .summaryText {
   font-size: 13px;
-  color: $COLOR_BLACK_TINT_60;
+  color: var(--color-black-tint-60, #666666);
   margin-bottom: 12px;
 }
 
@@ -39,7 +39,7 @@
   border-radius: 10px;
   padding: 14px 20px;
   margin-bottom: 24px;
-  border: 3px solid #23261F;
+  border: 3px solid #23261f;
 }
 
 .supervisorLeft {
@@ -76,13 +76,13 @@
 }
 
 .greenB {
-  background-color: $COLOR_GREEN !important;
-  color: $COLOR_WHITE !important;
+  background-color: var(--color-status-present) !important;
+  color: var(--color-white, #ffffff) !important;
 }
 
 .lightGreenB {
-  background-color: $COLOR_GREEN_LIGHT !important;
-  color: $COLOR_BLACK !important;
+  background-color: var(--color-status-present) !important;
+  color: var(--color-white, #ffffff) !important;
 }
 
 .blueB {
@@ -91,28 +91,30 @@
 }
 
 .redB {
-  background-color: $COLOR_RED_LIGHT;
-  color: $COLOR_WHITE !important;
+  background-color: var(--color-status-closed) !important;
+  color: var(--color-white, #ffffff) !important;
 }
 
 .whiteB {
-    background-color: $COLOR_WHITE;
-  color: $COLOR_BLACK_TINT_70 !important;
+  background-color: var(--color-status-free) !important;
+  color: var(--color-black-tint-70, #4d4d4d) !important;
 }
 
 .greenBorder {
-  border: 2px solid $COLOR_GREEN !important;
+  border: 2px solid var(--color-status-present) !important;
   
   &:hover {
-      border-color: darken($COLOR_GREEN, 20%) !important; 
-    }
+    border-color: var(--color-status-present) !important; 
+    filter: brightness(0.85);
+  }
 }
 
 .redBorder {
-  border: 2px solid $COLOR_RED_LIGHT !important;
+  border: 2px solid var(--color-status-closed) !important;
 
-  &:hover{
-    border-color: darken($COLOR_RED_LIGHT, 20%) !important;
+  &:hover {
+    border-color: var(--color-status-closed) !important;
+    filter: brightness(0.85);
   }
 }
 
@@ -120,7 +122,7 @@
   font-size: 16px;
   font-weight: bold;
   margin: 20px 0 12px 0;
-  color: $COLOR_BLACK;
+  color: var(--color-black, #000000);
 }
 
 .tracksGrid {
@@ -142,23 +144,23 @@
   justify-content: space-between;
   text-decoration: none;
   color: inherit;
-  border: 2px solid $COLOR_BLACK_TINT_20;
+  border: 2px solid var(--color-black-tint-20, #cccccc);
   border-radius: 10px; 
   overflow: hidden;
-  background: $COLOR_WHITE;
+  background: var(--color-white, #ffffff);
   min-height: auto; 
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:has(.greenB) {
-    background-color: $COLOR_GREEN;
+    background-color: var(--color-status-present);
   }
 
   &:has(.redB) {
-    background-color: $COLOR_RED_LIGHT;
+    background-color: var(--color-status-closed);
   }
 
   &:hover {
-    border-color: darken($COLOR_BLACK_TINT_20, 15%);
+    border-color: var(--color-black-tint-50, #808080);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   }
 
@@ -175,7 +177,7 @@
   padding: 12px;
   display: flex;
   flex-direction: column;
-  background-color: $COLOR_WHITE;
+  background-color: var(--color-white, #ffffff);
 }
 
 .trackHeader {
@@ -191,18 +193,18 @@
 
 .infoIcon {
   font-size: 18px !important;
-  color: $COLOR_BLACK_TINT_60;
+  color: var(--color-black-tint-60, #666666);
 }
 
 .trackDesc {
   font-size: 12px;
-  color: $COLOR_BLACK_TINT_70;
+  color: var(--color-black-tint-70, #4d4d4d);
   margin-top: 2px;
 }
 
 .trackSub {
   font-size: 10px;
-  color: $COLOR_BLACK_TINT_50;
+  color: var(--color-black-tint-50, #808080);
 }
 
 .statusBadge {
@@ -219,18 +221,16 @@
 
   &.whiteB {
     @media only screen and (max-width: 600px) {
-      border-left: 2px solid $COLOR_BLACK_TINT_20;
+      border-left: 2px solid var(--color-black-tint-20, #cccccc);
     }
   }
-
-
 
   @media only screen and (min-width: 600px) {
     width: 100%;
     justify-content: center;
     text-align: center;
     padding: 8px;
-    border-top: 1px solid $COLOR_BLACK_TINT_20;
+    border-top: 1px solid var(--color-black-tint-20, #cccccc);
     height: auto;
   }
 }
@@ -240,7 +240,7 @@
   align-items: center;
   gap: 6px;
   margin-top: 24px;
-  color: $COLOR_BLACK;
+  color: var(--color-black, #000000);
   text-decoration: none;
   font-size: 14px;
   padding-bottom: 12px;
