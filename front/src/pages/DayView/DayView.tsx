@@ -94,6 +94,7 @@ export function Dayview() {
               rangeSupervision={data.rangeSupervision}
               opensAt={opensAt}
               closesAt={closesAt}
+              arrivingAt={data.arriving_at}
             />
           )}
 
@@ -198,10 +199,12 @@ function OfficerBanner({
   rangeSupervision,
   opensAt,
   closesAt,
+  arrivingAt,
 }: {
   rangeSupervision: string;
   opensAt?: string;
   closesAt?: string;
+  arrivingAt?: string | null;
 }) {
   const { t } = useLingui();
 
@@ -224,8 +227,14 @@ function OfficerBanner({
     <div className={classes(css.supervisorBanner, colorClass)}>
       <div className={classes(css.supervisorLeft)}>
         <AccessTimeIcon className={css.bannerClockIcon} />
-        <div>
+        <div className={classes(css.supervisorText)}>
           <h3 className={classes(css.supervisorTitle)}>{text}</h3>
+          {arrivingAt && (
+            <span className={classes(css.arrivalTime)}>
+              <Trans>Your estimated time of arrival:</Trans>{' '}
+              {moment(arrivingAt, 'HH:mm:ss').format('H.mm')}
+            </span>
+          )}
         </div>
       </div>
       {opensAt && closesAt && (

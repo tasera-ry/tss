@@ -58,6 +58,16 @@
   font-weight: bold;
 }
 
+.supervisorText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.arrivalTime {
+  display: none;
+}
+
 .supervisorRight {
   display: flex;
   flex-direction: column;
@@ -73,6 +83,47 @@
 .openHoursTime {
   font-size: 18px;
   font-weight: bold;
+}
+
+@media only screen and (max-width: 599px) {
+  .supervisorBanner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .supervisorLeft {
+    gap: 8px;
+  }
+
+  .bannerClockIcon {
+    font-size: 22px !important;
+  }
+
+  .supervisorTitle {
+    font-size: 14px;
+  }
+
+  .supervisorText {
+    align-items: flex-start;
+  }
+
+  .arrivalTime {
+    display: block;
+    font-size: 10px;
+    text-decoration: underline;
+  }
+
+  .supervisorRight {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .openHoursTime {
+    font-size: 14px;
+  }
 }
 
 .greenB {
