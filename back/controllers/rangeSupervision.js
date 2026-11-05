@@ -86,7 +86,7 @@ const controller = {
   create: async function createSupervision(request, response) {
     try {
       const scheduleId = response.locals.id;
-      email('assigned', response.req.body.association, { scheduleId: scheduleId });
+      email('assigned', response.req.body.association, { scheduleId }).catch(console.error);
     } catch (error) {
       console.error(error);
     }
