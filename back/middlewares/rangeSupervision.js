@@ -58,7 +58,8 @@ const serviceCalls = {
     let id;
 
     try {
-      id = await services.rangeSupervision.create(query);
+      const created = await services.rangeSupervision.create(query);
+      id = created?.scheduled_range_supervision_id ?? created;
     } catch (e) {
       // could be a constant?
       if (e.name === 'Supervision exists') {
