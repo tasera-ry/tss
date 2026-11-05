@@ -54,7 +54,7 @@ Tasera Scheduling Software (TSS) is a management system for Tasera-operated shoo
 
 | Requirement    | Version |
 | :------------- | ------: |
-| Node.js        |     20+ |
+| Node.js        |     24+ |
 | PostgreSQL     |     13+ |
 | Docker         |  Latest |
 | Docker Compose |  Latest |
@@ -110,7 +110,7 @@ Production environment update is done manually.
 
 1. Install project dependencies
 
-   - https://nodejs.org/ (tested using the `LTS 20` release)
+   - https://nodejs.org/ (tested using the `LTS 24` release)
    - https://www.postgresql.org/
 
      Easiest way to set up a PSQL database is using docker:

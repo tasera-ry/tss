@@ -1,5 +1,5 @@
 # Tasera TSS docker image
-FROM node:20-slim AS frontbuild
+FROM node:24-slim AS frontbuild
 ENV NODE_ENV=stable
 ENV NODE_OPTIONS=--max_old_space_size=2048
 WORKDIR /usr/src/app
@@ -8,7 +8,7 @@ RUN npm install
 COPY ./front ./
 RUN npm run build
 
-FROM node:20-slim AS production
+FROM node:24-slim AS production
 ENV NODE_ENV=stable
 WORKDIR /usr/src/app
 COPY --from=frontbuild /usr/src/app/dist ./front/build
