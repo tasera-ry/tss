@@ -39,8 +39,8 @@ $cell-gap: 6px;
   width: 100%;
   min-width: 0;
   padding: 12px;
-  background: $COLOR_WHITE;
-  border: 1px solid $COLOR_BLACK_TINT_20;
+  background: var(--color-white);
+  border: 1px solid var(--color-black-tint-20);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 
@@ -56,7 +56,7 @@ $cell-gap: 6px;
   text-align: center;
   font-size: 11px;
   font-weight: bold;
-  color: $COLOR_BLACK_TINT_60;
+  color: var(--color-black-tint-60);
 
   @include desktop {
     font-size: 13px;
@@ -68,7 +68,7 @@ $cell-gap: 6px;
   align-items: center;
   justify-content: center;
   font-size: 11px;
-  color: $COLOR_BLACK_TINT_60;
+  color: var(--color-black-tint-60);
 
   @include desktop {
     font-size: 13px;
@@ -89,21 +89,21 @@ $cell-gap: 6px;
   font: inherit;
   text-align: center;
   cursor: pointer;
-  border: 2px solid $COLOR_BLACK_TINT_20;
+  border: 2px solid var(--color-black-tint-20);
   border-radius: 8px;
   background-clip: padding-box;
-  background-color: $COLOR_WHITE;
-  color: $COLOR_BLACK;
+  background-color: var(--color-white);
+  color: var(--color-black);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   -webkit-appearance: none;
   appearance: none;
 
   &:hover {
-    border-color: $COLOR_BLACK_TINT_50;
+    border-color: var(--color-black-tint-50);
   }
 
   &:focus-visible {
-    outline: 2px solid $COLOR_BLACK;
+    outline: 2px solid var(--color-black);
     outline-offset: 2px;
   }
 
@@ -120,46 +120,46 @@ $cell-gap: 6px;
 
 
 .statusPresent {
-  background-color: $COLOR_GREEN;
-  color: $COLOR_WHITE;
+  background-color: var(--color-green);
+  color: var(--color-white);
 }
 
 .statusConfirmed {
-  background-color: $COLOR_GREEN_LIGHT;
-  color: $COLOR_BLACK;
+  background-color: var(--color-green-light);
+  color: var(--color-black);
 }
 
 .statusNotConfirmed {
-  background-color: $COLOR_TURQUOISE;
-  color: $COLOR_BLACK;
+  background-color: var(--color-turquoise);
+  color: var(--color-black);
 }
 
 .statusAbsent {
-  background-color: $COLOR_WHITE;
-  color: $COLOR_BLACK_TINT_70;
+  background-color: var(--color-white);
+  color: var(--color-black-tint-70);
 }
 
 .statusClosed {
-  background-color: $COLOR_RED_LIGHT;
-  color: $COLOR_WHITE;
+  background-color: var(--color-red-light);
+  color: var(--color-white);
 }
 
 .otherMonth {
-  background-color: $COLOR_BLACK_TINT_05;
-  color: $COLOR_BLACK_TINT_50;
-  border-color: $COLOR_BLACK_TINT_05;
+  background-color: var(--color-black-tint-05);
+  color: var(--color-black-tint-50);
+  border-color: var(--color-black-tint-05);
 }
 
 .today {
-  border-color: $COLOR_BLACK;
+  border-color: var(--color-black);
 
   &:hover {
-    border-color: $COLOR_BLACK;
+    border-color: var(--color-black);
   }
 }
 
 .selected {
-  box-shadow: 0 0 0 2px $COLOR_WHITE, 0 0 0 4px $COLOR_BLACK_TINT_70;
+  box-shadow: 0 0 0 2px var(--color-white), 0 0 0 4px var(--color-black-tint-70);
 }
 
 
@@ -227,8 +227,8 @@ $cell-gap: 6px;
     font-size: 10px;
     font-weight: bold;
     letter-spacing: 0.5px;
-    color: $COLOR_WHITE;
-    background: $COLOR_BLACK;
+    color: var(--color-white);
+    background: var(--color-black);
     border-radius: 4px;
   }
 }
@@ -248,8 +248,8 @@ $cell-gap: 6px;
   width: 100%;
   margin-top: 16px;
   padding: 16px;
-  background: $COLOR_WHITE;
-  border: 1px solid $COLOR_BLACK_TINT_20;
+  background: var(--color-white);
+  border: 1px solid var(--color-black-tint-20);
   border-radius: 12px;
 }
 
@@ -265,7 +265,7 @@ $cell-gap: 6px;
   gap: 8px;
   margin-bottom: 12px;
   padding: 10px 12px;
-  border: 1px solid $COLOR_BLACK_TINT_20;
+  border: 1px solid var(--color-black-tint-20);
   border-radius: 10px;
   background-clip: padding-box;
   font-weight: bold;
@@ -277,8 +277,8 @@ $cell-gap: 6px;
   text-align: center;
   text-decoration: none;
   font-weight: bold;
-  color: $COLOR_WHITE;
-  background: $COLOR_BLACK_TINT_70;
+  color: var(--color-white);
+  background: var(--color-black-tint-70);
   border-radius: 10px;
 }
 
@@ -312,7 +312,7 @@ $cell-gap: 6px;
   width: 28px;
   height: 28px;
   box-sizing: border-box;
-  border: 2px solid $COLOR_BLACK_TINT_20;
+  border: 2px solid var(--color-black-tint-20);
   border-radius: 6px;
   background-clip: padding-box;
 }

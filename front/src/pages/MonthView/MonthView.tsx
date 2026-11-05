@@ -10,7 +10,8 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import { Trans, useLingui } from '@lingui/react/macro';
-import 'moment/locale/fi'; moment.locale('fi');
+import 'moment/locale/fi';
+import 'moment/locale/sv';
 
 import api from '@/api/api';
 import { DateHeader } from '@/lib/components/DateHeader';
@@ -113,8 +114,6 @@ const LEGEND_ORDER: RangeSupervision[] = [
   'absent',
   'closed',
 ];
-
-const WEEKDAYS = moment.weekdaysMin(true);
 
 const formatTime = (time?: string) =>
   time ? moment(time, 'HH:mm').format('H.mm') : '';
@@ -223,12 +222,23 @@ interface CalendarProps {
 }
 
 function Calendar({ weeks, targetDate, selectedDate, onDayClick }: CalendarProps) {
+  const { t } = useLingui();
+  const weekdays = [
+    t`Mon`,
+    t`Tue`,
+    t`Wed`,
+    t`Thu`,
+    t`Fri`,
+    t`Sat`,
+    t`Sun`,
+  ];
+
   return (
     <div className={classes(css.calendar)} role="grid">
       <div className={classes(css.headerCell)}>
-        <Trans>Vk</Trans>
+        <Trans>Wk</Trans>
       </div>
-      {WEEKDAYS.map((day) => (
+      {weekdays.map((day) => (
         <div key={day} className={classes(css.headerCell)}>
           {day}
         </div>
@@ -323,10 +333,16 @@ function DayCell({ day, inCurrentMonth, selected, onClick }: DayCellProps) {
 }
 
 function SelectedDayCard({ day }: { day: MonthDay }) {
+  const { i18n } = useLingui();
   const statuses = useStatusConfigs();
   const status = statuses[day.rangeSupervision] ?? statuses.absent;
-  const date = moment(day.date);
-  const title = date.format('dddd D.M.YYYY');
+
+  const dateObj = new Date(day.date);
+  
+  const weekday = new Intl.DateTimeFormat(i18n.locale, { weekday: 'long' }).format(dateObj);
+  const formattedDate = moment(day.date).format('D.M.YYYY');
+
+  const title = `${weekday} ${formattedDate}`;
 
   return (
     <div className={classes(css.detailCard)}>
