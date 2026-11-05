@@ -43,7 +43,6 @@ export interface MonthWeek {
   days: MonthDay[]; // 7 kpl, ma-su
 }
 
-
 export function toMonthDay(day: DaySchedule): MonthDay {
   return {
     date: day.date,
@@ -119,7 +118,6 @@ const WEEKDAYS = moment.weekdaysMin(true);
 
 const formatTime = (time?: string) =>
   time ? moment(time, 'HH:mm').format('H.mm') : '';
-
 
 interface MonthviewProps {
   weeks?: MonthWeek[];
@@ -203,14 +201,13 @@ export function Monthview({ weeks }: MonthviewProps) {
           onDayClick={handleDayClick}
         />
 
-        <div className={classes(css.desktopLegend)}>
-          <Legend />
-        </div>
 
-        <div className={classes(css.mobileOnly)}>
-          {selectedDay && <SelectedDayCard day={selectedDay} />}
-          <Legend />
-        </div>
+        {!isDesktop && (
+          <div className={classes(css.mobileOnly)}>
+            {selectedDay && <SelectedDayCard day={selectedDay} />}
+            <Legend />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -231,11 +228,11 @@ function Calendar({ weeks, targetDate, selectedDate, onDayClick }: CalendarProps
       <div className={classes(css.headerCell)}>
         <Trans>Vk</Trans>
       </div>
-{WEEKDAYS.map((day) => (
-  <div key={day} className={classes(css.headerCell)}>
-    {day}
-  </div>
-))}
+      {WEEKDAYS.map((day) => (
+        <div key={day} className={classes(css.headerCell)}>
+          {day}
+        </div>
+      ))}
 
       {weeks.map((week) => (
         <WeekRow
@@ -271,7 +268,6 @@ function WeekRow({
     </>
   );
 }
-
 
 interface DayCellProps {
   day: MonthDay;
@@ -388,7 +384,6 @@ function Legend() {
     </div>
   );
 }
-
 
 function groupIntoWeeks(days: MonthDay[]): MonthWeek[] {
   const byWeek = days.reduce<Record<string, MonthDay[]>>((acc, day) => {
