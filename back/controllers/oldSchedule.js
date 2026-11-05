@@ -2,7 +2,6 @@
 
 const config = require('../config/config');
 const moment = require('moment-timezone');
-const fetch = require('node-fetch');
 const _ = require('lodash');
 
 /*
