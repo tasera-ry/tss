@@ -4,7 +4,7 @@ ENV NODE_ENV=stable
 ENV NODE_OPTIONS=--max_old_space_size=2048
 WORKDIR /usr/src/app
 COPY ./front/package*.json ./
-RUN npm install
+RUN npm ci
 COPY ./front ./
 RUN npm run build
 
@@ -14,7 +14,7 @@ WORKDIR /usr/src/app
 COPY --from=frontbuild /usr/src/app/dist ./front/build
 COPY ./back ./back
 WORKDIR /usr/src/app/back
-RUN npm install --production
+RUN npm ci --omit=dev
 WORKDIR /usr/src/app
 COPY ./deploy/startup.sh ./
 EXPOSE 8093
