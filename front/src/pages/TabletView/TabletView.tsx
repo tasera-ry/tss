@@ -7,7 +7,7 @@ import moment from 'moment';
 import api from '../../api/api';
 
 // Login validation
-import socketIOClient from 'socket.io-client';
+import { io } from 'socket.io-client';
 import { validateLogin } from '../../utils/Utils';
 
 // Receiving possible info messages
@@ -72,7 +72,7 @@ export function TabletView() {
       }
     })();
 
-    const socketClient = socketIOClient();
+    const socketClient = io();
     setSocket(socketClient);
 
     const onUpdate = (msg: any) => {

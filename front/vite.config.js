@@ -26,6 +26,11 @@ export default ({ mode }) => {
           ws: true,
           rewriteWsOrigin: true,
         },
+        '/socket.io': {
+          target: process.env.VITE_PROXY_API ?? 'http://localhost:8000',
+          changeOrigin: true,
+          ws: true,
+        },
       },
     },
     test: {
