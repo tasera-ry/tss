@@ -10,6 +10,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { awaitingRangeOfficer} from '@/trackview/trackViewTypes';
 
 import api from '@/api/api';
 import { DateHeader } from '@/lib/components/DateHeader';
@@ -84,9 +85,9 @@ export function Dayview() {
 
         <div className={classes(css.mainCard)}>
           <div className={classes(css.summaryText)}>
-            <Trans>{tracksCount} rataa</Trans>
+            <Trans>{tracksCount} tracks</Trans>
             {' • '}
-            <Trans>{equipmentCount} välinettä</Trans>
+            <Trans>{equipmentCount} devices</Trans>
           </div>
 
           {data && (
@@ -99,7 +100,7 @@ export function Dayview() {
           )}
 
           <h3 className={classes(css.sectionTitle)}>
-            <Trans>Radat</Trans>
+            <Trans>Tracks</Trans>
           </h3>
 
           {isLoading || !data ? (
@@ -107,11 +108,11 @@ export function Dayview() {
               <CircularProgress disableShrink />
             </div>
           ) : (
-            <TrackList tracks={data.tracks} date={targetDate} />
+            <TrackList tracks={data.tracks} date={targetDate} rangeSupervision={data.rangeSupervision}/>
           )}
 
           <h3 className={classes(css.sectionTitle)}>
-            <Trans>Välineet</Trans>
+            <Trans>Devices</Trans>
           </h3>
           <div className={classes(css.devicesWrapper)}>
             <DeviceStatusList />
@@ -124,34 +125,43 @@ export function Dayview() {
 
 export default Dayview;
 
-function TrackList({ tracks, date }: { tracks: any[]; date: string }) {
+function TrackList({ tracks, date, rangeSupervision }: { tracks: any[]; date: string; rangeSupervision: string }) {
   return (
     <div className={classes(css.tracksGrid)}>
       {tracks.map((track) => (
-        <TrackBox key={track.id} track={track} date={date} />
+        <TrackBox key={track.id} track={track} date={date} rangeSupervision={rangeSupervision} />
       ))}
     </div>
   );
 }
 
-function TrackBox({ track, date }: { track: any; date: string }) {
+function TrackBox({ track, date, rangeSupervision }: { track: any; date: string; rangeSupervision: string }) {
   const { t } = useLingui();
 
   const { statusClass, borderClass, statusText, icon } = useMemo(() => {
+    if (awaitingRangeOfficer(rangeSupervision)) {
+      return {
+        statusClass: css.whiteB,
+        borderClass: undefined,
+        statusText: t`Awaiting range officer`,
+        icon: null,
+      };
+    }
+
     switch (track.trackSupervision) {
       case 'present':
       case 'confirmed':
         return {
           statusClass: css.greenB,
           borderClass: css.greenBorder,
-          statusText: t`Avoinna`,
+          statusText: t`Open`,
           icon: <CheckCircleOutlineIcon className={css.statusIcon} />,
         };
       case 'closed':
         return {
           statusClass: css.redB,
           borderClass: css.redBorder,
-          statusText: t`Suljettu`,
+          statusText: t`Closed`,
           icon: <HighlightOffIcon className={css.statusIcon} />,
         };
       case 'absent':
@@ -159,11 +169,11 @@ function TrackBox({ track, date }: { track: any; date: string }) {
       default:
         return {
           statusClass: css.whiteB,
-          statusText: t`Ei valvojaa`,
+          statusText: t`No track officer available`,
           icon: null,
         };
     }
-  }, [track.trackSupervision, t]);
+  }, [track.trackSupervision, rangeSupervision, t]);
 
   const link = `/trackview/${date}/${track.name}`;
 
@@ -211,15 +221,15 @@ function OfficerBanner({
   const { text, colorClass } = useMemo(() => {
     switch (rangeSupervision) {
       case 'present':
-        return { text: t`Päävalvoja paikalla`, colorClass: css.lightGreenB };
+        return { text: t`Range officer present`, colorClass: css.lightGreenB };
       case 'confirmed':
-        return { text: t`Päävalvoja varmistettu`, colorClass: css.lightGreenB };
+        return { text: t`Range officer confirmed`, colorClass: css.lightGreenB };
       case 'not confirmed':
-        return { text: t`Päävalvojaa ei varmistettu`, colorClass: css.blueB };
+        return { text: t`Range officer predefined, not confirmed`, colorClass: css.blueB };
       case 'absent':
-        return { text: t`Ei päävalvojaa`, colorClass: css.whiteB };
+        return { text: t`No range officer present`, colorClass: css.whiteB };
       default:
-        return { text: t`Rata suljettu`, colorClass: css.redB };
+        return { text: t`Range closed`, colorClass: css.redB };
     }
   }, [t, rangeSupervision]);
 
@@ -240,7 +250,7 @@ function OfficerBanner({
       {opensAt && closesAt && (
         <div className={classes(css.supervisorRight)}>
           <span className={classes(css.openHoursLabel)}>
-            <Trans>AUKIOLAIKA</Trans>
+            <Trans>OPENING HOURS</Trans>
           </span>
           <span className={classes(css.openHoursTime)}>
             {opensAt}–{closesAt}
