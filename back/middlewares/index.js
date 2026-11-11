@@ -11,6 +11,8 @@ const daterange = require(path.join(root, 'middlewares', 'daterange'));
 const raffle = require(path.join(root, 'middlewares', 'raffle'));
 const members = require(path.join(root, 'middlewares', 'members'));
 const devices = require(path.join(root, 'middlewares', 'devices'));
+const trackSection = require(path.join(root, 'middlewares', 'trackSection'));
+const trackReservation = require(path.join(root, 'middlewares', 'trackReservation'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -23,3 +25,5 @@ exports.daterange = daterange;
 exports.raffle = raffle;
 exports.members = members;
 exports.devices = devices;
+exports.trackSection = trackSection;
+exports.trackReservation = trackReservation;
