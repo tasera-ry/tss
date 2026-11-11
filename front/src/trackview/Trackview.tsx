@@ -126,8 +126,6 @@ function getTrackAvailability(trackSupervision: string) {
       return { status: 'available', text: t`Track officer present` };
     case 'absent':
       return { status: 'unavailable', text: t`No defined track officer` };
-    case 'private_event':
-      return { status: 'privateEvent', text: t`Private event` };
     default:
       return { status: 'closed', text: t`Range closed` };
   }
