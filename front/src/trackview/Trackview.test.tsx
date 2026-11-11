@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import testUtils from '../_TestUtils/TestUtils';
 import api from '../api/api';
 import { Trackview } from './Trackview';
+import type { ApiReservation, ApiSection } from './trackViewPlaceholder';
 
 vi.mock('../api/api');
 vi.mock('react-router-dom', async (originalImport) => {
@@ -18,6 +19,41 @@ vi.mock('react-router-dom', async (originalImport) => {
   };
 });
 
+// The pistol track's three lohkot; every other track undivided.
+const sections: ApiSection[] = [
+  ...['Vasemmanpuoleisin', 'Keskimmäinen', 'Oikeanpuoleisin'].map(
+    (side, i) => ({
+      id: 10 + i,
+      track_id: 1,
+      name: `Lohko ${i + 1}`,
+      position: `${side} loossi`,
+      lane_count: 20,
+    }),
+  ),
+  ...testUtils.schedule.tracks.slice(1).map((track) => ({
+    id: track.id * 10,
+    track_id: track.id,
+    name: '',
+    position: null,
+    lane_count: 40,
+  })),
+];
+
+// A club holds half of Lohko 1 until closing time (the fixture opens 03.11–06.08).
+const reservations: ApiReservation[] = [
+  {
+    id: 1,
+    track_section_id: 10,
+    association_id: 5,
+    association_name: 'Hirviseura',
+    type: 'private_event',
+    start_time: '05:11:00',
+    end_time: '06:08:00',
+    lanes_used: 10,
+    description: null,
+  },
+];
+
 /**
  * LinguiProvider renders null until its catalog import resolves, and this version
  * of Testing Library does not reliably settle a second `findBy*` afterwards. So
@@ -25,6 +61,8 @@ vi.mock('react-router-dom', async (originalImport) => {
  */
 async function renderTrackview(schedule = testUtils.schedule) {
   vi.mocked(api.getSchedulingDate).mockResolvedValue(schedule);
+  vi.mocked(api.getTrackSections).mockResolvedValue(sections);
+  vi.mocked(api.getTrackReservations).mockResolvedValue(reservations);
   const result = render(<Trackview />, { wrapper: TestProviders });
   await screen.findByRole(
     'heading',
@@ -177,7 +215,7 @@ describe('testing Trackview', () => {
   });
 
   describe('with both supervisors present', () => {
-    // The placeholder books half of Lohko 1 for a club on this fixture.
+    // A club holds half of Lohko 1 on this fixture; see `reservations`.
     const supervised = {
       ...testUtils.schedule,
       rangeSupervision: 'present',
@@ -193,9 +231,7 @@ describe('testing Trackview', () => {
         0,
       );
       expect(
-        screen.getByText(
-          'Private event · Varattu seuran vuorolle · 10 lanes booked',
-        ),
+        screen.getByText('Private event · Hirviseura · 10 lanes booked'),
       ).toBeInTheDocument();
       expect(screen.getByText('10/20 free')).toBeInTheDocument();
     });

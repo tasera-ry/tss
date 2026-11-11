@@ -3,41 +3,23 @@
  *
  * PURPOSE: everything the redesign needs that the backend does not yet provide is
  * invented here, in one file, behind the types in `trackViewTypes.ts`. Real fields
- * from `GET /api/datesupreme/:date` are mapped through untouched; only the parts
- * belonging to #420 (lanes), #421 (time segments) and the track officer identity
- * are fabricated.
+ * from `GET /api/datesupreme/:date` are mapped through untouched. Sections, lane
+ * counts and part-day reservations (#420, #421; B1–B5) are real too, from
+ * `GET /api/track-section` and `GET /api/track-reservation?date=`.
  *
  * ============================================================================
- * BACKEND WORK NEEDED — the complete list. Each item is tagged where it is
- * faked, so `grep -rn "BACKEND(" src/trackview` finds every site. When an item
- * lands, replace the tagged code with the real field and delete the tag; when
- * all have landed, delete this file.
+ * BACKEND WORK NEEDED — what is left. Each item is tagged where it is faked,
+ * so `grep -rn "BACKEND(" src/trackview` finds every site. When an item lands,
+ * replace the tagged code with the real field and delete the tag; when all
+ * have landed, delete this file.
  *
- *   B1  (#420) `track.lane_count` and the track's sections: name, position and
- *       lane count each. Only track 1 (three lohkot) and track 4 (marked and
- *       unmarked places) have sections. A section table or a JSON column.
- *       Faked in LANE_CONFIG, with the customer's figures of 7.10.2026.
- *   B2  (#421) A per-track (and per-section) reservation with a start and an
- *       end time. This is a new table, not two columns: `range_reservation` is
- *       one row per range per day, unique on (range_id, date), and nothing in
- *       the schema is finer than a day except the range's own opening hours.
- *       Faked in placeholderSegments().
- *   B3  (#420) `lanes_used` on that reservation. Lanes within a track are
- *       identical, so this is a count, never a set of lane ids. A booking that
- *       leaves lanes free is shown as "Partially available".
- *   B4  (#419) The reservation's type: private event, or reserved for
- *       authority use. Whether authority use is its own type is still open with
- *       the customer; the view draws them as distinct.
- *   B5  A link from a reservation to the association holding it. Today the
- *       only association link is at range level, so "reserved for X" per track
- *       has no data behind it.
  *   B6  (#419) `'private'` added to the `track_supervisor` enum.
  *   B7  `track.requires_range_officer` (boolean, default true). False only for
  *       track 6, which may open without a range officer (Pasi Autio,
  *       12.10.2026). Faked by list position in NO_RANGE_OFFICER_NEEDED.
  *   B8  Standing rules per track ("Vain .22LR", "Ei ammuntaa pimeällä"), as
  *       data an admin can edit, with a way to translate it. Faked as Finnish
- *       strings in LANE_CONFIG.
+ *       strings in TRACK_NOTES.
  *   B9  (#437) The sunset time for the date. Faked as one fixed time,
  *       PLACEHOLDER_SUNSET, marked in the view in development.
  *   B10 The supervisor rule enforced on write: "track officer present" must
@@ -45,7 +27,7 @@
  *       with requires_range_officer = false. Today nothing stops the
  *       combination, so the view derives availability itself; see
  *       unavailableReason() in trackViewTypes.ts. This is the one item that is
- *       not purely additive, and it gets dearer once B2 exists.
+ *       not purely additive.
  * ============================================================================
  *
  * Nothing here writes. The view is read-only; creating reservations is an admin
@@ -55,11 +37,37 @@
 import type {
   LaneSection,
   RangeOfficerState,
+  SegmentStatus,
   TimeSegment,
   TrackDetail,
   TrackOfficerState,
   TrackViewDay,
 } from './trackViewTypes';
+
+/** One row of `GET /api/track-section`. */
+export interface ApiSection {
+  id: number;
+  track_id: number;
+  /** Empty for a track that is not subdivided. */
+  name: string;
+  position: string | null;
+  lane_count: number;
+}
+
+/** One row of `GET /api/track-reservation?date=`. */
+export interface ApiReservation {
+  id: number;
+  track_section_id: number;
+  /** Null for authority use, which no association holds. */
+  association_id: number | null;
+  association_name: string | null;
+  type: 'private_event' | 'official' | 'closed';
+  /** 'HH:MM:SS'. */
+  start_time: string;
+  end_time: string;
+  lanes_used: number;
+  description: string | null;
+}
 
 /** Shape of one track in the current `datesupreme` payload. Untyped upstream. */
 interface ApiTrack {
@@ -98,61 +106,28 @@ export function formatTime(minutes: number): string {
 }
 
 /**
- * PLACEHOLDER. Lane counts and sections, from the customer 7.10.2026.
- * Keyed by position in the track list because the database has no lane column to
- * key on yet. Replace with real data; do not extend this table.
+ * PLACEHOLDER. Standing rules per track, from the customer 7.10.2026.
+ * Keyed by position in the track list because the database has nowhere to keep
+ * them yet. Replace with real data; do not extend this table.
  *
- * BACKEND(B1, #420): lanes and sections.
  * BACKEND(B8): notes.
  */
-const LANE_CONFIG: {
-  lanes: number;
-  sections?: { name: string; position?: string; lanes: number }[];
-  notes: string[];
-}[] = [
-  {
-    lanes: 60,
-    sections: [
-      { name: 'Lohko 1', position: 'Vasemmanpuoleisin loossi', lanes: 20 },
-      { name: 'Lohko 2', position: 'Keskimmäinen loossi', lanes: 20 },
-      { name: 'Lohko 3', position: 'Oikeanpuoleisin loossi', lanes: 20 },
-    ],
-    notes: [],
-  },
-  { lanes: 40, notes: [] },
-  { lanes: 40, notes: [] },
-  {
-    lanes: 24,
-    sections: [
-      { name: 'Merkityt paikat', lanes: 4 },
-      { name: 'Merkitsemättömät paikat', lanes: 20 },
-    ],
-    notes: ['Soveltuu myös toiminnalliseen ammuntaan (SRA, IPSC, IDPA, CAS).'],
-  },
-  {
-    lanes: 4,
-    // Pasi Autio, review 10/2026: open on winter weekdays too, while it is light.
-    // Track 6 shares the rule; the customer's specs gave both the same note.
-    notes: [
-      'Ei ammuntaa pimeällä. Talvikaudella rata on käytössä vain valoisaan aikaan.',
-    ],
-  },
-  {
-    lanes: 60,
-    notes: [
-      'Vain .22LR.',
-      'Ei ammuntaa pimeällä. Talvikaudella rata on käytössä vain valoisaan aikaan.',
-    ],
-  },
-  {
-    lanes: 25,
-    notes: [
-      'Ensisijainen toiminnallisen ammunnan rata (SRA, IPSC, IDPA, CAS).',
-    ],
-  },
+const TRACK_NOTES: string[][] = [
+  [],
+  [],
+  [],
+  ['Soveltuu myös toiminnalliseen ammuntaan (SRA, IPSC, IDPA, CAS).'],
+  // Pasi Autio, review 10/2026: open on winter weekdays too, while it is light.
+  // Track 6 shares the rule; the customer's specs gave both the same note.
+  [
+    'Ei ammuntaa pimeällä. Talvikaudella rata on käytössä vain valoisaan aikaan.',
+  ],
+  [
+    'Vain .22LR.',
+    'Ei ammuntaa pimeällä. Talvikaudella rata on käytössä vain valoisaan aikaan.',
+  ],
+  ['Ensisijainen toiminnallisen ammunnan rata (SRA, IPSC, IDPA, CAS).'],
 ];
-
-const DEFAULT_CONFIG = { lanes: 20, notes: [] as string[] };
 
 /**
  * PLACEHOLDER. Which tracks may be used without a range officer on site.
@@ -170,10 +145,6 @@ const NO_RANGE_OFFICER_NEEDED = new Set([5]);
  * BACKEND(B9, #437): the sunset time for the date.
  */
 export const PLACEHOLDER_SUNSET = 18 * 60 + 32;
-
-function laneConfig(index: number) {
-  return LANE_CONFIG[index] ?? DEFAULT_CONFIG;
-}
 
 /** The existing `track_supervisor` enum maps straight onto the new type. */
 function toTrackOfficer(value: string | null): TrackOfficerState {
@@ -200,90 +171,125 @@ function toRangeOfficer(value: string | null): RangeOfficerState {
   }
 }
 
+const RESERVATION_STATUS: Record<ApiReservation['type'], SegmentStatus> = {
+  private_event: 'private',
+  official: 'official',
+  closed: 'closed',
+};
+
+/** Where reservations overlap, the first of these present is shown. */
+const PRECEDENCE: SegmentStatus[] = ['closed', 'official', 'private'];
+
 /**
- * PLACEHOLDER. Deterministic pseudo-reservations so the view renders something
- * plausible without a backend, and renders the same thing on every load.
- * Seeded from the date and track id — no randomness, so tests are stable.
+ * Turn one section's reservations into segments that tile the opening hours.
  *
- * BACKEND(B2, #421): the reservations themselves, with start and end.
- * BACKEND(B3, #420): lanesUsed.
- * BACKEND(B4, #419): status, private or official.
- * BACKEND(B5): reservedFor, the association holding the booking.
+ * Reservations may overlap, as long as their lanes fit the section; the backend
+ * checks that on write. The view draws one segment at a time, so the day is cut
+ * at every start and end. Where reservations overlap, their lanes are added up,
+ * their holders named together, and the strongest status shown. Neighbouring
+ * pieces that read the same are joined back together. Time outside the opening
+ * hours is dropped.
  */
-function placeholderSegments(
-  seed: number,
+export function buildSegments(
   open: number,
   close: number,
   laneCount: number,
+  reservations: ApiReservation[],
 ): TimeSegment[] {
-  const span = close - open;
-  if (span <= 60) return [{ start: open, end: close, status: 'free' }];
+  const spans = reservations
+    .map((r) => ({
+      start: Math.max(toMinutes(r.start_time) as number, open),
+      end: Math.min(toMinutes(r.end_time) as number, close),
+      status: RESERVATION_STATUS[r.type],
+      lanes: r.lanes_used,
+      holder: r.association_name,
+    }))
+    .filter((s) => s.start < s.end);
 
-  // Three shapes, chosen by seed: untouched, one block, one partial block.
-  const shape = seed % 3;
-  if (shape === 0) return [{ start: open, end: close, status: 'free' }];
-
-  // Start one to three hours in, on a quarter hour; run for two hours less a quarter.
-  const start = open + 60 * (1 + (seed % 3));
-  const end = Math.min(start + 105, close);
-  if (end <= start) return [{ start: open, end: close, status: 'free' }];
-
-  const reserved: TimeSegment = {
-    start,
-    end,
-    status: shape === 1 ? 'private' : 'official',
-    reservedFor: shape === 1 ? 'Varattu seuran vuorolle' : 'Viranomaiskäyttö',
-    // Half the lanes on the partial shape, all of them otherwise.
-    lanesUsed:
-      shape === 1 && laneCount > 4 ? Math.round(laneCount / 2) : laneCount,
-  };
+  const cuts = [
+    ...new Set([open, close, ...spans.flatMap((s) => [s.start, s.end])]),
+  ].sort((a, b) => a - b);
 
   const out: TimeSegment[] = [];
-  if (start > open) out.push({ start: open, end: start, status: 'free' });
-  out.push(reserved);
-  if (end < close) out.push({ end: close, start: end, status: 'free' });
+  for (let i = 1; i < cuts.length; i += 1) {
+    const start = cuts[i - 1];
+    const end = cuts[i];
+    const active = spans.filter((s) => s.start < end && s.end > start);
+
+    let segment: TimeSegment = { start, end, status: 'free' };
+    if (active.length > 0) {
+      const holders = [
+        ...new Set(active.map((s) => s.holder).filter((h) => h !== null)),
+      ];
+      segment = {
+        start,
+        end,
+        status: PRECEDENCE.find((p) =>
+          active.some((s) => s.status === p),
+        ) as SegmentStatus,
+        reservedFor: holders.length > 0 ? holders.join(', ') : undefined,
+        lanesUsed: Math.min(
+          laneCount,
+          active.reduce((sum, s) => sum + s.lanes, 0),
+        ),
+      };
+    }
+
+    const previous = out[out.length - 1];
+    if (
+      previous &&
+      previous.status === segment.status &&
+      previous.lanesUsed === segment.lanesUsed &&
+      previous.reservedFor === segment.reservedFor
+    ) {
+      previous.end = end;
+    } else {
+      out.push(segment);
+    }
+  }
   return out;
 }
 
 function buildSections(
   track: ApiTrack,
-  index: number,
+  sections: ApiSection[],
+  reservations: ApiReservation[],
   open: number,
   close: number,
 ): LaneSection[] {
-  const config = laneConfig(index);
   const officerClosed = track.trackSupervision === 'closed';
 
-  const make = (
-    id: string,
-    name: string,
-    lanes: number,
-    seed: number,
-    position?: string,
-  ): LaneSection => ({
-    id,
-    name,
-    position,
-    laneCount: lanes,
-    segments: officerClosed
-      ? [{ start: open, end: close, status: 'closed' }]
-      : placeholderSegments(seed, open, close, lanes),
-  });
-
-  if (config.sections) {
-    return config.sections.map((s, i) =>
-      make(`${track.id}-${i}`, s.name, s.lanes, track.id + i, s.position),
+  return sections
+    .filter((s) => s.track_id === track.id)
+    .map(
+      (s): LaneSection => ({
+        id: String(s.id),
+        name: s.name,
+        position: s.position ?? undefined,
+        laneCount: s.lane_count,
+        segments: officerClosed
+          ? [{ start: open, end: close, status: 'closed' }]
+          : buildSegments(
+              open,
+              close,
+              s.lane_count,
+              reservations.filter((r) => r.track_section_id === s.id),
+            ),
+      }),
     );
-  }
-  return [make(String(track.id), '', config.lanes, track.id)];
 }
 
 /**
- * Map the live payload into what the redesigned view needs, filling the gaps.
- * Real: name, description, notice, both supervisor statuses, opening hours.
- * Placeholder: lane counts, sections, time segments, sunset.
+ * Map the live payloads into what the redesigned view needs, filling the gaps.
+ * Real: name, description, notice, both supervisor statuses, opening hours,
+ * sections, lane counts, reservations.
+ * Placeholder: notes, the range officer exception, sunset.
  */
-export function toTrackViewDay(api: ApiDay | undefined): TrackViewDay | null {
+export function toTrackViewDay(
+  api: ApiDay | undefined,
+  sections: ApiSection[] = [],
+  reservations: ApiReservation[] = [],
+): TrackViewDay | null {
   if (!api) return null;
 
   const open = toMinutes(api.open) ?? 10 * 60;
@@ -297,8 +303,8 @@ export function toTrackViewDay(api: ApiDay | undefined): TrackViewDay | null {
     notice: track.notice ?? null,
     officer: toTrackOfficer(track.trackSupervision),
     requiresRangeOfficer: !NO_RANGE_OFFICER_NEEDED.has(index),
-    sections: buildSections(track, index, open, close),
-    notes: laneConfig(index).notes,
+    sections: buildSections(track, sections, reservations, open, close),
+    notes: TRACK_NOTES[index] ?? [],
   }));
 
   return {
