@@ -17,7 +17,7 @@ msgstr ""
 
 #: src/pages/DayView/DayView.tsx:90
 msgid "{equipmentCount} devices"
-msgstr "{equipmentCount} laitetta"
+msgstr "{equipmentCount} välinettä"
 
 #: src/pages/DayView/DayView.tsx:88
 msgid "{tracksCount} tracks"
@@ -396,7 +396,7 @@ msgstr "Lisätiedot"
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:43
 #: src/pages/DayView/DayView.tsx:115
 msgid "Devices"
-msgstr "Laitteet"
+msgstr "Välineet"
 
 #: src/EmailSettings/EmailSettings.tsx:180
 msgid "DNS resolution failed. Please check that the SMTP host is correct."
