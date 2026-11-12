@@ -1,10 +1,8 @@
-import { useLingui } from '@lingui/react/macro';
-import classNames from 'classnames';
-import moment from 'moment';
 import { useMemo } from 'react';
-import css from './DateHeader.module.scss';
-
-const classes = classNames.bind(css);
+import { useLingui } from '@lingui/react/macro';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import moment from 'moment';
 
 export interface DateHeaderProps {
   targetDate: string;
@@ -34,7 +32,7 @@ export function DateHeader({
   }, [date, i18n]);
 
   const weekString = useMemo(() => {
-    const year = moment(date).year();
+    const year = moment(date).isoWeekYear();
     const weekNumber = moment(date).isoWeek();
     return t`Week ${weekNumber} ${year}`;
   }, [date, t]);
@@ -42,7 +40,7 @@ export function DateHeader({
   const monthString = useMemo(() => {
     const str = i18n.date(date, { month: 'long', year: 'numeric' });
     return str.charAt(0).toUpperCase() + str.slice(1);
-  }, [date, i18n.date]);
+  }, [date, i18n]);
 
   const label = useMemo(() => {
     switch (type) {
@@ -55,23 +53,34 @@ export function DateHeader({
     }
   }, [type, weekString, monthString, dateString]);
 
+  const arrowBtnStyle =
+    'flex size-9 shrink-0 items-center justify-center rounded-lg border border-black-tint-20 bg-white text-grey transition-colors hover:border-black-tint-40 hover:text-black active:scale-95';
+
   return (
-    <div className="flex justify-center items-center py-10">
+    <div className="grid grid-cols-[44px_1fr_44px] items-center justify-items-center w-full max-w-md mx-auto py-4">
       <button
         type="button"
-        className={classes(css.hoverHand, css.arrowLeft)}
+        className={arrowBtnStyle}
         onClick={onPrevious}
         data-testid="previousDay"
-      />
-      <h1 className="font-bold text-[2em] px-5 text-center w-92 text-nowrap">
+        aria-label={t`Previous`}
+      >
+        <ChevronLeftIcon fontSize="small" />
+      </button>
+
+      <h1 className="w-full min-w-0 font-semibold text-base sm:text-xl text-center px-1 truncate">
         {label}
       </h1>
+
       <button
         type="button"
-        className={classes(css.hoverHand, css.arrowRight)}
+        className={arrowBtnStyle}
         onClick={onNext}
         data-testid="nextDay"
-      />
+        aria-label={t`Next`}
+      >
+        <ChevronRightIcon fontSize="small" />
+      </button>
     </div>
   );
 }

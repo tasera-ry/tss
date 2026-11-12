@@ -5,13 +5,6 @@ import { Trans } from '@lingui/react/macro';
 import api from '../api/api';
 import colors from '../colors.module.scss';
 
-/**
- * Increments or decrements the date by the param amount
- * @param {Date} date The date to be incemented or decremented
- * @param {number} amountOfDays The amount of days to increment or decrement.
- * Give a negative number for decrement.
- * @returns {Date} new date
- */
 export const incrementOrDecrementDate = (date, amountOfDays) =>
   new Date(date.setDate(date.getDate() + amountOfDays));
 
@@ -68,24 +61,27 @@ export const checkColor = (days, oneDay) => {
 
 export function JumpToCurrent() {
   const fullUrl = window.location.href.split('/');
-  const urlParamDate = fullUrl[4];
-  const date = new Date().toISOString().split('T')[0];
+  const urlParamDate = fullUrl[4] || 'dayview';
+  const currentDateParam = fullUrl[5];
+  const today = new Date().toISOString().split('T')[0];
+  
+  const isToday = currentDateParam === today;
+
+  const baseStyle = "px-3 py-1.5 text-sm font-medium rounded-md border transition-colors flex justify-center items-center";
+  const activeStyle = "bg-black-tint-70 border-black-tint-70 text-white";
+  const inactiveStyle = "bg-white border-black-tint-20 text-grey hover:border-black-tint-40 hover:text-black";
 
   return (
     <Link
-      className="bg-black-tint-70 rounded-t-lg p-2 flex justify-center items-center text-white text-lg font-bold"
+      className={`${baseStyle} ${isToday ? activeStyle : inactiveStyle}`}
       data-testid="jumpToCur"
-      to={`/${urlParamDate}/${date}`}
+      to={`/${urlParamDate}/${today}`}
     >
       <Trans>Today</Trans>
     </Link>
   );
 }
 
-/*
-  Validates the login token (in cookies)
-  return: boolean, is token valid (true = yes)
-*/
 export const validateLogin = async () => {
   try {
     await api.validateLogin();
@@ -95,9 +91,6 @@ export const validateLogin = async () => {
   }
 };
 
-// on success true
-// else returns string trying to explain what broke
-// requires reservation and schedule to exist
 export const updateRangeSupervision = async (
   rsId,
   srsId,
@@ -110,7 +103,6 @@ export const updateRangeSupervision = async (
   if (rsId === null || srsId === null)
     return `${failureText} reservation or schedule missing`;
 
-  // only closed is different from the 6 states
   if (rangeStatus === 'closed') {
     try {
       await api.patchReservation(rsId, { available: 'false' });
@@ -120,7 +112,6 @@ export const updateRangeSupervision = async (
     }
   }
 
-  // no range supervision exists, add new supervision
   if (!rsScheduled) {
     try {
       await api.patchReservation(rsId, { available: 'true' });
@@ -136,7 +127,6 @@ export const updateRangeSupervision = async (
     }
   }
 
-  // range suprevision exists, update supervision
   try {
     await api.patchReservation(rsId, { available: 'true' });
   } catch (err) {
