@@ -75,6 +75,23 @@ const CustomSwitchRed = withStyles({
   track: {},
 })(Switch);
 
+// A custom switch to display orange color for track sliders
+const CustomSwitchOrange = withStyles({
+  switchBase: {
+    // grey
+    color: '#cccccc',
+    '&$checked': {
+      // orange
+      color: '#FFB866',
+    },
+    '&$checked + $track': {
+      backgroundColor: '#FFB866',
+    },
+  },
+  checked: {},
+  track: {},
+})(Switch);
+
 // A custom switch to display green color for all sliders
 const CustomSwitchGreen = withStyles({
   switchBase: {
@@ -297,6 +314,22 @@ function Scheduling() {
     setEvents((prevEvents) => ({
       ...prevEvents,
       [name]: checked ? 'closed' : 'absent',
+    }));
+  };
+
+  const handleTrackPrivateEventSwitchChange = (event) => {
+
+    const { name, checked } = event.target;
+    const status = checked ? 'private_event' : 'absent';
+
+    setTrackStates((prevStates) => ({
+      ...prevStates,
+      [name]: status,
+    }));
+
+    setEvents((prevEvents) => ({
+      ...prevEvents,
+      [name]: status,
     }));
   };
 
@@ -558,9 +591,11 @@ function Scheduling() {
         <React.Fragment key={key}>
           <Box
             className={`trackBox ${
-              trackStates[tracks[key].id] === 'closed'
-                ? 'track-closed'
-                : 'track-open'
+              trackStates[tracks[key].id] === 'private_event'
+                ? 'track-private-event'
+                : trackStates[tracks[key].id] === 'closed'
+                  ? 'track-closed'
+                  : 'track-open'
             }`}
           >
             <FormControl component="fieldset" style={{ padding: '5px' }}>
@@ -573,6 +608,16 @@ function Scheduling() {
                   onChange={handleTrackSwitchChange}
                   name={tracks[key].id.toString()}
                   data-testid={`track-${tracks[key].id.toString()}`}
+                />
+              </div>
+              <div className="trackSwitchRow">
+                <div>{t`Private event`}</div>
+                <CustomSwitchOrange
+                  disabled={!available}
+                  checked={trackStates[tracks[key].id] === 'private_event'}
+                  onChange={handleTrackPrivateEventSwitchChange}
+                  name={tracks[key].id.toString()}
+                  data-testid={`private-event-${tracks[key].id}`}
                 />
               </div>
               <TextareaAutosize

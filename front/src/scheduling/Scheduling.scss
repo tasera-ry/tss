@@ -252,6 +252,14 @@
       background-color: #FFFFFF;
       border: 1px solid #dddddd;
     }
+    .track-private-event {
+      background-color: #FFE8CC;
+      border: 1px solid #FFB866;
+    }
+    .track-closed {
+      background-color: #FAE0E0;
+      border: 1px solid #df8d8d;
+    }
     .trackSwitchRow {
       display: flex;
       flex-flow: row wrap;

@@ -132,6 +132,8 @@ function TrackBox({ track, date }) {
         return css.blueB;
       case 'closed':
         return css.redB;
+      case 'private_event':
+        return css.orangeB;
       default:
         break;
     }
@@ -187,6 +189,7 @@ function Legends() {
       <div className="grid grid-cols-2 gap-2">
         <LegendItem label={t`Open`} colorClass={css.greenB} />
         <LegendItem label={t`Closed`} colorClass={css.redB} />
+        <LegendItem label={t`Private event`} colorClass={css.orangeB} />
         <LegendItem
           label={t`No track officer available`}
           colorClass={css.whiteB}
