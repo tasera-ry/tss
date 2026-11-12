@@ -32,7 +32,7 @@ export function DateHeader({
   }, [date, i18n]);
 
   const weekString = useMemo(() => {
-    const year = moment(date).year();
+    const year = moment(date).isoWeekYear();
     const weekNumber = moment(date).isoWeek();
     return t`Week ${weekNumber} ${year}`;
   }, [date, t]);
