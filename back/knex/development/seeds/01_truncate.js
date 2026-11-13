@@ -9,7 +9,6 @@ exports.seed = async function (knex) {
 	};
 	await truncate('track_reservation');
 	await truncate('track_section');
-	await truncate('member_association');
 	await truncate('track_supervision_history');
 	await truncate('track_supervision');
 	await truncate('range_supervision');

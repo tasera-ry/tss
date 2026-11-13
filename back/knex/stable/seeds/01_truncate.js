@@ -11,6 +11,8 @@ exports.seed = function (knex) {
   const truncateRangeSupervision = _.partial(truncate, 'range_supervision');
   const truncateScheduledRangeSupervision = _.partial(truncate, 'scheduled_range_supervision');
   const truncateRangeReservation = _.partial(truncate, 'range_reservation');
+  const truncateTrackReservation = _.partial(truncate, 'track_reservation');
+  const truncateTrackSection = _.partial(truncate, 'track_section');
   const truncateTrack = _.partial(truncate, 'track');
   const truncateRange = _.partial(truncate, 'range');
   const truncateSupervisor = _.partial(truncate, 'association');
@@ -23,6 +25,8 @@ exports.seed = function (knex) {
     .then(truncateRangeSupervision)
     .then(truncateScheduledRangeSupervision)
     .then(truncateRangeReservation)
+    .then(truncateTrackReservation)
+    .then(truncateTrackSection)
     .then(truncateTrack)
     .then(truncateRange)
     .then(truncateSupervisor)

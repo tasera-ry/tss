@@ -1,14 +1,17 @@
 // New tables for track section reservations (issue #456).
 //
 // - A track consists of 1..n sections. Tracks that aren't divided into many
-//   sections are considered to have a single section, so track_section is the
-//   uniform relation everything else refers to.
-// - A member/association is who made the reservation. A null association_id
-//   means the time is reserved for the military, a.k.a. closed.
-// - Reservations are day-scoped: a date column plus start_time/end_time times
-//   of day, matching how the range_reservation and the track view work.
-// - Overlapping reservations on the same section must not reserve more lanes
-//   combined than the section has, so a constraint trigger rejects
+//   sections are considered to have a single section, so track_section is
+//   the uniform relation everything else refers to.
+// - The reserver is an association user account. A null association_id
+//   means no association is behind the reservation: reserved for the
+//   military or other authorities (type 'official'), or closed without a
+//   booking (type 'closed').
+// - Reservations are day-scoped: a date column plus start_time/end_time
+//   times of day, matching how the range_reservation and the track view
+//   work.
+// - Overlapping reservations on the same section must not reserve more
+//   lanes combined than the section has, so a constraint trigger rejects
 //   reservations that would overcommit a section. (The design says the
 //   combined amount should stay under the section's total, but a section
 //   booked to exactly its capacity is allowed here.)
@@ -16,11 +19,6 @@
 exports.up = function(knex) {
   return knex.schema
     .raw('create type reservation_type as enum (\'private_event\', \'official\', \'closed\')')
-    .createTable('member_association', memberAssociation => {
-      memberAssociation.increments('id');
-      memberAssociation.string('name')
-        .notNullable();
-    })
     .createTable('track_section', trackSection => {
       trackSection.increments('id');
       trackSection.integer('track_id')
@@ -41,10 +39,11 @@ exports.up = function(knex) {
     })
     .createTable('track_reservation', trackReservation => {
       trackReservation.increments('id');
-      // Nullable on purpose: null means reserved for the military (closed).
+      // Nullable on purpose: null means no association is behind the
+      // reservation (military/official use, or a plain closure).
       trackReservation.integer('association_id')
         .references('id')
-        .inTable('member_association');
+        .inTable('user');
       trackReservation.enu('type', ['private_event', 'official', 'closed'], {
         useNative: true,
         existingType: true,
@@ -133,6 +132,5 @@ exports.down = function(knex) {
     .raw('drop function if exists enforce_section_lane_capacity')
     .dropTableIfExists('track_reservation')
     .dropTableIfExists('track_section')
-    .dropTableIfExists('member_association')
     .raw('drop type if exists reservation_type');
 };
