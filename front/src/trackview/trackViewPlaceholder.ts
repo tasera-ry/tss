@@ -13,7 +13,6 @@
  * replace the tagged code with the real field and delete the tag; when all
  * have landed, delete this file.
  *
- *   B6  (#419) `'private'` added to the `track_supervisor` enum.
  *   B7  `track.requires_range_officer` (boolean, default true). False only for
  *       track 6, which may open without a range officer (Pasi Autio,
  *       12.10.2026). Faked by list position in NO_RANGE_OFFICER_NEEDED.
@@ -48,10 +47,15 @@ import type {
 export interface ApiSection {
   id: number;
   track_id: number;
-  /** Empty for a track that is not subdivided. */
-  name: string;
-  position: string | null;
+  /** Display order within the track, from 1. */
+  position: number;
   lane_count: number;
+  /**
+   * Where a lohko sits, e.g. "Vasemmanpuoleisin". A track that is not
+   * subdivided has one section, named after the track.
+   */
+  name: string;
+  description: string | null;
 }
 
 /** One row of `GET /api/track-reservation?date=`. */
@@ -152,8 +156,9 @@ function toTrackOfficer(value: string | null): TrackOfficerState {
     case 'present':
     case 'closed':
       return value;
-    // 'private' is #419 and cannot reach us yet; everything else means absent.
-    // BACKEND(B6, #419): add 'private' to the enum, then map it here.
+    // #419, added to the enum in #451.
+    case 'private_event':
+      return 'private';
     default:
       return 'absent';
   }
@@ -257,26 +262,38 @@ function buildSections(
   open: number,
   close: number,
 ): LaneSection[] {
-  const officerClosed = track.trackSupervision === 'closed';
-
-  return sections
+  const officer = toTrackOfficer(track.trackSupervision);
+  const own = sections
     .filter((s) => s.track_id === track.id)
-    .map(
-      (s): LaneSection => ({
-        id: String(s.id),
-        name: s.name,
-        position: s.position ?? undefined,
-        laneCount: s.lane_count,
-        segments: officerClosed
-          ? [{ start: open, end: close, status: 'closed' }]
-          : buildSegments(
-              open,
-              close,
-              s.lane_count,
-              reservations.filter((r) => r.track_section_id === s.id),
-            ),
-      }),
-    );
+    .sort((a, b) => a.position - b.position);
+  // Only a subdivided track names its sections; one section is the whole track.
+  const divided = own.length > 1;
+
+  return own.map((s): LaneSection => {
+    const segments: TimeSegment[] =
+      officer === 'closed'
+        ? [{ start: open, end: close, status: 'closed' }]
+        : buildSegments(
+            open,
+            close,
+            s.lane_count,
+            reservations.filter((r) => r.track_section_id === s.id),
+          );
+    return {
+      id: String(s.id),
+      name: divided ? `Lohko ${s.position}` : '',
+      position: divided ? s.name : undefined,
+      laneCount: s.lane_count,
+      // A private event track is not open to other members, so its free time
+      // is not free. Bookings on it still show as they are.
+      segments:
+        officer === 'private'
+          ? segments.map((seg) =>
+              seg.status === 'free' ? { ...seg, status: 'private' } : seg,
+            )
+          : segments,
+    };
+  });
 }
 
 /**

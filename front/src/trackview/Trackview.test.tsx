@@ -25,17 +25,19 @@ const sections: ApiSection[] = [
     (side, i) => ({
       id: 10 + i,
       track_id: 1,
-      name: `Lohko ${i + 1}`,
-      position: `${side} loossi`,
+      position: i + 1,
       lane_count: 20,
+      name: `${side} loossi`,
+      description: '20 paikan lohko',
     }),
   ),
   ...testUtils.schedule.tracks.slice(1).map((track) => ({
     id: track.id * 10,
     track_id: track.id,
-    name: '',
-    position: null,
+    position: 1,
     lane_count: 40,
+    name: track.name,
+    description: null,
   })),
 ];
 
@@ -59,9 +61,12 @@ const reservations: ApiReservation[] = [
  * of Testing Library does not reliably settle a second `findBy*` afterwards. So
  * each test awaits the track's heading once, then asserts synchronously.
  */
-async function renderTrackview(schedule = testUtils.schedule) {
+async function renderTrackview(
+  schedule = testUtils.schedule,
+  sectionRows = sections,
+) {
   vi.mocked(api.getSchedulingDate).mockResolvedValue(schedule);
-  vi.mocked(api.getTrackSections).mockResolvedValue(sections);
+  vi.mocked(api.getTrackSections).mockResolvedValue(sectionRows);
   vi.mocked(api.getTrackReservations).mockResolvedValue(reservations);
   const result = render(<Trackview />, { wrapper: TestProviders });
   await screen.findByRole(
@@ -206,6 +211,15 @@ describe('testing Trackview', () => {
     expect(screen.getByText('Vasemmanpuoleisin loossi')).toBeInTheDocument();
     expect(screen.getByText('Keskimmäinen loossi')).toBeInTheDocument();
     expect(screen.getByText('Oikeanpuoleisin loossi')).toBeInTheDocument();
+  });
+
+  it('still renders a track whose sections are not in the database yet', async () => {
+    // Production has none until someone adds them; #477 seeds development only.
+    await renderTrackview(testUtils.schedule, []);
+
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Shooting Track 0' }),
+    ).toBeInTheDocument();
   });
 
   it('labels the notice as the notice for the day', async () => {

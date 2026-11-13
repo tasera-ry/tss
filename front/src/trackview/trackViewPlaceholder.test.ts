@@ -57,30 +57,40 @@ const apiDay = {
   ],
 };
 
-// The customer's figures of 7.10.2026, as the data migration should seed them.
+// The customer's figures of 7.10.2026, in the shape of the #477 dev seed.
 const sections: ApiSection[] = [
   {
     id: 11,
     track_id: 1,
-    name: 'Lohko 1',
-    position: 'Vasemmanpuoleisin loossi',
+    position: 1,
     lane_count: 20,
+    name: 'Vasemmanpuoleisin',
+    description: '20 paikan lohko',
   },
   {
     id: 12,
     track_id: 1,
-    name: 'Lohko 2',
-    position: 'Keskimmäinen loossi',
+    position: 2,
     lane_count: 20,
+    name: 'Keskimmäinen',
+    description: '20 paikan lohko',
   },
   {
     id: 13,
     track_id: 1,
-    name: 'Lohko 3',
-    position: 'Oikeanpuoleisin loossi',
+    position: 3,
     lane_count: 20,
+    name: 'Oikeanpuoleisin',
+    description: '20 paikan lohko',
   },
-  { id: 21, track_id: 2, name: '', position: null, lane_count: 40 },
+  {
+    id: 21,
+    track_id: 2,
+    position: 1,
+    lane_count: 40,
+    name: 'Rata 2',
+    description: null,
+  },
 ];
 
 function reservation(overrides: Partial<ApiReservation>): ApiReservation {
@@ -147,11 +157,20 @@ describe('toTrackViewDay', () => {
     // TASERA review, 10/2026.
     const day = toTrackViewDay(apiDay, sections);
     expect(day?.tracks[0].sections.map((s) => s.position)).toEqual([
-      'Vasemmanpuoleisin loossi',
-      'Keskimmäinen loossi',
-      'Oikeanpuoleisin loossi',
+      'Vasemmanpuoleisin',
+      'Keskimmäinen',
+      'Oikeanpuoleisin',
     ]);
     expect(day?.tracks[1].sections[0].position).toBeUndefined();
+  });
+
+  it('orders the lohkot by their position, not by the order they arrive in', () => {
+    const day = toTrackViewDay(apiDay, [...sections].reverse());
+    expect(day?.tracks[0].sections.map((s) => s.position)).toEqual([
+      'Vasemmanpuoleisin',
+      'Keskimmäinen',
+      'Oikeanpuoleisin',
+    ]);
   });
 
   it('gives a track with no sections none, rather than inventing a lane count', () => {
@@ -194,6 +213,24 @@ describe('toTrackViewDay', () => {
     ]);
     expect(day?.tracks[1].sections[0].segments).toEqual([
       { start: 600, end: 1140, status: 'closed' },
+    ]);
+  });
+
+  it('maps a private event track and shows its free time as private, keeping its bookings', () => {
+    // #419, track_supervisor 'private_event' since #451.
+    const day = toTrackViewDay(
+      {
+        ...apiDay,
+        tracks: [{ ...apiDay.tracks[1], trackSupervision: 'private_event' }],
+      },
+      sections,
+      [reservation({ track_section_id: 21, type: 'official' })],
+    );
+    expect(day?.tracks[0].officer).toBe('private');
+    expect(day?.tracks[0].sections[0].segments.map((s) => s.status)).toEqual([
+      'private',
+      'official',
+      'private',
     ]);
   });
 

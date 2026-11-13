@@ -642,6 +642,8 @@ function SegmentList({
 }) {
   const { t } = useLingui();
   const label = useSegmentLabel();
+  // Nothing to list until the track's sections exist (none are seeded in production).
+  if (track.sections.length === 0) return null;
   const grouped = track.sections.some((s) => s.name);
 
   const arrival =
