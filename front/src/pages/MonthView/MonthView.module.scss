@@ -1,196 +1,441 @@
 @import '../../shared.module.scss';
 
-.hoverHand:hover {
-  cursor: pointer;
-}
+$desktop: 768px;
+$mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-.arrowLeft {
-  margin-right: 1vw;
-}
-
-.arrowRight {
-  margin-left: 1vw;
-}
-
-.progress {
-  display: flex;
-  margin: auto;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  height: 80vh;
-}
-
-.notCurMonth {
-  opacity: 0.6;
-}
-
-.weekdays {
-  text-align: center;
-  justify-content: center;
-  display: flex;
-  width: 100%;
-  background-color: $COLOR_BLACK_TINT_70;
-  border-bottom: 1px solid $COLOR_BLACK_TINT_70;
-  border-radius: 5px;
-  margin-top: -5px;
-  margin-bottom: -5px;
-}
-
-.weekdays > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: calc(100% / 7 - 2px);
-  height: 5vh;
-  min-height: 48px;
+@mixin desktop {
+  @media only screen and (min-width: $desktop) {
+    @content;
+  }
 }
 
 .monthContainer {
-  justify-content: center;
-  text-align: center;
-  margin: auto;
   display: flex;
-  width: 100vw;
-  max-width: 1025px;
-  flex-wrap: wrap;
-  font-size: large;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 16px;
+
+  @include desktop {
+    padding: 32px 24px;
+  }
 }
 
-.monthDays {
-  display: flex;
-  background-color: $COLOR_BLACK_TINT_70;
-  text-align: center;
-  justify-content: center;
-  font-weight: bold;
-  flex-wrap: wrap;
-  width: 100%;
-  //border: 1px solid red;
-  border-bottom: 2px solid $COLOR_BLACK_TINT_70;
-  margin-left: -4px;
-  border-left: 4px solid $COLOR_BLACK_TINT_70;
-}
-.monthDays > a {
-  color: $COLOR_BLACK_TINT_80;
-  font-weight: bold;
-  text-decoration: none;
+.toolbar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: calc(100% / 7 - 5px);
-  height: 10vh;
-  min-height: 48px;
-  font-weight: normal;
-  margin: 2px;
-  border-radius: 3px;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Hidden on mobile to match the Figma layout. */
+.todayButton {
+  display: none;
+
+  @include desktop {
+    display: block;
+  }
+}
+
+.viewTabs {
+  flex: 1 1 auto;
+
+  > div {
+    width: 100%;
+  }
+
+  a {
+    flex: 1 1 0;
+  }
+
+  @include desktop {
+    flex: 0 0 auto;
+
+    a {
+      flex: 0 0 auto;
+      min-width: 64px;
+    }
+  }
+}
+
+.weekRange {
+  /* Offsets DateHeader's py-10 so the subtitle sits under the title. */
+  margin: -32px 0 24px;
+  text-align: center;
+  font-family: $mono;
+  font-size: 12px;
+  color: var(--color-black-tint-60);
+}
+
+.calendarCard {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+
+  @include desktop {
+    padding: 20px 16px 16px;
+    background: var(--color-white);
+    border: 1px solid var(--color-black-tint-20);
+    border-radius: 12px;
+  }
+}
+
+.caption {
+  display: none;
+
+  @include desktop {
+    display: block;
+    margin: 0 0 12px;
+    font-family: $mono;
+    font-size: 12px;
+    color: var(--color-black-tint-60);
+  }
+}
+
+.calendar {
+  --week-col: 22px;
+
+  display: grid;
+  grid-template-columns: var(--week-col) repeat(7, minmax(0, 1fr));
+  gap: 6px 5px;
+  width: 100%;
+  min-width: 0;
+
+  @include desktop {
+    --week-col: 40px;
+    gap: 8px;
+  }
+}
+
+.headerCell {
+  padding: 0 0 4px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--color-black-tint-60);
+
+  &:first-child {
+    font-weight: normal;
+  }
+
+  @include desktop {
+    font-size: 12px;
+  }
 }
 
 .weekNumber {
-  background-color: $COLOR_BLACK_TINT_70;
-  display: none;
-  text-align: center;
-  justify-content: left;
-  flex-wrap: wrap;
-  width: calc(100% / 8);
-  border-radius: 5px;
-  //margin-right: -5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $mono;
+  font-size: 10px;
+  color: var(--color-black-tint-60);
+
+  @include desktop {
+    font-size: 12px;
+  }
 }
 
-.weekdays .weekNumber {
+.dayCell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 62px;
+  padding: 4px;
+  overflow: hidden;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  border: 1px solid var(--color-black-tint-20);
+  border-radius: 6px;
+  background-clip: padding-box;
+  background-color: var(--color-white);
+  color: var(--color-black);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  -webkit-appearance: none;
+  appearance: none;
+
+  &:hover {
+    border-color: var(--color-black-tint-50);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-black);
+    outline-offset: 2px;
+  }
+
+  @include desktop {
+    min-height: 112px;
+    padding: 10px;
+    border-radius: 6px;
+  }
+}
+
+.statusPresent {
+  background-color: var(--color-green);
+  color: var(--color-white);
+}
+
+.statusConfirmed {
+  background-color: var(--color-green-light);
+  color: var(--color-black);
+}
+
+.statusNotConfirmed {
+  background-color: var(--color-turquoise);
+  color: var(--color-black);
+}
+
+.statusAbsent {
+  background-color: var(--color-white);
+  color: var(--color-black-tint-70);
+}
+
+.statusClosed {
+  background-color: var(--color-red-light);
+  color: var(--color-white);
+}
+
+.otherMonth {
+  background-color: var(--color-black-tint-05);
+  color: var(--color-black-tint-50);
+  border-color: var(--color-black-tint-05);
+}
+
+/* Desktop marks today with a thick border; mobile uses the TÄNÄÄN label. */
+.today {
+  @include desktop {
+    border-width: 3px;
+    border-color: var(--color-black);
+
+    &:hover {
+      border-color: var(--color-black);
+    }
+  }
+}
+
+.selected {
+  box-shadow: 0 0 0 2px var(--color-white), 0 0 0 4px var(--color-black-tint-70);
+}
+
+.cellTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.dayNumber {
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 1.2;
+
+  .otherMonth & {
+    font-size: 10px;
+  }
+
+  @include desktop {
+    font-size: 15px;
+
+    .otherMonth & {
+      font-size: 15px;
+    }
+  }
+}
+
+.cellTopIcon {
+  display: flex;
+  margin-left: auto;
+}
+
+.statusIcon {
+  font-size: 16px !important;
+
+  @include desktop {
+    font-size: 18px !important;
+  }
+}
+
+.cellBody {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1px;
+  min-width: 0;
+  text-align: center;
+
+  @include desktop {
+    justify-content: center;
+    padding: 0 18px;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+}
+
+.statusText {
+  font-weight: bold;
+}
+
+.timeText {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.cellCenter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  display: none;
-  background-color: $COLOR_BLACK_TINT_70;
-  width: calc(100% / 8 - 6px);
+  pointer-events: none;
+}
+
+.todayBadge {
+  display: inline-block;
+  padding: 1px 6px;
+  font-family: $mono;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  line-height: 1.5;
+  color: var(--color-white);
+  background: var(--color-black);
   border-radius: 4px;
 }
 
-.weekNumber > a {
-  color: $COLOR_WHITE;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 10vh;
-  min-height: 48px;
-  border: 1px solid $COLOR_BLACK_TINT_70;
-  
-}
-
-.dateHeaderM {
-  height: 10em;
-  width: 99vw;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.MonthviewInfo {
+.todayMini {
   position: absolute;
-  margin-top: 2pt;
-  width: 20px;
-  height: 20px;
+  right: 0;
+  bottom: 4px;
+  left: 0;
+  font-family: $mono;
+  font-size: 7px;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+  text-align: center;
+  pointer-events: none;
 }
 
-.monthviewDayText {
+.mobileOnly {
+  width: 100%;
+
+  @include desktop {
+    display: none;
+  }
+}
+
+.detailCard,
+.legendCard {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--color-white);
+  border: 1px solid var(--color-black-tint-20);
+  border-radius: 12px;
+}
+
+.detailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.detailTitle {
+  margin: 0;
+  font-size: 16px;
   font-weight: bold;
 }
-.monthviewDayImg {
-  margin-right: 22px;
+
+.detailStatus {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
 }
 
-/* media files */
-
-/* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
-@media only screen and (min-width: 320px) {
+.detailArrival {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: var(--color-black-tint-70);
 }
 
-/* smartphones, Android phones, landscape iPhone */
-@media only screen and (min-width: 480px) {
-  .MonthviewInfo {
-    margin-left: 3px;
-  }
-  .monthviewDayImg {
-    margin-right: 16px;
-  }
-
-  .weekNumber {
-    display: flex;
-  }
-
-  .monthDays {
-    width: calc(100% / 8 * 7);
-  }
-
-  .weekdays .weekNumber {
-    display: flex;
-  }
-
-  .weekdays > a {
-    width: calc(100% / 8 - 2px);
-  }
-
-  .weekdays > div {
-    background-color: $COLOR_BLACK_TINT_70;
-    color: $COLOR_WHITE;
-    width: calc(100% / 8 - 2px);
-  }
+.statusMessage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  padding: 24px;
+  text-align: center;
+  color: var(--color-black-tint-60);
 }
 
-/* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
-@media only screen and (min-width: 600px) {
+.openButton {
+  display: block;
+  padding: 12px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+  color: var(--color-white);
+  background: $COLOR_GREEN_DARK;
+  border-radius: 8px;
 }
 
-/* tablet, landscape iPad, lo-res laptops ands desktops */
-@media only screen and (min-width: 801px) {
+.legendTitle {
+  margin: 0 0 14px;
+  font-family: $mono;
+  font-size: 12px;
+  font-weight: normal;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-black-tint-60);
 }
 
-/* big landscape tablets, laptops, and desktops */
-@media only screen and (min-width: 1025px) {
+.legendList {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-/* hi-res laptops and desktops */
-@media only screen and (min-width: 1281px) {
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.legendSwatch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  box-sizing: border-box;
+  border: 1px solid var(--color-black-tint-20);
+  border-radius: 5px;
+  background-clip: padding-box;
+}
+
+.legendIcon {
+  font-size: 16px !important;
 }
