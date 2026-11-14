@@ -32,7 +32,6 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   width: 100%;
 }
 
-/* Hidden on mobile to match the Figma layout. */
 .todayButton {
   display: none;
 
@@ -162,6 +161,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   -webkit-appearance: none;
   appearance: none;
+  container-type: inline-size;
 
   &:hover {
     border-color: var(--color-black-tint-50);
@@ -228,9 +228,14 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
 .cellTop {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
-  gap: 6px;
+  gap: 4px 6px;
   min-width: 0;
+
+  @include desktop {
+    padding-right: 22px;
+  }
 }
 
 .dayNumber {
@@ -251,9 +256,12 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
 }
 
+/* Pinned so a wide TÄNÄÄN badge can never push the status icon out of a narrow cell. */
 .cellTopIcon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   display: flex;
-  margin-left: auto;
 }
 
 .statusIcon {
@@ -313,17 +321,34 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   border-radius: 4px;
 }
 
+/* Narrow desktop cells: put the badge on its own centred row instead of letting flex-wrap drop it.*/
+@container (max-width: 100px) {
+  .cellTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .todayBadge {
+    align-self: center;
+    margin-right: -22px;
+  }
+}
+
 .todayMini {
   position: absolute;
-  right: 0;
+  right: 2px;
   bottom: 4px;
-  left: 0;
+  left: 2px;
   font-family: $mono;
-  font-size: 7px;
+  font-size: 8px;
   font-weight: bold;
   letter-spacing: 0.3px;
+  line-height: 1.5;
   text-align: center;
   pointer-events: none;
+  color: var(--color-white);
+  background: var(--color-black);
+  border-radius: 4px;
 }
 
 .mobileOnly {
