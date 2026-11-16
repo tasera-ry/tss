@@ -37,31 +37,25 @@
  */
 @theme static {
   /*
-   * Status palette (#432). Proposed values — expect these to change once the
-   * palette work is finished. Defined here only, and read from SCSS with
-   * var(--color-status-*), so they are not duplicated into colors.module.scss
-   * the way the older tokens are.
+   * Status palette (#432), revised 16.11.2026: solid colours instead of
+   * stripes, red for closed and green for open/free. Defined here only and read
+   * with var(--color-status-*), so they are not duplicated into
+   * colors.module.scss the way the older tokens are.
    *
-   * Built as a lightness ramp rather than as a set of hues: L* 93 / 73 / 55 /
-   * 43 / 21. That means the five states stay distinguishable with no colour
-   * perception at all, which picking a better green and a better red cannot
-   * achieve — those two collapse to dE2000 6.6 under deuteranopia today, and
-   * any green/red pair would.
+   * Every status is also written as text, so colour is never the only signal.
+   * Hue and lightness together keep the states apart for colour-blind viewers:
+   * L* free 93, blocked 70, private 73, present 60, official 42, closed 30.
+   * Closed and present, the classic red/green pair, differ by 30 in L* and
+   * stay at dE 27 under simulated deuteranopia (45 protanopia); every other
+   * pair that can appear side by side stays above dE 20.
    *
-   * Measured against the #ebebeb page background:
-   *   private  3.17:1   official  4.93:1   closed  10.69:1   (SC 1.4.11 wants 3:1)
-   * "free" and "blocked" sit below that deliberately: they carry no information
-   * on their own, the text does.
-   *
-   * Two pairs stay close under simulation — free/blocked at dE 14 and
-   * private/official at dE 14 — so both also differ by pattern and by wording.
-   * With five states on a light ground there is no palette where every pair
-   * clears the threshold on hue alone.
+   * Text on each fill: free, blocked, private and present take black text
+   * (17.4, 9.2, 10.1 and 6.7:1); official and closed take white (6.0, 9.3:1).
    */
-  --color-status-free: #ebebeb;
-  --color-status-blocked: #afb3ad;
-  --color-status-private: #b4761f;
-  --color-status-official: #a4483c;
-  --color-status-closed: #2e342f;
-  --color-status-present: #2e6b3e;
+  --color-status-free: #dcefdc;
+  --color-status-blocked: #a9ada8;
+  --color-status-private: #f2a33a;
+  --color-status-official: #4a5bb8;
+  --color-status-closed: #8a1c18;
+  --color-status-present: #46a457;
 }

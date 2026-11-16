@@ -2,32 +2,18 @@
  * Segment fills for the track view.
  *
  * Colour comes from the --color-status-* tokens in App.css, read at runtime so
- * the values live in one place rather than being copied here the way the older
- * palette is copied between colors.module.scss and App.css.
- *
- * Every fill also carries a pattern, and every segment carries its status as
- * text. Colour is the third channel, not the first: the accessibility audit
- * measured the current "open" and "closed" fills at dE2000 6.6 under
- * deuteranopia, so nothing here may depend on hue alone.
+ * the values live in one place. Each status has its own solid colour, chosen so
+ * the states stay apart for colour-blind viewers too (see App.css), and every
+ * segment also carries its status as text: colour is never the only signal.
  */
-
-@mixin hatch($angle, $colour) {
-  background-image: repeating-linear-gradient(
-    $angle,
-    transparent 0 5px,
-    $colour 5px 8px
-  );
-}
 
 .segPrivate {
   background-color: var(--color-status-private);
-  @include hatch(45deg, rgba(0, 0, 0, 0.28));
   color: #000;
 }
 
 .segOfficial {
   background-color: var(--color-status-official);
-  @include hatch(-45deg, rgba(255, 255, 255, 0.3));
   color: #fff;
 }
 
@@ -39,27 +25,16 @@
 /** Unavailable because a supervisor is missing, not because it is reserved. */
 .segBlocked {
   background-color: var(--color-status-blocked);
-  @include hatch(90deg, rgba(255, 255, 255, 0.45));
   color: #000;
 }
 
-/** Small keys beside each row of the list. Same patterns, smaller. */
+/** Small keys beside each row of the list, in the same colours. */
 .markPrivate {
   background-color: var(--color-status-private);
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent 0 3px,
-    rgba(0, 0, 0, 0.28) 3px 4px
-  );
 }
 
 .markOfficial {
   background-color: var(--color-status-official);
-  background-image: repeating-linear-gradient(
-    -45deg,
-    transparent 0 2px,
-    rgba(255, 255, 255, 0.3) 2px 4px
-  );
 }
 
 .markClosed {
@@ -68,11 +43,6 @@
 
 .markBlocked {
   background-color: var(--color-status-blocked);
-  background-image: repeating-linear-gradient(
-    90deg,
-    transparent 0 3px,
-    rgba(255, 255, 255, 0.45) 3px 4px
-  );
 }
 
 .markFree {
