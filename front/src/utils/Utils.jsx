@@ -1,7 +1,7 @@
 import moment from 'moment';
 import 'moment/locale/sv';
 import { Trans } from '@lingui/react/macro';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import api from '../api/api';
 import colors from '../colors.module.scss';
 
@@ -66,13 +66,21 @@ export const checkColor = (days, oneDay) => {
   }
 };
 
-export function JumpToCurrent() {
-  const fullUrl = window.location.href.split('/');
+/**
+ * Jumps to today in the view being shown.
+ * @param {{ view?: string, rest?: string }} props `view` overrides the view read
+ *   from the route; `rest` is kept after the date (the track in the track view).
+ */
+export function JumpToCurrent({ view, rest } = {}) {
+  const { pathname } = useLocation();
+  const [routeView, shownDate] = pathname.split('/').filter(Boolean);
   // "/" renders the week view (App.tsx).
-  const urlParamDate = fullUrl[4] || 'weekview';
-  const today = new Date().toISOString().split('T')[0];
+  const target = view ?? routeView ?? 'weekview';
+  // The local date: toISOString() gave yesterday until 02.00-03.00 Finnish time.
+  const today = moment().format('YYYY-MM-DD');
   // A route without a date shows today.
-  const isToday = (fullUrl[5] || today) === today;
+  const isToday = (shownDate ?? today) === today;
+  const path = rest ? `/${target}/${today}/${rest}` : `/${target}/${today}`;
 
   // Shaped like the view tabs, but a lighter grey when on, so it never looks
   // like the active view tab.
@@ -87,7 +95,7 @@ export function JumpToCurrent() {
       className={`${baseStyle} ${isToday ? activeStyle : inactiveStyle}`}
       data-testid="jumpToCur"
       aria-current={isToday ? 'date' : undefined}
-      to={`/${urlParamDate}/${today}`}
+      to={path}
     >
       <Trans>Today</Trans>
     </Link>

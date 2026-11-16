@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import moment from 'moment';
 import { useQuery } from 'react-query';
 
+import { JumpToCurrent } from '@/utils/Utils';
 import api from '../api/api';
 import css from './Trackview.module.scss';
 import { formatTime, toTrackViewDay } from './trackViewPlaceholder';
@@ -88,7 +89,7 @@ export function Trackview() {
 
   if (status === 'error') {
     return (
-      <TrackViewContainer date={targetDate}>
+      <TrackViewContainer date={targetDate} track={track}>
         <h1 className="font-bold text-2xl">{t`Error`}</h1>
         <p>{t`Something went wrong. Please try again later.`}</p>
       </TrackViewContainer>
@@ -97,7 +98,7 @@ export function Trackview() {
 
   if (status === 'loading') {
     return (
-      <TrackViewContainer date={targetDate}>
+      <TrackViewContainer date={targetDate} track={track}>
         <CircularProgress />
         <span>{t`Loading...`}</span>
       </TrackViewContainer>
@@ -106,7 +107,7 @@ export function Trackview() {
 
   if (!day || !selectedTrack) {
     return (
-      <TrackViewContainer date={targetDate}>
+      <TrackViewContainer date={targetDate} track={track}>
         <h1 className="font-bold text-2xl">{t`Track not found`}</h1>
         <p>{t`This track has no schedule for the selected day.`}</p>
       </TrackViewContainer>
@@ -116,7 +117,7 @@ export function Trackview() {
   const blocked = unavailableReason(day, selectedTrack);
 
   return (
-    <TrackViewContainer date={targetDate}>
+    <TrackViewContainer date={targetDate} track={track}>
       <DateNav date={targetDate} track={selectedTrack.name} />
       <p className="-mt-3 text-center text-grey text-sm">
         {day.open !== null && day.close !== null && (
@@ -177,14 +178,21 @@ export function Trackview() {
 
 function TrackViewContainer({
   date,
+  track,
   children,
-}: { date: string; children: React.ReactNode }) {
+}: { date: string; track?: string; children: React.ReactNode }) {
   return (
     // A readable column on phones and tablets; on desktop the full width of the
     // screen, up to 1920px, beyond which rows would stretch too far apart to read.
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 pt-4 pb-16 sm:px-6 lg:max-w-[1920px] lg:px-8">
-      <div className="flex flex-wrap items-center justify-end gap-3">
-        <ViewTabs date={date} />
+      {/* Today in the middle, the view tabs on the right, as in the day view. */}
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+        <div className="col-start-2">
+          <JumpToCurrent view="trackview" rest={track} />
+        </div>
+        <div className="col-start-3 justify-self-end">
+          <ViewTabs date={date} />
+        </div>
       </div>
       {children}
     </div>
