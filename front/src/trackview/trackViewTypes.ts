@@ -69,8 +69,8 @@ export interface TimeSegment {
  */
 export interface LaneSection {
   id: string;
-  /** Empty for tracks that are not subdivided. */
-  name: string;
+  /** Number within a subdivided track, from 1; null when it is undivided. */
+  number: number | null;
   /**
    * Where the section sits, in the words members use on site, e.g.
    * "Vasemmanpuoleisin loossi". Asked for by TASERA in review, 10/2026, because

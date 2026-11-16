@@ -204,9 +204,24 @@ describe('testing Trackview', () => {
   it('lists the three lohkot of the pistol track separately', async () => {
     await renderTrackview();
 
-    expect(screen.getAllByText('Lohko 1').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Lohko 2').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Lohko 3').length).toBeGreaterThan(0);
+    // English in the tests; "Lohko 1" in Finnish.
+    expect(screen.getAllByText('Section 1').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Section 2').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Section 3').length).toBeGreaterThan(0);
+  });
+
+  it('names the numbered tracks in the interface language, and links by the stored name', async () => {
+    const tracks = testUtils.schedule.tracks.map((track, i) =>
+      i === 1 ? { ...track, name: 'Rata 2' } : track,
+    );
+    await renderTrackview({ ...away, tracks });
+
+    const nav = within(screen.getByRole('navigation', { name: 'Tracks' }));
+    expect(nav.getByRole('link', { name: 'Track 2' })).toHaveAttribute(
+      'href',
+      expect.stringMatching(/\/trackview\/2020-02-20\/Rata(%20| )2$/),
+    );
+    expect(screen.queryByText('Rata 2')).not.toBeInTheDocument();
   });
 
   it('says where each lohko is', async () => {

@@ -279,7 +279,7 @@ function buildSections(
           );
     return {
       id: String(s.id),
-      name: divided ? `Lohko ${s.position}` : '',
+      number: divided ? s.position : null,
       position: divided ? s.name : undefined,
       laneCount: s.lane_count,
       // A private event track is not open to other members, so its free time
