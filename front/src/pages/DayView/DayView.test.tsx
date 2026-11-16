@@ -237,7 +237,7 @@ describe('testing Dayview component', () => {
         i === 1 ? { ...track, name: 'Rata 2' } : track,
       ),
     });
-    expect(screen.getByRole('link', { name: /Track 2/ })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /^Track 2/ })).toHaveAttribute(
       'href',
       expect.stringMatching(/\/trackview\/.*\/Rata(%20| )2$/),
     );
