@@ -37,25 +37,25 @@
  */
 @theme static {
   /*
-   * Status palette (#432), revised 16.11.2026: solid colours instead of
-   * stripes, red for closed and green for open/free. Defined here only and read
-   * with var(--color-status-*), so they are not duplicated into
-   * colors.module.scss the way the older tokens are.
+   * Status palette (#432). For now the new views use the colours the rest of
+   * TSS already uses (colors.module.scss), so all four views look alike; the
+   * palette is to be reviewed once the month, week, day and track views are
+   * all redesigned (decided 16.11.2026). Defined here only and read with
+   * var(--color-status-*).
    *
-   * Every status is also written as text, so colour is never the only signal.
-   * Hue and lightness together keep the states apart for colour-blind viewers:
-   * L* free 93, blocked 70, private 73, present 60, official 42, closed 30.
-   * Closed and present, the classic red/green pair, differ by 30 in L* and
-   * stay at dE 27 under simulated deuteranopia (45 protanopia); every other
-   * pair that can appear side by side stays above dE 20.
+   * Every status is written as text in these views, so colour is never the
+   * only signal (WCAG 1.4.1). All text on the fills is black, at least 5.6:1,
+   * except official, which takes white at 5.3:1 (WCAG 1.4.3).
    *
-   * Text on each fill: free, blocked, private and present take black text
-   * (17.4, 9.2, 10.1 and 6.7:1); official and closed take white (6.0, 9.3:1).
+   * Known limit, for the review: present green and closed red are 1.16:1
+   * apart and look alike with deuteranopia; the text and the icons carry the
+   * difference. Official and blocked have no colour in the old palette: official
+   * takes the old red (military use was shown as closed), blocked a grey.
    */
-  --color-status-free: #dcefdc;
+  --color-status-free: #b2d9ad;
   --color-status-blocked: #a9ada8;
-  --color-status-private: #f2a33a;
-  --color-status-official: #4a5bb8;
-  --color-status-closed: #8a1c18;
-  --color-status-present: #46a457;
+  --color-status-private: #f2c66d;
+  --color-status-official: #c23a3a;
+  --color-status-closed: #c97b76;
+  --color-status-present: #658f60;
 }
