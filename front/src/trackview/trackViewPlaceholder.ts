@@ -19,8 +19,8 @@
  *   B8  Standing rules per track ("Vain .22LR", "Ei ammuntaa pimeällä"), as
  *       data an admin can edit, with a way to translate it. Faked as Finnish
  *       strings in TRACK_NOTES.
- *   B9  (#437) The sunset time for the date. Faked as one fixed time,
- *       PLACEHOLDER_SUNSET, marked in the view in development.
+ *   B9  (#437) The sunset time for the date. Not shown until it exists
+ *       (PR #465); a fixed placeholder would have reached production.
  *   B10 The supervisor rule enforced on write: "track officer present" must
  *       not be settable while the range officer is away, except on tracks
  *       with requires_range_officer = false. Today nothing stops the
@@ -144,12 +144,6 @@ const TRACK_NOTES: string[][] = [
  */
 const NO_RANGE_OFFICER_NEEDED = new Set([5]);
 
-/**
- * PLACEHOLDER for #437. Deliberately one fixed time rather than a real one.
- * BACKEND(B9, #437): the sunset time for the date.
- */
-export const PLACEHOLDER_SUNSET = 18 * 60 + 32;
-
 /** The existing `track_supervisor` enum maps straight onto the new type. */
 function toTrackOfficer(value: string | null): TrackOfficerState {
   switch (value) {
@@ -261,8 +255,12 @@ function buildSections(
   reservations: ApiReservation[],
   open: number,
   close: number,
+  rangeClosed: boolean,
 ): LaneSection[] {
-  const officer = toTrackOfficer(track.trackSupervision);
+  // A range closed for the day closes every track, track 6 included.
+  const officer = rangeClosed
+    ? 'closed'
+    : toTrackOfficer(track.trackSupervision);
   const own = sections
     .filter((s) => s.track_id === track.id)
     .sort((a, b) => a.position - b.position);
@@ -300,7 +298,7 @@ function buildSections(
  * Map the live payloads into what the redesigned view needs, filling the gaps.
  * Real: name, description, notice, both supervisor statuses, opening hours,
  * sections, lane counts, reservations.
- * Placeholder: notes, the range officer exception, sunset.
+ * Placeholder: notes, the range officer exception. Sunset is not shown yet.
  */
 export function toTrackViewDay(
   api: ApiDay | undefined,
@@ -320,7 +318,14 @@ export function toTrackViewDay(
     notice: track.notice ?? null,
     officer: toTrackOfficer(track.trackSupervision),
     requiresRangeOfficer: !NO_RANGE_OFFICER_NEEDED.has(index),
-    sections: buildSections(track, sections, reservations, open, close),
+    sections: buildSections(
+      track,
+      sections,
+      reservations,
+      open,
+      close,
+      api.rangeSupervision === 'closed',
+    ),
     notes: TRACK_NOTES[index] ?? [],
   }));
 
@@ -329,13 +334,14 @@ export function toTrackViewDay(
     open,
     close,
     rangeOfficer: toRangeOfficer(api.rangeSupervision),
-    rangeOfficerArrivingAt: toMinutes(api.arrivingAt),
-    // PLACEHOLDER until #437. Null renders nothing rather than a wrong time.
-    // PLACEHOLDER until #437. A fixed time, not a real one for this date, so
-    // nobody mistakes it for the feature working. The view marks it as such.
-    // The real value would come from Ilmatieteen laitos or similar, and matters
-    // on tracks 5 and 6 where shooting is barred after dark.
-    sunset: PLACEHOLDER_SUNSET,
+    // Only while the officer is booked: arriving_at is never cleared on
+    // check-in, so a present or closed day can still carry an old time.
+    rangeOfficerArrivingAt:
+      api.rangeSupervision === 'confirmed' ? toMinutes(api.arrivingAt) : null,
+    // BACKEND(B9, #437): null renders nothing rather than a wrong time. The
+    // real value (PR #465) matters on tracks 5 and 6, where shooting is
+    // barred after dark.
+    sunset: null,
     tracks,
   };
 }

@@ -86,6 +86,17 @@ describe('unavailableReason', () => {
     ).toBeNull();
   });
 
+  it.each([['confirmed'], ['not confirmed']] as const)(
+    'does not block on a missing track officer while the range officer is %s: nobody is on site yet',
+    (rangeOfficer) => {
+      // Production, 16.11.2026: every booked future day has its track officers
+      // 'absent'; they are marked on the tablet on the day.
+      expect(
+        unavailableReason({ rangeOfficer }, { ...normal, officer: 'absent' }),
+      ).toBeNull();
+    },
+  );
+
   describe('the track 6 exception', () => {
     it.each([['absent'], ['confirmed']] as const)(
       'stays usable with its own officer while the range officer is %s',

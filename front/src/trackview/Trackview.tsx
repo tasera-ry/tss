@@ -3,7 +3,6 @@ import { Link, useParams } from 'react-router-dom';
 
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { CircularProgress } from '@mui/material';
@@ -32,7 +31,7 @@ import { awaitingRangeOfficer, unavailableReason } from './trackViewTypes';
  * and editing reservations is an association and admin task and belongs in the
  * scheduling view.
  *
- * Notes, the range officer exception and the sunset time still come from
+ * Notes and the range officer exception still come from
  * `trackViewPlaceholder`; everything else is live data. The backend work left is
  * listed at the top of that file.
  */
@@ -129,7 +128,7 @@ export function Trackview() {
           ' · '}
         {day.sunset !== null && (
           <>
-            {t`Sunset`} <DevValue>{formatTime(day.sunset)}</DevValue>
+            {t`Sunset`} {formatTime(day.sunset)}
           </>
         )}
       </p>
@@ -180,25 +179,11 @@ function TrackViewContainer({
     // A readable column on phones and tablets; on desktop the full width of the
     // screen, up to 1920px, beyond which rows would stretch too far apart to read.
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 pt-4 pb-16 sm:px-6 lg:max-w-[1920px] lg:px-8">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <BackLink date={date} />
+      <div className="flex flex-wrap items-center justify-end gap-3">
         <ViewTabs date={date} />
       </div>
       {children}
     </div>
-  );
-}
-
-function BackLink({ date }: { date: string }) {
-  const { t } = useLingui();
-  return (
-    <Link
-      className="-ml-2 flex items-center gap-1 p-2 text-grey hover:text-black"
-      to={`/dayview/${moment(date).format('YYYY-MM-DD')}`}
-    >
-      <ArrowBackIcon fontSize="small" />
-      {t`Back to day view`}
-    </Link>
   );
 }
 
@@ -318,8 +303,11 @@ function RangeOfficerBanner({ day }: { day: TrackViewDay }) {
   // Booked but not on site yet: how every future day looks.
   const awaiting = awaitingRangeOfficer(day);
 
+  const closed = day.rangeOfficer === 'closed';
+
   let title = t`No range officer present`;
-  if (present) title = t`Range officer present`;
+  if (closed) title = t`Range closed`;
+  else if (present) title = t`Range officer present`;
   else if (day.rangeOfficer === 'confirmed') title = t`Range officer confirmed`;
   else if (day.rangeOfficer === 'not confirmed') {
     title = t`Range officer predefined`;
@@ -346,10 +334,12 @@ function RangeOfficerBanner({ day }: { day: TrackViewDay }) {
         <span className="block text-grey">
           {present && t`Tracks can be used during opening hours.`}
           {awaiting && t`Tracks can be used once the range officer arrives.`}
+          {closed && t`No track can be used on this day.`}
           {!present &&
             !awaiting &&
+            !closed &&
             t`No track can be used until the range officer arrives.`}
-          {!present && day.rangeOfficerArrivingAt !== null && (
+          {day.rangeOfficerArrivingAt !== null && (
             <>
               {' '}
               {t`Estimated arrival`} {formatTime(day.rangeOfficerArrivingAt)}.
@@ -369,10 +359,7 @@ function TrackHeader({ track }: { track: TrackDetail }) {
   return (
     <div className="flex flex-col gap-2">
       {track.description && (
-        <p className="whitespace-pre-wrap text-sm">
-          {track.description}
-          <DevFlag kind="description" />
-        </p>
+        <p className="whitespace-pre-wrap text-sm">{track.description}</p>
       )}
       <p className="text-grey text-sm tabular-nums">
         {lanes} {t`lanes`}
@@ -405,7 +392,6 @@ function TrackHeader({ track }: { track: TrackDetail }) {
         <p className="border-grey border-l-3 bg-black-tint-05 py-2 pr-3 pl-3 text-sm">
           <b className="font-semibold">{t`Notice for the day`}</b>{' '}
           {track.notice}
-          <DevFlag kind="notice" />
         </p>
       )}
       {track.notes.map((note) => (
@@ -415,53 +401,6 @@ function TrackHeader({ track }: { track: TrackDetail }) {
       ))}
     </div>
   );
-}
-
-/**
- * Development-only marker, stripped from production builds.
- *
- * Three things on this page look like defects in the dev environment and are
- * not. Each gets its own wording so nobody has to work out which is which.
- *
- * `description` — track.description. The track's permanent physical
- *   description, maintained by an admin in the Radat view. Real content reads
- *   like "75m / 100m Hirvirata - 20 ampumapaikkaa". The dev seed generates a
- *   short label instead ("Pistol 300m"), from 04_tracks.js:38.
- *
- * `notice` — track_supervision.notice. The free-text note a range officer
- *   writes for one track on one day; it is what the "Radalla lisätietoja" icon
- *   announces. Real content reads like "Taustavalli huollossa". The dev seed
- *   fills it with faker Latin, from 08_track_supervision.js:52, which is where
- *   the lorem ipsum on this page comes from.
- *
- * Both are database text, and there is no translation path for database text at
- * all — it stays as entered whatever language the interface is set to.
- */
-/**
- * A single invented value shown inline, marked in place rather than with a
- * sentence after it. Used for the sunset time, which has nowhere else to sit.
- * In production the value renders plainly.
- */
-function DevValue({ children }: { children: React.ReactNode }) {
-  if (!import.meta.env.DEV) return <>{children}</>;
-  return (
-    <span className={css.devValue} title="Placeholder — awaiting #437">
-      {children}
-    </span>
-  );
-}
-
-function DevFlag({ kind }: { kind: 'description' | 'notice' }) {
-  if (!import.meta.env.DEV) return null;
-
-  const text = {
-    description:
-      'awaiting the real track description, maintained in Radat. Database text, never translated.',
-    notice:
-      'a range officer notice for this track on this day. Dev seed text (08_track_supervision.js). Database text, never translated.',
-  }[kind];
-
-  return <span className={css.devFlag}> — {text}</span>;
 }
 
 const SEGMENT_FILL: Record<SegmentStatus | 'blocked', string> = {
