@@ -65,7 +65,7 @@
 }
 
 .arrivalTime {
-  display: none;
+  font-size: 13px;
 }
 
 .supervisorRight {
@@ -110,9 +110,7 @@
   }
 
   .arrivalTime {
-    display: block;
-    font-size: 10px;
-    text-decoration: underline;
+    font-size: 12px;
   }
 
   .supervisorRight {
@@ -259,10 +257,6 @@
   margin-top: 2px;
 }
 
-.trackSub {
-  font-size: 10px;
-  color: var(--color-black-tint-50, #808080);
-}
 
 .statusBadge {
   flex: 1; 

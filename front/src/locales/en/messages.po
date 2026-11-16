@@ -17,6 +17,22 @@ msgstr ""
 msgid "{booked, plural, one {# lane booked} other {# lanes booked}}"
 msgstr "{booked, plural, one {# lane booked} other {# lanes booked}}"
 
+#: src/pages/DayView/DayView.tsx:96
+msgid "{equipmentCount, plural, one {# device} other {# devices}}"
+msgstr "{equipmentCount, plural, one {# device} other {# devices}}"
+
+#: src/pages/DayView/DayView.tsx:90
+#~ msgid "{equipmentCount} devices"
+#~ msgstr "{equipmentCount} devices"
+
+#: src/pages/DayView/DayView.tsx:94
+msgid "{tracksCount, plural, one {# track} other {# tracks}}"
+msgstr "{tracksCount, plural, one {# track} other {# tracks}}"
+
+#: src/pages/DayView/DayView.tsx:88
+#~ msgid "{tracksCount} tracks"
+#~ msgstr "{tracksCount} tracks"
+
 #: src/upcomingsupervisions/LoggedIn.jsx:75
 #: src/upcomingsupervisions/LoggedIn.jsx:131
 #: src/upcomingsupervisions/LoggedIn.jsx:179
@@ -166,6 +182,10 @@ msgstr "Associations"
 #~ msgid "August"
 #~ msgstr "August"
 
+#: src/pages/DayView/DayView.tsx:232
+msgid "Awaiting range officer"
+msgstr "Awaiting range officer"
+
 #: src/pages/UserManagement/UserManagementView.tsx:72
 msgid "Back"
 msgstr "Back"
@@ -179,8 +199,8 @@ msgstr "Back to day view"
 #~ msgstr "Back to dayview"
 
 #: src/pages/DayView/DayView.tsx:98
-msgid "Back to weekview"
-msgstr "Back to weekview"
+#~ msgid "Back to weekview"
+#~ msgstr "Back to weekview"
 
 #: src/upcomingsupervisions/LoggedIn.jsx:522
 #: src/profile/profilepages/officerform.jsx:84
@@ -261,7 +281,7 @@ msgstr "Close All"
 #: src/pages/TabletView/components/TrackCard.tsx:20
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:109
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:126
-#: src/pages/DayView/DayView.tsx:191
+#: src/pages/DayView/DayView.tsx:209
 msgid "Closed"
 msgstr "Closed"
 
@@ -344,7 +364,7 @@ msgstr "Date"
 
 #: src/trackview/Trackview.tsx:222
 #: src/pages/StatisticsView/StatisticsView.tsx:89
-#: src/lib/components/ViewChanger.jsx:39
+#: src/lib/components/ViewChanger.jsx:45
 msgid "Day"
 msgstr "Day"
 
@@ -384,6 +404,7 @@ msgid "Details"
 msgstr "Details"
 
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:43
+#: src/pages/DayView/DayView.tsx:121
 msgid "Devices"
 msgstr "Devices"
 
@@ -587,7 +608,7 @@ msgstr "free"
 
 #: src/trackview/Trackview.tsx:488
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusCard.tsx:11
-#: src/DeviceStatusList/DeviceStatusList.tsx:37
+#: src/DeviceStatusList/DeviceStatusList.tsx:55
 msgid "Free"
 msgstr "Free"
 
@@ -783,7 +804,7 @@ msgstr "Mon"
 
 #: src/trackview/Trackview.tsx:220
 #: src/pages/StatisticsView/StatisticsView.tsx:99
-#: src/lib/components/ViewChanger.jsx:25
+#: src/lib/components/ViewChanger.jsx:33
 msgid "Month"
 msgstr "Month"
 
@@ -816,6 +837,10 @@ msgstr "New password"
 msgid "New password is required"
 msgstr "New password is required"
 
+#: src/lib/components/DateHeader/DateHeader.tsx:80
+msgid "Next"
+msgstr "Next"
+
 #: src/trackview/Trackview.tsx:259
 msgid "Next day"
 msgstr "Next day"
@@ -840,6 +865,8 @@ msgstr "No pending messages to send."
 
 #: src/trackview/Trackview.tsx:321
 #: src/trackview/Trackview.tsx:658
+#: src/pages/DayView/DayView.tsx:239
+#: src/pages/DayView/DayView.tsx:305
 msgid "No range officer present"
 msgstr "No range officer present"
 
@@ -864,12 +891,13 @@ msgstr "No track can be used until the range officer arrives."
 msgid "No track officer"
 msgstr "No track officer"
 
-#: src/pages/DayView/DayView.tsx:194
-msgid "No track officer available"
-msgstr "No track officer available"
+#: src/pages/DayView/DayView.tsx:172
+#~ msgid "No track officer available"
+#~ msgstr "No track officer available"
 
 #: src/trackview/Trackview.tsx:397
 #: src/trackview/Trackview.tsx:657
+#: src/pages/DayView/DayView.tsx:246
 msgid "No track officer present"
 msgstr "No track officer present"
 
@@ -929,7 +957,7 @@ msgstr "Old password isn't valid"
 #: src/trackview/Trackview.tsx:123
 #: src/scheduling/Scheduling.jsx:1072
 #: src/pages/TabletView/components/OpenHoursSection.tsx:101
-#: src/pages/DayView/DayView.tsx:190
+#: src/pages/DayView/DayView.tsx:202
 msgid "Open"
 msgstr "Open"
 
@@ -941,9 +969,17 @@ msgstr "Open All"
 msgid "Opening hours"
 msgstr "Opening hours"
 
+#: src/pages/DayView/DayView.tsx:327
+msgid "OPENING HOURS"
+msgstr "OPENING HOURS"
+
 #: src/pages/DayView/DayView.tsx:71
-msgid "Opening hours: {opensAt}-{closesAt}"
-msgstr "Opening hours: {opensAt}-{closesAt}"
+#~ msgid "Opening hours: {opensAt}-{closesAt}"
+#~ msgstr "Opening hours: {opensAt}-{closesAt}"
+
+#: src/pages/DayView/DayView.tsx:224
+msgid "Opens at {time}"
+msgstr "Opens at {time}"
 
 #: src/raffle/raffle.tsx:112
 msgid "Organization updated"
@@ -1009,13 +1045,17 @@ msgstr "Please give your new email address"
 msgid "Present"
 msgstr "Present"
 
+#: src/lib/components/DateHeader/DateHeader.tsx:66
+msgid "Previous"
+msgstr "Previous"
+
 #: src/trackview/Trackview.tsx:255
 msgid "Previous day"
 msgstr "Previous day"
 
 #: src/trackview/Trackview.tsx:490
 #: src/scheduling/Scheduling.jsx:614
-#: src/pages/DayView/DayView.tsx:192
+#: src/pages/DayView/DayView.tsx:216
 msgid "Private event"
 msgstr "Private event"
 
@@ -1028,7 +1068,7 @@ msgstr "Raffle results"
 msgid "Raffle supervisors"
 msgstr "Raffle supervisors"
 
-#: src/pages/DayView/DayView.tsx:178
+#: src/pages/DayView/DayView.tsx:307
 #: src/lib/components/TableLegends.tsx:34
 msgid "Range closed"
 msgstr "Range closed"
@@ -1057,6 +1097,7 @@ msgstr "Range officer addition failed"
 
 #. placeholder {0}: formatTime(arrivingAt)
 #: src/trackview/Trackview.tsx:651
+#: src/pages/DayView/DayView.tsx:319
 msgid "Range officer arriving at {0}"
 msgstr "Range officer arriving at {0}"
 
@@ -1066,7 +1107,7 @@ msgstr "Range officer arriving at {0}"
 #: src/scheduling/Scheduling.jsx:389
 #: src/scheduling/Scheduling.jsx:982
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:130
-#: src/pages/DayView/DayView.tsx:174
+#: src/pages/DayView/DayView.tsx:299
 msgid "Range officer confirmed"
 msgstr "Range officer confirmed"
 
@@ -1100,7 +1141,7 @@ msgstr "Range officer management"
 #: src/scheduling/Scheduling.jsx:374
 #: src/scheduling/Scheduling.jsx:985
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:134
-#: src/pages/DayView/DayView.tsx:176
+#: src/pages/DayView/DayView.tsx:303
 msgid "Range officer predefined"
 msgstr "Range officer predefined"
 
@@ -1113,7 +1154,7 @@ msgstr "Range officer predefined, not confirmed"
 #: src/scheduling/Scheduling.jsx:401
 #: src/scheduling/Scheduling.jsx:973
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:118
-#: src/pages/DayView/DayView.tsx:170
+#: src/pages/DayView/DayView.tsx:296
 #: src/lib/components/TableLegends.tsx:14
 msgid "Range officer present"
 msgstr "Range officer present"
@@ -1121,7 +1162,6 @@ msgstr "Range officer present"
 #: src/scheduling/Scheduling.jsx:976
 #: src/scheduling/Scheduling.jsx:988
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:122
-#: src/pages/DayView/DayView.tsx:172
 #: src/lib/components/TableLegends.tsx:37
 msgid "Range officer undefined"
 msgstr "Range officer undefined"
@@ -1155,7 +1195,7 @@ msgid "Repeat weekly"
 msgstr "Repeat weekly"
 
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusCard.tsx:15
-#: src/DeviceStatusList/DeviceStatusList.tsx:37
+#: src/DeviceStatusList/DeviceStatusList.tsx:55
 msgid "Reserved"
 msgstr "Reserved"
 
@@ -1473,11 +1513,12 @@ msgstr "Thu"
 msgid "Time for sending emails"
 msgstr "Time for sending emails"
 
-#: src/utils/Utils.jsx:80
+#: src/utils/Utils.jsx:89
 msgid "Today"
 msgstr "Today"
 
 #: src/trackview/Trackview.tsx:227
+#: src/lib/components/ViewChanger.jsx:52
 msgid "Track"
 msgstr "Track"
 
@@ -1507,9 +1548,7 @@ msgstr "Track deleted successfully"
 
 #: src/pages/WeekView/WeekView.tsx:171
 #: src/pages/MonthView/MonthView.tsx:215
-#: src/pages/DayView/DayView.tsx:157
-#: src/pages/DayView/DayView.tsx:201
-#: src/pages/DayView/DayView.tsx:203
+#: src/pages/DayView/DayView.tsx:262
 #: src/lib/components/TableLegends.tsx:46
 #: src/lib/components/TableLegends.tsx:48
 msgid "Track has additional information"
@@ -1542,6 +1581,7 @@ msgstr "Track updated successfully"
 #: src/trackview/Trackview.tsx:281
 #: src/trackview/Trackview.tsx:285
 #: src/pages/EditTracksView/EditTracksView.tsx:64
+#: src/pages/DayView/DayView.tsx:109
 msgid "Tracks"
 msgstr "Tracks"
 
@@ -1620,6 +1660,7 @@ msgid "Values cannot be negative"
 msgstr "Values cannot be negative"
 
 #: src/trackview/Trackview.tsx:219
+#: src/lib/components/ViewChanger.jsx:28
 msgid "Views"
 msgstr "Views"
 
@@ -1660,11 +1701,11 @@ msgstr "Wed"
 #~ msgstr "Wednesday"
 
 #: src/trackview/Trackview.tsx:221
-#: src/lib/components/ViewChanger.jsx:32
+#: src/lib/components/ViewChanger.jsx:39
 msgid "Week"
 msgstr "Week"
 
-#: src/lib/components/DateHeader/DateHeader.tsx:39
+#: src/lib/components/DateHeader/DateHeader.tsx:37
 msgid "Week {weekNumber} {year}"
 msgstr "Week {weekNumber} {year}"
 

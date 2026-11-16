@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
-import { Link, useParams, useLocation } from 'react-router-dom';
 import { useLingui } from '@lingui/react/macro';
 import moment from 'moment';
+import { useMemo } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
 
 export function ViewChanger() {
   const { t } = useLingui();
@@ -10,13 +10,12 @@ export function ViewChanger() {
 
   const targetDate = useMemo(
     () => dateParam ?? moment().format('YYYY-MM-DD'),
-    [dateParam]
+    [dateParam],
   );
 
   const baseTabStyle =
     'px-3 py-1.5 text-sm font-medium rounded-md border transition-colors';
-  const activeTabStyle =
-    'bg-black-tint-70 border-black-tint-70 text-white';
+  const activeTabStyle = 'bg-black-tint-70 border-black-tint-70 text-white';
   const inactiveTabStyle =
     'bg-white border-black-tint-20 text-grey hover:border-black-tint-40 hover:text-black';
 

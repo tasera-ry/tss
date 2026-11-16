@@ -40,7 +40,7 @@ function DeviceLabel({ device }: { device: any }) {
           : 'var(--color-black-tint-70, #4d4d4d)',
       }}
       className={classNames(
-        'rounded-xl flex flex-col text-left w-full min-w-0 font-medium py-1 px-2 transition-colors'
+        'rounded-xl flex flex-col text-left w-full min-w-0 font-medium py-1 px-2 transition-colors',
       )}
     >
       <span className="font-bold max-w-full break-words">
@@ -49,7 +49,7 @@ function DeviceLabel({ device }: { device: any }) {
       <span
         className={classNames(
           'text-sm',
-          isReserved ? 'font-bold' : 'opacity-80'
+          isReserved ? 'font-bold' : 'opacity-80',
         )}
       >
         {isReserved ? t`Reserved` : t`Free`}

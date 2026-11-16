@@ -1,16 +1,21 @@
-import classNames from 'classnames';
-import { useMemo } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
-import moment from 'moment';
-import { useQuery } from 'react-query';
-import CircularProgress from '@mui/material/CircularProgress';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import InfoIcon from '@mui/icons-material/InfoOutlined';
+import { formatTime, toTrackViewDay } from '@/trackview/trackViewPlaceholder';
+import {
+  type TrackDetail,
+  type TrackViewDay,
+  awaitingRangeOfficer,
+  unavailableReason,
+} from '@/trackview/trackViewTypes';
+import { Plural, Trans, useLingui } from '@lingui/react/macro';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { awaitingRangeOfficer} from '@/trackview/trackViewTypes';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
+import CircularProgress from '@mui/material/CircularProgress';
+import classNames from 'classnames';
+import moment from 'moment';
+import { useMemo } from 'react';
+import { useQuery } from 'react-query';
+import { Link, useHistory, useParams } from 'react-router-dom';
 
 import api from '@/api/api';
 import { DateHeader } from '@/lib/components/DateHeader';
@@ -35,6 +40,9 @@ export function Dayview() {
     queryKey: ['dayview', targetDate],
     queryFn: () => api.getSchedulingDate(targetDate),
   });
+
+  // The same mapping and rules as the track view, so the two cannot disagree.
+  const day = useMemo(() => toTrackViewDay(data), [data]);
 
   const devicesQuery = useQuery({
     queryKey: ['devices'],
@@ -63,8 +71,6 @@ export function Dayview() {
     return moment(data.close, 'HH:mm').format('H.mm');
   }, [data]);
 
-  
-
   const tracksCount = data?.tracks?.length ?? 0;
   const equipmentCount = devicesQuery.data?.length ?? 0;
 
@@ -85,9 +91,9 @@ export function Dayview() {
 
         <div className={classes(css.mainCard)}>
           <div className={classes(css.summaryText)}>
-            <Trans>{tracksCount} tracks</Trans>
+            <Plural value={tracksCount} one="# track" other="# tracks" />
             {' • '}
-            <Trans>{equipmentCount} devices</Trans>
+            <Plural value={equipmentCount} one="# device" other="# devices" />
           </div>
 
           {data && (
@@ -95,7 +101,7 @@ export function Dayview() {
               rangeSupervision={data.rangeSupervision}
               opensAt={opensAt}
               closesAt={closesAt}
-              arrivingAt={data.arriving_at}
+              arrivingAt={day?.rangeOfficerArrivingAt ?? null}
             />
           )}
 
@@ -103,12 +109,12 @@ export function Dayview() {
             <Trans>Tracks</Trans>
           </h3>
 
-          {isLoading || !data ? (
+          {isLoading || !data || !day ? (
             <div className="flex justify-center p-6">
               <CircularProgress disableShrink />
             </div>
           ) : (
-            <TrackList tracks={data.tracks} date={targetDate} rangeSupervision={data.rangeSupervision}/>
+            <TrackList tracks={data.tracks} day={day} date={targetDate} />
           )}
 
           <h3 className={classes(css.sectionTitle)}>
@@ -116,7 +122,7 @@ export function Dayview() {
           </h3>
           <div className={classes(css.devicesWrapper)}>
             <DeviceStatusList />
-          </div>  
+          </div>
         </div>
       </div>
     </div>
@@ -125,32 +131,71 @@ export function Dayview() {
 
 export default Dayview;
 
-function TrackList({ tracks, date, rangeSupervision }: { tracks: any[]; date: string; rangeSupervision: string }) {
+function TrackList({
+  tracks,
+  day,
+  date,
+}: {
+  tracks: any[];
+  day: TrackViewDay;
+  date: string;
+}) {
   return (
     <div className={classes(css.tracksGrid)}>
-      {tracks.map((track) => (
-        <TrackBox key={track.id} track={track} date={date} rangeSupervision={rangeSupervision} />
+      {tracks.map((track, i) => (
+        <TrackBox
+          key={track.id}
+          track={track}
+          status={cardStatus(day, day.tracks[i])}
+          date={date}
+        />
       ))}
     </div>
   );
 }
 
-function TrackBox({ track, date, rangeSupervision }: { track: any; date: string; rangeSupervision: string }) {
+type CardStatus =
+  | { kind: 'open' | 'closed' | 'private' | 'awaiting' }
+  | { kind: 'noRangeOfficer' | 'noTrackOfficer' }
+  | { kind: 'opensAt'; at: number };
+
+/**
+ * What a track's card says. Never "Open" before the range officer is on site
+ * (customer, 8.10.2026): with an arrival time the card says when the track
+ * opens, the later of the arrival and the opening time; without one it waits.
+ * Closed and private event show as they are. Track 6 needs no range officer
+ * (12.10.2026), so for it only its own officer counts.
+ */
+export function cardStatus(day: TrackViewDay, track: TrackDetail): CardStatus {
+  if (day.rangeOfficer === 'closed' || track.officer === 'closed') {
+    return { kind: 'closed' };
+  }
+  if (track.officer === 'private') return { kind: 'private' };
+  if (track.requiresRangeOfficer && awaitingRangeOfficer(day)) {
+    const arrival =
+      day.rangeOfficer === 'confirmed' ? day.rangeOfficerArrivingAt : null;
+    if (arrival === null) return { kind: 'awaiting' };
+    return { kind: 'opensAt', at: Math.max(arrival, day.open ?? arrival) };
+  }
+  const reason = unavailableReason(day, track);
+  if (reason) return { kind: reason };
+  return { kind: 'open' };
+}
+
+function TrackBox({
+  track,
+  status,
+  date,
+}: {
+  track: any;
+  status: CardStatus;
+  date: string;
+}) {
   const { t } = useLingui();
 
   const { statusClass, borderClass, statusText, icon } = useMemo(() => {
-    if (awaitingRangeOfficer(rangeSupervision)) {
-      return {
-        statusClass: css.whiteB,
-        borderClass: undefined,
-        statusText: t`Awaiting range officer`,
-        icon: null,
-      };
-    }
-
-    switch (track.trackSupervision) {
-      case 'present':
-      case 'confirmed':
+    switch (status.kind) {
+      case 'open':
         return {
           statusClass: css.greenB,
           borderClass: css.greenBorder,
@@ -164,16 +209,45 @@ function TrackBox({ track, date, rangeSupervision }: { track: any; date: string;
           statusText: t`Closed`,
           icon: <HighlightOffIcon className={css.statusIcon} />,
         };
-      case 'absent':
-      case 'not confirmed':
+      case 'private':
+        return {
+          statusClass: css.orangeB,
+          borderClass: undefined,
+          statusText: t`Private event`,
+          icon: null,
+        };
+      case 'opensAt': {
+        const time = formatTime(status.at);
+        return {
+          statusClass: css.whiteB,
+          borderClass: undefined,
+          statusText: t`Opens at ${time}`,
+          icon: <AccessTimeIcon className={css.statusIcon} />,
+        };
+      }
+      case 'awaiting':
+        return {
+          statusClass: css.whiteB,
+          borderClass: undefined,
+          statusText: t`Awaiting range officer`,
+          icon: <AccessTimeIcon className={css.statusIcon} />,
+        };
+      case 'noRangeOfficer':
+        return {
+          statusClass: css.whiteB,
+          borderClass: undefined,
+          statusText: t`No range officer present`,
+          icon: null,
+        };
       default:
         return {
           statusClass: css.whiteB,
-          statusText: t`No track officer available`,
+          borderClass: undefined,
+          statusText: t`No track officer present`,
           icon: null,
         };
     }
-  }, [track.trackSupervision, rangeSupervision, t]);
+  }, [status, t]);
 
   const link = `/trackview/${date}/${track.name}`;
 
@@ -192,9 +266,6 @@ function TrackBox({ track, date, rangeSupervision }: { track: any; date: string;
         <div className={classes(css.trackDesc)}>
           {track.description || track.short_description}
         </div>
-        {track.subType && (
-          <div className={classes(css.trackSub)}>{track.subType}</div>
-        )}
       </div>
 
       <div className={classes(css.statusBadge, statusClass)}>
@@ -214,7 +285,8 @@ function OfficerBanner({
   rangeSupervision: string;
   opensAt?: string;
   closesAt?: string;
-  arrivingAt?: string | null;
+  /** Minutes from midnight, when the range officer has given one. */
+  arrivingAt: number | null;
 }) {
   const { t } = useLingui();
 
@@ -223,9 +295,10 @@ function OfficerBanner({
       case 'present':
         return { text: t`Range officer present`, colorClass: css.lightGreenB };
       case 'confirmed':
-        return { text: t`Range officer confirmed`, colorClass: css.lightGreenB };
+        // Booked but not on site yet: green is kept for present.
+        return { text: t`Range officer confirmed`, colorClass: css.whiteB };
       case 'not confirmed':
-        return { text: t`Range officer predefined, not confirmed`, colorClass: css.blueB };
+        return { text: t`Range officer predefined`, colorClass: css.blueB };
       case 'absent':
         return { text: t`No range officer present`, colorClass: css.whiteB };
       default:
@@ -239,10 +312,9 @@ function OfficerBanner({
         <AccessTimeIcon className={css.bannerClockIcon} />
         <div className={classes(css.supervisorText)}>
           <h3 className={classes(css.supervisorTitle)}>{text}</h3>
-          {arrivingAt && (
+          {arrivingAt !== null && (
             <span className={classes(css.arrivalTime)}>
-              <Trans>Your estimated time of arrival:</Trans>{' '}
-              {moment(arrivingAt, 'HH:mm:ss').format('H.mm')}
+              {t`Range officer arriving at ${formatTime(arrivingAt)}`}
             </span>
           )}
         </div>
