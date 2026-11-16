@@ -29,12 +29,13 @@ function DeviceLabel({ device }: { device: any }) {
   return (
     <div
       style={{
+        // Free green, reserved red, as on the track cards. Text says which.
         border: isReserved
-          ? '2px solid var(--color-status-closed, #2e342f)'
-          : '2px solid var(--color-black-tint-20, #cccccc)',
+          ? '2px solid var(--color-status-closed, #8a1c18)'
+          : '2px solid var(--color-status-present, #46a457)',
         backgroundColor: isReserved
-          ? 'var(--color-status-closed, #2e342f)'
-          : 'var(--color-status-free, #ebebeb)',
+          ? 'var(--color-status-closed, #8a1c18)'
+          : 'var(--color-status-free, #dcefdc)',
         color: isReserved
           ? 'var(--color-white, #ffffff)'
           : 'var(--color-black-tint-70, #4d4d4d)',

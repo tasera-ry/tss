@@ -126,12 +126,12 @@
 
 .greenB {
   background-color: var(--color-status-present) !important;
-  color: var(--color-white, #ffffff) !important;
+  color: var(--color-black, #000000) !important; // 6.7:1; white would be 3.1:1
 }
 
 .lightGreenB {
   background-color: var(--color-status-present) !important;
-  color: var(--color-white, #ffffff) !important;
+  color: var(--color-black, #000000) !important;
 }
 
 .blueB {
@@ -144,14 +144,15 @@
   color: var(--color-white, #ffffff) !important;
 }
 
-// Private event (#451). Black text: white on this orange is 3.7:1, black 5.8:1.
+// Private event (#451). Black text, 10.1:1.
 .orangeB {
   background-color: var(--color-status-private) !important;
   color: var(--color-black, #000000) !important;
 }
 
+// Waiting or unsupervised: neutral, so green stays for open and free.
 .whiteB {
-  background-color: var(--color-status-free) !important;
+  background-color: var(--color-black-tint-10, #e5e5e5) !important;
   color: var(--color-black-tint-70, #4d4d4d) !important;
 }
 
