@@ -9,10 +9,12 @@
 }
 
 .viewChangerWrapper {
+  // Today on the left, the view tabs on the right, as in the other views.
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 12px;
+  width: 100%;
   margin-bottom: 12px;
 }
 

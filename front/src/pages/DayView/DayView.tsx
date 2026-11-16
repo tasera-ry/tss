@@ -9,6 +9,7 @@ import {
   awaitingRangeOfficer,
   unavailableReason,
 } from '@/trackview/trackViewTypes';
+import { useTrackName } from '@/trackview/useTrackName';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -201,6 +202,7 @@ function TrackBox({
   date: string;
 }) {
   const { t } = useLingui();
+  const trackName = useTrackName();
 
   const { statusClass, borderClass, statusText, icon } = useMemo(() => {
     switch (status.kind) {
@@ -264,7 +266,7 @@ function TrackBox({
     <Link to={link} className={classes(css.trackCard, borderClass)}>
       <div className={classes(css.trackDetails)}>
         <div className={classes(css.trackHeader)}>
-          <span className={classes(css.bold)}>{track.name}</span>
+          <span className={classes(css.bold)}>{trackName(track.name)}</span>
           {track.notice && track.notice.length > 0 && (
             <InfoIcon
               className={css.infoIcon}

@@ -74,11 +74,11 @@ export function JumpToCurrent() {
   // A route without a date shows today.
   const isToday = (fullUrl[5] || today) === today;
 
-  // A pill rather than a tab, and green rather than dark when it is on, so it
-  // never looks like the active view tab beside it.
+  // Shaped like the view tabs, but a lighter grey when on, so it never looks
+  // like the active view tab.
   const baseStyle =
-    'px-3 py-1.5 text-sm font-medium rounded-full border-2 transition-colors flex justify-center items-center';
-  const activeStyle = 'bg-status-free border-status-present text-black';
+    'px-3 py-1.5 text-sm font-medium rounded-md border transition-colors flex justify-center items-center';
+  const activeStyle = 'bg-black-tint-20 border-black-tint-30 text-black';
   const inactiveStyle =
     'bg-white border-black-tint-20 text-grey hover:border-black-tint-40 hover:text-black';
 

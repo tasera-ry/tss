@@ -229,6 +229,20 @@ describe('testing Dayview component', () => {
     expect(screen.getByText('09.30–15.00')).toBeInTheDocument();
   });
 
+  it('names the numbered tracks in the interface language', async () => {
+    const day = dayWith('present', ['present']);
+    await renderDayview({
+      ...day,
+      tracks: day.tracks.map((track, i) =>
+        i === 1 ? { ...track, name: 'Rata 2' } : track,
+      ),
+    });
+    expect(screen.getByRole('link', { name: /Track 2/ })).toHaveAttribute(
+      'href',
+      expect.stringMatching(/\/trackview\/.*\/Rata(%20| )2$/),
+    );
+  });
+
   it('shows the range officer arrival time in the banner', async () => {
     await renderDayview(
       dayWith('confirmed', ['present'], { arrivingAt: '09:45:00' }),
