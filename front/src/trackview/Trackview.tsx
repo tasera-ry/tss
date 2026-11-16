@@ -497,7 +497,7 @@ function Timeline({
               {section.name}
             </span>
           )}
-          <div className="relative h-10 min-w-0 flex-1 overflow-hidden rounded-sm bg-black-tint-05">
+          <div className="relative h-11 min-w-0 flex-1 overflow-hidden rounded-sm bg-status-free">
             {hours.slice(0, -1).map((m) => (
               <i
                 key={m}
@@ -520,7 +520,7 @@ function Timeline({
                 <div
                   key={`${segment.start}-${segment.end}`}
                   className={classNames(
-                    'absolute top-0 bottom-0 flex items-center justify-center overflow-hidden rounded-xs border border-black-tint-30 text-xs',
+                    'absolute top-0 bottom-0 flex items-center justify-center overflow-hidden rounded-xs border border-black-tint-30 text-sm',
                     partlyFree ? '' : SEGMENT_FILL[state],
                   )}
                   style={{
