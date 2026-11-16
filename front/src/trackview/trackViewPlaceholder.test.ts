@@ -234,6 +234,46 @@ describe('toTrackViewDay', () => {
     ]);
   });
 
+  it('keeps the arrival time only while the range officer is booked', () => {
+    // arriving_at is never cleared on check-in (production, e.g. 14.11.2026).
+    const at = (rangeSupervision: string) =>
+      toTrackViewDay({ ...apiDay, rangeSupervision, arrivingAt: '09:45:00' })
+        ?.rangeOfficerArrivingAt;
+    expect(at('confirmed')).toBe(585);
+    expect(at('present')).toBeNull();
+    expect(at('closed')).toBeNull();
+  });
+
+  it('closes every track, track 6 included, when the range is closed for the day', () => {
+    const tracks = Array.from({ length: 6 }, (_, i) => ({
+      ...apiDay.tracks[0],
+      id: i + 1,
+      name: `Rata ${i + 1}`,
+      trackSupervision: 'present',
+    }));
+    const sixTracks = tracks.map((t) => ({
+      id: t.id * 10,
+      track_id: t.id,
+      position: 1,
+      lane_count: 20,
+      name: t.name,
+      description: null,
+    }));
+    const day = toTrackViewDay(
+      { ...apiDay, rangeSupervision: 'closed', tracks },
+      sixTracks,
+    );
+    for (const track of day?.tracks ?? []) {
+      expect(track.sections[0].segments).toEqual([
+        { start: 600, end: 1140, status: 'closed' },
+      ]);
+    }
+  });
+
+  it('shows no sunset time until the real one exists, rather than a made-up one', () => {
+    expect(toTrackViewDay(apiDay)?.sunset).toBeNull();
+  });
+
   it('falls back to 10-19 when the day has no opening hours', () => {
     const day = toTrackViewDay({ ...apiDay, open: null, close: null });
     expect(day?.open).toBe(600);

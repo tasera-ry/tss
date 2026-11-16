@@ -83,20 +83,3 @@
 .dotPresent {
   background-color: var(--color-status-present);
 }
-
-/**
- * Development-only marker for text that comes from the database and has no
- * translation path, and for data the backend does not provide yet. Stripped
- * from production builds by the import.meta.env.DEV guard in the component.
- */
-.devFlag {
-  color: var(--color-status-official);
-  font-style: italic;
-  font-size: 0.75rem;
-}
-
-/** An invented value shown inline, marked where it sits. */
-.devValue {
-  color: var(--color-status-official);
-  font-style: italic;
-}

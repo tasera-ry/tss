@@ -164,6 +164,11 @@ export function unavailableReason(
   ) {
     return 'noRangeOfficer';
   }
+  // While the range officer is still to arrive, nobody is on site yet:
+  // track officers are marked on the tablet on the day, so every booked future
+  // day carries 'absent' for them (production, checked 16.11.2026). That
+  // means "not yet", not "no one is coming".
+  if (track.requiresRangeOfficer && awaitingRangeOfficer(day)) return null;
   // Every track needs its own officer. The exception above is about the range
   // officer, not about going unsupervised altogether.
   if (track.officer === 'absent') return 'noTrackOfficer';

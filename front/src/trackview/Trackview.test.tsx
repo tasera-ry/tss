@@ -56,13 +56,17 @@ const reservations: ApiReservation[] = [
   },
 ];
 
+// The shared fixture's range is 'closed' for the day. These tests are about a
+// range officer who is away, so they use 'absent'; a closed day has its own test.
+const away = { ...testUtils.schedule, rangeSupervision: 'absent' };
+
 /**
  * LinguiProvider renders null until its catalog import resolves, and this version
  * of Testing Library does not reliably settle a second `findBy*` afterwards. So
  * each test awaits the track's heading once, then asserts synchronously.
  */
 async function renderTrackview(
-  schedule = testUtils.schedule,
+  schedule: typeof testUtils.schedule = away,
   sectionRows = sections,
 ) {
   vi.mocked(api.getSchedulingDate).mockResolvedValue(schedule);
@@ -166,10 +170,10 @@ describe('testing Trackview', () => {
   });
 
   it('reports that no track can be used when the range officer is away', async () => {
-    // The shared fixture carries rangeSupervision 'closed' while individual
-    // tracks carry trackSupervision 'present' — the combination the customer
-    // says cannot occur. The view has to resolve it in the member's favour by
-    // reporting the range officer rather than showing the track as usable.
+    // Range officer 'absent' while individual tracks carry trackSupervision
+    // 'present' — the combination the customer says cannot occur. The view has
+    // to resolve it in the member's favour by reporting the range officer
+    // rather than showing the track as usable.
     await renderTrackview();
 
     // Appears both in the banner and beside every blocked stretch of time.
@@ -220,6 +224,23 @@ describe('testing Trackview', () => {
     expect(
       screen.getByRole('heading', { level: 2, name: 'Shooting Track 0' }),
     ).toBeInTheDocument();
+  });
+
+  it('shows a range closed for the day as closed, on every track', async () => {
+    await renderTrackview(testUtils.schedule);
+
+    const banner = within(screen.getByTestId('range-officer-banner'));
+    expect(banner.getByText('Range closed')).toBeInTheDocument();
+    expect(
+      banner.getByText('No track can be used on this day.'),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Free')).not.toBeInTheDocument();
+    expect(screen.getAllByText('Closed').length).toBeGreaterThan(0);
+  });
+
+  it('has no link back to the day view; the view tabs cover it', async () => {
+    await renderTrackview();
+    expect(screen.queryByText('Back to day view')).not.toBeInTheDocument();
   });
 
   it('labels the notice as the notice for the day', async () => {
