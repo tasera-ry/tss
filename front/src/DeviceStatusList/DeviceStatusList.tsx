@@ -31,14 +31,13 @@ function DeviceLabel({ device }: { device: any }) {
       style={{
         // Free green, reserved red, as on the track cards. Text says which.
         border: isReserved
-          ? '2px solid var(--color-status-closed, #8a1c18)'
-          : '2px solid var(--color-status-present, #46a457)',
+          ? '2px solid var(--color-status-closed, #c97b76)'
+          : '2px solid var(--color-status-present, #658f60)',
         backgroundColor: isReserved
-          ? 'var(--color-status-closed, #8a1c18)'
-          : 'var(--color-status-free, #dcefdc)',
-        color: isReserved
-          ? 'var(--color-white, #ffffff)'
-          : 'var(--color-black-tint-70, #4d4d4d)',
+          ? 'var(--color-status-closed, #c97b76)'
+          : 'var(--color-status-free, #b2d9ad)',
+        // Black on both: 6.6:1 on red, 13:1 on light green.
+        color: 'var(--color-black, #000000)',
       }}
       className={classNames(
         'rounded-xl flex flex-col text-left w-full min-w-0 font-medium py-1 px-2 transition-colors',

@@ -138,7 +138,7 @@
 
 .greenB {
   background-color: var(--color-status-present) !important;
-  color: var(--color-black, #000000) !important; // 6.7:1; white would be 3.1:1
+  color: var(--color-black, #000000) !important; // 5.7:1; white would be 3.7:1
 }
 
 .lightGreenB {
@@ -153,10 +153,10 @@
 
 .redB {
   background-color: var(--color-status-closed) !important;
-  color: var(--color-white, #ffffff) !important;
+  color: var(--color-black, #000000) !important; // 6.6:1; white would be 3.2:1
 }
 
-// Private event (#451). Black text, 10.1:1.
+// Private event (#451). Black text, 13:1.
 .orangeB {
   background-color: var(--color-status-private) !important;
   color: var(--color-black, #000000) !important;
