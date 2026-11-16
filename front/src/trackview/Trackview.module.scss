@@ -2,9 +2,9 @@
  * Segment fills for the track view.
  *
  * Colour comes from the --color-status-* tokens in App.css, read at runtime so
- * the values live in one place. Each status has its own solid colour, chosen so
- * the states stay apart for colour-blind viewers too (see App.css), and every
- * segment also carries its status as text: colour is never the only signal.
+ * the values live in one place (see App.css for the palette and its limits).
+ * Every segment also carries its status as text: colour is never the only
+ * signal.
  */
 
 .segPrivate {
@@ -19,7 +19,7 @@
 
 .segClosed {
   background-color: var(--color-status-closed);
-  color: #fff;
+  color: #000;
 }
 
 /** Unavailable because a supervisor is missing, not because it is reserved. */
