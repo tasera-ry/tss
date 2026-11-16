@@ -142,14 +142,11 @@ describe('toTrackViewDay', () => {
 
   it('gives each track its own sections from the API, in order', () => {
     const day = toTrackViewDay(apiDay, sections);
-    expect(day?.tracks[0].sections.map((s) => s.name)).toEqual([
-      'Lohko 1',
-      'Lohko 2',
-      'Lohko 3',
-    ]);
+    // Numbered here; the view writes "Lohko 1" in the interface language.
+    expect(day?.tracks[0].sections.map((s) => s.number)).toEqual([1, 2, 3]);
     expect(day?.tracks[0].sections[0].laneCount).toBe(20);
     expect(day?.tracks[1].sections).toHaveLength(1);
-    expect(day?.tracks[1].sections[0].name).toBe('');
+    expect(day?.tracks[1].sections[0].number).toBeNull();
     expect(day?.tracks[1].sections[0].laneCount).toBe(40);
   });
 

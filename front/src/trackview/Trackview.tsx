@@ -23,6 +23,7 @@ import type {
   UnavailableReason,
 } from './trackViewTypes';
 import { awaitingRangeOfficer, unavailableReason } from './trackViewTypes';
+import { useTrackName } from './useTrackName';
 
 /**
  * Track view (#432 redesign).
@@ -37,6 +38,7 @@ import { awaitingRangeOfficer, unavailableReason } from './trackViewTypes';
  */
 export function Trackview() {
   const { t } = useLingui();
+  const trackName = useTrackName();
   const { date: dateParam, track } = useParams<{
     date?: string;
     track: string;
@@ -145,7 +147,9 @@ export function Trackview() {
         />
 
         <section className="flex min-w-0 flex-col gap-4 rounded-xl border border-black-tint-20 bg-white p-4 sm:p-5 lg:p-6">
-          <h2 className="font-semibold text-xl">{selectedTrack.name}</h2>
+          <h2 className="font-semibold text-xl">
+            {trackName(selectedTrack.name)}
+          </h2>
           <TrackHeader track={selectedTrack} />
           {day.open !== null && day.close !== null && (
             <Timeline
@@ -260,6 +264,7 @@ function TrackChips({
   selected,
 }: { date: string; tracks: TrackDetail[]; selected: string }) {
   const { t } = useLingui();
+  const trackName = useTrackName();
 
   return (
     <nav
@@ -276,7 +281,7 @@ function TrackChips({
             aria-current="page"
             className="rounded-full border border-black bg-black-tint-05 px-3 py-1.5 font-medium text-sm lg:rounded-md lg:py-2"
           >
-            {item.name}
+            {trackName(item.name)}
           </span>
         ) : (
           <Link
@@ -284,7 +289,7 @@ function TrackChips({
             className="rounded-full border border-black-tint-20 bg-white px-3 py-1.5 text-grey text-sm hover:border-black-tint-40 hover:text-black lg:rounded-md lg:py-2"
             to={`/trackview/${date}/${item.name}`}
           >
-            {item.name}
+            {trackName(item.name)}
           </Link>
         ),
       )}
@@ -403,6 +408,13 @@ function TrackHeader({ track }: { track: TrackDetail }) {
   );
 }
 
+/** "Lohko 2" in the interface language; nothing for an undivided track. */
+function SectionLabel({ number }: { number: number | null }) {
+  const { t } = useLingui();
+  if (number === null) return null;
+  return <>{t`Section ${number}`}</>;
+}
+
 const SEGMENT_FILL: Record<SegmentStatus | 'blocked', string> = {
   free: '',
   private: css.segPrivate,
@@ -465,7 +477,7 @@ function Timeline({
   const { t } = useLingui();
   const label = useSegmentLabel();
   const span = close - open;
-  const named = track.sections.some((s) => s.name);
+  const named = track.sections.some((s) => s.number !== null);
   const pct = (minutes: number) => ((minutes - open) / span) * 100;
 
   const hours: number[] = [];
@@ -494,7 +506,7 @@ function Timeline({
         <div key={section.id} className="mt-2 flex items-stretch">
           {named && (
             <span className="flex w-30 shrink-0 items-center pr-3 text-grey text-xs">
-              {section.name}
+              <SectionLabel number={section.number} />
             </span>
           )}
           <div className="relative h-11 min-w-0 flex-1 overflow-hidden rounded-sm bg-status-free">
@@ -583,7 +595,7 @@ function SegmentList({
   const label = useSegmentLabel();
   // Nothing to list until the track's sections exist (none are seeded in production).
   if (track.sections.length === 0) return null;
-  const grouped = track.sections.some((s) => s.name);
+  const grouped = track.sections.some((s) => s.number !== null);
 
   const arrival =
     arrivingAt !== null
@@ -695,7 +707,7 @@ function SegmentList({
           {/* h3: a section belongs to the track, whose name is the h2. */}
           <h3 className="flex justify-between gap-2 border-black-tint-20 border-b bg-black-tint-05 px-3 py-2 font-semibold text-grey text-xs uppercase tracking-wider">
             <span>
-              {section.name}
+              <SectionLabel number={section.number} />
               {section.position && (
                 <>
                   {' '}
