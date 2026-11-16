@@ -9,13 +9,23 @@
 }
 
 .viewChangerWrapper {
-  // Today on the left, the view tabs on the right, as in the other views.
-  display: flex;
+  // Today in the middle, the view tabs on the right where the other views
+  // have them. Three columns keep Today centred whatever the tabs' width.
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
   width: 100%;
   margin-bottom: 12px;
+
+  > :first-child {
+    grid-column: 2;
+  }
+
+  > :last-child {
+    grid-column: 3;
+    justify-self: end;
+  }
 }
 
 .mainCard {
