@@ -26,15 +26,15 @@ import type {
 import { awaitingRangeOfficer, unavailableReason } from './trackViewTypes';
 
 /**
- * Track view (#432 redesign, with placeholders for #419, #420 and #421).
+ * Track view (#432 redesign).
  *
  * Read-only by design: over a thousand members only ever look at this. Creating
  * and editing reservations is an association and admin task and belongs in the
  * scheduling view.
  *
- * Time segments, lane counts and sections come from `trackViewPlaceholder` until
- * the backend provides them; everything else is live data. The backend work
- * needed is listed at the top of that file as B1–B10.
+ * Notes, the range officer exception and the sunset time still come from
+ * `trackViewPlaceholder`; everything else is live data. The backend work left is
+ * listed at the top of that file.
  */
 export function Trackview() {
   const { t } = useLingui();
@@ -45,15 +45,37 @@ export function Trackview() {
   // The date is optional in the route; default to today, as the other views do.
   const targetDate = dateParam ?? moment().format('YYYY-MM-DD');
 
-  const { data: schedule, status } = useQuery({
+  const scheduleQuery = useQuery({
     queryKey: ['trackview', targetDate],
     queryFn: () => api.getSchedulingDate(targetDate),
     // Keep the day on screen while the next one loads, so stepping through days
     // does not unmount the arrows and drop keyboard focus.
     keepPreviousData: true,
   });
+  const sectionsQuery = useQuery({
+    queryKey: ['trackSections'],
+    queryFn: api.getTrackSections,
+  });
+  const reservationsQuery = useQuery({
+    queryKey: ['trackReservations', targetDate],
+    queryFn: () => api.getTrackReservations(targetDate),
+    keepPreviousData: true,
+  });
 
-  const day = useMemo(() => toTrackViewDay(schedule), [schedule]);
+  const queries = [scheduleQuery, sectionsQuery, reservationsQuery];
+  const status = queries.some((q) => q.status === 'error')
+    ? 'error'
+    : queries.some((q) => q.status === 'loading')
+      ? 'loading'
+      : 'success';
+
+  const schedule = scheduleQuery.data;
+  const sections = sectionsQuery.data;
+  const reservations = reservationsQuery.data;
+  const day = useMemo(
+    () => toTrackViewDay(schedule, sections, reservations),
+    [schedule, sections, reservations],
+  );
 
   // The route carries the track NAME, not its id, so a renamed track breaks
   // existing deep links. Kept as-is to avoid changing the day view's links in
@@ -126,9 +148,6 @@ export function Trackview() {
         <section className="flex min-w-0 flex-col gap-4 rounded-xl border border-black-tint-20 bg-white p-4 sm:p-5 lg:p-6">
           <h2 className="font-semibold text-xl">{selectedTrack.name}</h2>
           <TrackHeader track={selectedTrack} />
-          <p className="-mb-2">
-            <DevFlag kind="placeholder" />
-          </p>
           {day.open !== null && day.close !== null && (
             <Timeline
               track={selectedTrack}
@@ -417,9 +436,6 @@ function TrackHeader({ track }: { track: TrackDetail }) {
  *
  * Both are database text, and there is no translation path for database text at
  * all — it stays as entered whatever language the interface is set to.
- *
- * `placeholder` — time segments and lane counts, invented in
- *   trackViewPlaceholder.ts because the API does not carry them. See #420, #421.
  */
 /**
  * A single invented value shown inline, marked in place rather than with a
@@ -435,7 +451,7 @@ function DevValue({ children }: { children: React.ReactNode }) {
   );
 }
 
-function DevFlag({ kind }: { kind: 'description' | 'notice' | 'placeholder' }) {
+function DevFlag({ kind }: { kind: 'description' | 'notice' }) {
   if (!import.meta.env.DEV) return null;
 
   const text = {
@@ -443,8 +459,6 @@ function DevFlag({ kind }: { kind: 'description' | 'notice' | 'placeholder' }) {
       'awaiting the real track description, maintained in Radat. Database text, never translated.',
     notice:
       'a range officer notice for this track on this day. Dev seed text (08_track_supervision.js). Database text, never translated.',
-    placeholder:
-      'placeholder data, the backend does not provide this yet (#420, #421).',
   }[kind];
 
   return <span className={css.devFlag}> — {text}</span>;
@@ -628,6 +642,8 @@ function SegmentList({
 }) {
   const { t } = useLingui();
   const label = useSegmentLabel();
+  // Nothing to list until the track's sections exist (none are seeded in production).
+  if (track.sections.length === 0) return null;
   const grouped = track.sections.some((s) => s.name);
 
   const arrival =

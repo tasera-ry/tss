@@ -146,6 +146,12 @@
   color: var(--color-white, #ffffff) !important;
 }
 
+// Private event (#451). Black text: white on this orange is 3.7:1, black 5.8:1.
+.orangeB {
+  background-color: var(--color-status-private) !important;
+  color: var(--color-black, #000000) !important;
+}
+
 .whiteB {
   background-color: var(--color-status-free) !important;
   color: var(--color-black-tint-70, #4d4d4d) !important;

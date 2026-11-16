@@ -7,6 +7,8 @@ exports.seed = async function (knex) {
 		ora.promise(promise, `Truncate ${table}`);
 		return await promise;
 	};
+	await truncate('track_reservation');
+	await truncate('track_section');
 	await truncate('track_supervision_history');
 	await truncate('track_supervision');
 	await truncate('range_supervision');
