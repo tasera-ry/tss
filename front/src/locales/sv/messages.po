@@ -15,7 +15,7 @@ msgstr ""
 msgid "{booked, plural, one {# lane booked} other {# lanes booked}}"
 msgstr "{booked, plural, one {# skjutplats bokad} other {# skjutplatser bokade}}"
 
-#: src/pages/DayView/DayView.tsx:96
+#: src/pages/DayView/DayView.tsx:102
 msgid "{equipmentCount, plural, one {# device} other {# devices}}"
 msgstr "{equipmentCount, plural, one {# enhet} other {# enheter}}"
 
@@ -23,7 +23,7 @@ msgstr "{equipmentCount, plural, one {# enhet} other {# enheter}}"
 #~ msgid "{equipmentCount} devices"
 #~ msgstr "{equipmentCount} enheter"
 
-#: src/pages/DayView/DayView.tsx:94
+#: src/pages/DayView/DayView.tsx:100
 msgid "{tracksCount, plural, one {# track} other {# tracks}}"
 msgstr "{tracksCount, plural, one {# bana} other {# banor}}"
 
@@ -180,7 +180,7 @@ msgstr "Föreningar"
 #~ msgid "August"
 #~ msgstr "Augusti"
 
-#: src/pages/DayView/DayView.tsx:232
+#: src/pages/DayView/DayView.tsx:241
 msgid "Awaiting range officer"
 msgstr "Väntar på banofficer"
 
@@ -279,7 +279,7 @@ msgstr "Stäng alla"
 #: src/pages/TabletView/components/TrackCard.tsx:20
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:109
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:126
-#: src/pages/DayView/DayView.tsx:209
+#: src/pages/DayView/DayView.tsx:218
 msgid "Closed"
 msgstr "Stängd"
 
@@ -362,7 +362,7 @@ msgstr "Datum"
 
 #: src/trackview/Trackview.tsx:207
 #: src/pages/StatisticsView/StatisticsView.tsx:89
-#: src/lib/components/ViewChanger.jsx:45
+#: src/lib/components/ViewChanger.jsx:49
 msgid "Day"
 msgstr "Dag"
 
@@ -402,7 +402,7 @@ msgid "Details"
 msgstr "Detaljer"
 
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:43
-#: src/pages/DayView/DayView.tsx:121
+#: src/pages/DayView/DayView.tsx:127
 msgid "Devices"
 msgstr "Enheter"
 
@@ -606,7 +606,7 @@ msgstr "lediga"
 
 #: src/trackview/Trackview.tsx:427
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusCard.tsx:11
-#: src/DeviceStatusList/DeviceStatusList.tsx:55
+#: src/DeviceStatusList/DeviceStatusList.tsx:50
 msgid "Free"
 msgstr "Fri"
 
@@ -802,7 +802,7 @@ msgstr "Mån"
 
 #: src/trackview/Trackview.tsx:205
 #: src/pages/StatisticsView/StatisticsView.tsx:99
-#: src/lib/components/ViewChanger.jsx:33
+#: src/lib/components/ViewChanger.jsx:35
 msgid "Month"
 msgstr "Månad"
 
@@ -863,8 +863,8 @@ msgstr "Inga väntande e-postmeddelanden att skicka."
 
 #: src/trackview/Trackview.tsx:308
 #: src/trackview/Trackview.tsx:597
-#: src/pages/DayView/DayView.tsx:239
-#: src/pages/DayView/DayView.tsx:303
+#: src/pages/DayView/DayView.tsx:248
+#: src/pages/DayView/DayView.tsx:312
 msgid "No range officer present"
 msgstr "Ingen banofficer närvarande"
 
@@ -899,7 +899,7 @@ msgstr "Ingen banofficer"
 
 #: src/trackview/Trackview.tsx:384
 #: src/trackview/Trackview.tsx:596
-#: src/pages/DayView/DayView.tsx:246
+#: src/pages/DayView/DayView.tsx:255
 msgid "No track officer present"
 msgstr "Ingen banhandledare närvarande"
 
@@ -959,7 +959,7 @@ msgstr "Gammalt lösenord är ogiltigt"
 #: src/trackview/Trackview.tsx:122
 #: src/scheduling/Scheduling.jsx:1072
 #: src/pages/TabletView/components/OpenHoursSection.tsx:101
-#: src/pages/DayView/DayView.tsx:202
+#: src/pages/DayView/DayView.tsx:211
 msgid "Open"
 msgstr "Öppet"
 
@@ -971,7 +971,7 @@ msgstr "Öppna alla"
 msgid "Opening hours"
 msgstr "Öppettider"
 
-#: src/pages/DayView/DayView.tsx:325
+#: src/pages/DayView/DayView.tsx:334
 msgid "OPENING HOURS"
 msgstr "ÖPPETTIDER"
 
@@ -979,7 +979,7 @@ msgstr "ÖPPETTIDER"
 #~ msgid "Opening hours: {opensAt}-{closesAt}"
 #~ msgstr "Öppettider: {opensAt}-{closesAt}"
 
-#: src/pages/DayView/DayView.tsx:224
+#: src/pages/DayView/DayView.tsx:233
 msgid "Opens at {time}"
 msgstr "Öppnar kl. {time}"
 
@@ -1057,7 +1057,7 @@ msgstr "Föregående dag"
 
 #: src/trackview/Trackview.tsx:429
 #: src/scheduling/Scheduling.jsx:614
-#: src/pages/DayView/DayView.tsx:216
+#: src/pages/DayView/DayView.tsx:225
 msgid "Private event"
 msgstr "Privat evenemang"
 
@@ -1071,7 +1071,7 @@ msgid "Raffle supervisors"
 msgstr "Värdera handledare"
 
 #: src/trackview/Trackview.tsx:309
-#: src/pages/DayView/DayView.tsx:305
+#: src/pages/DayView/DayView.tsx:314
 #: src/lib/components/TableLegends.tsx:34
 msgid "Range closed"
 msgstr "Skjutbana stängd"
@@ -1100,7 +1100,7 @@ msgstr "Banofficer tillägg misslyckades"
 
 #. placeholder {0}: formatTime(arrivingAt)
 #: src/trackview/Trackview.tsx:590
-#: src/pages/DayView/DayView.tsx:317
+#: src/pages/DayView/DayView.tsx:326
 msgid "Range officer arriving at {0}"
 msgstr "Banofficeren anländer kl. {0}"
 
@@ -1110,7 +1110,7 @@ msgstr "Banofficeren anländer kl. {0}"
 #: src/scheduling/Scheduling.jsx:389
 #: src/scheduling/Scheduling.jsx:982
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:130
-#: src/pages/DayView/DayView.tsx:299
+#: src/pages/DayView/DayView.tsx:308
 msgid "Range officer confirmed"
 msgstr "Banofficer bekräftat"
 
@@ -1144,7 +1144,7 @@ msgstr "Banofficerhantering"
 #: src/scheduling/Scheduling.jsx:374
 #: src/scheduling/Scheduling.jsx:985
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:134
-#: src/pages/DayView/DayView.tsx:301
+#: src/pages/DayView/DayView.tsx:310
 msgid "Range officer predefined"
 msgstr "Banofficer inte bekräftat"
 
@@ -1157,7 +1157,7 @@ msgstr "Banofficer fördefinierad, men inte bekräftat"
 #: src/scheduling/Scheduling.jsx:401
 #: src/scheduling/Scheduling.jsx:973
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:118
-#: src/pages/DayView/DayView.tsx:296
+#: src/pages/DayView/DayView.tsx:305
 #: src/lib/components/TableLegends.tsx:14
 msgid "Range officer present"
 msgstr "Banofficer närvarande"
@@ -1198,7 +1198,7 @@ msgid "Repeat weekly"
 msgstr "Upprepa varje vecka"
 
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusCard.tsx:15
-#: src/DeviceStatusList/DeviceStatusList.tsx:55
+#: src/DeviceStatusList/DeviceStatusList.tsx:50
 msgid "Reserved"
 msgstr "Reserverad"
 
@@ -1512,12 +1512,11 @@ msgstr "Tor"
 msgid "Time for sending emails"
 msgstr "Tid för att skicka e-post"
 
-#: src/utils/Utils.jsx:89
+#: src/utils/Utils.jsx:90
 msgid "Today"
 msgstr "Idag"
 
 #: src/trackview/Trackview.tsx:212
-#: src/lib/components/ViewChanger.jsx:52
 msgid "Track"
 msgstr "Bana"
 
@@ -1547,7 +1546,7 @@ msgstr "Bana borttagen"
 
 #: src/pages/WeekView/WeekView.tsx:171
 #: src/pages/MonthView/MonthView.tsx:215
-#: src/pages/DayView/DayView.tsx:262
+#: src/pages/DayView/DayView.tsx:271
 #: src/lib/components/TableLegends.tsx:46
 #: src/lib/components/TableLegends.tsx:48
 msgid "Track has additional information"
@@ -1580,7 +1579,7 @@ msgstr "Bana uppdaterad"
 #: src/trackview/Trackview.tsx:266
 #: src/trackview/Trackview.tsx:270
 #: src/pages/EditTracksView/EditTracksView.tsx:64
-#: src/pages/DayView/DayView.tsx:109
+#: src/pages/DayView/DayView.tsx:115
 msgid "Tracks"
 msgstr "Banor"
 
@@ -1659,7 +1658,7 @@ msgid "Values cannot be negative"
 msgstr "Värden kan inte vara negativa"
 
 #: src/trackview/Trackview.tsx:204
-#: src/lib/components/ViewChanger.jsx:28
+#: src/lib/components/ViewChanger.jsx:29
 msgid "Views"
 msgstr "Vyer"
 
@@ -1700,7 +1699,7 @@ msgstr "Ons"
 #~ msgstr "Onsdag"
 
 #: src/trackview/Trackview.tsx:206
-#: src/lib/components/ViewChanger.jsx:39
+#: src/lib/components/ViewChanger.jsx:42
 msgid "Week"
 msgstr "Vecka"
 

@@ -285,18 +285,3 @@
     height: auto;
   }
 }
-
-.backLink {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 24px;
-  color: var(--color-black, #000000);
-  text-decoration: none;
-  font-size: 14px;
-  padding-bottom: 12px;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}

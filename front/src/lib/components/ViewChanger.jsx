@@ -20,38 +20,34 @@ export function ViewChanger() {
     'bg-white border-black-tint-20 text-grey hover:border-black-tint-40 hover:text-black';
 
   const isMonth = location.pathname.includes('/monthview');
-  const isWeek = location.pathname.includes('/weekview');
+  // "/" renders the week view (App.tsx).
+  const isWeek =
+    location.pathname === '/' || location.pathname.includes('/weekview');
   const isDay = location.pathname.includes('/dayview');
-  const isTrack = location.pathname.includes('/trackview');
 
   return (
     <nav aria-label={t`Views`} className="flex gap-1">
       <Link
         className={`${baseTabStyle} ${isMonth ? activeTabStyle : inactiveTabStyle}`}
+        aria-current={isMonth ? 'page' : undefined}
         to={`/monthview/${targetDate}`}
       >
         {t`Month`}
       </Link>
       <Link
         className={`${baseTabStyle} ${isWeek ? activeTabStyle : inactiveTabStyle}`}
+        aria-current={isWeek ? 'page' : undefined}
         to={`/weekview/${targetDate}`}
       >
         {t`Week`}
       </Link>
       <Link
         className={`${baseTabStyle} ${isDay ? activeTabStyle : inactiveTabStyle}`}
+        aria-current={isDay ? 'page' : undefined}
         to={`/dayview/${targetDate}`}
       >
         {t`Day`}
       </Link>
-      {isTrack && (
-        <span
-          aria-current="page"
-          className={`${baseTabStyle} ${activeTabStyle}`}
-        >
-          {t`Track`}
-        </span>
-      )}
     </nav>
   );
 }

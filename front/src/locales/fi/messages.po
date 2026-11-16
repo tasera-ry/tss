@@ -15,7 +15,7 @@ msgstr ""
 msgid "{booked, plural, one {# lane booked} other {# lanes booked}}"
 msgstr "{booked, plural, one {# ampumapaikka varattu} other {# ampumapaikkaa varattu}}"
 
-#: src/pages/DayView/DayView.tsx:96
+#: src/pages/DayView/DayView.tsx:102
 msgid "{equipmentCount, plural, one {# device} other {# devices}}"
 msgstr "{equipmentCount, plural, one {# laite} other {# laitetta}}"
 
@@ -23,7 +23,7 @@ msgstr "{equipmentCount, plural, one {# laite} other {# laitetta}}"
 #~ msgid "{equipmentCount} devices"
 #~ msgstr "{equipmentCount} välinettä"
 
-#: src/pages/DayView/DayView.tsx:94
+#: src/pages/DayView/DayView.tsx:100
 msgid "{tracksCount, plural, one {# track} other {# tracks}}"
 msgstr "{tracksCount, plural, one {# rata} other {# rataa}}"
 
@@ -180,7 +180,7 @@ msgstr "Yhteisöt"
 #~ msgid "August"
 #~ msgstr "Elokuu"
 
-#: src/pages/DayView/DayView.tsx:232
+#: src/pages/DayView/DayView.tsx:241
 msgid "Awaiting range officer"
 msgstr "Odottaa päävalvojaa"
 
@@ -279,7 +279,7 @@ msgstr "Sulje kaikki"
 #: src/pages/TabletView/components/TrackCard.tsx:20
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:109
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:126
-#: src/pages/DayView/DayView.tsx:209
+#: src/pages/DayView/DayView.tsx:218
 msgid "Closed"
 msgstr "Suljettu"
 
@@ -362,7 +362,7 @@ msgstr "Päivämäärä"
 
 #: src/trackview/Trackview.tsx:207
 #: src/pages/StatisticsView/StatisticsView.tsx:89
-#: src/lib/components/ViewChanger.jsx:45
+#: src/lib/components/ViewChanger.jsx:49
 msgid "Day"
 msgstr "Päivä"
 
@@ -402,7 +402,7 @@ msgid "Details"
 msgstr "Lisätiedot"
 
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:43
-#: src/pages/DayView/DayView.tsx:121
+#: src/pages/DayView/DayView.tsx:127
 msgid "Devices"
 msgstr "Laitteet"
 
@@ -606,7 +606,7 @@ msgstr "vapaana"
 
 #: src/trackview/Trackview.tsx:427
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusCard.tsx:11
-#: src/DeviceStatusList/DeviceStatusList.tsx:55
+#: src/DeviceStatusList/DeviceStatusList.tsx:50
 msgid "Free"
 msgstr "Vapaa"
 
@@ -802,7 +802,7 @@ msgstr "Ma"
 
 #: src/trackview/Trackview.tsx:205
 #: src/pages/StatisticsView/StatisticsView.tsx:99
-#: src/lib/components/ViewChanger.jsx:33
+#: src/lib/components/ViewChanger.jsx:35
 msgid "Month"
 msgstr "Kuukausi"
 
@@ -863,8 +863,8 @@ msgstr "Ei lähetettäviä viestejä jonossa."
 
 #: src/trackview/Trackview.tsx:308
 #: src/trackview/Trackview.tsx:597
-#: src/pages/DayView/DayView.tsx:239
-#: src/pages/DayView/DayView.tsx:303
+#: src/pages/DayView/DayView.tsx:248
+#: src/pages/DayView/DayView.tsx:312
 msgid "No range officer present"
 msgstr "Ei päävalvojaa paikalla"
 
@@ -899,7 +899,7 @@ msgstr "Ei valvojaa"
 
 #: src/trackview/Trackview.tsx:384
 #: src/trackview/Trackview.tsx:596
-#: src/pages/DayView/DayView.tsx:246
+#: src/pages/DayView/DayView.tsx:255
 msgid "No track officer present"
 msgstr "Ei ratavalvojaa paikalla"
 
@@ -959,7 +959,7 @@ msgstr "Vanha salasana ei kelpaa"
 #: src/trackview/Trackview.tsx:122
 #: src/scheduling/Scheduling.jsx:1072
 #: src/pages/TabletView/components/OpenHoursSection.tsx:101
-#: src/pages/DayView/DayView.tsx:202
+#: src/pages/DayView/DayView.tsx:211
 msgid "Open"
 msgstr "Avoinna"
 
@@ -971,7 +971,7 @@ msgstr "Avaa kaikki"
 msgid "Opening hours"
 msgstr "Aukioloaika"
 
-#: src/pages/DayView/DayView.tsx:325
+#: src/pages/DayView/DayView.tsx:334
 msgid "OPENING HOURS"
 msgstr "AUKIOLOAIKA"
 
@@ -979,7 +979,7 @@ msgstr "AUKIOLOAIKA"
 #~ msgid "Opening hours: {opensAt}-{closesAt}"
 #~ msgstr "Aukioloaika: {opensAt}-{closesAt}"
 
-#: src/pages/DayView/DayView.tsx:224
+#: src/pages/DayView/DayView.tsx:233
 msgid "Opens at {time}"
 msgstr "Avautuu klo {time}"
 
@@ -1057,7 +1057,7 @@ msgstr "Edellinen päivä"
 
 #: src/trackview/Trackview.tsx:429
 #: src/scheduling/Scheduling.jsx:614
-#: src/pages/DayView/DayView.tsx:216
+#: src/pages/DayView/DayView.tsx:225
 msgid "Private event"
 msgstr "Yksityistilaisuus"
 
@@ -1071,7 +1071,7 @@ msgid "Raffle supervisors"
 msgstr "Arvo valvojat"
 
 #: src/trackview/Trackview.tsx:309
-#: src/pages/DayView/DayView.tsx:305
+#: src/pages/DayView/DayView.tsx:314
 #: src/lib/components/TableLegends.tsx:34
 msgid "Range closed"
 msgstr "Rata suljettu"
@@ -1100,7 +1100,7 @@ msgstr "Valvojan lisäys epäonnistui"
 
 #. placeholder {0}: formatTime(arrivingAt)
 #: src/trackview/Trackview.tsx:590
-#: src/pages/DayView/DayView.tsx:317
+#: src/pages/DayView/DayView.tsx:326
 msgid "Range officer arriving at {0}"
 msgstr "Päävalvoja saapuu klo {0}"
 
@@ -1110,7 +1110,7 @@ msgstr "Päävalvoja saapuu klo {0}"
 #: src/scheduling/Scheduling.jsx:389
 #: src/scheduling/Scheduling.jsx:982
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:130
-#: src/pages/DayView/DayView.tsx:299
+#: src/pages/DayView/DayView.tsx:308
 msgid "Range officer confirmed"
 msgstr "Päävalvoja varmistettu"
 
@@ -1144,7 +1144,7 @@ msgstr "Valvojien hallinta"
 #: src/scheduling/Scheduling.jsx:374
 #: src/scheduling/Scheduling.jsx:985
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:134
-#: src/pages/DayView/DayView.tsx:301
+#: src/pages/DayView/DayView.tsx:310
 msgid "Range officer predefined"
 msgstr "Päävalvoja ei varmistettu"
 
@@ -1157,7 +1157,7 @@ msgstr "Päävalvoja määritetty, mutta ei varmistettu"
 #: src/scheduling/Scheduling.jsx:401
 #: src/scheduling/Scheduling.jsx:973
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:118
-#: src/pages/DayView/DayView.tsx:296
+#: src/pages/DayView/DayView.tsx:305
 #: src/lib/components/TableLegends.tsx:14
 msgid "Range officer present"
 msgstr "Päävalvoja paikalla"
@@ -1198,7 +1198,7 @@ msgid "Repeat weekly"
 msgstr "Toista viikoittain"
 
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusCard.tsx:15
-#: src/DeviceStatusList/DeviceStatusList.tsx:55
+#: src/DeviceStatusList/DeviceStatusList.tsx:50
 msgid "Reserved"
 msgstr "Varattu"
 
@@ -1512,12 +1512,11 @@ msgstr "To"
 msgid "Time for sending emails"
 msgstr "Sähköpostiviestien lähetysaika"
 
-#: src/utils/Utils.jsx:89
+#: src/utils/Utils.jsx:90
 msgid "Today"
 msgstr "Tänään"
 
 #: src/trackview/Trackview.tsx:212
-#: src/lib/components/ViewChanger.jsx:52
 msgid "Track"
 msgstr "Rata"
 
@@ -1547,7 +1546,7 @@ msgstr "Rata poistettu"
 
 #: src/pages/WeekView/WeekView.tsx:171
 #: src/pages/MonthView/MonthView.tsx:215
-#: src/pages/DayView/DayView.tsx:262
+#: src/pages/DayView/DayView.tsx:271
 #: src/lib/components/TableLegends.tsx:46
 #: src/lib/components/TableLegends.tsx:48
 msgid "Track has additional information"
@@ -1580,7 +1579,7 @@ msgstr "Rata päivitetty"
 #: src/trackview/Trackview.tsx:266
 #: src/trackview/Trackview.tsx:270
 #: src/pages/EditTracksView/EditTracksView.tsx:64
-#: src/pages/DayView/DayView.tsx:109
+#: src/pages/DayView/DayView.tsx:115
 msgid "Tracks"
 msgstr "Radat"
 
@@ -1659,7 +1658,7 @@ msgid "Values cannot be negative"
 msgstr "Arvot eivät saa olla negatiivisia"
 
 #: src/trackview/Trackview.tsx:204
-#: src/lib/components/ViewChanger.jsx:28
+#: src/lib/components/ViewChanger.jsx:29
 msgid "Views"
 msgstr "Näkymät"
 
@@ -1700,7 +1699,7 @@ msgstr "Ke"
 #~ msgstr "Keskiviikko"
 
 #: src/trackview/Trackview.tsx:206
-#: src/lib/components/ViewChanger.jsx:39
+#: src/lib/components/ViewChanger.jsx:42
 msgid "Week"
 msgstr "Viikko"
 

@@ -15,7 +15,7 @@ describe('Navigation Tests', () => {
   const pages = [
     { path: '/#/', name: 'Home', expectedText: 'Week' },
     { path: '/#/scheduling', name: 'Scheduling', expectedText: 'Schedules' },
-    { path: '/#/dayview', name: 'Day View', expectedText: 'Back to weekview' },
+    { path: '/#/dayview', name: 'Day View', selector: 'h3', expectedText: 'Tracks' },
     { path: '/#/tablet', name: 'Tablet', expectedText: 'Devices' },
 		{ path: '/#/usermanagement', name: 'User management', expectedText: 'User management' },
 		{ path: '/#/tracks', name: 'Tracks', expectedText: 'Tracks' },
@@ -25,11 +25,11 @@ describe('Navigation Tests', () => {
 		{ path: '/#/info', name: 'Info', expectedText: 'Add info' },
   ];
 
-  pages.forEach(({ path, name, expectedText }) => {
+  pages.forEach(({ path, name, selector, expectedText }) => {
     it(`should navigate to the ${name} page`, () => {
       cy.visit(path);
       cy.wait(1000);
-      cy.contains(expectedText).should('be.visible');
+      (selector ? cy.contains(selector, expectedText) : cy.contains(expectedText)).should('be.visible');
     })
   });
 });

@@ -171,6 +171,64 @@ describe('testing Dayview component', () => {
     });
   });
 
+  describe('agree with the track view (review of #478)', () => {
+    it('on a booked day, a track officer not yet marked does not hide the opening time', async () => {
+      // Production: booked future days carry every track officer as 'absent'.
+      await renderDayview(
+        dayWith('confirmed', ['absent'], { arrivingAt: '10:30:00' }),
+      );
+      expect(
+        card('Shooting Track 0').getByText('Opens at 10.30'),
+      ).toBeInTheDocument();
+    });
+
+    it('track 6 still needs its own officer on a booked day', async () => {
+      await renderDayview(
+        dayWith('confirmed', ['present'], { arrivingAt: '10:30:00' }),
+      );
+      expect(
+        card('Shooting Track 5').getByText('No track officer present'),
+      ).toBeInTheDocument();
+    });
+
+    it('a range closed for the day closes track 6 too', async () => {
+      await renderDayview(
+        dayWith('closed', [
+          'present',
+          'present',
+          'present',
+          'present',
+          'present',
+          'present',
+        ]),
+      );
+      expect(card('Shooting Track 5').getByText('Closed')).toBeInTheDocument();
+    });
+
+    it('an arrival at or after closing time waits instead of promising an opening', async () => {
+      await renderDayview(
+        dayWith('confirmed', ['present'], { arrivingAt: '19:00:00' }),
+      );
+      expect(
+        card('Shooting Track 0').getByText('Awaiting range officer'),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('does not show an old arrival time once the range officer is present', async () => {
+    await renderDayview(
+      dayWith('present', ['present'], { arrivingAt: '09:45:00' }),
+    );
+    expect(screen.queryByText(/Range officer arriving at/)).toBeNull();
+  });
+
+  it('writes the opening hours as hh.mm', async () => {
+    await renderDayview(
+      dayWith('present', ['present'], { open: '09:30:00', close: '15:00:00' }),
+    );
+    expect(screen.getByText('09.30–15.00')).toBeInTheDocument();
+  });
+
   it('shows the range officer arrival time in the banner', async () => {
     await renderDayview(
       dayWith('confirmed', ['present'], { arrivingAt: '09:45:00' }),

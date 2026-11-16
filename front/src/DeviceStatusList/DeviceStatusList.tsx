@@ -46,12 +46,7 @@ function DeviceLabel({ device }: { device: any }) {
       <span className="font-bold max-w-full break-words">
         {device.device_name}
       </span>
-      <span
-        className={classNames(
-          'text-sm',
-          isReserved ? 'font-bold' : 'opacity-80',
-        )}
-      >
+      <span className={classNames('text-sm', isReserved && 'font-bold')}>
         {isReserved ? t`Reserved` : t`Free`}
       </span>
     </div>

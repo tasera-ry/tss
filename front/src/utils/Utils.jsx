@@ -68,11 +68,11 @@ export const checkColor = (days, oneDay) => {
 
 export function JumpToCurrent() {
   const fullUrl = window.location.href.split('/');
-  const urlParamDate = fullUrl[4] || 'dayview';
-  const currentDateParam = fullUrl[5];
+  // "/" renders the week view (App.tsx).
+  const urlParamDate = fullUrl[4] || 'weekview';
   const today = new Date().toISOString().split('T')[0];
-
-  const isToday = currentDateParam === today;
+  // A route without a date shows today.
+  const isToday = (fullUrl[5] || today) === today;
 
   const baseStyle =
     'px-3 py-1.5 text-sm font-medium rounded-md border transition-colors flex justify-center items-center';
@@ -84,6 +84,7 @@ export function JumpToCurrent() {
     <Link
       className={`${baseStyle} ${isToday ? activeStyle : inactiveStyle}`}
       data-testid="jumpToCur"
+      aria-current={isToday ? 'date' : undefined}
       to={`/${urlParamDate}/${today}`}
     >
       <Trans>Today</Trans>

@@ -1,4 +1,8 @@
-import { formatTime, toTrackViewDay } from '@/trackview/trackViewPlaceholder';
+import {
+  formatTime,
+  toMinutes,
+  toTrackViewDay,
+} from '@/trackview/trackViewPlaceholder';
 import {
   type TrackDetail,
   type TrackViewDay,
@@ -61,14 +65,16 @@ export function Dayview() {
     );
   };
 
+  // hh.mm, as everywhere else. Read from the payload: toTrackViewDay fills
+  // missing hours with 10-19, which the banner must not show.
   const opensAt = useMemo(() => {
-    if (!data?.open) return undefined;
-    return moment(data.open, 'HH:mm').format('H.mm');
+    const minutes = toMinutes(data?.open);
+    return minutes === null ? undefined : formatTime(minutes);
   }, [data]);
 
   const closesAt = useMemo(() => {
-    if (!data?.close) return undefined;
-    return moment(data.close, 'HH:mm').format('H.mm');
+    const minutes = toMinutes(data?.close);
+    return minutes === null ? undefined : formatTime(minutes);
   }, [data]);
 
   const tracksCount = data?.tracks?.length ?? 0;
@@ -174,7 +180,10 @@ export function cardStatus(day: TrackViewDay, track: TrackDetail): CardStatus {
   if (track.requiresRangeOfficer && awaitingRangeOfficer(day)) {
     const arrival =
       day.rangeOfficer === 'confirmed' ? day.rangeOfficerArrivingAt : null;
-    if (arrival === null) return { kind: 'awaiting' };
+    // An arrival at or after closing opens nothing that day.
+    if (arrival === null || (day.close !== null && arrival >= day.close)) {
+      return { kind: 'awaiting' };
+    }
     return { kind: 'opensAt', at: Math.max(arrival, day.open ?? arrival) };
   }
   const reason = unavailableReason(day, track);
