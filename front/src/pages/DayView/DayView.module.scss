@@ -6,6 +6,12 @@
   align-items: center;
   padding: 16px;
   min-height: 100vh;
+  // One readable column, at most 1024px, centred, as in the track view and the
+  // old month and week views; the navigation lines up with the content edges.
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto;
 }
 
 .viewChangerWrapper {
@@ -215,7 +221,8 @@
   grid-template-columns: 1fr;
 
   @media only screen and (min-width: 600px) {
-    grid-template-columns: repeat(auto-fit, minmax(136px, 1fr));
+    // Narrow enough that all seven tracks fit one row in the 1024px column.
+    grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
   }
 }
 

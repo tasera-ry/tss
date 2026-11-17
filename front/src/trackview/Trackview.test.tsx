@@ -285,9 +285,11 @@ describe('testing Trackview', () => {
     );
   });
 
-  it('has no link back to the day view; the view tabs cover it', async () => {
+  it('links back to the day view, one level up', async () => {
     await renderTrackview();
-    expect(screen.queryByText('Back to day view')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Back to day view' }),
+    ).toHaveAttribute('href', expect.stringMatching(/\/dayview\/2020-02-20$/));
   });
 
   it('labels the notice as the notice for the day', async () => {
