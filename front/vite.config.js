@@ -32,6 +32,7 @@ export default ({ mode }) => {
       environment: 'jsdom',
       globals: true,
       setupFiles: './src/setupTests.ts',
+      server: { deps: { inline: [/@lingui/] } },
       coverage: {
         provider: 'v8',
         reporter: ['text', 'json', 'html'],
