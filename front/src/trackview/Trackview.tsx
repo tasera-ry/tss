@@ -24,7 +24,7 @@ import type {
   UnavailableReason,
 } from './trackViewTypes';
 import { awaitingRangeOfficer, unavailableReason } from './trackViewTypes';
-import { useTrackName } from './useTrackName';
+import { usePositionName, useTrackName } from './useTrackName';
 
 /**
  * Track view (#432 redesign).
@@ -600,6 +600,7 @@ function SegmentList({
   awaiting: RangeOfficerState | null;
 }) {
   const { t } = useLingui();
+  const positionName = usePositionName();
   const label = useSegmentLabel();
   // Nothing to list until the track's sections exist (none are seeded in production).
   if (track.sections.length === 0) return null;
@@ -721,7 +722,7 @@ function SegmentList({
                   {' '}
                   {/* Own line on phones, beside the name from sm up. */}
                   <span className="block font-normal normal-case tracking-normal sm:ml-1 sm:inline">
-                    {section.position}
+                    {positionName(section.position)}
                   </span>
                 </>
               )}
