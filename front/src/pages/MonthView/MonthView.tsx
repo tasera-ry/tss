@@ -3,12 +3,18 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import CircularProgress from '@mui/material/CircularProgress';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import classNames from 'classnames';
 import moment from 'moment';
-import { useEffect, useMemo, useState } from 'react';
-import { useQuery } from 'react-query';
+import {
+  type KeyboardEvent,
+  type TouchEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useQuery, useQueryClient } from 'react-query';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import 'moment/locale/fi';
 import 'moment/locale/sv';
@@ -19,18 +25,18 @@ import { DateHeader } from '@/lib/components/DateHeader';
 import { InfoBox } from '@/lib/components/InfoBox';
 import { ViewChanger } from '@/lib/components/ViewChanger';
 import type { DaySchedule } from '@/types';
-import { JumpToCurrent } from '@/utils/Utils';
 
 import css from './MonthView.module.scss';
 
-const classes = classNames.bind(css);
+const RANGE_SUPERVISIONS = [
+  'present',
+  'confirmed',
+  'not confirmed',
+  'absent',
+  'closed',
+] as const;
 
-type RangeSupervision =
-  | 'present'
-  | 'confirmed'
-  | 'not confirmed'
-  | 'absent'
-  | 'closed';
+type RangeSupervision = (typeof RANGE_SUPERVISIONS)[number];
 
 export interface MonthDay {
   date: string; // YYYY-MM-DD
@@ -43,6 +49,10 @@ export interface MonthWeek {
   days: MonthDay[];
 }
 
+function isRangeSupervision(value: unknown): value is RangeSupervision {
+  return RANGE_SUPERVISIONS.includes(value as RangeSupervision);
+}
+
 export function toMonthDay(day: DaySchedule): MonthDay {
   const tracks = day.tracks ?? [];
   // The API repeats the scheduled supervision's arrival time on every track row.
@@ -53,125 +63,147 @@ export function toMonthDay(day: DaySchedule): MonthDay {
     null;
   return {
     date: day.date,
-    rangeSupervision: day.rangeSupervision as RangeSupervision,
+    rangeSupervision: isRangeSupervision(day.rangeSupervision)
+      ? day.rangeSupervision
+      : 'absent',
     arrivingAt,
   };
 }
 
 interface StatusConfig {
-  key: RangeSupervision;
   className: string;
   label: string;
   legendLabel: string;
   icon: JSX.Element;
 }
 
-function useStatusConfigs() {
+type StatusConfigs = Record<RangeSupervision, StatusConfig>;
+
+function useStatusConfigs(): StatusConfigs {
   const { t } = useLingui();
 
-  return useMemo(() => {
-    const configs: Record<RangeSupervision, StatusConfig> = {
+  return useMemo(
+    () => ({
       present: {
-        key: 'present',
         className: css.statusPresent,
         label: t`Range officer present`,
         legendLabel: t`Range officer present`,
         icon: <CheckCircleOutlineIcon className={css.statusIcon} />,
       },
       confirmed: {
-        key: 'confirmed',
         className: css.statusConfirmed,
         label: t`Range officer confirmed`,
         legendLabel: t`Range officer confirmed, estimated time of arrival`,
         icon: <AccessTimeIcon className={css.statusIcon} />,
       },
       'not confirmed': {
-        key: 'not confirmed',
         className: css.statusNotConfirmed,
         label: t`Range officer predefined, not confirmed`,
         legendLabel: t`Range officer predefined, not confirmed`,
         icon: <HelpOutlineIcon className={css.statusIcon} />,
       },
       absent: {
-        key: 'absent',
         className: css.statusAbsent,
         label: t`Range officer undefined`,
         legendLabel: t`Range officer undefined`,
         icon: <RemoveCircleOutlineIcon className={css.statusIcon} />,
       },
       closed: {
-        key: 'closed',
         className: css.statusClosed,
         label: t`Range closed`,
         legendLabel: t`Range closed`,
         icon: <HighlightOffIcon className={css.statusIcon} />,
       },
-    };
-    return configs;
-  }, [t]);
-}
-
-const LEGEND_ORDER: RangeSupervision[] = [
-  'present',
-  'confirmed',
-  'not confirmed',
-  'absent',
-  'closed',
-];
-
-const formatTime = (time?: string | null) =>
-  time ? moment(time, ['HH:mm:ss', 'HH:mm']).format('H.mm') : '';
-
-const HAS_OFFICER: RangeSupervision[] = [
-  'present',
-  'confirmed',
-  'not confirmed',
-];
-
-interface MonthviewProps {
-  weeks?: MonthWeek[];
-}
-
-export function Monthview({ weeks }: MonthviewProps) {
-  const history = useHistory();
-  const { date: dateParam } = useParams<{ date: string }>();
-  const isDesktop = useMediaQuery('(min-width:768px)');
-
-  const targetDate = useMemo(
-    () => dateParam ?? moment().format('YYYY-MM-DD'),
-    [dateParam],
+    }),
+    [t],
   );
+}
 
-  const [selectedDate, setSelectedDate] = useState<string>(targetDate);
+const ARRIVAL_SHOWN: RangeSupervision[] = ['confirmed', 'not confirmed'];
+
+function useFormatTime() {
+  const { i18n } = useLingui();
+  return (time?: string | null) => {
+    if (!time) return '';
+    const parsed = moment(time, ['HH:mm:ss', 'HH:mm'], true);
+    if (!parsed.isValid()) return '';
+    return new Intl.DateTimeFormat(i18n.locale, {
+      hour: 'numeric',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    }).format(parsed.toDate());
+  };
+}
+
+const SWIPE_MIN_DISTANCE = 50;
+
+const ARROW_KEY_DAYS: Record<string, number> = {
+  ArrowLeft: -1,
+  ArrowRight: 1,
+  ArrowUp: -7,
+  ArrowDown: 7,
+};
+
+function monthQueryKey(monthKey: string) {
+  return ['monthview', monthKey];
+}
+
+async function fetchMonth(monthKey: string): Promise<MonthWeek[]> {
+  const { first, last } = calendarRange(monthKey);
+  const data = (await api.getSchedulingFreeform(
+    first.format('YYYY-MM-DD'),
+    last.format('YYYY-MM-DD'),
+  )) as DaySchedule[];
+  return buildCalendar(monthKey, data.map(toMonthDay));
+}
+
+function parseDateParam(dateParam?: string) {
+  if (!dateParam) return null;
+  const parsed = moment(dateParam, 'YYYY-MM-DD', true);
+  return parsed.isValid() ? parsed.format('YYYY-MM-DD') : null;
+}
+
+export function Monthview() {
+  const history = useHistory();
+  const queryClient = useQueryClient();
+  const { date: dateParam } = useParams<{ date?: string }>();
+  const isDesktop = useMediaQuery('(min-width:768px)', { noSsr: true });
+
+  const today = moment().format('YYYY-MM-DD');
+  const validDateParam = parseDateParam(dateParam);
+  const targetDate = validDateParam ?? today;
+  const monthKey = moment(targetDate).format('YYYY-MM');
+
+  useEffect(() => {
+    if (dateParam && !validDateParam) {
+      history.replace(`/monthview/${today}`);
+    }
+  }, [dateParam, validDateParam, history, today]);
+
+  const [selectedDate, setSelectedDate] = useState(targetDate);
 
   useEffect(() => {
     setSelectedDate(targetDate);
   }, [targetDate]);
 
-  const monthKey = moment(targetDate).format('YYYY-MM');
-
-  const {
-    data: apiWeeks,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['monthview', monthKey],
-    enabled: !weeks,
-    queryFn: async (): Promise<MonthWeek[]> => {
-      const { first, last } = calendarRange(targetDate);
-      const data = (await api.getSchedulingFreeform(
-        first.format('YYYY-MM-DD'),
-        last.format('YYYY-MM-DD'),
-      )) as DaySchedule[];
-      return groupIntoWeeks(data.map(toMonthDay));
-    },
+  const { data, isError, refetch } = useQuery({
+    queryKey: monthQueryKey(monthKey),
+    queryFn: () => fetchMonth(monthKey),
   });
 
-  const skeletonWeeks = useMemo(
-    () => buildSkeletonWeeks(targetDate),
-    [targetDate],
-  );
-  const data = weeks ?? apiWeeks;
+  useEffect(() => {
+    for (const delta of [-1, 1]) {
+      const adjacent = moment(monthKey, 'YYYY-MM')
+        .add(delta, 'month')
+        .format('YYYY-MM');
+      queryClient.prefetchQuery(monthQueryKey(adjacent), () =>
+        fetchMonth(adjacent),
+      );
+    }
+  }, [monthKey, queryClient]);
+
+  const skeletonWeeks = useMemo(() => buildCalendar(monthKey), [monthKey]);
+  const weeks = data ?? skeletonWeeks;
 
   const goToMonth = (delta: 1 | -1) =>
     history.push(
@@ -185,25 +217,24 @@ export function Monthview({ weeks }: MonthviewProps) {
     [data, selectedDate],
   );
 
-  const handleDayClick = (date: string) => {
-    if (isDesktop) {
-      history.push(`/dayview/${date}`);
-    } else {
-      setSelectedDate(date);
-    }
-  };
-
   return (
     <div>
       <InfoBox />
 
-      <div className={classes(css.monthContainer)}>
-        <div className={classes(css.toolbar)}>
-          <div className={classes(css.todayButton)}>
-            <JumpToCurrent />
+      <div className={css.monthContainer}>
+        <div className={css.toolbar}>
+          <div className={css.todayButton}>
+            <Link
+              className="bg-black-tint-70 rounded-t-lg p-2 flex justify-center items-center text-white text-lg font-bold"
+              data-testid="jumpToCur"
+              to={`/monthview/${today}`}
+            >
+              <Trans>Today</Trans>
+            </Link>
           </div>
-          <div className={classes(css.viewTabs)}>
-            <ViewChanger />
+          <div className={css.viewTabs}>
+            {/* ViewChanger reads the date from the URL only on mount. */}
+            <ViewChanger key={targetDate} />
           </div>
         </div>
 
@@ -213,31 +244,39 @@ export function Monthview({ weeks }: MonthviewProps) {
           onNext={() => goToMonth(1)}
           type="month"
         />
-        <WeekRange weeks={data ?? skeletonWeeks} />
+        <WeekRange weeks={weeks} />
 
-        {data ? (
-          <Calendar
-            weeks={data}
-            targetDate={targetDate}
-            selectedDate={isDesktop ? undefined : selectedDate}
-            isDesktop={isDesktop}
-            onDayClick={handleDayClick}
-          />
-        ) : (
-          <div className={classes(css.statusMessage)}>
-            {isError ? (
+        {isError && !data ? (
+          <div className={css.statusMessage} role="alert">
+            <p>
               <Trans>
                 Could not load the schedule. Please try again later.
               </Trans>
-            ) : (
-              isLoading && <CircularProgress disableShrink />
-            )}
+            </p>
+            <button
+              type="button"
+              className={css.retryButton}
+              onClick={() => refetch()}
+            >
+              <Trans>Try again</Trans>
+            </button>
           </div>
+        ) : (
+          <Calendar
+            weeks={weeks}
+            loading={!data}
+            targetDate={targetDate}
+            today={today}
+            selectedDate={isDesktop ? undefined : selectedDate}
+            isDesktop={isDesktop}
+            onDayClick={setSelectedDate}
+            onSwipe={goToMonth}
+          />
         )}
 
         {!isDesktop && (
-          <div className={classes(css.mobileOnly)}>
-            {selectedDay && <SelectedDayCard day={selectedDay} />}
+          <div className={css.mobileOnly}>
+            {selectedDay && <SelectedDayCard day={selectedDay} today={today} />}
             <Legend />
           </div>
         )}
@@ -254,44 +293,98 @@ function WeekRange({ weeks }: { weeks: MonthWeek[] }) {
   const lastWeek = weeks[weeks.length - 1]?.week;
   if (firstWeek == null) return null;
 
-  return (
-    <p className={classes(css.weekRange)}>
-      {t`Weeks ${firstWeek}–${lastWeek}`}
-    </p>
-  );
+  return <p className={css.weekRange}>{t`Weeks ${firstWeek}–${lastWeek}`}</p>;
 }
 
 interface CalendarProps {
   weeks: MonthWeek[];
+  loading: boolean;
   targetDate: string;
+  today: string;
   selectedDate?: string;
   isDesktop: boolean;
   onDayClick: (date: string) => void;
+  onSwipe: (delta: 1 | -1) => void;
 }
 
 function Calendar({
   weeks,
+  loading,
   targetDate,
+  today,
   selectedDate,
   isDesktop,
   onDayClick,
+  onSwipe,
 }: CalendarProps) {
   const { t } = useLingui();
-  const weekdays = [t`Mon`, t`Tue`, t`Wed`, t`Thu`, t`Fri`, t`Sat`, t`Sun`];
+  const statuses = useStatusConfigs();
+  const gridRef = useRef<HTMLDivElement>(null);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+
+  const weekdays = [
+    [t`Mon`, t`Monday`],
+    [t`Tue`, t`Tuesday`],
+    [t`Wed`, t`Wednesday`],
+    [t`Thu`, t`Thursday`],
+    [t`Fri`, t`Friday`],
+    [t`Sat`, t`Saturday`],
+    [t`Sun`, t`Sunday`],
+  ];
   const weekCount = weeks.length;
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const offset = ARROW_KEY_DAYS[event.key];
+    const from = (event.target as HTMLElement).dataset.date;
+    if (offset == null || !from) return;
+
+    const next = moment(from).add(offset, 'day').format('YYYY-MM-DD');
+    const cell = gridRef.current?.querySelector<HTMLButtonElement>(
+      `[data-date="${next}"]`,
+    );
+    if (cell) {
+      event.preventDefault();
+      cell.focus();
+    }
+  };
+
+  const handleTouchStart = (event: TouchEvent) => {
+    const touch = event.touches[0];
+    touchStart.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const handleTouchEnd = (event: TouchEvent) => {
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!start) return;
+
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    if (Math.abs(dx) >= SWIPE_MIN_DISTANCE && Math.abs(dx) > Math.abs(dy) * 2) {
+      onSwipe(dx < 0 ? 1 : -1);
+    }
+  };
+
   return (
-    <section className={classes(css.calendarCard)}>
-      <p className={classes(css.caption)}>
+    <section
+      className={css.calendarCard}
+      aria-busy={loading}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      <p className={css.caption}>
         {t`${weekCount} weeks · select a day to see the tracks`}
       </p>
-      <div className={classes(css.calendar)}>
-        <div className={classes(css.headerCell)}>
-          <Trans>Wk</Trans>
+      <div className={css.calendar} ref={gridRef} onKeyDown={handleKeyDown}>
+        <div className={css.headerCell}>
+          <abbr title={t`Week`}>
+            <Trans>Wk</Trans>
+          </abbr>
         </div>
-        {weekdays.map((day) => (
-          <div key={day} className={classes(css.headerCell)}>
-            {day}
+        {weekdays.map(([short, long]) => (
+          <div key={short} className={css.headerCell}>
+            <abbr title={long}>{short}</abbr>
           </div>
         ))}
 
@@ -299,7 +392,10 @@ function Calendar({
           <WeekRow
             key={week.days[0]?.date ?? week.week}
             week={week}
+            loading={loading}
+            statuses={statuses}
             targetDate={targetDate}
+            today={today}
             selectedDate={selectedDate}
             isDesktop={isDesktop}
             onDayClick={onDayClick}
@@ -310,21 +406,37 @@ function Calendar({
   );
 }
 
+interface WeekRowProps {
+  week: MonthWeek;
+  loading: boolean;
+  statuses: StatusConfigs;
+  targetDate: string;
+  today: string;
+  selectedDate?: string;
+  isDesktop: boolean;
+  onDayClick: (date: string) => void;
+}
+
 function WeekRow({
   week,
+  loading,
+  statuses,
   targetDate,
+  today,
   selectedDate,
   isDesktop,
   onDayClick,
-}: { week: MonthWeek } & Omit<CalendarProps, 'weeks'>) {
+}: WeekRowProps) {
   return (
     <>
-      <div className={classes(css.weekNumber)}>{week.week}</div>
+      <div className={css.weekNumber}>{week.week}</div>
       {week.days.map((day) => (
         <DayCell
           key={day.date}
           day={day}
+          status={loading ? null : statuses[day.rangeSupervision]}
           inCurrentMonth={moment(day.date).isSame(targetDate, 'month')}
+          isToday={day.date === today}
           selected={selectedDate === day.date}
           isDesktop={isDesktop}
           onClick={() => onDayClick(day.date)}
@@ -334,122 +446,167 @@ function WeekRow({
   );
 }
 
-interface DayCellProps {
-  day: MonthDay;
-  inCurrentMonth: boolean;
-  selected: boolean;
-  isDesktop: boolean;
-  onClick: () => void;
-}
-
 function ArrivalText({ day }: { day: MonthDay }) {
   const { t } = useLingui();
+  const formatTime = useFormatTime();
   if (day.rangeSupervision !== 'confirmed') return null;
 
   const time = formatTime(day.arrivingAt);
   return (
-    <span className={classes(css.timeText)}>
+    <span className={css.timeText}>
       {time ? t`Estimate ${time}` : t`Arrival time unknown`}
     </span>
   );
 }
 
+interface DayCellProps {
+  day: MonthDay;
+  status: StatusConfig | null;
+  inCurrentMonth: boolean;
+  isToday: boolean;
+  selected: boolean;
+  isDesktop: boolean;
+  onClick: () => void;
+}
+
 function DayCell({
   day,
+  status,
   inCurrentMonth,
+  isToday,
   selected,
   isDesktop,
   onClick,
 }: DayCellProps) {
-  const statuses = useStatusConfigs();
-  const status = statuses[day.rangeSupervision] ?? statuses.absent;
+  const { t, i18n } = useLingui();
+  const formatTime = useFormatTime();
 
-  const date = useMemo(() => moment(day.date), [day.date]);
-  const isToday = date.isSame(moment(), 'day');
+  const date = moment(day.date);
   const dayLabel = inCurrentMonth ? date.format('D') : date.format('D.M.');
+  const shownStatus = inCurrentMonth ? status : null;
+  const time = formatTime(day.arrivingAt);
+
+  const ariaLabel = [
+    i18n.date(date.toDate(), {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+    }),
+    isToday && t`Today`,
+    shownStatus?.label,
+    shownStatus &&
+      day.rangeSupervision === 'confirmed' &&
+      (time ? t`Estimate ${time}` : t`Arrival time unknown`),
+  ]
+    .filter(Boolean)
+    .join(', ');
+
+  const className = classNames(
+    css.dayCell,
+    !inCurrentMonth && css.otherMonth,
+    shownStatus?.className,
+    !status && css.loading,
+    isToday && css.today,
+    selected && css.selected,
+  );
+
+  const content = (
+    <>
+      <span className={css.cellTop}>
+        <span className={css.dayNumber}>{dayLabel}</span>
+        {isDesktop && isToday && (
+          <span className={css.todayBadge}>
+            <Trans>TODAY</Trans>
+          </span>
+        )}
+        {shownStatus && isDesktop && (
+          <span className={css.cellTopIcon}>{shownStatus.icon}</span>
+        )}
+      </span>
+
+      {shownStatus &&
+        (isDesktop ? (
+          <span className={css.cellBody}>
+            <span className={css.statusText}>{shownStatus.label}</span>
+            <ArrivalText day={day} />
+          </span>
+        ) : (
+          <span className={css.cellCenter}>{shownStatus.icon}</span>
+        ))}
+      {!isDesktop && isToday && inCurrentMonth && (
+        <span className={css.todayMini}>
+          <Trans>TODAY</Trans>
+        </span>
+      )}
+    </>
+  );
+
+  if (isDesktop && status) {
+    return (
+      <Link
+        to={`/dayview/${day.date}`}
+        data-date={day.date}
+        aria-label={ariaLabel}
+        aria-current={isToday ? 'date' : undefined}
+        className={className}
+      >
+        {content}
+      </Link>
+    );
+  }
 
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-label={`${date.format('D.M.')} ${status.label}`}
+      disabled={!status}
+      data-date={day.date}
+      aria-label={ariaLabel}
       aria-current={isToday ? 'date' : undefined}
-      className={classes(
-        css.dayCell,
-        inCurrentMonth ? status.className : css.otherMonth,
-        isToday && css.today,
-        selected && css.selected,
-      )}
+      aria-pressed={isDesktop ? undefined : selected}
+      className={className}
     >
-      <span className={classes(css.cellTop)}>
-        <span className={classes(css.dayNumber)}>{dayLabel}</span>
-        {isDesktop && isToday && (
-          <span className={classes(css.todayBadge)}>
-            <Trans>TODAY</Trans>
-          </span>
-        )}
-        {inCurrentMonth && isDesktop && (
-          <span className={classes(css.cellTopIcon)}>{status.icon}</span>
-        )}
-      </span>
-
-      {inCurrentMonth &&
-        (isDesktop ? (
-          <span className={classes(css.cellBody)}>
-            <span className={classes(css.statusText)}>{status.label}</span>
-            <ArrivalText day={day} />
-          </span>
-        ) : (
-          <>
-            <span className={classes(css.cellCenter)}>{status.icon}</span>
-            {isToday && (
-              <span className={classes(css.todayMini)}>
-                <Trans>TODAY</Trans>
-              </span>
-            )}
-          </>
-        ))}
+      {content}
     </button>
   );
 }
 
-function SelectedDayCard({ day }: { day: MonthDay }) {
+function SelectedDayCard({ day, today }: { day: MonthDay; today: string }) {
   const { t, i18n } = useLingui();
   const statuses = useStatusConfigs();
-  const status = statuses[day.rangeSupervision] ?? statuses.absent;
+  const formatTime = useFormatTime();
+  const status = statuses[day.rangeSupervision];
 
-  const weekday = new Intl.DateTimeFormat(i18n.locale, {
-    weekday: 'long',
-  }).format(new Date(day.date));
-  const title = `${weekday} ${moment(day.date).format('D.M.YYYY')}`;
-  const isToday = moment(day.date).isSame(moment(), 'day');
+  const date = moment(day.date);
+  const weekday = i18n.date(date.toDate(), { weekday: 'long' });
+  const title = `${weekday} ${date.format('D.M.YYYY')}`;
   const time = formatTime(day.arrivingAt);
 
   return (
-    <div className={classes(css.detailCard)}>
-      <div className={classes(css.detailHeader)}>
-        <h3 className={classes(css.detailTitle)}>
+    <div className={css.detailCard} aria-live="polite">
+      <div className={css.detailHeader}>
+        <h3 className={css.detailTitle}>
           {title.charAt(0).toUpperCase() + title.slice(1)}
         </h3>
-        {isToday && (
-          <span className={classes(css.todayBadge)}>
+        {day.date === today && (
+          <span className={css.todayBadge}>
             <Trans>TODAY</Trans>
           </span>
         )}
       </div>
-      <div className={classes(css.detailStatus)}>
-        <span className={classes(css.legendSwatch, status.className)}>
+      <div className={css.detailStatus}>
+        <span className={classNames(css.legendSwatch, status.className)}>
           {status.icon}
         </span>
         <span>{status.label}</span>
       </div>
-      {HAS_OFFICER.includes(day.rangeSupervision) && (
-        <p className={classes(css.detailArrival)}>
+      {ARRIVAL_SHOWN.includes(day.rangeSupervision) && (
+        <p className={css.detailArrival}>
           <AccessTimeIcon className={css.legendIcon} />
           {time ? t`Estimated arrival ${time}` : t`Arrival time unknown`}
         </p>
       )}
-      <Link to={`/dayview/${day.date}`} className={classes(css.openButton)}>
+      <Link to={`/dayview/${day.date}`} className={css.openButton}>
         <Trans>Open day view</Trans>
       </Link>
     </div>
@@ -460,23 +617,23 @@ function Legend() {
   const statuses = useStatusConfigs();
 
   return (
-    <div className={classes(css.legendCard)}>
-      <h3 className={classes(css.legendTitle)}>
+    <div className={css.legendCard}>
+      <h3 className={css.legendTitle}>
         <Trans>Legend</Trans>
       </h3>
-      <ul className={classes(css.legendList)}>
-        {LEGEND_ORDER.map((key) => (
-          <li key={key} className={classes(css.legendItem)}>
+      <ul className={css.legendList}>
+        {RANGE_SUPERVISIONS.map((key) => (
+          <li key={key} className={css.legendItem}>
             <span
-              className={classes(css.legendSwatch, statuses[key].className)}
+              className={classNames(css.legendSwatch, statuses[key].className)}
             >
               {statuses[key].icon}
             </span>
             <span>{statuses[key].legendLabel}</span>
           </li>
         ))}
-        <li className={classes(css.legendItem)}>
-          <span className={classes(css.legendSwatch, css.otherMonth)} />
+        <li className={css.legendItem}>
+          <span className={classNames(css.legendSwatch, css.otherMonth)} />
           <span>
             <Trans>Day of the previous or next month</Trans>
           </span>
@@ -486,42 +643,30 @@ function Legend() {
   );
 }
 
-function groupIntoWeeks(days: MonthDay[]): MonthWeek[] {
-  const byWeek = new Map<string, MonthDay[]>();
-  for (const day of days) {
-    const key = moment(day.date).startOf('isoWeek').format('YYYY-MM-DD');
-    const bucket = byWeek.get(key);
-    if (bucket) bucket.push(day);
-    else byWeek.set(key, [day]);
-  }
-
-  return [...byWeek.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([monday, weekDays]) => ({
-      week: moment(monday).isoWeek(),
-      days: weekDays.sort((a, b) => a.date.localeCompare(b.date)),
-    }));
-}
-
-function calendarRange(targetDate: string) {
+function calendarRange(monthKey: string) {
+  const month = moment(monthKey, 'YYYY-MM');
   return {
-    first: moment(targetDate).startOf('month').startOf('isoWeek'),
-    last: moment(targetDate).endOf('month').endOf('isoWeek'),
+    first: month.clone().startOf('month').startOf('isoWeek'),
+    last: month.clone().endOf('month').endOf('isoWeek'),
   };
 }
 
-function buildSkeletonWeeks(targetDate: string): MonthWeek[] {
-  const { first, last } = calendarRange(targetDate);
-  const days: MonthDay[] = [];
+/** Every day of the visible range, so a day missing from the API cannot shift the grid. */
+function buildCalendar(monthKey: string, days: MonthDay[] = []): MonthWeek[] {
+  const byDate = new Map(days.map((day) => [day.date, day]));
+  const { first, last } = calendarRange(monthKey);
+  const weeks: MonthWeek[] = [];
+
   for (
     const d = first.clone();
     d.isSameOrBefore(last, 'day');
     d.add(1, 'day')
   ) {
-    days.push({
-      date: d.format('YYYY-MM-DD'),
-      rangeSupervision: 'absent',
-    });
+    const date = d.format('YYYY-MM-DD');
+    if (d.isoWeekday() === 1) weeks.push({ week: d.isoWeek(), days: [] });
+    weeks[weeks.length - 1].days.push(
+      byDate.get(date) ?? { date, rangeSupervision: 'absent' },
+    );
   }
-  return groupIntoWeeks(days);
+  return weeks;
 }

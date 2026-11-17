@@ -121,6 +121,10 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-weight: normal;
   }
 
+  abbr {
+    text-decoration: none;
+  }
+
   @include desktop {
     font-size: 12px;
   }
@@ -158,6 +162,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   background-clip: padding-box;
   background-color: var(--color-white);
   color: var(--color-black);
+  text-decoration: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   -webkit-appearance: none;
   appearance: none;
@@ -170,6 +175,10 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   &:focus-visible {
     outline: 2px solid var(--color-black);
     outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: default;
   }
 
   @include desktop {
@@ -210,7 +219,12 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   border-color: var(--color-black-tint-05);
 }
 
-/* Desktop marks today with a thick border; mobile uses the TÄNÄÄN label. */
+.loading {
+  background-color: var(--color-black-tint-05);
+  border-color: var(--color-black-tint-05);
+}
+
+/* Desktop marks today with a thick border; mobile uses the TODAY label. */
 .today {
   @include desktop {
     border-width: 3px;
@@ -256,7 +270,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
 }
 
-/* Pinned so a wide TÄNÄÄN badge can never push the status icon out of a narrow cell. */
+/* Pinned so a wide TODAY badge can never push the status icon out of a narrow cell. */
 .cellTopIcon {
   position: absolute;
   top: 10px;
@@ -321,7 +335,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   border-radius: 4px;
 }
 
-/* Narrow desktop cells: put the badge on its own centred row instead of letting flex-wrap drop it.*/
+/* Narrow desktop cells: put the badge on its own centred row instead of letting flex-wrap drop it. */
 @container (max-width: 100px) {
   .cellTop {
     flex-direction: column;
@@ -404,6 +418,8 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
 .statusMessage {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
   align-items: center;
   justify-content: center;
   min-height: 240px;
@@ -421,6 +437,22 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   color: var(--color-white);
   background: $COLOR_GREEN_DARK;
   border-radius: 8px;
+}
+
+.retryButton {
+  padding: 10px 20px;
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--color-white);
+  background: $COLOR_GREEN_DARK;
+  border: none;
+  border-radius: 8px;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-black);
+    outline-offset: 2px;
+  }
 }
 
 .legendTitle {

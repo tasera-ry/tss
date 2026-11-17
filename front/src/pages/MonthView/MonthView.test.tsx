@@ -1,8 +1,15 @@
 import { TestProviders } from '@/_TestUtils/TestProvides';
 import api from '@/api/api';
 import type { DaySchedule } from '@/types';
-import { render, screen, waitFor } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import moment from 'moment';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { HashRouter as Router, useParams } from 'react-router-dom';
 import { Monthview, toMonthDay } from './MonthView';
 
@@ -26,74 +33,114 @@ vi.mock('react-router-dom', async (originalImport) => {
   };
 });
 
+interface ApiDayOverrides {
+  rangeSupervision?: string;
+  arriving_at?: string | null;
+}
+
 function apiRange(
   begin: string,
   end: string,
-  statusFor: (date: string) => string = () => 'closed',
+  dayFor: (date: string) => ApiDayOverrides | null = () => ({}),
 ) {
   const days = [];
   for (const d = moment(begin); d.isSameOrBefore(end, 'day'); d.add(1, 'day')) {
     const date = d.format('YYYY-MM-DD');
+    const overrides = dayFor(date);
+    if (overrides === null) continue;
     days.push({
       date,
-      rangeSupervision: statusFor(date),
+      rangeSupervision: 'closed',
       arriving_at: null,
       tracks: [],
+      ...overrides,
     });
   }
   return days;
 }
 
+function setDateParam(date: string | undefined) {
+  vi.mocked(useParams).mockImplementation(() => ({ date }));
+}
+
+function setDesktop(matches: boolean) {
+  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+    matches,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  }));
+}
+
+function renderMonthview() {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return render(
+    <QueryClientProvider client={client}>
+      <Router>
+        <Monthview />
+      </Router>
+    </QueryClientProvider>,
+    { wrapper: TestProviders },
+  );
+}
+
+const originalMatchMedia = window.matchMedia;
+
 beforeEach(() => {
+  localStorage.setItem('language', '1');
+  window.location.hash = '';
+  setDateParam(undefined);
   vi.mocked(api.getSchedulingFreeform).mockImplementation(
     async (begin: string, end: string) => apiRange(begin, end),
   );
 });
 
+afterEach(() => {
+  vi.useRealTimers();
+  window.matchMedia = originalMatchMedia;
+});
+
 describe('testing monthview', () => {
-  it('should render monthView when URL is broken/invalid', async () => {
+  it('shows the current month when no date is given', async () => {
     vi.setSystemTime('2020-10-21T11:30:57.000Z');
-    localStorage.setItem('language', '1');
-    render(
-      <Router>
-        <Monthview />
-      </Router>,
-      { wrapper: TestProviders },
-    );
+    renderMonthview();
     await waitFor(() =>
       expect(screen.getByText('October 2020')).toBeInTheDocument(),
     );
   });
 
   it('should render monthview when URL is valid', async () => {
-    vi.mocked(useParams).mockImplementation(() => ({
-      date: '2020-10-21',
-    }));
-
-    localStorage.setItem('language', '1');
-    render(
-      <Router>
-        <Monthview />
-      </Router>,
-      { wrapper: TestProviders },
-    );
+    setDateParam('2020-10-21');
+    renderMonthview();
     await waitFor(() =>
       expect(screen.getByText('October 2020')).toBeInTheDocument(),
     );
   });
 
-  it('shows the visible week range and week count for the month', async () => {
-    vi.mocked(useParams).mockImplementation(() => ({
-      date: '2020-10-21',
-    }));
+  it('falls back to today and fixes the URL when the date is invalid', async () => {
+    vi.setSystemTime('2020-10-21T11:30:57.000Z');
+    setDateParam('not-a-date');
+    renderMonthview();
 
-    localStorage.setItem('language', '1');
-    render(
-      <Router>
-        <Monthview />
-      </Router>,
-      { wrapper: TestProviders },
+    expect(await screen.findByText('October 2020')).toBeInTheDocument();
+    await waitFor(() =>
+      expect(window.location.hash).toBe('#/monthview/2020-10-21'),
     );
+    expect(api.getSchedulingFreeform).toHaveBeenCalledWith(
+      '2020-09-28',
+      '2020-11-01',
+    );
+  });
+
+  it('shows the visible week range and week count for the month', async () => {
+    setDateParam('2020-10-21');
+    renderMonthview();
     // October 2020 spans ISO weeks 40-44 (Sep 28 - Nov 1)
     await waitFor(() =>
       expect(screen.getByText('Weeks 40–44')).toBeInTheDocument(),
@@ -103,36 +150,208 @@ describe('testing monthview', () => {
     ).toBeInTheDocument();
   });
 
+  it('numbers the weeks across a year boundary', async () => {
+    setDateParam('2021-01-15');
+    renderMonthview();
+    // January 2021: Mon 28.12.2020 (week 53) – Sun 31.1.2021 (week 4)
+    expect(await screen.findByText('Weeks 53–4')).toBeInTheDocument();
+  });
+
   it('requests the full visible range and shows statuses from the API', async () => {
-    vi.mocked(useParams).mockImplementation(() => ({
-      date: '2021-03-10',
-    }));
+    setDateParam('2021-03-10');
     vi.mocked(api.getSchedulingFreeform).mockImplementation(
       async (begin: string, end: string) =>
         apiRange(begin, end, (date) =>
-          date === '2021-03-02' ? 'present' : 'closed',
+          date === '2021-03-02' ? { rangeSupervision: 'present' } : {},
         ),
     );
-
-    localStorage.setItem('language', '1');
-    render(
-      <Router>
-        <Monthview />
-      </Router>,
-      { wrapper: TestProviders },
-    );
+    renderMonthview();
 
     expect(
-      await screen.findByRole('button', { name: '2.3. Range officer present' }),
+      await screen.findByRole('button', {
+        name: 'Tuesday, March 2, Range officer present',
+      }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: '3.3. Range closed' }),
+      screen.getByRole('button', { name: 'Wednesday, March 3, Range closed' }),
     ).toBeInTheDocument();
     // March 2021: Mon 1.3. – Sun 4.4.
     expect(api.getSchedulingFreeform).toHaveBeenCalledWith(
       '2021-03-01',
       '2021-04-04',
     );
+  });
+
+  it('keeps a full grid when the API leaves out a day', async () => {
+    setDateParam('2021-03-10');
+    vi.mocked(api.getSchedulingFreeform).mockImplementation(
+      async (begin: string, end: string) =>
+        apiRange(begin, end, (date) => (date === '2021-03-10' ? null : {})),
+    );
+    const { container } = renderMonthview();
+
+    expect(
+      await screen.findByRole('button', {
+        name: 'Wednesday, March 10, Range officer undefined',
+      }),
+    ).toBeInTheDocument();
+    expect(container.querySelectorAll('[data-date]')).toHaveLength(35);
+  });
+
+  it('disables the days while the month is loading', async () => {
+    setDateParam('2021-03-10');
+    const pending = new Map<string, (value: unknown) => void>();
+    vi.mocked(api.getSchedulingFreeform).mockImplementation(
+      (begin: string) => new Promise((r) => pending.set(begin, r)),
+    );
+    const { container } = renderMonthview();
+
+    await waitFor(() =>
+      expect(container.querySelectorAll('[data-date]')).toHaveLength(35),
+    );
+    const cells = container.querySelectorAll('[data-date]');
+    for (const cell of cells) expect(cell).toBeDisabled();
+    expect(container.querySelector('[aria-busy="true"]')).not.toBeNull();
+
+    pending.get('2021-03-01')?.(apiRange('2021-03-01', '2021-04-04'));
+    expect(
+      await screen.findByRole('button', {
+        name: 'Wednesday, March 3, Range closed',
+      }),
+    ).toBeEnabled();
+  });
+
+  it('shows an error with a retry button when loading fails', async () => {
+    setDateParam('2021-03-10');
+    vi.mocked(api.getSchedulingFreeform).mockRejectedValueOnce(
+      new Error('network'),
+    );
+    renderMonthview();
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Could not load the schedule.',
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+
+    expect(
+      await screen.findByRole('button', {
+        name: 'Wednesday, March 3, Range closed',
+      }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('moves to the next month', async () => {
+    setDateParam('2021-03-10');
+    renderMonthview();
+    await screen.findByText('March 2021');
+
+    fireEvent.click(screen.getByTestId('nextDay'));
+    expect(window.location.hash).toBe('#/monthview/2021-04-10');
+  });
+
+  it('moves focus between days with the arrow keys', async () => {
+    setDateParam('2021-03-10');
+    renderMonthview();
+
+    const day = await screen.findByRole('button', {
+      name: 'Wednesday, March 10, Range closed',
+    });
+    day.focus();
+    fireEvent.keyDown(day, { key: 'ArrowRight' });
+    expect(document.activeElement).toHaveAttribute('data-date', '2021-03-11');
+    fireEvent.keyDown(document.activeElement as Element, { key: 'ArrowUp' });
+    expect(document.activeElement).toHaveAttribute('data-date', '2021-03-04');
+  });
+
+  describe('on mobile', () => {
+    it('selects a day and shows its details', async () => {
+      setDateParam('2021-03-10');
+      vi.mocked(api.getSchedulingFreeform).mockImplementation(
+        async (begin: string, end: string) =>
+          apiRange(begin, end, (date) =>
+            date === '2021-03-12'
+              ? { rangeSupervision: 'confirmed', arriving_at: '17:30:00' }
+              : {},
+          ),
+      );
+      renderMonthview();
+
+      const day = await screen.findByRole('button', {
+        name: 'Friday, March 12, Range officer confirmed, Estimate 17:30',
+      });
+      expect(day).toHaveAttribute('aria-pressed', 'false');
+      fireEvent.click(day);
+
+      expect(day).toHaveAttribute('aria-pressed', 'true');
+      expect(
+        screen.getByRole('heading', { name: 'Friday 12.3.2021' }),
+      ).toBeInTheDocument();
+      expect(screen.getByText('Estimated arrival 17:30')).toBeInTheDocument();
+      expect(
+        screen.getByRole('link', { name: 'Open day view' }),
+      ).toHaveAttribute('href', '#/dayview/2021-03-12');
+      expect(window.location.hash).not.toContain('dayview');
+    });
+
+    it('does not show an arrival estimate once the officer is present', async () => {
+      setDateParam('2021-03-10');
+      vi.mocked(api.getSchedulingFreeform).mockImplementation(
+        async (begin: string, end: string) =>
+          apiRange(begin, end, () => ({
+            rangeSupervision: 'present',
+            arriving_at: '17:30:00',
+          })),
+      );
+      renderMonthview();
+
+      const card = (
+        await screen.findByRole('heading', { name: 'Wednesday 10.3.2021' })
+      ).parentElement?.parentElement as HTMLElement;
+      expect(
+        within(card).getByText('Range officer present'),
+      ).toBeInTheDocument();
+      expect(within(card).queryByText(/arrival/i)).not.toBeInTheDocument();
+    });
+  });
+
+  describe('on desktop', () => {
+    it('links each day to its day view', async () => {
+      setDesktop(true);
+      setDateParam('2021-03-10');
+      renderMonthview();
+
+      const day = await screen.findByRole('link', {
+        name: 'Friday, March 12, Range closed',
+      });
+      expect(day).toHaveAttribute('href', '#/dayview/2021-03-12');
+      fireEvent.click(day);
+
+      expect(window.location.hash).toBe('#/dayview/2021-03-12');
+    });
+
+    it('shows the arrival time in the cell', async () => {
+      setDesktop(true);
+      setDateParam('2021-03-10');
+      vi.mocked(api.getSchedulingFreeform).mockImplementation(
+        async (begin: string, end: string) =>
+          apiRange(begin, end, (date) => {
+            if (date === '2021-03-12')
+              return { rangeSupervision: 'confirmed', arriving_at: '17:30:00' };
+            if (date === '2021-03-13') return { rangeSupervision: 'confirmed' };
+            return {};
+          }),
+      );
+      renderMonthview();
+
+      const withTime = await screen.findByRole('link', {
+        name: /^Friday, March 12/,
+      });
+      expect(withTime).toHaveTextContent('Estimate 17:30');
+      expect(
+        screen.getByRole('link', { name: /^Saturday, March 13/ }),
+      ).toHaveTextContent('Arrival time unknown');
+    });
   });
 });
 
@@ -164,5 +383,14 @@ describe('toMonthDay', () => {
     expect(toMonthDay(base as unknown as DaySchedule)).toMatchObject({
       arrivingAt: null,
     });
+  });
+
+  it('treats an unknown status as undefined supervision', () => {
+    expect(
+      toMonthDay({
+        ...base,
+        rangeSupervision: 'weird',
+      } as unknown as DaySchedule).rangeSupervision,
+    ).toBe('absent');
   });
 });
