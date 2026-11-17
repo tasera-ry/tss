@@ -186,11 +186,12 @@ function TrackViewContainer({
     // screen, up to 1920px, beyond which rows would stretch too far apart to read.
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 pt-4 pb-16 sm:px-6 lg:max-w-[1920px] lg:px-8">
       {/* Today in the middle, the view tabs on the right, as in the day view. */}
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-        <div className="col-start-2">
+      {/* On phones Today goes left: there is no room for a true middle. */}
+      <div className="grid grid-cols-[auto_1fr] items-center gap-3 sm:grid-cols-[1fr_auto_1fr]">
+        <div className="sm:col-start-2">
           <JumpToCurrent view="trackview" rest={track} />
         </div>
-        <div className="col-start-3 justify-self-end">
+        <div className="justify-self-end sm:col-start-3">
           <ViewTabs date={date} />
         </div>
       </div>

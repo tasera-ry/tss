@@ -26,6 +26,20 @@
     grid-column: 3;
     justify-self: end;
   }
+
+  // Phones: no room for a true middle, so Today goes left, as in the week
+  // and month views, rather than sitting off centre against the tabs.
+  @media (max-width: 639px) {
+    grid-template-columns: auto 1fr;
+
+    > :first-child {
+      grid-column: 1;
+    }
+
+    > :last-child {
+      grid-column: 2;
+    }
+  }
 }
 
 .mainCard {
