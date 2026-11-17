@@ -63,7 +63,7 @@ export function DateHeader({
         onClick={onPrevious}
         data-testid="previousDay"
       />
-      <h1 className="font-bold text-[2em] px-5 text-center w-92 text-nowrap">
+      <h1 className="font-bold text-[1.5em] md:text-[2em] px-3 md:px-5 text-center flex-1 min-w-0 max-w-92 md:text-nowrap">
         {label}
       </h1>
       <button

@@ -1,156 +1,341 @@
-@import '../../shared.module.scss';
+$desktop: 768px;
+$wide: 922px;
+$mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-.infoBox {
+@mixin desktop {
+  @media only screen and (min-width: $desktop) {
+    @content;
+  }
+}
+
+@mixin wide {
+  @media only screen and (min-width: $wide) {
+    @content;
+  }
+}
+
+.weekContainer {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 16px;
+
+  @include desktop {
+    padding: 32px 24px;
+  }
+}
+
+.toolbar {
+  display: flex;
   align-items: center;
-  margin: 1em;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
 }
 
-.exclamation2 {
-  position: relative;
-  top: 30px;
-  margin: 0;
-  width: 80%;
-  max-height: 80%;
-  max-width: 80%;
+.todayButton {
+  display: none;
+
+  @include desktop {
+    display: block;
+  }
 }
 
-.arrivalTime {
+.viewTabs {
+  flex: 1 1 auto;
+
+  > div {
+    width: 100%;
+  }
+
+  a {
+    flex: 1 1 0;
+  }
+
+  @include desktop {
+    flex: 0 0 auto;
+
+    a {
+      flex: 0 0 auto;
+      min-width: 64px;
+    }
+  }
+}
+
+.dateRange {
+  /* Offsets DateHeader's py-10 so the subtitle sits under the title. */
+  margin: -32px 0 24px;
+  text-align: center;
+  font-family: $mono;
+  font-size: 12px;
+  color: var(--color-black-tint-60);
+}
+
+.statusMessage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  padding: 24px;
+  text-align: center;
+  color: var(--color-black-tint-60);
+}
+
+.weekCard {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  background: var(--color-white);
+  border: 1px solid var(--color-black-tint-20);
+  border-radius: 12px;
+
+  @include desktop {
+    padding: 20px 20px 20px;
+  }
+}
+
+.caption {
+  margin: 0 0 12px;
+  font-family: $mono;
+  font-size: 12px;
+  color: var(--color-black-tint-60);
+
+  @include desktop {
+    margin-bottom: 8px;
+  }
+}
+
+.dayList {
+  display: grid;
+  gap: 10px;
   margin: 0;
   padding: 0;
-  font-size: 0.8em;
-  color: $COLOR_BLACK_TINT_70;
+  list-style: none;
+
+  @include wide {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 12px;
+    /* Room for the TÄNÄÄN marker above today's card. */
+    padding-top: 22px;
+  }
 }
 
-.bigContainer {
-  width: 100vw;
-  max-width: 1025px;
-  margin: auto;
-}
-
-.flexContainer {
+.dayItem {
+  position: relative;
   display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
-  background-color: $COLOR_BLACK_TINT_70;
-  border-right: 0px;
-  border-radius: 5px;
-  padding-left: 2px;
-  padding-bottom: 2px;
-  padding-right: 2px;
+  flex-direction: column;
+  min-width: 0;
 }
 
-.flexContainer2 {
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
-  text-align: center;
-  max-height: 50px;
-  background-color: $COLOR_BLACK_TINT_70;
-  border: 3px solid $COLOR_BLACK_TINT_70;
-  border-radius: 5px 5px 0 0;
-  margin-top: -5px;
-  margin-bottom: -5px;
-}
-
-.flexContainer2 ~ .flexContainer2 {
-  border-top: 0px;
-}
-
-.dateHeader {
-  height: 10em;
+.todayMarker {
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+  gap: 3px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+
+  &::before {
+    content: '';
+    border-top: 7px solid currentColor;
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+  }
+
+  @include wide {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    justify-content: center;
+    margin-bottom: 6px;
+  }
 }
 
-.flexContainer2 > a {
-  //outline: 0px $COLOR_BLACK;
-  background-color: $COLOR_BLACK_TINT_70;
-  width: calc(100% / 7);
-  text-align: center;
-  line-height: 30px;
-  font-size: 20px;
+.dayCard {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+  min-height: 82px;
+  overflow: hidden;
   text-decoration: none;
-  color: $COLOR_WHITE;
+  color: var(--color-black);
+  border: 1px solid var(--color-black-tint-20);
+  border-radius: 8px;
+  background: var(--color-white);
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: var(--color-black-tint-50);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-black);
+    outline-offset: 2px;
+  }
+
+  @include wide {
+    flex: 1 1 auto;
+    grid-template-columns: none;
+    grid-template-rows: auto 1fr;
+    aspect-ratio: 3 / 5;
+    container-type: inline-size;
+  }
 }
 
-.flexContainer > a {
-  //border-right: 1px solid;
+.today {
+  border: 2px solid var(--color-black);
 
-  width: calc(100% / 7);
-  margin: 3px;
-  text-align: center;
-  height: 125px;
-  text-decoration: none;
-  color: $COLOR_WHITE;
-  border-radius: 5px;
+  &:hover {
+    border-color: var(--color-black);
+  }
 }
 
-.mainGrid {
-  direction: column;
-  justify-content: left;
-  align-items: center;
-}
-
-.arrowRight {
-  margin-left: 1vw;
-}
-
-.arrowLeft {
-  margin-right: 1vw;
-}
-
-.progress {
+.dayHead {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: center;
-}
+  gap: 4px;
+  padding: 10px 12px;
+  min-width: 0;
 
-.hoverHand:hover {
-  cursor: pointer;
-}
-
-.klockan {
-  margin-left: 16vw;
-}
-
-/* media files */
-
-/* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
-@media only screen and (min-width: 320px) {
-}
-/* smartphones, Android phones, landscape iPhone */
-@media only screen and (min-width: 480px) {
-  .exclamation2 {
-    top: 15px;
-    width: 70%;
-    max-height: 70%;
-    max-width: 70%;
-    padding-top: 10%;
+  @include wide {
+    align-items: center;
+    padding: 10px 4px;
+    border-bottom: 1px solid var(--color-black-tint-20);
   }
 }
-/* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
-@media only screen and (min-width: 600px) {
-  .exclamation2 {
-    width: 60%;
-    max-height: 60%;
-    max-width: 60%;
-    padding-top: 10%;
+
+.weekday {
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: bold;
+  text-overflow: ellipsis;
+
+  @include wide {
+    font-size: clamp(12px, 10.5cqi, 15px);
   }
 }
-/* tablet, landscape iPad, lo-res laptops ands desktops */
-@media only screen and (min-width: 801px) {
-  .exclamation2 {
-    padding-top: 0;
+
+.date {
+  font-family: $mono;
+  font-size: 13px;
+  color: var(--color-black-tint-70);
+
+  @include wide {
+    font-size: clamp(10px, 9cqi, 13px);
   }
 }
-/* big landscape tablets, laptops, and desktops */
-@media only screen and (min-width: 1025px) {
+
+.weekdayRow {
+  display: flex;
+  min-width: 0;
 }
-/* hi-res laptops and desktops */
-@media only screen and (min-width: 1281px) {
+
+.hasNotice {
+  padding-right: 34px;
+
+  @include wide {
+    padding-right: 4px;
+  }
+}
+
+.noticeIcon {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  font-size: 24px !important;
+  transform: translateY(-50%);
+
+  @include wide {
+    top: 4px;
+    right: 4px;
+    font-size: 18px !important;
+    transform: none;
+  }
+}
+
+.dayStatus {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  font-size: 14px;
+  line-height: 1.3;
+  border-left: 1px solid var(--color-black-tint-20);
+
+  @include wide {
+    border-left: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 8px;
+    font-size: clamp(13px, 9.7cqi, 16px);
+    text-align: center;
+  }
+}
+
+.statusPresent {
+  background-color: var(--color-green);
+  color: var(--color-white);
+}
+
+.statusConfirmed {
+  background-color: var(--color-green-light);
+  color: var(--color-black);
+}
+
+.statusNotConfirmed {
+  background-color: var(--color-turquoise);
+  color: var(--color-black);
+}
+
+.statusAbsent {
+  background-color: var(--color-white);
+  color: var(--color-black-tint-70);
+}
+
+.statusClosed {
+  background-color: var(--color-red-light);
+  color: var(--color-white);
+}
+
+.statusIcon {
+  flex-shrink: 0;
+  font-size: 24px !important;
+}
+
+.statusText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+
+  @include wide {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+.timeText {
+  font-size: 12px;
+  opacity: 0.85;
+
+  @include wide {
+    font-size: clamp(10px, 8.3cqi, 12px);
+  }
+}
+
+/* Only the row layout greys out past days, as in the Figma. */
+.past .dayStatus {
+  @include wide {
+    background-color: var(--color-black-tint-10);
+    color: var(--color-black-tint-80);
+  }
 }

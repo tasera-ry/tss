@@ -1,179 +1,251 @@
-import classNames from 'classnames';
-import { useCallback, useMemo } from 'react';
-
+import { Trans, useLingui } from '@lingui/react/macro';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import CircularProgress from '@mui/material/CircularProgress';
+import classNames from 'classnames';
+import moment from 'moment';
+import { useCallback, useMemo } from 'react';
+import { useQuery } from 'react-query';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
-import exclamation from '@/assets/Info.png';
-import { InfoBox } from '@/lib/components/InfoBox';
-import { TableLegends } from '@/lib/components/TableLegends';
-import { ViewChanger } from '@/lib/components/ViewChanger';
-import { JumpToCurrent, getSchedulingWeek } from '@/utils/Utils';
-import moment from 'moment';
-
 import { DateHeader } from '@/lib/components/DateHeader';
+import { InfoBox } from '@/lib/components/InfoBox';
+import { ViewChanger } from '@/lib/components/ViewChanger';
 import type { DaySchedule } from '@/types';
-import { Weekday } from '@/utils/dateUtils';
-import { useLingui } from '@lingui/react/macro';
-import { useQuery } from 'react-query';
+import { JumpToCurrent, getSchedulingWeek } from '@/utils/Utils';
+
 import css from './WeekView.module.scss';
 
 const classes = classNames.bind(css);
+
+type RangeSupervision =
+  | 'present'
+  | 'confirmed'
+  | 'not confirmed'
+  | 'absent'
+  | 'closed';
+
+interface StatusConfig {
+  key: RangeSupervision;
+  className: string;
+  label: string;
+  icon: JSX.Element;
+}
+
+function useStatusConfigs() {
+  const { t } = useLingui();
+
+  return useMemo(() => {
+    const configs: Record<RangeSupervision, StatusConfig> = {
+      present: {
+        key: 'present',
+        className: css.statusPresent,
+        label: t`Range officer present`,
+        icon: <CheckCircleOutlineIcon className={css.statusIcon} />,
+      },
+      confirmed: {
+        key: 'confirmed',
+        className: css.statusConfirmed,
+        label: t`Range officer confirmed`,
+        icon: <AccessTimeIcon className={css.statusIcon} />,
+      },
+      'not confirmed': {
+        key: 'not confirmed',
+        className: css.statusNotConfirmed,
+        label: t`Range officer predefined, not confirmed`,
+        icon: <HelpOutlineIcon className={css.statusIcon} />,
+      },
+      absent: {
+        key: 'absent',
+        className: css.statusAbsent,
+        label: t`Range officer undefined`,
+        icon: <RemoveCircleOutlineIcon className={css.statusIcon} />,
+      },
+      closed: {
+        key: 'closed',
+        className: css.statusClosed,
+        label: t`Range closed`,
+        icon: <HighlightOffIcon className={css.statusIcon} />,
+      },
+    };
+    return configs;
+  }, [t]);
+}
+
+const formatTime = (time?: string | null) =>
+  time ? moment(time, ['HH:mm:ss', 'HH:mm']).format('H.mm') : '';
+
+function getArrivingAt(day: DaySchedule) {
+  // The API repeats the scheduled supervision's arrival time on every track row.
+  return (
+    day.arriving_at ??
+    (day.tracks ?? []).find((tr) => tr.scheduled?.arriving_at != null)
+      ?.scheduled.arriving_at ??
+    null
+  );
+}
 
 export const Weekview = () => {
   const history = useHistory();
   const { date: dateParam } = useParams<{ date: string }>();
 
-  const targetDate = useMemo(() => {
-    return dateParam ?? moment().format('YYYY-MM-DD');
-  }, [dateParam]);
+  const targetDate = useMemo(
+    () => dateParam ?? moment().format('YYYY-MM-DD'),
+    [dateParam],
+  );
 
-  const { data } = useQuery({
-    queryKey: ['weekview', targetDate],
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['weekview', moment(targetDate).startOf('isoWeek').format()],
     queryFn: () => getSchedulingWeek(targetDate),
   });
 
-  const previousWeekClick = useCallback(() => {
-    history.push(
-      `/weekview/${moment(targetDate).subtract(1, 'week').format('YYYY-MM-DD')}`,
-    );
-  }, [targetDate, history.push]);
-
-  const nextWeekClick = useCallback(() => {
-    history.push(
-      `/weekview/${moment(targetDate).add(1, 'week').format('YYYY-MM-DD')}`,
-    );
-  }, [targetDate, history.push]);
+  const goToWeek = useCallback(
+    (delta: 1 | -1) =>
+      history.push(
+        `/weekview/${moment(targetDate).add(delta, 'week').format('YYYY-MM-DD')}`,
+      ),
+    [targetDate, history],
+  );
 
   return (
     <div>
       <InfoBox />
-      <div className={classes(css.container)}>
-        <DateHeader
-          targetDate={targetDate}
-          onPrevious={previousWeekClick}
-          onNext={nextWeekClick}
-          type="week"
-        />
-        <div className={classes(css.bigContainer)}>
-          <div className={classes(css.viewChanger)}>
+
+      <div className={classes(css.weekContainer)}>
+        <div className={classes(css.toolbar)}>
+          <div className={classes(css.todayButton)}>
             <JumpToCurrent />
+          </div>
+          <div className={classes(css.viewTabs)}>
             <ViewChanger />
           </div>
-          {!data ? (
-            <div className={classes(css.progress)}>
-              <CircularProgress disableShrink />
-            </div>
-          ) : (
-            <>
-              <CalenderHeader days={data.week} />
-              <CalenderBody days={data.week} />
-            </>
-          )}
         </div>
+
+        <DateHeader
+          targetDate={targetDate}
+          onPrevious={() => goToWeek(-1)}
+          onNext={() => goToWeek(1)}
+          type="week"
+        />
+        <p className={classes(css.dateRange)}>{formatWeekRange(targetDate)}</p>
+
+        {data?.week ? (
+          <WeekCalendar days={data.week} />
+        ) : (
+          <div className={classes(css.statusMessage)}>
+            {isError ? (
+              <Trans>
+                Could not load the schedule. Please try again later.
+              </Trans>
+            ) : (
+              isLoading && <CircularProgress disableShrink />
+            )}
+          </div>
+        )}
       </div>
-      <TableLegends showAdditionalInfo={true} />
     </div>
   );
 };
 
-function CalenderHeader({ days }: { days: DaySchedule[] }) {
-  const { t } = useLingui();
-  const weekdays = useMemo(() => {
-    if (!days) return [];
-    return Array.from({ length: 7 }, (_, i) => {
-      return {
-        dayNumber: i,
-        link: `/dayview/${days[i]?.date}`,
-      };
-    });
-  }, [days]);
+export default Weekview;
 
-  return (
-    <div className="grid grid-cols-7 justify-center bg-black-tint-70 border-[3px] border-black-tint-70 rounded-t-sm pt-2">
-      {weekdays.map((day) => (
-        <Link
-          key={day.dayNumber}
-          to={day.link}
-          className="flex flex-col gap-1 items-center justify-center text-white"
-        >
-          <span>
-            <Weekday date={days[day.dayNumber]?.date} weekday="short" />
-          </span>
-          <span id="weekDay">
-            {moment(days[day.dayNumber]?.date).format('DD.MM')}
-          </span>
-        </Link>
-      ))}
-    </div>
-  );
+/** "12.–18.10.2026", or "28.9.–4.10.2026" when the week spans two months. */
+export function formatWeekRange(targetDate: string) {
+  const first = moment(targetDate).startOf('isoWeek');
+  const last = moment(targetDate).endOf('isoWeek');
+  if (!first.isSame(last, 'year')) {
+    return `${first.format('D.M.YYYY')}–${last.format('D.M.YYYY')}`;
+  }
+  if (!first.isSame(last, 'month')) {
+    return `${first.format('D.M.')}–${last.format('D.M.YYYY')}`;
+  }
+  return `${first.format('D.')}–${last.format('D.M.YYYY')}`;
 }
 
-function CalenderBody({ days }: { days: DaySchedule[] }) {
-  return (
-    <div className="grid grid-cols-7 bg-[#4d4d4d] rounded-b p-[2px]">
-      {days.map((day) => (
-        <CalenderCell key={day.date} day={day} />
-      ))}
-    </div>
-  );
-}
-
-function CalenderCell({ day }: { day: DaySchedule }) {
+function WeekCalendar({ days }: { days: DaySchedule[] }) {
   const { t } = useLingui();
-  const color = useMemo(() => {
-    switch (day.rangeSupervision) {
-      case 'present':
-        return '#658f60';
-      case 'confirmed':
-        return '#b2d9ad';
-      case 'not confirmed':
-        return '#95d5db';
-      case 'closed':
-        return '#c97b7b';
-      case 'absent':
-        return '#f2f2f2';
-      default:
-        return '#f2f2f2';
-    }
-  }, [day.rangeSupervision]);
-
-  const trackNotice = useMemo(() => {
-    return day.tracks.some(
-      (track) => track.notice !== null && track.notice !== '',
-    );
-  }, [day.tracks]);
-
-  const arrivalTime = useMemo(() => {
-    const track = day.tracks.find(
-      (track) => track.scheduled.arriving_at !== null,
-    );
-    if (track) {
-      return moment(track.scheduled.arriving_at, 'HH:mm:ss').format('HH:mm');
-    }
-    return null;
-  }, [day.tracks]);
+  const dayCount = days.length;
 
   return (
-    <Link
-      className="h-[125px] rounded-[3px] m-[3px]"
-      style={{ backgroundColor: color }}
-      to={`/dayview/${day.date}`}
-    >
-      <p className={classes(css.infoBox)}>
-        {arrivalTime && (
-          <div className={classes(css.arrivalTime)}>ETA {arrivalTime}</div>
-        )}
-        {trackNotice ? (
-          <img
-            className={classes(css.exclamation2)}
-            src={exclamation}
-            alt={t`Track has additional information`}
-          />
-        ) : (
-          <br />
-        )}
+    <section className={classes(css.weekCard)}>
+      <p className={classes(css.caption)}>
+        {t`${dayCount} days · select a day to see the tracks`}
       </p>
-    </Link>
+      <ol className={classes(css.dayList)}>
+        {days.map((day) => (
+          <DayItem key={day.date} day={day} />
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+function DayItem({ day }: { day: DaySchedule }) {
+  const { t, i18n } = useLingui();
+  const statuses = useStatusConfigs();
+  const status =
+    statuses[day.rangeSupervision as RangeSupervision] ?? statuses.absent;
+
+  const date = moment(day.date);
+  const isToday = date.isSame(moment(), 'day');
+  const isPast = date.isBefore(moment(), 'day');
+
+  const weekday = new Intl.DateTimeFormat(i18n.locale, {
+    weekday: 'long',
+  }).format(new Date(day.date));
+  const weekdayLabel = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+
+  const hasNotice = (day.tracks ?? []).some(
+    (track) => track.notice != null && track.notice !== '',
+  );
+
+  const time = formatTime(getArrivingAt(day));
+
+  return (
+    <li className={classes(css.dayItem)}>
+      {isToday && (
+        <span className={classes(css.todayMarker)} aria-hidden="true">
+          <Trans>TODAY</Trans>
+        </span>
+      )}
+      <Link
+        to={`/dayview/${day.date}`}
+        aria-current={isToday ? 'date' : undefined}
+        aria-label={`${weekdayLabel} ${date.format('D.M.YYYY')} ${status.label}`}
+        className={classes(
+          css.dayCard,
+          isToday && css.today,
+          isPast && css.past,
+        )}
+      >
+        <span className={classes(css.dayHead, hasNotice && css.hasNotice)}>
+          <span className={classes(css.weekdayRow)}>
+            <span className={classes(css.weekday)}>{weekdayLabel}</span>
+            {hasNotice && (
+              <InfoOutlinedIcon
+                className={classes(css.noticeIcon)}
+                titleAccess={t`Track has additional information`}
+              />
+            )}
+          </span>
+          <span className={classes(css.date)}>{date.format('DD.MM.YYYY')}</span>
+        </span>
+        <span className={classes(css.dayStatus, status.className)}>
+          {status.icon}
+          <span className={classes(css.statusText)}>
+            <span>{status.label}</span>
+            {status.key === 'confirmed' && (
+              <span className={classes(css.timeText)}>
+                {time ? t`Estimate ${time}` : t`Arrival time unknown`}
+              </span>
+            )}
+          </span>
+        </span>
+      </Link>
+    </li>
   );
 }
