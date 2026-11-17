@@ -247,6 +247,18 @@ router
   .put(validators.track.update, middlewares.track.update, controllers.track.update)
   .delete(validators.track.delete, middlewares.track.delete, controllers.track.delete);
 
+/*
+ *  Track sections and part-day reservations (#420, #421). Public, read by the
+ *  track view.
+ */
+router
+  .route('/track-section')
+  .get(validators.trackSection.readFilter, middlewares.trackSection.read, controllers.trackSection.read);
+
+router
+  .route('/track-reservation')
+  .get(validators.trackReservation.readFilter, middlewares.trackReservation.read, controllers.trackReservation.read);
+
 router
   .route('/daterange/week/:begin')
   .get(middlewares.daterange.readWeek, controllers.daterange.read);
