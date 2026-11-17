@@ -210,6 +210,27 @@ describe('testing Trackview', () => {
     expect(screen.getAllByText('Section 3').length).toBeGreaterThan(0);
   });
 
+  it('translates the known section positions, and shows others as stored', async () => {
+    vi.mocked(api.getTrackSections).mockResolvedValue([
+      { ...sections[0], name: 'Vasemmanpuoleisin' },
+      { ...sections[1], name: 'Keskimmäinen' },
+      { ...sections[2], name: 'Takahuone' },
+      ...sections.slice(3),
+    ]);
+    vi.mocked(api.getSchedulingDate).mockResolvedValue(away);
+    vi.mocked(api.getTrackReservations).mockResolvedValue(reservations);
+    render(<Trackview />, { wrapper: TestProviders });
+    await screen.findByRole(
+      'heading',
+      { level: 2, name: 'Shooting Track 0' },
+      { timeout: 5000 },
+    );
+
+    expect(screen.getByText('Leftmost')).toBeInTheDocument();
+    expect(screen.getByText('Middle')).toBeInTheDocument();
+    expect(screen.getByText('Takahuone')).toBeInTheDocument();
+  });
+
   it('names the numbered tracks in the interface language, and links by the stored name', async () => {
     const tracks = testUtils.schedule.tracks.map((track, i) =>
       i === 1 ? { ...track, name: 'Rata 2' } : track,

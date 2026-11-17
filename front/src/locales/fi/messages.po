@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#: src/trackview/Trackview.tsx:640
+#: src/trackview/Trackview.tsx:641
 msgid "{booked, plural, one {# lane booked} other {# lanes booked}}"
 msgstr "{booked, plural, one {# ampumapaikka varattu} other {# ampumapaikkaa varattu}}"
 
@@ -579,7 +579,7 @@ msgstr "Unohtuiko salasana?"
 #~ msgid "Fr"
 #~ msgstr "Su"
 
-#: src/trackview/Trackview.tsx:684
+#: src/trackview/Trackview.tsx:685
 msgid "free"
 msgstr "vapaana"
 
@@ -658,9 +658,13 @@ msgstr "Virheellinen aika valittu."
 #~ msgstr "Kesäkuu"
 
 #: src/trackview/Trackview.tsx:370
-#: src/trackview/Trackview.tsx:722
+#: src/trackview/Trackview.tsx:723
 msgid "lanes"
 msgstr "ampumapaikkaa"
+
+#: src/trackview/useTrackName.ts:33
+msgid "Leftmost"
+msgstr "Vasemmanpuoleisin"
 
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:20
 msgid "Loading devices..."
@@ -696,6 +700,10 @@ msgstr "Hallitse ratoja"
 #~ msgid "March"
 #~ msgstr "Maaliskuu"
 
+#: src/trackview/useTrackName.ts:39
+msgid "Marked lanes"
+msgstr "Merkityt paikat"
+
 #: src/raffle/RaffleDatePicker.jsx:30
 #~ msgid "May"
 #~ msgstr "Toukokuu"
@@ -711,6 +719,10 @@ msgstr "Valikko"
 #: src/pages/InfoMessageManagementView/components/NewMessageForm.tsx:83
 msgid "Message"
 msgstr "Viesti"
+
+#: src/trackview/useTrackName.ts:35
+msgid "Middle"
+msgstr "Keskimmäinen"
 
 #: src/usermanagement/UserManagementView.jsx:925
 #: src/usermanagement/UserManagementView.jsx:930
@@ -837,7 +849,7 @@ msgid "No pending messages to send."
 msgstr "Ei lähetettäviä viestejä jonossa."
 
 #: src/trackview/Trackview.tsx:313
-#: src/trackview/Trackview.tsx:609
+#: src/trackview/Trackview.tsx:610
 msgid "No range officer present"
 msgstr "Ei päävalvojaa paikalla"
 
@@ -871,7 +883,7 @@ msgid "No track officer available"
 msgstr "Ei valvojaa"
 
 #: src/trackview/Trackview.tsx:389
-#: src/trackview/Trackview.tsx:608
+#: src/trackview/Trackview.tsx:609
 msgid "No track officer present"
 msgstr "Ei ratavalvojaa paikalla"
 
@@ -952,7 +964,7 @@ msgid "Organization updated"
 msgstr "Yhteisö päivitetty"
 
 #: src/trackview/Trackview.tsx:558
-#: src/trackview/Trackview.tsx:677
+#: src/trackview/Trackview.tsx:678
 msgid "Partially available"
 msgstr "Käytettävissä osittain"
 
@@ -1059,12 +1071,12 @@ msgid "Range officer addition failed"
 msgstr "Valvojan lisäys epäonnistui"
 
 #. placeholder {0}: formatTime(arrivingAt)
-#: src/trackview/Trackview.tsx:602
+#: src/trackview/Trackview.tsx:603
 msgid "Range officer arriving at {0}"
 msgstr "Päävalvoja saapuu klo {0}"
 
 #: src/trackview/Trackview.tsx:316
-#: src/trackview/Trackview.tsx:615
+#: src/trackview/Trackview.tsx:616
 #: src/scheduling/Scheduling.jsx:384
 #: src/scheduling/Scheduling.jsx:389
 #: src/scheduling/Scheduling.jsx:982
@@ -1098,7 +1110,7 @@ msgstr "Valvojien hallinta"
 #~ msgstr "Päävalvoja ei paikalla"
 
 #: src/trackview/Trackview.tsx:318
-#: src/trackview/Trackview.tsx:617
+#: src/trackview/Trackview.tsx:618
 #: src/scheduling/Scheduling.jsx:369
 #: src/scheduling/Scheduling.jsx:374
 #: src/scheduling/Scheduling.jsx:985
@@ -1178,6 +1190,10 @@ msgstr "Tulokset tallennettu"
 #: src/upcomingsupervisions/LoggedIn.jsx:493
 msgid "Retrieving information..."
 msgstr "Haetaan vuoroja..."
+
+#: src/trackview/useTrackName.ts:37
+msgid "Rightmost"
+msgstr "Oikeanpuoleisin"
 
 #: src/pages/UserManagement/UserManagementView.tsx:124
 #: src/pages/UserManagement/UserManagementView.tsx:166
@@ -1575,6 +1591,10 @@ msgstr "Ti"
 #: src/EmailSettings/EmailSettings.tsx:313
 msgid "Unconfirmed shift reminder"
 msgstr "Muistutus vahvistamattomasta vuorosta"
+
+#: src/trackview/useTrackName.ts:41
+msgid "Unmarked lanes"
+msgstr "Merkitsemättömät paikat"
 
 #: src/scheduling/Scheduling.jsx:460
 msgid "Update successful"
