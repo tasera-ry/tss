@@ -33,7 +33,7 @@
     "nodemailer": "^6.4.1",
     "ora": "^4.1.1",
     "pg": "^8.5.0",
-    "socket.io": "^2.5.0",
+    "socket.io": "^4.8.4",
     "validate.js": "^0.13.1"
   },
   "devDependencies": {
@@ -42,7 +42,8 @@
     "jest": "^27.2.5",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "supertest": "^6.1.6",
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "socket.io-client": "^4.8.4"
   },
   "keywords": []
 }

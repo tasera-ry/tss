@@ -37,7 +37,7 @@ import { useLanguageContext } from '@/i18n';
 // Translation
 import { useLingui } from '@lingui/react/macro';
 import { useHistory } from 'react-router-dom';
-import socketIOClient from 'socket.io-client';
+import { io } from 'socket.io-client';
 import api from '../api/api';
 import colors from '../colors.module.scss';
 import { updateRangeSupervision, validateLogin } from '../utils/Utils';
@@ -155,7 +155,7 @@ function Scheduling() {
     });
     // Updates the status colour and text in the UI based on the
     // data received from the socket event
-    const socket = socketIOClient()
+    const socket = io()
       .on('rangeUpdate', (msg) => {
         if (isMounted) {
           setStatusColor(msg.color);
