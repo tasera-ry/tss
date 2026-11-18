@@ -14,6 +14,8 @@ const raffle = require(path.join(root, 'services', 'raffle'));
 const raffleSupervisors = require(path.join(root, 'services', 'raffleSupervisors'));
 const members = require(path.join(root, 'services', 'members'));
 const devices = require(path.join(root, 'services', 'devices'));
+const trackSection = require(path.join(root, 'services', 'trackSection'));
+const trackReservation = require(path.join(root, 'services', 'trackReservation'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -28,3 +30,5 @@ exports.raffle = raffle;
 exports.members = members;
 exports.raffleSupervisors = raffleSupervisors;
 exports.devices = devices;
+exports.trackSection = trackSection;
+exports.trackReservation = trackReservation;
