@@ -120,6 +120,8 @@ describe(`${endpoint} writes`, () => {
     await userModel.create({ id: 'admin', name: 'admin', role: 'superuser' });
     await userModel.create({ id: 'club', name: 'club', role: 'association' });
     await userModel.create({ id: 'tablet', name: 'tablet', role: 'rangemaster' });
+    await userModel.create({ id: 12, name: 'Hirviseura', role: 'association' });
+    await userModel.create({ id: 13, name: 'Toinen pääkäyttäjä', role: 'superuser' });
     trackSectionModel.clear();
     trackSectionModel.seed(sections);
     trackReservationModel.clear();
@@ -196,11 +198,47 @@ describe(`${endpoint} writes`, () => {
       expect(res.status).toBe(400);
     });
 
-    it('refuses more lanes than the section has', async () => {
+    const laneConflict = (used, total) => {
+      const error = new Error(
+        'Reservation of 10 lane(s) on section 1 on 2099-06-01 overlaps ' +
+          `reservations already using ${used} of the section's ${total} lane(s)`,
+      );
+      error.code = 'P0001';
+      return error;
+    };
+
+    it('refuses more lanes than the section has, through the database trigger', async () => {
+      trackReservationModel.failNextWrite(laneConflict(0, 20));
+
       const res = await request.post(endpoint).set('Cookie', admin).send({ ...privateEvent, lanes_used: 25 });
 
       expect(res.status).toBe(409);
       expect(res.body.free).toBe(20);
+    });
+
+    it('says the track is not free when official use conflicts, without a lane count', async () => {
+      trackReservationModel.failNextWrite(laneConflict(5, 20));
+
+      const res = await request.post(endpoint).set('Cookie', admin).send({
+        date: FUTURE, start_time: '15:00', end_time: '17:00', type: 'official', track_section_id: 1,
+      });
+
+      expect(res.status).toBe(409);
+      expect(res.body.message).toBe('The track is not free for official use');
+      expect(res.body.free).toBeUndefined();
+    });
+
+    it('refuses a holder that is not a member association', async () => {
+      const res = await request.post(endpoint).set('Cookie', admin).send({ ...privateEvent, association_id: 13 });
+
+      expect(res.status).toBe(400);
+      expect(res.body.message).toBe('Unknown association');
+    });
+
+    it('refuses ids beyond what the database can store, instead of a 500', async () => {
+      const res = await request.post(endpoint).set('Cookie', admin).send({ ...privateEvent, track_section_id: 9999999999 });
+
+      expect(res.status).toBe(400);
     });
 
     it('answers a lane conflict from the database with 409 and the lanes still free', async () => {
@@ -214,7 +252,13 @@ describe(`${endpoint} writes`, () => {
       const res = await request.post(endpoint).set('Cookie', admin).send(privateEvent);
 
       expect(res.status).toBe(409);
-      expect(res.body).toEqual(expect.objectContaining({ message: 'Not enough free lanes', free: 5 }));
+      expect(res.body).toEqual(expect.objectContaining({
+        message: 'Not enough free lanes',
+        free: 5,
+        total: 20,
+        track_section_id: 1,
+        date: '2099-06-01',
+      }));
     });
   });
 
@@ -243,6 +287,32 @@ describe(`${endpoint} writes`, () => {
       expect(res.body.map(r => r.id).sort()).toEqual([1, 2, 3]);
       const track2 = await trackReservationModel.readRows({ id: 4 });
       expect(track2[0].start_time).toBe('15:00:00');
+    });
+
+    it('refuses lanes, section or holder changes on official use, rather than ignoring them', async () => {
+      const official = { date: FUTURE, start_time: '15:00:00', end_time: '17:00:00', type: 'official', association_id: null, lanes_used: 20 };
+      trackReservationModel.seed([{ id: 1, ...official, track_section_id: 1 }]);
+
+      const res = await request.put(`${endpoint}/1`).set('Cookie', admin).send({ lanes_used: 5 });
+
+      expect(res.status).toBe(400);
+    });
+
+    it('refuses a type change: delete and create instead', async () => {
+      trackReservationModel.seed([{ id: 7, ...privateEvent, start_time: '12:00:00', end_time: '14:00:00' }]);
+
+      const res = await request.put(`${endpoint}/7`).set('Cookie', admin).send({ type: 'closed' });
+
+      expect(res.status).toBe(400);
+    });
+
+    it('clears the holder and the description with null', async () => {
+      trackReservationModel.seed([{ id: 7, ...privateEvent, description: 'Harjoitus', start_time: '12:00:00', end_time: '14:00:00' }]);
+
+      const res = await request.put(`${endpoint}/7`).set('Cookie', admin).send({ association_id: null, description: null });
+
+      expect(res.status).toBe(200);
+      expect(res.body[0]).toEqual(expect.objectContaining({ association_id: null, description: null }));
     });
 
     it('refuses to change a past day', async () => {

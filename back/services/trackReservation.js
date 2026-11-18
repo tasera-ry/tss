@@ -36,6 +36,35 @@ function assertTimeOrder(start, end) {
   }
 }
 
+// The holder of a booking must be a member association, not any account.
+async function assertAssociation(id) {
+  if (id === null || id === undefined) return;
+  const [user] = await models.user.read({ id }, ['user.id', 'role']);
+  if (!user || user.role !== 'association') {
+    throw clientError(400, 'Unknown association');
+  }
+}
+
+// Raised by the #477 lane capacity trigger.
+function isLaneConflict(error) {
+  return error.code === 'P0001' && /overlaps reservations already using/.test(error.message);
+}
+
+/**
+ * Official use needs every lane of every section, so the trigger's lanes-free
+ * figure for one section means nothing for it: say the track is not free.
+ */
+async function officialWrite(write) {
+  try {
+    return await write();
+  } catch (error) {
+    if (isLaneConflict(error)) {
+      throw clientError(409, 'The track is not free for official use');
+    }
+    throw error;
+  }
+}
+
 async function sectionOf(id) {
   const [section] = await models.trackSection.read({ id });
   if (!section) {
@@ -96,17 +125,16 @@ const service = {
 
     if (data.type === 'official') {
       const sections = await models.trackSection.read({ track_id: section.track_id });
-      return models.trackReservation.create(sections.map(s => ({
+      return officialWrite(() => models.trackReservation.create(sections.map(s => ({
         ...base,
         track_section_id: s.id,
         lanes_used: s.lane_count,
         association_id: null
-      })));
+      }))));
     }
 
-    if (data.lanes_used > section.lane_count) {
-      throw clientError(409, 'Not enough free lanes', { free: section.lane_count });
-    }
+    // The lane capacity trigger refuses too many lanes and reports what is free.
+    await assertAssociation(data.association_id);
     return models.trackReservation.create([{
       ...base,
       track_section_id: section.id,
@@ -136,28 +164,35 @@ const service = {
     assertNotPast(next.date);
     assertTimeOrder(next.start_time, next.end_time);
 
-    const allowed = current.type === 'official'
+    if (changes.type !== undefined && changes.type !== current.type) {
+      throw clientError(400, 'The type cannot change: delete and create instead');
+    }
+    const official = current.type === 'official';
+    const allowed = official
       ? ['date', 'start_time', 'end_time', 'description']
       : ['date', 'start_time', 'end_time', 'lanes_used', 'track_section_id',
         'association_id', 'description'];
+    const refused = _.difference(Object.keys(_.omit(changes, 'type')), allowed);
+    if (refused.length > 0) {
+      throw clientError(400,
+        'Official use takes the whole track: only the date, times and description can change');
+    }
+
     const set = _.pick(changes, allowed);
     if (set.start_time) set.start_time = normaliseTime(set.start_time);
     if (set.end_time) set.end_time = normaliseTime(set.end_time);
-    if (_.isEmpty(set)) {
-      return [current];
-    }
-
-    if (current.type !== 'official' && (set.lanes_used || set.track_section_id)) {
-      const section = await sectionOf(next.track_section_id);
-      if (next.lanes_used > section.lane_count) {
-        throw clientError(409, 'Not enough free lanes', { free: section.lane_count });
-      }
-    }
-
-    const ids = current.type === 'official'
+    const ids = official
       ? (await officialGroup(current)).map(r => r.id)
       : [current.id];
-    return models.trackReservation.update(ids, set);
+    if (_.isEmpty(set)) {
+      return Promise.all(ids.map(id => models.trackReservation.readRows({ id })))
+        .then(rows => rows.flat());
+    }
+
+    if (set.track_section_id) await sectionOf(set.track_section_id);
+    if (set.association_id) await assertAssociation(set.association_id);
+    const write = () => models.trackReservation.update(ids, set);
+    return official ? officialWrite(write) : write();
   },
 
   /**

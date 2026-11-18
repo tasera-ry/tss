@@ -4,7 +4,7 @@ const services = require(path.join(root, 'services'));
 
 // Raised by the enforce_section_lane_capacity trigger (#477).
 const LANE_CONFLICT =
-  /already using (\d+) of the section's (\d+) lane/;
+  /on section (\d+) on (\S+) overlaps reservations already using (\d+) of the section's (\d+) lane/;
 
 /**
  * Turn the errors a write can meet into answers the scheduling view can show:
@@ -14,12 +14,19 @@ const LANE_CONFLICT =
 function sendWriteError(error, response, next) {
   const conflict = error.code === 'P0001' && LANE_CONFLICT.exec(error.message);
   if (conflict) {
-    const [, used, total] = conflict.map(Number);
+    const [, section, date, used, total] = conflict;
     return response.status(409).send({
       success: false,
       message: 'Not enough free lanes',
-      free: Math.max(0, total - used)
+      free: Math.max(0, Number(total) - Number(used)),
+      total: Number(total),
+      track_section_id: Number(section),
+      date
     });
+  }
+  // Data the database could not take (SQLSTATE class 22): never echo its text.
+  if (/^22/.test(error.code || '')) {
+    return response.status(400).send({ success: false, message: 'Invalid value' });
   }
   if (error.code === '23514') {
     return response.status(400).send({

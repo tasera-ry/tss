@@ -19,24 +19,39 @@ function handleValidationErrors(request, response, next) {
 const TIME = /^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/;
 const TYPES = ['private_event', 'official', 'closed'];
 
+// Postgres int4: larger values would reach the database and fail there.
+const INT4 = 2147483647;
+
 const date = field => field
   .isDate({ format: 'YYYY-MM-DD', strictMode: true })
   .withMessage('must be a date, YYYY-MM-DD');
 const time = field => field.matches(TIME).withMessage('must be a time, HH:MM');
-const id = field => field.isInt({ min: 1 }).withMessage('must be an id').toInt();
+const id = field => field
+  .isInt({ min: 1, max: INT4 })
+  .withMessage('must be an id')
+  .toInt();
 const lanes = field => field
-  .isInt({ min: 1 })
+  .isInt({ min: 1, max: INT4 })
   .withMessage('must be a whole number of lanes, at least 1')
   .toInt();
+// Counted in characters as varchar(255) counts them; NUL is refused, as
+// Postgres refuses it in text.
 const description = field => field
   .isString()
   .withMessage('must be text')
   .trim()
-  .isLength({ max: 255 })
-  .withMessage('must be at most 255 characters');
+  .custom(value => [...value].length <= 255)
+  .withMessage('must be at most 255 characters')
+  .custom(value => !value.includes('\u0000'))
+  .withMessage('must not contain NUL');
 
 function storeBody(request, response, next) {
-  response.locals.body = matchedData(request, { locations: ['body'] });
+  const body = matchedData(request, { locations: ['body'] });
+  // matchedData drops an explicit null, which is how a client clears these.
+  for (const field of ['association_id', 'description']) {
+    if (request.body && request.body[field] === null) body[field] = null;
+  }
+  response.locals.body = body;
   return next();
 }
 
@@ -86,6 +101,7 @@ module.exports = {
   // Any subset of the fields; the type cannot change (delete and create).
   update: [
     id(param('id')),
+    body('type').optional().isIn(TYPES).withMessage(`must be one of ${TYPES.join(', ')}`),
     date(body('date').optional()),
     time(body('start_time').optional()),
     time(body('end_time').optional()),
