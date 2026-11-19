@@ -89,9 +89,8 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   @include desktop {
     display: block;
     margin: 0 0 12px;
-    font-family: $mono;
     font-size: 12px;
-    color: var(--color-black-tint-60);
+    color: var(--color-grey);
   }
 }
 
@@ -114,8 +113,8 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   padding: 0 0 4px;
   text-align: center;
   font-size: 11px;
-  font-weight: bold;
-  color: var(--color-black-tint-60);
+  font-weight: 600;
+  color: var(--color-grey);
 
   &:first-child {
     font-weight: normal;
@@ -134,9 +133,9 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: $mono;
   font-size: 10px;
-  color: var(--color-black-tint-60);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-grey);
 
   @include desktop {
     font-size: 12px;
@@ -254,7 +253,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
 .dayNumber {
   font-size: 13px;
-  font-weight: bold;
+  font-weight: 600;
   line-height: 1.2;
 
   .otherMonth & {
@@ -305,7 +304,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 .statusText {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .timeText {
@@ -328,7 +327,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   bottom: 4px;
   left: 2px;
   font-size: 9px;
-  font-weight: bold;
+  font-weight: 600;
   line-height: 1.2;
   text-align: center;
 
@@ -340,9 +339,8 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 .todayBadge {
   display: inline-block;
   padding: 1px 6px;
-  font-family: $mono;
   font-size: 10px;
-  font-weight: bold;
+  font-weight: 600;
   letter-spacing: 0.5px;
   line-height: 1.5;
   color: var(--color-white);
@@ -368,9 +366,8 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   right: 2px;
   bottom: 4px;
   left: 2px;
-  font-family: $mono;
   font-size: 8px;
-  font-weight: bold;
+  font-weight: 600;
   letter-spacing: 0.3px;
   line-height: 1.5;
   text-align: center;
@@ -410,7 +407,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 .detailTitle {
   margin: 0;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .detailStatus {
@@ -427,8 +424,8 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   align-items: center;
   gap: 8px;
   margin: 0 0 16px;
-  font-size: 13px;
-  color: var(--color-black-tint-70);
+  font-size: 14px;
+  color: var(--color-grey);
 }
 
 .statusMessage {
@@ -440,7 +437,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   min-height: 240px;
   padding: 24px;
   text-align: center;
-  color: var(--color-black-tint-60);
+  color: var(--color-grey);
 }
 
 .openButton {
@@ -448,7 +445,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   padding: 12px;
   text-align: center;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
   color: var(--color-white);
   background: $COLOR_GREEN_DARK;
   border-radius: 8px;
@@ -457,7 +454,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 .retryButton {
   padding: 10px 20px;
   font: inherit;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
   color: var(--color-white);
   background: $COLOR_GREEN_DARK;
@@ -472,12 +469,11 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
 .legendTitle {
   margin: 0 0 14px;
-  font-family: $mono;
   font-size: 12px;
-  font-weight: normal;
-  letter-spacing: 1px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--color-black-tint-60);
+  color: var(--color-grey);
 }
 
 .legendList {
@@ -492,7 +488,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .legendSwatch {
