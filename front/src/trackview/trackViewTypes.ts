@@ -2,20 +2,11 @@
  * Domain types for the redesigned track view.
  *
  * This file is the contract between frontend and backend for issues #419, #420
- * and #421. Nothing in the current `GET /api/datesupreme/:date` payload provides
- * time segments, lane counts or track-officer presence, so those parts are served
- * from `trackViewPlaceholder.ts` until the backend catches up. The shapes here are
- * what the frontend expects; the placeholder exists only to satisfy them.
- *
- * How far off the backend is, measured rather than assumed. The whole schema has
- * three time columns: scheduled_range_supervision.open and .close, and
- * range_supervision.arriving_at. `range_reservation` is one row per range per
- * day, unique on (range_id, date), carrying a single boolean. `track_supervision`
- * is a status, a visitor count and a notice — not a booking, and with no link to
- * an association.
- *
- * So #421 is not two columns on an existing row. There is no per-track
- * reservation to put them on, and nothing below day level anywhere.
+ * and #421. Sections, lane counts and time segments are built from
+ * `GET /api/track-section` and `GET /api/track-reservation` (tables
+ * `track_section` and `track_reservation`); what the backend does not provide
+ * yet is filled in by `trackViewPlaceholder.ts`. The shapes here are what the
+ * frontend expects.
  *
  * Deliberately not reusing `src/types.ts` — its `Track` types every field as
  * `null`, which only compiles because strict mode is off.
@@ -78,13 +69,12 @@ export interface TimeSegment {
  */
 export interface LaneSection {
   id: string;
-  /** Empty for tracks that are not subdivided. */
-  name: string;
+  /** Number within a subdivided track, from 1; null when it is undivided. */
+  number: number | null;
   /**
    * Where the section sits, in the words members use on site, e.g.
    * "Vasemmanpuoleisin loossi". Asked for by TASERA in review, 10/2026, because
    * "Lohko 1" alone does not say which bay it is.
-   * BACKEND(B1, #420): part of the section data.
    */
   position?: string;
   laneCount: number;
@@ -174,6 +164,11 @@ export function unavailableReason(
   ) {
     return 'noRangeOfficer';
   }
+  // While the range officer is still to arrive, nobody is on site yet:
+  // track officers are marked on the tablet on the day, so every booked future
+  // day carries 'absent' for them (production, checked 16.11.2026). That
+  // means "not yet", not "no one is coming".
+  if (track.requiresRangeOfficer && awaitingRangeOfficer(day)) return null;
   // Every track needs its own officer. The exception above is about the range
   // officer, not about going unsupervised altogether.
   if (track.officer === 'absent') return 'noTrackOfficer';

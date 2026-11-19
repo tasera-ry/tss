@@ -11,6 +11,7 @@ import classNames from 'classnames';
 import moment from 'moment';
 import { useQuery } from 'react-query';
 
+import { JumpToCurrent } from '@/utils/Utils';
 import api from '../api/api';
 import css from './Trackview.module.scss';
 import { formatTime, toTrackViewDay } from './trackViewPlaceholder';
@@ -24,20 +25,22 @@ import type {
   UnavailableReason,
 } from './trackViewTypes';
 import { awaitingRangeOfficer, unavailableReason } from './trackViewTypes';
+import { usePositionName, useTrackName } from './useTrackName';
 
 /**
- * Track view (#432 redesign, with placeholders for #419, #420 and #421).
+ * Track view (#432 redesign).
  *
  * Read-only by design: over a thousand members only ever look at this. Creating
  * and editing reservations is an association and admin task and belongs in the
  * scheduling view.
  *
- * Time segments, lane counts and sections come from `trackViewPlaceholder` until
- * the backend provides them; everything else is live data. The backend work
- * needed is listed at the top of that file as B1–B10.
+ * Notes and the range officer exception still come from
+ * `trackViewPlaceholder`; everything else is live data. The backend work left is
+ * listed at the top of that file.
  */
 export function Trackview() {
   const { t } = useLingui();
+  const trackName = useTrackName();
   const { date: dateParam, track } = useParams<{
     date?: string;
     track: string;
@@ -45,15 +48,37 @@ export function Trackview() {
   // The date is optional in the route; default to today, as the other views do.
   const targetDate = dateParam ?? moment().format('YYYY-MM-DD');
 
-  const { data: schedule, status } = useQuery({
+  const scheduleQuery = useQuery({
     queryKey: ['trackview', targetDate],
     queryFn: () => api.getSchedulingDate(targetDate),
     // Keep the day on screen while the next one loads, so stepping through days
     // does not unmount the arrows and drop keyboard focus.
     keepPreviousData: true,
   });
+  const sectionsQuery = useQuery({
+    queryKey: ['trackSections'],
+    queryFn: api.getTrackSections,
+  });
+  const reservationsQuery = useQuery({
+    queryKey: ['trackReservations', targetDate],
+    queryFn: () => api.getTrackReservations(targetDate),
+    keepPreviousData: true,
+  });
 
-  const day = useMemo(() => toTrackViewDay(schedule), [schedule]);
+  const queries = [scheduleQuery, sectionsQuery, reservationsQuery];
+  const status = queries.some((q) => q.status === 'error')
+    ? 'error'
+    : queries.some((q) => q.status === 'loading')
+      ? 'loading'
+      : 'success';
+
+  const schedule = scheduleQuery.data;
+  const sections = sectionsQuery.data;
+  const reservations = reservationsQuery.data;
+  const day = useMemo(
+    () => toTrackViewDay(schedule, sections, reservations),
+    [schedule, sections, reservations],
+  );
 
   // The route carries the track NAME, not its id, so a renamed track breaks
   // existing deep links. Kept as-is to avoid changing the day view's links in
@@ -65,7 +90,7 @@ export function Trackview() {
 
   if (status === 'error') {
     return (
-      <TrackViewContainer date={targetDate}>
+      <TrackViewContainer date={targetDate} track={track}>
         <h1 className="font-bold text-2xl">{t`Error`}</h1>
         <p>{t`Something went wrong. Please try again later.`}</p>
       </TrackViewContainer>
@@ -74,7 +99,7 @@ export function Trackview() {
 
   if (status === 'loading') {
     return (
-      <TrackViewContainer date={targetDate}>
+      <TrackViewContainer date={targetDate} track={track}>
         <CircularProgress />
         <span>{t`Loading...`}</span>
       </TrackViewContainer>
@@ -83,7 +108,7 @@ export function Trackview() {
 
   if (!day || !selectedTrack) {
     return (
-      <TrackViewContainer date={targetDate}>
+      <TrackViewContainer date={targetDate} track={track}>
         <h1 className="font-bold text-2xl">{t`Track not found`}</h1>
         <p>{t`This track has no schedule for the selected day.`}</p>
       </TrackViewContainer>
@@ -93,7 +118,7 @@ export function Trackview() {
   const blocked = unavailableReason(day, selectedTrack);
 
   return (
-    <TrackViewContainer date={targetDate}>
+    <TrackViewContainer date={targetDate} track={track}>
       <DateNav date={targetDate} track={selectedTrack.name} />
       <p className="-mt-3 text-center text-grey text-sm">
         {day.open !== null && day.close !== null && (
@@ -107,16 +132,15 @@ export function Trackview() {
           ' · '}
         {day.sunset !== null && (
           <>
-            {t`Sunset`} <DevValue>{formatTime(day.sunset)}</DevValue>
+            {t`Sunset`} {formatTime(day.sunset)}
           </>
         )}
       </p>
 
       <RangeOfficerBanner day={day} />
 
-      {/* Desktop: the tracks become a sidebar beside the track, so the page
-          uses the screen's width and every track stays in view. */}
-      <div className="flex flex-col gap-5 lg:grid lg:grid-cols-[12rem_minmax(0,1fr)] lg:items-start lg:gap-6">
+      {/* The tracks as one row of buttons under the banner, then the track. */}
+      <div className="flex flex-col gap-5">
         <TrackChips
           date={targetDate}
           tracks={day.tracks}
@@ -124,11 +148,10 @@ export function Trackview() {
         />
 
         <section className="flex min-w-0 flex-col gap-4 rounded-xl border border-black-tint-20 bg-white p-4 sm:p-5 lg:p-6">
-          <h2 className="font-semibold text-xl">{selectedTrack.name}</h2>
+          <h2 className="font-semibold text-xl">
+            {trackName(selectedTrack.name)}
+          </h2>
           <TrackHeader track={selectedTrack} />
-          <p className="-mb-2">
-            <DevFlag kind="placeholder" />
-          </p>
           {day.open !== null && day.close !== null && (
             <Timeline
               track={selectedTrack}
@@ -155,15 +178,27 @@ export function Trackview() {
 
 function TrackViewContainer({
   date,
+  track,
   children,
-}: { date: string; children: React.ReactNode }) {
+}: { date: string; track?: string; children: React.ReactNode }) {
   return (
-    // A readable column on phones and tablets; on desktop the full width of the
-    // screen, up to 1920px, beyond which rows would stretch too far apart to read.
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 pt-4 pb-16 sm:px-6 lg:max-w-[1920px] lg:px-8">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <BackLink date={date} />
-        <ViewTabs date={date} />
+    // One readable column, at most 1024px, centred, as in the day view and the
+    // old month and week views. Wider rows are harder to read and scan (WCAG
+    // 1.4.8; GOV.UK and USWDS cap their pages at 960-1024px).
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 pt-4 pb-16 sm:px-6">
+      {/* Back to the day view on the left (the track view is one level
+          deeper), Today in the middle, the view tabs on the right. On phones
+          the back link has its own row and Today goes left. */}
+      <div className="grid grid-cols-[auto_1fr] items-center gap-3 sm:grid-cols-[1fr_auto_1fr]">
+        <div className="col-span-2 sm:col-span-1 sm:col-start-1 sm:justify-self-start">
+          <BackLink date={date} />
+        </div>
+        <div className="sm:col-start-2">
+          <JumpToCurrent view="trackview" rest={track} />
+        </div>
+        <div className="justify-self-end sm:col-start-3">
+          <ViewTabs date={date} />
+        </div>
       </div>
       {children}
     </div>
@@ -256,31 +291,26 @@ function TrackChips({
   selected,
 }: { date: string; tracks: TrackDetail[]; selected: string }) {
   const { t } = useLingui();
+  const trackName = useTrackName();
 
   return (
-    <nav
-      aria-label={t`Tracks`}
-      className="flex flex-wrap gap-2 lg:sticky lg:top-4 lg:max-h-[calc(100dvh-2rem)] lg:flex-col lg:overflow-y-auto lg:flex-nowrap lg:gap-1"
-    >
-      <h2 className="mb-1 hidden px-3 font-semibold text-grey text-xs uppercase tracking-wider lg:block">
-        {t`Tracks`}
-      </h2>
+    <nav aria-label={t`Tracks`} className="flex flex-wrap gap-2">
       {tracks.map((item) =>
         item.name === selected ? (
           <span
             key={item.id}
             aria-current="page"
-            className="rounded-full border border-black bg-black-tint-05 px-3 py-1.5 font-medium text-sm lg:rounded-md lg:py-2"
+            className="rounded-full border border-black bg-black-tint-05 px-3 py-1.5 font-medium text-sm"
           >
-            {item.name}
+            {trackName(item.name)}
           </span>
         ) : (
           <Link
             key={item.id}
-            className="rounded-full border border-black-tint-20 bg-white px-3 py-1.5 text-grey text-sm hover:border-black-tint-40 hover:text-black lg:rounded-md lg:py-2"
+            className="rounded-full border border-black-tint-20 bg-white px-3 py-1.5 text-grey text-sm hover:border-black-tint-40 hover:text-black"
             to={`/trackview/${date}/${item.name}`}
           >
-            {item.name}
+            {trackName(item.name)}
           </Link>
         ),
       )}
@@ -299,8 +329,11 @@ function RangeOfficerBanner({ day }: { day: TrackViewDay }) {
   // Booked but not on site yet: how every future day looks.
   const awaiting = awaitingRangeOfficer(day);
 
+  const closed = day.rangeOfficer === 'closed';
+
   let title = t`No range officer present`;
-  if (present) title = t`Range officer present`;
+  if (closed) title = t`Range closed`;
+  else if (present) title = t`Range officer present`;
   else if (day.rangeOfficer === 'confirmed') title = t`Range officer confirmed`;
   else if (day.rangeOfficer === 'not confirmed') {
     title = t`Range officer predefined`;
@@ -327,10 +360,12 @@ function RangeOfficerBanner({ day }: { day: TrackViewDay }) {
         <span className="block text-grey">
           {present && t`Tracks can be used during opening hours.`}
           {awaiting && t`Tracks can be used once the range officer arrives.`}
+          {closed && t`No track can be used on this day.`}
           {!present &&
             !awaiting &&
+            !closed &&
             t`No track can be used until the range officer arrives.`}
-          {!present && day.rangeOfficerArrivingAt !== null && (
+          {day.rangeOfficerArrivingAt !== null && (
             <>
               {' '}
               {t`Estimated arrival`} {formatTime(day.rangeOfficerArrivingAt)}.
@@ -350,10 +385,7 @@ function TrackHeader({ track }: { track: TrackDetail }) {
   return (
     <div className="flex flex-col gap-2">
       {track.description && (
-        <p className="whitespace-pre-wrap text-sm">
-          {track.description}
-          <DevFlag kind="description" />
-        </p>
+        <p className="whitespace-pre-wrap text-sm">{track.description}</p>
       )}
       <p className="text-grey text-sm tabular-nums">
         {lanes} {t`lanes`}
@@ -386,7 +418,6 @@ function TrackHeader({ track }: { track: TrackDetail }) {
         <p className="border-grey border-l-3 bg-black-tint-05 py-2 pr-3 pl-3 text-sm">
           <b className="font-semibold">{t`Notice for the day`}</b>{' '}
           {track.notice}
-          <DevFlag kind="notice" />
         </p>
       )}
       {track.notes.map((note) => (
@@ -398,56 +429,11 @@ function TrackHeader({ track }: { track: TrackDetail }) {
   );
 }
 
-/**
- * Development-only marker, stripped from production builds.
- *
- * Three things on this page look like defects in the dev environment and are
- * not. Each gets its own wording so nobody has to work out which is which.
- *
- * `description` — track.description. The track's permanent physical
- *   description, maintained by an admin in the Radat view. Real content reads
- *   like "75m / 100m Hirvirata - 20 ampumapaikkaa". The dev seed generates a
- *   short label instead ("Pistol 300m"), from 04_tracks.js:38.
- *
- * `notice` — track_supervision.notice. The free-text note a range officer
- *   writes for one track on one day; it is what the "Radalla lisätietoja" icon
- *   announces. Real content reads like "Taustavalli huollossa". The dev seed
- *   fills it with faker Latin, from 08_track_supervision.js:52, which is where
- *   the lorem ipsum on this page comes from.
- *
- * Both are database text, and there is no translation path for database text at
- * all — it stays as entered whatever language the interface is set to.
- *
- * `placeholder` — time segments and lane counts, invented in
- *   trackViewPlaceholder.ts because the API does not carry them. See #420, #421.
- */
-/**
- * A single invented value shown inline, marked in place rather than with a
- * sentence after it. Used for the sunset time, which has nowhere else to sit.
- * In production the value renders plainly.
- */
-function DevValue({ children }: { children: React.ReactNode }) {
-  if (!import.meta.env.DEV) return <>{children}</>;
-  return (
-    <span className={css.devValue} title="Placeholder — awaiting #437">
-      {children}
-    </span>
-  );
-}
-
-function DevFlag({ kind }: { kind: 'description' | 'notice' | 'placeholder' }) {
-  if (!import.meta.env.DEV) return null;
-
-  const text = {
-    description:
-      'awaiting the real track description, maintained in Radat. Database text, never translated.',
-    notice:
-      'a range officer notice for this track on this day. Dev seed text (08_track_supervision.js). Database text, never translated.',
-    placeholder:
-      'placeholder data, the backend does not provide this yet (#420, #421).',
-  }[kind];
-
-  return <span className={css.devFlag}> — {text}</span>;
+/** "Lohko 2" in the interface language; nothing for an undivided track. */
+function SectionLabel({ number }: { number: number | null }) {
+  const { t } = useLingui();
+  if (number === null) return null;
+  return <>{t`Section ${number}`}</>;
 }
 
 const SEGMENT_FILL: Record<SegmentStatus | 'blocked', string> = {
@@ -512,7 +498,7 @@ function Timeline({
   const { t } = useLingui();
   const label = useSegmentLabel();
   const span = close - open;
-  const named = track.sections.some((s) => s.name);
+  const named = track.sections.some((s) => s.number !== null);
   const pct = (minutes: number) => ((minutes - open) / span) * 100;
 
   const hours: number[] = [];
@@ -541,10 +527,10 @@ function Timeline({
         <div key={section.id} className="mt-2 flex items-stretch">
           {named && (
             <span className="flex w-30 shrink-0 items-center pr-3 text-grey text-xs">
-              {section.name}
+              <SectionLabel number={section.number} />
             </span>
           )}
-          <div className="relative h-10 min-w-0 flex-1 overflow-hidden rounded-sm bg-black-tint-05">
+          <div className="relative h-11 min-w-0 flex-1 overflow-hidden rounded-sm bg-status-free">
             {hours.slice(0, -1).map((m) => (
               <i
                 key={m}
@@ -567,7 +553,7 @@ function Timeline({
                 <div
                   key={`${segment.start}-${segment.end}`}
                   className={classNames(
-                    'absolute top-0 bottom-0 flex items-center justify-center overflow-hidden rounded-xs border border-black-tint-30 text-xs',
+                    'absolute top-0 bottom-0 flex items-center justify-center overflow-hidden rounded-xs border border-black-tint-30 text-sm',
                     partlyFree ? '' : SEGMENT_FILL[state],
                   )}
                   style={{
@@ -627,8 +613,11 @@ function SegmentList({
   awaiting: RangeOfficerState | null;
 }) {
   const { t } = useLingui();
+  const positionName = usePositionName();
   const label = useSegmentLabel();
-  const grouped = track.sections.some((s) => s.name);
+  // Nothing to list until the track's sections exist (none are seeded in production).
+  if (track.sections.length === 0) return null;
+  const grouped = track.sections.some((s) => s.number !== null);
 
   const arrival =
     arrivingAt !== null
@@ -740,13 +729,13 @@ function SegmentList({
           {/* h3: a section belongs to the track, whose name is the h2. */}
           <h3 className="flex justify-between gap-2 border-black-tint-20 border-b bg-black-tint-05 px-3 py-2 font-semibold text-grey text-xs uppercase tracking-wider">
             <span>
-              {section.name}
+              <SectionLabel number={section.number} />
               {section.position && (
                 <>
                   {' '}
                   {/* Own line on phones, beside the name from sm up. */}
                   <span className="block font-normal normal-case tracking-normal sm:ml-1 sm:inline">
-                    {section.position}
+                    {positionName(section.position)}
                   </span>
                 </>
               )}

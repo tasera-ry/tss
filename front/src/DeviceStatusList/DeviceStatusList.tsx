@@ -14,7 +14,7 @@ export function DeviceStatusList() {
   if (!devices.data) return null;
 
   return (
-    <div className="flex flex-col items-center gap-2 p-2">
+    <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-2 w-full">
       {devices.data.map((device) => (
         <DeviceLabel key={device.id} device={device} />
       ))}
@@ -24,17 +24,30 @@ export function DeviceStatusList() {
 
 function DeviceLabel({ device }: { device: any }) {
   const { t } = useLingui();
+  const isReserved = device.status === 'reserved';
 
   return (
     <div
+      style={{
+        // Free green, reserved red, as on the track cards. Text says which.
+        border: isReserved
+          ? '2px solid var(--color-status-closed, #c97b76)'
+          : '2px solid var(--color-status-present, #658f60)',
+        backgroundColor: isReserved
+          ? 'var(--color-status-closed, #c97b76)'
+          : 'var(--color-status-free, #b2d9ad)',
+        // Black on both: 6.6:1 on red, 13:1 on light green.
+        color: 'var(--color-black, #000000)',
+      }}
       className={classNames(
-        'rounded-xl flex flex-col text-nowrap w-full items-center justify-center font-medium py-1 px-2',
-        device.status === 'reserved' ? 'bg-red-light' : 'bg-green',
+        'rounded-xl flex flex-col text-left w-full min-w-0 font-medium py-1 px-2 transition-colors',
       )}
     >
-      <span>{device.device_name}</span>
-      <span className="text-sm">
-        {device.status === 'reserved' ? t`Reserved` : t`Free`}
+      <span className="font-bold max-w-full break-words">
+        {device.device_name}
+      </span>
+      <span className={classNames('text-sm', isReserved && 'font-bold')}>
+        {isReserved ? t`Reserved` : t`Free`}
       </span>
     </div>
   );
