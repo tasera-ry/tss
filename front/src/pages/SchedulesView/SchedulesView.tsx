@@ -5,9 +5,9 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { CircularProgress } from '@mui/material';
 import classNames from 'classnames';
 import moment from 'moment';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useHistory, useParams } from 'react-router-dom';
+import { Prompt, useHistory, useParams } from 'react-router-dom';
 
 import api from '@/api/api';
 import {
@@ -54,6 +54,24 @@ export function SchedulesView() {
     api.getAssociations(),
   );
 
+  // Cards with unsaved changes: leaving the day would lose them.
+  const [unsaved, setUnsaved] = useState<number[]>([]);
+  const onDirtyChange = useCallback((trackId: number, dirty: boolean) => {
+    setUnsaved((ids) => {
+      if (dirty === ids.includes(trackId)) return ids;
+      return dirty ? [...ids, trackId] : ids.filter((id) => id !== trackId);
+    });
+  }, []);
+  useEffect(() => {
+    if (unsaved.length === 0) return;
+    const warn = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [unsaved.length]);
+
   const go = (to: string) => history.push(`/schedules/${to}`);
   const shift = (days: number) =>
     go(moment(date).add(days, 'day').format('YYYY-MM-DD'));
@@ -68,6 +86,10 @@ export function SchedulesView() {
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 pt-4 pb-16 sm:px-6">
       <h1 className="font-semibold text-2xl">{t`Schedules`}</h1>
+      <Prompt
+        when={unsaved.length > 0}
+        message={t`A track has unsaved changes. Leave without saving?`}
+      />
 
       <div className="flex flex-wrap items-center justify-center gap-2">
         <button
@@ -133,7 +155,7 @@ export function SchedulesView() {
           <div className="flex flex-col gap-4">
             {day.data.tracks.map((track: ApiTrackDay) => (
               <TrackCard
-                key={`${date}-${track.id}-${track.trackSupervision}-${track.notice}`}
+                key={`${date}-${track.id}`}
                 day={day.data}
                 track={track}
                 sections={(sections.data ?? []).filter(
@@ -142,6 +164,7 @@ export function SchedulesView() {
                 reservations={reservations.data ?? []}
                 associations={associations.data ?? []}
                 past={past}
+                onDirtyChange={onDirtyChange}
               />
             ))}
           </div>
@@ -168,16 +191,20 @@ function DatePicker({
   const [open, setOpen] = useState(false);
   const [month, setMonth] = useState(date);
   const box = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
-    setMonth(date);
+    // Start from the chosen day, as a date picker does.
+    box.current
+      ?.querySelector<HTMLButtonElement>('dialog button[aria-pressed="true"]')
+      ?.focus();
     const close = (event: MouseEvent | KeyboardEvent) => {
-      if (
-        event instanceof KeyboardEvent
-          ? event.key === 'Escape'
-          : !box.current?.contains(event.target as Node)
-      ) {
+      if (event instanceof KeyboardEvent) {
+        if (event.key !== 'Escape') return;
+        setOpen(false);
+        trigger.current?.focus();
+      } else if (!box.current?.contains(event.target as Node)) {
         setOpen(false);
       }
     };
@@ -187,16 +214,20 @@ function DatePicker({
       document.removeEventListener('mousedown', close);
       document.removeEventListener('keydown', close);
     };
-  }, [open, date]);
+  }, [open]);
 
   return (
     <div className="relative" ref={box}>
       <button
+        ref={trigger}
         type="button"
         className="flex items-center gap-1 rounded-lg border border-black-tint-20 bg-white py-1.5 pr-2 pl-3 font-semibold hover:border-black-tint-40"
         aria-haspopup="dialog"
         aria-expanded={open}
-        onClick={() => setOpen(!open)}
+        onClick={() => {
+          setMonth(date);
+          setOpen(!open);
+        }}
       >
         {label}
         <ArrowDropDownIcon fontSize="small" />
@@ -204,7 +235,7 @@ function DatePicker({
       {open && (
         <dialog
           open
-          aria-label={t`Choose a date`}
+          aria-label={t`Choose date`}
           className="absolute top-full left-1/2 z-10 m-0 mt-2 -translate-x-1/2 rounded-xl border border-black-tint-20 bg-white p-3 shadow-lg"
         >
           <MonthCalendar
@@ -214,6 +245,7 @@ function DatePicker({
             selected={[date]}
             onSelect={(picked) => {
               setOpen(false);
+              trigger.current?.focus();
               onPick(picked);
             }}
           />

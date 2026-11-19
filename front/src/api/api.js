@@ -173,6 +173,13 @@ const postScheduledSupervisionTrack = (data) =>
 const patchScheduledSupervisionTrack = (scheduleId, trackId, data) =>
   axios.put(`/api/track-supervision/${scheduleId}/${trackId}`, data);
 
+const getScheduledSupervisionTrack = async (scheduleId, trackId) => {
+  const response = await axios.get(
+    `/api/track-supervision/${scheduleId}/${trackId}`,
+  );
+  return response.data[0];
+};
+
 const getMembers = async () => {
   const response = await axios.get('/api/members');
   return response.data;
@@ -304,6 +311,7 @@ export default {
   sendFeedback,
   postScheduledSupervisionTrack,
   patchScheduledSupervisionTrack,
+  getScheduledSupervisionTrack,
   getMembers,
   patchMembers,
   raffleSupervisors,

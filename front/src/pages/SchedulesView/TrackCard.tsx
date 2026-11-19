@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import classNames from 'classnames';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from 'react-query';
 
 import api from '@/api/api';
@@ -23,15 +23,15 @@ function statusOf(supervisor: string | null): Status {
   return 'normal';
 }
 
-/**
- * The stored value for a chosen status. "Normal" keeps what the tablet set:
- * the track officer's presence is marked there, never on this page.
- */
-function supervisorFor(status: Status, current: string | null): string {
+function supervisorFor(status: Status): string {
   if (status === 'closed') return 'closed';
   if (status === 'private') return 'private_event';
-  return current === 'present' ? 'present' : 'absent';
+  return 'absent';
 }
+
+// A chip's keyboard focus is drawn on its label: the radio itself is hidden.
+const chip =
+  'cursor-pointer rounded-full border px-3 py-1 text-sm has-[:checked]:border-black has-[:checked]:bg-black-tint-05 has-[:checked]:font-medium has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-black has-[:focus-visible]:outline-offset-2';
 
 /**
  * One track for one day: its status and notice, saved on their own, and its
@@ -44,6 +44,7 @@ export function TrackCard({
   reservations,
   associations,
   past,
+  onDirtyChange,
 }: {
   day: ApiScheduleDay;
   track: ApiTrackDay;
@@ -52,6 +53,7 @@ export function TrackCard({
   reservations: ApiReservation[];
   associations: Association[];
   past: boolean;
+  onDirtyChange: (trackId: number, dirty: boolean) => void;
 }) {
   const { t } = useLingui();
   const trackName = useTrackName();
@@ -63,8 +65,35 @@ export function TrackCard({
   const [notice, setNotice] = useState(storedNotice);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [announcement, setAnnouncement] = useState('');
   const [form, setForm] = useState<'new' | ApiReservation | null>(null);
-  const dirty = status !== stored || notice !== storedNotice;
+  const dirty = status !== stored || notice.trim() !== storedNotice;
+
+  const heading = useRef<HTMLHeadingElement>(null);
+  const addButton = useRef<HTMLButtonElement>(null);
+
+  // Follow the server (a refetch, another admin, the tablet) while the card
+  // has no edits of its own; never overwrite edits in progress.
+  const previous = useRef({ stored, storedNotice });
+  useEffect(() => {
+    const before = previous.current;
+    if (before.stored !== stored || before.storedNotice !== storedNotice) {
+      setStatus((current) => (current === before.stored ? stored : current));
+      setNotice((current) =>
+        current.trim() === before.storedNotice ? storedNotice : current,
+      );
+      previous.current = { stored, storedNotice };
+    }
+  }, [stored, storedNotice]);
+
+  useEffect(() => {
+    onDirtyChange(track.id, dirty);
+    if (dirty) setAnnouncement('');
+  }, [dirty, onDirtyChange, track.id]);
+  useEffect(
+    () => () => onDirtyChange(track.id, false),
+    [onDirtyChange, track.id],
+  );
 
   const ordered = [...sections].sort((a, b) => a.position - b.position);
   const sectionIds = ordered.map((s) => s.id);
@@ -94,31 +123,49 @@ export function TrackCard({
   async function save() {
     setSaving(true);
     setError(null);
+    setAnnouncement('');
     try {
       const ids = await ensureDayRows(day);
-      const body = {
-        track_supervisor: supervisorFor(status, track.trackSupervision),
-        notice: notice.trim(),
-      };
-      if (track.scheduled && day.scheduleId !== null) {
-        await api.patchScheduledSupervisionTrack(
-          ids.scheduleId,
-          track.id,
-          body,
-        );
+      if (track.scheduled) {
+        // The tablet may have marked the track officer present since this
+        // page loaded: write the status only when it changed, and keep a
+        // present officer when the track goes back to normal.
+        let supervisor: string | undefined =
+          status === stored ? undefined : supervisorFor(status);
+        if (supervisor === 'absent') {
+          const current = await api.getScheduledSupervisionTrack(
+            ids.scheduleId,
+            track.id,
+          );
+          if (current?.track_supervisor === 'present') supervisor = undefined;
+        }
+        await api.patchScheduledSupervisionTrack(ids.scheduleId, track.id, {
+          notice: notice.trim(),
+          ...(supervisor ? { track_supervisor: supervisor } : {}),
+        });
       } else {
         await api.postScheduledSupervisionTrack({
           scheduled_range_supervision_id: ids.scheduleId,
           track_id: track.id,
-          ...body,
+          track_supervisor: supervisorFor(status),
+          notice: notice.trim(),
         });
       }
-      await queryClient.invalidateQueries(['schedulesDay', day.date]);
+      setNotice(notice.trim());
+      setAnnouncement(t`Saved`);
+      heading.current?.focus();
     } catch {
       setError(t`The track could not be saved.`);
     } finally {
+      await queryClient.invalidateQueries(['schedulesDay', day.date]);
       setSaving(false);
     }
+  }
+
+  function closeForm() {
+    setForm(null);
+    // The Add button is back once the form is gone.
+    requestAnimationFrame(() => addButton.current?.focus());
   }
 
   return (
@@ -131,7 +178,13 @@ export function TrackCard({
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="font-semibold text-lg">{trackName(track.name)}</h3>
+          <h3
+            ref={heading}
+            tabIndex={-1}
+            className="font-semibold text-lg focus:outline-none"
+          >
+            {trackName(track.name)}
+          </h3>
           <p className="mt-1 text-grey text-sm tabular-nums">
             {lanes} {t`lanes`}
             {track.trackSupervision === 'present' && (
@@ -148,10 +201,7 @@ export function TrackCard({
             <legend className="mb-1 text-grey text-sm">{t`Track status`}</legend>
             <div className="flex gap-1">
               {choices.map((choice) => (
-                <label
-                  key={choice}
-                  className="cursor-pointer rounded-full border border-black-tint-20 px-3 py-1 text-sm has-[:checked]:border-black has-[:checked]:bg-black-tint-05 has-[:checked]:font-medium"
-                >
+                <label key={choice} className={`${chip} border-black-tint-20`}>
                   <input
                     type="radio"
                     name={`status-${track.id}`}
@@ -182,7 +232,7 @@ export function TrackCard({
           </span>
           <input
             type="text"
-            className="w-full rounded-md border border-black-tint-30 px-2 py-1.5 text-sm"
+            className="w-full rounded-md border border-black-tint-50 px-2 py-1.5 text-sm"
             value={notice}
             maxLength={255}
             placeholder={t`No notice`}
@@ -206,6 +256,7 @@ export function TrackCard({
               total={lanes}
               past={past}
               onEdit={() => setForm(r)}
+              onDeleted={() => addButton.current?.focus()}
             />
           ))}
           {ordered.flatMap((section) =>
@@ -222,6 +273,7 @@ export function TrackCard({
                   total={section.lane_count}
                   past={past}
                   onEdit={() => setForm(r)}
+                  onDeleted={() => addButton.current?.focus()}
                 />
               )),
           )}
@@ -236,12 +288,13 @@ export function TrackCard({
             sections={ordered}
             associations={associations}
             booking={form === 'new' ? undefined : form}
-            onDone={() => setForm(null)}
+            onDone={closeForm}
           />
         ) : (
           <button
+            ref={addButton}
             type="button"
-            className="mt-3 rounded-md border border-black-tint-30 bg-white px-3 py-1.5 text-sm"
+            className="mt-3 rounded-md border border-black-tint-50 bg-white px-3 py-1.5 text-sm"
             onClick={() => setForm('new')}
             disabled={ordered.length === 0}
           >
@@ -255,11 +308,12 @@ export function TrackCard({
           <span className="flex gap-2">
             <button
               type="button"
-              className="rounded-md border border-black-tint-30 bg-white px-3 py-1.5 text-sm"
+              className="rounded-md border border-black-tint-50 bg-white px-3 py-1.5 text-sm"
               onClick={() => {
                 setStatus(stored);
                 setNotice(storedNotice);
                 setError(null);
+                heading.current?.focus();
               }}
             >
               {t`Undo`}
@@ -275,6 +329,9 @@ export function TrackCard({
           </span>
         </div>
       )}
+      <output className="mt-2 block text-grey text-sm empty:hidden">
+        {!dirty && announcement}
+      </output>
       {error && (
         <p role="alert" className="mt-2 font-medium text-sm">
           ⚠ {error}
@@ -290,17 +347,24 @@ function BookingRow({
   total,
   past,
   onEdit,
+  onDeleted,
 }: {
   booking: ApiReservation;
   where?: string;
   total: number;
   past: boolean;
   onEdit: () => void;
+  onDeleted: () => void;
 }) {
   const { t } = useLingui();
   const positionName = usePositionName();
   const queryClient = useQueryClient();
   const [confirming, setConfirming] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const confirmButton = useRef<HTMLButtonElement>(null);
+  const deleteButton = useRef<HTMLButtonElement>(null);
+  const questionId = `delete-${booking.id}`;
   const start = toMinutes(booking.start_time);
   const end = toMinutes(booking.end_time);
   const type = {
@@ -309,9 +373,25 @@ function BookingRow({
     closed: t`Closed`,
   }[booking.type];
 
+  useEffect(() => {
+    if (confirming) confirmButton.current?.focus();
+  }, [confirming]);
+
   async function remove() {
-    await api.deleteTrackReservation(booking.id);
-    await queryClient.invalidateQueries(['trackReservations']);
+    setDeleting(true);
+    setError(null);
+    try {
+      await api.deleteTrackReservation(booking.id);
+      onDeleted();
+    } catch (e) {
+      // Already gone (deleted elsewhere) counts as done.
+      if ((e as { response?: { status: number } }).response?.status !== 404) {
+        setError(t`The booking could not be deleted.`);
+      }
+    } finally {
+      setDeleting(false);
+      await queryClient.invalidateQueries(['trackReservations']);
+    }
   }
 
   return (
@@ -336,23 +416,33 @@ function BookingRow({
       </span>
       {!past &&
         (confirming ? (
-          <span className="flex items-center gap-2">
-            <span className="text-sm">{t`Delete this booking?`}</span>
+          <fieldset
+            className="flex items-center gap-2"
+            aria-labelledby={questionId}
+          >
+            <span id={questionId} className="text-sm">
+              {t`Delete this booking?`}
+            </span>
             <button
+              ref={confirmButton}
               type="button"
               className="rounded-md border border-black-tint-70 px-2 py-1 text-sm"
               onClick={remove}
+              disabled={deleting}
             >
               {t`Delete`}
             </button>
             <button
               type="button"
               className="px-2 py-1 text-grey text-sm"
-              onClick={() => setConfirming(false)}
+              onClick={() => {
+                setConfirming(false);
+                requestAnimationFrame(() => deleteButton.current?.focus());
+              }}
             >
               {t`Cancel`}
             </button>
-          </span>
+          </fieldset>
         ) : (
           <span className="flex gap-2">
             <button
@@ -363,6 +453,7 @@ function BookingRow({
               {t`Edit`}
             </button>
             <button
+              ref={deleteButton}
               type="button"
               className="px-2 py-1 text-grey text-sm hover:text-black"
               onClick={() => setConfirming(true)}
@@ -371,6 +462,11 @@ function BookingRow({
             </button>
           </span>
         ))}
+      {error && (
+        <p role="alert" className="w-full font-medium text-sm">
+          ⚠ {error}
+        </p>
+      )}
     </li>
   );
 }

@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from 'react-query';
 
 import api from '@/api/api';
@@ -10,9 +10,11 @@ import type {
 import { usePositionName } from '@/trackview/useTrackName';
 
 type BookingType = 'private_event' | 'official';
+/** The field an error is about, if any. */
+type ErrorField = 'end' | 'lanes';
 
 const field =
-  'w-full rounded-md border border-black-tint-30 bg-white px-2 py-1.5 text-sm';
+  'w-full rounded-md border border-black-tint-50 bg-white px-2 py-1.5 text-sm';
 const labelText = 'mb-1 block font-medium text-sm';
 
 /**
@@ -56,19 +58,35 @@ export function BookingForm({
     booking?.association_id ? String(booking.association_id) : '',
   );
   const [description, setDescription] = useState(booking?.description ?? '');
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<{
+    message: string;
+    field?: ErrorField;
+  } | null>(null);
   const [saving, setSaving] = useState(false);
+  const first = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    first.current?.focus();
+  }, []);
 
   const section = sections.find((s) => s.id === sectionId) ?? sections[0];
   // Unique per form, for the ids that tie labels and descriptions to fields.
   const formId = `booking-${booking?.id ?? 'new'}-${sections[0]?.track_id}`;
   const official = type === 'official';
+  const errorId = `${formId}-error`;
+  const invalid = (name: ErrorField) =>
+    error?.field === name
+      ? { 'aria-invalid': true, 'aria-errormessage': errorId }
+      : {};
 
   async function save(event: React.FormEvent) {
     event.preventDefault();
     setError(null);
     if (!start || !end || start >= end) {
-      setError(t`The booking must end after it starts.`);
+      setError({
+        message: t`The booking must end after it starts.`,
+        field: 'end',
+      });
       return;
     }
     const common = {
@@ -107,7 +125,7 @@ export function BookingForm({
     }
   }
 
-  function describeError(e: unknown): string {
+  function describeError(e: unknown): { message: string; field?: ErrorField } {
     const response = (
       e as {
         response?: {
@@ -118,15 +136,36 @@ export function BookingForm({
     ).response;
     if (response?.status === 409) {
       if (official)
-        return t`The track is not free for authority use at that time.`;
+        return {
+          message: t`The track is not free for authority use at that time.`,
+        };
       const free = response.data?.free ?? 0;
       const total = response.data?.total ?? section.lane_count;
-      return t`Only ${free}/${total} lanes are free at that time.`;
+      return {
+        message: t`Only ${free}/${total} lanes are free at that time.`,
+        field: 'lanes',
+      };
     }
-    if (response?.status === 400 && response.data?.message) {
-      return response.data.message;
+    if (response?.status === 404) {
+      return { message: t`The booking has been deleted.` };
     }
-    return t`The booking could not be saved.`;
+    // The server's own words are English; show the ones a user can act on.
+    const message = response?.data?.message ?? '';
+    if (message === 'Past days are read-only') {
+      return { message: t`Past days cannot be changed.` };
+    }
+    if (message === 'The reservation must end after it starts') {
+      return {
+        message: t`The booking must end after it starts.`,
+        field: 'end',
+      };
+    }
+    if (message.startsWith('Unknown')) {
+      return {
+        message: t`The section or the association no longer exists. Reload the page.`,
+      };
+    }
+    return { message: t`The booking could not be saved.` };
   }
 
   return (
@@ -143,6 +182,7 @@ export function BookingForm({
         <label className="w-28">
           <span className={labelText}>{t`Starts`}</span>
           <input
+            ref={first}
             type="time"
             className={field}
             value={start}
@@ -158,6 +198,7 @@ export function BookingForm({
             value={end}
             onChange={(e) => setEnd(e.target.value)}
             required
+            {...invalid('end')}
           />
         </label>
         <fieldset disabled={editing}>
@@ -166,7 +207,7 @@ export function BookingForm({
             {(['private_event', 'official'] as const).map((value) => (
               <label
                 key={value}
-                className={`cursor-pointer rounded-full border px-3 py-1.5 text-sm has-[:checked]:border-black has-[:checked]:bg-white has-[:checked]:font-medium ${editing ? 'cursor-not-allowed opacity-60' : 'border-black-tint-20'}`}
+                className={`cursor-pointer rounded-full border px-3 py-1.5 text-sm has-[:checked]:border-black has-[:checked]:bg-white has-[:checked]:font-medium has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-black has-[:focus-visible]:outline-offset-2 ${editing ? 'cursor-not-allowed opacity-60' : 'border-black-tint-20'}`}
               >
                 <input
                   type="radio"
@@ -222,6 +263,7 @@ export function BookingForm({
                 onChange={(e) => setLanes(e.target.value)}
                 aria-describedby={`${formId}-of`}
                 required
+                {...invalid('lanes')}
               />
               <span id={`${formId}-of`} className="shrink-0 text-grey text-sm">
                 / {section.lane_count}
@@ -258,8 +300,8 @@ export function BookingForm({
       </label>
 
       {error && (
-        <p role="alert" className="font-medium text-sm">
-          ⚠ {error}
+        <p id={errorId} role="alert" className="font-medium text-sm">
+          ⚠ {error.message}
         </p>
       )}
 

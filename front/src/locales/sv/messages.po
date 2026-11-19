@@ -15,6 +15,10 @@ msgstr ""
 msgid "{booked, plural, one {# lane booked} other {# lanes booked}}"
 msgstr "{booked, plural, one {# skjutplats bokad} other {# skjutplatser bokade}}"
 
+#: src/pages/SchedulesView/SchedulesView.tsx:91
+msgid "A track has unsaved changes. Leave without saving?"
+msgstr "En bana har osparade ändringar. Lämna utan att spara?"
+
 #: src/upcomingsupervisions/LoggedIn.jsx:75
 #: src/upcomingsupervisions/LoggedIn.jsx:131
 #: src/upcomingsupervisions/LoggedIn.jsx:179
@@ -36,7 +40,7 @@ msgstr "Funktioner"
 msgid "Add"
 msgstr "Lägg till"
 
-#: src/pages/SchedulesView/TrackCard.tsx:248
+#: src/pages/SchedulesView/TrackCard.tsx:301
 msgid "Add booking"
 msgstr "Lägg till bokning"
 
@@ -64,7 +68,7 @@ msgstr "Lägg till banofficer"
 msgid "Advanced options"
 msgstr "Avancerade alternativ"
 
-#: src/pages/SchedulesView/TrackCard.tsx:334
+#: src/pages/SchedulesView/TrackCard.tsx:414
 msgid "All lanes"
 msgstr "Alla platser"
 
@@ -172,7 +176,7 @@ msgstr "Föreningar"
 #~ msgid "August"
 #~ msgstr "Augusti"
 
-#: src/pages/SchedulesView/BookingForm.tsx:190
+#: src/pages/SchedulesView/BookingForm.tsx:231
 msgid "Authority use takes the whole track: every section and lane."
 msgstr "Myndighetsbruk tar hela banan: alla sektioner och skjutplatser."
 
@@ -192,11 +196,11 @@ msgstr "Tillbaka"
 msgid "Back to weekview"
 msgstr "Tillbaka till veckovy"
 
-#: src/pages/SchedulesView/BookingForm.tsx:232
+#: src/pages/SchedulesView/BookingForm.tsx:274
 msgid "Booked by"
 msgstr "Bokad av"
 
-#: src/pages/SchedulesView/TrackCard.tsx:195
+#: src/pages/SchedulesView/TrackCard.tsx:245
 msgid "Bookings"
 msgstr "Bokningar"
 
@@ -206,18 +210,18 @@ msgstr "Bokningar"
 #: src/pages/UserManagement/components/dialogs/ChangeEmailSelfDialog.tsx:92
 #: src/pages/UserManagement/components/dialogs/AddUserDialog.tsx:167
 #: src/pages/TabletView/components/OpenHoursSection.tsx:145
-#: src/pages/SchedulesView/TrackCard.tsx:353
-#: src/pages/SchedulesView/BookingForm.tsx:279
+#: src/pages/SchedulesView/TrackCard.tsx:443
+#: src/pages/SchedulesView/BookingForm.tsx:321
 #: src/lib/components/Navbar/FeedbackWindow.tsx:45
 msgid "Cancel"
-msgstr "Avboka"
+msgstr "Avbryt"
 
 #: src/EmailSettings/EmailSettings.tsx:269
 msgid "CC"
 msgstr "CC"
 
-#: src/pages/SchedulesView/BookingForm.tsx:136
-#: src/pages/SchedulesView/BookingForm.tsx:139
+#: src/pages/SchedulesView/BookingForm.tsx:175
+#: src/pages/SchedulesView/BookingForm.tsx:178
 msgid "Change booking"
 msgstr "Ändra bokning"
 
@@ -260,12 +264,9 @@ msgstr "KONTROLLERA"
 msgid "Choose \"Yes\" to use SSL/TLS encryption from the start of the connection (typically with port 465). Choose \"No\" for unencrypted connections that may upgrade via STARTTLS (typically with port 587). This setting must match your email provider's requirements for the specified port, otherwise connection will fail."
 msgstr "Välj \"Ja\" för att använda SSL/TLS-kryptering från början av anslutningen (vanligtvis med port 465). Välj \"Nej\" för oförsäkrade anslutningar som kan uppgradera via STARTTLS (vanligtvis med port 587). Denna inställning måste matcha dina e-postleverantörers krav för den angivna porten, annars kommer anslutningen att misslyckas."
 
-#: src/pages/SchedulesView/SchedulesView.tsx:207
-msgid "Choose a date"
-msgstr "Välj datum"
-
 #: src/scheduling/Scheduling.jsx:1047
 #: src/pages/StatisticsView/StatisticsView.tsx:77
+#: src/pages/SchedulesView/SchedulesView.tsx:238
 msgid "Choose date"
 msgstr "Välj datum"
 
@@ -290,9 +291,9 @@ msgstr "Stäng alla"
 #: src/pages/TabletView/components/TrackCard.tsx:20
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:109
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:126
-#: src/pages/SchedulesView/TrackCard.tsx:90
-#: src/pages/SchedulesView/TrackCard.tsx:309
-#: src/pages/SchedulesView/SchedulesView.tsx:255
+#: src/pages/SchedulesView/TrackCard.tsx:119
+#: src/pages/SchedulesView/TrackCard.tsx:373
+#: src/pages/SchedulesView/SchedulesView.tsx:287
 #: src/pages/DayView/DayView.tsx:191
 msgid "Closed"
 msgstr "Stängd"
@@ -390,8 +391,8 @@ msgstr "Definiera status för banofficer genom att välja färg"
 
 #: src/profile/profilepages/officerform.jsx:69
 #: src/profile/profilepages/officerform.jsx:92
-#: src/pages/SchedulesView/TrackCard.tsx:346
-#: src/pages/SchedulesView/TrackCard.tsx:370
+#: src/pages/SchedulesView/TrackCard.tsx:433
+#: src/pages/SchedulesView/TrackCard.tsx:461
 #: src/pages/EditTracksView/components/TrackRow.tsx:189
 msgid "Delete"
 msgstr "Ta bort"
@@ -404,7 +405,7 @@ msgstr "Ta bort"
 msgid "Delete range officer"
 msgstr "Ta bort banofficer"
 
-#: src/pages/SchedulesView/TrackCard.tsx:340
+#: src/pages/SchedulesView/TrackCard.tsx:424
 msgid "Delete this booking?"
 msgstr "Ta bort bokningen?"
 
@@ -417,7 +418,7 @@ msgstr "Ta bort användare"
 msgid "Description"
 msgstr "Beskrivning"
 
-#: src/pages/SchedulesView/BookingForm.tsx:250
+#: src/pages/SchedulesView/BookingForm.tsx:292
 msgid "Description (optional)"
 msgstr "Beskrivning (valfri)"
 
@@ -444,7 +445,7 @@ msgstr "Ange en e-postadress!"
 
 #: src/pages/UserManagement/UserManagementView.tsx:137
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:45
-#: src/pages/SchedulesView/TrackCard.tsx:363
+#: src/pages/SchedulesView/TrackCard.tsx:453
 #: src/pages/EditTracksView/components/TrackRow.tsx:181
 msgid "Edit"
 msgstr "Redigera"
@@ -530,7 +531,7 @@ msgstr "Slutdatum"
 msgid "End repeat after"
 msgstr "Avsluta upprepa efter"
 
-#: src/pages/SchedulesView/BookingForm.tsx:154
+#: src/pages/SchedulesView/BookingForm.tsx:194
 msgid "Ends"
 msgstr "Slutar"
 
@@ -579,7 +580,7 @@ msgstr "Fel vid verifiering av token!"
 #~ msgstr "Fel: Enhetsstatusen måste vara antigen 'fri' eller 'reserverad'"
 
 #: src/trackview/Trackview.tsx:350
-#: src/pages/SchedulesView/SchedulesView.tsx:274
+#: src/pages/SchedulesView/SchedulesView.tsx:306
 msgid "Estimated arrival"
 msgstr "Beräknad ankomst"
 
@@ -695,7 +696,7 @@ msgstr "Ogiltig e-postadress"
 msgid "Invalid time selected."
 msgstr "Ogiltigt valt tid"
 
-#: src/pages/SchedulesView/SchedulesView.tsx:116
+#: src/pages/SchedulesView/SchedulesView.tsx:138
 msgid "It is shown read-only; past days cannot be changed."
 msgstr "Uppgifterna visas skrivskyddade; tidigare dagar kan inte ändras."
 
@@ -713,11 +714,11 @@ msgstr "Uppgifterna visas skrivskyddade; tidigare dagar kan inte ändras."
 
 #: src/trackview/Trackview.tsx:370
 #: src/trackview/Trackview.tsx:723
-#: src/pages/SchedulesView/TrackCard.tsx:136
+#: src/pages/SchedulesView/TrackCard.tsx:189
 msgid "lanes"
 msgstr "skjutplatser"
 
-#: src/pages/SchedulesView/BookingForm.tsx:212
+#: src/pages/SchedulesView/BookingForm.tsx:253
 msgid "Lanes"
 msgstr "Skjutplatser"
 
@@ -873,8 +874,8 @@ msgstr "Namn"
 msgid "Name is required"
 msgstr "Namn är obligatoriskt"
 
-#: src/pages/SchedulesView/BookingForm.tsx:136
-#: src/pages/SchedulesView/BookingForm.tsx:139
+#: src/pages/SchedulesView/BookingForm.tsx:175
+#: src/pages/SchedulesView/BookingForm.tsx:178
 msgid "New booking"
 msgstr "Ny bokning"
 
@@ -891,7 +892,7 @@ msgid "New password is required"
 msgstr "Nytt lösenord är obligatoriskt"
 
 #: src/trackview/Trackview.tsx:248
-#: src/pages/SchedulesView/SchedulesView.tsx:91
+#: src/pages/SchedulesView/SchedulesView.tsx:113
 msgid "Next day"
 msgstr "Nästa dag"
 
@@ -904,11 +905,11 @@ msgstr "Nästa månad"
 msgid "No"
 msgstr "Nej"
 
-#: src/pages/SchedulesView/BookingForm.tsx:238
+#: src/pages/SchedulesView/BookingForm.tsx:280
 msgid "No association"
 msgstr "Ingen förening"
 
-#: src/pages/SchedulesView/TrackCard.tsx:198
+#: src/pages/SchedulesView/TrackCard.tsx:248
 msgid "No bookings"
 msgstr "Inga bokningar"
 
@@ -920,7 +921,7 @@ msgstr "Inga bokningar"
 msgid "No devices found"
 msgstr "Inga enheter hittades"
 
-#: src/pages/SchedulesView/TrackCard.tsx:188
+#: src/pages/SchedulesView/TrackCard.tsx:238
 msgid "No notice"
 msgstr "Inget meddelande"
 
@@ -929,7 +930,7 @@ msgstr "Inget meddelande"
 msgid "No pending messages to send."
 msgstr "Inga väntande e-postmeddelanden att skicka."
 
-#: src/pages/SchedulesView/SchedulesView.tsx:265
+#: src/pages/SchedulesView/SchedulesView.tsx:297
 msgid "No range officer"
 msgstr "Ingen banofficer"
 
@@ -972,7 +973,7 @@ msgstr "Inte banhandledare tillgängliga"
 msgid "No track officer present"
 msgstr "Ingen banhandledare närvarande"
 
-#: src/pages/SchedulesView/TrackCard.tsx:89
+#: src/pages/SchedulesView/TrackCard.tsx:118
 msgid "Normal"
 msgstr "Normal"
 
@@ -990,8 +991,8 @@ msgid "Nothing to confirm"
 msgstr "Inget att bekräfta"
 
 #: src/trackview/Trackview.tsx:398
-#: src/pages/SchedulesView/TrackCard.tsx:174
-#: src/pages/SchedulesView/TrackCard.tsx:181
+#: src/pages/SchedulesView/TrackCard.tsx:224
+#: src/pages/SchedulesView/TrackCard.tsx:231
 msgid "Notice for the day"
 msgstr "Dagens meddelande"
 
@@ -1031,14 +1032,14 @@ msgstr "Gammalt lösenord är obligatoriskt"
 msgid "Old password isn't valid"
 msgstr "Gammalt lösenord är ogiltigt"
 
-#: src/pages/SchedulesView/BookingForm.tsx:124
+#: src/pages/SchedulesView/BookingForm.tsx:145
 msgid "Only {free}/{total} lanes are free at that time."
 msgstr "Endast {free}/{total} skjutplatser är lediga vid den tiden."
 
 #: src/trackview/Trackview.tsx:124
 #: src/scheduling/Scheduling.jsx:1072
 #: src/pages/TabletView/components/OpenHoursSection.tsx:101
-#: src/pages/SchedulesView/SchedulesView.tsx:255
+#: src/pages/SchedulesView/SchedulesView.tsx:287
 #: src/pages/DayView/DayView.tsx:190
 msgid "Open"
 msgstr "Öppet"
@@ -1048,7 +1049,7 @@ msgid "Open All"
 msgstr "Öppna alla"
 
 #: src/scheduling/Scheduling.jsx:1082
-#: src/pages/SchedulesView/SchedulesView.tsx:258
+#: src/pages/SchedulesView/SchedulesView.tsx:290
 msgid "Opening hours"
 msgstr "Öppettider"
 
@@ -1105,9 +1106,13 @@ msgstr "Lösenorden matchar inte"
 msgid "Passwords don't match!"
 msgstr "Lösenord matchar inte!"
 
-#: src/pages/SchedulesView/SchedulesView.tsx:115
+#: src/pages/SchedulesView/SchedulesView.tsx:137
 msgid "Past day"
 msgstr "Tidigare dag"
+
+#: src/pages/SchedulesView/BookingForm.tsx:155
+msgid "Past days cannot be changed."
+msgstr "Tidigare dagar kan inte ändras."
 
 #: src/EmailSettings/EmailSettings.tsx:144
 msgid "Pending messages sent successfully!"
@@ -1125,7 +1130,7 @@ msgid "Present"
 msgstr "Närvarande"
 
 #: src/trackview/Trackview.tsx:244
-#: src/pages/SchedulesView/SchedulesView.tsx:77
+#: src/pages/SchedulesView/SchedulesView.tsx:99
 msgid "Previous day"
 msgstr "Föregående dag"
 
@@ -1135,9 +1140,9 @@ msgstr "Föregående månad"
 
 #: src/trackview/Trackview.tsx:441
 #: src/scheduling/Scheduling.jsx:614
-#: src/pages/SchedulesView/TrackCard.tsx:91
-#: src/pages/SchedulesView/TrackCard.tsx:307
-#: src/pages/SchedulesView/BookingForm.tsx:181
+#: src/pages/SchedulesView/TrackCard.tsx:120
+#: src/pages/SchedulesView/TrackCard.tsx:371
+#: src/pages/SchedulesView/BookingForm.tsx:222
 #: src/pages/DayView/DayView.tsx:192
 msgid "Private event"
 msgstr "Privat evenemang"
@@ -1151,7 +1156,7 @@ msgstr "Tombola resultat"
 msgid "Raffle supervisors"
 msgstr "Värdera handledare"
 
-#: src/pages/SchedulesView/SchedulesView.tsx:251
+#: src/pages/SchedulesView/SchedulesView.tsx:283
 msgid "Range"
 msgstr "Skjutbaneområde"
 
@@ -1194,7 +1199,7 @@ msgstr "Banofficeren anländer kl. {0}"
 #: src/scheduling/Scheduling.jsx:389
 #: src/scheduling/Scheduling.jsx:982
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:130
-#: src/pages/SchedulesView/SchedulesView.tsx:241
+#: src/pages/SchedulesView/SchedulesView.tsx:273
 #: src/pages/DayView/DayView.tsx:174
 msgid "Range officer confirmed"
 msgstr "Banofficer bekräftat"
@@ -1229,7 +1234,7 @@ msgstr "Banofficerhantering"
 #: src/scheduling/Scheduling.jsx:374
 #: src/scheduling/Scheduling.jsx:985
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:134
-#: src/pages/SchedulesView/SchedulesView.tsx:242
+#: src/pages/SchedulesView/SchedulesView.tsx:274
 #: src/pages/DayView/DayView.tsx:176
 msgid "Range officer predefined"
 msgstr "Banofficer inte bekräftat"
@@ -1243,17 +1248,17 @@ msgstr "Banofficer fördefinierad, men inte bekräftat"
 #: src/scheduling/Scheduling.jsx:401
 #: src/scheduling/Scheduling.jsx:973
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:118
-#: src/pages/SchedulesView/SchedulesView.tsx:240
+#: src/pages/SchedulesView/SchedulesView.tsx:272
 #: src/pages/DayView/DayView.tsx:170
 #: src/lib/components/TableLegends.tsx:14
 msgid "Range officer present"
 msgstr "Banofficer närvarande"
 
-#: src/pages/SchedulesView/SchedulesView.tsx:264
+#: src/pages/SchedulesView/SchedulesView.tsx:296
 msgid "Range officer shift"
 msgstr "Banofficerns pass"
 
-#: src/pages/SchedulesView/SchedulesView.tsx:268
+#: src/pages/SchedulesView/SchedulesView.tsx:300
 msgid "Range officer status"
 msgstr "Banofficerns status"
 
@@ -1269,7 +1274,7 @@ msgstr "Banofficer odefinierad"
 msgid "Range officers"
 msgstr "Banofficer"
 
-#: src/pages/SchedulesView/SchedulesView.tsx:254
+#: src/pages/SchedulesView/SchedulesView.tsx:286
 msgid "Range today"
 msgstr "Skjutbaneområdet i dag"
 
@@ -1303,8 +1308,8 @@ msgid "Reserved"
 msgstr "Reserverad"
 
 #: src/trackview/Trackview.tsx:443
-#: src/pages/SchedulesView/TrackCard.tsx:308
-#: src/pages/SchedulesView/BookingForm.tsx:180
+#: src/pages/SchedulesView/TrackCard.tsx:372
+#: src/pages/SchedulesView/BookingForm.tsx:221
 msgid "Reserved for authority use"
 msgstr "Reserverad för myndighetsbruk"
 
@@ -1351,11 +1356,11 @@ msgstr "Lör"
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:184
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:264
 #: src/pages/TabletView/components/OpenHoursSection.tsx:151
-#: src/pages/SchedulesView/TrackCard.tsx:273
+#: src/pages/SchedulesView/TrackCard.tsx:327
 msgid "Save"
 msgstr "Spara"
 
-#: src/pages/SchedulesView/BookingForm.tsx:272
+#: src/pages/SchedulesView/BookingForm.tsx:314
 msgid "Save booking"
 msgstr "Spara bokning"
 
@@ -1374,13 +1379,17 @@ msgstr "Spara resultat"
 msgid "Save settings"
 msgstr "Spara inställningar"
 
+#: src/pages/SchedulesView/TrackCard.tsx:155
+msgid "Saved"
+msgstr "Sparat"
+
 #: src/scheduling/Scheduling.jsx:1025
-#: src/pages/SchedulesView/SchedulesView.tsx:70
+#: src/pages/SchedulesView/SchedulesView.tsx:88
 #: src/lib/components/Navbar/DrawerMenu.tsx:30
 msgid "Schedules"
 msgstr "Schema"
 
-#: src/pages/SchedulesView/BookingForm.tsx:196
+#: src/pages/SchedulesView/BookingForm.tsx:237
 msgid "Section"
 msgstr "Sektion"
 
@@ -1520,7 +1529,7 @@ msgstr "Start"
 msgid "Start date"
 msgstr "Start datum"
 
-#: src/pages/SchedulesView/BookingForm.tsx:144
+#: src/pages/SchedulesView/BookingForm.tsx:183
 msgid "Starts"
 msgstr "Börjar"
 
@@ -1600,15 +1609,24 @@ msgstr "Surfplattavy"
 #~ msgid "Th"
 #~ msgstr "To"
 
-#: src/pages/SchedulesView/BookingForm.tsx:129
+#: src/pages/SchedulesView/TrackCard.tsx:389
+msgid "The booking could not be deleted."
+msgstr "Bokningen kunde inte tas bort."
+
+#: src/pages/SchedulesView/BookingForm.tsx:168
 msgid "The booking could not be saved."
 msgstr "Bokningen kunde inte sparas."
 
-#: src/pages/SchedulesView/BookingForm.tsx:71
+#: src/pages/SchedulesView/BookingForm.tsx:150
+msgid "The booking has been deleted."
+msgstr "Bokningen har tagits bort."
+
+#: src/pages/SchedulesView/BookingForm.tsx:87
+#: src/pages/SchedulesView/BookingForm.tsx:159
 msgid "The booking must end after it starts."
 msgstr "Bokningen måste sluta efter att den börjar."
 
-#: src/pages/SchedulesView/SchedulesView.tsx:125
+#: src/pages/SchedulesView/SchedulesView.tsx:147
 msgid "The day could not be loaded."
 msgstr "Dagens uppgifter kunde inte laddas."
 
@@ -1628,11 +1646,15 @@ msgstr "Länken är felaktig eller så har den gått ut. Skicka en ny återstäl
 msgid "The saving of the results failed"
 msgstr "Misslyckats att spara resultat"
 
-#: src/pages/SchedulesView/TrackCard.tsx:118
+#: src/pages/SchedulesView/BookingForm.tsx:165
+msgid "The section or the association no longer exists. Reload the page."
+msgstr "Sektionen eller föreningen finns inte längre. Ladda om sidan."
+
+#: src/pages/SchedulesView/TrackCard.tsx:158
 msgid "The track could not be saved."
 msgstr "Banan kunde inte sparas."
 
-#: src/pages/SchedulesView/BookingForm.tsx:121
+#: src/pages/SchedulesView/BookingForm.tsx:140
 msgid "The track is not free for authority use at that time."
 msgstr "Banan är inte ledig för myndighetsbruk vid den tiden."
 
@@ -1657,7 +1679,7 @@ msgid "Time for sending emails"
 msgstr "Tid för att skicka e-post"
 
 #: src/utils/Utils.jsx:80
-#: src/pages/SchedulesView/SchedulesView.tsx:106
+#: src/pages/SchedulesView/SchedulesView.tsx:128
 msgid "Today"
 msgstr "Idag"
 
@@ -1708,15 +1730,15 @@ msgid "Track not found"
 msgstr "Banan hittades inte"
 
 #: src/trackview/Trackview.tsx:388
-#: src/pages/SchedulesView/TrackCard.tsx:138
+#: src/pages/SchedulesView/TrackCard.tsx:191
 msgid "Track officer present"
 msgstr "Banhandledare närvarande"
 
-#: src/pages/SchedulesView/SchedulesView.tsx:131
+#: src/pages/SchedulesView/SchedulesView.tsx:153
 msgid "Track officers are marked present on the tablet. Here you set each track's status, notice and bookings."
 msgstr "Banhandledarnas närvaro markeras på surfplattan. Här ställer du in banans status, dagens meddelande och bokningar."
 
-#: src/pages/SchedulesView/TrackCard.tsx:148
+#: src/pages/SchedulesView/TrackCard.tsx:201
 msgid "Track status"
 msgstr "Banans status"
 
@@ -1738,7 +1760,7 @@ msgstr "Bana uppdaterad"
 
 #: src/trackview/Trackview.tsx:271
 #: src/trackview/Trackview.tsx:275
-#: src/pages/SchedulesView/SchedulesView.tsx:129
+#: src/pages/SchedulesView/SchedulesView.tsx:151
 #: src/pages/EditTracksView/EditTracksView.tsx:64
 msgid "Tracks"
 msgstr "Banor"
@@ -1763,7 +1785,7 @@ msgstr "Tis"
 #~ msgid "Tuesday"
 #~ msgstr "Tisdag"
 
-#: src/pages/SchedulesView/BookingForm.tsx:164
+#: src/pages/SchedulesView/BookingForm.tsx:205
 msgid "Type"
 msgstr "Typ"
 
@@ -1771,7 +1793,7 @@ msgstr "Typ"
 msgid "Unconfirmed shift reminder"
 msgstr "Påminnelse om obekräftat skift"
 
-#: src/pages/SchedulesView/TrackCard.tsx:265
+#: src/pages/SchedulesView/TrackCard.tsx:319
 msgid "Undo"
 msgstr "Ångra"
 
@@ -1779,7 +1801,7 @@ msgstr "Ångra"
 msgid "Unmarked lanes"
 msgstr "Omarkerade platser"
 
-#: src/pages/SchedulesView/TrackCard.tsx:254
+#: src/pages/SchedulesView/TrackCard.tsx:307
 msgid "Unsaved changes"
 msgstr "Osparade ändringar"
 
@@ -1882,7 +1904,7 @@ msgstr "Vecka"
 msgid "Week {weekNumber} {year}"
 msgstr "Vecka {weekNumber} {year}"
 
-#: src/pages/SchedulesView/TrackCard.tsx:205
+#: src/pages/SchedulesView/TrackCard.tsx:255
 msgid "Whole track"
 msgstr "Hela banan"
 
