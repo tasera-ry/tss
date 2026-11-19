@@ -5,6 +5,7 @@ import './App.css';
 
 import { Route, HashRouter as Router, Switch } from 'react-router-dom';
 import Dayview from './pages/DayView/DayView';
+import { SchedulesView } from './pages/SchedulesView/SchedulesView';
 import { TabletView } from './pages/TabletView/TabletView';
 import { Weekview } from './pages/WeekView/WeekView';
 import Profile from './profile/profilesettings';
@@ -48,6 +49,8 @@ export function App() {
         <Route path="/monthview/:date?" component={Monthview} />
         <Route path="/trackview/:date?/:track?" component={Trackview} />
         <Route path="/scheduling/:date?" component={Scheduling} />
+        {/* The new Schedules page (#463), beside the old one until it replaces it. */}
+        <Route path="/schedules/:date?" component={SchedulesView} />
         <Route path="/tablet" component={TabletView} />
         <Route path="/profile" component={Profile} />
         <Route path="/usermanagement" component={UserManagementView} />

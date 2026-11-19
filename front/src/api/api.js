@@ -13,6 +13,14 @@ const getTrackSections = async () => {
   return response.data;
 };
 
+// Member associations, for the range officer shift and booking holders.
+const getAssociations = async () => {
+  const response = await axios.get('/api/user', {
+    params: { role: 'association' },
+  });
+  return response.data;
+};
+
 const getTrackReservations = async (date) => {
   const response = await axios.get('/api/track-reservation', {
     params: { date: dateToString(date) },
@@ -242,6 +250,7 @@ export default {
   getSchedulingDate,
   getTrackSections,
   getTrackReservations,
+  getAssociations,
   getSchedulingWeek,
   getSchedulingFreeform,
   signIn,
