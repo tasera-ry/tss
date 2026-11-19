@@ -7,9 +7,10 @@ import moment from 'moment';
 /**
  * One month as a grid of day buttons, Monday first.
  *
- * Used to pick the day to edit, and (later) the days to copy a track's details
- * to, so selection is a list. Days before `disableBefore` cannot be chosen:
- * past days are read-only (Pasi Autio, 13.11.2026).
+ * Used to pick the day to edit, and the days to copy a track's details to, so
+ * selection is a list. Days before `disableBefore` cannot be chosen: past days
+ * are read-only (Pasi Autio, 13.11.2026). A refused day (a copy that did not
+ * fit) is outlined in red and says why in words, not by colour alone.
  */
 export function MonthCalendar({
   month,
@@ -18,6 +19,8 @@ export function MonthCalendar({
   selected,
   onSelect,
   disableBefore,
+  disabledDates = [],
+  refused = {},
 }: {
   /** Any date in the month to show, YYYY-MM-DD. */
   month: string;
@@ -26,6 +29,10 @@ export function MonthCalendar({
   selected: string[];
   onSelect: (date: string) => void;
   disableBefore?: string;
+  /** Further days that cannot be chosen. */
+  disabledDates?: string[];
+  /** Days refused, each with a short reason shown under its number. */
+  refused?: Record<string, string>;
 }) {
   const { t, i18n } = useLingui();
   // Intl through Lingui, so names follow the interface language.
@@ -94,22 +101,35 @@ export function MonthCalendar({
             // The first day starts in its weekday's column; Monday is 1.
             style={i === 0 ? { gridColumnStart: lead + 1 } : undefined}
             onClick={() => onSelect(date)}
-            disabled={disableBefore !== undefined && date < disableBefore}
+            disabled={
+              (disableBefore !== undefined && date < disableBefore) ||
+              disabledDates.includes(date)
+            }
             aria-pressed={selected.includes(date)}
             aria-current={date === today ? 'date' : undefined}
-            aria-label={label(date)}
+            aria-label={
+              refused[date] ? `${label(date)}: ${refused[date]}` : label(date)
+            }
             className={classNames(
-              'h-9 rounded-md text-sm tabular-nums',
+              'min-h-9 rounded-md text-sm tabular-nums leading-tight',
               'disabled:cursor-not-allowed disabled:text-black-tint-30',
-              selected.includes(date)
-                ? 'bg-black-tint-70 font-semibold text-white'
-                : 'hover:bg-black-tint-10',
+              refused[date]
+                ? 'bg-[#f6d5d3] font-semibold text-black ring-2 ring-[#c23a3a] ring-inset'
+                : selected.includes(date)
+                  ? 'bg-black-tint-70 font-semibold text-white'
+                  : 'hover:bg-black-tint-10',
               date === today &&
                 !selected.includes(date) &&
+                !refused[date] &&
                 'font-semibold ring-1 ring-black-tint-40 ring-inset',
             )}
           >
             {moment(date).date()}
+            {refused[date] && (
+              <span className="block font-normal text-[10px]" aria-hidden>
+                {refused[date]}
+              </span>
+            )}
           </button>
         ))}
       </div>

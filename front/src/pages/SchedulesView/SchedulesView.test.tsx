@@ -333,6 +333,130 @@ describe('SchedulesView', () => {
     });
   });
 
+  describe('copying to other days', () => {
+    const nextMonth = moment(FUTURE).add(1, 'month').startOf('month');
+    const dayName = (date: moment.Moment) =>
+      new Intl.DateTimeFormat('en', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'numeric',
+        year: 'numeric',
+      }).format(date.toDate());
+
+    function pickDays(region: HTMLElement, count: number) {
+      const panel = within(region);
+      fireEvent.click(panel.getByRole('button', { name: 'Next month' }));
+      for (let i = 0; i < count; i++) {
+        fireEvent.click(
+          panel.getByRole('button', {
+            name: dayName(nextMonth.clone().add(i, 'day')),
+          }),
+        );
+      }
+    }
+    // The open copy panel, whichever way it was opened.
+    const panelElement = () =>
+      screen.getByRole('region', { name: /Copy to other days|Repeat booking/ });
+    const dates = (count: number) =>
+      Array.from({ length: count }, (_, i) =>
+        nextMonth.clone().add(i, 'day').format('YYYY-MM-DD'),
+      );
+
+    it("copies the track's status and notice to the chosen days in one save", async () => {
+      vi.mocked(api.copyTrackDay).mockResolvedValue({} as never);
+      await renderPage();
+      const track2 = within(screen.getByRole('region', { name: 'Track 2' }));
+      fireEvent.click(
+        track2.getByRole('button', { name: 'Copy to other days' }),
+      );
+      const panel = within(
+        screen.getByRole('region', { name: 'Copy to other days' }),
+      );
+      pickDays(panelElement(), 2);
+      fireEvent.click(panel.getByRole('button', { name: 'Copy to 2 days' }));
+      await vi.waitFor(() =>
+        expect(api.copyTrackDay).toHaveBeenCalledWith({
+          track_id: 2,
+          dates: dates(2),
+          track_supervisor: 'closed',
+          notice: 'Taustavallin huolto',
+        }),
+      );
+      expect(await track2.findByText('Copied to 2 days.')).toBeInTheDocument();
+    });
+
+    it('repeats one booking, and nothing else', async () => {
+      vi.mocked(api.copyTrackDay).mockResolvedValue({} as never);
+      await renderPage();
+      const row = within(
+        within(screen.getByRole('region', { name: 'Track 1' }))
+          .getAllByRole('listitem')
+          .find((li) => li.textContent?.includes('Harjoitus')) as HTMLElement,
+      );
+      fireEvent.click(row.getByRole('button', { name: 'Repeat' }));
+      const panel = within(
+        screen.getByRole('region', { name: 'Repeat booking' }),
+      );
+      pickDays(panelElement(), 1);
+      fireEvent.click(panel.getByRole('button', { name: 'Copy to 1 day' }));
+      await vi.waitFor(() =>
+        expect(api.copyTrackDay).toHaveBeenCalledWith({
+          track_id: 1,
+          dates: dates(1),
+          reservations: [
+            {
+              type: 'private_event',
+              start_time: '12:00',
+              end_time: '14:00',
+              description: 'Harjoitus',
+              track_section_id: 11,
+              lanes_used: 10,
+              association_id: 5,
+            },
+          ],
+        }),
+      );
+    });
+
+    it('marks the days a booking does not fit on, with the lanes free, and copies nothing', async () => {
+      const [first, second] = dates(2);
+      vi.mocked(api.copyTrackDay).mockRejectedValue({
+        response: {
+          status: 409,
+          data: {
+            conflicts: [
+              { date: second, track_section_id: 11, free: 5, total: 20 },
+            ],
+          },
+        },
+      });
+      await renderPage();
+      fireEvent.click(
+        within(screen.getByRole('region', { name: 'Track 1' })).getByRole(
+          'button',
+          { name: 'Copy to other days' },
+        ),
+      );
+      const panel = within(
+        screen.getByRole('region', { name: 'Copy to other days' }),
+      );
+      fireEvent.click(panel.getByRole('checkbox', { name: /Bookings/ }));
+      pickDays(panelElement(), 2);
+      fireEvent.click(panel.getByRole('button', { name: 'Copy to 2 days' }));
+      expect(await panel.findByRole('alert')).toHaveTextContent(
+        'Nothing was copied',
+      );
+      expect(
+        panel.getByRole('button', {
+          name: `${dayName(moment(second))}: 5/20 free`,
+        }),
+      ).toBeInTheDocument();
+      expect(
+        panel.getByRole('button', { name: dayName(moment(first)) }),
+      ).toBeInTheDocument();
+    });
+  });
+
   describe('bookings', () => {
     const track1 = () =>
       within(screen.getByRole('region', { name: 'Track 1' }));

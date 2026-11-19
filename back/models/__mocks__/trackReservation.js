@@ -5,6 +5,8 @@ const _ = require('lodash');
 let reservations = [];
 let nextId = 1;
 let failNext = null;
+let copies = [];
+let copyConflicts = [];
 
 function matches(row, key) {
   return Object.keys(key).every(field => row[field] === key[field]);
@@ -49,6 +51,23 @@ const model = {
     return before - reservations.length;
   },
 
+  copyDay: async function copyDay(copy) {
+    copies.push(copy);
+    const conflicts = copyConflicts;
+    copyConflicts = [];
+    return conflicts;
+  },
+
+  /** The copies asked for, oldest first. */
+  copies: function readCopies() {
+    return copies;
+  },
+
+  /** Make the next copy report these days as not fitting. */
+  conflictNextCopy: function conflictNextCopy(conflicts) {
+    copyConflicts = conflicts;
+  },
+
   seed: async function seed(rows) {
     reservations = rows.map(row => ({ ...row }));
     nextId = Math.max(0, ...rows.map(row => row.id || 0)) + 1;
@@ -58,6 +77,8 @@ const model = {
     reservations = [];
     nextId = 1;
     failNext = null;
+    copies = [];
+    copyConflicts = [];
   },
 
   /** Make the next create or update throw, as the database would. */

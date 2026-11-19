@@ -47,6 +47,8 @@ const updateTrackReservation = async (id, data) => {
 const deleteTrackReservation = (id) =>
   axios.delete(`/api/track-reservation/${id}`);
 
+const copyTrackDay = (data) => axios.post('/api/track-day-copy', data);
+
 const getTrackReservations = async (date) => {
   const response = await axios.get('/api/track-reservation', {
     params: { date: dateToString(date) },
@@ -289,6 +291,7 @@ export default {
   createTrackReservation,
   updateTrackReservation,
   deleteTrackReservation,
+  copyTrackDay,
   getSchedulingWeek,
   getSchedulingFreeform,
   signIn,

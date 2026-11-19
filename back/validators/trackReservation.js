@@ -18,6 +18,8 @@ function handleValidationErrors(request, response, next) {
 
 const TIME = /^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/;
 const TYPES = ['private_event', 'official', 'closed'];
+// A track's status for the day; 'present' is the tablet's to set.
+const SUPERVISION = ['absent', 'closed', 'private_event'];
 
 // Postgres int4: larger values would reach the database and fail there.
 const INT4 = 2147483647;
@@ -112,6 +114,34 @@ module.exports = {
     handleValidationErrors,
     storeBody,
     storeId
+  ],
+
+  // A track's day copied to other days: any of its status, notice and
+  // bookings. The service checks the bookings against the track.
+  copy: [
+    id(body('track_id').exists().withMessage('must be included')),
+    body('dates')
+      .isArray({ min: 1, max: 366 })
+      .withMessage('must be a list of 1 to 366 dates'),
+    date(body('dates.*')),
+    body('track_supervisor')
+      .optional()
+      .isIn(SUPERVISION)
+      .withMessage(`must be one of ${SUPERVISION.join(', ')}`),
+    description(body('notice').optional()),
+    body('reservations')
+      .optional()
+      .isArray({ max: 100 })
+      .withMessage('must be a list of at most 100 bookings'),
+    body('reservations.*.type').isIn(TYPES).withMessage(`must be one of ${TYPES.join(', ')}`),
+    time(body('reservations.*.start_time')),
+    time(body('reservations.*.end_time')),
+    id(body('reservations.*.track_section_id').optional()),
+    lanes(body('reservations.*.lanes_used').optional()),
+    id(body('reservations.*.association_id').optional({ nullable: true })),
+    description(body('reservations.*.description').optional({ nullable: true })),
+    handleValidationErrors,
+    storeBody
   ],
 
   delete: [

@@ -268,6 +268,17 @@ router
     controllers.trackReservation.create
   );
 
+// A track's day copied to other days, all or nothing (#463).
+router
+  .route('/track-day-copy')
+  .post(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'),
+    validators.trackReservation.copy,
+    middlewares.trackReservation.copy,
+    controllers.trackReservation.copy
+  );
+
 router
   .route('/track-reservation/:id')
   .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'))

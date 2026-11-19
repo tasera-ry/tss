@@ -1,3 +1,4 @@
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import classNames from 'classnames';
 import { useEffect, useRef, useState } from 'react';
@@ -12,6 +13,7 @@ import {
 } from '@/trackview/trackViewPlaceholder';
 import { usePositionName, useTrackName } from '@/trackview/useTrackName';
 import { BookingForm } from './BookingForm';
+import { CopyPanel } from './CopyPanel';
 import { ensureDayRows } from './dayRows';
 import type { ApiScheduleDay, ApiTrackDay, Association } from './types';
 
@@ -67,10 +69,13 @@ export function TrackCard({
   const [error, setError] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState('');
   const [form, setForm] = useState<'new' | ApiReservation | null>(null);
+  // Copying the day, or repeating one booking.
+  const [copying, setCopying] = useState<'day' | ApiReservation | null>(null);
   const dirty = status !== stored || notice.trim() !== storedNotice;
 
   const heading = useRef<HTMLHeadingElement>(null);
   const addButton = useRef<HTMLButtonElement>(null);
+  const copyButton = useRef<HTMLButtonElement>(null);
 
   // Follow the server (a refetch, another admin, the tablet) while the card
   // has no edits of its own; never overwrite edits in progress.
@@ -168,6 +173,32 @@ export function TrackCard({
     requestAnimationFrame(() => addButton.current?.focus());
   }
 
+  function openForm(booking: 'new' | ApiReservation) {
+    setCopying(null);
+    setForm(booking);
+  }
+
+  function openCopy(what: 'day' | ApiReservation) {
+    setForm(null);
+    setAnnouncement('');
+    setCopying(what);
+  }
+
+  function closeCopy(copiedTo?: number) {
+    setCopying(null);
+    if (copiedTo) {
+      setAnnouncement(
+        t({
+          message: plural(copiedTo, {
+            one: 'Copied to # day.',
+            other: 'Copied to # days.',
+          }),
+        }),
+      );
+    }
+    requestAnimationFrame(() => copyButton.current?.focus());
+  }
+
   return (
     <section
       className={classNames(
@@ -255,7 +286,8 @@ export function TrackCard({
               where={t`Whole track`}
               total={lanes}
               past={past}
-              onEdit={() => setForm(r)}
+              onEdit={() => openForm(r)}
+              onRepeat={() => openCopy(r)}
               onDeleted={() => addButton.current?.focus()}
             />
           ))}
@@ -272,7 +304,8 @@ export function TrackCard({
                   where={ordered.length > 1 ? section.name : undefined}
                   total={section.lane_count}
                   past={past}
-                  onEdit={() => setForm(r)}
+                  onEdit={() => openForm(r)}
+                  onRepeat={() => openCopy(r)}
                   onDeleted={() => addButton.current?.focus()}
                 />
               )),
@@ -290,16 +323,42 @@ export function TrackCard({
             booking={form === 'new' ? undefined : form}
             onDone={closeForm}
           />
+        ) : copying ? (
+          <CopyPanel
+            key={copying === 'day' ? 'day' : copying.id}
+            date={day.date}
+            trackId={track.id}
+            trackSupervisor={supervisorFor(stored)}
+            notice={storedNotice}
+            bookings={[
+              ...official,
+              ...own.filter((r) => r.type !== 'official'),
+            ]}
+            booking={copying === 'day' ? undefined : copying}
+            onDone={closeCopy}
+          />
         ) : (
-          <button
-            ref={addButton}
-            type="button"
-            className="mt-3 rounded-md border border-black-tint-50 bg-white px-3 py-1.5 text-sm"
-            onClick={() => setForm('new')}
-            disabled={ordered.length === 0}
-          >
-            + {t`Add booking`}
-          </button>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              ref={addButton}
+              type="button"
+              className="rounded-md border border-black-tint-50 bg-white px-3 py-1.5 text-sm"
+              onClick={() => openForm('new')}
+              disabled={ordered.length === 0}
+            >
+              + {t`Add booking`}
+            </button>
+            {/* What is copied is what is saved: save or undo edits first. */}
+            <button
+              ref={copyButton}
+              type="button"
+              className="rounded-md border border-black-tint-50 bg-white px-3 py-1.5 text-sm disabled:opacity-60"
+              onClick={() => openCopy('day')}
+              disabled={dirty}
+            >
+              {t`Copy to other days`}
+            </button>
+          </div>
         ))}
 
       {!past && dirty && (
@@ -347,6 +406,7 @@ function BookingRow({
   total,
   past,
   onEdit,
+  onRepeat,
   onDeleted,
 }: {
   booking: ApiReservation;
@@ -354,6 +414,7 @@ function BookingRow({
   total: number;
   past: boolean;
   onEdit: () => void;
+  onRepeat: () => void;
   onDeleted: () => void;
 }) {
   const { t } = useLingui();
@@ -451,6 +512,13 @@ function BookingRow({
               onClick={onEdit}
             >
               {t`Edit`}
+            </button>
+            <button
+              type="button"
+              className="px-2 py-1 text-grey text-sm hover:text-black"
+              onClick={onRepeat}
+            >
+              {t`Repeat`}
             </button>
             <button
               ref={deleteButton}

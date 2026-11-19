@@ -2,6 +2,7 @@ const path = require('path');
 
 const root = path.join(__dirname, '..');
 const models = require(path.join(root, 'models'));
+const laneConflict = require(path.join(root, 'knex', 'laneConflict'));
 
 const _ = require('lodash');
 
@@ -45,11 +46,6 @@ async function assertAssociation(id) {
   }
 }
 
-// Raised by the #477 lane capacity trigger.
-function isLaneConflict(error) {
-  return error.code === 'P0001' && /overlaps reservations already using/.test(error.message);
-}
-
 /**
  * Official use needs every lane of every section, so the trigger's lanes-free
  * figure for one section means nothing for it: say the track is not free.
@@ -58,7 +54,7 @@ async function officialWrite(write) {
   try {
     return await write();
   } catch (error) {
-    if (isLaneConflict(error)) {
+    if (laneConflict(error)) {
       throw clientError(409, 'The track is not free for official use');
     }
     throw error;
@@ -193,6 +189,75 @@ const service = {
     if (set.association_id) await assertAssociation(set.association_id);
     const write = () => models.trackReservation.update(ids, set);
     return official ? officialWrite(write) : write();
+  },
+
+  /**
+   * Copy a track's day to other days in one save (#463): its status, its
+   * notice and any of its bookings. Days without rows get them, closed, as the
+   * Schedules page creates them. All or nothing: if a booking does not fit on
+   * some day, nothing is stored and every such day is reported.
+   *
+   * @param {object} data - { track_id, dates, track_supervisor?, notice?,
+   *   reservations?: [{ type, start_time, end_time, track_section_id?,
+   *   lanes_used?, association_id?, description? }] }
+   * @return {Promise<object>} { dates } copied to
+   */
+  copy: async function copyTrackDay(data) {
+    const dates = _.uniq(data.dates).sort();
+    dates.forEach(assertNotPast);
+    const supervision = _.pick(data, 'track_supervisor', 'notice');
+    const bookings = data.reservations || [];
+    if (_.isEmpty(supervision) && bookings.length === 0) {
+      throw clientError(400, 'Nothing to copy');
+    }
+
+    const sections = await models.trackSection.read({ track_id: data.track_id });
+    if (sections.length === 0) {
+      throw clientError(400, `Unknown track ${data.track_id}`);
+    }
+    const rows = [];
+    for (const booking of bookings) {
+      assertTimeOrder(booking.start_time, booking.end_time);
+      const base = {
+        start_time: normaliseTime(booking.start_time),
+        end_time: normaliseTime(booking.end_time),
+        type: booking.type,
+        description: booking.description ?? null
+      };
+      if (booking.type === 'official') {
+        rows.push(...sections.map(s => ({
+          ...base,
+          track_section_id: s.id,
+          lanes_used: s.lane_count,
+          association_id: null
+        })));
+        continue;
+      }
+      if (!sections.some(s => s.id === booking.track_section_id)) {
+        throw clientError(400, `Unknown track section ${booking.track_section_id}`);
+      }
+      if (!booking.lanes_used) {
+        throw clientError(400, 'A booking needs its lanes');
+      }
+      await assertAssociation(booking.association_id);
+      rows.push({
+        ...base,
+        track_section_id: booking.track_section_id,
+        lanes_used: booking.lanes_used,
+        association_id: booking.association_id ?? null
+      });
+    }
+
+    const conflicts = await models.trackReservation.copyDay({
+      trackId: data.track_id,
+      dates,
+      supervision,
+      reservations: rows
+    });
+    if (conflicts.length > 0) {
+      throw clientError(409, 'Not enough free lanes', { conflicts });
+    }
+    return { dates };
   },
 
   /**
