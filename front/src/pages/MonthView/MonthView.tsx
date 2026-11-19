@@ -353,25 +353,27 @@ function Calendar({
     touchStart.current = { x: touch.clientX, y: touch.clientY };
   };
 
-  const handleTouchEnd = (event: TouchEvent) => {
-    const start = touchStart.current;
-    touchStart.current = null;
-    if (!start) return;
+  // Swipe to change month disabled for now since it felt quite sticky on mobile.
 
-    const touch = event.changedTouches[0];
-    const dx = touch.clientX - start.x;
-    const dy = touch.clientY - start.y;
-    if (Math.abs(dx) >= SWIPE_MIN_DISTANCE && Math.abs(dx) > Math.abs(dy) * 2) {
-      onSwipe(dx < 0 ? 1 : -1);
-    }
-  };
+  // const handleTouchEnd = (event: TouchEvent) => {
+  //   const start = touchStart.current;
+  //   touchStart.current = null;
+  //   if (!start) return;
+
+  //   const touch = event.changedTouches[0];
+  //   const dx = touch.clientX - start.x;
+  //   const dy = touch.clientY - start.y;
+  //   if (Math.abs(dx) >= SWIPE_MIN_DISTANCE && Math.abs(dx) > Math.abs(dy) * 2) {
+  //     onSwipe(dx < 0 ? 1 : -1);
+  //   }
+  // };
 
   return (
     <section
       className={css.calendarCard}
       aria-busy={loading}
       onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
+      // onTouchEnd={handleTouchEnd}
     >
       <p className={css.caption}>
         {t`${weekCount} weeks · select a day to see the tracks`}
