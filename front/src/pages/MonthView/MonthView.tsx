@@ -8,7 +8,6 @@ import classNames from 'classnames';
 import moment from 'moment';
 import {
   type KeyboardEvent,
-  type TouchEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -142,8 +141,6 @@ function useFormatTime() {
     [formatter],
   );
 }
-
-const SWIPE_MIN_DISTANCE = 50;
 
 const ARROW_KEY_DAYS: Record<string, number> = {
   ArrowLeft: -1,
@@ -279,7 +276,6 @@ export function Monthview() {
             isDesktop={isDesktop}
             onDayClick={setSelectedDate}
             onNavigate={(date) => history.push(`/monthview/${date}`)}
-            onSwipe={goToMonth}
           />
         )}
 
@@ -314,7 +310,6 @@ interface CalendarProps {
   isDesktop: boolean;
   onDayClick: (date: string) => void;
   onNavigate: (date: string) => void;
-  onSwipe: (delta: 1 | -1) => void;
 }
 
 function Calendar({
@@ -326,12 +321,10 @@ function Calendar({
   isDesktop,
   onDayClick,
   onNavigate,
-  onSwipe,
 }: CalendarProps) {
   const { t } = useLingui();
   const statuses = useStatusConfigs();
   const gridRef = useRef<HTMLDivElement>(null);
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
   const pendingFocus = useRef<string | null>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: a prefetched month changes only `weeks`
@@ -372,33 +365,8 @@ function Calendar({
     }
   };
 
-  const handleTouchStart = (event: TouchEvent) => {
-    const touch = event.touches[0];
-    touchStart.current = { x: touch.clientX, y: touch.clientY };
-  };
-
-  // Swipe to change month disabled for now since it felt quite sticky on mobile.
-
-  // const handleTouchEnd = (event: TouchEvent) => {
-  //   const start = touchStart.current;
-  //   touchStart.current = null;
-  //   if (!start) return;
-
-  //   const touch = event.changedTouches[0];
-  //   const dx = touch.clientX - start.x;
-  //   const dy = touch.clientY - start.y;
-  //   if (Math.abs(dx) >= SWIPE_MIN_DISTANCE && Math.abs(dx) > Math.abs(dy) * 2) {
-  //     onSwipe(dx < 0 ? 1 : -1);
-  //   }
-  // };
-
   return (
-    <section
-      className={css.calendarCard}
-      aria-busy={loading}
-      onTouchStart={handleTouchStart}
-      // onTouchEnd={handleTouchEnd}
-    >
+    <section className={css.calendarCard} aria-busy={loading}>
       <p className={css.caption}>
         {t`${weekCount} weeks · select a day to see the tracks`}
       </p>
