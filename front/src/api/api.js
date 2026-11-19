@@ -21,6 +21,32 @@ const getAssociations = async () => {
   return response.data;
 };
 
+// A day's rows, created when a schedules card is first saved on a day that
+// has none: the range reservation, then its schedule.
+const createReservation = async (data) => {
+  const response = await axios.post('/api/reservation', data);
+  return response.data;
+};
+
+const createSchedule = async (data) => {
+  const response = await axios.post('/api/schedule', data);
+  return response.data;
+};
+
+// Part-day bookings (#492): superusers only.
+const createTrackReservation = async (data) => {
+  const response = await axios.post('/api/track-reservation', data);
+  return response.data;
+};
+
+const updateTrackReservation = async (id, data) => {
+  const response = await axios.put(`/api/track-reservation/${id}`, data);
+  return response.data;
+};
+
+const deleteTrackReservation = (id) =>
+  axios.delete(`/api/track-reservation/${id}`);
+
 const getTrackReservations = async (date) => {
   const response = await axios.get('/api/track-reservation', {
     params: { date: dateToString(date) },
@@ -251,6 +277,11 @@ export default {
   getTrackSections,
   getTrackReservations,
   getAssociations,
+  createReservation,
+  createSchedule,
+  createTrackReservation,
+  updateTrackReservation,
+  deleteTrackReservation,
   getSchedulingWeek,
   getSchedulingFreeform,
   signIn,

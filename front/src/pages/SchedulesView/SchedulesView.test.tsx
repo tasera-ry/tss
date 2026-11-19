@@ -19,6 +19,9 @@ const PAST = moment().subtract(10, 'day').format('YYYY-MM-DD');
 
 const day = {
   date: FUTURE,
+  rangeId: 56,
+  reservationId: 300,
+  scheduleId: 251,
   available: true,
   open: '10:00:00',
   close: '19:00:00',
@@ -32,6 +35,7 @@ const day = {
       description: 'Pistooli',
       notice: '',
       trackSupervision: 'absent',
+      scheduled: false,
     },
     {
       id: 2,
@@ -39,6 +43,7 @@ const day = {
       description: null,
       notice: 'Taustavallin huolto',
       trackSupervision: 'closed',
+      scheduled: { track_id: 2 },
     },
   ],
 };
@@ -153,8 +158,9 @@ describe('SchedulesView', () => {
 
   it("shows a track's status and the notice for the day", async () => {
     await renderPage();
-    expect(screen.getByText('Taustavallin huolto')).toBeInTheDocument();
-    expect(screen.getAllByText('Closed').length).toBeGreaterThan(0);
+    const track2 = within(screen.getByRole('region', { name: 'Track 2' }));
+    expect(track2.getByDisplayValue('Taustavallin huolto')).toBeInTheDocument();
+    expect(track2.getByRole('radio', { name: 'Closed' })).toBeChecked();
   });
 
   it('picks a date from the month calendar', async () => {
@@ -167,10 +173,208 @@ describe('SchedulesView', () => {
     );
     const target = moment(FUTURE).add(1, 'day');
     fireEvent.click(
-      dialog.getByRole('button', { name: target.format('dddd D.M.YYYY') }),
+      dialog.getByRole('button', {
+        name: new Intl.DateTimeFormat('en', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'numeric',
+          year: 'numeric',
+        }).format(target.toDate()),
+      }),
     );
     expect(window.location.hash).toBe(
       `#/schedules/${target.format('YYYY-MM-DD')}`,
     );
+  });
+
+  describe('editing a track', () => {
+    const track = (name: string) =>
+      within(screen.getByRole('region', { name }));
+
+    it('saves its status and notice on their own', async () => {
+      vi.mocked(api.patchScheduledSupervisionTrack).mockResolvedValue(
+        {} as never,
+      );
+      await renderPage();
+      fireEvent.change(track('Track 2').getByLabelText('Notice for the day'), {
+        target: { value: 'Huolto klo 12 asti' },
+      });
+      fireEvent.click(track('Track 2').getByRole('button', { name: 'Save' }));
+      await vi.waitFor(() =>
+        expect(api.patchScheduledSupervisionTrack).toHaveBeenCalledWith(
+          251,
+          2,
+          {
+            track_supervisor: 'closed',
+            notice: 'Huolto klo 12 asti',
+          },
+        ),
+      );
+    });
+
+    it("keeps the tablet's track officer presence when saved as normal", async () => {
+      vi.mocked(api.patchScheduledSupervisionTrack).mockResolvedValue(
+        {} as never,
+      );
+      await renderPage(FUTURE, {
+        tracks: [{ ...day.tracks[1], trackSupervision: 'present', notice: '' }],
+      });
+      fireEvent.change(track('Track 2').getByLabelText('Notice for the day'), {
+        target: { value: 'Kilpailu' },
+      });
+      fireEvent.click(track('Track 2').getByRole('button', { name: 'Save' }));
+      await vi.waitFor(() =>
+        expect(api.patchScheduledSupervisionTrack).toHaveBeenCalledWith(
+          251,
+          2,
+          {
+            track_supervisor: 'present',
+            notice: 'Kilpailu',
+          },
+        ),
+      );
+    });
+
+    it("creates the day's rows first on a day that has none, keeping it closed", async () => {
+      vi.mocked(api.createReservation).mockResolvedValue({ id: 900 });
+      vi.mocked(api.createSchedule).mockResolvedValue({ id: 901 });
+      vi.mocked(api.postScheduledSupervisionTrack).mockResolvedValue(
+        {} as never,
+      );
+      await renderPage(FUTURE, {
+        reservationId: null,
+        scheduleId: null,
+        available: null,
+      });
+      fireEvent.click(track('Track 1').getByRole('radio', { name: 'Closed' }));
+      fireEvent.click(track('Track 1').getByRole('button', { name: 'Save' }));
+      await vi.waitFor(() =>
+        expect(api.postScheduledSupervisionTrack).toHaveBeenCalledWith({
+          scheduled_range_supervision_id: 901,
+          track_id: 1,
+          track_supervisor: 'closed',
+          notice: '',
+        }),
+      );
+      expect(api.createReservation).toHaveBeenCalledWith({
+        range_id: 56,
+        date: FUTURE,
+        available: false,
+      });
+      expect(api.createSchedule).toHaveBeenCalledWith({
+        range_reservation_id: 900,
+        open: '17:00',
+        close: '20:00',
+      });
+    });
+
+    it('offers no editing on a past day', async () => {
+      await renderPage(PAST);
+      expect(
+        screen.queryByLabelText('Notice for the day'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: /Add booking/ }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: 'Edit' }),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('bookings', () => {
+    const track1 = () =>
+      within(screen.getByRole('region', { name: 'Track 1' }));
+
+    async function openForm() {
+      await renderPage();
+      fireEvent.click(track1().getByRole('button', { name: /Add booking/ }));
+      const form = within(screen.getByRole('form', { name: 'New booking' }));
+      fireEvent.change(form.getByLabelText('Starts'), {
+        target: { value: '15:00' },
+      });
+      fireEvent.change(form.getByLabelText('Ends'), {
+        target: { value: '16:00' },
+      });
+      return form;
+    }
+
+    it('creates a private event on a section, with lanes and a holder', async () => {
+      vi.mocked(api.createTrackReservation).mockResolvedValue([] as never);
+      const form = await openForm();
+      fireEvent.change(form.getByLabelText('Section'), {
+        target: { value: '12' },
+      });
+      fireEvent.change(form.getByLabelText('Lanes'), {
+        target: { value: '8' },
+      });
+      fireEvent.change(form.getByLabelText('Booked by'), {
+        target: { value: '5' },
+      });
+      fireEvent.click(form.getByRole('button', { name: 'Save booking' }));
+      await vi.waitFor(() =>
+        expect(api.createTrackReservation).toHaveBeenCalledWith({
+          date: FUTURE,
+          type: 'private_event',
+          start_time: '15:00',
+          end_time: '16:00',
+          description: null,
+          track_section_id: 12,
+          lanes_used: 8,
+          association_id: 5,
+        }),
+      );
+    });
+
+    it('says how many lanes are free when the database refuses', async () => {
+      vi.mocked(api.createTrackReservation).mockRejectedValue({
+        response: { status: 409, data: { free: 5, total: 20 } },
+      });
+      const form = await openForm();
+      fireEvent.change(form.getByLabelText('Lanes'), {
+        target: { value: '10' },
+      });
+      fireEvent.click(form.getByRole('button', { name: 'Save booking' }));
+      expect(await form.findByRole('alert')).toHaveTextContent(
+        'Only 5/20 lanes are free at that time.',
+      );
+    });
+
+    it('books authority use for the whole track, without lanes or a holder', async () => {
+      vi.mocked(api.createTrackReservation).mockResolvedValue([] as never);
+      const form = await openForm();
+      fireEvent.click(
+        form.getByRole('radio', { name: 'Reserved for authority use' }),
+      );
+      expect(form.queryByLabelText('Lanes')).not.toBeInTheDocument();
+      fireEvent.click(form.getByRole('button', { name: 'Save booking' }));
+      await vi.waitFor(() =>
+        expect(api.createTrackReservation).toHaveBeenCalledWith({
+          date: FUTURE,
+          type: 'official',
+          track_section_id: 11,
+          start_time: '15:00',
+          end_time: '16:00',
+          description: null,
+        }),
+      );
+    });
+
+    it('deletes a booking after asking', async () => {
+      vi.mocked(api.deleteTrackReservation).mockResolvedValue({} as never);
+      await renderPage();
+      const rows = track1().getAllByRole('listitem');
+      const privateRow = within(
+        rows.find((row) =>
+          row.textContent?.includes('Harjoitus'),
+        ) as HTMLElement,
+      );
+      fireEvent.click(privateRow.getByRole('button', { name: 'Delete' }));
+      expect(api.deleteTrackReservation).not.toHaveBeenCalled();
+      fireEvent.click(privateRow.getByRole('button', { name: 'Delete' }));
+      await vi.waitFor(() =>
+        expect(api.deleteTrackReservation).toHaveBeenCalledWith(3),
+      );
+    });
   });
 });

@@ -16,9 +16,10 @@ import {
   formatTime,
   toMinutes,
 } from '@/trackview/trackViewPlaceholder';
-import { useTrackName } from '@/trackview/useTrackName';
 import { validateLogin } from '@/utils/Utils';
 import { MonthCalendar } from './MonthCalendar';
+import { TrackCard } from './TrackCard';
+import type { ApiScheduleDay, ApiTrackDay, Association } from './types';
 
 /**
  * Schedules (#463): the admin page for one day of the range. A first part:
@@ -49,9 +50,8 @@ export function SchedulesView() {
     ['trackReservations', date],
     () => api.getTrackReservations(date),
   );
-  const associations = useQuery<{ id: number; name: string }[]>(
-    ['associations'],
-    () => api.getAssociations(),
+  const associations = useQuery<Association[]>(['associations'], () =>
+    api.getAssociations(),
   );
 
   const go = (to: string) => history.push(`/schedules/${to}`);
@@ -127,15 +127,21 @@ export function SchedulesView() {
         <>
           <RangeCard day={day.data} associations={associations.data ?? []} />
           <h2 className="mt-2 font-semibold text-xl">{t`Tracks`}</h2>
+          <p className="-mt-3 text-grey text-sm">
+            {t`Track officers are marked present on the tablet. Here you set each track's status, notice and bookings.`}
+          </p>
           <div className="flex flex-col gap-4">
             {day.data.tracks.map((track: ApiTrackDay) => (
               <TrackCard
-                key={track.id}
+                key={`${date}-${track.id}-${track.trackSupervision}-${track.notice}`}
+                day={day.data}
                 track={track}
                 sections={(sections.data ?? []).filter(
                   (s) => s.track_id === track.id,
                 )}
                 reservations={reservations.data ?? []}
+                associations={associations.data ?? []}
+                past={past}
               />
             ))}
           </div>
@@ -146,25 +152,6 @@ export function SchedulesView() {
 }
 
 export default SchedulesView;
-
-/** The day from GET /api/datesupreme/:date, as far as this page reads it. */
-interface ApiScheduleDay {
-  available: boolean | null;
-  open: string | null;
-  close: string | null;
-  rangeSupervisorId: number | null;
-  rangeSupervision: string | null;
-  arrivingAt: string | null;
-  tracks: ApiTrackDay[];
-}
-
-interface ApiTrackDay {
-  id: number;
-  name: string;
-  description: string | null;
-  notice: string | null;
-  trackSupervision: string | null;
-}
 
 function DatePicker({
   date,
@@ -215,10 +202,10 @@ function DatePicker({
         <ArrowDropDownIcon fontSize="small" />
       </button>
       {open && (
-        <div
-          role="dialog"
+        <dialog
+          open
           aria-label={t`Choose a date`}
-          className="absolute top-full left-1/2 z-10 mt-2 -translate-x-1/2 rounded-xl border border-black-tint-20 bg-white p-3 shadow-lg"
+          className="absolute top-full left-1/2 z-10 m-0 mt-2 -translate-x-1/2 rounded-xl border border-black-tint-20 bg-white p-3 shadow-lg"
         >
           <MonthCalendar
             month={month}
@@ -230,7 +217,7 @@ function DatePicker({
               onPick(picked);
             }}
           />
-        </div>
+        </dialog>
       )}
     </div>
   );
@@ -241,7 +228,7 @@ function RangeCard({
   associations,
 }: {
   day: ApiScheduleDay;
-  associations: { id: number; name: string }[];
+  associations: Association[];
 }) {
   const { t } = useLingui();
   const open = toMinutes(day.open);
@@ -290,145 +277,5 @@ function RangeCard({
         )}
       </dl>
     </section>
-  );
-}
-
-function TrackCard({
-  track,
-  sections,
-  reservations,
-}: {
-  track: ApiTrackDay;
-  sections: ApiSection[];
-  reservations: ApiReservation[];
-}) {
-  const { t } = useLingui();
-  const trackName = useTrackName();
-  const ordered = [...sections].sort((a, b) => a.position - b.position);
-  const sectionIds = ordered.map((s) => s.id);
-  const own = reservations.filter((r) =>
-    sectionIds.includes(r.track_section_id),
-  );
-  // Official use is one booking stored on every section; list it once.
-  const official = own
-    .filter((r) => r.type === 'official')
-    .filter(
-      (r, i, all) =>
-        all.findIndex(
-          (o) => o.start_time === r.start_time && o.end_time === r.end_time,
-        ) === i,
-    );
-  const lanes = ordered.reduce((sum, s) => sum + s.lane_count, 0);
-
-  const status =
-    track.trackSupervision === 'closed'
-      ? t`Closed`
-      : track.trackSupervision === 'private_event'
-        ? t`Private event`
-        : t`Normal`;
-
-  return (
-    <section className="rounded-xl border border-black-tint-20 bg-white p-4 sm:p-5">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h3 className="font-semibold text-lg">{trackName(track.name)}</h3>
-        <span
-          className={classNames(
-            'rounded-full border px-3 py-0.5 text-sm',
-            track.trackSupervision === 'closed'
-              ? 'border-black-tint-40 font-semibold'
-              : 'border-black-tint-20',
-          )}
-        >
-          {status}
-        </span>
-      </div>
-      <p className="mt-1 text-grey text-sm tabular-nums">
-        {lanes} {t`lanes`}
-        {track.trackSupervision === 'present' && (
-          <> · {t`Track officer present`}</>
-        )}
-      </p>
-      {track.notice && (
-        <p className="mt-3 border-grey border-l-3 bg-black-tint-05 py-2 pr-3 pl-3 text-sm">
-          <b className="font-semibold">{t`Notice for the day`}</b>{' '}
-          {track.notice}
-        </p>
-      )}
-
-      <h4 className="mt-4 mb-1 font-semibold text-grey text-xs uppercase tracking-wider">
-        {t`Bookings`}
-      </h4>
-      {own.length === 0 ? (
-        <p className="text-grey text-sm">{t`No bookings`}</p>
-      ) : (
-        <ul className="list-none divide-y divide-black-tint-10 p-0 text-sm">
-          {official.map((r) => (
-            <BookingRow
-              key={`official-${r.id}`}
-              booking={r}
-              where={t`Whole track`}
-              total={lanes}
-            />
-          ))}
-          {ordered.flatMap((section) =>
-            own
-              .filter(
-                (r) =>
-                  r.type !== 'official' && r.track_section_id === section.id,
-              )
-              .map((r) => (
-                <BookingRow
-                  key={r.id}
-                  booking={r}
-                  where={ordered.length > 1 ? section.name : undefined}
-                  total={section.lane_count}
-                />
-              )),
-          )}
-        </ul>
-      )}
-    </section>
-  );
-}
-
-function BookingRow({
-  booking,
-  where,
-  total,
-}: {
-  booking: ApiReservation;
-  where?: string;
-  total: number;
-}) {
-  const { t } = useLingui();
-  const start = toMinutes(booking.start_time);
-  const end = toMinutes(booking.end_time);
-  const type = {
-    private_event: t`Private event`,
-    official: t`Reserved for authority use`,
-    closed: t`Closed`,
-  }[booking.type];
-
-  return (
-    <li className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-2">
-      <span className="w-28 shrink-0 tabular-nums">
-        {start !== null &&
-          end !== null &&
-          `${formatTime(start)}–${formatTime(end)}`}
-      </span>
-      <span className="min-w-0 flex-1">
-        <b className="font-semibold">{type}</b>
-        {booking.association_name && <> · {booking.association_name}</>}
-        {where && <span className="text-grey"> · {where}</span>}
-        {booking.description && (
-          <span className="block text-grey">{booking.description}</span>
-        )}
-      </span>
-      <span className="text-grey tabular-nums">
-        {booking.type === 'official'
-          ? t`All lanes`
-          : `${booking.lanes_used}/${total}`}
-      </span>
-    </li>
   );
 }

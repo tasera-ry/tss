@@ -27,20 +27,30 @@ export function MonthCalendar({
   onSelect: (date: string) => void;
   disableBefore?: string;
 }) {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
+  // Intl through Lingui, so names follow the interface language.
+  const label = (date: string) =>
+    i18n.date(moment(date).toDate(), {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+    });
   const first = moment(month).startOf('month');
   const lead = first.isoWeekday() - 1;
   const days = Array.from({ length: first.daysInMonth() }, (_, i) =>
     first.clone().add(i, 'day').format('YYYY-MM-DD'),
   );
-  const cells: (string | null)[] = [...Array(lead).fill(null), ...days];
-  while (cells.length % 7) cells.push(null);
   const weekdays = Array.from({ length: 7 }, (_, i) =>
-    moment()
-      .isoWeekday(i + 1)
-      .format('dd'),
+    i18n.date(
+      first
+        .clone()
+        .isoWeekday(i + 1)
+        .toDate(),
+      { weekday: 'short' },
+    ),
   );
-  const title = first.format('MMMM YYYY');
+  const title = i18n.date(first.toDate(), { month: 'long', year: 'numeric' });
 
   return (
     <div className="w-80 max-w-full">
@@ -71,39 +81,37 @@ export function MonthCalendar({
           <ChevronRightIcon fontSize="small" />
         </button>
       </div>
-      <div className="grid grid-cols-7 gap-0.5 text-center" role="grid">
+      <div className="grid grid-cols-7 gap-0.5 text-center">
         {weekdays.map((day) => (
           <span key={day} className="py-1 text-grey text-xs" aria-hidden>
             {day}
           </span>
         ))}
-        {cells.map((date, i) =>
-          date === null ? (
-            <span key={`empty-${i}`} />
-          ) : (
-            <button
-              key={date}
-              type="button"
-              onClick={() => onSelect(date)}
-              disabled={disableBefore !== undefined && date < disableBefore}
-              aria-pressed={selected.includes(date)}
-              aria-current={date === today ? 'date' : undefined}
-              aria-label={moment(date).format('dddd D.M.YYYY')}
-              className={classNames(
-                'h-9 rounded-md text-sm tabular-nums',
-                'disabled:cursor-not-allowed disabled:text-black-tint-30',
-                selected.includes(date)
-                  ? 'bg-black-tint-70 font-semibold text-white'
-                  : 'hover:bg-black-tint-10',
-                date === today &&
-                  !selected.includes(date) &&
-                  'font-semibold ring-1 ring-black-tint-40 ring-inset',
-              )}
-            >
-              {moment(date).date()}
-            </button>
-          ),
-        )}
+        {days.map((date, i) => (
+          <button
+            key={date}
+            type="button"
+            // The first day starts in its weekday's column; Monday is 1.
+            style={i === 0 ? { gridColumnStart: lead + 1 } : undefined}
+            onClick={() => onSelect(date)}
+            disabled={disableBefore !== undefined && date < disableBefore}
+            aria-pressed={selected.includes(date)}
+            aria-current={date === today ? 'date' : undefined}
+            aria-label={label(date)}
+            className={classNames(
+              'h-9 rounded-md text-sm tabular-nums',
+              'disabled:cursor-not-allowed disabled:text-black-tint-30',
+              selected.includes(date)
+                ? 'bg-black-tint-70 font-semibold text-white'
+                : 'hover:bg-black-tint-10',
+              date === today &&
+                !selected.includes(date) &&
+                'font-semibold ring-1 ring-black-tint-40 ring-inset',
+            )}
+          >
+            {moment(date).date()}
+          </button>
+        ))}
       </div>
     </div>
   );
