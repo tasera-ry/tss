@@ -448,12 +448,21 @@ function WeekRow({
   );
 }
 
-function ArrivalText({ day }: { day: MonthDay }) {
+function ArrivalText({
+  day,
+  compact = false,
+}: {
+  day: MonthDay;
+  compact?: boolean;
+}) {
   const { t } = useLingui();
   const formatTime = useFormatTime();
   if (day.rangeSupervision !== 'confirmed') return null;
 
   const time = formatTime(day.arrivingAt);
+  if (compact) {
+    return time ? <span className={css.timeTextMini}>{time}</span> : null;
+  }
   return (
     <span className={css.timeText}>
       {time ? t`Estimate ${time}` : t`Arrival time unknown`}
@@ -533,7 +542,10 @@ function DayCell({
             <ArrivalText day={day} />
           </span>
         ) : (
-          <span className={css.cellCenter}>{shownStatus.icon}</span>
+          <span className={css.cellCenter}>
+            {shownStatus.icon}
+            <ArrivalText day={day} compact />
+          </span>
         ))}
       {!isDesktop && isToday && inCurrentMonth && (
         <span className={css.todayMini}>

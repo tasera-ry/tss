@@ -322,6 +322,21 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   pointer-events: none;
 }
 
+.timeTextMini {
+  position: absolute;
+  right: 2px;
+  bottom: 4px;
+  left: 2px;
+  font-size: 9px;
+  font-weight: bold;
+  line-height: 1.2;
+  text-align: center;
+
+  /* for today and time txt not going over each other */
+  .today & {
+  }
+}
+
 .todayBadge {
   display: inline-block;
   padding: 1px 6px;
