@@ -330,10 +330,6 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-weight: 600;
   line-height: 1.2;
   text-align: center;
-
-  /* for today and time txt not going over each other */
-  .today & {
-  }
 }
 
 .todayBadge {

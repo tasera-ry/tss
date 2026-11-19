@@ -9,6 +9,7 @@ import moment from 'moment';
 import {
   type KeyboardEvent,
   type TouchEvent,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -123,16 +124,23 @@ const ARRIVAL_SHOWN: RangeSupervision[] = ['confirmed', 'not confirmed'];
 
 function useFormatTime() {
   const { i18n } = useLingui();
-  return (time?: string | null) => {
-    if (!time) return '';
-    const parsed = moment(time, ['HH:mm:ss', 'HH:mm'], true);
-    if (!parsed.isValid()) return '';
-    return new Intl.DateTimeFormat(i18n.locale, {
-      hour: 'numeric',
-      minute: '2-digit',
-      hourCycle: 'h23',
-    }).format(parsed.toDate());
-  };
+  const formatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat(i18n.locale, {
+        hour: 'numeric',
+        minute: '2-digit',
+        hourCycle: 'h23',
+      }),
+    [i18n.locale],
+  );
+  return useCallback(
+    (time?: string | null) => {
+      if (!time) return '';
+      const parsed = moment(time, ['HH:mm:ss', 'HH:mm'], true);
+      return parsed.isValid() ? formatter.format(parsed.toDate()) : '';
+    },
+    [formatter],
+  );
 }
 
 const SWIPE_MIN_DISTANCE = 50;
@@ -270,6 +278,7 @@ export function Monthview() {
             selectedDate={isDesktop ? undefined : selectedDate}
             isDesktop={isDesktop}
             onDayClick={setSelectedDate}
+            onNavigate={(date) => history.push(`/monthview/${date}`)}
             onSwipe={goToMonth}
           />
         )}
@@ -304,6 +313,7 @@ interface CalendarProps {
   selectedDate?: string;
   isDesktop: boolean;
   onDayClick: (date: string) => void;
+  onNavigate: (date: string) => void;
   onSwipe: (delta: 1 | -1) => void;
 }
 
@@ -315,12 +325,23 @@ function Calendar({
   selectedDate,
   isDesktop,
   onDayClick,
+  onNavigate,
   onSwipe,
 }: CalendarProps) {
   const { t } = useLingui();
   const statuses = useStatusConfigs();
   const gridRef = useRef<HTMLDivElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const pendingFocus = useRef<string | null>(null);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: a prefetched month changes only `weeks`
+  useEffect(() => {
+    if (!pendingFocus.current || loading) return;
+    gridRef.current
+      ?.querySelector<HTMLElement>(`[data-date="${pendingFocus.current}"]`)
+      ?.focus();
+    pendingFocus.current = null;
+  }, [weeks, loading]);
 
   const weekdays = [
     [t`Mon`, t`Monday`],
@@ -342,9 +363,12 @@ function Calendar({
     const cell = gridRef.current?.querySelector<HTMLButtonElement>(
       `[data-date="${next}"]`,
     );
+    event.preventDefault();
     if (cell) {
-      event.preventDefault();
       cell.focus();
+    } else {
+      pendingFocus.current = next;
+      onNavigate(next);
     }
   };
 
@@ -493,9 +517,12 @@ function DayCell({
   const formatTime = useFormatTime();
 
   const date = moment(day.date);
-  const dayLabel = inCurrentMonth ? date.format('D') : date.format('D.M.');
+  const dayLabel = inCurrentMonth
+    ? date.format('D')
+    : i18n.date(date.toDate(), { day: 'numeric', month: 'numeric' });
   const shownStatus = inCurrentMonth ? status : null;
   const time = formatTime(day.arrivingAt);
+  const showTodayMini = !isDesktop && isToday && inCurrentMonth;
 
   const ariaLabel = [
     i18n.date(date.toDate(), {
@@ -544,10 +571,10 @@ function DayCell({
         ) : (
           <span className={css.cellCenter}>
             {shownStatus.icon}
-            <ArrivalText day={day} compact />
+            {!showTodayMini && <ArrivalText day={day} compact />}
           </span>
         ))}
-      {!isDesktop && isToday && inCurrentMonth && (
+      {showTodayMini && (
         <span className={css.todayMini}>
           <Trans>TODAY</Trans>
         </span>
@@ -592,8 +619,12 @@ function SelectedDayCard({ day, today }: { day: MonthDay; today: string }) {
   const status = statuses[day.rangeSupervision];
 
   const date = moment(day.date);
-  const weekday = i18n.date(date.toDate(), { weekday: 'long' });
-  const title = `${weekday} ${date.format('D.M.YYYY')}`;
+  const title = i18n.date(date.toDate(), {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric',
+  });
   const time = formatTime(day.arrivingAt);
 
   return (
