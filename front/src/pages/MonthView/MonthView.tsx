@@ -88,8 +88,6 @@ function showsArrival(supervision: RangeSupervision) {
   return supervision === 'confirmed';
 }
 
-const ARRIVAL_SHOWN: RangeSupervision[] = ['confirmed', 'not confirmed'];
-
 const timeFormatters = new Map<string, Intl.DateTimeFormat>();
 
 /** One formatter per locale, shared by every cell. */
@@ -123,11 +121,25 @@ function monthQueryKey(monthKey: string) {
 
 async function fetchMonth(monthKey: string): Promise<MonthWeek[]> {
   const { first, last } = calendarRange(monthKey);
-  const data = (await api.getSchedulingFreeform(
-    first.format('YYYY-MM-DD'),
-    last.format('YYYY-MM-DD'),
-  )) as DaySchedule[];
+  let data: DaySchedule[];
+  try {
+    data = await api.getSchedulingFreeform(
+      first.format('YYYY-MM-DD'),
+      last.format('YYYY-MM-DD'),
+    );
+  } catch (error) {
+    // The API answers 404 rather than an empty list when no day in the range has a schedule.
+    if (isNotFound(error)) return buildCalendar(monthKey);
+    throw error;
+  }
   return buildCalendar(monthKey, data.map(toMonthDay));
+}
+
+function isNotFound(error: unknown) {
+  return (
+    (error as { response?: { status?: number } } | null)?.response?.status ===
+    404
+  );
 }
 
 function parseDateParam(dateParam?: string) {
@@ -583,7 +595,7 @@ function SelectedDayCard({ day, status, today }: SelectedDayCardProps) {
         </span>
         <span>{status.label}</span>
       </div>
-      {ARRIVAL_SHOWN.includes(day.rangeSupervision) && (
+      {showsArrival(day.rangeSupervision) && (
         <p className={css.detailArrival}>
           <AccessTimeIcon className={css.legendIcon} />
           {time ? t`Estimated arrival ${time}` : t`Arrival time unknown`}

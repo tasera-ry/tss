@@ -243,6 +243,22 @@ describe('testing monthview', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
+  it('shows an empty month when the API has no schedule for it', async () => {
+    setDateParam('2021-03-10');
+    vi.mocked(api.getSchedulingFreeform).mockRejectedValue({
+      response: { status: 404 },
+    });
+    const { container } = renderMonthview();
+
+    expect(
+      await screen.findByRole('button', {
+        name: 'Wednesday, March 10, Range officer undefined',
+      }),
+    ).toBeEnabled();
+    expect(container.querySelectorAll('[data-date]')).toHaveLength(35);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
   it('moves to the next month', async () => {
     setDateParam('2021-03-10');
     renderMonthview();
@@ -349,6 +365,23 @@ describe('testing monthview', () => {
       ).parentElement?.parentElement as HTMLElement;
       expect(
         within(card).getByText('Range officer present'),
+      ).toBeInTheDocument();
+      expect(within(card).queryByText(/arrival/i)).not.toBeInTheDocument();
+    });
+
+    it('does not show an arrival time for an unconfirmed officer', async () => {
+      setDateParam('2021-03-10');
+      vi.mocked(api.getSchedulingFreeform).mockImplementation(
+        async (begin: string, end: string) =>
+          apiRange(begin, end, () => ({ rangeSupervision: 'not confirmed' })),
+      );
+      renderMonthview();
+
+      const card = (
+        await screen.findByRole('heading', { name: 'Wednesday, 3/10/2021' })
+      ).parentElement?.parentElement as HTMLElement;
+      expect(
+        within(card).getByText('Range officer predefined, not confirmed'),
       ).toBeInTheDocument();
       expect(within(card).queryByText(/arrival/i)).not.toBeInTheDocument();
     });
