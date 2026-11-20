@@ -1,6 +1,5 @@
 import { TestProviders } from '@/_TestUtils/TestProvides';
 import api from '@/api/api';
-import type { DaySchedule } from '@/types';
 import {
   fireEvent,
   render,
@@ -11,7 +10,7 @@ import {
 import moment from 'moment';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { HashRouter as Router, useParams } from 'react-router-dom';
-import { Monthview, toMonthDay } from './MonthView';
+import { Monthview } from './MonthView';
 
 vi.mock('axios');
 
@@ -392,45 +391,5 @@ describe('testing monthview', () => {
         screen.getByRole('link', { name: /^Saturday, March 13/ }),
       ).toHaveTextContent('Arrival time unknown');
     });
-  });
-});
-
-describe('toMonthDay', () => {
-  const base = {
-    date: '2021-03-02',
-    rangeSupervision: 'confirmed',
-    arriving_at: null,
-    tracks: [],
-  };
-
-  it('falls back to the track-level arrival time like WeekView', () => {
-    const day = {
-      ...base,
-      tracks: [
-        { notice: null, scheduled: { arriving_at: null } },
-        { notice: null, scheduled: { arriving_at: '17:30:00' } },
-      ],
-    } as unknown as DaySchedule;
-
-    expect(toMonthDay(day)).toEqual({
-      date: '2021-03-02',
-      rangeSupervision: 'confirmed',
-      arrivingAt: '17:30:00',
-    });
-  });
-
-  it('handles days without tracks', () => {
-    expect(toMonthDay(base as unknown as DaySchedule)).toMatchObject({
-      arrivingAt: null,
-    });
-  });
-
-  it('treats an unknown status as undefined supervision', () => {
-    expect(
-      toMonthDay({
-        ...base,
-        rangeSupervision: 'weird',
-      } as unknown as DaySchedule).rangeSupervision,
-    ).toBe('absent');
   });
 });

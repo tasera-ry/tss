@@ -1,3 +1,4 @@
+import { Trans, useLingui } from '@lingui/react/macro';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
@@ -8,7 +9,6 @@ import classNames from 'classnames';
 import moment from 'moment';
 import {
   type KeyboardEvent,
-  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -16,9 +16,6 @@ import {
 } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { Link, useHistory, useParams } from 'react-router-dom';
-import 'moment/locale/fi';
-import 'moment/locale/sv';
-import { Trans, useLingui } from '@lingui/react/macro';
 
 import api from '@/api/api';
 import { DateHeader } from '@/lib/components/DateHeader';
@@ -27,48 +24,15 @@ import { ViewChanger } from '@/lib/components/ViewChanger';
 import type { DaySchedule } from '@/types';
 
 import css from './MonthView.module.scss';
-
-const RANGE_SUPERVISIONS = [
-  'present',
-  'confirmed',
-  'not confirmed',
-  'absent',
-  'closed',
-] as const;
-
-type RangeSupervision = (typeof RANGE_SUPERVISIONS)[number];
-
-export interface MonthDay {
-  date: string; // YYYY-MM-DD
-  rangeSupervision: RangeSupervision;
-  arrivingAt?: string | null;
-}
-
-export interface MonthWeek {
-  week: number;
-  days: MonthDay[];
-}
-
-function isRangeSupervision(value: unknown): value is RangeSupervision {
-  return RANGE_SUPERVISIONS.includes(value as RangeSupervision);
-}
-
-export function toMonthDay(day: DaySchedule): MonthDay {
-  const tracks = day.tracks ?? [];
-  // The API repeats the scheduled supervision's arrival time on every track row.
-  const arrivingAt =
-    day.arriving_at ??
-    tracks.find((tr) => tr.scheduled?.arriving_at != null)?.scheduled
-      .arriving_at ??
-    null;
-  return {
-    date: day.date,
-    rangeSupervision: isRangeSupervision(day.rangeSupervision)
-      ? day.rangeSupervision
-      : 'absent',
-    arrivingAt,
-  };
-}
+import {
+  type MonthDay,
+  type MonthWeek,
+  RANGE_SUPERVISIONS,
+  type RangeSupervision,
+  buildCalendar,
+  calendarRange,
+  toMonthDay,
+} from './monthViewData';
 
 interface StatusConfig {
   className: string;
@@ -119,27 +83,31 @@ function useStatusConfigs(): StatusConfigs {
   );
 }
 
+/** The legend ties the arrival estimate to the confirmed state only. */
+function showsArrival(supervision: RangeSupervision) {
+  return supervision === 'confirmed';
+}
+
 const ARRIVAL_SHOWN: RangeSupervision[] = ['confirmed', 'not confirmed'];
 
-function useFormatTime() {
-  const { i18n } = useLingui();
-  const formatter = useMemo(
-    () =>
-      new Intl.DateTimeFormat(i18n.locale, {
-        hour: 'numeric',
-        minute: '2-digit',
-        hourCycle: 'h23',
-      }),
-    [i18n.locale],
-  );
-  return useCallback(
-    (time?: string | null) => {
-      if (!time) return '';
-      const parsed = moment(time, ['HH:mm:ss', 'HH:mm'], true);
-      return parsed.isValid() ? formatter.format(parsed.toDate()) : '';
-    },
-    [formatter],
-  );
+const timeFormatters = new Map<string, Intl.DateTimeFormat>();
+
+/** One formatter per locale, shared by every cell. */
+function formatTime(time: string | null | undefined, locale: string) {
+  if (!time) return '';
+  const parsed = moment(time, ['HH:mm:ss', 'HH:mm'], true);
+  if (!parsed.isValid()) return '';
+
+  let formatter = timeFormatters.get(locale);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat(locale, {
+      hour: 'numeric',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    });
+    timeFormatters.set(locale, formatter);
+  }
+  return formatter.format(parsed.toDate());
 }
 
 const ARROW_KEY_DAYS: Record<string, number> = {
@@ -185,11 +153,16 @@ export function Monthview() {
     }
   }, [dateParam, validDateParam, history, today]);
 
-  const [selectedDate, setSelectedDate] = useState(targetDate);
+  // A selection belongs to the URL date it was made on; a new URL date resets it.
+  const [selection, setSelection] = useState({
+    targetDate,
+    date: targetDate,
+  });
+  const selectedDate =
+    selection.targetDate === targetDate ? selection.date : targetDate;
+  const selectDate = (date: string) => setSelection({ targetDate, date });
 
-  useEffect(() => {
-    setSelectedDate(targetDate);
-  }, [targetDate]);
+  const statuses = useStatusConfigs();
 
   const { data, isError, refetch } = useQuery({
     queryKey: monthQueryKey(monthKey),
@@ -270,19 +243,26 @@ export function Monthview() {
           <Calendar
             weeks={weeks}
             loading={!data}
+            statuses={statuses}
             targetDate={targetDate}
             today={today}
             selectedDate={isDesktop ? undefined : selectedDate}
             isDesktop={isDesktop}
-            onDayClick={setSelectedDate}
+            onDayClick={selectDate}
             onNavigate={(date) => history.push(`/monthview/${date}`)}
           />
         )}
 
         {!isDesktop && (
           <div className={css.mobileOnly}>
-            {selectedDay && <SelectedDayCard day={selectedDay} today={today} />}
-            <Legend />
+            {selectedDay && (
+              <SelectedDayCard
+                day={selectedDay}
+                status={statuses[selectedDay.rangeSupervision]}
+                today={today}
+              />
+            )}
+            <Legend statuses={statuses} />
           </div>
         )}
       </div>
@@ -304,6 +284,7 @@ function WeekRange({ weeks }: { weeks: MonthWeek[] }) {
 interface CalendarProps {
   weeks: MonthWeek[];
   loading: boolean;
+  statuses: StatusConfigs;
   targetDate: string;
   today: string;
   selectedDate?: string;
@@ -315,6 +296,7 @@ interface CalendarProps {
 function Calendar({
   weeks,
   loading,
+  statuses,
   targetDate,
   today,
   selectedDate,
@@ -323,7 +305,6 @@ function Calendar({
   onNavigate,
 }: CalendarProps) {
   const { t } = useLingui();
-  const statuses = useStatusConfigs();
   const gridRef = useRef<HTMLDivElement>(null);
   const pendingFocus = useRef<string | null>(null);
 
@@ -440,28 +421,6 @@ function WeekRow({
   );
 }
 
-function ArrivalText({
-  day,
-  compact = false,
-}: {
-  day: MonthDay;
-  compact?: boolean;
-}) {
-  const { t } = useLingui();
-  const formatTime = useFormatTime();
-  if (day.rangeSupervision !== 'confirmed') return null;
-
-  const time = formatTime(day.arrivingAt);
-  if (compact) {
-    return time ? <span className={css.timeTextMini}>{time}</span> : null;
-  }
-  return (
-    <span className={css.timeText}>
-      {time ? t`Estimate ${time}` : t`Arrival time unknown`}
-    </span>
-  );
-}
-
 interface DayCellProps {
   day: MonthDay;
   status: StatusConfig | null;
@@ -482,15 +441,23 @@ function DayCell({
   onClick,
 }: DayCellProps) {
   const { t, i18n } = useLingui();
-  const formatTime = useFormatTime();
 
   const date = moment(day.date);
   const dayLabel = inCurrentMonth
     ? date.format('D')
     : i18n.date(date.toDate(), { day: 'numeric', month: 'numeric' });
   const shownStatus = inCurrentMonth ? status : null;
-  const time = formatTime(day.arrivingAt);
   const showTodayMini = !isDesktop && isToday && inCurrentMonth;
+
+  const time = showsArrival(day.rangeSupervision)
+    ? formatTime(day.arrivingAt, i18n.locale)
+    : '';
+  const arrival =
+    shownStatus && showsArrival(day.rangeSupervision)
+      ? time
+        ? t`Estimate ${time}`
+        : t`Arrival time unknown`
+      : null;
 
   const ariaLabel = [
     i18n.date(date.toDate(), {
@@ -500,9 +467,7 @@ function DayCell({
     }),
     isToday && t`Today`,
     shownStatus?.label,
-    shownStatus &&
-      day.rangeSupervision === 'confirmed' &&
-      (time ? t`Estimate ${time}` : t`Arrival time unknown`),
+    arrival,
   ]
     .filter(Boolean)
     .join(', ');
@@ -534,12 +499,14 @@ function DayCell({
         (isDesktop ? (
           <span className={css.cellBody}>
             <span className={css.statusText}>{shownStatus.label}</span>
-            <ArrivalText day={day} />
+            {arrival && <span className={css.timeText}>{arrival}</span>}
           </span>
         ) : (
           <span className={css.cellCenter}>
             {shownStatus.icon}
-            {!showTodayMini && <ArrivalText day={day} compact />}
+            {!showTodayMini && time && (
+              <span className={css.timeTextMini}>{time}</span>
+            )}
           </span>
         ))}
       {showTodayMini && (
@@ -580,11 +547,14 @@ function DayCell({
   );
 }
 
-function SelectedDayCard({ day, today }: { day: MonthDay; today: string }) {
+interface SelectedDayCardProps {
+  day: MonthDay;
+  status: StatusConfig;
+  today: string;
+}
+
+function SelectedDayCard({ day, status, today }: SelectedDayCardProps) {
   const { t, i18n } = useLingui();
-  const statuses = useStatusConfigs();
-  const formatTime = useFormatTime();
-  const status = statuses[day.rangeSupervision];
 
   const date = moment(day.date);
   const title = i18n.date(date.toDate(), {
@@ -593,7 +563,7 @@ function SelectedDayCard({ day, today }: { day: MonthDay; today: string }) {
     month: 'numeric',
     year: 'numeric',
   });
-  const time = formatTime(day.arrivingAt);
+  const time = formatTime(day.arrivingAt, i18n.locale);
 
   return (
     <div className={css.detailCard} aria-live="polite">
@@ -626,9 +596,7 @@ function SelectedDayCard({ day, today }: { day: MonthDay; today: string }) {
   );
 }
 
-function Legend() {
-  const statuses = useStatusConfigs();
-
+function Legend({ statuses }: { statuses: StatusConfigs }) {
   return (
     <div className={css.legendCard}>
       <h3 className={css.legendTitle}>
@@ -654,32 +622,4 @@ function Legend() {
       </ul>
     </div>
   );
-}
-
-function calendarRange(monthKey: string) {
-  const month = moment(monthKey, 'YYYY-MM');
-  return {
-    first: month.clone().startOf('month').startOf('isoWeek'),
-    last: month.clone().endOf('month').endOf('isoWeek'),
-  };
-}
-
-/** Every day of the visible range, so a day missing from the API cannot shift the grid. */
-function buildCalendar(monthKey: string, days: MonthDay[] = []): MonthWeek[] {
-  const byDate = new Map(days.map((day) => [day.date, day]));
-  const { first, last } = calendarRange(monthKey);
-  const weeks: MonthWeek[] = [];
-
-  for (
-    const d = first.clone();
-    d.isSameOrBefore(last, 'day');
-    d.add(1, 'day')
-  ) {
-    const date = d.format('YYYY-MM-DD');
-    if (d.isoWeekday() === 1) weeks.push({ week: d.isoWeek(), days: [] });
-    weeks[weeks.length - 1].days.push(
-      byDate.get(date) ?? { date, rangeSupervision: 'absent' },
-    );
-  }
-  return weeks;
 }
