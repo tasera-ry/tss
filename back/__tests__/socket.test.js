@@ -18,8 +18,7 @@ describe('socket.io relay', () => {
   });
 
   afterAll((done) => {
-    io.close();
-    httpServer.close(done);
+    io.close(done);
   });
 
   afterEach(() => {
