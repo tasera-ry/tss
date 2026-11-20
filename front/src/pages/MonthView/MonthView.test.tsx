@@ -385,6 +385,30 @@ describe('testing monthview', () => {
       ).toBeInTheDocument();
       expect(within(card).queryByText(/arrival/i)).not.toBeInTheDocument();
     });
+
+    it('selects a day of the next month shown in the grid', async () => {
+      setDateParam('2021-03-10');
+      vi.mocked(api.getSchedulingFreeform).mockImplementation(
+        async (begin: string, end: string) =>
+          apiRange(begin, end, (date) =>
+            date === '2021-04-01' ? { rangeSupervision: 'present' } : {},
+          ),
+      );
+      renderMonthview();
+
+      fireEvent.click(
+        await screen.findByRole('button', { name: 'Thursday, April 1' }),
+      );
+
+      const card = screen.getByRole('heading', { name: 'Thursday, 4/1/2021' })
+        .parentElement?.parentElement as HTMLElement;
+      expect(
+        within(card).getByText('Range officer present'),
+      ).toBeInTheDocument();
+      expect(
+        within(card).getByRole('link', { name: 'Open day view' }),
+      ).toHaveAttribute('href', '#/dayview/2021-04-01');
+    });
   });
 
   describe('on desktop', () => {
