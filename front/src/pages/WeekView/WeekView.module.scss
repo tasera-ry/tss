@@ -1,3 +1,5 @@
+@use '../../colors.module.scss' as colors;
+
 $desktop: 768px;
 $wide: 922px;
 $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -77,12 +79,30 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
 .statusMessage {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
   align-items: center;
   justify-content: center;
   min-height: 240px;
   padding: 24px;
   text-align: center;
   color: var(--color-grey);
+}
+
+.retryButton {
+  padding: 10px 20px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--color-white);
+  background: colors.$COLOR_GREEN_DARK;
+  border: none;
+  border-radius: 8px;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-black);
+    outline-offset: 2px;
+  }
 }
 
 .weekCard {

@@ -73,8 +73,24 @@ function useStatusConfigs() {
   }, [t]);
 }
 
-const formatTime = (time?: string | null) =>
-  time ? moment(time, ['HH:mm:ss', 'HH:mm']).format('H.mm') : '';
+const timeFormatters = new Map<string, Intl.DateTimeFormat>();
+
+function formatTime(time: string | null | undefined, locale: string) {
+  if (!time) return '';
+  const parsed = moment(time, ['HH:mm:ss', 'HH:mm'], true);
+  if (!parsed.isValid()) return '';
+
+  let formatter = timeFormatters.get(locale);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat(locale, {
+      hour: 'numeric',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    });
+    timeFormatters.set(locale, formatter);
+  }
+  return formatter.format(parsed.toDate());
+}
 
 function weekDates(targetDate: string) {
   const first = moment(targetDate).startOf('isoWeek');
@@ -102,7 +118,7 @@ export const Weekview = () => {
     [dateParam],
   );
 
-  const { data, isError } = useQuery({
+  const { data, isError, refetch } = useQuery({
     queryKey: ['weekview', moment(targetDate).startOf('isoWeek').format()],
     queryFn: () => getSchedulingWeek(targetDate),
   });
@@ -138,8 +154,19 @@ export const Weekview = () => {
         <p className={css.dateRange}>{formatWeekRange(targetDate)}</p>
 
         {isError && !data ? (
-          <div className={css.statusMessage}>
-            <Trans>Could not load the schedule. Please try again later.</Trans>
+          <div className={css.statusMessage} role="alert">
+            <p>
+              <Trans>
+                Could not load the schedule. Please try again later.
+              </Trans>
+            </p>
+            <button
+              type="button"
+              className={css.retryButton}
+              onClick={() => refetch()}
+            >
+              <Trans>Try again</Trans>
+            </button>
           </div>
         ) : (
           <WeekCalendar days={data?.week} targetDate={targetDate} />
@@ -201,7 +228,7 @@ function DayItem({
     weekday: 'long',
   }).format(date.toDate());
   const weekdayLabel = weekday.charAt(0).toUpperCase() + weekday.slice(1);
-  const dateLabel = date.format('DD.MM.YYYY');
+  const dateLabel = date.format('D.M.YYYY');
 
   const todayMarker = isToday && (
     <span className={css.todayMarker} aria-hidden="true">
@@ -235,7 +262,7 @@ function DayItem({
     (track) => track.notice != null && track.notice !== '',
   );
 
-  const time = formatTime(getArrivingAt(day));
+  const time = formatTime(getArrivingAt(day), i18n.locale);
 
   return (
     <li className={css.dayItem}>
@@ -243,7 +270,7 @@ function DayItem({
       <Link
         to={`/dayview/${day.date}`}
         aria-current={isToday ? 'date' : undefined}
-        aria-label={`${weekdayLabel} ${date.format('D.M.YYYY')} ${status.label}`}
+        aria-label={`${weekdayLabel} ${dateLabel} ${status.label}`}
         className={classNames(
           css.dayCard,
           isToday && css.today,

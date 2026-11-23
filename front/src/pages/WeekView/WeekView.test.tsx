@@ -2,7 +2,7 @@ import { TestProviders } from '@/_TestUtils/TestProvides';
 import { schedulingWeek } from '@/_TestUtils/TestUtils';
 import type { DaySchedule } from '@/types';
 import { getSchedulingWeek } from '@/utils/Utils';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import moment from 'moment';
 import { act } from 'react-dom/test-utils';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -113,7 +113,7 @@ describe('Weekview', () => {
     );
     await renderAt('2026-10-14');
 
-    expect(await screen.findByText('Estimate 17.30')).toBeInTheDocument();
+    expect(await screen.findByText('Estimate 17:30')).toBeInTheDocument();
     expect(screen.getByText('Arrival time unknown')).toBeInTheDocument();
   });
 
@@ -153,15 +153,19 @@ describe('Weekview', () => {
     expect(document.querySelector('[aria-busy="true"]')).not.toBeNull();
   });
 
-  it('shows an error when the schedule cannot be loaded', async () => {
-    vi.mocked(getSchedulingWeek).mockRejectedValue(new Error('boom'));
+  it('shows an error with a retry when the schedule cannot be loaded', async () => {
+    vi.mocked(getSchedulingWeek).mockRejectedValueOnce(new Error('boom'));
+    vi.mocked(getSchedulingWeek).mockResolvedValueOnce(buildWeek('2026-10-12'));
     await renderAt('2026-10-14');
 
-    expect(
-      await screen.findByText(
-        'Could not load the schedule. Please try again later.',
-      ),
-    ).toBeInTheDocument();
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Could not load the schedule. Please try again later.',
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+
+    expect(await screen.findAllByRole('link', { name: /2026/ })).toHaveLength(
+      7,
+    );
   });
 });
 

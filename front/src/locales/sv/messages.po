@@ -15,7 +15,7 @@ msgstr ""
 msgid "{booked, plural, one {# lane booked} other {# lanes booked}}"
 msgstr ""
 
-#: src/pages/WeekView/WeekView.tsx:176
+#: src/pages/WeekView/WeekView.tsx:205
 msgid "{dayCount} days · select a day to see the tracks"
 msgstr "{dayCount} dagar · välj en dag för att se banorna"
 
@@ -129,7 +129,7 @@ msgstr "Är du säker på att du vill ta bort denna rata?"
 #~ msgid "Are you sure?"
 #~ msgstr "Är du säker?"
 
-#: src/pages/WeekView/WeekView.tsx:243
+#: src/pages/WeekView/WeekView.tsx:298
 msgid "Arrival time unknown"
 msgstr "Ankomsttid okänd"
 
@@ -330,7 +330,7 @@ msgstr "Anslutningen timeoutade. Kontrollera nätverksanslutningen."
 msgid "Could not load associations"
 msgstr "Kunde inte ladda föreningar"
 
-#: src/pages/WeekView/WeekView.tsx:141
+#: src/pages/WeekView/WeekView.tsx:159
 msgid "Could not load the schedule. Please try again later."
 msgstr "Det gick inte att ladda schemat. Försök igen senare."
 
@@ -541,7 +541,7 @@ msgstr "Fel vid verifiering av token!"
 #~ msgid "Error: Device status must be either 'free' or 'reserved'"
 #~ msgstr "Fel: Enhetsstatusen måste vara antigen 'fri' eller 'reserverad'"
 
-#: src/pages/WeekView/WeekView.tsx:243
+#: src/pages/WeekView/WeekView.tsx:298
 msgid "Estimate {time}"
 msgstr "Beräknad {time}"
 
@@ -1042,7 +1042,7 @@ msgstr "Tombola resultat"
 msgid "Raffle supervisors"
 msgstr "Värdera handledare"
 
-#: src/pages/WeekView/WeekView.tsx:71
+#: src/pages/WeekView/WeekView.tsx:68
 #: src/pages/DayView/DayView.tsx:178
 #: src/lib/components/TableLegends.tsx:34
 msgid "Range closed"
@@ -1080,7 +1080,7 @@ msgstr ""
 #: src/scheduling/Scheduling.jsx:384
 #: src/scheduling/Scheduling.jsx:389
 #: src/scheduling/Scheduling.jsx:982
-#: src/pages/WeekView/WeekView.tsx:53
+#: src/pages/WeekView/WeekView.tsx:50
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:130
 #: src/pages/DayView/DayView.tsx:174
 msgid "Range officer confirmed"
@@ -1120,7 +1120,7 @@ msgstr "Banofficerhantering"
 msgid "Range officer predefined"
 msgstr "Banofficer inte bekräftat"
 
-#: src/pages/WeekView/WeekView.tsx:59
+#: src/pages/WeekView/WeekView.tsx:56
 #: src/lib/components/TableLegends.tsx:17
 msgid "Range officer predefined, not confirmed"
 msgstr "Banofficer fördefinierad, men inte bekräftat"
@@ -1129,7 +1129,7 @@ msgstr "Banofficer fördefinierad, men inte bekräftat"
 #: src/scheduling/Scheduling.jsx:399
 #: src/scheduling/Scheduling.jsx:401
 #: src/scheduling/Scheduling.jsx:973
-#: src/pages/WeekView/WeekView.tsx:47
+#: src/pages/WeekView/WeekView.tsx:44
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:118
 #: src/pages/DayView/DayView.tsx:170
 #: src/lib/components/TableLegends.tsx:14
@@ -1138,7 +1138,7 @@ msgstr "Banofficer närvarande"
 
 #: src/scheduling/Scheduling.jsx:976
 #: src/scheduling/Scheduling.jsx:988
-#: src/pages/WeekView/WeekView.tsx:65
+#: src/pages/WeekView/WeekView.tsx:62
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:122
 #: src/pages/DayView/DayView.tsx:172
 #: src/lib/components/TableLegends.tsx:37
@@ -1492,7 +1492,7 @@ msgstr "Tid för att skicka e-post"
 msgid "Today"
 msgstr "Idag"
 
-#: src/pages/WeekView/WeekView.tsx:212
+#: src/pages/WeekView/WeekView.tsx:235
 msgid "TODAY"
 msgstr "IDAG"
 
@@ -1524,7 +1524,7 @@ msgstr "Bana borttagen"
 #~ msgid "Track deletion failed"
 #~ msgstr "Bana borttagning misslyckades"
 
-#: src/pages/WeekView/WeekView.tsx:231
+#: src/pages/WeekView/WeekView.tsx:286
 #: src/pages/MonthView/MonthView.tsx:215
 #: src/pages/DayView/DayView.tsx:157
 #: src/pages/DayView/DayView.tsx:201
@@ -1571,6 +1571,10 @@ msgstr ""
 #: src/trackview/Trackview.tsx:329
 msgid "Tracks can be used once the range officer arrives."
 msgstr ""
+
+#: src/pages/WeekView/WeekView.tsx:168
+msgid "Try again"
+msgstr "Försök igen"
 
 #: src/raffle/RaffleDatePicker.jsx:19
 #~ msgid "Tu"
