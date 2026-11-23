@@ -5,7 +5,6 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import CircularProgress from '@mui/material/CircularProgress';
 import classNames from 'classnames';
 import moment from 'moment';
 import { useCallback, useMemo } from 'react';
@@ -19,8 +18,6 @@ import type { DaySchedule } from '@/types';
 import { JumpToCurrent, getSchedulingWeek } from '@/utils/Utils';
 
 import css from './WeekView.module.scss';
-
-const classes = classNames.bind(css);
 
 type RangeSupervision =
   | 'present'
@@ -79,6 +76,13 @@ function useStatusConfigs() {
 const formatTime = (time?: string | null) =>
   time ? moment(time, ['HH:mm:ss', 'HH:mm']).format('H.mm') : '';
 
+function weekDates(targetDate: string) {
+  const first = moment(targetDate).startOf('isoWeek');
+  return Array.from({ length: 7 }, (_, i) =>
+    first.clone().add(i, 'day').format('YYYY-MM-DD'),
+  );
+}
+
 function getArrivingAt(day: DaySchedule) {
   // The API repeats the scheduled supervision's arrival time on every track row.
   return (
@@ -98,7 +102,7 @@ export const Weekview = () => {
     [dateParam],
   );
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isError } = useQuery({
     queryKey: ['weekview', moment(targetDate).startOf('isoWeek').format()],
     queryFn: () => getSchedulingWeek(targetDate),
   });
@@ -115,12 +119,12 @@ export const Weekview = () => {
     <div>
       <InfoBox />
 
-      <div className={classes(css.weekContainer)}>
-        <div className={classes(css.toolbar)}>
-          <div className={classes(css.todayButton)}>
+      <div className={css.weekContainer}>
+        <div className={css.toolbar}>
+          <div className={css.todayButton}>
             <JumpToCurrent />
           </div>
-          <div className={classes(css.viewTabs)}>
+          <div className={css.viewTabs}>
             <ViewChanger />
           </div>
         </div>
@@ -131,20 +135,14 @@ export const Weekview = () => {
           onNext={() => goToWeek(1)}
           type="week"
         />
-        <p className={classes(css.dateRange)}>{formatWeekRange(targetDate)}</p>
+        <p className={css.dateRange}>{formatWeekRange(targetDate)}</p>
 
-        {data?.week ? (
-          <WeekCalendar days={data.week} />
-        ) : (
-          <div className={classes(css.statusMessage)}>
-            {isError ? (
-              <Trans>
-                Could not load the schedule. Please try again later.
-              </Trans>
-            ) : (
-              isLoading && <CircularProgress disableShrink />
-            )}
+        {isError && !data ? (
+          <div className={css.statusMessage}>
+            <Trans>Could not load the schedule. Please try again later.</Trans>
           </div>
+        ) : (
+          <WeekCalendar days={data?.week} targetDate={targetDate} />
         )}
       </div>
     </div>
@@ -166,38 +164,72 @@ export function formatWeekRange(targetDate: string) {
   return `${first.format('D.')}–${last.format('D.M.YYYY')}`;
 }
 
-function WeekCalendar({ days }: { days: DaySchedule[] }) {
+function WeekCalendar({
+  days,
+  targetDate,
+}: { days?: DaySchedule[]; targetDate: string }) {
   const { t } = useLingui();
-  const dayCount = days.length;
+  const dates = days ? days.map((day) => day.date) : weekDates(targetDate);
+  const dayCount = dates.length;
 
   return (
-    <section className={classes(css.weekCard)}>
-      <p className={classes(css.caption)}>
+    <section className={css.weekCard} aria-busy={!days}>
+      <p className={css.caption}>
         {t`${dayCount} days · select a day to see the tracks`}
       </p>
-      <ol className={classes(css.dayList)}>
-        {days.map((day) => (
-          <DayItem key={day.date} day={day} />
+      <ol className={css.dayList}>
+        {dates.map((date, i) => (
+          <DayItem key={date} date={date} day={days?.[i]} />
         ))}
       </ol>
     </section>
   );
 }
 
-function DayItem({ day }: { day: DaySchedule }) {
+function DayItem({
+  date: dateString,
+  day,
+}: { date: string; day?: DaySchedule }) {
   const { t, i18n } = useLingui();
   const statuses = useStatusConfigs();
-  const status =
-    statuses[day.rangeSupervision as RangeSupervision] ?? statuses.absent;
 
-  const date = moment(day.date);
+  const date = moment(dateString);
   const isToday = date.isSame(moment(), 'day');
   const isPast = date.isBefore(moment(), 'day');
 
   const weekday = new Intl.DateTimeFormat(i18n.locale, {
     weekday: 'long',
-  }).format(new Date(day.date));
+  }).format(date.toDate());
   const weekdayLabel = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+  const dateLabel = date.format('DD.MM.YYYY');
+
+  const todayMarker = isToday && (
+    <span className={css.todayMarker} aria-hidden="true">
+      <Trans>TODAY</Trans>
+    </span>
+  );
+
+  if (!day) {
+    return (
+      <li className={css.dayItem}>
+        {todayMarker}
+        <div
+          className={classNames(css.dayCard, css.pending, isToday && css.today)}
+        >
+          <span className={css.dayHead}>
+            <span className={css.weekdayRow}>
+              <span className={css.weekday}>{weekdayLabel}</span>
+            </span>
+            <span className={css.date}>{dateLabel}</span>
+          </span>
+          <span className={classNames(css.dayStatus, css.loading)} />
+        </div>
+      </li>
+    );
+  }
+
+  const status =
+    statuses[day.rangeSupervision as RangeSupervision] ?? statuses.absent;
 
   const hasNotice = (day.tracks ?? []).some(
     (track) => track.notice != null && track.notice !== '',
@@ -206,40 +238,36 @@ function DayItem({ day }: { day: DaySchedule }) {
   const time = formatTime(getArrivingAt(day));
 
   return (
-    <li className={classes(css.dayItem)}>
-      {isToday && (
-        <span className={classes(css.todayMarker)} aria-hidden="true">
-          <Trans>TODAY</Trans>
-        </span>
-      )}
+    <li className={css.dayItem}>
+      {todayMarker}
       <Link
         to={`/dayview/${day.date}`}
         aria-current={isToday ? 'date' : undefined}
         aria-label={`${weekdayLabel} ${date.format('D.M.YYYY')} ${status.label}`}
-        className={classes(
+        className={classNames(
           css.dayCard,
           isToday && css.today,
           isPast && css.past,
         )}
       >
-        <span className={classes(css.dayHead, hasNotice && css.hasNotice)}>
-          <span className={classes(css.weekdayRow)}>
-            <span className={classes(css.weekday)}>{weekdayLabel}</span>
+        <span className={classNames(css.dayHead, hasNotice && css.hasNotice)}>
+          <span className={css.weekdayRow}>
+            <span className={css.weekday}>{weekdayLabel}</span>
             {hasNotice && (
               <InfoOutlinedIcon
-                className={classes(css.noticeIcon)}
+                className={css.noticeIcon}
                 titleAccess={t`Track has additional information`}
               />
             )}
           </span>
-          <span className={classes(css.date)}>{date.format('DD.MM.YYYY')}</span>
+          <span className={css.date}>{dateLabel}</span>
         </span>
-        <span className={classes(css.dayStatus, status.className)}>
+        <span className={classNames(css.dayStatus, status.className)}>
           {status.icon}
-          <span className={classes(css.statusText)}>
+          <span className={css.statusText}>
             <span>{status.label}</span>
             {status.key === 'confirmed' && (
-              <span className={classes(css.timeText)}>
+              <span className={css.timeText}>
                 {time ? t`Estimate ${time}` : t`Arrival time unknown`}
               </span>
             )}

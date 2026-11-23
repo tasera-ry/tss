@@ -143,6 +143,16 @@ describe('Weekview', () => {
     ).toHaveLength(1);
   });
 
+  it('shows the week as placeholder cards while loading', async () => {
+    vi.mocked(getSchedulingWeek).mockReturnValue(new Promise(() => {}));
+    await renderAt('2026-10-14');
+
+    expect(screen.getByText('12.10.2026')).toBeInTheDocument();
+    expect(screen.getByText('18.10.2026')).toBeInTheDocument();
+    expect(screen.queryAllByRole('link', { name: /2026/ })).toHaveLength(0);
+    expect(document.querySelector('[aria-busy="true"]')).not.toBeNull();
+  });
+
   it('shows an error when the schedule cannot be loaded', async () => {
     vi.mocked(getSchedulingWeek).mockRejectedValue(new Error('boom'));
     await renderAt('2026-10-14');

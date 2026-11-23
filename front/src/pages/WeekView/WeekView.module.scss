@@ -190,6 +190,14 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
 }
 
+.pending {
+  cursor: default;
+
+  &:hover {
+    border-color: var(--color-black-tint-20);
+  }
+}
+
 .today {
   border: 2px solid var(--color-black);
 
@@ -306,6 +314,10 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 .statusClosed {
   background-color: var(--color-red-light);
   color: var(--color-white);
+}
+
+.loading {
+  background-color: var(--color-black-tint-05);
 }
 
 .statusIcon {
