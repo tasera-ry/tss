@@ -75,10 +75,11 @@ function setDesktop(matches: boolean) {
   }));
 }
 
-function monthviewTree() {
-  const client = new QueryClient({
+function monthviewTree(
+  client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
-  });
+  }),
+) {
   return (
     <QueryClientProvider client={client}>
       <Router>
@@ -265,6 +266,32 @@ describe('testing monthview', () => {
 
     fireEvent.click(screen.getByTestId('nextDay'));
     expect(window.location.hash).toBe('#/monthview/2021-04-10');
+  });
+
+  it('does not refetch months it has just loaded or prefetched', async () => {
+    setDateParam('2021-03-10');
+    vi.mocked(api.getSchedulingFreeform).mockClear();
+    const client = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    const { rerender } = render(monthviewTree(client), {
+      wrapper: TestProviders,
+    });
+    await screen.findByText('March 2021');
+    await waitFor(() =>
+      expect(api.getSchedulingFreeform).toHaveBeenCalledTimes(3),
+    );
+
+    setDateParam('2021-04-10');
+    rerender(monthviewTree(client));
+    await screen.findByText('April 2021');
+    await waitFor(() =>
+      expect(api.getSchedulingFreeform).toHaveBeenCalledTimes(4),
+    );
+    expect(api.getSchedulingFreeform).toHaveBeenLastCalledWith(
+      '2021-04-26',
+      '2021-06-06',
+    );
   });
 
   it('moves focus between days with the arrow keys', async () => {

@@ -23,7 +23,7 @@ msgstr "{equipmentCount, plural, one {# laite} other {# laitetta}}"
 msgid "{tracksCount, plural, one {# track} other {# tracks}}"
 msgstr "{tracksCount, plural, one {# rata} other {# rataa}}"
 
-#: src/pages/MonthView/MonthView.tsx:354
+#: src/pages/MonthView/MonthView.tsx:359
 msgid "{weekCount} weeks · select a day to see the tracks"
 msgstr "{weekCount} viikkoa · valitse päivä nähdäksesi radat"
 
@@ -129,8 +129,8 @@ msgstr "Haluatko varmasti poistaa tämän viestin?"
 msgid "Are you sure you want to delete this track?"
 msgstr "Haluatko varmasti poistaa tämän radan?"
 
-#: src/pages/MonthView/MonthView.tsx:461
-#: src/pages/MonthView/MonthView.tsx:591
+#: src/pages/MonthView/MonthView.tsx:466
+#: src/pages/MonthView/MonthView.tsx:596
 msgid "Arrival time unknown"
 msgstr "Saapumisaika ei tiedossa"
 
@@ -303,7 +303,7 @@ msgstr "Yhteys aika katkaisiin. Tarkista verkkoyhteys."
 msgid "Could not load associations"
 msgstr "Yhteisöjen lataus epäonnistui"
 
-#: src/pages/MonthView/MonthView.tsx:241
+#: src/pages/MonthView/MonthView.tsx:246
 msgid "Could not load the schedule. Please try again later."
 msgstr "Aikataulun lataaminen epäonnistui. Yritä myöhemmin uudelleen."
 
@@ -331,7 +331,7 @@ msgstr "Päivämäärä"
 msgid "Day"
 msgstr "Päivä"
 
-#: src/pages/MonthView/MonthView.tsx:621
+#: src/pages/MonthView/MonthView.tsx:626
 msgid "Day of the previous or next month"
 msgstr "Edellisen tai seuraavan kuukauden päivä"
 
@@ -494,7 +494,7 @@ msgstr "Ratan päivitys epäonnistui"
 msgid "Error verifying token!"
 msgstr "Ongelma tokenin varmennuksessa!"
 
-#: src/pages/MonthView/MonthView.tsx:460
+#: src/pages/MonthView/MonthView.tsx:465
 msgid "Estimate {time}"
 msgstr "Arvio {time}"
 
@@ -502,7 +502,7 @@ msgstr "Arvio {time}"
 msgid "Estimated arrival"
 msgstr "Arvioitu saapumisaika"
 
-#: src/pages/MonthView/MonthView.tsx:591
+#: src/pages/MonthView/MonthView.tsx:596
 msgid "Estimated arrival {time}"
 msgstr "Arvioitu saapumisaika {time}"
 
@@ -554,11 +554,11 @@ msgstr "vapaana"
 msgid "Free"
 msgstr "Vapaa"
 
-#: src/pages/MonthView/MonthView.tsx:327
+#: src/pages/MonthView/MonthView.tsx:332
 msgid "Fri"
 msgstr "Pe"
 
-#: src/pages/MonthView/MonthView.tsx:327
+#: src/pages/MonthView/MonthView.tsx:332
 msgid "Friday"
 msgstr "perjantai"
 
@@ -615,7 +615,7 @@ msgstr "ampumapaikkaa"
 msgid "Leftmost"
 msgstr "Vasemmanpuoleisin"
 
-#: src/pages/MonthView/MonthView.tsx:605
+#: src/pages/MonthView/MonthView.tsx:610
 msgid "Legend"
 msgstr "Selite"
 
@@ -706,11 +706,11 @@ msgstr "Vähintään {5} iso kirjain"
 msgid "Minimum length of password is 6 characters"
 msgstr "Salasanan minimipituus on 6 merkkiä"
 
-#: src/pages/MonthView/MonthView.tsx:323
+#: src/pages/MonthView/MonthView.tsx:328
 msgid "Mon"
 msgstr "Ma"
 
-#: src/pages/MonthView/MonthView.tsx:323
+#: src/pages/MonthView/MonthView.tsx:328
 msgid "Monday"
 msgstr "maanantai"
 
@@ -855,7 +855,7 @@ msgstr "Avoinna"
 msgid "Open All"
 msgstr "Avaa kaikki"
 
-#: src/pages/MonthView/MonthView.tsx:595
+#: src/pages/MonthView/MonthView.tsx:600
 msgid "Open day view"
 msgstr "Avaa päivänäkymä"
 
@@ -1123,11 +1123,11 @@ msgstr "Rooli"
 msgid "Role is required"
 msgstr "Rooli on pakollinen"
 
-#: src/pages/MonthView/MonthView.tsx:328
+#: src/pages/MonthView/MonthView.tsx:333
 msgid "Sat"
 msgstr "La"
 
-#: src/pages/MonthView/MonthView.tsx:328
+#: src/pages/MonthView/MonthView.tsx:333
 msgid "Saturday"
 msgstr "lauantai"
 
@@ -1288,11 +1288,11 @@ msgstr "Lähetä"
 msgid "Successfully updated!"
 msgstr "Päivitys onnistui!"
 
-#: src/pages/MonthView/MonthView.tsx:329
+#: src/pages/MonthView/MonthView.tsx:334
 msgid "Sun"
 msgstr "Su"
 
-#: src/pages/MonthView/MonthView.tsx:329
+#: src/pages/MonthView/MonthView.tsx:334
 msgid "Sunday"
 msgstr "sunnuntai"
 
@@ -1348,11 +1348,11 @@ msgstr "Tuloksien tallennus epäonnistui"
 msgid "This track has no schedule for the selected day."
 msgstr "Radalla ei ole aikataulua valitulle päivälle."
 
-#: src/pages/MonthView/MonthView.tsx:326
+#: src/pages/MonthView/MonthView.tsx:331
 msgid "Thu"
 msgstr "To"
 
-#: src/pages/MonthView/MonthView.tsx:326
+#: src/pages/MonthView/MonthView.tsx:331
 msgid "Thursday"
 msgstr "torstai"
 
@@ -1361,14 +1361,14 @@ msgid "Time for sending emails"
 msgstr "Sähköpostiviestien lähetysaika"
 
 #: src/utils/Utils.jsx:100
-#: src/pages/MonthView/MonthView.tsx:222
-#: src/pages/MonthView/MonthView.tsx:470
+#: src/pages/MonthView/MonthView.tsx:227
+#: src/pages/MonthView/MonthView.tsx:475
 msgid "Today"
 msgstr "Tänään"
 
-#: src/pages/MonthView/MonthView.tsx:492
-#: src/pages/MonthView/MonthView.tsx:516
-#: src/pages/MonthView/MonthView.tsx:578
+#: src/pages/MonthView/MonthView.tsx:497
+#: src/pages/MonthView/MonthView.tsx:521
+#: src/pages/MonthView/MonthView.tsx:583
 msgid "TODAY"
 msgstr "TÄNÄÄN"
 
@@ -1425,15 +1425,15 @@ msgstr "Radat ovat käytettävissä aukioloaikana."
 msgid "Tracks can be used once the range officer arrives."
 msgstr "Radat ovat käytettävissä, kun päävalvoja saapuu."
 
-#: src/pages/MonthView/MonthView.tsx:250
+#: src/pages/MonthView/MonthView.tsx:255
 msgid "Try again"
 msgstr "Yritä uudelleen"
 
-#: src/pages/MonthView/MonthView.tsx:324
+#: src/pages/MonthView/MonthView.tsx:329
 msgid "Tue"
 msgstr "Ti"
 
-#: src/pages/MonthView/MonthView.tsx:324
+#: src/pages/MonthView/MonthView.tsx:329
 msgid "Tuesday"
 msgstr "tiistai"
 
@@ -1513,16 +1513,16 @@ msgstr "Vieraita tänään"
 msgid "Warning!"
 msgstr "Varoitus!"
 
-#: src/pages/MonthView/MonthView.tsx:325
+#: src/pages/MonthView/MonthView.tsx:330
 msgid "Wed"
 msgstr "Ke"
 
-#: src/pages/MonthView/MonthView.tsx:325
+#: src/pages/MonthView/MonthView.tsx:330
 msgid "Wednesday"
 msgstr "keskiviikko"
 
 #: src/trackview/Trackview.tsx:237
-#: src/pages/MonthView/MonthView.tsx:358
+#: src/pages/MonthView/MonthView.tsx:363
 #: src/lib/components/ViewChanger.jsx:42
 msgid "Week"
 msgstr "Viikko"
@@ -1535,7 +1535,7 @@ msgstr "Viikko {weekNumber} {year}"
 #~ msgid "Weeks {firstWeek}–{lastWeek}"
 #~ msgstr "Viikot {firstWeek}–{lastWeek}"
 
-#: src/pages/MonthView/MonthView.tsx:359
+#: src/pages/MonthView/MonthView.tsx:364
 msgid "Wk"
 msgstr "Vko"
 

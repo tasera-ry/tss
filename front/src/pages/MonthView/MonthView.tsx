@@ -115,6 +115,8 @@ const ARROW_KEY_DAYS: Record<string, number> = {
   ArrowDown: 7,
 };
 
+const MONTH_STALE_TIME = 60_000;
+
 function monthQueryKey(monthKey: string) {
   return ['monthview', monthKey];
 }
@@ -179,6 +181,7 @@ export function Monthview() {
   const { data, isError, refetch } = useQuery({
     queryKey: monthQueryKey(monthKey),
     queryFn: () => fetchMonth(monthKey),
+    staleTime: MONTH_STALE_TIME,
   });
 
   useEffect(() => {
@@ -186,8 +189,10 @@ export function Monthview() {
       const adjacent = moment(monthKey, 'YYYY-MM')
         .add(delta, 'month')
         .format('YYYY-MM');
-      queryClient.prefetchQuery(monthQueryKey(adjacent), () =>
-        fetchMonth(adjacent),
+      queryClient.prefetchQuery(
+        monthQueryKey(adjacent),
+        () => fetchMonth(adjacent),
+        { staleTime: MONTH_STALE_TIME },
       );
     }
   }, [monthKey, queryClient]);
