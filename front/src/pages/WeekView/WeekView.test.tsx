@@ -7,7 +7,7 @@ import moment from 'moment';
 import { act } from 'react-dom/test-utils';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { MemoryRouter, Route } from 'react-router-dom';
-import { Weekview, formatWeekRange } from './WeekView';
+import { Weekview } from './WeekView';
 
 vi.mock('@/lib/components/InfoBox', () => ({
   InfoBox: () => <div data-testid="mockInfoBox">Mock InfoBox</div>,
@@ -92,7 +92,6 @@ describe('Weekview', () => {
     expect(screen.getByText('Range officer undefined')).toBeInTheDocument();
     expect(screen.getByText('12.10.2026')).toBeInTheDocument();
     expect(screen.getByText('18.10.2026')).toBeInTheDocument();
-    expect(screen.getByText('12.–18.10.2026')).toBeInTheDocument();
     expect(screen.getByTestId('mockInfoBox')).toBeInTheDocument();
   });
 
@@ -166,19 +165,5 @@ describe('Weekview', () => {
     expect(await screen.findAllByRole('link', { name: /2026/ })).toHaveLength(
       7,
     );
-  });
-});
-
-describe('formatWeekRange', () => {
-  it('formats a week inside one month', () => {
-    expect(formatWeekRange('2026-10-14')).toBe('12.–18.10.2026');
-  });
-
-  it('formats a week spanning two months', () => {
-    expect(formatWeekRange('2026-10-01')).toBe('28.9.–4.10.2026');
-  });
-
-  it('formats a week spanning two years', () => {
-    expect(formatWeekRange('2026-12-31')).toBe('28.12.2026–3.1.2027');
   });
 });

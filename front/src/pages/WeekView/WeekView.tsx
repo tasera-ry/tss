@@ -151,7 +151,6 @@ export const Weekview = () => {
           onNext={() => goToWeek(1)}
           type="week"
         />
-        <p className={css.dateRange}>{formatWeekRange(targetDate)}</p>
 
         {isError && !data ? (
           <div className={css.statusMessage} role="alert">
@@ -177,19 +176,6 @@ export const Weekview = () => {
 };
 
 export default Weekview;
-
-/** "12.–18.10.2026", or "28.9.–4.10.2026" when the week spans two months. */
-export function formatWeekRange(targetDate: string) {
-  const first = moment(targetDate).startOf('isoWeek');
-  const last = moment(targetDate).endOf('isoWeek');
-  if (!first.isSame(last, 'year')) {
-    return `${first.format('D.M.YYYY')}–${last.format('D.M.YYYY')}`;
-  }
-  if (!first.isSame(last, 'month')) {
-    return `${first.format('D.M.')}–${last.format('D.M.YYYY')}`;
-  }
-  return `${first.format('D.')}–${last.format('D.M.YYYY')}`;
-}
 
 function WeekCalendar({
   days,

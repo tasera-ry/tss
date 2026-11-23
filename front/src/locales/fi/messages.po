@@ -15,7 +15,7 @@ msgstr ""
 msgid "{booked, plural, one {# lane booked} other {# lanes booked}}"
 msgstr ""
 
-#: src/pages/WeekView/WeekView.tsx:205
+#: src/pages/WeekView/WeekView.tsx:191
 msgid "{dayCount} days · select a day to see the tracks"
 msgstr "{dayCount} päivää · valitse päivä nähdäksesi radat"
 
@@ -129,7 +129,7 @@ msgstr "Haluatko varmasti poistaa tämän radan?"
 #~ msgid "Are you sure?"
 #~ msgstr "Haluatko varmasti jatkaa?"
 
-#: src/pages/WeekView/WeekView.tsx:298
+#: src/pages/WeekView/WeekView.tsx:284
 msgid "Arrival time unknown"
 msgstr "Saapumisaika ei tiedossa"
 
@@ -330,7 +330,7 @@ msgstr "Yhteys aika katkaisiin. Tarkista verkkoyhteys."
 msgid "Could not load associations"
 msgstr "Yhteisöjen lataus epäonnistui"
 
-#: src/pages/WeekView/WeekView.tsx:159
+#: src/pages/WeekView/WeekView.tsx:158
 msgid "Could not load the schedule. Please try again later."
 msgstr "Aikataulun lataaminen epäonnistui. Yritä myöhemmin uudelleen."
 
@@ -541,7 +541,7 @@ msgstr "Ongelma tokenin varmennuksessa!"
 #~ msgid "Error: Device status must be either 'free' or 'reserved'"
 #~ msgstr "Virhe: Laitteen tilan on oltava joko 'vapaa' tai 'varattu'"
 
-#: src/pages/WeekView/WeekView.tsx:298
+#: src/pages/WeekView/WeekView.tsx:284
 msgid "Estimate {time}"
 msgstr "Arvio {time}"
 
@@ -1492,7 +1492,7 @@ msgstr "Sähköpostiviestien lähetysaika"
 msgid "Today"
 msgstr "Tänään"
 
-#: src/pages/WeekView/WeekView.tsx:235
+#: src/pages/WeekView/WeekView.tsx:221
 msgid "TODAY"
 msgstr "TÄNÄÄN"
 
@@ -1524,7 +1524,7 @@ msgstr "Rata poistettu"
 #~ msgid "Track deletion failed"
 #~ msgstr "Rata poiston epäonnistui"
 
-#: src/pages/WeekView/WeekView.tsx:286
+#: src/pages/WeekView/WeekView.tsx:272
 #: src/pages/MonthView/MonthView.tsx:215
 #: src/pages/DayView/DayView.tsx:157
 #: src/pages/DayView/DayView.tsx:201
@@ -1572,7 +1572,7 @@ msgstr ""
 msgid "Tracks can be used once the range officer arrives."
 msgstr ""
 
-#: src/pages/WeekView/WeekView.tsx:168
+#: src/pages/WeekView/WeekView.tsx:167
 msgid "Try again"
 msgstr "Yritä uudelleen"
 
