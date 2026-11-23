@@ -82,7 +82,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   min-height: 240px;
   padding: 24px;
   text-align: center;
-  color: var(--color-black-tint-60);
+  color: var(--color-grey);
 }
 
 .weekCard {
@@ -101,12 +101,12 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
 .caption {
   margin: 0 0 12px;
-  font-family: $mono;
-  font-size: 12px;
-  color: var(--color-black-tint-60);
+  font-size: 14px;
+  color: var(--color-grey);
 
   @include desktop {
     margin-bottom: 8px;
+    font-size: 12px;
   }
 }
 
@@ -138,7 +138,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   gap: 3px;
   margin-bottom: 6px;
   font-size: 11px;
-  font-weight: bold;
+  font-weight: 600;
   letter-spacing: 0.3px;
 
   &::before {
@@ -166,12 +166,14 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   text-decoration: none;
   color: var(--color-black);
   border: 1px solid var(--color-black-tint-20);
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--color-white);
   transition: border-color 0.15s ease;
 
-  &:hover {
-    border-color: var(--color-black-tint-50);
+  @media (hover: hover) {
+    &:hover {
+      border-color: var(--color-black-tint-50);
+    }
   }
 
   &:focus-visible {
@@ -215,7 +217,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 .weekday {
   overflow: hidden;
   font-size: 15px;
-  font-weight: bold;
+  font-weight: 600;
   text-overflow: ellipsis;
 
   @include wide {
@@ -224,9 +226,9 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 .date {
-  font-family: $mono;
   font-size: 13px;
-  color: var(--color-black-tint-70);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-grey);
 
   @include wide {
     font-size: clamp(10px, 9cqi, 13px);
@@ -250,13 +252,13 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   position: absolute;
   top: 50%;
   right: 8px;
-  font-size: 24px !important;
+  font-size: 22px;
   transform: translateY(-50%);
 
   @include wide {
     top: 4px;
     right: 4px;
-    font-size: 18px !important;
+    font-size: 18px;
     transform: none;
   }
 }
@@ -308,7 +310,11 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
 .statusIcon {
   flex-shrink: 0;
-  font-size: 24px !important;
+  font-size: 22px;
+
+  @include wide {
+    font-size: 18px;
+  }
 }
 
 .statusText {
@@ -316,6 +322,7 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
+  font-weight: 600;
 
   @include wide {
     flex: 1;
@@ -324,18 +331,19 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 .timeText {
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: normal;
   opacity: 0.85;
 
   @include wide {
-    font-size: clamp(10px, 8.3cqi, 12px);
+    font-size: clamp(9px, 7.6cqi, 11px);
   }
 }
 
 /* Only the row layout greys out past days, as in the Figma. */
 .past .dayStatus {
   @include wide {
-    background-color: var(--color-black-tint-10);
-    color: var(--color-black-tint-80);
+    background-color: var(--color-black-tint-05);
+    color: var(--color-black-tint-50);
   }
 }
