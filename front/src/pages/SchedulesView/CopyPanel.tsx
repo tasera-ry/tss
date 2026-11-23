@@ -141,9 +141,12 @@ export function CopyPanel({
         );
         const days = conflicts
           .map((c) =>
+            // With the year: a Finnish date ends in a full stop, and
+            // without the year it would meet the sentence's own.
             i18n.date(moment(c.date).toDate(), {
               day: 'numeric',
               month: 'numeric',
+              year: 'numeric',
             }),
           )
           .join(', ');

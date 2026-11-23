@@ -1,5 +1,6 @@
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import classNames from 'classnames';
 import { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from 'react-query';
@@ -338,7 +339,9 @@ export function TrackCard({
             onDone={closeCopy}
           />
         ) : (
-          <div className="mt-3 flex flex-wrap gap-2">
+          // Add belongs to the bookings; copy is for the whole card, so it
+          // sits apart on the right.
+          <div className="mt-3 flex flex-wrap justify-between gap-2">
             <button
               ref={addButton}
               type="button"
@@ -352,10 +355,11 @@ export function TrackCard({
             <button
               ref={copyButton}
               type="button"
-              className="rounded-md border border-black-tint-50 bg-white px-3 py-1.5 text-sm disabled:opacity-60"
+              className="flex items-center gap-1.5 rounded-md border border-black-tint-50 bg-white px-3 py-1.5 text-sm disabled:opacity-60"
               onClick={() => openCopy('day')}
               disabled={dirty}
             >
+              <ContentCopyIcon sx={{ fontSize: 16 }} aria-hidden />
               {t`Copy to other days`}
             </button>
           </div>
