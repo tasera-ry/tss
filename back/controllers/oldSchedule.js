@@ -3,7 +3,6 @@
 const config = require('../config/config');
 const rangeModel = require('../models/range');
 const moment = require('moment-timezone');
-const fetch = require('node-fetch');
 const _ = require('lodash');
 
 /*

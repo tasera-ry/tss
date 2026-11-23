@@ -274,9 +274,22 @@ describe('testing Trackview', () => {
     expect(screen.getAllByText('Closed').length).toBeGreaterThan(0);
   });
 
-  it('has no link back to the day view; the view tabs cover it', async () => {
+  it('jumps to today on the same track', async () => {
     await renderTrackview();
-    expect(screen.queryByText('Back to day view')).not.toBeInTheDocument();
+    const today = moment().format('YYYY-MM-DD');
+    expect(screen.getByTestId('jumpToCur')).toHaveAttribute(
+      'href',
+      expect.stringMatching(
+        new RegExp(`/trackview/${today}/Shooting(%20| )Track(%20| )0$`),
+      ),
+    );
+  });
+
+  it('links back to the day view, one level up', async () => {
+    await renderTrackview();
+    expect(
+      screen.getByRole('link', { name: 'Back to day view' }),
+    ).toHaveAttribute('href', expect.stringMatching(/\/dayview\/2020-02-20$/));
   });
 
   it('labels the notice as the notice for the day', async () => {

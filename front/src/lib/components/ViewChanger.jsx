@@ -1,43 +1,53 @@
+import { useLingui } from '@lingui/react/macro';
 import moment from 'moment';
 import { useMemo } from 'react';
-import 'moment/locale/sv';
-import { useLingui } from '@lingui/react/macro';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 
 export function ViewChanger() {
   const { t } = useLingui();
+  const { date: dateParam } = useParams();
+  const location = useLocation();
 
-  const time = useMemo(() => {
-    const fullUrl = window.location.href.split('/');
-    const urlParamDate = fullUrl[5];
-    if (urlParamDate) return urlParamDate;
+  const targetDate = useMemo(
+    () => dateParam ?? moment().format('YYYY-MM-DD'),
+    [dateParam],
+  );
 
-    return moment().format('YYYY-MM-DD');
-  }, []);
+  const baseTabStyle =
+    'px-3 py-1.5 text-sm font-medium rounded-md border transition-colors';
+  const activeTabStyle = 'bg-black-tint-70 border-black-tint-70 text-white';
+  const inactiveTabStyle =
+    'bg-white border-black-tint-20 text-grey hover:border-black-tint-40 hover:text-black';
+
+  const isMonth = location.pathname.includes('/monthview');
+  // "/" renders the week view (App.tsx).
+  const isWeek =
+    location.pathname === '/' || location.pathname.includes('/weekview');
+  const isDay = location.pathname.includes('/dayview');
 
   return (
-    <div className="flex gap-1">
+    <nav aria-label={t`Views`} className="flex gap-1">
       <Link
-        key="month"
-        className="bg-black-tint-70 rounded-t-lg p-2 flex justify-center items-center text-white text-lg font-bold"
-        to={`/monthview/${time}`}
+        className={`${baseTabStyle} ${isMonth ? activeTabStyle : inactiveTabStyle}`}
+        aria-current={isMonth ? 'page' : undefined}
+        to={`/monthview/${targetDate}`}
       >
         {t`Month`}
       </Link>
       <Link
-        key="week"
-        className="bg-black-tint-70 rounded-t-lg p-2 flex justify-center items-center text-white text-lg font-bold"
-        to={`/weekview/${time}`}
+        className={`${baseTabStyle} ${isWeek ? activeTabStyle : inactiveTabStyle}`}
+        aria-current={isWeek ? 'page' : undefined}
+        to={`/weekview/${targetDate}`}
       >
         {t`Week`}
       </Link>
       <Link
-        key="day"
-        className="bg-black-tint-70 rounded-t-lg p-2 flex justify-center items-center text-white text-lg font-bold"
-        to={`/dayview/${time}`}
+        className={`${baseTabStyle} ${isDay ? activeTabStyle : inactiveTabStyle}`}
+        aria-current={isDay ? 'page' : undefined}
+        to={`/dayview/${targetDate}`}
       >
         {t`Day`}
       </Link>
-    </div>
+    </nav>
   );
 }
