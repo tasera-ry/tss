@@ -17,7 +17,7 @@ msgstr ""
 msgid "{booked, plural, one {# lane booked} other {# lanes booked}}"
 msgstr "{booked, plural, one {# lane booked} other {# lanes booked}}"
 
-#: src/pages/WeekView/WeekView.tsx:191
+#: src/pages/WeekView/WeekView.tsx:239
 msgid "{dayCount} days · select a day to see the tracks"
 msgstr "{dayCount} days · select a day to see the tracks"
 
@@ -147,7 +147,7 @@ msgstr "Are you sure you want to delete this track?"
 #~ msgid "Are you sure?"
 #~ msgstr "Are you sure?"
 
-#: src/pages/WeekView/WeekView.tsx:284
+#: src/pages/WeekView/WeekView.tsx:310
 msgid "Arrival time unknown"
 msgstr "Arrival time unknown"
 
@@ -352,7 +352,7 @@ msgstr "Connection timed out. Check network connectivity.!"
 msgid "Could not load associations"
 msgstr "Could not load associations"
 
-#: src/pages/WeekView/WeekView.tsx:158
+#: src/pages/WeekView/WeekView.tsx:201
 msgid "Could not load the schedule. Please try again later."
 msgstr "Could not load the schedule. Please try again later."
 
@@ -564,7 +564,7 @@ msgstr "Error verifying token!"
 #~ msgid "Error: Device status must be either 'free' or 'reserved'"
 #~ msgstr "Error: Device status must be either 'free' or 'reserved'"
 
-#: src/pages/WeekView/WeekView.tsx:284
+#: src/pages/WeekView/WeekView.tsx:309
 msgid "Estimate {time}"
 msgstr "Estimate {time}"
 
@@ -1101,7 +1101,7 @@ msgid "Raffle supervisors"
 msgstr "Raffle supervisors"
 
 #: src/trackview/Trackview.tsx:335
-#: src/pages/WeekView/WeekView.tsx:68
+#: src/pages/WeekView/WeekView.tsx:70
 #: src/pages/DayView/DayView.tsx:316
 #: src/lib/components/TableLegends.tsx:34
 msgid "Range closed"
@@ -1140,7 +1140,7 @@ msgstr "Range officer arriving at {0}"
 #: src/scheduling/Scheduling.jsx:384
 #: src/scheduling/Scheduling.jsx:389
 #: src/scheduling/Scheduling.jsx:983
-#: src/pages/WeekView/WeekView.tsx:50
+#: src/pages/WeekView/WeekView.tsx:52
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:130
 #: src/pages/DayView/DayView.tsx:310
 msgid "Range officer confirmed"
@@ -1180,7 +1180,7 @@ msgstr "Range officer management"
 msgid "Range officer predefined"
 msgstr "Range officer predefined"
 
-#: src/pages/WeekView/WeekView.tsx:56
+#: src/pages/WeekView/WeekView.tsx:58
 #: src/lib/components/TableLegends.tsx:17
 msgid "Range officer predefined, not confirmed"
 msgstr "Range officer predefined, not confirmed"
@@ -1189,7 +1189,7 @@ msgstr "Range officer predefined, not confirmed"
 #: src/scheduling/Scheduling.jsx:399
 #: src/scheduling/Scheduling.jsx:401
 #: src/scheduling/Scheduling.jsx:974
-#: src/pages/WeekView/WeekView.tsx:44
+#: src/pages/WeekView/WeekView.tsx:46
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:118
 #: src/pages/DayView/DayView.tsx:307
 #: src/lib/components/TableLegends.tsx:14
@@ -1198,7 +1198,7 @@ msgstr "Range officer present"
 
 #: src/scheduling/Scheduling.jsx:977
 #: src/scheduling/Scheduling.jsx:989
-#: src/pages/WeekView/WeekView.tsx:62
+#: src/pages/WeekView/WeekView.tsx:64
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:122
 #: src/lib/components/TableLegends.tsx:37
 msgid "Range officer undefined"
@@ -1560,10 +1560,11 @@ msgid "Time for sending emails"
 msgstr "Time for sending emails"
 
 #: src/utils/Utils.jsx:100
+#: src/pages/WeekView/WeekView.tsx:316
 msgid "Today"
 msgstr "Today"
 
-#: src/pages/WeekView/WeekView.tsx:221
+#: src/pages/WeekView/WeekView.tsx:275
 msgid "TODAY"
 msgstr "TODAY"
 
@@ -1599,7 +1600,7 @@ msgstr "Track deleted successfully"
 #~ msgid "Track deletion failed"
 #~ msgstr "Track deletion failed"
 
-#: src/pages/WeekView/WeekView.tsx:272
+#: src/pages/WeekView/WeekView.tsx:312
 #: src/pages/MonthView/MonthView.tsx:215
 #: src/pages/DayView/DayView.tsx:273
 #: src/lib/components/TableLegends.tsx:46
@@ -1645,7 +1646,7 @@ msgstr "Tracks can be used during opening hours."
 msgid "Tracks can be used once the range officer arrives."
 msgstr "Tracks can be used once the range officer arrives."
 
-#: src/pages/WeekView/WeekView.tsx:167
+#: src/pages/WeekView/WeekView.tsx:210
 msgid "Try again"
 msgstr "Try again"
 

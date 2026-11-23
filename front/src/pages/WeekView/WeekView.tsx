@@ -7,7 +7,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import classNames from 'classnames';
 import moment from 'moment';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
@@ -33,11 +33,13 @@ interface StatusConfig {
   icon: JSX.Element;
 }
 
-function useStatusConfigs() {
+type StatusConfigs = Record<RangeSupervision, StatusConfig>;
+
+function useStatusConfigs(): StatusConfigs {
   const { t } = useLingui();
 
   return useMemo(() => {
-    const configs: Record<RangeSupervision, StatusConfig> = {
+    const configs: StatusConfigs = {
       present: {
         key: 'present',
         className: css.statusPresent,
@@ -92,6 +94,18 @@ function formatTime(time: string | null | undefined, locale: string) {
   return formatter.format(parsed.toDate());
 }
 
+const weekdayFormatters = new Map<string, Intl.DateTimeFormat>();
+
+function formatWeekday(date: Date, locale: string) {
+  let formatter = weekdayFormatters.get(locale);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat(locale, { weekday: 'long' });
+    weekdayFormatters.set(locale, formatter);
+  }
+  const weekday = formatter.format(date);
+  return weekday.charAt(0).toUpperCase() + weekday.slice(1);
+}
+
 function weekDates(targetDate: string) {
   const first = moment(targetDate).startOf('isoWeek');
   return Array.from({ length: 7 }, (_, i) =>
@@ -109,18 +123,47 @@ function getArrivingAt(day: DaySchedule) {
   );
 }
 
+async function fetchWeek(targetDate: string): Promise<DaySchedule[]> {
+  try {
+    const { week } = await getSchedulingWeek(targetDate);
+    return week ?? [];
+  } catch (error) {
+    // The API answers 404 rather than an empty list when no day in the range has a schedule.
+    if (isNotFound(error)) return [];
+    throw error;
+  }
+}
+
+function isNotFound(error: unknown) {
+  return (
+    (error as { response?: { status?: number } } | null)?.response?.status ===
+    404
+  );
+}
+
+function parseDateParam(dateParam?: string) {
+  if (!dateParam) return null;
+  const parsed = moment(dateParam, 'YYYY-MM-DD', true);
+  return parsed.isValid() ? parsed.format('YYYY-MM-DD') : null;
+}
+
 export const Weekview = () => {
   const history = useHistory();
-  const { date: dateParam } = useParams<{ date: string }>();
+  const { date: dateParam } = useParams<{ date?: string }>();
 
-  const targetDate = useMemo(
-    () => dateParam ?? moment().format('YYYY-MM-DD'),
-    [dateParam],
-  );
+  const today = moment().format('YYYY-MM-DD');
+  const validDateParam = parseDateParam(dateParam);
+  const targetDate = validDateParam ?? today;
+
+  useEffect(() => {
+    if (dateParam && !validDateParam) {
+      history.replace(`/weekview/${today}`);
+    }
+  }, [dateParam, validDateParam, history, today]);
 
   const { data, isError, refetch } = useQuery({
     queryKey: ['weekview', moment(targetDate).startOf('isoWeek').format()],
-    queryFn: () => getSchedulingWeek(targetDate),
+    queryFn: () => fetchWeek(targetDate),
   });
 
   const goToWeek = useCallback(
@@ -168,7 +211,7 @@ export const Weekview = () => {
             </button>
           </div>
         ) : (
-          <WeekCalendar days={data?.week} targetDate={targetDate} />
+          <WeekCalendar days={data} targetDate={targetDate} />
         )}
       </div>
     </div>
@@ -182,7 +225,12 @@ function WeekCalendar({
   targetDate,
 }: { days?: DaySchedule[]; targetDate: string }) {
   const { t } = useLingui();
-  const dates = days ? days.map((day) => day.date) : weekDates(targetDate);
+  const statuses = useStatusConfigs();
+  const dates = weekDates(targetDate);
+  const byDate = useMemo(
+    () => new Map((days ?? []).map((day) => [day.date, day])),
+    [days],
+  );
   const dayCount = dates.length;
 
   return (
@@ -191,29 +239,35 @@ function WeekCalendar({
         {t`${dayCount} days · select a day to see the tracks`}
       </p>
       <ol className={css.dayList}>
-        {dates.map((date, i) => (
-          <DayItem key={date} date={date} day={days?.[i]} />
+        {dates.map((date) => (
+          <DayItem
+            key={date}
+            date={date}
+            day={byDate.get(date)}
+            loading={!days}
+            statuses={statuses}
+          />
         ))}
       </ol>
     </section>
   );
 }
 
-function DayItem({
-  date: dateString,
-  day,
-}: { date: string; day?: DaySchedule }) {
+interface DayItemProps {
+  date: string;
+  day?: DaySchedule;
+  loading: boolean;
+  statuses: StatusConfigs;
+}
+
+function DayItem({ date: dateString, day, loading, statuses }: DayItemProps) {
   const { t, i18n } = useLingui();
-  const statuses = useStatusConfigs();
 
   const date = moment(dateString);
   const isToday = date.isSame(moment(), 'day');
   const isPast = date.isBefore(moment(), 'day');
 
-  const weekday = new Intl.DateTimeFormat(i18n.locale, {
-    weekday: 'long',
-  }).format(date.toDate());
-  const weekdayLabel = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+  const weekdayLabel = formatWeekday(date.toDate(), i18n.locale);
   const dateLabel = date.format('D.M.YYYY');
 
   const todayMarker = isToday && (
@@ -222,7 +276,7 @@ function DayItem({
     </span>
   );
 
-  if (!day) {
+  if (loading) {
     return (
       <li className={css.dayItem}>
         {todayMarker}
@@ -242,21 +296,38 @@ function DayItem({
   }
 
   const status =
-    statuses[day.rangeSupervision as RangeSupervision] ?? statuses.absent;
+    statuses[day?.rangeSupervision as RangeSupervision] ?? statuses.absent;
 
-  const hasNotice = (day.tracks ?? []).some(
+  const hasNotice = (day?.tracks ?? []).some(
     (track) => track.notice != null && track.notice !== '',
   );
 
-  const time = formatTime(getArrivingAt(day), i18n.locale);
+  const time = day ? formatTime(getArrivingAt(day), i18n.locale) : '';
+  const arrival =
+    status.key === 'confirmed'
+      ? time
+        ? t`Estimate ${time}`
+        : t`Arrival time unknown`
+      : null;
+  const noticeLabel = t`Track has additional information`;
+
+  const ariaLabel = [
+    `${weekdayLabel} ${dateLabel}`,
+    isToday && t`Today`,
+    status.label,
+    arrival,
+    hasNotice && noticeLabel,
+  ]
+    .filter(Boolean)
+    .join(', ');
 
   return (
     <li className={css.dayItem}>
       {todayMarker}
       <Link
-        to={`/dayview/${day.date}`}
+        to={`/dayview/${dateString}`}
         aria-current={isToday ? 'date' : undefined}
-        aria-label={`${weekdayLabel} ${dateLabel} ${status.label}`}
+        aria-label={ariaLabel}
         className={classNames(
           css.dayCard,
           isToday && css.today,
@@ -269,7 +340,7 @@ function DayItem({
             {hasNotice && (
               <InfoOutlinedIcon
                 className={css.noticeIcon}
-                titleAccess={t`Track has additional information`}
+                titleAccess={noticeLabel}
               />
             )}
           </span>
@@ -279,11 +350,7 @@ function DayItem({
           {status.icon}
           <span className={css.statusText}>
             <span>{status.label}</span>
-            {status.key === 'confirmed' && (
-              <span className={css.timeText}>
-                {time ? t`Estimate ${time}` : t`Arrival time unknown`}
-              </span>
-            )}
+            {arrival && <span className={css.timeText}>{arrival}</span>}
           </span>
         </span>
       </Link>

@@ -15,7 +15,7 @@ msgstr ""
 msgid "{booked, plural, one {# lane booked} other {# lanes booked}}"
 msgstr "{booked, plural, one {# skjutplats bokad} other {# skjutplatser bokade}}"
 
-#: src/pages/WeekView/WeekView.tsx:191
+#: src/pages/WeekView/WeekView.tsx:239
 msgid "{dayCount} days · select a day to see the tracks"
 msgstr "{dayCount} dagar · välj en dag för att se banorna"
 
@@ -145,7 +145,7 @@ msgstr "Är du säker på att du vill ta bort denna rata?"
 #~ msgid "Are you sure?"
 #~ msgstr "Är du säker?"
 
-#: src/pages/WeekView/WeekView.tsx:284
+#: src/pages/WeekView/WeekView.tsx:310
 msgid "Arrival time unknown"
 msgstr "Ankomsttid okänd"
 
@@ -350,7 +350,7 @@ msgstr "Anslutningen timeoutade. Kontrollera nätverksanslutningen."
 msgid "Could not load associations"
 msgstr "Kunde inte ladda föreningar"
 
-#: src/pages/WeekView/WeekView.tsx:158
+#: src/pages/WeekView/WeekView.tsx:201
 msgid "Could not load the schedule. Please try again later."
 msgstr "Det gick inte att ladda schemat. Försök igen senare."
 
@@ -562,7 +562,7 @@ msgstr "Fel vid verifiering av token!"
 #~ msgid "Error: Device status must be either 'free' or 'reserved'"
 #~ msgstr "Fel: Enhetsstatusen måste vara antigen 'fri' eller 'reserverad'"
 
-#: src/pages/WeekView/WeekView.tsx:284
+#: src/pages/WeekView/WeekView.tsx:309
 msgid "Estimate {time}"
 msgstr "Beräknad {time}"
 
@@ -1099,7 +1099,7 @@ msgid "Raffle supervisors"
 msgstr "Värdera handledare"
 
 #: src/trackview/Trackview.tsx:335
-#: src/pages/WeekView/WeekView.tsx:68
+#: src/pages/WeekView/WeekView.tsx:70
 #: src/pages/DayView/DayView.tsx:316
 #: src/lib/components/TableLegends.tsx:34
 msgid "Range closed"
@@ -1138,7 +1138,7 @@ msgstr "Banofficeren anländer kl. {0}"
 #: src/scheduling/Scheduling.jsx:384
 #: src/scheduling/Scheduling.jsx:389
 #: src/scheduling/Scheduling.jsx:983
-#: src/pages/WeekView/WeekView.tsx:50
+#: src/pages/WeekView/WeekView.tsx:52
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:130
 #: src/pages/DayView/DayView.tsx:310
 msgid "Range officer confirmed"
@@ -1178,7 +1178,7 @@ msgstr "Banofficerhantering"
 msgid "Range officer predefined"
 msgstr "Banofficer inte bekräftat"
 
-#: src/pages/WeekView/WeekView.tsx:56
+#: src/pages/WeekView/WeekView.tsx:58
 #: src/lib/components/TableLegends.tsx:17
 msgid "Range officer predefined, not confirmed"
 msgstr "Banofficer fördefinierad, men inte bekräftat"
@@ -1187,7 +1187,7 @@ msgstr "Banofficer fördefinierad, men inte bekräftat"
 #: src/scheduling/Scheduling.jsx:399
 #: src/scheduling/Scheduling.jsx:401
 #: src/scheduling/Scheduling.jsx:974
-#: src/pages/WeekView/WeekView.tsx:44
+#: src/pages/WeekView/WeekView.tsx:46
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:118
 #: src/pages/DayView/DayView.tsx:307
 #: src/lib/components/TableLegends.tsx:14
@@ -1196,7 +1196,7 @@ msgstr "Banofficer närvarande"
 
 #: src/scheduling/Scheduling.jsx:977
 #: src/scheduling/Scheduling.jsx:989
-#: src/pages/WeekView/WeekView.tsx:62
+#: src/pages/WeekView/WeekView.tsx:64
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:122
 #: src/lib/components/TableLegends.tsx:37
 msgid "Range officer undefined"
@@ -1554,10 +1554,11 @@ msgid "Time for sending emails"
 msgstr "Tid för att skicka e-post"
 
 #: src/utils/Utils.jsx:100
+#: src/pages/WeekView/WeekView.tsx:316
 msgid "Today"
 msgstr "Idag"
 
-#: src/pages/WeekView/WeekView.tsx:221
+#: src/pages/WeekView/WeekView.tsx:275
 msgid "TODAY"
 msgstr "IDAG"
 
@@ -1593,7 +1594,7 @@ msgstr "Bana borttagen"
 #~ msgid "Track deletion failed"
 #~ msgstr "Bana borttagning misslyckades"
 
-#: src/pages/WeekView/WeekView.tsx:272
+#: src/pages/WeekView/WeekView.tsx:312
 #: src/pages/MonthView/MonthView.tsx:215
 #: src/pages/DayView/DayView.tsx:273
 #: src/lib/components/TableLegends.tsx:46
@@ -1639,7 +1640,7 @@ msgstr "Banorna kan användas under öppettiderna."
 msgid "Tracks can be used once the range officer arrives."
 msgstr "Banorna kan användas när banofficeren har anlänt."
 
-#: src/pages/WeekView/WeekView.tsx:167
+#: src/pages/WeekView/WeekView.tsx:210
 msgid "Try again"
 msgstr "Försök igen"
 

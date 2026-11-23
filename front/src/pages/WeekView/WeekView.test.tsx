@@ -166,4 +166,65 @@ describe('Weekview', () => {
       7,
     );
   });
+
+  it('shows an empty week when the API has no schedule for it', async () => {
+    vi.mocked(getSchedulingWeek).mockRejectedValue({
+      response: { status: 404 },
+    });
+    await renderAt('2026-10-14');
+
+    expect(await screen.findAllByRole('link', { name: /2026/ })).toHaveLength(
+      7,
+    );
+    expect(screen.getAllByText('Range officer undefined')).toHaveLength(7);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('keeps every weekday in its column when the API leaves days out', async () => {
+    const week = buildWeek('2026-10-12');
+    vi.mocked(getSchedulingWeek).mockResolvedValue({
+      ...week,
+      week: week.week.slice(2),
+    });
+    await renderAt('2026-10-14');
+
+    const links = await screen.findAllByRole('link', { name: /2026/ });
+    expect(links).toHaveLength(7);
+    expect(links[0]).toHaveAttribute('href', '/dayview/2026-10-12');
+    expect(links[0]).toHaveAccessibleName(/Range officer undefined/);
+    expect(links[2]).toHaveAttribute('href', '/dayview/2026-10-14');
+    expect(links[2]).toHaveAccessibleName(
+      /Range officer predefined, not confirmed/,
+    );
+  });
+
+  it('falls back to the current week for an invalid date', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-10-15T12:00:00'));
+    vi.mocked(getSchedulingWeek).mockResolvedValue(buildWeek('2026-10-12'));
+    await renderAt('foo');
+
+    const links = await screen.findAllByRole('link', { name: /2026/ });
+    expect(links[0]).toHaveAttribute('href', '/dayview/2026-10-12');
+    expect(getSchedulingWeek).toHaveBeenLastCalledWith('2026-10-15');
+  });
+
+  it('includes the arrival estimate and notices in the card label', async () => {
+    vi.mocked(getSchedulingWeek).mockResolvedValue(
+      buildWeek('2026-10-12', (day) =>
+        day.date === '2026-10-13'
+          ? {
+              arriving_at: '17:30:00',
+              tracks: day.tracks.map((t) => ({ ...t, notice: 'Kilpailu' })),
+            }
+          : {},
+      ),
+    );
+    await renderAt('2026-10-14');
+
+    const links = await screen.findAllByRole('link', { name: /2026/ });
+    expect(links[1]).toHaveAccessibleName(
+      'Tuesday 13.10.2026, Range officer confirmed, Estimate 17:30, Track has additional information',
+    );
+  });
 });
