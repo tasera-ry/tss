@@ -25,7 +25,6 @@ const controller = {
   },
 
   read: async function read(request, response) {
-    scheduleEmailReminder();
     if (response.locals.queryResult.length === 0) {
       return response
         .status(404)
