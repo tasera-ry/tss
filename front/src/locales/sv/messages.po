@@ -23,7 +23,7 @@ msgstr "{equipmentCount, plural, one {# enhet} other {# enheter}}"
 msgid "{tracksCount, plural, one {# track} other {# tracks}}"
 msgstr "{tracksCount, plural, one {# bana} other {# banor}}"
 
-#: src/pages/MonthView/MonthView.tsx:364
+#: src/pages/MonthView/MonthView.tsx:354
 msgid "{weekCount} weeks · select a day to see the tracks"
 msgstr "{weekCount} veckor · välj en dag för att se banorna"
 
@@ -129,8 +129,8 @@ msgstr "Är du säker på att du vill ta bort detta meddelande?"
 msgid "Are you sure you want to delete this track?"
 msgstr "Är du säker på att du vill ta bort denna rata?"
 
-#: src/pages/MonthView/MonthView.tsx:471
-#: src/pages/MonthView/MonthView.tsx:601
+#: src/pages/MonthView/MonthView.tsx:461
+#: src/pages/MonthView/MonthView.tsx:591
 msgid "Arrival time unknown"
 msgstr "Ankomsttid okänd"
 
@@ -303,7 +303,7 @@ msgstr "Anslutningen timeoutade. Kontrollera nätverksanslutningen."
 msgid "Could not load associations"
 msgstr "Kunde inte ladda föreningar"
 
-#: src/pages/MonthView/MonthView.tsx:242
+#: src/pages/MonthView/MonthView.tsx:241
 msgid "Could not load the schedule. Please try again later."
 msgstr "Det gick inte att ladda schemat. Försök igen senare."
 
@@ -331,7 +331,7 @@ msgstr "Datum"
 msgid "Day"
 msgstr "Dag"
 
-#: src/pages/MonthView/MonthView.tsx:631
+#: src/pages/MonthView/MonthView.tsx:621
 msgid "Day of the previous or next month"
 msgstr "Dag i föregående eller nästa månad"
 
@@ -494,7 +494,7 @@ msgstr "Fel vid att uppdatera rata"
 msgid "Error verifying token!"
 msgstr "Fel vid verifiering av token!"
 
-#: src/pages/MonthView/MonthView.tsx:470
+#: src/pages/MonthView/MonthView.tsx:460
 msgid "Estimate {time}"
 msgstr "Beräknad {time}"
 
@@ -502,7 +502,7 @@ msgstr "Beräknad {time}"
 msgid "Estimated arrival"
 msgstr "Beräknad ankomst"
 
-#: src/pages/MonthView/MonthView.tsx:601
+#: src/pages/MonthView/MonthView.tsx:591
 msgid "Estimated arrival {time}"
 msgstr "Beräknad ankomsttid {time}"
 
@@ -554,11 +554,11 @@ msgstr "lediga"
 msgid "Free"
 msgstr "Fri"
 
-#: src/pages/MonthView/MonthView.tsx:337
+#: src/pages/MonthView/MonthView.tsx:327
 msgid "Fri"
 msgstr "Fre"
 
-#: src/pages/MonthView/MonthView.tsx:337
+#: src/pages/MonthView/MonthView.tsx:327
 msgid "Friday"
 msgstr "fredag"
 
@@ -615,7 +615,7 @@ msgstr "skjutplatser"
 msgid "Leftmost"
 msgstr "Längst till vänster"
 
-#: src/pages/MonthView/MonthView.tsx:615
+#: src/pages/MonthView/MonthView.tsx:605
 msgid "Legend"
 msgstr "Teckenförklaring"
 
@@ -706,11 +706,11 @@ msgstr "Minst {5} stor bokstav"
 msgid "Minimum length of password is 6 characters"
 msgstr "Lösenord måste vara minst 6 tecken långt"
 
-#: src/pages/MonthView/MonthView.tsx:333
+#: src/pages/MonthView/MonthView.tsx:323
 msgid "Mon"
 msgstr "Mån"
 
-#: src/pages/MonthView/MonthView.tsx:333
+#: src/pages/MonthView/MonthView.tsx:323
 msgid "Monday"
 msgstr "måndag"
 
@@ -855,7 +855,7 @@ msgstr "Öppna"
 msgid "Open All"
 msgstr "Öppna alla"
 
-#: src/pages/MonthView/MonthView.tsx:605
+#: src/pages/MonthView/MonthView.tsx:595
 msgid "Open day view"
 msgstr "Öppna dagsvy"
 
@@ -1123,11 +1123,11 @@ msgstr "Roll"
 msgid "Role is required"
 msgstr "Roll är obligatorisk"
 
-#: src/pages/MonthView/MonthView.tsx:338
+#: src/pages/MonthView/MonthView.tsx:328
 msgid "Sat"
 msgstr "Lör"
 
-#: src/pages/MonthView/MonthView.tsx:338
+#: src/pages/MonthView/MonthView.tsx:328
 msgid "Saturday"
 msgstr "lördag"
 
@@ -1288,11 +1288,11 @@ msgstr "Skicka in"
 msgid "Successfully updated!"
 msgstr "Uppdaterat!"
 
-#: src/pages/MonthView/MonthView.tsx:339
+#: src/pages/MonthView/MonthView.tsx:329
 msgid "Sun"
 msgstr "Sön"
 
-#: src/pages/MonthView/MonthView.tsx:339
+#: src/pages/MonthView/MonthView.tsx:329
 msgid "Sunday"
 msgstr "söndag"
 
@@ -1348,11 +1348,11 @@ msgstr "Misslyckats att spara resultat"
 msgid "This track has no schedule for the selected day."
 msgstr "Banan har inget schema för den valda dagen."
 
-#: src/pages/MonthView/MonthView.tsx:336
+#: src/pages/MonthView/MonthView.tsx:326
 msgid "Thu"
 msgstr "Tor"
 
-#: src/pages/MonthView/MonthView.tsx:336
+#: src/pages/MonthView/MonthView.tsx:326
 msgid "Thursday"
 msgstr "torsdag"
 
@@ -1362,13 +1362,13 @@ msgstr "Tid för att skicka e-post"
 
 #: src/utils/Utils.jsx:100
 #: src/pages/MonthView/MonthView.tsx:222
-#: src/pages/MonthView/MonthView.tsx:480
+#: src/pages/MonthView/MonthView.tsx:470
 msgid "Today"
 msgstr "Idag"
 
-#: src/pages/MonthView/MonthView.tsx:502
-#: src/pages/MonthView/MonthView.tsx:526
-#: src/pages/MonthView/MonthView.tsx:588
+#: src/pages/MonthView/MonthView.tsx:492
+#: src/pages/MonthView/MonthView.tsx:516
+#: src/pages/MonthView/MonthView.tsx:578
 msgid "TODAY"
 msgstr "IDAG"
 
@@ -1425,15 +1425,15 @@ msgstr "Banorna kan användas under öppettiderna."
 msgid "Tracks can be used once the range officer arrives."
 msgstr "Banorna kan användas när banofficeren har anlänt."
 
-#: src/pages/MonthView/MonthView.tsx:251
+#: src/pages/MonthView/MonthView.tsx:250
 msgid "Try again"
 msgstr "Försök igen"
 
-#: src/pages/MonthView/MonthView.tsx:334
+#: src/pages/MonthView/MonthView.tsx:324
 msgid "Tue"
 msgstr "Tis"
 
-#: src/pages/MonthView/MonthView.tsx:334
+#: src/pages/MonthView/MonthView.tsx:324
 msgid "Tuesday"
 msgstr "tisdag"
 
@@ -1513,16 +1513,16 @@ msgstr "Besökare idag"
 msgid "Warning!"
 msgstr "Varning!"
 
-#: src/pages/MonthView/MonthView.tsx:335
+#: src/pages/MonthView/MonthView.tsx:325
 msgid "Wed"
 msgstr "Ons"
 
-#: src/pages/MonthView/MonthView.tsx:335
+#: src/pages/MonthView/MonthView.tsx:325
 msgid "Wednesday"
 msgstr "onsdag"
 
 #: src/trackview/Trackview.tsx:237
-#: src/pages/MonthView/MonthView.tsx:368
+#: src/pages/MonthView/MonthView.tsx:358
 #: src/lib/components/ViewChanger.jsx:42
 msgid "Week"
 msgstr "Vecka"
@@ -1532,10 +1532,10 @@ msgid "Week {weekNumber} {year}"
 msgstr "Vecka {weekNumber} {year}"
 
 #: src/pages/MonthView/MonthView.tsx:293
-msgid "Weeks {firstWeek}–{lastWeek}"
-msgstr "Veckor {firstWeek}–{lastWeek}"
+#~ msgid "Weeks {firstWeek}–{lastWeek}"
+#~ msgstr "Veckor {firstWeek}–{lastWeek}"
 
-#: src/pages/MonthView/MonthView.tsx:369
+#: src/pages/MonthView/MonthView.tsx:359
 msgid "Wk"
 msgstr "V"
 

@@ -234,7 +234,6 @@ export function Monthview() {
           onNext={() => goToMonth(1)}
           type="month"
         />
-        <WeekRange weeks={weeks} />
 
         {isError && !data ? (
           <div className={css.statusMessage} role="alert">
@@ -283,15 +282,6 @@ export function Monthview() {
 }
 
 export default Monthview;
-
-function WeekRange({ weeks }: { weeks: MonthWeek[] }) {
-  const { t } = useLingui();
-  const firstWeek = weeks[0]?.week;
-  const lastWeek = weeks[weeks.length - 1]?.week;
-  if (firstWeek == null) return null;
-
-  return <p className={css.weekRange}>{t`Weeks ${firstWeek}–${lastWeek}`}</p>;
-}
 
 interface CalendarProps {
   weeks: MonthWeek[];

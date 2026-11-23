@@ -140,13 +140,12 @@ describe('testing monthview', () => {
     );
   });
 
-  it('shows the visible week range and week count for the month', async () => {
+  it('shows the visible week numbers and week count for the month', async () => {
     setDateParam('2020-10-21');
     renderMonthview();
     // October 2020 spans ISO weeks 40-44 (Sep 28 - Nov 1)
-    await waitFor(() =>
-      expect(screen.getByText('Weeks 40–44')).toBeInTheDocument(),
-    );
+    await waitFor(() => expect(screen.getByText('40')).toBeInTheDocument());
+    expect(screen.getByText('44')).toBeInTheDocument();
     expect(
       await screen.findByText('5 weeks · select a day to see the tracks'),
     ).toBeInTheDocument();
@@ -156,7 +155,7 @@ describe('testing monthview', () => {
     setDateParam('2021-01-15');
     renderMonthview();
     // January 2021: Mon 28.12.2020 (week 53) – Sun 31.1.2021 (week 4)
-    expect(await screen.findByText('Weeks 53–4')).toBeInTheDocument();
+    expect(await screen.findByText('53')).toBeInTheDocument();
   });
 
   it('requests the full visible range and shows statuses from the API', async () => {

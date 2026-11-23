@@ -25,7 +25,7 @@ msgstr "{equipmentCount, plural, one {# device} other {# devices}}"
 msgid "{tracksCount, plural, one {# track} other {# tracks}}"
 msgstr "{tracksCount, plural, one {# track} other {# tracks}}"
 
-#: src/pages/MonthView/MonthView.tsx:364
+#: src/pages/MonthView/MonthView.tsx:354
 msgid "{weekCount} weeks · select a day to see the tracks"
 msgstr "{weekCount} weeks · select a day to see the tracks"
 
@@ -131,8 +131,8 @@ msgstr "Are you sure you want to delete this message?"
 msgid "Are you sure you want to delete this track?"
 msgstr "Are you sure you want to delete this track?"
 
-#: src/pages/MonthView/MonthView.tsx:471
-#: src/pages/MonthView/MonthView.tsx:601
+#: src/pages/MonthView/MonthView.tsx:461
+#: src/pages/MonthView/MonthView.tsx:591
 msgid "Arrival time unknown"
 msgstr "Arrival time unknown"
 
@@ -305,7 +305,7 @@ msgstr "Connection timed out. Check network connectivity.!"
 msgid "Could not load associations"
 msgstr "Could not load associations"
 
-#: src/pages/MonthView/MonthView.tsx:242
+#: src/pages/MonthView/MonthView.tsx:241
 msgid "Could not load the schedule. Please try again later."
 msgstr "Could not load the schedule. Please try again later."
 
@@ -333,7 +333,7 @@ msgstr "Date"
 msgid "Day"
 msgstr "Day"
 
-#: src/pages/MonthView/MonthView.tsx:631
+#: src/pages/MonthView/MonthView.tsx:621
 msgid "Day of the previous or next month"
 msgstr "Day of the previous or next month"
 
@@ -496,7 +496,7 @@ msgstr "Error updating track"
 msgid "Error verifying token!"
 msgstr "Error verifying token!"
 
-#: src/pages/MonthView/MonthView.tsx:470
+#: src/pages/MonthView/MonthView.tsx:460
 msgid "Estimate {time}"
 msgstr "Estimate {time}"
 
@@ -504,7 +504,7 @@ msgstr "Estimate {time}"
 msgid "Estimated arrival"
 msgstr "Estimated arrival"
 
-#: src/pages/MonthView/MonthView.tsx:601
+#: src/pages/MonthView/MonthView.tsx:591
 msgid "Estimated arrival {time}"
 msgstr "Estimated arrival {time}"
 
@@ -556,11 +556,11 @@ msgstr "free"
 msgid "Free"
 msgstr "Free"
 
-#: src/pages/MonthView/MonthView.tsx:337
+#: src/pages/MonthView/MonthView.tsx:327
 msgid "Fri"
 msgstr "Fri"
 
-#: src/pages/MonthView/MonthView.tsx:337
+#: src/pages/MonthView/MonthView.tsx:327
 msgid "Friday"
 msgstr "Friday"
 
@@ -617,7 +617,7 @@ msgstr "lanes"
 msgid "Leftmost"
 msgstr "Leftmost"
 
-#: src/pages/MonthView/MonthView.tsx:615
+#: src/pages/MonthView/MonthView.tsx:605
 msgid "Legend"
 msgstr "Legend"
 
@@ -708,11 +708,11 @@ msgstr "Minimum {5} uppercase letter"
 msgid "Minimum length of password is 6 characters"
 msgstr "Minimum length of password is 6 characters"
 
-#: src/pages/MonthView/MonthView.tsx:333
+#: src/pages/MonthView/MonthView.tsx:323
 msgid "Mon"
 msgstr "Mon"
 
-#: src/pages/MonthView/MonthView.tsx:333
+#: src/pages/MonthView/MonthView.tsx:323
 msgid "Monday"
 msgstr "Monday"
 
@@ -857,7 +857,7 @@ msgstr "Open"
 msgid "Open All"
 msgstr "Open All"
 
-#: src/pages/MonthView/MonthView.tsx:605
+#: src/pages/MonthView/MonthView.tsx:595
 msgid "Open day view"
 msgstr "Open day view"
 
@@ -1125,11 +1125,11 @@ msgstr "Role"
 msgid "Role is required"
 msgstr "Role is required"
 
-#: src/pages/MonthView/MonthView.tsx:338
+#: src/pages/MonthView/MonthView.tsx:328
 msgid "Sat"
 msgstr "Sat"
 
-#: src/pages/MonthView/MonthView.tsx:338
+#: src/pages/MonthView/MonthView.tsx:328
 msgid "Saturday"
 msgstr "Saturday"
 
@@ -1290,11 +1290,11 @@ msgstr "Submit"
 msgid "Successfully updated!"
 msgstr "Successfully updated!"
 
-#: src/pages/MonthView/MonthView.tsx:339
+#: src/pages/MonthView/MonthView.tsx:329
 msgid "Sun"
 msgstr "Sun"
 
-#: src/pages/MonthView/MonthView.tsx:339
+#: src/pages/MonthView/MonthView.tsx:329
 msgid "Sunday"
 msgstr "Sunday"
 
@@ -1350,11 +1350,11 @@ msgstr "The saving of the results failed"
 msgid "This track has no schedule for the selected day."
 msgstr "This track has no schedule for the selected day."
 
-#: src/pages/MonthView/MonthView.tsx:336
+#: src/pages/MonthView/MonthView.tsx:326
 msgid "Thu"
 msgstr "Thu"
 
-#: src/pages/MonthView/MonthView.tsx:336
+#: src/pages/MonthView/MonthView.tsx:326
 msgid "Thursday"
 msgstr "Thursday"
 
@@ -1364,13 +1364,13 @@ msgstr "Time for sending emails"
 
 #: src/utils/Utils.jsx:100
 #: src/pages/MonthView/MonthView.tsx:222
-#: src/pages/MonthView/MonthView.tsx:480
+#: src/pages/MonthView/MonthView.tsx:470
 msgid "Today"
 msgstr "Today"
 
-#: src/pages/MonthView/MonthView.tsx:502
-#: src/pages/MonthView/MonthView.tsx:526
-#: src/pages/MonthView/MonthView.tsx:588
+#: src/pages/MonthView/MonthView.tsx:492
+#: src/pages/MonthView/MonthView.tsx:516
+#: src/pages/MonthView/MonthView.tsx:578
 msgid "TODAY"
 msgstr "TODAY"
 
@@ -1427,15 +1427,15 @@ msgstr "Tracks can be used during opening hours."
 msgid "Tracks can be used once the range officer arrives."
 msgstr "Tracks can be used once the range officer arrives."
 
-#: src/pages/MonthView/MonthView.tsx:251
+#: src/pages/MonthView/MonthView.tsx:250
 msgid "Try again"
 msgstr "Try again"
 
-#: src/pages/MonthView/MonthView.tsx:334
+#: src/pages/MonthView/MonthView.tsx:324
 msgid "Tue"
 msgstr "Tue"
 
-#: src/pages/MonthView/MonthView.tsx:334
+#: src/pages/MonthView/MonthView.tsx:324
 msgid "Tuesday"
 msgstr "Tuesday"
 
@@ -1515,16 +1515,16 @@ msgstr "Visitors today"
 msgid "Warning!"
 msgstr "Warning!"
 
-#: src/pages/MonthView/MonthView.tsx:335
+#: src/pages/MonthView/MonthView.tsx:325
 msgid "Wed"
 msgstr "Wed"
 
-#: src/pages/MonthView/MonthView.tsx:335
+#: src/pages/MonthView/MonthView.tsx:325
 msgid "Wednesday"
 msgstr "Wednesday"
 
 #: src/trackview/Trackview.tsx:237
-#: src/pages/MonthView/MonthView.tsx:368
+#: src/pages/MonthView/MonthView.tsx:358
 #: src/lib/components/ViewChanger.jsx:42
 msgid "Week"
 msgstr "Week"
@@ -1534,10 +1534,10 @@ msgid "Week {weekNumber} {year}"
 msgstr "Week {weekNumber} {year}"
 
 #: src/pages/MonthView/MonthView.tsx:293
-msgid "Weeks {firstWeek}–{lastWeek}"
-msgstr "Weeks {firstWeek}–{lastWeek}"
+#~ msgid "Weeks {firstWeek}–{lastWeek}"
+#~ msgstr "Weeks {firstWeek}–{lastWeek}"
 
-#: src/pages/MonthView/MonthView.tsx:369
+#: src/pages/MonthView/MonthView.tsx:359
 msgid "Wk"
 msgstr "Wk"
 

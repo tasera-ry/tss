@@ -1,7 +1,6 @@
 @import '../../shared.module.scss';
 
 $desktop: 768px;
-$mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
 @mixin desktop {
   @media only screen and (min-width: $desktop) {
@@ -59,15 +58,6 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       min-width: 64px;
     }
   }
-}
-
-.weekRange {
-  /* Offsets DateHeader's py-10 so the subtitle sits under the title. */
-  margin: -32px 0 24px;
-  text-align: center;
-  font-family: $mono;
-  font-size: 12px;
-  color: var(--color-black-tint-60);
 }
 
 .calendarCard {
