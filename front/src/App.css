@@ -37,31 +37,25 @@
  */
 @theme static {
   /*
-   * Status palette (#432). Proposed values — expect these to change once the
-   * palette work is finished. Defined here only, and read from SCSS with
-   * var(--color-status-*), so they are not duplicated into colors.module.scss
-   * the way the older tokens are.
+   * Status palette (#432). For now the new views use the colours the rest of
+   * TSS already uses (colors.module.scss), so all four views look alike; the
+   * palette is to be reviewed once the month, week, day and track views are
+   * all redesigned (decided 16.11.2026). Defined here only and read with
+   * var(--color-status-*).
    *
-   * Built as a lightness ramp rather than as a set of hues: L* 93 / 73 / 55 /
-   * 43 / 21. That means the five states stay distinguishable with no colour
-   * perception at all, which picking a better green and a better red cannot
-   * achieve — those two collapse to dE2000 6.6 under deuteranopia today, and
-   * any green/red pair would.
+   * Every status is written as text in these views, so colour is never the
+   * only signal (WCAG 1.4.1). All text on the fills is black, at least 5.6:1,
+   * except official, which takes white at 5.3:1 (WCAG 1.4.3).
    *
-   * Measured against the #ebebeb page background:
-   *   private  3.17:1   official  4.93:1   closed  10.69:1   (SC 1.4.11 wants 3:1)
-   * "free" and "blocked" sit below that deliberately: they carry no information
-   * on their own, the text does.
-   *
-   * Two pairs stay close under simulation — free/blocked at dE 14 and
-   * private/official at dE 14 — so both also differ by pattern and by wording.
-   * With five states on a light ground there is no palette where every pair
-   * clears the threshold on hue alone.
+   * Known limit, for the review: present green and closed red are 1.16:1
+   * apart and look alike with deuteranopia; the text and the icons carry the
+   * difference. Official and blocked have no colour in the old palette: official
+   * takes the old red (military use was shown as closed), blocked a grey.
    */
-  --color-status-free: #ebebeb;
-  --color-status-blocked: #afb3ad;
-  --color-status-private: #b4761f;
-  --color-status-official: #a4483c;
-  --color-status-closed: #2e342f;
-  --color-status-present: #2e6b3e;
+  --color-status-free: #b2d9ad;
+  --color-status-blocked: #a9ada8;
+  --color-status-private: #f2c66d;
+  --color-status-official: #c23a3a;
+  --color-status-closed: #c97b76;
+  --color-status-present: #658f60;
 }

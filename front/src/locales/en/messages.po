@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/trackview/Trackview.tsx:673
+#: src/trackview/Trackview.tsx:641
 msgid "{booked, plural, one {# lane booked} other {# lanes booked}}"
 msgstr "{booked, plural, one {# lane booked} other {# lanes booked}}"
 
@@ -42,7 +42,7 @@ msgstr "Actions"
 msgid "Add"
 msgstr "Add"
 
-#: src/scheduling/Scheduling.jsx:1181
+#: src/scheduling/Scheduling.jsx:1182
 msgid "Add estimated time of arrival"
 msgstr "Add estimated time of arrival"
 
@@ -62,7 +62,7 @@ msgstr "Add new range officer"
 msgid "Add range officer"
 msgstr "Add range officer"
 
-#: src/scheduling/Scheduling.jsx:1244
+#: src/scheduling/Scheduling.jsx:1245
 msgid "Advanced options"
 msgstr "Advanced options"
 
@@ -167,10 +167,6 @@ msgstr "Associations"
 msgid "Back"
 msgstr "Back"
 
-#: src/trackview/Trackview.tsx:181
-msgid "Back to day view"
-msgstr "Back to day view"
-
 #: src/pages/DayView/DayView.tsx:98
 msgid "Back to weekview"
 msgstr "Back to weekview"
@@ -216,7 +212,7 @@ msgstr "CHECK"
 msgid "Choose \"Yes\" to use SSL/TLS encryption from the start of the connection (typically with port 465). Choose \"No\" for unencrypted connections that may upgrade via STARTTLS (typically with port 587). This setting must match your email provider's requirements for the specified port, otherwise connection will fail."
 msgstr "Choose \"Yes\" to use SSL/TLS encryption from the start of the connection (typically with port 465). Choose \"No\" for unencrypted connections that may upgrade via STARTTLS (typically with port 587). This setting must match your email provider's requirements for the specified port, otherwise connection will fail."
 
-#: src/scheduling/Scheduling.jsx:1047
+#: src/scheduling/Scheduling.jsx:1048
 #: src/pages/StatisticsView/StatisticsView.tsx:77
 msgid "Choose date"
 msgstr "Choose date"
@@ -225,12 +221,12 @@ msgstr "Choose date"
 msgid "Choose dates for the raffle"
 msgstr "Choose dates for the raffle"
 
-#: src/scheduling/Scheduling.jsx:1236
+#: src/scheduling/Scheduling.jsx:1237
 msgid "Close All"
 msgstr "Close All"
 
-#: src/trackview/Trackview.tsx:480
-#: src/scheduling/Scheduling.jsx:979
+#: src/trackview/Trackview.tsx:445
+#: src/scheduling/Scheduling.jsx:980
 #: src/pages/TabletView/components/TrackCard.tsx:20
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:109
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:126
@@ -267,7 +263,7 @@ msgstr "Confirm password"
 msgid "Confirm supervisions"
 msgstr "Confirm supervisions"
 
-#: src/scheduling/Scheduling.jsx:1197
+#: src/scheduling/Scheduling.jsx:1198
 msgid "Confirm time"
 msgstr "Confirm time"
 
@@ -280,7 +276,7 @@ msgstr "Confirmation doesn't match the new password"
 #: src/upcomingsupervisions/LoggedIn.jsx:176
 #: src/upcomingsupervisions/LoggedIn.jsx:184
 #: src/upcomingsupervisions/LoggedIn.jsx:218
-#: src/scheduling/Scheduling.jsx:1168
+#: src/scheduling/Scheduling.jsx:1169
 #: src/profile/profilepages/supervisions.tsx:260
 msgid "Confirmed"
 msgstr "Confirmed"
@@ -319,7 +315,7 @@ msgstr "Current password"
 msgid "Date"
 msgstr "Date"
 
-#: src/trackview/Trackview.tsx:203
+#: src/trackview/Trackview.tsx:211
 #: src/pages/StatisticsView/StatisticsView.tsx:89
 #: src/lib/components/ViewChanger.jsx:39
 msgid "Day"
@@ -379,7 +375,7 @@ msgstr "E-mail address is required!"
 msgid "Edit"
 msgstr "Edit"
 
-#: src/scheduling/Scheduling.jsx:1151
+#: src/scheduling/Scheduling.jsx:1152
 msgid "Edit range officer status by choosing color"
 msgstr "Edit range officer status by choosing color"
 
@@ -438,7 +434,7 @@ msgstr "Enable email sending, otherwise emails will not be sent. WARNING: This w
 msgid "Enable emails"
 msgstr "Enable emails"
 
-#: src/scheduling/Scheduling.jsx:1109
+#: src/scheduling/Scheduling.jsx:1110
 #: src/pages/TabletView/components/OpenHoursSection.tsx:127
 msgid "End"
 msgstr "End"
@@ -447,11 +443,11 @@ msgstr "End"
 msgid "End date"
 msgstr "End date"
 
-#: src/scheduling/Scheduling.jsx:1282
+#: src/scheduling/Scheduling.jsx:1283
 msgid "End repeat after"
 msgstr "End repeat after"
 
-#: src/trackview/Trackview.tsx:69
+#: src/trackview/Trackview.tsx:92
 msgid "Error"
 msgstr "Error"
 
@@ -491,7 +487,7 @@ msgstr "Error verifying token!"
 msgid "Estimate {time}"
 msgstr "Estimate {time}"
 
-#: src/trackview/Trackview.tsx:336
+#: src/trackview/Trackview.tsx:350
 msgid "Estimated arrival"
 msgstr "Estimated arrival"
 
@@ -537,11 +533,11 @@ msgstr "Force all pending emails to be sent immediately."
 msgid "Forgot password?"
 msgstr "Forgot password?"
 
-#: src/trackview/Trackview.tsx:717
+#: src/trackview/Trackview.tsx:685
 msgid "free"
 msgstr "free"
 
-#: src/trackview/Trackview.tsx:474
+#: src/trackview/Trackview.tsx:439
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusCard.tsx:11
 #: src/DeviceStatusList/DeviceStatusList.tsx:37
 msgid "Free"
@@ -599,10 +595,14 @@ msgstr "Invalid email address"
 msgid "Invalid time selected."
 msgstr "Invalid time selected."
 
-#: src/trackview/Trackview.tsx:359
-#: src/trackview/Trackview.tsx:755
+#: src/trackview/Trackview.tsx:370
+#: src/trackview/Trackview.tsx:723
 msgid "lanes"
 msgstr "lanes"
+
+#: src/trackview/useTrackName.ts:33
+msgid "Leftmost"
+msgstr "Leftmost"
 
 #: src/pages/MonthView/MonthView.tsx:615
 msgid "Legend"
@@ -620,7 +620,7 @@ msgstr "Loading email settings..."
 msgid "Loading user data..."
 msgstr "Loading user data..."
 
-#: src/trackview/Trackview.tsx:79
+#: src/trackview/Trackview.tsx:102
 msgid "Loading..."
 msgstr "Loading..."
 
@@ -628,11 +628,15 @@ msgstr "Loading..."
 msgid "Log in"
 msgstr "Log in"
 
-#: src/scheduling/Scheduling.jsx:1211
+#: src/scheduling/Scheduling.jsx:1212
 msgid "Manage shooting tracks"
 msgstr "Manage shooting tracks"
 
-#: src/trackview/Trackview.tsx:381
+#: src/trackview/useTrackName.ts:39
+msgid "Marked lanes"
+msgstr "Marked lanes"
+
+#: src/trackview/Trackview.tsx:392
 msgid "Members may not enter a track without a track officer."
 msgstr "Members may not enter a track without a track officer."
 
@@ -643,6 +647,10 @@ msgstr "Menu"
 #: src/pages/InfoMessageManagementView/components/NewMessageForm.tsx:83
 msgid "Message"
 msgstr "Message"
+
+#: src/trackview/useTrackName.ts:35
+msgid "Middle"
+msgstr "Middle"
 
 #. placeholder {0}: 1
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:200
@@ -695,7 +703,7 @@ msgstr "Mon"
 msgid "Monday"
 msgstr "Monday"
 
-#: src/trackview/Trackview.tsx:201
+#: src/trackview/Trackview.tsx:209
 #: src/pages/StatisticsView/StatisticsView.tsx:99
 #: src/lib/components/ViewChanger.jsx:25
 msgid "Month"
@@ -730,7 +738,7 @@ msgstr "New password"
 msgid "New password is required"
 msgstr "New password is required"
 
-#: src/trackview/Trackview.tsx:240
+#: src/trackview/Trackview.tsx:248
 msgid "Next day"
 msgstr "Next day"
 
@@ -748,8 +756,8 @@ msgstr "No devices found"
 msgid "No pending messages to send."
 msgstr "No pending messages to send."
 
-#: src/trackview/Trackview.tsx:302
-#: src/trackview/Trackview.tsx:642
+#: src/trackview/Trackview.tsx:313
+#: src/trackview/Trackview.tsx:610
 msgid "No range officer present"
 msgstr "No range officer present"
 
@@ -758,11 +766,15 @@ msgstr "No range officer present"
 msgid "No selection"
 msgstr "No selection"
 
-#: src/trackview/Trackview.tsx:482
+#: src/trackview/Trackview.tsx:447
 msgid "No shooting"
 msgstr "No shooting"
 
-#: src/trackview/Trackview.tsx:332
+#: src/trackview/Trackview.tsx:342
+msgid "No track can be used on this day."
+msgstr "No track can be used on this day."
+
+#: src/trackview/Trackview.tsx:346
 msgid "No track can be used until the range officer arrives."
 msgstr "No track can be used until the range officer arrives."
 
@@ -774,12 +786,12 @@ msgstr "No track officer"
 msgid "No track officer available"
 msgstr "No track officer available"
 
-#: src/trackview/Trackview.tsx:378
-#: src/trackview/Trackview.tsx:641
+#: src/trackview/Trackview.tsx:389
+#: src/trackview/Trackview.tsx:609
 msgid "No track officer present"
 msgstr "No track officer present"
 
-#: src/scheduling/Scheduling.jsx:1160
+#: src/scheduling/Scheduling.jsx:1161
 #: src/profile/profilepages/supervisions.tsx:258
 msgid "Not confirmed"
 msgstr "Not confirmed"
@@ -792,7 +804,7 @@ msgstr "Not selected"
 msgid "Nothing to confirm"
 msgstr "Nothing to confirm"
 
-#: src/trackview/Trackview.tsx:387
+#: src/trackview/Trackview.tsx:398
 msgid "Notice for the day"
 msgstr "Notice for the day"
 
@@ -818,14 +830,14 @@ msgstr "Old password is required"
 msgid "Old password isn't valid"
 msgstr "Old password isn't valid"
 
-#: src/trackview/Trackview.tsx:101
-#: src/scheduling/Scheduling.jsx:1072
+#: src/trackview/Trackview.tsx:124
+#: src/scheduling/Scheduling.jsx:1073
 #: src/pages/TabletView/components/OpenHoursSection.tsx:101
 #: src/pages/DayView/DayView.tsx:190
 msgid "Open"
 msgstr "Open"
 
-#: src/scheduling/Scheduling.jsx:1224
+#: src/scheduling/Scheduling.jsx:1225
 msgid "Open All"
 msgstr "Open All"
 
@@ -833,7 +845,7 @@ msgstr "Open All"
 msgid "Open day view"
 msgstr "Open day view"
 
-#: src/scheduling/Scheduling.jsx:1082
+#: src/scheduling/Scheduling.jsx:1083
 msgid "Opening hours"
 msgstr "Opening hours"
 
@@ -845,8 +857,8 @@ msgstr "Opening hours: {opensAt}-{closesAt}"
 msgid "Organization updated"
 msgstr "Organization updated"
 
-#: src/trackview/Trackview.tsx:593
-#: src/trackview/Trackview.tsx:710
+#: src/trackview/Trackview.tsx:558
+#: src/trackview/Trackview.tsx:678
 msgid "Partially available"
 msgstr "Partially available"
 
@@ -898,18 +910,18 @@ msgstr "Pending messages sent successfully!"
 msgid "Please give your new email address"
 msgstr "Please give your new email address"
 
-#: src/scheduling/Scheduling.jsx:1176
+#: src/scheduling/Scheduling.jsx:1177
 #: src/profile/profilepages/supervisions.tsx:261
 #: src/pages/TabletView/components/TrackCard.tsx:16
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:99
 msgid "Present"
 msgstr "Present"
 
-#: src/trackview/Trackview.tsx:236
+#: src/trackview/Trackview.tsx:244
 msgid "Previous day"
 msgstr "Previous day"
 
-#: src/trackview/Trackview.tsx:476
+#: src/trackview/Trackview.tsx:441
 #: src/scheduling/Scheduling.jsx:614
 #: src/pages/DayView/DayView.tsx:192
 msgid "Private event"
@@ -924,6 +936,7 @@ msgstr "Raffle results"
 msgid "Raffle supervisors"
 msgstr "Raffle supervisors"
 
+#: src/trackview/Trackview.tsx:314
 #: src/pages/MonthView/MonthView.tsx:77
 #: src/pages/MonthView/MonthView.tsx:78
 #: src/pages/DayView/DayView.tsx:178
@@ -931,7 +944,7 @@ msgstr "Raffle supervisors"
 msgid "Range closed"
 msgstr "Range closed"
 
-#: src/scheduling/Scheduling.jsx:1121
+#: src/scheduling/Scheduling.jsx:1122
 #: src/pages/UserManagement/UserManagementView.tsx:152
 #: src/pages/UserManagement/components/SelectRole.tsx:23
 msgid "Range officer"
@@ -950,15 +963,15 @@ msgid "Range officer addition failed"
 msgstr "Range officer addition failed"
 
 #. placeholder {0}: formatTime(arrivingAt)
-#: src/trackview/Trackview.tsx:635
+#: src/trackview/Trackview.tsx:603
 msgid "Range officer arriving at {0}"
 msgstr "Range officer arriving at {0}"
 
-#: src/trackview/Trackview.tsx:304
-#: src/trackview/Trackview.tsx:648
+#: src/trackview/Trackview.tsx:316
+#: src/trackview/Trackview.tsx:616
 #: src/scheduling/Scheduling.jsx:384
 #: src/scheduling/Scheduling.jsx:389
-#: src/scheduling/Scheduling.jsx:982
+#: src/scheduling/Scheduling.jsx:983
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:130
 #: src/pages/MonthView/MonthView.tsx:59
 #: src/pages/DayView/DayView.tsx:174
@@ -986,11 +999,11 @@ msgstr "Range officer deletion failed"
 msgid "Range officer management"
 msgstr "Range officer management"
 
-#: src/trackview/Trackview.tsx:306
-#: src/trackview/Trackview.tsx:650
+#: src/trackview/Trackview.tsx:318
+#: src/trackview/Trackview.tsx:618
 #: src/scheduling/Scheduling.jsx:369
 #: src/scheduling/Scheduling.jsx:374
-#: src/scheduling/Scheduling.jsx:985
+#: src/scheduling/Scheduling.jsx:986
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:134
 #: src/pages/DayView/DayView.tsx:176
 msgid "Range officer predefined"
@@ -1002,10 +1015,10 @@ msgstr "Range officer predefined"
 msgid "Range officer predefined, not confirmed"
 msgstr "Range officer predefined, not confirmed"
 
-#: src/trackview/Trackview.tsx:303
+#: src/trackview/Trackview.tsx:315
 #: src/scheduling/Scheduling.jsx:399
 #: src/scheduling/Scheduling.jsx:401
-#: src/scheduling/Scheduling.jsx:973
+#: src/scheduling/Scheduling.jsx:974
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:118
 #: src/pages/MonthView/MonthView.tsx:53
 #: src/pages/MonthView/MonthView.tsx:54
@@ -1014,8 +1027,8 @@ msgstr "Range officer predefined, not confirmed"
 msgid "Range officer present"
 msgstr "Range officer present"
 
-#: src/scheduling/Scheduling.jsx:976
-#: src/scheduling/Scheduling.jsx:988
+#: src/scheduling/Scheduling.jsx:977
+#: src/scheduling/Scheduling.jsx:989
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:122
 #: src/pages/MonthView/MonthView.tsx:71
 #: src/pages/MonthView/MonthView.tsx:72
@@ -1040,15 +1053,15 @@ msgstr "Rangeofficers"
 msgid "Recipients"
 msgstr "Recipients"
 
-#: src/scheduling/Scheduling.jsx:1249
+#: src/scheduling/Scheduling.jsx:1250
 msgid "Repeat daily"
 msgstr "Repeat daily"
 
-#: src/scheduling/Scheduling.jsx:1271
+#: src/scheduling/Scheduling.jsx:1272
 msgid "Repeat monthly"
 msgstr "Repeat monthly"
 
-#: src/scheduling/Scheduling.jsx:1260
+#: src/scheduling/Scheduling.jsx:1261
 msgid "Repeat weekly"
 msgstr "Repeat weekly"
 
@@ -1057,7 +1070,7 @@ msgstr "Repeat weekly"
 msgid "Reserved"
 msgstr "Reserved"
 
-#: src/trackview/Trackview.tsx:478
+#: src/trackview/Trackview.tsx:443
 msgid "Reserved for authority use"
 msgstr "Reserved for authority use"
 
@@ -1073,6 +1086,10 @@ msgstr "Results saved"
 #: src/upcomingsupervisions/LoggedIn.jsx:493
 msgid "Retrieving information..."
 msgstr "Retrieving information..."
+
+#: src/trackview/useTrackName.ts:37
+msgid "Rightmost"
+msgstr "Rightmost"
 
 #: src/pages/UserManagement/UserManagementView.tsx:124
 #: src/pages/UserManagement/UserManagementView.tsx:166
@@ -1099,7 +1116,7 @@ msgstr "Saturday"
 msgid "Save"
 msgstr "Save"
 
-#: src/scheduling/Scheduling.jsx:1301
+#: src/scheduling/Scheduling.jsx:1302
 #: src/pages/UserManagement/components/dialogs/ChangePasswordSelfDialog.tsx:141
 #: src/pages/UserManagement/components/dialogs/ChangeEmailSelfDialog.tsx:100
 #: src/pages/UserManagement/components/dialogs/AddUserDialog.tsx:175
@@ -1114,12 +1131,16 @@ msgstr "Save results"
 msgid "Save settings"
 msgstr "Save settings"
 
-#: src/scheduling/Scheduling.jsx:1025
+#: src/scheduling/Scheduling.jsx:1026
 #: src/lib/components/Navbar/DrawerMenu.tsx:30
 msgid "Schedules"
 msgstr "Schedules"
 
-#: src/trackview/Trackview.tsx:363
+#: src/trackview/Trackview.tsx:415
+msgid "Section {number}"
+msgstr "Section {number}"
+
+#: src/trackview/Trackview.tsx:374
 msgid "sections"
 msgstr "sections"
 
@@ -1216,11 +1237,11 @@ msgstr "Something went wrong"
 msgid "Something went wrong!"
 msgstr "Something went wrong!"
 
-#: src/trackview/Trackview.tsx:70
+#: src/trackview/Trackview.tsx:93
 msgid "Something went wrong. Please try again later."
 msgstr "Something went wrong. Please try again later."
 
-#: src/scheduling/Scheduling.jsx:1092
+#: src/scheduling/Scheduling.jsx:1093
 #: src/pages/TabletView/components/OpenHoursSection.tsx:118
 msgid "Start"
 msgstr "Start"
@@ -1253,7 +1274,7 @@ msgstr "Sun"
 msgid "Sunday"
 msgstr "Sunday"
 
-#: src/trackview/Trackview.tsx:110
+#: src/trackview/Trackview.tsx:133
 msgid "Sunset"
 msgstr "Sunset"
 
@@ -1301,7 +1322,7 @@ msgstr "The link is incorrect or it has expired. Please send a new reset link!"
 msgid "The saving of the results failed"
 msgstr "The saving of the results failed"
 
-#: src/trackview/Trackview.tsx:88
+#: src/trackview/Trackview.tsx:111
 msgid "This track has no schedule for the selected day."
 msgstr "This track has no schedule for the selected day."
 
@@ -1329,9 +1350,13 @@ msgstr "Today"
 msgid "TODAY"
 msgstr "TODAY"
 
-#: src/trackview/Trackview.tsx:208
+#: src/trackview/Trackview.tsx:216
 msgid "Track"
 msgstr "Track"
+
+#: src/trackview/useTrackName.ts:17
+msgid "Track {number}"
+msgstr "Track {number}"
 
 #: src/pages/EditTracksView/components/NewTrackRow.tsx:53
 msgid "Track added successfully"
@@ -1354,11 +1379,11 @@ msgstr "Track deleted successfully"
 msgid "Track has additional information"
 msgstr "Track has additional information"
 
-#: src/trackview/Trackview.tsx:87
+#: src/trackview/Trackview.tsx:110
 msgid "Track not found"
 msgstr "Track not found"
 
-#: src/trackview/Trackview.tsx:377
+#: src/trackview/Trackview.tsx:388
 msgid "Track officer present"
 msgstr "Track officer present"
 
@@ -1366,17 +1391,17 @@ msgstr "Track officer present"
 msgid "Track updated successfully"
 msgstr "Track updated successfully"
 
-#: src/trackview/Trackview.tsx:262
-#: src/trackview/Trackview.tsx:266
+#: src/trackview/Trackview.tsx:271
+#: src/trackview/Trackview.tsx:275
 #: src/pages/EditTracksView/EditTracksView.tsx:64
 msgid "Tracks"
 msgstr "Tracks"
 
-#: src/trackview/Trackview.tsx:328
+#: src/trackview/Trackview.tsx:340
 msgid "Tracks can be used during opening hours."
 msgstr "Tracks can be used during opening hours."
 
-#: src/trackview/Trackview.tsx:329
+#: src/trackview/Trackview.tsx:341
 msgid "Tracks can be used once the range officer arrives."
 msgstr "Tracks can be used once the range officer arrives."
 
@@ -1395,6 +1420,10 @@ msgstr "Tuesday"
 #: src/EmailSettings/EmailSettings.tsx:313
 msgid "Unconfirmed shift reminder"
 msgstr "Unconfirmed shift reminder"
+
+#: src/trackview/useTrackName.ts:41
+msgid "Unmarked lanes"
+msgstr "Unmarked lanes"
 
 #: src/scheduling/Scheduling.jsx:460
 msgid "Update successful"
@@ -1435,7 +1464,7 @@ msgstr "Users should not be reduced, Do you really want to reduce the number of 
 msgid "Values cannot be negative"
 msgstr "Values cannot be negative"
 
-#: src/trackview/Trackview.tsx:200
+#: src/trackview/Trackview.tsx:208
 msgid "Views"
 msgstr "Views"
 
@@ -1471,7 +1500,7 @@ msgstr "Wed"
 msgid "Wednesday"
 msgstr "Wednesday"
 
-#: src/trackview/Trackview.tsx:202
+#: src/trackview/Trackview.tsx:210
 #: src/pages/MonthView/MonthView.tsx:368
 #: src/lib/components/ViewChanger.jsx:32
 msgid "Week"
