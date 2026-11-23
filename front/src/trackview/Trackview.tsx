@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { CircularProgress } from '@mui/material';
@@ -10,6 +11,7 @@ import classNames from 'classnames';
 import moment from 'moment';
 import { useQuery } from 'react-query';
 
+import { JumpToCurrent } from '@/utils/Utils';
 import api from '../api/api';
 import css from './Trackview.module.scss';
 import { formatTime, toTrackViewDay } from './trackViewPlaceholder';
@@ -88,7 +90,7 @@ export function Trackview() {
 
   if (status === 'error') {
     return (
-      <TrackViewContainer date={targetDate}>
+      <TrackViewContainer date={targetDate} track={track}>
         <h1 className="font-bold text-2xl">{t`Error`}</h1>
         <p>{t`Something went wrong. Please try again later.`}</p>
       </TrackViewContainer>
@@ -97,7 +99,7 @@ export function Trackview() {
 
   if (status === 'loading') {
     return (
-      <TrackViewContainer date={targetDate}>
+      <TrackViewContainer date={targetDate} track={track}>
         <CircularProgress />
         <span>{t`Loading...`}</span>
       </TrackViewContainer>
@@ -106,7 +108,7 @@ export function Trackview() {
 
   if (!day || !selectedTrack) {
     return (
-      <TrackViewContainer date={targetDate}>
+      <TrackViewContainer date={targetDate} track={track}>
         <h1 className="font-bold text-2xl">{t`Track not found`}</h1>
         <p>{t`This track has no schedule for the selected day.`}</p>
       </TrackViewContainer>
@@ -116,7 +118,7 @@ export function Trackview() {
   const blocked = unavailableReason(day, selectedTrack);
 
   return (
-    <TrackViewContainer date={targetDate}>
+    <TrackViewContainer date={targetDate} track={track}>
       <DateNav date={targetDate} track={selectedTrack.name} />
       <p className="-mt-3 text-center text-grey text-sm">
         {day.open !== null && day.close !== null && (
@@ -137,9 +139,8 @@ export function Trackview() {
 
       <RangeOfficerBanner day={day} />
 
-      {/* Desktop: the tracks become a sidebar beside the track, so the page
-          uses the screen's width and every track stays in view. */}
-      <div className="flex flex-col gap-5 lg:grid lg:grid-cols-[12rem_minmax(0,1fr)] lg:items-start lg:gap-6">
+      {/* The tracks as one row of buttons under the banner, then the track. */}
+      <div className="flex flex-col gap-5">
         <TrackChips
           date={targetDate}
           tracks={day.tracks}
@@ -177,17 +178,43 @@ export function Trackview() {
 
 function TrackViewContainer({
   date,
+  track,
   children,
-}: { date: string; children: React.ReactNode }) {
+}: { date: string; track?: string; children: React.ReactNode }) {
   return (
-    // A readable column on phones and tablets; on desktop the full width of the
-    // screen, up to 1920px, beyond which rows would stretch too far apart to read.
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 pt-4 pb-16 sm:px-6 lg:max-w-[1920px] lg:px-8">
-      <div className="flex flex-wrap items-center justify-end gap-3">
-        <ViewTabs date={date} />
+    // One readable column, at most 1024px, centred, as in the day view and the
+    // old month and week views. Wider rows are harder to read and scan (WCAG
+    // 1.4.8; GOV.UK and USWDS cap their pages at 960-1024px).
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 pt-4 pb-16 sm:px-6">
+      {/* Back to the day view on the left (the track view is one level
+          deeper), Today in the middle, the view tabs on the right. On phones
+          the back link has its own row and Today goes left. */}
+      <div className="grid grid-cols-[auto_1fr] items-center gap-3 sm:grid-cols-[1fr_auto_1fr]">
+        <div className="col-span-2 sm:col-span-1 sm:col-start-1 sm:justify-self-start">
+          <BackLink date={date} />
+        </div>
+        <div className="sm:col-start-2">
+          <JumpToCurrent view="trackview" rest={track} />
+        </div>
+        <div className="justify-self-end sm:col-start-3">
+          <ViewTabs date={date} />
+        </div>
       </div>
       {children}
     </div>
+  );
+}
+
+function BackLink({ date }: { date: string }) {
+  const { t } = useLingui();
+  return (
+    <Link
+      className="-ml-2 flex items-center gap-1 p-2 text-grey hover:text-black"
+      to={`/dayview/${moment(date).format('YYYY-MM-DD')}`}
+    >
+      <ArrowBackIcon fontSize="small" />
+      {t`Back to day view`}
+    </Link>
   );
 }
 
@@ -267,26 +294,20 @@ function TrackChips({
   const trackName = useTrackName();
 
   return (
-    <nav
-      aria-label={t`Tracks`}
-      className="flex flex-wrap gap-2 lg:sticky lg:top-4 lg:max-h-[calc(100dvh-2rem)] lg:flex-col lg:overflow-y-auto lg:flex-nowrap lg:gap-1"
-    >
-      <h2 className="mb-1 hidden px-3 font-semibold text-grey text-xs uppercase tracking-wider lg:block">
-        {t`Tracks`}
-      </h2>
+    <nav aria-label={t`Tracks`} className="flex flex-wrap gap-2">
       {tracks.map((item) =>
         item.name === selected ? (
           <span
             key={item.id}
             aria-current="page"
-            className="rounded-full border border-black bg-black-tint-05 px-3 py-1.5 font-medium text-sm lg:rounded-md lg:py-2"
+            className="rounded-full border border-black bg-black-tint-05 px-3 py-1.5 font-medium text-sm"
           >
             {trackName(item.name)}
           </span>
         ) : (
           <Link
             key={item.id}
-            className="rounded-full border border-black-tint-20 bg-white px-3 py-1.5 text-grey text-sm hover:border-black-tint-40 hover:text-black lg:rounded-md lg:py-2"
+            className="rounded-full border border-black-tint-20 bg-white px-3 py-1.5 text-grey text-sm hover:border-black-tint-40 hover:text-black"
             to={`/trackview/${date}/${item.name}`}
           >
             {trackName(item.name)}
