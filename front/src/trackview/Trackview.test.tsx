@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import testUtils from '../_TestUtils/TestUtils';
 import api from '../api/api';
 import { Trackview } from './Trackview';
+import type { ApiReservation, ApiSection } from './trackViewPlaceholder';
 
 vi.mock('../api/api');
 vi.mock('react-router-dom', async (originalImport) => {
@@ -18,13 +19,59 @@ vi.mock('react-router-dom', async (originalImport) => {
   };
 });
 
+// The pistol track's three lohkot; every other track undivided.
+const sections: ApiSection[] = [
+  ...['Vasemmanpuoleisin', 'Keskimmäinen', 'Oikeanpuoleisin'].map(
+    (side, i) => ({
+      id: 10 + i,
+      track_id: 1,
+      position: i + 1,
+      lane_count: 20,
+      name: `${side} loossi`,
+      description: '20 paikan lohko',
+    }),
+  ),
+  ...testUtils.schedule.tracks.slice(1).map((track) => ({
+    id: track.id * 10,
+    track_id: track.id,
+    position: 1,
+    lane_count: 40,
+    name: track.name,
+    description: null,
+  })),
+];
+
+// A club holds half of Lohko 1 until closing time (the fixture opens 03.11–06.08).
+const reservations: ApiReservation[] = [
+  {
+    id: 1,
+    track_section_id: 10,
+    association_id: 5,
+    association_name: 'Hirviseura',
+    type: 'private_event',
+    start_time: '05:11:00',
+    end_time: '06:08:00',
+    lanes_used: 10,
+    description: null,
+  },
+];
+
+// The shared fixture's range is 'closed' for the day. These tests are about a
+// range officer who is away, so they use 'absent'; a closed day has its own test.
+const away = { ...testUtils.schedule, rangeSupervision: 'absent' };
+
 /**
  * LinguiProvider renders null until its catalog import resolves, and this version
  * of Testing Library does not reliably settle a second `findBy*` afterwards. So
  * each test awaits the track's heading once, then asserts synchronously.
  */
-async function renderTrackview(schedule = testUtils.schedule) {
+async function renderTrackview(
+  schedule: typeof testUtils.schedule = away,
+  sectionRows = sections,
+) {
   vi.mocked(api.getSchedulingDate).mockResolvedValue(schedule);
+  vi.mocked(api.getTrackSections).mockResolvedValue(sectionRows);
+  vi.mocked(api.getTrackReservations).mockResolvedValue(reservations);
   const result = render(<Trackview />, { wrapper: TestProviders });
   await screen.findByRole(
     'heading',
@@ -123,10 +170,10 @@ describe('testing Trackview', () => {
   });
 
   it('reports that no track can be used when the range officer is away', async () => {
-    // The shared fixture carries rangeSupervision 'closed' while individual
-    // tracks carry trackSupervision 'present' — the combination the customer
-    // says cannot occur. The view has to resolve it in the member's favour by
-    // reporting the range officer rather than showing the track as usable.
+    // Range officer 'absent' while individual tracks carry trackSupervision
+    // 'present' — the combination the customer says cannot occur. The view has
+    // to resolve it in the member's favour by reporting the range officer
+    // rather than showing the track as usable.
     await renderTrackview();
 
     // Appears both in the banner and beside every blocked stretch of time.
@@ -157,9 +204,45 @@ describe('testing Trackview', () => {
   it('lists the three lohkot of the pistol track separately', async () => {
     await renderTrackview();
 
-    expect(screen.getAllByText('Lohko 1').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Lohko 2').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Lohko 3').length).toBeGreaterThan(0);
+    // English in the tests; "Lohko 1" in Finnish.
+    expect(screen.getAllByText('Section 1').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Section 2').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Section 3').length).toBeGreaterThan(0);
+  });
+
+  it('translates the known section positions, and shows others as stored', async () => {
+    vi.mocked(api.getTrackSections).mockResolvedValue([
+      { ...sections[0], name: 'Vasemmanpuoleisin' },
+      { ...sections[1], name: 'Keskimmäinen' },
+      { ...sections[2], name: 'Takahuone' },
+      ...sections.slice(3),
+    ]);
+    vi.mocked(api.getSchedulingDate).mockResolvedValue(away);
+    vi.mocked(api.getTrackReservations).mockResolvedValue(reservations);
+    render(<Trackview />, { wrapper: TestProviders });
+    await screen.findByRole(
+      'heading',
+      { level: 2, name: 'Shooting Track 0' },
+      { timeout: 5000 },
+    );
+
+    expect(screen.getByText('Leftmost')).toBeInTheDocument();
+    expect(screen.getByText('Middle')).toBeInTheDocument();
+    expect(screen.getByText('Takahuone')).toBeInTheDocument();
+  });
+
+  it('names the numbered tracks in the interface language, and links by the stored name', async () => {
+    const tracks = testUtils.schedule.tracks.map((track, i) =>
+      i === 1 ? { ...track, name: 'Rata 2' } : track,
+    );
+    await renderTrackview({ ...away, tracks });
+
+    const nav = within(screen.getByRole('navigation', { name: 'Tracks' }));
+    expect(nav.getByRole('link', { name: 'Track 2' })).toHaveAttribute(
+      'href',
+      expect.stringMatching(/\/trackview\/2020-02-20\/Rata(%20| )2$/),
+    );
+    expect(screen.queryByText('Rata 2')).not.toBeInTheDocument();
   });
 
   it('says where each lohko is', async () => {
@@ -170,6 +253,45 @@ describe('testing Trackview', () => {
     expect(screen.getByText('Oikeanpuoleisin loossi')).toBeInTheDocument();
   });
 
+  it('still renders a track whose sections are not in the database yet', async () => {
+    // Production has none until someone adds them; #477 seeds development only.
+    await renderTrackview(testUtils.schedule, []);
+
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Shooting Track 0' }),
+    ).toBeInTheDocument();
+  });
+
+  it('shows a range closed for the day as closed, on every track', async () => {
+    await renderTrackview(testUtils.schedule);
+
+    const banner = within(screen.getByTestId('range-officer-banner'));
+    expect(banner.getByText('Range closed')).toBeInTheDocument();
+    expect(
+      banner.getByText('No track can be used on this day.'),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Free')).not.toBeInTheDocument();
+    expect(screen.getAllByText('Closed').length).toBeGreaterThan(0);
+  });
+
+  it('jumps to today on the same track', async () => {
+    await renderTrackview();
+    const today = moment().format('YYYY-MM-DD');
+    expect(screen.getByTestId('jumpToCur')).toHaveAttribute(
+      'href',
+      expect.stringMatching(
+        new RegExp(`/trackview/${today}/Shooting(%20| )Track(%20| )0$`),
+      ),
+    );
+  });
+
+  it('links back to the day view, one level up', async () => {
+    await renderTrackview();
+    expect(
+      screen.getByRole('link', { name: 'Back to day view' }),
+    ).toHaveAttribute('href', expect.stringMatching(/\/dayview\/2020-02-20$/));
+  });
+
   it('labels the notice as the notice for the day', async () => {
     await renderTrackview();
 
@@ -177,7 +299,7 @@ describe('testing Trackview', () => {
   });
 
   describe('with both supervisors present', () => {
-    // The placeholder books half of Lohko 1 for a club on this fixture.
+    // A club holds half of Lohko 1 on this fixture; see `reservations`.
     const supervised = {
       ...testUtils.schedule,
       rangeSupervision: 'present',
@@ -193,9 +315,7 @@ describe('testing Trackview', () => {
         0,
       );
       expect(
-        screen.getByText(
-          'Private event · Varattu seuran vuorolle · 10 lanes booked',
-        ),
+        screen.getByText('Private event · Hirviseura · 10 lanes booked'),
       ).toBeInTheDocument();
       expect(screen.getByText('10/20 free')).toBeInTheDocument();
     });

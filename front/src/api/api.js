@@ -8,6 +8,18 @@ const getSchedulingDate = async (date) => {
   return response.data;
 };
 
+const getTrackSections = async () => {
+  const response = await axios.get('/api/track-section');
+  return response.data;
+};
+
+const getTrackReservations = async (date) => {
+  const response = await axios.get('/api/track-reservation', {
+    params: { date: dateToString(date) },
+  });
+  return response.data;
+};
+
 const getSchedulingWeek = async (date) => {
   const response = await axios.get(`/api/daterange/week/${dateToString(date)}`);
   return response.data;
@@ -95,9 +107,10 @@ const addRangeSupervision = (
   rangeSupervisor,
   association,
 ) => {
-  axios.post('/api/range-supervision', {
+  return axios.post('/api/range-supervision', {
     scheduled_range_supervision_id:
-      scheduledRangeSupervisionId.scheduled_range_supervision_id,
+      scheduledRangeSupervisionId?.scheduled_range_supervision_id ??
+      scheduledRangeSupervisionId,
     range_supervisor: rangeSupervisor,
     association,
   });
@@ -228,6 +241,8 @@ async function putSupervision(id, data) {
 
 export default {
   getSchedulingDate,
+  getTrackSections,
+  getTrackReservations,
   getSchedulingWeek,
   getSchedulingFreeform,
   signIn,

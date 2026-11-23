@@ -11,13 +11,29 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#: src/trackview/Trackview.tsx:673
+#: src/trackview/Trackview.tsx:662
 msgid "{booked, plural, one {# lane booked} other {# lanes booked}}"
-msgstr ""
+msgstr "{booked, plural, one {# ampumapaikka varattu} other {# ampumapaikkaa varattu}}"
 
 #: src/pages/WeekView/WeekView.tsx:191
 msgid "{dayCount} days · select a day to see the tracks"
 msgstr "{dayCount} päivää · valitse päivä nähdäksesi radat"
+
+#: src/pages/DayView/DayView.tsx:103
+msgid "{equipmentCount, plural, one {# device} other {# devices}}"
+msgstr "{equipmentCount, plural, one {# laite} other {# laitetta}}"
+
+#: src/pages/DayView/DayView.tsx:90
+#~ msgid "{equipmentCount} devices"
+#~ msgstr "{equipmentCount} välinettä"
+
+#: src/pages/DayView/DayView.tsx:101
+msgid "{tracksCount, plural, one {# track} other {# tracks}}"
+msgstr "{tracksCount, plural, one {# rata} other {# rataa}}"
+
+#: src/pages/DayView/DayView.tsx:88
+#~ msgid "{tracksCount} tracks"
+#~ msgstr "{tracksCount}rataa"
 
 #: src/upcomingsupervisions/LoggedIn.jsx:75
 #: src/upcomingsupervisions/LoggedIn.jsx:131
@@ -40,7 +56,7 @@ msgstr "Toiminnot"
 msgid "Add"
 msgstr "Lisää"
 
-#: src/scheduling/Scheduling.jsx:1181
+#: src/scheduling/Scheduling.jsx:1182
 msgid "Add estimated time of arrival"
 msgstr "Lisää arvioitu saapumisaika"
 
@@ -60,7 +76,7 @@ msgstr "Lisää uusi valvoja"
 msgid "Add range officer"
 msgstr "Lisää valvoja"
 
-#: src/scheduling/Scheduling.jsx:1244
+#: src/scheduling/Scheduling.jsx:1245
 msgid "Advanced options"
 msgstr "Lisäasetukset"
 
@@ -172,21 +188,25 @@ msgstr "Yhteisöt"
 #~ msgid "August"
 #~ msgstr "Elokuu"
 
+#: src/pages/DayView/DayView.tsx:243
+msgid "Awaiting range officer"
+msgstr "Odottaa päävalvojaa"
+
 #: src/pages/UserManagement/UserManagementView.tsx:72
 msgid "Back"
 msgstr "Takaisin"
 
-#: src/trackview/Trackview.tsx:181
+#: src/trackview/Trackview.tsx:216
 msgid "Back to day view"
-msgstr ""
+msgstr "Takaisin päivänäkymään"
 
 #: src/trackview/Trackview.tsx:159
 #~ msgid "Back to dayview"
 #~ msgstr "Takaisin päivänäkymään"
 
 #: src/pages/DayView/DayView.tsx:98
-msgid "Back to weekview"
-msgstr "Takaisin viikkonäkymään"
+#~ msgid "Back to weekview"
+#~ msgstr "Takaisin viikkonäkymään"
 
 #: src/upcomingsupervisions/LoggedIn.jsx:522
 #: src/profile/profilepages/officerform.jsx:84
@@ -241,7 +261,7 @@ msgstr "TARKISTA"
 msgid "Choose \"Yes\" to use SSL/TLS encryption from the start of the connection (typically with port 465). Choose \"No\" for unencrypted connections that may upgrade via STARTTLS (typically with port 587). This setting must match your email provider's requirements for the specified port, otherwise connection will fail."
 msgstr "Valitse \"Kyllä\" käyttääksesi SSL/TLS-salausta yhteyden alusta alkaen (tyypillisesti portissa 465). Valitse \"Ei\" salaamattomille yhteyksille, jotka voivat päivittyä STARTTLS:n kautta (tyypillisesti portissa 587). Tämän asetuksen on vastattava sähköpostipalveluntarjoajasi vaatimuksia määritetylle portille, muuten yhteys epäonnistuu."
 
-#: src/scheduling/Scheduling.jsx:1047
+#: src/scheduling/Scheduling.jsx:1048
 #: src/pages/StatisticsView/StatisticsView.tsx:77
 msgid "Choose date"
 msgstr "Valitse päivä"
@@ -254,7 +274,7 @@ msgstr "Valitse arvottavat päivämäärät"
 #~ msgid "Close"
 #~ msgstr "Sulje"
 
-#: src/scheduling/Scheduling.jsx:1236
+#: src/scheduling/Scheduling.jsx:1237
 msgid "Close All"
 msgstr "Sulje kaikki"
 
@@ -262,12 +282,12 @@ msgstr "Sulje kaikki"
 #~ msgid "Close editing mode"
 #~ msgstr "Sulje muokkaustila"
 
-#: src/trackview/Trackview.tsx:480
-#: src/scheduling/Scheduling.jsx:979
+#: src/trackview/Trackview.tsx:466
+#: src/scheduling/Scheduling.jsx:980
 #: src/pages/TabletView/components/TrackCard.tsx:20
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:109
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:126
-#: src/pages/DayView/DayView.tsx:191
+#: src/pages/DayView/DayView.tsx:220
 msgid "Closed"
 msgstr "Suljettu"
 
@@ -300,7 +320,7 @@ msgstr "Vahvista salasana"
 msgid "Confirm supervisions"
 msgstr "Vahvistettavat valvonnat"
 
-#: src/scheduling/Scheduling.jsx:1197
+#: src/scheduling/Scheduling.jsx:1198
 msgid "Confirm time"
 msgstr "Vahvista aika"
 
@@ -313,7 +333,7 @@ msgstr "Vahvistus ei vastaa uutta salasanaa"
 #: src/upcomingsupervisions/LoggedIn.jsx:176
 #: src/upcomingsupervisions/LoggedIn.jsx:184
 #: src/upcomingsupervisions/LoggedIn.jsx:218
-#: src/scheduling/Scheduling.jsx:1168
+#: src/scheduling/Scheduling.jsx:1169
 #: src/profile/profilepages/supervisions.tsx:260
 msgid "Confirmed"
 msgstr "Varmistettu"
@@ -352,9 +372,9 @@ msgstr "Nykyinen salasana"
 msgid "Date"
 msgstr "Päivämäärä"
 
-#: src/trackview/Trackview.tsx:203
+#: src/trackview/Trackview.tsx:238
 #: src/pages/StatisticsView/StatisticsView.tsx:89
-#: src/lib/components/ViewChanger.jsx:39
+#: src/lib/components/ViewChanger.jsx:49
 msgid "Day"
 msgstr "Päivä"
 
@@ -394,6 +414,7 @@ msgid "Details"
 msgstr "Lisätiedot"
 
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:43
+#: src/pages/DayView/DayView.tsx:128
 msgid "Devices"
 msgstr "Laitteet"
 
@@ -420,7 +441,7 @@ msgstr "Muokkaa"
 #~ msgid "Edit email address"
 #~ msgstr "Muokkaa sähköpostiosoitetta"
 
-#: src/scheduling/Scheduling.jsx:1151
+#: src/scheduling/Scheduling.jsx:1152
 msgid "Edit range officer status by choosing color"
 msgstr "Muokkaa päävalvojan statusta napauttamalla väriä alta"
 
@@ -484,7 +505,7 @@ msgstr "Ota sähköpostiviestien lähetys käyttöön, muuten viestejä ei lähe
 msgid "Enable emails"
 msgstr "Ota sähköpostiviestien lähetys käyttöön"
 
-#: src/scheduling/Scheduling.jsx:1109
+#: src/scheduling/Scheduling.jsx:1110
 #: src/pages/TabletView/components/OpenHoursSection.tsx:127
 msgid "End"
 msgstr "Loppu"
@@ -493,11 +514,11 @@ msgstr "Loppu"
 msgid "End date"
 msgstr "Loppumispäivämäärä"
 
-#: src/scheduling/Scheduling.jsx:1282
+#: src/scheduling/Scheduling.jsx:1283
 msgid "End repeat after"
 msgstr "Toistojen määrä"
 
-#: src/trackview/Trackview.tsx:69
+#: src/trackview/Trackview.tsx:94
 msgid "Error"
 msgstr "Virhe"
 
@@ -545,9 +566,9 @@ msgstr "Ongelma tokenin varmennuksessa!"
 msgid "Estimate {time}"
 msgstr "Arvio {time}"
 
-#: src/trackview/Trackview.tsx:336
+#: src/trackview/Trackview.tsx:371
 msgid "Estimated arrival"
-msgstr ""
+msgstr "Arvioitu saapumisaika"
 
 #: src/scheduling/Scheduling.jsx:426
 msgid "Estimated time of arrival updated"
@@ -595,13 +616,13 @@ msgstr "Unohtuiko salasana?"
 #~ msgid "Fr"
 #~ msgstr "Su"
 
-#: src/trackview/Trackview.tsx:717
+#: src/trackview/Trackview.tsx:706
 msgid "free"
-msgstr ""
+msgstr "vapaana"
 
-#: src/trackview/Trackview.tsx:474
+#: src/trackview/Trackview.tsx:460
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusCard.tsx:11
-#: src/DeviceStatusList/DeviceStatusList.tsx:37
+#: src/DeviceStatusList/DeviceStatusList.tsx:50
 msgid "Free"
 msgstr "Vapaa"
 
@@ -673,10 +694,14 @@ msgstr "Virheellinen aika valittu."
 #~ msgid "June"
 #~ msgstr "Kesäkuu"
 
-#: src/trackview/Trackview.tsx:359
-#: src/trackview/Trackview.tsx:755
+#: src/trackview/Trackview.tsx:391
+#: src/trackview/Trackview.tsx:744
 msgid "lanes"
-msgstr ""
+msgstr "ampumapaikkaa"
+
+#: src/trackview/useTrackName.ts:33
+msgid "Leftmost"
+msgstr "Vasemmanpuoleisin"
 
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:20
 msgid "Loading devices..."
@@ -690,7 +715,7 @@ msgstr "Ladataan sähköpostiasetuksia..."
 msgid "Loading user data..."
 msgstr "Ladataan käyttäjätietoja..."
 
-#: src/trackview/Trackview.tsx:79
+#: src/trackview/Trackview.tsx:104
 msgid "Loading..."
 msgstr "Ladataan..."
 
@@ -704,7 +729,7 @@ msgstr "Kirjaudu"
 #~ msgid "lowercase letter"
 #~ msgstr "pieni kirjain"
 
-#: src/scheduling/Scheduling.jsx:1211
+#: src/scheduling/Scheduling.jsx:1212
 msgid "Manage shooting tracks"
 msgstr "Hallitse ratoja"
 
@@ -712,13 +737,17 @@ msgstr "Hallitse ratoja"
 #~ msgid "March"
 #~ msgstr "Maaliskuu"
 
+#: src/trackview/useTrackName.ts:39
+msgid "Marked lanes"
+msgstr "Merkityt paikat"
+
 #: src/raffle/RaffleDatePicker.jsx:30
 #~ msgid "May"
 #~ msgstr "Toukokuu"
 
-#: src/trackview/Trackview.tsx:381
+#: src/trackview/Trackview.tsx:413
 msgid "Members may not enter a track without a track officer."
-msgstr ""
+msgstr "Radalle ei saa mennä ilman ratavalvojaa."
 
 #: src/lib/components/Navbar/DrawerMenu.tsx:75
 msgid "Menu"
@@ -727,6 +756,10 @@ msgstr "Valikko"
 #: src/pages/InfoMessageManagementView/components/NewMessageForm.tsx:83
 msgid "Message"
 msgstr "Viesti"
+
+#: src/trackview/useTrackName.ts:35
+msgid "Middle"
+msgstr "Keskimmäinen"
 
 #: src/usermanagement/UserManagementView.jsx:925
 #: src/usermanagement/UserManagementView.jsx:930
@@ -795,9 +828,9 @@ msgstr "Ma"
 #~ msgid "Monday"
 #~ msgstr "Maanantai"
 
-#: src/trackview/Trackview.tsx:201
+#: src/trackview/Trackview.tsx:236
 #: src/pages/StatisticsView/StatisticsView.tsx:99
-#: src/lib/components/ViewChanger.jsx:25
+#: src/lib/components/ViewChanger.jsx:35
 msgid "Month"
 msgstr "Kuukausi"
 
@@ -830,9 +863,13 @@ msgstr "Uusi salasana"
 msgid "New password is required"
 msgstr "Uusi salasana on pakollinen"
 
-#: src/trackview/Trackview.tsx:240
+#: src/lib/components/DateHeader/DateHeader.tsx:80
+msgid "Next"
+msgstr "Seuraava"
+
+#: src/trackview/Trackview.tsx:275
 msgid "Next day"
-msgstr ""
+msgstr "Seuraava päivä"
 
 #: src/pages/TabletView/components/TrackStatistics/TrackStatistics.tsx:106
 #: src/EmailSettings/components/ToggleFIeld.tsx:41
@@ -852,10 +889,12 @@ msgstr "Laitteita ei löytynyt"
 msgid "No pending messages to send."
 msgstr "Ei lähetettäviä viestejä jonossa."
 
-#: src/trackview/Trackview.tsx:302
-#: src/trackview/Trackview.tsx:642
+#: src/trackview/Trackview.tsx:334
+#: src/trackview/Trackview.tsx:631
+#: src/pages/DayView/DayView.tsx:250
+#: src/pages/DayView/DayView.tsx:314
 msgid "No range officer present"
-msgstr ""
+msgstr "Ei päävalvojaa paikalla"
 
 #: src/VisitorLogging/VisitorLogging.jsx:125
 #~ msgid "No reservations found. Set reservation in Schedules page"
@@ -866,28 +905,33 @@ msgstr ""
 msgid "No selection"
 msgstr "Ei valintaa"
 
-#: src/trackview/Trackview.tsx:482
+#: src/trackview/Trackview.tsx:468
 msgid "No shooting"
-msgstr ""
+msgstr "Ei ammuntaa"
 
-#: src/trackview/Trackview.tsx:332
+#: src/trackview/Trackview.tsx:363
+msgid "No track can be used on this day."
+msgstr "Ratoja ei voi käyttää tänä päivänä."
+
+#: src/trackview/Trackview.tsx:367
 msgid "No track can be used until the range officer arrives."
-msgstr ""
+msgstr "Ratoja ei voi käyttää ennen kuin päävalvoja saapuu."
 
 #: src/pages/TabletView/components/TrackCard.tsx:24
 msgid "No track officer"
 msgstr "Ei valvojaa"
 
-#: src/pages/DayView/DayView.tsx:194
-msgid "No track officer available"
-msgstr "Ei valvojaa"
+#: src/pages/DayView/DayView.tsx:172
+#~ msgid "No track officer available"
+#~ msgstr "Ei valvojaa"
 
-#: src/trackview/Trackview.tsx:378
-#: src/trackview/Trackview.tsx:641
+#: src/trackview/Trackview.tsx:410
+#: src/trackview/Trackview.tsx:630
+#: src/pages/DayView/DayView.tsx:257
 msgid "No track officer present"
-msgstr ""
+msgstr "Ei ratavalvojaa paikalla"
 
-#: src/scheduling/Scheduling.jsx:1160
+#: src/scheduling/Scheduling.jsx:1161
 #: src/profile/profilepages/supervisions.tsx:258
 msgid "Not confirmed"
 msgstr "Ei varmistettu"
@@ -900,9 +944,9 @@ msgstr "Ei valittu"
 msgid "Nothing to confirm"
 msgstr "Sinulla ei ole vahvistettavia vuoroja"
 
-#: src/trackview/Trackview.tsx:387
+#: src/trackview/Trackview.tsx:419
 msgid "Notice for the day"
-msgstr ""
+msgstr "Päivän huomautus"
 
 #: src/raffle/RaffleDatePicker.jsx:36
 #~ msgid "November"
@@ -940,33 +984,41 @@ msgstr "Vanha salasana on pakollinen"
 msgid "Old password isn't valid"
 msgstr "Vanha salasana ei kelpaa"
 
-#: src/trackview/Trackview.tsx:101
-#: src/scheduling/Scheduling.jsx:1072
+#: src/trackview/Trackview.tsx:126
+#: src/scheduling/Scheduling.jsx:1073
 #: src/pages/TabletView/components/OpenHoursSection.tsx:101
-#: src/pages/DayView/DayView.tsx:190
+#: src/pages/DayView/DayView.tsx:213
 msgid "Open"
 msgstr "Avoinna"
 
-#: src/scheduling/Scheduling.jsx:1224
+#: src/scheduling/Scheduling.jsx:1225
 msgid "Open All"
 msgstr "Avaa kaikki"
 
-#: src/scheduling/Scheduling.jsx:1082
+#: src/scheduling/Scheduling.jsx:1083
 msgid "Opening hours"
 msgstr "Aukioloaika"
 
+#: src/pages/DayView/DayView.tsx:336
+msgid "OPENING HOURS"
+msgstr "AUKIOLOAIKA"
+
 #: src/pages/DayView/DayView.tsx:71
-msgid "Opening hours: {opensAt}-{closesAt}"
-msgstr "Aukioloaika: {opensAt}-{closesAt}"
+#~ msgid "Opening hours: {opensAt}-{closesAt}"
+#~ msgstr "Aukioloaika: {opensAt}-{closesAt}"
+
+#: src/pages/DayView/DayView.tsx:235
+msgid "Opens at {time}"
+msgstr "Avautuu klo {time}"
 
 #: src/raffle/raffle.tsx:112
 msgid "Organization updated"
 msgstr "Yhteisö päivitetty"
 
-#: src/trackview/Trackview.tsx:593
-#: src/trackview/Trackview.tsx:710
+#: src/trackview/Trackview.tsx:579
+#: src/trackview/Trackview.tsx:699
 msgid "Partially available"
-msgstr ""
+msgstr "Käytettävissä osittain"
 
 #: src/signin/SignIn.jsx:93
 #: src/profile/profilepages/officerform.jsx:230
@@ -1016,22 +1068,26 @@ msgstr "Lähetetty viestit onnistuneesti!"
 msgid "Please give your new email address"
 msgstr "Anna uusi sähköpostiosoite"
 
-#: src/scheduling/Scheduling.jsx:1176
+#: src/scheduling/Scheduling.jsx:1177
 #: src/profile/profilepages/supervisions.tsx:261
 #: src/pages/TabletView/components/TrackCard.tsx:16
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:99
 msgid "Present"
 msgstr "Paikalla"
 
-#: src/trackview/Trackview.tsx:236
-msgid "Previous day"
-msgstr ""
+#: src/lib/components/DateHeader/DateHeader.tsx:66
+msgid "Previous"
+msgstr "Edellinen"
 
-#: src/trackview/Trackview.tsx:476
+#: src/trackview/Trackview.tsx:271
+msgid "Previous day"
+msgstr "Edellinen päivä"
+
+#: src/trackview/Trackview.tsx:462
 #: src/scheduling/Scheduling.jsx:614
-#: src/pages/DayView/DayView.tsx:192
+#: src/pages/DayView/DayView.tsx:227
 msgid "Private event"
-msgstr ""
+msgstr "Yksityistilaisuus"
 
 #: src/raffle/raffle.tsx:230
 msgid "Raffle results"
@@ -1042,8 +1098,9 @@ msgstr "Arvonnan tulokset"
 msgid "Raffle supervisors"
 msgstr "Arvo valvojat"
 
+#: src/trackview/Trackview.tsx:335
 #: src/pages/WeekView/WeekView.tsx:68
-#: src/pages/DayView/DayView.tsx:178
+#: src/pages/DayView/DayView.tsx:316
 #: src/lib/components/TableLegends.tsx:34
 msgid "Range closed"
 msgstr "Rata suljettu"
@@ -1052,7 +1109,7 @@ msgstr "Rata suljettu"
 #~ msgid "Range master"
 #~ msgstr "Päävalvoja"
 
-#: src/scheduling/Scheduling.jsx:1121
+#: src/scheduling/Scheduling.jsx:1122
 #: src/pages/UserManagement/UserManagementView.tsx:152
 #: src/pages/UserManagement/components/SelectRole.tsx:23
 msgid "Range officer"
@@ -1071,18 +1128,19 @@ msgid "Range officer addition failed"
 msgstr "Valvojan lisäys epäonnistui"
 
 #. placeholder {0}: formatTime(arrivingAt)
-#: src/trackview/Trackview.tsx:635
+#: src/trackview/Trackview.tsx:624
+#: src/pages/DayView/DayView.tsx:328
 msgid "Range officer arriving at {0}"
-msgstr ""
+msgstr "Päävalvoja saapuu klo {0}"
 
-#: src/trackview/Trackview.tsx:304
-#: src/trackview/Trackview.tsx:648
+#: src/trackview/Trackview.tsx:337
+#: src/trackview/Trackview.tsx:637
 #: src/scheduling/Scheduling.jsx:384
 #: src/scheduling/Scheduling.jsx:389
-#: src/scheduling/Scheduling.jsx:982
+#: src/scheduling/Scheduling.jsx:983
 #: src/pages/WeekView/WeekView.tsx:50
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:130
-#: src/pages/DayView/DayView.tsx:174
+#: src/pages/DayView/DayView.tsx:310
 msgid "Range officer confirmed"
 msgstr "Päävalvoja varmistettu"
 
@@ -1110,13 +1168,13 @@ msgstr "Valvojien hallinta"
 #~ msgid "Range officer not present"
 #~ msgstr "Päävalvoja ei paikalla"
 
-#: src/trackview/Trackview.tsx:306
-#: src/trackview/Trackview.tsx:650
+#: src/trackview/Trackview.tsx:339
+#: src/trackview/Trackview.tsx:639
 #: src/scheduling/Scheduling.jsx:369
 #: src/scheduling/Scheduling.jsx:374
-#: src/scheduling/Scheduling.jsx:985
+#: src/scheduling/Scheduling.jsx:986
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:134
-#: src/pages/DayView/DayView.tsx:176
+#: src/pages/DayView/DayView.tsx:312
 msgid "Range officer predefined"
 msgstr "Päävalvoja ei varmistettu"
 
@@ -1125,22 +1183,21 @@ msgstr "Päävalvoja ei varmistettu"
 msgid "Range officer predefined, not confirmed"
 msgstr "Päävalvoja määritetty, mutta ei varmistettu"
 
-#: src/trackview/Trackview.tsx:303
+#: src/trackview/Trackview.tsx:336
 #: src/scheduling/Scheduling.jsx:399
 #: src/scheduling/Scheduling.jsx:401
-#: src/scheduling/Scheduling.jsx:973
+#: src/scheduling/Scheduling.jsx:974
 #: src/pages/WeekView/WeekView.tsx:44
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:118
-#: src/pages/DayView/DayView.tsx:170
+#: src/pages/DayView/DayView.tsx:307
 #: src/lib/components/TableLegends.tsx:14
 msgid "Range officer present"
 msgstr "Päävalvoja paikalla"
 
-#: src/scheduling/Scheduling.jsx:976
-#: src/scheduling/Scheduling.jsx:988
+#: src/scheduling/Scheduling.jsx:977
+#: src/scheduling/Scheduling.jsx:989
 #: src/pages/WeekView/WeekView.tsx:62
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:122
-#: src/pages/DayView/DayView.tsx:172
 #: src/lib/components/TableLegends.tsx:37
 msgid "Range officer undefined"
 msgstr "Päävalvojaa ei asetettu"
@@ -1161,26 +1218,26 @@ msgstr "Valvojat"
 msgid "Recipients"
 msgstr "Vastaanottajat"
 
-#: src/scheduling/Scheduling.jsx:1249
+#: src/scheduling/Scheduling.jsx:1250
 msgid "Repeat daily"
 msgstr "Toista päivittäin"
 
-#: src/scheduling/Scheduling.jsx:1271
+#: src/scheduling/Scheduling.jsx:1272
 msgid "Repeat monthly"
 msgstr "Toista kuukausittain"
 
-#: src/scheduling/Scheduling.jsx:1260
+#: src/scheduling/Scheduling.jsx:1261
 msgid "Repeat weekly"
 msgstr "Toista viikoittain"
 
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusCard.tsx:15
-#: src/DeviceStatusList/DeviceStatusList.tsx:37
+#: src/DeviceStatusList/DeviceStatusList.tsx:50
 msgid "Reserved"
 msgstr "Varattu"
 
-#: src/trackview/Trackview.tsx:478
+#: src/trackview/Trackview.tsx:464
 msgid "Reserved for authority use"
-msgstr ""
+msgstr "Varattu viranomaiskäyttöön"
 
 #: src/resetPW/ResetPasswordForm.jsx:74
 #: src/profile/profilepages/supervisions.tsx:233
@@ -1194,6 +1251,10 @@ msgstr "Tulokset tallennettu"
 #: src/upcomingsupervisions/LoggedIn.jsx:493
 msgid "Retrieving information..."
 msgstr "Haetaan vuoroja..."
+
+#: src/trackview/useTrackName.ts:37
+msgid "Rightmost"
+msgstr "Oikeanpuoleisin"
 
 #: src/pages/UserManagement/UserManagementView.tsx:124
 #: src/pages/UserManagement/UserManagementView.tsx:166
@@ -1224,7 +1285,7 @@ msgstr "La"
 msgid "Save"
 msgstr "Tallenna"
 
-#: src/scheduling/Scheduling.jsx:1301
+#: src/scheduling/Scheduling.jsx:1302
 #: src/pages/UserManagement/components/dialogs/ChangePasswordSelfDialog.tsx:141
 #: src/pages/UserManagement/components/dialogs/ChangeEmailSelfDialog.tsx:100
 #: src/pages/UserManagement/components/dialogs/AddUserDialog.tsx:175
@@ -1239,14 +1300,18 @@ msgstr "Tallenna tulokset"
 msgid "Save settings"
 msgstr "Tallenna asetukset"
 
-#: src/scheduling/Scheduling.jsx:1025
+#: src/scheduling/Scheduling.jsx:1026
 #: src/lib/components/Navbar/DrawerMenu.tsx:30
 msgid "Schedules"
 msgstr "Aikataulut"
 
-#: src/trackview/Trackview.tsx:363
+#: src/trackview/Trackview.tsx:436
+msgid "Section {number}"
+msgstr "Lohko {number}"
+
+#: src/trackview/Trackview.tsx:395
 msgid "sections"
-msgstr ""
+msgstr "lohkoa"
 
 #: src/pages/UserManagement/components/SelectAssociation.tsx:10
 #: src/pages/UserManagement/components/SelectAssociation.tsx:14
@@ -1363,11 +1428,11 @@ msgstr "Päivitys epäonnistui"
 msgid "Something went wrong!"
 msgstr "Jokin meni pieleen!"
 
-#: src/trackview/Trackview.tsx:70
+#: src/trackview/Trackview.tsx:95
 msgid "Something went wrong. Please try again later."
 msgstr "Jokin meni pieleen. Yritä uudelleen myöhemmin."
 
-#: src/scheduling/Scheduling.jsx:1092
+#: src/scheduling/Scheduling.jsx:1093
 #: src/pages/TabletView/components/OpenHoursSection.tsx:118
 msgid "Start"
 msgstr "Alku"
@@ -1408,9 +1473,9 @@ msgstr "Su"
 #~ msgid "Sunday"
 #~ msgstr "Sunnuntai"
 
-#: src/trackview/Trackview.tsx:110
+#: src/trackview/Trackview.tsx:135
 msgid "Sunset"
-msgstr ""
+msgstr "Auringonlasku"
 
 #: src/pages/UserManagement/UserManagementView.tsx:154
 #: src/pages/UserManagement/components/SelectRole.tsx:25
@@ -1472,9 +1537,9 @@ msgstr "Tuloksien tallennus epäonnistui"
 #~ msgid "This action will permanently remove user"
 #~ msgstr "Tämä poistaa pysyvästi käyttäjän"
 
-#: src/trackview/Trackview.tsx:88
+#: src/trackview/Trackview.tsx:113
 msgid "This track has no schedule for the selected day."
-msgstr ""
+msgstr "Radalla ei ole aikataulua valitulle päivälle."
 
 #: src/pages/MonthView/MonthView.tsx:111
 msgid "Thu"
@@ -1488,7 +1553,7 @@ msgstr "To"
 msgid "Time for sending emails"
 msgstr "Sähköpostiviestien lähetysaika"
 
-#: src/utils/Utils.jsx:80
+#: src/utils/Utils.jsx:100
 msgid "Today"
 msgstr "Tänään"
 
@@ -1496,9 +1561,13 @@ msgstr "Tänään"
 msgid "TODAY"
 msgstr "TÄNÄÄN"
 
-#: src/trackview/Trackview.tsx:208
+#: src/trackview/Trackview.tsx:243
 msgid "Track"
 msgstr "Rata"
+
+#: src/trackview/useTrackName.ts:17
+msgid "Track {number}"
+msgstr "Rata {number}"
 
 #: src/pages/EditTracksView/components/NewTrackRow.tsx:53
 msgid "Track added successfully"
@@ -1526,21 +1595,19 @@ msgstr "Rata poistettu"
 
 #: src/pages/WeekView/WeekView.tsx:272
 #: src/pages/MonthView/MonthView.tsx:215
-#: src/pages/DayView/DayView.tsx:157
-#: src/pages/DayView/DayView.tsx:201
-#: src/pages/DayView/DayView.tsx:203
+#: src/pages/DayView/DayView.tsx:273
 #: src/lib/components/TableLegends.tsx:46
 #: src/lib/components/TableLegends.tsx:48
 msgid "Track has additional information"
 msgstr "Radalla lisätietoja"
 
-#: src/trackview/Trackview.tsx:87
+#: src/trackview/Trackview.tsx:112
 msgid "Track not found"
-msgstr ""
+msgstr "Rataa ei löytynyt"
 
-#: src/trackview/Trackview.tsx:377
+#: src/trackview/Trackview.tsx:409
 msgid "Track officer present"
-msgstr "Valvoja paikalla"
+msgstr "Ratavalvoja paikalla"
 
 #: src/edittracks/tracks.jsx:86
 #~ msgid "Track update failed"
@@ -1558,19 +1625,19 @@ msgstr "Rata päivitetty"
 #~ msgid "Track visitors successfully upded"
 #~ msgstr "Käyttäjätiedot kirjattu"
 
-#: src/trackview/Trackview.tsx:262
-#: src/trackview/Trackview.tsx:266
+#: src/trackview/Trackview.tsx:297
 #: src/pages/EditTracksView/EditTracksView.tsx:64
+#: src/pages/DayView/DayView.tsx:116
 msgid "Tracks"
 msgstr "Radat"
 
-#: src/trackview/Trackview.tsx:328
+#: src/trackview/Trackview.tsx:361
 msgid "Tracks can be used during opening hours."
-msgstr ""
+msgstr "Radat ovat käytettävissä aukioloaikana."
 
-#: src/trackview/Trackview.tsx:329
+#: src/trackview/Trackview.tsx:362
 msgid "Tracks can be used once the range officer arrives."
-msgstr ""
+msgstr "Radat ovat käytettävissä, kun päävalvoja saapuu."
 
 #: src/pages/WeekView/WeekView.tsx:167
 msgid "Try again"
@@ -1591,6 +1658,10 @@ msgstr "Ti"
 #: src/EmailSettings/EmailSettings.tsx:313
 msgid "Unconfirmed shift reminder"
 msgstr "Muistutus vahvistamattomasta vuorosta"
+
+#: src/trackview/useTrackName.ts:41
+msgid "Unmarked lanes"
+msgstr "Merkitsemättömät paikat"
 
 #: src/scheduling/Scheduling.jsx:460
 msgid "Update successful"
@@ -1642,9 +1713,10 @@ msgstr "Käyttäjiä ei tule vähentää. Haluatko todella vähentää käyttäj
 msgid "Values cannot be negative"
 msgstr "Arvot eivät saa olla negatiivisia"
 
-#: src/trackview/Trackview.tsx:200
+#: src/trackview/Trackview.tsx:235
+#: src/lib/components/ViewChanger.jsx:29
 msgid "Views"
-msgstr ""
+msgstr "Näkymät"
 
 #. placeholder {0}: monthQuery.data?.totalVisitorsForDay ?? 0
 #: src/pages/StatisticsView/StatisticsView.tsx:91
@@ -1682,12 +1754,12 @@ msgstr "Ke"
 #~ msgid "Wednesday"
 #~ msgstr "Keskiviikko"
 
-#: src/trackview/Trackview.tsx:202
-#: src/lib/components/ViewChanger.jsx:32
+#: src/trackview/Trackview.tsx:237
+#: src/lib/components/ViewChanger.jsx:42
 msgid "Week"
 msgstr "Viikko"
 
-#: src/lib/components/DateHeader/DateHeader.tsx:39
+#: src/lib/components/DateHeader/DateHeader.tsx:37
 msgid "Week {weekNumber} {year}"
 msgstr "Viikko {weekNumber} {year}"
 
