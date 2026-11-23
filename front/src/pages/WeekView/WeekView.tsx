@@ -56,7 +56,7 @@ export const Weekview = () => {
           type="week"
         />
         <div className={classes(css.bigContainer)}>
-          <div className={classes(css.viewChanger)}>
+          <div className="mb-2 flex items-end justify-between">
             <JumpToCurrent />
             <ViewChanger />
           </div>
