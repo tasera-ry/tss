@@ -37,6 +37,7 @@ const apiDay = {
   close: '19:00:00',
   rangeSupervision: 'present',
   arrivingAt: null,
+  sunset: '16:34:43',
   tracks: [
     {
       id: 1,
@@ -119,6 +120,7 @@ describe('toTrackViewDay', () => {
     expect(day?.open).toBe(600);
     expect(day?.close).toBe(1140);
     expect(day?.rangeOfficer).toBe('present');
+    expect(day?.sunset).toBe(16 * 60 + 34);
     expect(day?.tracks[0].name).toBe('Rata 1');
     expect(day?.tracks[0].description).toBe('Pistoolirata');
     expect(day?.tracks[1].notice).toBe('Huolto kesken');
@@ -267,14 +269,15 @@ describe('toTrackViewDay', () => {
     }
   });
 
-  it('shows no sunset time until the real one exists, rather than a made-up one', () => {
-    expect(toTrackViewDay(apiDay)?.sunset).toBeNull();
-  });
-
   it('falls back to 10-19 when the day has no opening hours', () => {
     const day = toTrackViewDay({ ...apiDay, open: null, close: null });
     expect(day?.open).toBe(600);
     expect(day?.close).toBe(1140);
+  });
+
+  it('leaves sunset empty when the API reports no sunset', () => {
+    const day = toTrackViewDay({ ...apiDay, sunset: null });
+    expect(day?.sunset).toBeNull();
   });
 });
 
