@@ -400,30 +400,39 @@ describe('testing Trackview', () => {
       });
     });
 
-    it('shades the hours from sunset to closing on track 5', async () => {
+    it('shades the hours from sunset to closing on track 5, and ends the list at sunset', async () => {
       await showTrack('Shooting Track 4', '05:00:00');
 
       const [area] = shade();
       // 05.00 is 109 of the day's 177 minutes in.
       expect(area.style.left).toMatch(/^61\.58/);
+      expect(screen.getByText('03.11–05.00 (Sunset)')).toBeInTheDocument();
+      expect(screen.queryByText('03.11–06.08')).not.toBeInTheDocument();
     });
 
-    it('shades the whole day on track 6 when the sun sets before opening', async () => {
+    it('shades the whole day on track 6 when the sun sets before opening, and lists nothing', async () => {
       await showTrack('Shooting Track 5', '02:00:00');
 
       expect(shade()[0].style.left).toBe('0%');
+      expect(
+        screen.getByText('The sun sets at 02.00, before the track opens.'),
+      ).toBeInTheDocument();
+      expect(screen.queryByText(/^03\.11–/)).not.toBeInTheDocument();
     });
 
-    it('shades nothing when the sun sets after closing', async () => {
+    it('changes nothing when the sun sets after closing', async () => {
       await showTrack('Shooting Track 4', '07:00:00');
 
       expect(shade()).toHaveLength(0);
+      expect(screen.getByText('03.11–06.08')).toBeInTheDocument();
     });
 
-    it('shades no other track, but every track gives the sunset time', async () => {
+    it('leaves other tracks alone, but every track gives the sunset time', async () => {
       await showTrack('Shooting Track 0', '05:00:00');
 
       expect(shade()).toHaveLength(0);
+      expect(screen.getAllByText('03.11–06.08').length).toBeGreaterThan(0);
+      expect(screen.queryByText(/\(Sunset\)/)).not.toBeInTheDocument();
       expect(screen.getByText(/Sunset 05\.00/)).toBeInTheDocument();
     });
   });

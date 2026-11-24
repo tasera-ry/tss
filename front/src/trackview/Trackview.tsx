@@ -165,6 +165,7 @@ export function Trackview() {
             track={selectedTrack}
             blocked={blocked}
             arrivingAt={day.rangeOfficerArrivingAt}
+            sunset={day.sunset}
             awaiting={
               selectedTrack.requiresRangeOfficer && awaitingRangeOfficer(day)
                 ? day.rangeOfficer
@@ -504,7 +505,7 @@ function Timeline({
   const named = track.sections.some((s) => s.number !== null);
   const pct = (minutes: number) => ((minutes - open) / span) * 100;
   // On tracks with no shooting after dark, the open hours after sunset are
-  // shaded and say so. The exact time is in the line under the date.
+  // shaded and say so. The exact time is under the date and in the list.
   const dark =
     track.daylightOnly && sunset !== null && sunset < close
       ? Math.max(sunset, open)
@@ -626,11 +627,13 @@ function SegmentList({
   track,
   blocked,
   arrivingAt,
+  sunset,
   awaiting,
 }: {
   track: TrackDetail;
   blocked: UnavailableReason;
   arrivingAt: number | null;
+  sunset: number | null;
   /** Set when a range officer is booked for this track's day but not on site. */
   awaiting: RangeOfficerState | null;
 }) {
@@ -640,6 +643,30 @@ function SegmentList({
   // Nothing to list until the track's sections exist (none are seeded in production).
   if (track.sections.length === 0) return null;
   const grouped = track.sections.some((s) => s.number !== null);
+
+  // No shooting after dark on tracks 5 and 6, so their list ends at sunset and
+  // says so; the timeline above shades the rest of the day.
+  const dark = track.daylightOnly ? sunset : null;
+  const untilDark = (
+    segments: TimeSegment[],
+  ): (TimeSegment & { atSunset?: boolean })[] =>
+    dark === null
+      ? segments
+      : segments
+          .filter((s) => s.start < dark)
+          .map((s) => (s.end > dark ? { ...s, end: dark, atSunset: true } : s));
+
+  if (
+    dark !== null &&
+    track.sections.every((s) => untilDark(s.segments).length === 0)
+  ) {
+    const time = formatTime(dark);
+    return (
+      <p className="border-black-tint-10 border-t py-3 text-sm">
+        {t`The sun sets at ${time}, before the track opens.`}
+      </p>
+    );
+  }
 
   const arrival =
     arrivingAt !== null
@@ -664,7 +691,7 @@ function SegmentList({
   // screen's: time on its own line when narrow, which is both a phone and a
   // lohko column on a wide desktop.
   const rows = (section: LaneSection) =>
-    section.segments.map((segment) => {
+    untilDark(section.segments).map((segment) => {
       const state = effectiveStatus(segment, blocked);
       // While the track is unusable (see unavailableReason) nothing on it can
       // be used, including the lanes a booking leaves free.
@@ -699,6 +726,7 @@ function SegmentList({
         >
           <span className="col-span-full text-grey text-sm tabular-nums @sm:col-span-1 @sm:text-black">
             {formatTime(segment.start)}–{formatTime(segment.end)}
+            {segment.atSunset && <> ({t`Sunset`})</>}
           </span>
           <span className="min-w-0">
             <b className="font-medium">
