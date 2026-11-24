@@ -103,6 +103,12 @@ export interface TrackDetail {
    * set in trackViewPlaceholder.ts.
    */
   requiresRangeOfficer: boolean;
+  /**
+   * No shooting after dark: tracks 5 and 6, whose notes say so. Their
+   * timelines shade the hours after sunset. Set in trackViewPlaceholder.ts
+   * until the backend carries the track's standing rules (B8).
+   */
+  daylightOnly: boolean;
   sections: LaneSection[];
   /** Standing rules, e.g. "no shooting after dark", ".22LR only". */
   notes: string[];

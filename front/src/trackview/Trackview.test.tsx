@@ -68,6 +68,7 @@ const away = { ...testUtils.schedule, rangeSupervision: 'absent' };
 async function renderTrackview(
   schedule: typeof testUtils.schedule = away,
   sectionRows = sections,
+  track = 'Shooting Track 0',
 ) {
   vi.mocked(api.getSchedulingDate).mockResolvedValue(schedule);
   vi.mocked(api.getTrackSections).mockResolvedValue(sectionRows);
@@ -75,7 +76,7 @@ async function renderTrackview(
   const result = render(<Trackview />, { wrapper: TestProviders });
   await screen.findByRole(
     'heading',
-    { level: 2, name: 'Shooting Track 0' },
+    { level: 2, name: track },
     { timeout: 5000 },
   );
   return result;
@@ -374,6 +375,57 @@ describe('testing Trackview', () => {
     const bar = within(screen.getByTestId('timeline'));
     expect(bar.queryByText('10/20')).not.toBeInTheDocument();
     expect(bar.getAllByText('Private event').length).toBeGreaterThan(0);
+  });
+
+  describe('after sunset', () => {
+    // The fixture opens 03.11–06.08. Tracks 5 and 6 (list positions 4 and 5)
+    // have no shooting after dark.
+    const withSunset = (sunset: string) => ({
+      ...testUtils.schedule,
+      sunset,
+    });
+    async function showTrack(track: string, sunset: string) {
+      vi.mocked(useParams).mockReturnValue({ date: '2020-02-20', track });
+      await renderTrackview(withSunset(sunset), sections, track);
+    }
+    const shade = () =>
+      within(screen.getByTestId('timeline'))
+        .queryAllByText('After sunset')
+        .map((text) => text.parentElement as HTMLElement);
+
+    afterEach(() => {
+      vi.mocked(useParams).mockReturnValue({
+        date: '2020-02-20',
+        track: 'Shooting Track 0',
+      });
+    });
+
+    it('shades the hours from sunset to closing on track 5', async () => {
+      await showTrack('Shooting Track 4', '05:00:00');
+
+      const [area] = shade();
+      // 05.00 is 109 of the day's 177 minutes in.
+      expect(area.style.left).toMatch(/^61\.58/);
+    });
+
+    it('shades the whole day on track 6 when the sun sets before opening', async () => {
+      await showTrack('Shooting Track 5', '02:00:00');
+
+      expect(shade()[0].style.left).toBe('0%');
+    });
+
+    it('shades nothing when the sun sets after closing', async () => {
+      await showTrack('Shooting Track 4', '07:00:00');
+
+      expect(shade()).toHaveLength(0);
+    });
+
+    it('shades no other track, but every track gives the sunset time', async () => {
+      await showTrack('Shooting Track 0', '05:00:00');
+
+      expect(shade()).toHaveLength(0);
+      expect(screen.getByText(/Sunset 05\.00/)).toBeInTheDocument();
+    });
   });
 
   it('offers no free lanes while the track officer alone is missing', async () => {

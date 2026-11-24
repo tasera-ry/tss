@@ -157,6 +157,7 @@ export function Trackview() {
               track={selectedTrack}
               open={day.open}
               close={day.close}
+              sunset={day.sunset}
               blocked={blocked}
             />
           )}
@@ -488,11 +489,13 @@ function Timeline({
   track,
   open,
   close,
+  sunset,
   blocked,
 }: {
   track: TrackDetail;
   open: number;
   close: number;
+  sunset: number | null;
   blocked: UnavailableReason;
 }) {
   const { t } = useLingui();
@@ -500,6 +503,12 @@ function Timeline({
   const span = close - open;
   const named = track.sections.some((s) => s.number !== null);
   const pct = (minutes: number) => ((minutes - open) / span) * 100;
+  // On tracks with no shooting after dark, the open hours after sunset are
+  // shaded and say so. The exact time is in the line under the date.
+  const dark =
+    track.daylightOnly && sunset !== null && sunset < close
+      ? Math.max(sunset, open)
+      : null;
 
   const hours: number[] = [];
   for (let m = Math.ceil(open / 60) * 60; m <= close; m += 60) hours.push(m);
@@ -592,6 +601,19 @@ function Timeline({
                 </div>
               );
             })}
+            {dark !== null && (
+              <div
+                className={classNames(
+                  'absolute top-0 right-0 bottom-0 flex items-center justify-center overflow-hidden text-sm',
+                  css.afterSunset,
+                )}
+                style={{ left: `${pct(dark)}%` }}
+              >
+                <em className="truncate px-1.5 font-medium not-italic">
+                  {t`After sunset`}
+                </em>
+              </div>
+            )}
           </div>
         </div>
       ))}
