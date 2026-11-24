@@ -104,6 +104,39 @@ export function TabletView() {
     });
   }, [date, i18n]);
 
+  useEffect(() => {
+    const checkDate = () => {
+      const today = moment(Date.now()).format('YYYY-MM-DD');
+      if (today !== date && navigator.onLine) {
+        window.location.reload();
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        checkDate();
+      }
+    };
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibilityChange,
+    );
+
+    const interval = setInterval(() => {
+      checkDate();
+    }, 30 * 1000);
+
+    return () => {
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange,
+      );
+      clearInterval(interval);
+    };
+
+  }, [])
+
   return (
     <div>
       <InfoBox tabletMode={true} />

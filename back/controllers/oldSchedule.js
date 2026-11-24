@@ -2,7 +2,6 @@
 
 const config = require('../config/config');
 const moment = require('moment-timezone');
-const fetch = require('node-fetch');
 const _ = require('lodash');
 const getSunset = require('../services/sunset');
 
@@ -24,7 +23,6 @@ const getSunset = require('../services/sunset');
         //present=green,            from range_supervision.range_supervisor
         //absent=white,             from range_supervision.range_supervisor
         //confirmed=lightGreen,     from range_supervision.range_supervisor
-        //en route=yellow,          from range_supervision.range_supervisor
         //closed=red                from reservation.available === false
         //not confirmed=blue        from range_supervision.range_supervisor
       tracks: [

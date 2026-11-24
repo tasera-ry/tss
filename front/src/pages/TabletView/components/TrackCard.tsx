@@ -24,10 +24,6 @@ const buttonStates = {
     labelMsg: msg`No track officer`,
     color: colors.white,
   },
-  'en route': {
-    labelMsg: msg`On the way`,
-    color: colors.orange,
-  },
 } as const;
 
 const toggleStates = ['present', 'closed', 'absent'] as const;

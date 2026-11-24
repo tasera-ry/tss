@@ -247,6 +247,33 @@ router
   .put(validators.track.update, middlewares.track.update, controllers.track.update)
   .delete(validators.track.delete, middlewares.track.delete, controllers.track.delete);
 
+/*
+ *  Track sections and part-day reservations (#420, #421). Reading is public, for
+ *  the track view.
+ */
+router
+  .route('/track-section')
+  .get(validators.trackSection.readFilter, middlewares.trackSection.read, controllers.trackSection.read);
+
+// Writes are for admins only: TASERA edits schedules itself (Pasi Autio,
+// 13.11.2026), so that every member is treated the same.
+router
+  .route('/track-reservation')
+  .get(validators.trackReservation.readFilter, middlewares.trackReservation.read, controllers.trackReservation.read)
+  .post(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'),
+    validators.trackReservation.create,
+    middlewares.trackReservation.create,
+    controllers.trackReservation.create
+  );
+
+router
+  .route('/track-reservation/:id')
+  .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'))
+  .put(validators.trackReservation.update, middlewares.trackReservation.update, controllers.trackReservation.update)
+  .delete(validators.trackReservation.delete, middlewares.trackReservation.delete, controllers.trackReservation.delete);
+
 router
   .route('/daterange/week/:begin')
   .get(middlewares.daterange.readWeek, controllers.daterange.read);

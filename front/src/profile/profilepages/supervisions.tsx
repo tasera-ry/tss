@@ -205,7 +205,7 @@ function SupervisionRow({ supervision, officers, createNotification }) {
             const value = event.target.value;
             setTime(value.length === 5 ? `${value}:00` : value);
           }}
-          disabled={status !== 'confirmed' && status !== 'en route'}
+          disabled={status !== 'confirmed'}
         />
       </TableCell>
 
@@ -242,7 +242,6 @@ const statusColors = {
   confirmed: 'bg-green-light',
   absent: 'bg-red-light',
   present: 'bg-green',
-  'en route': 'bg-orange',
 };
 
 function StatusCell({ status, setStatus, dataTestId }) {
@@ -260,7 +259,6 @@ function StatusCell({ status, setStatus, dataTestId }) {
         </MenuItem>
         <MenuItem value="confirmed">{t`Confirmed`}</MenuItem>
         <MenuItem value="present">{t`Present`}</MenuItem>
-        <MenuItem value="en route">{t`En route`}</MenuItem>
         <MenuItem value="absent">{t`Absent`}</MenuItem>
       </Select>
     </TableCell>

@@ -75,6 +75,23 @@ const CustomSwitchRed = withStyles({
   track: {},
 })(Switch);
 
+// A custom switch to display orange color for track sliders
+const CustomSwitchOrange = withStyles({
+  switchBase: {
+    // grey
+    color: '#cccccc',
+    '&$checked': {
+      // orange
+      color: '#FFB866',
+    },
+    '&$checked + $track': {
+      backgroundColor: '#FFB866',
+    },
+  },
+  checked: {},
+  track: {},
+})(Switch);
+
 // A custom switch to display green color for all sliders
 const CustomSwitchGreen = withStyles({
   switchBase: {
@@ -241,11 +258,11 @@ function Scheduling() {
     update();
   };
 
-  const handleTimeStartChange = () => {
+  const handleTimeStartChange = (date) => {
     setOpen(date);
   };
 
-  const handleTimeEndChange = () => {
+  const handleTimeEndChange = (date) => {
     setClose(date);
   };
 
@@ -297,6 +314,22 @@ function Scheduling() {
     setEvents((prevEvents) => ({
       ...prevEvents,
       [name]: checked ? 'closed' : 'absent',
+    }));
+  };
+
+  const handleTrackPrivateEventSwitchChange = (event) => {
+
+    const { name, checked } = event.target;
+    const status = checked ? 'private_event' : 'absent';
+
+    setTrackStates((prevStates) => ({
+      ...prevStates,
+      [name]: status,
+    }));
+
+    setEvents((prevEvents) => ({
+      ...prevEvents,
+      [name]: status,
     }));
   };
 
@@ -355,17 +388,6 @@ function Scheduling() {
       colors.greenLight,
       t`Range officer confirmed`,
     );
-  };
-
-  // Emits a 'rangeUpdate' event with the status 'en route'
-  // and updates the supervisor's status in the UI
-  const handleEnRouteClick = () => {
-    socket.emit('rangeUpdate', {
-      status: 'en route',
-      color: colors.orange,
-      text: t`Range officer on the way`,
-    });
-    updateSupervisor('en route', colors.orange, t`Range officer on the way`);
   };
 
   // Emits a 'rangeUpdate' event with the status 'present'
@@ -515,8 +537,6 @@ function Scheduling() {
       rangeStatus = 'absent';
     } else if (statusColor === colors.turquoise) {
       rangeStatus = 'not confirmed';
-    } else if (statusColor === colors.orange) {
-      rangeStatus = 'en route';
     } else if (statusColor === colors.greenLight) {
       rangeStatus = 'confirmed';
     }
@@ -571,9 +591,11 @@ function Scheduling() {
         <React.Fragment key={key}>
           <Box
             className={`trackBox ${
-              trackStates[tracks[key].id] === 'closed'
-                ? 'track-closed'
-                : 'track-open'
+              trackStates[tracks[key].id] === 'private_event'
+                ? 'track-private-event'
+                : trackStates[tracks[key].id] === 'closed'
+                  ? 'track-closed'
+                  : 'track-open'
             }`}
           >
             <FormControl component="fieldset" style={{ padding: '5px' }}>
@@ -586,6 +608,16 @@ function Scheduling() {
                   onChange={handleTrackSwitchChange}
                   name={tracks[key].id.toString()}
                   data-testid={`track-${tracks[key].id.toString()}`}
+                />
+              </div>
+              <div className="trackSwitchRow">
+                <div>{t`Private event`}</div>
+                <CustomSwitchOrange
+                  disabled={!available}
+                  checked={trackStates[tracks[key].id] === 'private_event'}
+                  onChange={handleTrackPrivateEventSwitchChange}
+                  name={tracks[key].id.toString()}
+                  data-testid={`private-event-${tracks[key].id}`}
                 />
               </div>
               <TextareaAutosize
@@ -757,11 +789,12 @@ function Scheduling() {
 
     if (rangeSupervisorSwitch) {
       if (rangeSupervisorId !== null) {
-        params = {
-          ...params,
-          association_id: rangeSupervisorId,
-        };
-      } else throw new Error('Range officer enabled but no id');
+        params.association_id = rangeSupervisorId;
+      } else {
+        throw new Error('Range officer enabled but no id');
+      }
+    } else {
+      params.association_id = null;
     }
 
     /* eslint-disable-next-line */
@@ -940,9 +973,6 @@ function Scheduling() {
       if (response.rangeSupervision === 'present') {
         setStatusText(t`Range officer present`);
         setStatusColor(colors.green);
-      } else if (response.rangeSupervision === 'en route') {
-        setStatusText(t`Range officer on the way`);
-        setStatusColor(colors.orange);
       } else if (response.rangeSupervision === 'absent') {
         setStatusText(t`Range officer undefined`);
         setStatusColor(colors.white);
@@ -1137,14 +1167,6 @@ function Scheduling() {
                       onClick={handleConfirmed}
                     >
                       {t`Confirmed`}
-                    </Button>
-                    <Button
-                      className="onTheWay"
-                      variant="contained"
-                      style={{ backgroundColor: colors.orange }}
-                      onClick={handleEnRouteClick}
-                    >
-                      {t`On the way`}
                     </Button>
                     <Button
                       className="present"

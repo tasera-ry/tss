@@ -191,9 +191,6 @@
         .confirmed {
           border: 1px solid #9fca99;
         }  
-        .onTheWay {
-          border: 1px solid #f9bc42;
-        } 
         .present {
           border: 1px solid #527a4f;
         }
@@ -254,6 +251,14 @@
     .track-open {
       background-color: #FFFFFF;
       border: 1px solid #dddddd;
+    }
+    .track-private-event {
+      background-color: #FFE8CC;
+      border: 1px solid #FFB866;
+    }
+    .track-closed {
+      background-color: #FAE0E0;
+      border: 1px solid #df8d8d;
     }
     .trackSwitchRow {
       display: flex;

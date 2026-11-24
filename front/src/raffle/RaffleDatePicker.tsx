@@ -89,17 +89,6 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
     [scheduleQuery.data],
   );
 
-  const isOnTheWay = useMemo(
-    () =>
-      scheduleQuery.data
-        ?.filter(
-          (s) =>
-            s.rangeSupervision === 'en route' && s.rangeSupervisionScheduled,
-        )
-        .map((day) => new Date(day.date)) || [],
-    [scheduleQuery.data],
-  );
-
   const localeDayPicker = LOCALE[locale];
   // datepicker
   return (
@@ -117,7 +106,6 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
         isSet: isSetDays,
         notConfirmedButSet: notConfirmedButSetDays,
         isPresent: isPresent,
-        isOnTheWay: isOnTheWay,
       }}
       modifiersClassNames={{
         closed: 'bg-red-light rounded-full',
@@ -125,7 +113,6 @@ const RaffleDatePicker = ({ selectedDays, setSelectedDays }) => {
         isSet: 'bg-green-light rounded-full',
         isPresent: 'bg-green rounded-full',
         notConfirmedButSet: 'bg-turquoise rounded-full',
-        isOnTheWay: 'bg-orange rounded-full',
         today: 'text-black font-extrabold underline font-size-2xl',
       }}
     />

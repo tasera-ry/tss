@@ -56,7 +56,7 @@ export const Weekview = () => {
           type="week"
         />
         <div className={classes(css.bigContainer)}>
-          <div className={classes(css.viewChanger)}>
+          <div className="mb-2 flex items-end justify-between">
             <JumpToCurrent />
             <ViewChanger />
           </div>
@@ -129,8 +129,6 @@ function CalenderCell({ day }: { day: DaySchedule }) {
         return '#b2d9ad';
       case 'not confirmed':
         return '#95d5db';
-      case 'en route':
-        return '#f2c66d';
       case 'closed':
         return '#c97b7b';
       case 'absent':

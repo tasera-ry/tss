@@ -52,6 +52,8 @@ export function LinguiProvider({
       i18n.load(lang, messages);
       i18n.activate(lang);
       moment.locale(lang);
+
+      document.documentElement.lang = lang;
       setIsReady(true);
     })();
   }, [lang]);

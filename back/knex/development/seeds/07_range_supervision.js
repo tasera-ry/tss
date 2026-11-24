@@ -31,15 +31,14 @@ exports.seed = async function (knex) {
 };
 
 casual.define('range_supervision', async (supervisionId) => {
-	const state = ['absent', 'confirmed', 'not confirmed', 'en route', 'present'];
+	const state = ['absent', 'confirmed', 'not confirmed', 'present'];
 
 	const supervisor = state[casual.integer(0, state.length - 1)];
 
 	// The public legend calls the 'confirmed' state "Päävalvoja varmistettu,
-	// arvioitu saapumisaika", and 'en route' means the officer is on the way, so
-	// both only make sense with a time attached. The seed never set one, which
-	// left that whole path unreachable in development.
-	const expectsArrival = supervisor === 'confirmed' || supervisor === 'en route';
+	// arvioitu saapumisaika", so it only makes sense with a time attached. The
+	// seed never set one, which left that whole path unreachable in development.
+	const expectsArrival = supervisor === 'confirmed';
 	let arrivingAt = null;
 	if (expectsArrival) {
 		const hour = String(casual.integer(9, 19)).padStart(2, '0');
