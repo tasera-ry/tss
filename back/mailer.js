@@ -18,8 +18,18 @@ const knex = require(path.join(root, 'knex', 'knex'));
  * @returns {Promise<void>} - A promise that resolves when the email is successfully sent or if sending is skipped.
  */
 const email = async (messageType, key, opts) => {
+  // No association selected for this day, so there is nobody to email
+  if (!key) {
+    return;
+  }
+
   const emailSettings = await services.emailSettings.read();
   const emailAddress = await services.user.getEmail(key);
+
+  // The user has no email address, so nothing can be sent or queued
+  if (!emailAddress) {
+    return;
+  }
 
   // If it has been selected that emails should not be sent, do nothing
   if (emailSettings.shouldSend !== 'true') {
