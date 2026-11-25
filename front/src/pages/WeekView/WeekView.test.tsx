@@ -152,6 +152,25 @@ describe('Weekview', () => {
     expect(document.querySelector('[aria-busy="true"]')).not.toBeNull();
   });
 
+  it('moves the TODAY marker when the date changes while the page is open', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-10-15T23:59:00'));
+    vi.mocked(getSchedulingWeek).mockResolvedValue(buildWeek('2026-10-12'));
+    await renderAt('2026-10-15');
+
+    const links = await screen.findAllByRole('link', { name: /2026/ });
+    expect(links[3]).toHaveAttribute('aria-current', 'date');
+
+    vi.setSystemTime(new Date('2026-10-16T08:00:00'));
+    act(() => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+
+    const updated = screen.getAllByRole('link', { name: /2026/ });
+    expect(updated[4]).toHaveAttribute('aria-current', 'date');
+    expect(updated[3]).not.toHaveAttribute('aria-current');
+  });
+
   it('shows an error with a retry when the schedule cannot be loaded', async () => {
     vi.mocked(getSchedulingWeek).mockRejectedValueOnce(new Error('boom'));
     vi.mocked(getSchedulingWeek).mockResolvedValueOnce(buildWeek('2026-10-12'));

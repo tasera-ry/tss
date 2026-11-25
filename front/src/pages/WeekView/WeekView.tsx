@@ -7,7 +7,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import classNames from 'classnames';
 import moment from 'moment';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
@@ -147,11 +147,31 @@ function parseDateParam(dateParam?: string) {
   return parsed.isValid() ? parsed.format('YYYY-MM-DD') : null;
 }
 
+// Today's date, updated at midnight and when the tab becomes visible again,
+// so a page left open overnight moves the TODAY marker.
+function useToday() {
+  const [today, setToday] = useState(() => moment().format('YYYY-MM-DD'));
+
+  useEffect(() => {
+    const update = () => setToday(moment().format('YYYY-MM-DD'));
+    const msToMidnight =
+      moment().add(1, 'day').startOf('day').diff(moment()) + 1000;
+    const timer = setTimeout(update, msToMidnight);
+    document.addEventListener('visibilitychange', update);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('visibilitychange', update);
+    };
+  }, [today]);
+
+  return today;
+}
+
 export const Weekview = () => {
   const history = useHistory();
   const { date: dateParam } = useParams<{ date?: string }>();
 
-  const today = moment().format('YYYY-MM-DD');
+  const today = useToday();
   const validDateParam = parseDateParam(dateParam);
   const targetDate = validDateParam ?? today;
 
@@ -207,7 +227,7 @@ export const Weekview = () => {
             </button>
           </div>
         ) : (
-          <WeekCalendar days={data} targetDate={targetDate} />
+          <WeekCalendar days={data} targetDate={targetDate} today={today} />
         )}
       </div>
     </div>
@@ -219,7 +239,8 @@ export default Weekview;
 function WeekCalendar({
   days,
   targetDate,
-}: { days?: DaySchedule[]; targetDate: string }) {
+  today,
+}: { days?: DaySchedule[]; targetDate: string; today: string }) {
   const { t } = useLingui();
   const statuses = useStatusConfigs();
   const dates = weekDates(targetDate);
@@ -241,6 +262,7 @@ function WeekCalendar({
             date={date}
             day={byDate.get(date)}
             loading={!days}
+            today={today}
             statuses={statuses}
           />
         ))}
@@ -253,15 +275,22 @@ interface DayItemProps {
   date: string;
   day?: DaySchedule;
   loading: boolean;
+  today: string;
   statuses: StatusConfigs;
 }
 
-function DayItem({ date: dateString, day, loading, statuses }: DayItemProps) {
+function DayItem({
+  date: dateString,
+  day,
+  loading,
+  today,
+  statuses,
+}: DayItemProps) {
   const { t, i18n } = useLingui();
 
   const date = moment(dateString);
-  const isToday = date.isSame(moment(), 'day');
-  const isPast = date.isBefore(moment(), 'day');
+  const isToday = dateString === today;
+  const isPast = dateString < today;
 
   const weekdayLabel = formatWeekday(date.toDate(), i18n.locale);
   const dateLabel = date.format('D.M.YYYY');
