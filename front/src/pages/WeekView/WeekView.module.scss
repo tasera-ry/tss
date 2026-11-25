@@ -30,40 +30,17 @@ $wide: 922px;
   }
 }
 
+// Today on the left, view tabs on the right, at every width.
 .toolbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  gap: 12px;
   width: 100%;
-}
+  margin-bottom: 12px;
 
-.todayButton {
-  display: none;
-
-  @include desktop {
-    display: block;
-  }
-}
-
-.viewTabs {
-  flex: 1 1 auto;
-
-  > div {
-    width: 100%;
-  }
-
-  a {
-    flex: 1 1 0;
-  }
-
-  @include desktop {
-    flex: 0 0 auto;
-
-    a {
-      flex: 0 0 auto;
-      min-width: 64px;
-    }
+  > :last-child {
+    justify-self: end;
   }
 }
 

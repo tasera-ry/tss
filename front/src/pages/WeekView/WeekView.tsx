@@ -180,12 +180,8 @@ export const Weekview = () => {
 
       <div className={css.weekContainer}>
         <div className={css.toolbar}>
-          <div className={css.todayButton}>
-            <JumpToCurrent />
-          </div>
-          <div className={css.viewTabs}>
-            <ViewChanger />
-          </div>
+          <JumpToCurrent />
+          <ViewChanger />
         </div>
 
         <DateHeader
