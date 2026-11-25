@@ -268,7 +268,7 @@ describe('testing monthview', () => {
     expect(window.location.hash).toBe('#/monthview/2021-04-10');
   });
 
-  it('does not refetch months it has just loaded or prefetched', async () => {
+  it('does not refetch prefetched neighbours but refetches the visible month', async () => {
     setDateParam('2021-03-10');
     vi.mocked(api.getSchedulingFreeform).mockClear();
     const client = new QueryClient({
@@ -285,10 +285,11 @@ describe('testing monthview', () => {
     setDateParam('2021-04-10');
     rerender(monthviewTree(client));
     await screen.findByText('April 2021');
+    // April refetches once; May (new neighbour) is prefetched; March stays cached.
     await waitFor(() =>
-      expect(api.getSchedulingFreeform).toHaveBeenCalledTimes(4),
+      expect(api.getSchedulingFreeform).toHaveBeenCalledTimes(5),
     );
-    expect(api.getSchedulingFreeform).toHaveBeenLastCalledWith(
+    expect(api.getSchedulingFreeform).toHaveBeenCalledWith(
       '2021-04-26',
       '2021-06-06',
     );

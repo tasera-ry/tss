@@ -22,6 +22,7 @@ import { DateHeader } from '@/lib/components/DateHeader';
 import { InfoBox } from '@/lib/components/InfoBox';
 import { ViewChanger } from '@/lib/components/ViewChanger';
 import type { DaySchedule } from '@/types';
+import { JumpToCurrent } from '@/utils/Utils';
 
 import css from './MonthView.module.scss';
 import {
@@ -115,7 +116,9 @@ const ARROW_KEY_DAYS: Record<string, number> = {
   ArrowDown: 7,
 };
 
-const MONTH_STALE_TIME = 60_000;
+// Only prefetched neighbours stay fresh; the visible month refetches on every visit
+// so schedule edits made elsewhere show up immediately.
+const PREFETCH_STALE_TIME = 60_000;
 
 function monthQueryKey(monthKey: string) {
   return ['monthview', monthKey];
@@ -181,7 +184,6 @@ export function Monthview() {
   const { data, isError, refetch } = useQuery({
     queryKey: monthQueryKey(monthKey),
     queryFn: () => fetchMonth(monthKey),
-    staleTime: MONTH_STALE_TIME,
   });
 
   useEffect(() => {
@@ -192,7 +194,7 @@ export function Monthview() {
       queryClient.prefetchQuery(
         monthQueryKey(adjacent),
         () => fetchMonth(adjacent),
-        { staleTime: MONTH_STALE_TIME },
+        { staleTime: PREFETCH_STALE_TIME },
       );
     }
   }, [monthKey, queryClient]);
@@ -218,19 +220,8 @@ export function Monthview() {
 
       <div className={css.monthContainer}>
         <div className={css.toolbar}>
-          <div className={css.todayButton}>
-            <Link
-              className="bg-black-tint-70 rounded-t-lg p-2 flex justify-center items-center text-white text-lg font-bold"
-              data-testid="jumpToCur"
-              to={`/monthview/${today}`}
-            >
-              <Trans>Today</Trans>
-            </Link>
-          </div>
-          <div className={css.viewTabs}>
-            {/* ViewChanger reads the date from the URL only on mount. */}
-            <ViewChanger key={targetDate} />
-          </div>
+          <JumpToCurrent />
+          <ViewChanger />
         </div>
 
         <DateHeader
