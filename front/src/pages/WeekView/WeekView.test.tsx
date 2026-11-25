@@ -150,6 +150,9 @@ describe('Weekview', () => {
     expect(screen.getByText('18.10.2026')).toBeInTheDocument();
     expect(screen.queryAllByRole('link', { name: /2026/ })).toHaveLength(0);
     expect(document.querySelector('[aria-busy="true"]')).not.toBeNull();
+    expect(
+      screen.getByText('7 days · select a day to see the tracks'),
+    ).toHaveAttribute('aria-hidden', 'true');
   });
 
   it('moves the TODAY marker when the date changes while the page is open', async () => {

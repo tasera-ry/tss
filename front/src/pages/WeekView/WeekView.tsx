@@ -252,7 +252,11 @@ function WeekCalendar({
 
   return (
     <section className={css.weekCard} aria-busy={!days}>
-      <p className={css.caption}>
+      {/* Kept in the layout but hidden while loading: the cards can't be selected yet. */}
+      <p
+        className={classNames(css.caption, !days && css.captionHidden)}
+        aria-hidden={!days || undefined}
+      >
         {t`${dayCount} days · select a day to see the tracks`}
       </p>
       <ol className={css.dayList}>
