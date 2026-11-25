@@ -21,7 +21,8 @@ const model = {
       range_id: {},
       name: {},
       description: {},
-      short_description: {}
+      short_description: {},
+      requires_range_officer: {}
     };
 
     const track = validate.cleanAttributes(trackInfo, trackConstraints);
@@ -71,7 +72,8 @@ const model = {
       range_id: {},
       name: {},
       description: {},
-      short_description: {}
+      short_description: {},
+      requires_range_officer: {}
     };
 
     const track = validate.cleanAttributes(update, trackConstraints);
