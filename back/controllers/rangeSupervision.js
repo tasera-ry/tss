@@ -4,8 +4,6 @@ const knex = require(path.join(root, 'knex', 'knex'));
 const { email } = require('../mailer.js');
 const moment = require('moment');
 
-
-
 // TODO: definitely update the database 1:1 connections so you don't
 // have to do this crap
 async function getCorrespondingSupervision(id) {
@@ -83,12 +81,7 @@ const controller = {
   },
 
   create: async function createSupervision(request, response) {
-    try {
-      const scheduleId = response.locals.id;
-      email('assigned', response.req.body.association, { scheduleId }).catch(console.error);
-    } catch (error) {
-      console.error(error);
-    }
+    // The "assigned" email is sent from reservation.js
     return response
       .status(201)
       .send(response.locals.queryResult);
@@ -102,13 +95,13 @@ const controller = {
       const scheduleId = response.locals.id.scheduled_range_supervision_id;
       // Association was assigned supervision
       // if (response.locals.updates && response.locals.updates.range_supervisor === 'not confirmed' && response.locals.updates.association){
-        // email('assigned', response.locals.updates.association, { scheduleId: scheduleId });
+      // email('assigned', response.locals.updates.association, { scheduleId: scheduleId });
       // }
 
-      if (response.locals.updates.range_supervisor === 'absent' && response.locals.user.name) {
+      if (response.locals.updates.range_supervisor === 'absent' && response.locals.user.name && response.locals.user.role !== 'superuser') {
         const superusers = response.locals.superusers;
         const supervision = await getCorrespondingSupervision(scheduleId);
-        const date = moment(supervision.date).format('YYYY-MM-DD');
+        const date = supervision?.[0]?.date ? moment(supervision[0].date).format('D.M.YYYY') : '';
         for (const superuser of superusers) {
           email('decline', superuser, { user: response.locals.user.name, date });
         }
@@ -123,7 +116,7 @@ const controller = {
   },
 
   delete: async function deleteSupervision(request, response) {
-    if(response.locals.queryResult === 0) {
+    if (response.locals.queryResult === 0) {
       return response
         .status(404)
         .send({
