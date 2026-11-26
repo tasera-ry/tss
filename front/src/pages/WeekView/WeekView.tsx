@@ -5,6 +5,12 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from '@mui/material';
 import classNames from 'classnames';
 import moment from 'moment';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -14,6 +20,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { DateHeader } from '@/lib/components/DateHeader';
 import { InfoBox } from '@/lib/components/InfoBox';
 import { ViewChanger } from '@/lib/components/ViewChanger';
+import { useTrackName } from '@/trackview/useTrackName';
 import type { DaySchedule } from '@/types';
 import { JumpToCurrent, getSchedulingWeek } from '@/utils/Utils';
 
@@ -124,21 +131,9 @@ function getArrivingAt(day: DaySchedule) {
 }
 
 async function fetchWeek(targetDate: string): Promise<DaySchedule[]> {
-  try {
-    const { week } = await getSchedulingWeek(targetDate);
-    return week ?? [];
-  } catch (error) {
-    // The API answers 404 rather than an empty list when no day in the range has a schedule.
-    if (isNotFound(error)) return [];
-    throw error;
-  }
-}
-
-function isNotFound(error: unknown) {
-  return (
-    (error as { response?: { status?: number } } | null)?.response?.status ===
-    404
-  );
+  // The API returns every day of the week, with or without a schedule.
+  const { week } = await getSchedulingWeek(targetDate);
+  return week ?? [];
 }
 
 function parseDateParam(dateParam?: string) {
@@ -152,6 +147,7 @@ function parseDateParam(dateParam?: string) {
 function useToday() {
   const [today, setToday] = useState(() => moment().format('YYYY-MM-DD'));
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: re-arms the midnight timer each time the day changes
   useEffect(() => {
     const update = () => setToday(moment().format('YYYY-MM-DD'));
     const msToMidnight =
@@ -248,7 +244,6 @@ function WeekCalendar({
     () => new Map((days ?? []).map((day) => [day.date, day])),
     [days],
   );
-  const dayCount = dates.length;
 
   return (
     <section className={css.weekCard} aria-busy={!days}>
@@ -257,7 +252,7 @@ function WeekCalendar({
         className={classNames(css.caption, !days && css.captionHidden)}
         aria-hidden={!days || undefined}
       >
-        {t`${dayCount} days · select a day to see the tracks`}
+        {t`7 days · select a day to see the tracks`}
       </p>
       <ol className={css.dayList}>
         {dates.map((date) => (
@@ -291,6 +286,7 @@ function DayItem({
   statuses,
 }: DayItemProps) {
   const { t, i18n } = useLingui();
+  const [noticesOpen, setNoticesOpen] = useState(false);
 
   const date = moment(dateString);
   const isToday = dateString === today;
@@ -327,9 +323,10 @@ function DayItem({
   const status =
     statuses[day?.rangeSupervision as RangeSupervision] ?? statuses.absent;
 
-  const hasNotice = (day?.tracks ?? []).some(
+  const notices = (day?.tracks ?? []).filter(
     (track) => track.notice != null && track.notice !== '',
   );
+  const hasNotice = notices.length > 0;
 
   const time = day ? formatTime(getArrivingAt(day), i18n.locale) : '';
   const arrival =
@@ -338,14 +335,11 @@ function DayItem({
         ? t`Estimate ${time}`
         : t`Arrival time unknown`
       : null;
-  const noticeLabel = t`Track has additional information`;
-
   const ariaLabel = [
     `${weekdayLabel} ${dateLabel}`,
     isToday && t`Today`,
     status.label,
     arrival,
-    hasNotice && noticeLabel,
   ]
     .filter(Boolean)
     .join(', ');
@@ -353,36 +347,103 @@ function DayItem({
   return (
     <li className={css.dayItem}>
       {todayMarker}
-      <Link
-        to={`/dayview/${dateString}`}
-        aria-current={isToday ? 'date' : undefined}
-        aria-label={ariaLabel}
-        className={classNames(
-          css.dayCard,
-          isToday && css.today,
-          isPast && css.past,
+      {/* The notice button sits over the card, outside its link: a button
+          cannot be inside a link. */}
+      <div className={css.cardWrap}>
+        <Link
+          to={`/dayview/${dateString}`}
+          aria-current={isToday ? 'date' : undefined}
+          aria-label={ariaLabel}
+          className={classNames(
+            css.dayCard,
+            isToday && css.today,
+            isPast && css.past,
+          )}
+        >
+          <span className={classNames(css.dayHead, hasNotice && css.hasNotice)}>
+            <span className={css.weekdayRow}>
+              <span className={css.weekday}>{weekdayLabel}</span>
+            </span>
+            <span className={css.date}>{dateLabel}</span>
+          </span>
+          <span className={classNames(css.dayStatus, status.className)}>
+            {status.icon}
+            <span className={css.statusText}>
+              <span>{status.label}</span>
+              {arrival && <span className={css.timeText}>{arrival}</span>}
+            </span>
+          </span>
+        </Link>
+        {hasNotice && (
+          <button
+            type="button"
+            className={css.noticeButton}
+            aria-label={`${t`Notices for the day`}, ${weekdayLabel} ${dateLabel}`}
+            aria-haspopup="dialog"
+            onClick={() => setNoticesOpen(true)}
+          >
+            <InfoOutlinedIcon className={css.noticeIcon} />
+          </button>
         )}
-      >
-        <span className={classNames(css.dayHead, hasNotice && css.hasNotice)}>
-          <span className={css.weekdayRow}>
-            <span className={css.weekday}>{weekdayLabel}</span>
-            {hasNotice && (
-              <InfoOutlinedIcon
-                className={css.noticeIcon}
-                titleAccess={noticeLabel}
-              />
-            )}
-          </span>
-          <span className={css.date}>{dateLabel}</span>
-        </span>
-        <span className={classNames(css.dayStatus, status.className)}>
-          {status.icon}
-          <span className={css.statusText}>
-            <span>{status.label}</span>
-            {arrival && <span className={css.timeText}>{arrival}</span>}
-          </span>
-        </span>
-      </Link>
+      </div>
+      {noticesOpen && (
+        <NoticesDialog
+          title={`${weekdayLabel} ${dateLabel}`}
+          tracks={notices}
+          onClose={() => setNoticesOpen(false)}
+        />
+      )}
     </li>
+  );
+}
+
+/**
+ * Every track notice of one day in one place. The notices belong to tracks,
+ * two levels down (day view, then track view); members asked from the week
+ * view should not have to open each track to find them.
+ */
+function NoticesDialog({
+  title,
+  tracks,
+  onClose,
+}: {
+  title: string;
+  tracks: DaySchedule['tracks'];
+  onClose: () => void;
+}) {
+  const { t } = useLingui();
+  const trackName = useTrackName();
+  const titleId = `notices-${title.replace(/\W+/g, '-')}`;
+
+  return (
+    <Dialog
+      open
+      onClose={onClose}
+      aria-labelledby={titleId}
+      fullWidth
+      maxWidth="xs"
+    >
+      <DialogTitle id={titleId} className={css.noticesTitle}>
+        {t`Notices for the day`}
+        <span className={css.noticesDate}>{title}</span>
+      </DialogTitle>
+      <DialogContent>
+        <ul className={css.noticesList}>
+          {tracks.map((track) => (
+            <li key={String(track.id)}>
+              <h3 className={css.noticeTrack}>
+                {trackName(String(track.name))}
+              </h3>
+              <p className={css.noticeText}>{track.notice}</p>
+            </li>
+          ))}
+        </ul>
+      </DialogContent>
+      <DialogActions>
+        <button type="button" className={css.closeButton} onClick={onClose}>
+          {t`Close`}
+        </button>
+      </DialogActions>
+    </Dialog>
   );
 }

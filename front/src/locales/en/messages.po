@@ -17,25 +17,17 @@ msgstr ""
 msgid "{booked, plural, one {# lane booked} other {# lanes booked}}"
 msgstr "{booked, plural, one {# lane booked} other {# lanes booked}}"
 
-#: src/pages/WeekView/WeekView.tsx:239
-msgid "{dayCount} days · select a day to see the tracks"
-msgstr "{dayCount} days · select a day to see the tracks"
-
 #: src/pages/DayView/DayView.tsx:103
 msgid "{equipmentCount, plural, one {# device} other {# devices}}"
 msgstr "{equipmentCount, plural, one {# device} other {# devices}}"
-
-#: src/pages/DayView/DayView.tsx:90
-#~ msgid "{equipmentCount} devices"
-#~ msgstr "{equipmentCount} devices"
 
 #: src/pages/DayView/DayView.tsx:101
 msgid "{tracksCount, plural, one {# track} other {# tracks}}"
 msgstr "{tracksCount, plural, one {# track} other {# tracks}}"
 
-#: src/pages/DayView/DayView.tsx:88
-#~ msgid "{tracksCount} tracks"
-#~ msgstr "{tracksCount} tracks"
+#: src/pages/WeekView/WeekView.tsx:255
+msgid "7 days · select a day to see the tracks"
+msgstr "7 days · select a day to see the tracks"
 
 #: src/upcomingsupervisions/LoggedIn.jsx:75
 #: src/upcomingsupervisions/LoggedIn.jsx:131
@@ -126,10 +118,6 @@ msgstr ""
 msgid "Amount of supervisions"
 msgstr "Amount of supervisions"
 
-#: src/raffle/RaffleDatePicker.jsx:29
-#~ msgid "April"
-#~ msgstr "April"
-
 #. placeholder {0}: user.name
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:141
 msgid "Are you sure you want to delete {0}?"
@@ -143,11 +131,7 @@ msgstr "Are you sure you want to delete this message?"
 msgid "Are you sure you want to delete this track?"
 msgstr "Are you sure you want to delete this track?"
 
-#: src/usermanagement/UserManagementView.jsx:993
-#~ msgid "Are you sure?"
-#~ msgstr "Are you sure?"
-
-#: src/pages/WeekView/WeekView.tsx:310
+#: src/pages/WeekView/WeekView.tsx:336
 msgid "Arrival time unknown"
 msgstr "Arrival time unknown"
 
@@ -186,10 +170,6 @@ msgstr "Association's upcoming supervisions"
 msgid "Associations"
 msgstr "Associations"
 
-#: src/raffle/RaffleDatePicker.jsx:33
-#~ msgid "August"
-#~ msgstr "August"
-
 #: src/pages/DayView/DayView.tsx:243
 msgid "Awaiting range officer"
 msgstr "Awaiting range officer"
@@ -201,14 +181,6 @@ msgstr "Back"
 #: src/trackview/Trackview.tsx:216
 msgid "Back to day view"
 msgstr "Back to day view"
-
-#: src/trackview/Trackview.tsx:159
-#~ msgid "Back to dayview"
-#~ msgstr "Back to dayview"
-
-#: src/pages/DayView/DayView.tsx:98
-#~ msgid "Back to weekview"
-#~ msgstr "Back to weekview"
 
 #: src/upcomingsupervisions/LoggedIn.jsx:522
 #: src/profile/profilepages/officerform.jsx:84
@@ -230,10 +202,6 @@ msgstr "CC"
 msgid "Change email address"
 msgstr "Change email address"
 
-#: src/usermanagement/UserManagementView.jsx:1251
-#~ msgid "Change Email for user:"
-#~ msgstr "Change Email for user:"
-
 #: src/profile/profilesettings.jsx:26
 #: src/profile/profilepages/changepassword.tsx:74
 #: src/profile/profilepages/changepassword.tsx:77
@@ -242,14 +210,6 @@ msgstr "Change email address"
 #: src/pages/UserManagement/components/dialogs/ChangePasswordSelfDialog.tsx:72
 msgid "Change password"
 msgstr "Change password"
-
-#: src/usermanagement/UserManagementView.jsx:1176
-#~ msgid "Change password for"
-#~ msgstr "Change password for"
-
-#: src/usermanagement/UserManagementView.jsx:1298
-#~ msgid "Change role for user:"
-#~ msgstr "Change role for user:"
 
 #: src/pages/TabletView/TabletView.tsx:157
 msgid "Change track officer status by choosing color. Change number of track users with buttons"
@@ -272,17 +232,13 @@ msgstr "Choose date"
 msgid "Choose dates for the raffle"
 msgstr "Choose dates for the raffle"
 
-#: src/VisitorLogging/VisitorLogging.jsx:136
-#~ msgid "Close"
-#~ msgstr "Close"
+#: src/pages/WeekView/WeekView.tsx:444
+msgid "Close"
+msgstr "Close"
 
 #: src/scheduling/Scheduling.jsx:1237
 msgid "Close All"
 msgstr "Close All"
-
-#: src/usermanagement/UserManagementView.jsx:1505
-#~ msgid "Close editing mode"
-#~ msgstr "Close editing mode"
 
 #: src/trackview/Trackview.tsx:466
 #: src/scheduling/Scheduling.jsx:980
@@ -352,7 +308,7 @@ msgstr "Connection timed out. Check network connectivity.!"
 msgid "Could not load associations"
 msgstr "Could not load associations"
 
-#: src/pages/WeekView/WeekView.tsx:201
+#: src/pages/WeekView/WeekView.tsx:213
 msgid "Could not load the schedule. Please try again later."
 msgstr "Could not load the schedule. Please try again later."
 
@@ -380,10 +336,6 @@ msgstr "Date"
 msgid "Day"
 msgstr "Day"
 
-#: src/raffle/RaffleDatePicker.jsx:37
-#~ msgid "December"
-#~ msgstr "December"
-
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:28
 msgid "Define range officer status by choosing color"
 msgstr "Define range officer status by choosing color"
@@ -393,10 +345,6 @@ msgstr "Define range officer status by choosing color"
 #: src/pages/EditTracksView/components/TrackRow.tsx:189
 msgid "Delete"
 msgstr "Delete"
-
-#: src/usermanagement/UserManagementView.jsx:525
-#~ msgid "Delete profile"
-#~ msgstr "Delete profile"
 
 #: src/profile/profilepages/officerform.jsx:81
 msgid "Delete range officer"
@@ -439,18 +387,9 @@ msgstr "E-mail address is required!"
 msgid "Edit"
 msgstr "Edit"
 
-#: src/usermanagement/UserManagementView.jsx:1423
-#~ msgid "Edit email address"
-#~ msgstr "Edit email address"
-
 #: src/scheduling/Scheduling.jsx:1152
 msgid "Edit range officer status by choosing color"
 msgstr "Edit range officer status by choosing color"
-
-#: src/usermanagement/UserManagementView.jsx:1439
-#: src/usermanagement/UserManagementView.jsx:1474
-#~ msgid "Edit role"
-#~ msgstr "Edit role"
 
 #: src/lib/components/Navbar/DrawerMenu.tsx:32
 msgid "Edit tracks"
@@ -556,15 +495,7 @@ msgstr "Error updating track"
 msgid "Error verifying token!"
 msgstr "Error verifying token!"
 
-#: src/Devices/devices.jsx:64
-#~ msgid "Error: Device name cannot be empty"
-#~ msgstr "Error: Device name cannot be empty"
-
-#: src/Devices/devices.jsx:69
-#~ msgid "Error: Device status must be either 'free' or 'reserved'"
-#~ msgstr "Error: Device status must be either 'free' or 'reserved'"
-
-#: src/pages/WeekView/WeekView.tsx:309
+#: src/pages/WeekView/WeekView.tsx:335
 msgid "Estimate {time}"
 msgstr "Estimate {time}"
 
@@ -588,10 +519,6 @@ msgstr "Failed to delete user, user might be range officer for reservation"
 msgid "Failed to update estimated time of arrival"
 msgstr "Failed to update estimated time of arrival"
 
-#: src/raffle/RaffleDatePicker.jsx:27
-#~ msgid "February"
-#~ msgstr "February"
-
 #: src/lib/components/Navbar/DrawerMenu.tsx:109
 msgid "Feedback"
 msgstr "Feedback"
@@ -614,10 +541,6 @@ msgstr "Force all pending emails to be sent immediately."
 msgid "Forgot password?"
 msgstr "Forgot password?"
 
-#: src/raffle/RaffleDatePicker.jsx:22
-#~ msgid "Fr"
-#~ msgstr "Fr"
-
 #: src/trackview/Trackview.tsx:706
 msgid "free"
 msgstr "free"
@@ -631,10 +554,6 @@ msgstr "Free"
 #: src/pages/MonthView/MonthView.tsx:112
 msgid "Fri"
 msgstr "Fri"
-
-#: src/raffle/RaffleDatePicker.jsx:13
-#~ msgid "Friday"
-#~ msgstr "Friday"
 
 #: src/lib/components/Navbar/FeedbackWindow.tsx:26
 msgid "Give feedback"
@@ -655,10 +574,6 @@ msgstr "Gun license owners"
 #: src/raffle/SupervisorsTable.jsx:52
 msgid "In raffle"
 msgstr "In raffle"
-
-#: src/trackview/Trackview.tsx:81
-#~ msgid "Info"
-#~ msgstr "Info"
 
 #: src/renewPW/RenewPassword.jsx:109
 msgid "Input new password"
@@ -683,18 +598,6 @@ msgstr "Invalid email address"
 #: src/pages/TabletView/components/OpenHoursSection.tsx:90
 msgid "Invalid time selected."
 msgstr "Invalid time selected."
-
-#: src/raffle/RaffleDatePicker.jsx:26
-#~ msgid "January"
-#~ msgstr "January"
-
-#: src/raffle/RaffleDatePicker.jsx:32
-#~ msgid "July"
-#~ msgstr "July"
-
-#: src/raffle/RaffleDatePicker.jsx:31
-#~ msgid "June"
-#~ msgstr "June"
 
 #: src/trackview/Trackview.tsx:391
 #: src/trackview/Trackview.tsx:744
@@ -725,27 +628,13 @@ msgstr "Loading..."
 msgid "Log in"
 msgstr "Log in"
 
-#: src/usermanagement/UserManagementView.jsx:930
-#: src/usermanagement/UserManagementView.jsx:1074
-#: src/usermanagement/UserManagementView.jsx:1197
-#~ msgid "lowercase letter"
-#~ msgstr "lowercase letter"
-
 #: src/scheduling/Scheduling.jsx:1212
 msgid "Manage shooting tracks"
 msgstr "Manage shooting tracks"
 
-#: src/raffle/RaffleDatePicker.jsx:28
-#~ msgid "March"
-#~ msgstr "March"
-
 #: src/trackview/useTrackName.ts:39
 msgid "Marked lanes"
 msgstr "Marked lanes"
-
-#: src/raffle/RaffleDatePicker.jsx:30
-#~ msgid "May"
-#~ msgstr "May"
 
 #: src/trackview/Trackview.tsx:413
 msgid "Members may not enter a track without a track officer."
@@ -762,18 +651,6 @@ msgstr "Message"
 #: src/trackview/useTrackName.ts:35
 msgid "Middle"
 msgstr "Middle"
-
-#: src/usermanagement/UserManagementView.jsx:925
-#: src/usermanagement/UserManagementView.jsx:930
-#: src/usermanagement/UserManagementView.jsx:935
-#: src/usermanagement/UserManagementView.jsx:1069
-#: src/usermanagement/UserManagementView.jsx:1074
-#: src/usermanagement/UserManagementView.jsx:1079
-#: src/usermanagement/UserManagementView.jsx:1192
-#: src/usermanagement/UserManagementView.jsx:1197
-#: src/usermanagement/UserManagementView.jsx:1202
-#~ msgid "Minimum"
-#~ msgstr "Minimum"
 
 #. placeholder {0}: 1
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:200
@@ -818,17 +695,9 @@ msgstr "Minimum {5} uppercase letter"
 msgid "Minimum length of password is 6 characters"
 msgstr "Minimum length of password is 6 characters"
 
-#: src/raffle/RaffleDatePicker.jsx:18
-#~ msgid "Mo"
-#~ msgstr "Mo"
-
 #: src/pages/MonthView/MonthView.tsx:108
 msgid "Mon"
 msgstr "Mon"
-
-#: src/raffle/RaffleDatePicker.jsx:9
-#~ msgid "Monday"
-#~ msgstr "Monday"
 
 #: src/trackview/Trackview.tsx:236
 #: src/pages/StatisticsView/StatisticsView.tsx:99
@@ -865,7 +734,7 @@ msgstr "New password"
 msgid "New password is required"
 msgstr "New password is required"
 
-#: src/lib/components/DateHeader/DateHeader.tsx:80
+#: src/lib/components/DateHeader/DateHeader.tsx:82
 msgid "Next"
 msgstr "Next"
 
@@ -877,10 +746,6 @@ msgstr "Next day"
 #: src/EmailSettings/components/ToggleFIeld.tsx:41
 msgid "No"
 msgstr "No"
-
-#: src/trackview/Trackview.tsx:130
-#~ msgid "No defined track officer"
-#~ msgstr "No defined track officer"
 
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:36
 msgid "No devices found"
@@ -897,10 +762,6 @@ msgstr "No pending messages to send."
 #: src/pages/DayView/DayView.tsx:314
 msgid "No range officer present"
 msgstr "No range officer present"
-
-#: src/VisitorLogging/VisitorLogging.jsx:125
-#~ msgid "No reservations found. Set reservation in Schedules page"
-#~ msgstr "No reservations found. Set reservation in Schedules page"
 
 #: src/upcomingsupervisions/LoggedIn.jsx:144
 #: src/upcomingsupervisions/LoggedIn.jsx:201
@@ -922,10 +783,6 @@ msgstr "No track can be used until the range officer arrives."
 #: src/pages/TabletView/components/TrackCard.tsx:24
 msgid "No track officer"
 msgstr "No track officer"
-
-#: src/pages/DayView/DayView.tsx:172
-#~ msgid "No track officer available"
-#~ msgstr "No track officer available"
 
 #: src/trackview/Trackview.tsx:410
 #: src/trackview/Trackview.tsx:630
@@ -950,25 +807,16 @@ msgstr "Nothing to confirm"
 msgid "Notice for the day"
 msgstr "Notice for the day"
 
-#: src/raffle/RaffleDatePicker.jsx:36
-#~ msgid "November"
-#~ msgstr "November"
-
-#: src/usermanagement/UserManagementView.jsx:925
-#: src/usermanagement/UserManagementView.jsx:1069
-#: src/usermanagement/UserManagementView.jsx:1192
-#~ msgid "number"
-#~ msgstr "number"
+#: src/pages/WeekView/WeekView.tsx:381
+#: src/pages/WeekView/WeekView.tsx:427
+msgid "Notices for the day"
+msgstr "Notices for the day"
 
 #: src/pages/StatisticsView/components/VisitorsTodayChart.tsx:63
 #: src/pages/StatisticsView/components/MonthlyVisitorsByTrackChart.tsx:88
 #: src/pages/StatisticsView/components/CurrentDayStatistics.tsx:85
 msgid "Number of visitors"
 msgstr "Number of visitors"
-
-#: src/raffle/RaffleDatePicker.jsx:35
-#~ msgid "October"
-#~ msgstr "October"
 
 #: src/profile/profilepages/changepassword.tsx:53
 msgid "Old password"
@@ -1004,10 +852,6 @@ msgstr "Opening hours"
 #: src/pages/DayView/DayView.tsx:336
 msgid "OPENING HOURS"
 msgstr "OPENING HOURS"
-
-#: src/pages/DayView/DayView.tsx:71
-#~ msgid "Opening hours: {opensAt}-{closesAt}"
-#~ msgstr "Opening hours: {opensAt}-{closesAt}"
 
 #: src/pages/DayView/DayView.tsx:235
 msgid "Opens at {time}"
@@ -1077,7 +921,7 @@ msgstr "Please give your new email address"
 msgid "Present"
 msgstr "Present"
 
-#: src/lib/components/DateHeader/DateHeader.tsx:66
+#: src/lib/components/DateHeader/DateHeader.tsx:68
 msgid "Previous"
 msgstr "Previous"
 
@@ -1101,15 +945,11 @@ msgid "Raffle supervisors"
 msgstr "Raffle supervisors"
 
 #: src/trackview/Trackview.tsx:335
-#: src/pages/WeekView/WeekView.tsx:70
+#: src/pages/WeekView/WeekView.tsx:77
 #: src/pages/DayView/DayView.tsx:316
 #: src/lib/components/TableLegends.tsx:34
 msgid "Range closed"
 msgstr "Range closed"
-
-#: src/usermanagement/UserManagementView.jsx:559
-#~ msgid "Range master"
-#~ msgstr "Range master"
 
 #: src/scheduling/Scheduling.jsx:1122
 #: src/pages/UserManagement/UserManagementView.tsx:152
@@ -1140,7 +980,7 @@ msgstr "Range officer arriving at {0}"
 #: src/scheduling/Scheduling.jsx:384
 #: src/scheduling/Scheduling.jsx:389
 #: src/scheduling/Scheduling.jsx:983
-#: src/pages/WeekView/WeekView.tsx:52
+#: src/pages/WeekView/WeekView.tsx:59
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:130
 #: src/pages/DayView/DayView.tsx:310
 msgid "Range officer confirmed"
@@ -1166,10 +1006,6 @@ msgstr "Range officer deletion failed"
 msgid "Range officer management"
 msgstr "Range officer management"
 
-#: src/trackview/Trackview.tsx:121
-#~ msgid "Range officer not present"
-#~ msgstr "Range officer not present"
-
 #: src/trackview/Trackview.tsx:339
 #: src/trackview/Trackview.tsx:639
 #: src/scheduling/Scheduling.jsx:369
@@ -1180,7 +1016,7 @@ msgstr "Range officer management"
 msgid "Range officer predefined"
 msgstr "Range officer predefined"
 
-#: src/pages/WeekView/WeekView.tsx:58
+#: src/pages/WeekView/WeekView.tsx:65
 #: src/lib/components/TableLegends.tsx:17
 msgid "Range officer predefined, not confirmed"
 msgstr "Range officer predefined, not confirmed"
@@ -1189,7 +1025,7 @@ msgstr "Range officer predefined, not confirmed"
 #: src/scheduling/Scheduling.jsx:399
 #: src/scheduling/Scheduling.jsx:401
 #: src/scheduling/Scheduling.jsx:974
-#: src/pages/WeekView/WeekView.tsx:46
+#: src/pages/WeekView/WeekView.tsx:53
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:118
 #: src/pages/DayView/DayView.tsx:307
 #: src/lib/components/TableLegends.tsx:14
@@ -1198,7 +1034,7 @@ msgstr "Range officer present"
 
 #: src/scheduling/Scheduling.jsx:977
 #: src/scheduling/Scheduling.jsx:989
-#: src/pages/WeekView/WeekView.tsx:64
+#: src/pages/WeekView/WeekView.tsx:71
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:122
 #: src/lib/components/TableLegends.tsx:37
 msgid "Range officer undefined"
@@ -1268,17 +1104,9 @@ msgstr "Role"
 msgid "Role is required"
 msgstr "Role is required"
 
-#: src/raffle/RaffleDatePicker.jsx:23
-#~ msgid "Sa"
-#~ msgstr "Sa"
-
 #: src/pages/MonthView/MonthView.tsx:113
 msgid "Sat"
 msgstr "Sat"
-
-#: src/raffle/RaffleDatePicker.jsx:14
-#~ msgid "Saturday"
-#~ msgstr "Saturday"
 
 #: src/upcomingsupervisions/LoggedIn.jsx:530
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:184
@@ -1360,10 +1188,6 @@ msgstr "Sender email address"
 msgid "Sending pending messages failed!"
 msgstr "Sending pending messages failed!"
 
-#: src/raffle/RaffleDatePicker.jsx:34
-#~ msgid "September"
-#~ msgstr "September"
-
 #: src/profile/profilepages/supervisions.tsx:221
 msgid "Set"
 msgstr "Set"
@@ -1408,24 +1232,6 @@ msgstr "SMTP settings"
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
-#: src/usermanagement/UserManagementView.jsx:1267
-#~ msgid "Something went wrong, email not saved"
-#~ msgstr "Something went wrong, email not saved"
-
-#: src/usermanagement/UserManagementView.jsx:1094
-#: src/usermanagement/UserManagementView.jsx:1220
-#~ msgid "Something went wrong, remember that the password has to meet the listed requirements"
-#~ msgstr "Something went wrong, remember that the password has to meet the listed requirements"
-
-#: src/usermanagement/UserManagementView.jsx:961
-#: src/usermanagement/UserManagementView.jsx:1145
-#~ msgid "Something went wrong, remember that the password has to meet the listed requirements and the name needs to be unique"
-#~ msgstr "Something went wrong, remember that the password has to meet the listed requirements and the name needs to be unique"
-
-#: src/usermanagement/UserManagementView.jsx:1304
-#~ msgid "Something went wrong, role not saved"
-#~ msgstr "Something went wrong, role not saved"
-
 #: src/EmailSettings/EmailSettings.tsx:210
 msgid "Something went wrong!"
 msgstr "Something went wrong!"
@@ -1451,14 +1257,6 @@ msgstr "Statistics"
 msgid "Status"
 msgstr "Status"
 
-#: src/Devices/devices.jsx:127
-#~ msgid "Status (free/reserved)"
-#~ msgstr "Status (free/reserved)"
-
-#: src/raffle/RaffleDatePicker.jsx:17
-#~ msgid "Su"
-#~ msgstr "Su"
-
 #: src/renewPW/RenewPassword.jsx:165
 msgid "Submit"
 msgstr "Submit"
@@ -1471,10 +1269,6 @@ msgstr "Successfully updated!"
 msgid "Sun"
 msgstr "Sun"
 
-#: src/raffle/RaffleDatePicker.jsx:8
-#~ msgid "Sunday"
-#~ msgstr "Sunday"
-
 #: src/trackview/Trackview.tsx:135
 msgid "Sunset"
 msgstr "Sunset"
@@ -1484,10 +1278,6 @@ msgstr "Sunset"
 msgid "Superuser"
 msgstr "Superuser"
 
-#: src/profile/profilepages/supervisions.jsx:207
-#~ msgid "Supervision cleared for"
-#~ msgstr "Supervision cleared for"
-
 #: src/profile/profilepages/supervisions.tsx:160
 msgid "Supervision cleared for {formatedDate}"
 msgstr "Supervision cleared for {formatedDate}"
@@ -1495,10 +1285,6 @@ msgstr "Supervision cleared for {formatedDate}"
 #: src/profile/profilepages/supervisions.tsx:176
 msgid "Supervision set for {formatedDate}"
 msgstr "Supervision set for {formatedDate}"
-
-#: src/profile/profilepages/supervisions.jsx:179
-#~ msgid "Supervision updated for"
-#~ msgstr "Supervision updated for"
 
 #: src/profile/profilesettings.jsx:34
 #: src/lib/components/Navbar/DrawerMenu.tsx:40
@@ -1514,14 +1300,6 @@ msgstr "Supervisor raffle"
 #: src/lib/components/Navbar/DrawerMenu.tsx:47
 msgid "Tablet view"
 msgstr "Tablet view"
-
-#: src/weekview/Weekview.tsx:56
-#~ msgid "Test"
-#~ msgstr "Test"
-
-#: src/raffle/RaffleDatePicker.jsx:21
-#~ msgid "Th"
-#~ msgstr "Th"
 
 #: src/EmailSettings/EmailSettings.tsx:292
 msgid "The email address that will be used to send emails from the system."
@@ -1539,10 +1317,6 @@ msgstr "The link is incorrect or it has expired. Please send a new reset link!"
 msgid "The saving of the results failed"
 msgstr "The saving of the results failed"
 
-#: src/usermanagement/UserManagementView.jsx:1000
-#~ msgid "This action will permanently remove user"
-#~ msgstr "This action will permanently remove user"
-
 #: src/trackview/Trackview.tsx:113
 msgid "This track has no schedule for the selected day."
 msgstr "This track has no schedule for the selected day."
@@ -1551,20 +1325,16 @@ msgstr "This track has no schedule for the selected day."
 msgid "Thu"
 msgstr "Thu"
 
-#: src/raffle/RaffleDatePicker.jsx:12
-#~ msgid "Thursday"
-#~ msgstr "Thursday"
-
 #: src/EmailSettings/EmailSettings.tsx:349
 msgid "Time for sending emails"
 msgstr "Time for sending emails"
 
 #: src/utils/Utils.jsx:100
-#: src/pages/WeekView/WeekView.tsx:316
+#: src/pages/WeekView/WeekView.tsx:340
 msgid "Today"
 msgstr "Today"
 
-#: src/pages/WeekView/WeekView.tsx:275
+#: src/pages/WeekView/WeekView.tsx:300
 msgid "TODAY"
 msgstr "TODAY"
 
@@ -1580,27 +1350,14 @@ msgstr "Track {number}"
 msgid "Track added successfully"
 msgstr "Track added successfully"
 
-#: src/trackview/Trackview.tsx:63
-#~ msgid "Track cannot be found."
-#~ msgstr "Track cannot be found."
-
 #: src/scheduling/Scheduling.jsx:604
 msgid "Track closed"
 msgstr "Track closed"
-
-#: src/edittracks/tracks.jsx:96
-#~ msgid "Track deleted"
-#~ msgstr "Track deleted"
 
 #: src/pages/EditTracksView/components/TrackRow.tsx:90
 msgid "Track deleted successfully"
 msgstr "Track deleted successfully"
 
-#: src/edittracks/tracks.jsx:99
-#~ msgid "Track deletion failed"
-#~ msgstr "Track deletion failed"
-
-#: src/pages/WeekView/WeekView.tsx:312
 #: src/pages/MonthView/MonthView.tsx:215
 #: src/pages/DayView/DayView.tsx:273
 #: src/lib/components/TableLegends.tsx:46
@@ -1616,21 +1373,9 @@ msgstr "Track not found"
 msgid "Track officer present"
 msgstr "Track officer present"
 
-#: src/edittracks/tracks.jsx:86
-#~ msgid "Track update failed"
-#~ msgstr "Track update failed"
-
-#: src/edittracks/tracks.jsx:81
-#~ msgid "Track updated"
-#~ msgstr "Track updated"
-
 #: src/pages/EditTracksView/components/TrackRow.tsx:66
 msgid "Track updated successfully"
 msgstr "Track updated successfully"
-
-#: src/VisitorLogging/VisitorLogging.jsx:65
-#~ msgid "Track visitors successfully upded"
-#~ msgstr "Track visitors successfully upded"
 
 #: src/trackview/Trackview.tsx:297
 #: src/pages/EditTracksView/EditTracksView.tsx:64
@@ -1646,21 +1391,13 @@ msgstr "Tracks can be used during opening hours."
 msgid "Tracks can be used once the range officer arrives."
 msgstr "Tracks can be used once the range officer arrives."
 
-#: src/pages/WeekView/WeekView.tsx:210
+#: src/pages/WeekView/WeekView.tsx:222
 msgid "Try again"
 msgstr "Try again"
-
-#: src/raffle/RaffleDatePicker.jsx:19
-#~ msgid "Tu"
-#~ msgstr "Tu"
 
 #: src/pages/MonthView/MonthView.tsx:109
 msgid "Tue"
 msgstr "Tue"
-
-#: src/raffle/RaffleDatePicker.jsx:10
-#~ msgid "Tuesday"
-#~ msgstr "Tuesday"
 
 #: src/EmailSettings/EmailSettings.tsx:313
 msgid "Unconfirmed shift reminder"
@@ -1674,12 +1411,6 @@ msgstr "Unmarked lanes"
 msgid "Update successful"
 msgstr "Update successful"
 
-#: src/usermanagement/UserManagementView.jsx:935
-#: src/usermanagement/UserManagementView.jsx:1079
-#: src/usermanagement/UserManagementView.jsx:1202
-#~ msgid "uppercase letter"
-#~ msgstr "uppercase letter"
-
 #: src/EmailSettings/EmailSettings.tsx:274
 msgid "Use SSL"
 msgstr "Use SSL"
@@ -1692,11 +1423,6 @@ msgstr "User"
 #: src/lib/components/Navbar/DrawerMenu.tsx:31
 msgid "User management"
 msgstr "User management"
-
-#: src/usermanagement/UserManagementView.jsx:1356
-#: src/usermanagement/UserManagementView.jsx:1360
-#~ msgid "User profiles"
-#~ msgstr "User profiles"
 
 #: src/signin/SignIn.jsx:74
 #: src/signin/SignIn.jsx:75
@@ -1749,26 +1475,18 @@ msgstr "Visitors today"
 msgid "Warning!"
 msgstr "Warning!"
 
-#: src/raffle/RaffleDatePicker.jsx:20
-#~ msgid "We"
-#~ msgstr "We"
-
 #: src/pages/MonthView/MonthView.tsx:110
 msgid "Wed"
 msgstr "Wed"
-
-#: src/raffle/RaffleDatePicker.jsx:11
-#~ msgid "Wednesday"
-#~ msgstr "Wednesday"
 
 #: src/trackview/Trackview.tsx:237
 #: src/lib/components/ViewChanger.jsx:42
 msgid "Week"
 msgstr "Week"
 
-#: src/lib/components/DateHeader/DateHeader.tsx:37
-msgid "Week {weekNumber} {year}"
-msgstr "Week {weekNumber} {year}"
+#: src/lib/components/DateHeader/DateHeader.tsx:39
+msgid "Week {weekNumber} · {year}"
+msgstr "Week {weekNumber} · {year}"
 
 #: src/pages/MonthView/MonthView.tsx:121
 msgid "Wk"
@@ -1790,10 +1508,6 @@ msgstr "Wrong username or password"
 #: src/EmailSettings/components/ToggleFIeld.tsx:41
 msgid "Yes"
 msgstr "Yes"
-
-#: src/usermanagement/UserManagementView.jsx:1330
-#~ msgid "You are logged in as"
-#~ msgstr "You are logged in as"
 
 #: src/pages/UserManagement/UserManagementView.tsx:101
 msgid "You are logged in as:"

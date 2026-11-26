@@ -56,6 +56,9 @@ function buildWeek(
   } as unknown as SchedulingWeek;
 }
 
+// The path the router is at, read by tests that navigate or redirect.
+let currentPath = '';
+
 async function renderAt(date: string) {
   await act(async () => {
     const queryClient = new QueryClient({
@@ -65,6 +68,13 @@ async function renderAt(date: string) {
       <QueryClientProvider client={queryClient}>
         <MemoryRouter initialEntries={[`/weekview/${date}`]}>
           <Route path="/weekview/:date?" component={Weekview} />
+          <Route
+            path="*"
+            render={({ location }) => {
+              currentPath = location.pathname;
+              return null;
+            }}
+          />
         </MemoryRouter>
       </QueryClientProvider>,
       { wrapper: TestProviders },
@@ -81,9 +91,10 @@ describe('Weekview', () => {
     vi.mocked(getSchedulingWeek).mockResolvedValue(buildWeek('2026-10-12'));
     await renderAt('2026-10-14');
 
-    await waitFor(() =>
-      expect(screen.getAllByRole('link', { name: /2026/ })).toHaveLength(7),
-    );
+    // The first test also waits for the catalog to load on a cold start.
+    expect(
+      await screen.findAllByRole('link', { name: /2026/ }, { timeout: 3000 }),
+    ).toHaveLength(7);
     expect(screen.getAllByText('Range officer present')).toHaveLength(2);
     expect(screen.getByText('Range closed')).toBeInTheDocument();
     expect(
@@ -138,8 +149,69 @@ describe('Weekview', () => {
     expect(links.filter((l) => l.hasAttribute('aria-current'))).toHaveLength(1);
     expect(screen.getByText('TODAY')).toBeInTheDocument();
     expect(
-      screen.getAllByTitle('Track has additional information'),
+      screen.getAllByRole('button', { name: /^Notices for the day/ }),
     ).toHaveLength(1);
+  });
+
+  it('lists every track notice of the day in a dialog', async () => {
+    vi.mocked(getSchedulingWeek).mockResolvedValue(
+      buildWeek('2026-10-12', (day) =>
+        day.date === '2026-10-17'
+          ? {
+              tracks: day.tracks.map((t, i) => ({
+                ...t,
+                notice:
+                  i === 0 ? 'Kilpailu klo 10-14' : i === 2 ? 'Huolto' : null,
+              })),
+            }
+          : {},
+      ),
+    );
+    await renderAt('2026-10-15');
+
+    fireEvent.click(
+      await screen.findByRole('button', {
+        name: 'Notices for the day, Saturday 17.10.2026',
+      }),
+    );
+    const dialog = await screen.findByRole('dialog', {
+      name: /Notices for the day/,
+    });
+    expect(dialog).toHaveTextContent('Saturday 17.10.2026');
+    expect(dialog).toHaveTextContent('Kilpailu klo 10-14');
+    expect(dialog).toHaveTextContent('Huolto');
+    expect(dialog.querySelectorAll('li')).toHaveLength(2);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument(),
+    );
+  });
+
+  it('names New Year week by its ISO year and moves across it', async () => {
+    // 2026 has 53 ISO weeks: week 53 runs from 28.12.2026 to 3.1.2027.
+    vi.mocked(getSchedulingWeek).mockResolvedValue(buildWeek('2026-12-28'));
+    await renderAt('2027-01-02');
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Week 53 · 2026' }),
+    ).toBeInTheDocument();
+    const links = await screen.findAllByRole('link', { name: /202[67]/ });
+    expect(links[0]).toHaveAttribute('href', '/dayview/2026-12-28');
+    expect(links[6]).toHaveAttribute('href', '/dayview/2027-01-03');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    expect(currentPath).toBe('/weekview/2027-01-09');
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Week 1 · 2027' }),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Previous' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Previous' }));
+    expect(currentPath).toBe('/weekview/2026-12-26');
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Week 52 · 2026' }),
+    ).toBeInTheDocument();
   });
 
   it('shows the week as placeholder cards while loading', async () => {
@@ -189,19 +261,6 @@ describe('Weekview', () => {
     );
   });
 
-  it('shows an empty week when the API has no schedule for it', async () => {
-    vi.mocked(getSchedulingWeek).mockRejectedValue({
-      response: { status: 404 },
-    });
-    await renderAt('2026-10-14');
-
-    expect(await screen.findAllByRole('link', { name: /2026/ })).toHaveLength(
-      7,
-    );
-    expect(screen.getAllByText('Range officer undefined')).toHaveLength(7);
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-  });
-
   it('keeps every weekday in its column when the API leaves days out', async () => {
     const week = buildWeek('2026-10-12');
     vi.mocked(getSchedulingWeek).mockResolvedValue({
@@ -229,9 +288,10 @@ describe('Weekview', () => {
     const links = await screen.findAllByRole('link', { name: /2026/ });
     expect(links[0]).toHaveAttribute('href', '/dayview/2026-10-12');
     expect(getSchedulingWeek).toHaveBeenLastCalledWith('2026-10-15');
+    expect(currentPath).toBe('/weekview/2026-10-15');
   });
 
-  it('includes the arrival estimate and notices in the card label', async () => {
+  it('includes the arrival estimate in the card label', async () => {
     vi.mocked(getSchedulingWeek).mockResolvedValue(
       buildWeek('2026-10-12', (day) =>
         day.date === '2026-10-13'
@@ -246,7 +306,13 @@ describe('Weekview', () => {
 
     const links = await screen.findAllByRole('link', { name: /2026/ });
     expect(links[1]).toHaveAccessibleName(
-      'Tuesday 13.10.2026, Range officer confirmed, Estimate 17:30, Track has additional information',
+      'Tuesday 13.10.2026, Range officer confirmed, Estimate 17:30',
     );
+    // The notices have their own button, right after the card.
+    expect(
+      screen.getByRole('button', {
+        name: 'Notices for the day, Tuesday 13.10.2026',
+      }),
+    ).toBeInTheDocument();
   });
 });

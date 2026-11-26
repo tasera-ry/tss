@@ -30,17 +30,36 @@ $wide: 922px;
   }
 }
 
-// Today on the left, view tabs on the right, at every width.
+// As in the day view: Today in the middle, the view tabs on the right. Three
+// columns keep Today centred whatever the tabs' width. On phones there is no
+// room for a true middle, so Today goes left.
 .toolbar {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 12px;
   width: 100%;
   margin-bottom: 12px;
 
+  > :first-child {
+    grid-column: 2;
+  }
+
   > :last-child {
+    grid-column: 3;
     justify-self: end;
+  }
+
+  @media (max-width: 639px) {
+    grid-template-columns: auto 1fr;
+
+    > :first-child {
+      grid-column: 1;
+    }
+
+    > :last-child {
+      grid-column: 2;
+    }
   }
 }
 
@@ -149,6 +168,26 @@ $wide: 922px;
   }
 }
 
+/* The card and its notice button share one grid cell, so the button sits
+   over the card's head without being inside the link. */
+.cardWrap {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+
+  > .dayCard {
+    grid-area: 1 / 1 / 2 / 3;
+  }
+
+  @include wide {
+    flex: 1 1 auto;
+    grid-template-columns: minmax(0, 1fr);
+
+    > .dayCard {
+      grid-area: 1 / 1;
+    }
+  }
+}
+
 .dayCard {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
@@ -240,25 +279,99 @@ $wide: 922px;
 }
 
 .hasNotice {
-  padding-right: 34px;
+  padding-right: 40px;
+
+  /* Room for the button on the right, so a long weekday never runs under it. */
+  @include wide {
+    padding-right: 22px;
+  }
+}
+
+.noticeButton {
+  grid-area: 1 / 1;
+  z-index: 1;
+  justify-self: end;
+  align-self: center;
+  display: flex;
+  margin-right: 4px;
+  padding: 6px;
+  color: var(--color-black);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+
+  @media (hover: hover) {
+    &:hover {
+      background: var(--color-black-tint-10);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-black);
+    outline-offset: 1px;
+  }
 
   @include wide {
-    padding-right: 4px;
+    align-self: start;
+    margin: 1px 1px 0 0;
+    padding: 3px;
   }
 }
 
 .noticeIcon {
-  position: absolute;
-  top: 50%;
-  right: 8px;
   font-size: 22px;
-  transform: translateY(-50%);
 
   @include wide {
-    top: 4px;
-    right: 4px;
     font-size: 18px;
-    transform: none;
+  }
+}
+
+.noticesTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.noticesDate {
+  font-size: 14px;
+  font-weight: normal;
+  color: var(--color-grey);
+}
+
+.noticesList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.noticeTrack {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.noticeText {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.closeButton {
+  padding: 8px 16px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--color-black);
+  background: var(--color-white);
+  border: 1px solid var(--color-black-tint-50);
+  border-radius: 8px;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-black);
+    outline-offset: 2px;
   }
 }
 
@@ -343,10 +456,15 @@ $wide: 922px;
   }
 }
 
-/* Only the row layout greys out past days, as in the Figma. */
+/* Only the row layout greys out past days, as in the Figma. The grey text
+   keeps 4.5:1 on the grey fill (WCAG 1.4.3). */
 .past .dayStatus {
   @include wide {
     background-color: var(--color-black-tint-05);
-    color: var(--color-black-tint-50);
+    color: var(--color-black-tint-60);
+
+    .timeText {
+      opacity: 1;
+    }
   }
 }
