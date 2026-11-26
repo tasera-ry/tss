@@ -39,7 +39,7 @@ const serviceCalls = {
       id = await services.trackSupervision.create(query);
     }
     catch(e) {
-      if(e.name === 'Supervision exists') {
+      if(e.name === 'Supervision exists' || e.name === 'Range officer not present') {
         return response
           .status(400)
           .send({
@@ -71,6 +71,14 @@ const serviceCalls = {
       if(e.name === 'Unknown supervision') {
         return response
           .status(404)
+          .send({
+            error: e.name
+          });
+      }
+
+      if(e.name === 'Range officer not present') {
+        return response
+          .status(400)
           .send({
             error: e.name
           });

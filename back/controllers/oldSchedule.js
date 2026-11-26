@@ -3,6 +3,7 @@
 const config = require('../config/config');
 const moment = require('moment-timezone');
 const _ = require('lodash');
+const getSunset = require('../services/sunset');
 
 /*
 *  Get complete scheduling for a date
@@ -166,7 +167,7 @@ exports.getScheduleDate = async (req, res) => {
         trackSupervision: 'absent',
         scheduled: false
       };
-      return _.pick(item, ['id', 'name', 'description', 'short_description', 'notice', 'trackSupervision', 'scheduled']);
+      return _.pick(item, ['id', 'name', 'description', 'short_description', 'requires_range_officer', 'notice', 'trackSupervision', 'scheduled']);
     });
 
     const trackSupervision = await getTracksupervision(scheduleId);
@@ -179,7 +180,7 @@ exports.getScheduleDate = async (req, res) => {
           trackSupervision: supervision ? supervision.track_supervisor : 'absent',
           scheduled: supervision
         };
-        return _.pick(item, ['id', 'name', 'description', 'short_description', 'notice', 'trackSupervision', 'scheduled']);
+        return _.pick(item, ['id', 'name', 'description', 'short_description', 'requires_range_officer', 'notice', 'trackSupervision', 'scheduled']);
       });
     }
 
@@ -200,6 +201,7 @@ exports.getScheduleDate = async (req, res) => {
       available: available,
       rangeSupervisorId: rangeSupervisorId,
       arrivingAt: arrivingAt,
+      sunset: getSunset(date),
       rangeSupervision: (!available ? 'closed' : rangeSupervisionState),
       rangeSupervisionScheduled: rangeSupervisionScheduled,
       tracks: tracks
