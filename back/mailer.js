@@ -203,29 +203,33 @@ const getText = (message, opts, emailSettings) => {
       text = addDates(emailSettings.assignedMsg, options, 'Uudet vuorot:');
       break;
     case 'update':
-      text = emailSettings.updateMsg;
+      text = addDates(emailSettings.updateMsg, options, 'Muutetut vuorot:');;
+      break;
+    case 'cancelled':
+      text = addDates(emailSettings.cancelledMsg, options, 'Perutut vuorot:');
       break;
     case 'reminder':
       text = emailSettings.reminderMsg;
       break;
     case 'decline':
       text = emailSettings.declineMsg;
-      allowedVars['{date}'] = opts.date;
-      allowedVars['{user}'] = opts.user;
+      allowedVars['{date}'] = options.date;
+      allowedVars['{user}'] = options.user;
       break;
     case 'feedback':
       text = emailSettings.feedbackMsg;
-      allowedVars['{feedback}'] = opts.feedback;
-      allowedVars['{user}'] = opts.user;
+      allowedVars['{feedback}'] = options.feedback;
+      allowedVars['{user}'] = options.user;
       break;
     case 'password_reset':
       text = emailSettings.resetpassMsg;
-      allowedVars['{token}'] = opts.token;
+      allowedVars['{token}'] = options.token;
       break;
     case 'collage':
       text = emailSettings.collageMsg;
-      allowedVars['{update}'] = opts.updateCount;
-      allowedVars['{assigned}'] = opts.assignedCount;
+      allowedVars['{update}'] = options.updateCount;
+      allowedVars['{assigned}'] = options.assignedCount;
+      allowedVars['{cancelled}'] = options.cancelledCount;
       break;
   }
   console.log("Mailer: getText text:", text)

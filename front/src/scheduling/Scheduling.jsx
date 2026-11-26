@@ -674,7 +674,7 @@ function Scheduling() {
     let params = {
       range_id: rangeId,
       available: available,
-      supervisor: rangeSupervisorId,
+      supervisor: rangeSupervisorSwitch ? rangeSupervisorId : null,
       originalSupervisor: rangeSupervisorOriginal,
       scheduleId: srsId,
     };
