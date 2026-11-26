@@ -95,6 +95,7 @@ const EmailSettings = ({ emailSettings }) => {
         shouldSend: z.string(),
         assignedMsg: z.string(),
         updateMsg: z.string(),
+        cancelledMsg: z.string(),
         reminderMsg: z.string(),
         declineMsg: z.string(),
         feedbackMsg: z.string(),
@@ -307,6 +308,11 @@ const EmailSettings = ({ emailSettings }) => {
         <CollapsibleTextField
           label={t`Shift updated`}
           field="updateMsg"
+          form={form}
+        />
+        <CollapsibleTextField
+          label={t`Shift cancelled`}
+          field="cancelledMsg"
           form={form}
         />
         <CollapsibleTextField

@@ -4,6 +4,9 @@ const { checkSchema, validationResult, matchedData } = require('express-validato
 const checkEmailMessage = (allowedVars) => {
   return (value) => {
     return new Promise((resolve, reject) => {
+      if (!value) {
+        return resolve();
+      }
       const matches = value.match(/{(.*?)}/g) || [];
       matches.forEach(match => {
         if (!allowedVars.includes(match)) {
@@ -37,11 +40,12 @@ const emailSettingConstraints = {
   sendPendingTime: { in: ['body'], exists: true, custom: {options: checkTimeFormat}},
   assignedMsg: {in: ['body'], custom: {options: checkEmailMessage([])}},
   updateMsg: {in: ['body'], custom: {options: checkEmailMessage([])}},
+  cancelledMsg: { in: ['body'], custom: { options: checkEmailMessage([])}},
   reminderMsg: {in: ['body'], custom: {options: checkEmailMessage([])}},
   declineMsg: {in: ['body'], custom: {options: checkEmailMessage(['{date}', '{user}'])}},
   feedbackMsg: {in: ['body'], custom: {options: checkEmailMessage(['{feedback}', '{user}'])}},
   resetpassMsg: { in: ['body'], custom: { options: checkEmailMessage(['{token}'])}},
-  collageMsg: {in: ['body'], custom: {options: checkEmailMessage(['{update}', '{assigned}'])}}
+  collageMsg: {in: ['body'], custom: {options: checkEmailMessage(['{update}', '{assigned}', '{cancelled}'])}}
 };
 
 function handleValidationErrors(request, response, next) {

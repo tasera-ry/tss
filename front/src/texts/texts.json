@@ -882,6 +882,7 @@
     ],
     "assigned": ["Vuoro annettu", "Shift assigned", "Skift tilldelad"],
     "update": ["Vuoro päivitetty", "Shift updated", "Skift uppdaterats"],
+    "cancelled": ["Vuoro peruttu", "Shift cancelled", "Skift inställt"],
     "reminder": [
       "Varmistamattoman vuoron muistutus",
       "Unconfirmed shift reminder",
