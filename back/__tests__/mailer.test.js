@@ -39,6 +39,7 @@ describe('back/mailer.js', () => {
   const mockQuery = {
     leftJoin: jest.fn(),
     where: jest.fn(),
+    whereIn: jest.fn(),
     select: jest.fn(),
   };
 
@@ -55,10 +56,11 @@ describe('back/mailer.js', () => {
     resetpassMsg: 'Reset your password using token: {token}',
     assignedMsg: 'You have been assigned a supervision shift.',
     updateMsg: 'Your supervision shift was updated.',
+    cancelledMsg: 'Your supervision shift was cancelled.',
     reminderMsg: 'Reminder: confirm your supervision shift.',
     declineMsg: '{user} declined {date}',
     feedbackMsg: 'Feedback from {user}: {feedback}',
-    collageMsg: 'Updates: {update}, Assigned: {assigned}',
+    collageMsg: 'Updates: {update}, Assigned: {assigned}, Cancelled: {cancelled}',
     sendPendingTime: '2026-01-01T10:00:00.000Z',
   };
 
@@ -85,6 +87,7 @@ describe('back/mailer.js', () => {
 
     mockQuery.leftJoin.mockReturnValue(mockQuery);
     mockQuery.where.mockReturnValue(mockQuery);
+    mockQuery.whereIn.mockReturnValue(mockQuery);
     mockQuery.select.mockResolvedValue([]);
     knex.mockReturnValue(mockQuery);
 
@@ -138,6 +141,35 @@ describe('back/mailer.js', () => {
       expect(services.pendingEmails.add).not.toHaveBeenCalled();
     });
 
+    test('fetches and appends sorted shift dates for assigned, update, and cancelled emails', async () => {
+      mockQuery.select.mockResolvedValueOnce([
+        { date: '2026-06-15' },
+        { date: '2026-06-02' },
+      ]);
+
+      await mailer.email('assigned', 'user-123', { scheduleIds: [10, 11] });
+      await flushPromises();
+
+      expect(sendMailMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          text: 'You have been assigned a supervision shift.\n\nUudet vuorot:\n2.6.2026\n15.6.2026',
+        })
+      );
+    });
+
+    test('fetches shift date using reservationId for cancelled emails', async () => {
+      mockQuery.select.mockResolvedValueOnce([{ date: '2026-07-04' }]);
+
+      await mailer.email('cancelled', 'user-123', { reservationId: 99 });
+      await flushPromises();
+
+      expect(sendMailMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          text: 'Your supervision shift was cancelled.\n\nPerutut vuorot:\n4.7.2026',
+        })
+      );
+    });
+
     test('does not send email when shouldSend is not "true"', async () => {
       services.emailSettings.read.mockResolvedValueOnce({
         ...mockEmailSettings,
@@ -162,6 +194,21 @@ describe('back/mailer.js', () => {
       await flushPromises();
 
       expect(services.pendingEmails.add).toHaveBeenCalledWith('assigned', 'user-123', 42);
+      expect(sendMailMock).not.toHaveBeenCalled();
+    });
+
+    test('queues all scheduleIds when shouldQueue is "true"', async () => {
+      services.emailSettings.read.mockResolvedValueOnce({
+        ...mockEmailSettings,
+        shouldQueue: 'true',
+      });
+
+      await mailer.email('assigned', 'user-123', { scheduleId: 42, scheduleIds: [42, 43] });
+      await flushPromises();
+
+      expect(services.pendingEmails.add).toHaveBeenCalledTimes(2);
+      expect(services.pendingEmails.add).toHaveBeenNthCalledWith(1, 'assigned', 'user-123', 42);
+      expect(services.pendingEmails.add).toHaveBeenNthCalledWith(2, 'assigned', 'user-123', 43);
       expect(sendMailMock).not.toHaveBeenCalled();
     });
 
@@ -323,10 +370,11 @@ describe('back/mailer.js', () => {
       expect(result).toEqual([{ success: true }]);
     });
 
-    test('sends collage email when multiple pending messages exist for user', async () => {
+    test('sends collage email with counts when pending messages of different types exist for user', async () => {
       services.pendingEmails.read.mockResolvedValueOnce([
         { user_id: 'user-1', email: 'multi@example.com', message_type: 'update' },
         { user_id: 'user-1', email: 'multi@example.com', message_type: 'assigned' },
+        { user_id: 'user-1', email: 'multi@example.com', message_type: 'cancelled' },
       ]);
 
       const result = await mailer.sendPending();
@@ -335,36 +383,44 @@ describe('back/mailer.js', () => {
       expect(sendMailMock).toHaveBeenCalledWith(
         expect.objectContaining({
           to: 'multi@example.com',
-          text: 'Updates: 1, Assigned: 1',
+          text: 'Updates: 1, Assigned: 1, Cancelled: 1',
         })
       );
       expect(services.pendingEmails.clear).toHaveBeenCalledTimes(1);
       expect(result).toEqual([{ success: true }]);
     });
 
-    test('counts several messages of the same type in the collage', async () => {
+    test('sends update message with sorted dates when all pending messages are updates', async () => {
       services.pendingEmails.read.mockResolvedValueOnce([
-        { user_id: 'user-1', email: 'multi@example.com', message_type: 'update' },
-        { user_id: 'user-1', email: 'multi@example.com', message_type: 'update' },
+        { user_id: 'user-1', email: 'multi@example.com', message_type: 'update', date: '2026-08-20' },
+        { user_id: 'user-1', email: 'multi@example.com', message_type: 'update', date: '2026-08-10' },
       ]);
 
       await mailer.sendPending();
 
+      expect(sendMailMock).toHaveBeenCalledTimes(1);
       expect(sendMailMock).toHaveBeenCalledWith(
-        expect.objectContaining({ text: 'Updates: 2, Assigned: 0' })
+        expect.objectContaining({
+          to: 'multi@example.com',
+          text: 'Your supervision shift was updated.\n\nMuutetut vuorot:\n10.8.2026\n20.8.2026',
+        })
       );
     });
 
-    test('shows zero updates in the collage when only assigned messages are pending', async () => {
+    test('sends assigned message with sorted dates when all pending messages are assignments', async () => {
       services.pendingEmails.read.mockResolvedValueOnce([
-        { user_id: 'user-1', email: 'multi@example.com', message_type: 'assigned' },
-        { user_id: 'user-1', email: 'multi@example.com', message_type: 'assigned' },
+        { user_id: 'user-1', email: 'multi@example.com', message_type: 'assigned', date: '2026-09-05' },
+        { user_id: 'user-1', email: 'multi@example.com', message_type: 'assigned', date: '2026-09-01' },
       ]);
 
       await mailer.sendPending();
 
+      expect(sendMailMock).toHaveBeenCalledTimes(1);
       expect(sendMailMock).toHaveBeenCalledWith(
-        expect.objectContaining({ text: 'Updates: 0, Assigned: 2' })
+        expect.objectContaining({
+          to: 'multi@example.com',
+          text: 'You have been assigned a supervision shift.\n\nUudet vuorot:\n1.9.2026\n5.9.2026',
+        })
       );
     });
 
@@ -498,8 +554,6 @@ describe('back/mailer.js', () => {
         expect(consoleErrorSpy).toHaveBeenCalledWith('Error in scheduled job:', expect.any(Error));
         expect(sendMailMock).not.toHaveBeenCalled();
       });
-
-      test.todo('sends reminders to all unconfirmed supervisions of the date, not only the first');
     });
   });
 });
