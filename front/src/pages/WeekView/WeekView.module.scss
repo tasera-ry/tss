@@ -331,6 +331,8 @@ $wide: 922px;
   display: flex;
   flex-direction: column;
   gap: 2px;
+  font-family: inherit;
+  font-weight: 600;
 }
 
 .noticesDate {
@@ -461,7 +463,7 @@ $wide: 922px;
 .past .dayStatus {
   @include wide {
     background-color: var(--color-black-tint-05);
-    color: var(--color-black-tint-60);
+    color: var(--color-black-tint-70);
 
     .timeText {
       opacity: 1;
