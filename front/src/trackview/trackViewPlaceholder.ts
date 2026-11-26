@@ -19,8 +19,6 @@
  *   B8  Standing rules per track ("Vain .22LR", "Ei ammuntaa pimeällä"), as
  *       data an admin can edit, with a way to translate it. Faked as Finnish
  *       strings in TRACK_NOTES.
- *   B9  (#437) The sunset time for the date. Not shown until it exists
- *       (PR #465); a fixed placeholder would have reached production.
  *   B10 The supervisor rule enforced on write: "track officer present" must
  *       not be settable while the range officer is away, except on tracks
  *       with requires_range_officer = false. Today nothing stops the
@@ -89,6 +87,7 @@ interface ApiDay {
   close: string | null;
   rangeSupervision: string | null;
   arrivingAt: string | null;
+  sunset?: string | null;
   tracks: ApiTrack[];
 }
 
@@ -297,8 +296,8 @@ function buildSections(
 /**
  * Map the live payloads into what the redesigned view needs, filling the gaps.
  * Real: name, description, notice, both supervisor statuses, opening hours,
- * sections, lane counts, reservations.
- * Placeholder: notes, the range officer exception. Sunset is not shown yet.
+ * sections, lane counts, reservations, sunset.
+ * Placeholder: notes, the range officer exception.
  */
 export function toTrackViewDay(
   api: ApiDay | undefined,
@@ -338,10 +337,7 @@ export function toTrackViewDay(
     // check-in, so a present or closed day can still carry an old time.
     rangeOfficerArrivingAt:
       api.rangeSupervision === 'confirmed' ? toMinutes(api.arrivingAt) : null,
-    // BACKEND(B9, #437): null renders nothing rather than a wrong time. The
-    // real value (PR #465) matters on tracks 5 and 6, where shooting is
-    // barred after dark.
-    sunset: null,
+    sunset: toMinutes(api.sunset),
     tracks,
   };
 }

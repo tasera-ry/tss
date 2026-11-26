@@ -13,15 +13,17 @@ vi.mock('../../utils/Utils');
 vi.mock('socket.io-client', () => {
   const client = {
     on: vi.fn(),
+    off: vi.fn(),
     emit: vi.fn(),
     disconnect: vi.fn(),
   };
 
   client.on.mockReturnValue(client);
+  client.off.mockReturnValue(client);
   client.emit.mockReturnValue(client);
   client.disconnect.mockReturnValue(client);
   return {
-    default: () => client,
+    io: () => client,
   };
 });
 
