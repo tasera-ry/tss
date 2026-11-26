@@ -36,11 +36,9 @@ async function updateReservation(request, response) {
     // send update email to supervisor associations
     if( request.body.originalSupervisor && request.body.originalSupervisor !== request.body.supervisor ) {
       // notify new supervisor about assigned supervision
-      email('assigned', request.body.supervisor, scheduleId)
-      // notify old supervisor that their supervision changed. Here a new email type like "supervision cancelled" could be handy
-      // but we have no time to implement it.
-      email('update', request.body.originalSupervisor, scheduleId)
-    } else {
+      if (request.body.originalSupervisor) {
+        email('cancelled', request.body.originalSupervisor, emailOptions);
+      }
       // if supervisor was not changed
       email('update', request.body.supervisor, scheduleId)
     }

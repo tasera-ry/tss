@@ -18,6 +18,7 @@ const model = {
       .orWhere({ setting_name: 'email_shouldsend' })
       .orWhere({ setting_name: 'email_assigned_msg' })
       .orWhere({ setting_name: 'email_update_msg' })
+      .orWhere({ setting_name: 'email_cancelled_msg' })
       .orWhere({ setting_name: 'email_cc' })
       .orWhere({ setting_name: 'email_reminder_msg' })
       .orWhere({ setting_name: 'email_decline_msg' })
@@ -42,6 +43,7 @@ const model = {
    *    shouldSend: *Whether or not to automatically send emails here*
    *    assignedMsg: *New supervisor assignment email message*
    *    updateMsg: *Updated supervisor assignment email message*
+   *    cancelledMsg: *Cancelled supervisor assignment email message*
    *    reminderMsg: *Reminder email message*
    *    declineMsg: *Supervisor declined email message*
    *    feedbackMsg: *Feedback given email message*
@@ -102,6 +104,11 @@ const model = {
         
       await trx('settings')
         .insert({ setting_name: 'email_update_msg', setting_value: { updateMsg: newSettings.updateMsg } })
+        .onConflict('setting_name')
+        .merge();
+
+      await trx('settings')
+        .insert({ setting_name: 'email_cancelled_msg', setting_value: { cancelledMsg: newSettings.cancelledMsg } })
         .onConflict('setting_name')
         .merge();
         
