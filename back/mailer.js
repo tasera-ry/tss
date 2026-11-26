@@ -48,23 +48,23 @@ const findDates = async ({ scheduleIds, reservationId }) => {
  */
 const email = async (messageType, key, opts) => {
   try {
-  // No association selected for this day, so there is nobody to email
-  if (!key) {
-    return;
-  }
+    // No association selected for this day, so there is nobody to email
+    if (!key) {
+      return;
+    }
 
-  const emailSettings = await services.emailSettings.read();
-  const emailAddress = await services.user.getEmail(key);
+    const emailSettings = await services.emailSettings.read();
+    const emailAddress = await services.user.getEmail(key);
 
-  // The user has no email address, so nothing can be sent or queued
-  if (!emailAddress) {
-    return;
-  }
+    // The user has no email address, so nothing can be sent or queued
+    if (!emailAddress) {
+      return;
+    }
 
-  // If it has been selected that emails should not be sent, do nothing
-  if (emailSettings.shouldSend !== 'true') {
-    return;
-  }
+    // If it has been selected that emails should not be sent, do nothing
+    if (emailSettings.shouldSend !== 'true') {
+      return;
+    }
 
     const options = { ...(opts || {}) };
     const hasDates = Array.isArray(options.dates) && options.dates.length > 0;
@@ -76,26 +76,27 @@ const email = async (messageType, key, opts) => {
       }
     }
 
-  switch (messageType) {
-    case 'reminder':
-      // always send reminders, no need to queue
+    switch (messageType) {
+      case 'reminder':
+        // always send reminders, no need to queue
         sendEmail(getText(messageType, options, emailSettings), emailAddress, emailSettings);
-      break;
-    default:
+        break;
+      default:
         const scheduleIds = Array.isArray(opts && opts.scheduleIds) && opts.scheduleIds.length > 0
           ? opts.scheduleIds
           : (opts && opts.scheduleId ? [opts.scheduleId] : []);
 
-      if (emailSettings.shouldQueue === 'true' && opts && opts.scheduleId) {
-        console.log("email: add email to pending emails", messageType)
-        console.log("email: add email to pending emails", emailAddress)
-        // add to pending emails
-        services.pendingEmails.add(messageType, key, opts.scheduleId);
-      } else { 
-        // send directly
+        if (emailSettings.shouldQueue === 'true' && opts && opts.scheduleId) {
+          // add to pending emails
+          for (const scheduleId of scheduleIds) {
+            await services.pendingEmails.add(messageType, key, scheduleId);
+          }
+
+        } else {
+          // send directly
           sendEmail(getText(messageType, options, emailSettings), emailAddress, emailSettings);
         }
-      }
+    }
   } catch (error) {
     // email() is called without await in many places, so it must never reject
     console.error('Error in email:', error);
@@ -126,7 +127,11 @@ const sendPending = async () => {
 
     const emailInfo = pending.reduce((acc, val) => {
       if (acc[val.user_id] === undefined) {
-        acc[val.user_id] = { email: val.email, total: 0, last: null };
+        acc[val.user_id] = { email: val.email, total: 0, last: null, dates: [] };
+      }
+      // The date of the shift (null if the shift no longer exists)
+      if (val.date) {
+        acc[val.user_id].dates.push(moment(val.date));
       }
       const tmp = (acc[val.user_id])[val.message_type];
       if (tmp === undefined) {
@@ -144,37 +149,47 @@ const sendPending = async () => {
       const address = emailInfo[outerKey].email;
       const total = emailInfo[outerKey].total;
       const last = emailInfo[outerKey].last;
-      let result;
-      // If total is greater than 1, it indicates that there are multiple updates or messages
-      // for the receiver, and a "collage" email is sent summarizing the updates.
-      if (total > 1) {
-        result = await sendEmail(
+
+      const dates = emailInfo[outerKey].dates
+        .filter(date => date.isValid())
+        .sort((a, b) => a.valueOf() - b.valueOf())
+        .map(date => date.format('D.M.YYYY'));
+
+      // Counts are stored under the message type names, so this is true when
+      // every pending message of the user has the same type
+      const allSameType = emailInfo[outerKey][last] === total;
+
+      if (allSameType) {
+        await sendEmail(getText(last, { dates }, emailSettings), address, emailSettings);
+      } else {
+        await sendEmail(
           getText(
             'collage',
             {
-              updateCount: emailInfo[outerKey].update ? emailInfo[outerKey].update.toString() : "0",
-              assignedCount: emailInfo[outerKey].assigned ? emailInfo[outerKey].assigned.toString() : "0"
+              updateCount: emailInfo[outerKey].update ? emailInfo[outerKey].update.toString() : '0',
+              assignedCount: emailInfo[outerKey].assigned ? emailInfo[outerKey].assigned.toString() : '0',
+              cancelledCount: emailInfo[outerKey].cancelled ? emailInfo[outerKey].cancelled.toString() : '0'
             },
             emailSettings
           ),
           address,
           emailSettings
         );
-      } else {
-        result = await sendEmail(getText(last, null, emailSettings), address, emailSettings);
       }
+
+      return { success: true };
+    })).then(async (results) => {
       await services.pendingEmails.clear();
-      return {success: true}
-      // If there was an error in sendEmail
-    }));
+      return results;
+    });
     // if (result && !result.success) {
     //   errors.push({ email: address, error: result.error });
     // }
     // // If there were errors in sendEmail-functions, return them
     // if (errors.length > 0) {
-      // return { success: false, errors: errors };
+    // return { success: false, errors: errors };
     // }
-    
+
   } catch (error) {
     console.error('Error in sendPending:', error);
     return { success: false, error: error.message };
@@ -327,69 +342,69 @@ async function scheduleEmailReminder(emailSettings) {
     //'seconds', 'minutes', 'hour', 'day of month', 'month', 'day of week'
     //For test purposes, you can replace the function declaration with this. It runs the code every 4 seconds.
     // schedule.scheduleJob('*/4 * * * * *', async function(){
-      if( !emailSettings ) {
-        emailSettings = await services.emailSettings.read();
-      }
-      const sendTime = new Date(emailSettings.sendPendingTime)
-      sendTime.setHours(sendTime.getHours()+2)
-      const hour = sendTime.getHours().toString().padStart(2, '0');
-      const minute = sendTime.getMinutes().toString().padStart(2, '0');
-      console.log("scheduleEmailReminder: hour", hour)
-      console.log("scheduleEmailReminder: minute", minute)
-      
-      
-      const rule = new schedule.RecurrenceRule();
-      rule.hour = hour;
-      rule.minute = minute;
-      rule.second = 0;
-      rule.tz = 'Europe/Helsinki'; // Set timezone to UTC+2 (Helsinki local time)
-      
-        
-        const job = schedule.scheduleJob(rule, async function () {
-          console.log('Run scheduled at Helsinki time!');
-          try {
-            // Get date 7 days from now and format it to YYYY-MM-DD
-            const currentDate = new Date();
-            currentDate.setDate(currentDate.getDate() + 7);
-            const formattedDate = currentDate.toISOString().split('T')[0]; // Formats to 'YYYY-MM-DD'
-        
-            async function getFutureSupervision() {
-              return knex('user')
-                .leftJoin('association', 'user.id', 'association.user_id')
-                .leftJoin(
-                  'scheduled_range_supervision',
-                  'association.user_id',
-                  'scheduled_range_supervision.association_id'
-                )
-                .leftJoin(
-                  'range_supervision',
-                  'scheduled_range_supervision.id',
-                  'range_supervision.scheduled_range_supervision_id'
-                )
-                .leftJoin(
-                  'range_reservation',
-                  'scheduled_range_supervision.range_reservation_id',
-                  'range_reservation.id'
-                )
-                .where('range_reservation.date', '=', formattedDate)
-                .select('scheduled_range_supervision.association_id', 'range_supervisor');
-            }
-        
-            const receiver = await getFutureSupervision();
-        
-            if (Array.isArray(receiver) && receiver[0]?.range_supervisor === 'not confirmed') {
-              email('reminder', receiver[0].association_id, null);
-            }
-            // send pending emails
-            sendPending();
+    if (!emailSettings) {
+      emailSettings = await services.emailSettings.read();
+    }
+    const sendTime = new Date(emailSettings.sendPendingTime)
+    sendTime.setHours(sendTime.getHours() + 2)
+    const hour = sendTime.getHours().toString().padStart(2, '0');
+    const minute = sendTime.getMinutes().toString().padStart(2, '0');
+    console.log("scheduleEmailReminder: hour", hour)
+    console.log("scheduleEmailReminder: minute", minute)
 
-          } catch (error) {
-            console.error('Error in scheduled job:', error);
-          }
-      
-      
-        });
-        
+
+    const rule = new schedule.RecurrenceRule();
+    rule.hour = hour;
+    rule.minute = minute;
+    rule.second = 0;
+    rule.tz = 'Europe/Helsinki'; // Set timezone to UTC+2 (Helsinki local time)
+
+
+    const job = schedule.scheduleJob(rule, async function () {
+      console.log('Run scheduled at Helsinki time!');
+      try {
+        // Get date 7 days from now and format it to YYYY-MM-DD
+        const currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() + 7);
+        const formattedDate = currentDate.toISOString().split('T')[0]; // Formats to 'YYYY-MM-DD'
+
+        async function getFutureSupervision() {
+          return knex('user')
+            .leftJoin('association', 'user.id', 'association.user_id')
+            .leftJoin(
+              'scheduled_range_supervision',
+              'association.user_id',
+              'scheduled_range_supervision.association_id'
+            )
+            .leftJoin(
+              'range_supervision',
+              'scheduled_range_supervision.id',
+              'range_supervision.scheduled_range_supervision_id'
+            )
+            .leftJoin(
+              'range_reservation',
+              'scheduled_range_supervision.range_reservation_id',
+              'range_reservation.id'
+            )
+            .where('range_reservation.date', '=', formattedDate)
+            .select('scheduled_range_supervision.association_id', 'range_supervisor');
+        }
+
+        const receiver = await getFutureSupervision();
+
+        if (Array.isArray(receiver) && receiver[0]?.range_supervisor === 'not confirmed') {
+          email('reminder', receiver[0].association_id, null);
+        }
+        // send pending emails
+        sendPending();
+
+      } catch (error) {
+        console.error('Error in scheduled job:', error);
+      }
+
+
+    });
+
   } catch (err) {
     console.error(err)
   }
