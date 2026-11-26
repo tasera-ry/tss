@@ -46,6 +46,8 @@ services:
       /bin/sh -c "npx knex migrate:latest
       && npx knex seed:run
       && nodemon --inspect=0.0.0.0:5858 --legacy-watch server.js"
+    stdin_open: true
+    tty: true
   frontend:
     build:
       context: ./front

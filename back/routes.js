@@ -29,11 +29,19 @@ router
   .route('/user')
   .all(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer'], _.includes)
+    middlewares.user.hasProperty(
+      'role',
+      ['superuser', 'association', 'rangeofficer'],
+      _.includes
+    )
   )
   .get(middlewares.user.readFilter, controllers.user.readFilter)
   .post(
-    middlewares.user.hasProperty('role', ['superuser', 'association'], _.includes),
+    middlewares.user.hasProperty(
+      'role',
+      ['superuser', 'association'],
+      _.includes
+    ),
     middlewares.user.create,
     controllers.user.create
   );
@@ -49,7 +57,11 @@ router
   .route('/rangeofficers/:associationId')
   .all(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer'], _.includes)
+    middlewares.user.hasProperty(
+      'role',
+      ['superuser', 'association', 'rangeofficer'],
+      _.includes
+    )
   )
   .get(
     validators.user.getRangeOfficers,
@@ -61,7 +73,11 @@ router
   .route('/officer-association/:id')
   .all(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer'], _.includes)
+    middlewares.user.hasProperty(
+      'role',
+      ['superuser', 'association', 'rangeofficer'],
+      _.includes
+    )
   )
   .get(
     validators.user.getAssociation,
@@ -81,7 +97,10 @@ router
 // Track supervision
 router
   .route('/track-supervision')
-  .get(middlewares.trackSupervision.readFilter, controllers.trackSupervision.readFilter)
+  .get(
+    middlewares.trackSupervision.readFilter,
+    controllers.trackSupervision.readFilter
+  )
   .post(
     middlewares.jwt.read,
     middlewares.user.hasProperty(
@@ -98,7 +117,11 @@ router
   .get(middlewares.trackSupervision.read, controllers.trackSupervision.read)
   .put(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'association', 'rangeofficer', 'rangemaster'], _.includes),
+    middlewares.user.hasProperty(
+      'role',
+      ['superuser', 'association', 'rangeofficer', 'rangemaster'],
+      _.includes
+    ),
     middlewares.trackSupervision.update,
     controllers.trackSupervision.update
   )
@@ -112,7 +135,10 @@ router
 // Range supervision
 router
   .route('/range-supervision')
-  .get(middlewares.rangeSupervision.readFilter, controllers.rangeSupervision.readFilter)
+  .get(
+    middlewares.rangeSupervision.readFilter,
+    controllers.rangeSupervision.readFilter
+  )
   .post(
     middlewares.jwt.read,
     middlewares.user.hasProperty(
@@ -244,8 +270,16 @@ router
   .route('/track/:track_id')
   .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'))
   .get(validators.track.read, middlewares.track.read, controllers.track.read)
-  .put(validators.track.update, middlewares.track.update, controllers.track.update)
-  .delete(validators.track.delete, middlewares.track.delete, controllers.track.delete);
+  .put(
+    validators.track.update,
+    middlewares.track.update,
+    controllers.track.update
+  )
+  .delete(
+    validators.track.delete,
+    middlewares.track.delete,
+    controllers.track.delete
+  );
 
 router
   .route('/daterange/week/:begin')
@@ -271,7 +305,9 @@ router
   .get(controllers.emailSettings.sendPendingEmails);
 
 //Infopage
-router.route('/info').all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'));
+router
+  .route('/info')
+  .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'));
 
 //Infomessages
 router
@@ -321,31 +357,62 @@ router
 router
   .route('/members')
   .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'))
-  .get(validators.members.readAll, middlewares.members.read, controllers.members.read)
-  .post(validators.members.create, middlewares.members.create, controllers.members.create);
+  .get(
+    validators.members.readAll,
+    middlewares.members.read,
+    controllers.members.read
+  )
+  .post(
+    validators.members.create,
+    middlewares.members.create,
+    controllers.members.create
+  );
 
 router
   .route('/members/:user_id')
   .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'))
-  .get(validators.members.read, middlewares.members.read, controllers.members.read)
-  .put(validators.members.update, middlewares.members.update, controllers.members.update);
+  .get(
+    validators.members.read,
+    middlewares.members.read,
+    controllers.members.read
+  )
+  .put(
+    validators.members.update,
+    middlewares.members.update,
+    controllers.members.update
+  );
 
 router
   .route('/set-raffled-supervisors')
   .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'))
-  .post(validators.raffleSupervisors.checkRaffleResults, controllers.raffleSupervisors.set);
+  .post(
+    validators.raffleSupervisors.checkRaffleResults,
+    controllers.raffleSupervisors.set
+  );
 
 router
   .route('/raffle')
   .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'))
-  .post(validators.raffle.create, middlewares.raffle.create, controllers.raffle.create);
+  .post(
+    validators.raffle.create,
+    middlewares.raffle.create,
+    controllers.raffle.create
+  );
 
 router
   .route('/devices')
-  .get(validators.devices.readAll, middlewares.devices.read, controllers.devices.read)
+  .get(
+    validators.devices.readAll,
+    middlewares.devices.read,
+    controllers.devices.read
+  )
   .post(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'rangemaster'], _.includes),
+    middlewares.user.hasProperty(
+      'role',
+      ['superuser', 'rangemaster'],
+      _.includes
+    ),
     validators.devices.create,
     middlewares.devices.create,
     controllers.devices.create
@@ -355,11 +422,40 @@ router
   .route('/devices/:id')
   .all(
     middlewares.jwt.read,
-    middlewares.user.hasProperty('role', ['superuser', 'rangemaster'], _.includes)
+    middlewares.user.hasProperty(
+      'role',
+      ['superuser', 'rangemaster'],
+      _.includes
+    )
   )
-  .get(validators.devices.read, middlewares.devices.read, controllers.devices.read)
-  .put(validators.devices.update, middlewares.devices.update, controllers.devices.update)
-  .delete(validators.devices.delete, middlewares.devices.delete, controllers.devices.delete);
+  .get(
+    validators.devices.read,
+    middlewares.devices.read,
+    controllers.devices.read
+  )
+  .put(
+    validators.devices.update,
+    middlewares.devices.update,
+    controllers.devices.update
+  )
+  .delete(
+    validators.devices.delete,
+    middlewares.devices.delete,
+    controllers.devices.delete
+  );
 
+router
+  .route('/default-hours')
+  .all(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty(
+      'role',
+      ['superuser', 'rangemaster'],
+      _.includes
+    )
+  )
+  .get(controllers.defaultHours.read)
+  .put(controllers.defaultHours.update);
 
 module.exports = router;
+
