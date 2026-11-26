@@ -21,15 +21,19 @@ async function setSupervisors(raffleResults) {
     const scheduledRangeSupervisionId = await updateOrCreateScheduledRangeSupervision(
       rangeReservationId, date, associationId
     );
-    await updateOrCreateRangeSupervision(scheduledRangeSupervisionId);  
+    await updateOrCreateRangeSupervision(scheduledRangeSupervisionId);
+
+    // Return what is needed for sending the "assigned" emails
+    return { associationId, scheduleId: scheduledRangeSupervisionId, date };
   };
-  
-  const range_id = await getRangeId(); 
-  await Promise.all(raffleResults.map(async result => {
-    const { association_id, date  } = result;
-    await setSingleSupervisor(range_id, association_id, date);
-  })
-  );
+
+  const range_id = await getRangeId();
+  const assignedSupervisions = await Promise.all(raffleResults.map(async result => {
+    const { association_id, date } = result;
+    return await setSingleSupervisor(range_id, association_id, date);
+  }));
+
+  return assignedSupervisions;
 }
 
 const service = {

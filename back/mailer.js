@@ -4,6 +4,35 @@ const schedule = require('node-schedule');
 const path = require('path');
 const root = path.join(__dirname, '.');
 const knex = require(path.join(root, 'knex', 'knex'));
+const moment = require('moment');
+
+// Finds the dates of the shifts from the database, formatted as D.M.YYYY, oldest first.
+// Either schedule ids (scheduled_range_supervision.id) or a reservation id can be given.
+const findDates = async ({ scheduleIds, reservationId }) => {
+  try {
+    const ids = (scheduleIds || []).map(Number).filter(Number.isInteger);
+    let rows = [];
+    if (ids.length > 0) {
+      rows = await knex('scheduled_range_supervision')
+        .leftJoin('range_reservation', 'scheduled_range_supervision.range_reservation_id', 'range_reservation.id')
+        .whereIn('scheduled_range_supervision.id', ids)
+        .select('range_reservation.date');
+    }
+    if (rows.length === 0 && Number.isInteger(Number(reservationId))) {
+      rows = await knex('range_reservation').where({ id: Number(reservationId) }).select('date');
+    }
+    const dates = rows
+      .filter(row => row.date)
+      .map(row => moment(row.date))
+      .filter(date => date.isValid())
+      .sort((a, b) => a.valueOf() - b.valueOf())
+      .map(date => date.format('D.M.YYYY'));
+    return [...new Set(dates)];
+  } catch (error) {
+    console.error('Error when finding the dates for the email:', error);
+    return [];
+  }
+};
 
 
 /**
@@ -18,6 +47,7 @@ const knex = require(path.join(root, 'knex', 'knex'));
  * @returns {Promise<void>} - A promise that resolves when the email is successfully sent or if sending is skipped.
  */
 const email = async (messageType, key, opts) => {
+  try {
   // No association selected for this day, so there is nobody to email
   if (!key) {
     return;
@@ -35,13 +65,27 @@ const email = async (messageType, key, opts) => {
   if (emailSettings.shouldSend !== 'true') {
     return;
   }
+
+    const options = { ...(opts || {}) };
+    const hasDates = Array.isArray(options.dates) && options.dates.length > 0;
+    if (['assigned', 'update', 'cancelled'].includes(messageType) && !hasDates) {
+      const scheduleIds = options.scheduleIds || (options.scheduleId ? [options.scheduleId] : []);
+      options.dates = await findDates({ scheduleIds, reservationId: options.reservationId });
+      if (options.dates.length === 0) {
+        console.log('email: no dates found for', JSON.stringify({ scheduleIds, reservationId: options.reservationId }));
+      }
+    }
+
   switch (messageType) {
     case 'reminder':
       // always send reminders, no need to queue
-      sendEmail(getText(messageType, opts, emailSettings), emailAddress, emailSettings);
+        sendEmail(getText(messageType, options, emailSettings), emailAddress, emailSettings);
       break;
     default:
-      // I have no idea what this scheduleId is supposed to be, but we must include it when saving pending emails.
+        const scheduleIds = Array.isArray(opts && opts.scheduleIds) && opts.scheduleIds.length > 0
+          ? opts.scheduleIds
+          : (opts && opts.scheduleId ? [opts.scheduleId] : []);
+
       if (emailSettings.shouldQueue === 'true' && opts && opts.scheduleId) {
         console.log("email: add email to pending emails", messageType)
         console.log("email: add email to pending emails", emailAddress)
@@ -49,10 +93,12 @@ const email = async (messageType, key, opts) => {
         services.pendingEmails.add(messageType, key, opts.scheduleId);
       } else { 
         // send directly
-        console.log("email: send email directly", messageType)
-        console.log("email: send email directly", emailAddress)
-        sendEmail(getText(messageType, opts, emailSettings), emailAddress, emailSettings);
+          sendEmail(getText(messageType, options, emailSettings), emailAddress, emailSettings);
+        }
       }
+  } catch (error) {
+    // email() is called without await in many places, so it must never reject
+    console.error('Error in email:', error);
   }
 };
 
@@ -135,13 +181,26 @@ const sendPending = async () => {
   }
 };
 
+// Adds the dates to the end of the message, one date per line.
+const addDates = (text, opts, heading) => {
+  if (!text) {
+    return text;
+  }
+  if (!opts || !Array.isArray(opts.dates) || opts.dates.length === 0) {
+    return text;
+  }
+  return text + '\n\n' + heading + '\n' + opts.dates.join('\n');
+};
+
 const getText = (message, opts, emailSettings) => {
   let text = message;
   let allowedVars = {};
+  // opts can be null (for example when the email is sent from the pending emails)
+  const options = opts || {};
   console.log("Mailer: getText message:", message)
   switch (message) {
     case 'assigned':
-      text = emailSettings.assignedMsg;
+      text = addDates(emailSettings.assignedMsg, options, 'Uudet vuorot:');
       break;
     case 'update':
       text = emailSettings.updateMsg;
