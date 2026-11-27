@@ -1,17 +1,25 @@
-const { email } = require('../mailer');
+const { emailShifts } = require('../mailer');
 
 /**
  * Tell the associations about their shifts, as the old scheduling page did:
  * a holder (re)assigned the shift is asked to confirm it, the previous holder
  * is told of the change, and a holder whose day changed (opened, closed, new
- * hours) gets an update.
+ * hours) gets an update. One email per association per save, however many
+ * days were saved.
  */
 function notify(days) {
+  const shifts = new Map();
+  const add = (association, kind, scheduleId) => {
+    if (!shifts.has(association)) shifts.set(association, { assigned: [], update: [] });
+    shifts.get(association)[kind].push(scheduleId);
+  };
   for (const { scheduleId, from, to, changed, assigned } of days) {
-    const opts = { scheduleId };
-    if (assigned) email('assigned', to, opts).catch(console.error);
-    else if (to !== null && changed) email('update', to, opts).catch(console.error);
-    if (from !== null && from !== to) email('update', from, opts).catch(console.error);
+    if (assigned) add(to, 'assigned', scheduleId);
+    else if (to !== null && changed) add(to, 'update', scheduleId);
+    if (from !== null && from !== to) add(from, 'update', scheduleId);
+  }
+  for (const [association, kinds] of shifts) {
+    emailShifts(association, kinds).catch(console.error);
   }
 }
 

@@ -244,6 +244,46 @@ describe('back/mailer.js', () => {
     });
   });
 
+  describe('emailShifts()', () => {
+    const sentTexts = () => sendMailMock.mock.calls.map(([mail]) => mail.text);
+
+    test('sends one shift its own message', async () => {
+      await mailer.emailShifts(12, { assigned: [7], update: [] });
+      await flushPromises();
+
+      expect(sentTexts()).toEqual(['You have been assigned a supervision shift.']);
+    });
+
+    test('sums several shifts up in one email with the counts', async () => {
+      await mailer.emailShifts(12, { assigned: [7, 8], update: [9] });
+      await flushPromises();
+
+      expect(sentTexts()).toEqual(['Updates: 1, Assigned: 2']);
+      expect(services.pendingEmails.add).not.toHaveBeenCalled();
+    });
+
+    test('queues each shift when the settings queue emails', async () => {
+      services.emailSettings.read.mockResolvedValue({ ...mockEmailSettings, shouldQueue: 'true' });
+      await mailer.emailShifts(12, { assigned: [7, 8], update: [9] });
+      await flushPromises();
+
+      expect(sendMailMock).not.toHaveBeenCalled();
+      expect(services.pendingEmails.add.mock.calls).toEqual([
+        ['assigned', 12, 7],
+        ['assigned', 12, 8],
+        ['update', 12, 9],
+      ]);
+    });
+
+    test('sends nothing without an association or shifts', async () => {
+      await mailer.emailShifts(null, { assigned: [7] });
+      await mailer.emailShifts(12, { assigned: [], update: [] });
+      await flushPromises();
+
+      expect(sendMailMock).not.toHaveBeenCalled();
+    });
+  });
+
   describe('verifyEmailCredentials()', () => {
     test('calls transporter.verify with callback (correct credentials)', async () => {
       const callback = jest.fn();

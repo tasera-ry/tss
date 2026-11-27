@@ -6,6 +6,7 @@ jest.mock('../models/rangeDay');
 jest.mock('../models/user');
 jest.mock('../mailer', () => ({
   email: jest.fn(),
+  emailShifts: jest.fn(),
   sendPending: jest.fn(),
   verifyEmailCredentials: jest.fn(),
   scheduleEmailReminder: jest.fn(),
@@ -16,7 +17,7 @@ const config = require('../config/config');
 const nextRangeSupervision = require('../knex/rangeOfficerRule');
 const rangeDayModel = require('../models/rangeDay');
 const userModel = require('../models/user');
-const { email } = require('../mailer');
+const { emailShifts } = require('../mailer');
 
 const request = supertest(app);
 
@@ -58,7 +59,7 @@ describe('PUT /api/range-day', () => {
 
   beforeEach(async () => {
     jest.resetAllMocks();
-    email.mockResolvedValue();
+    emailShifts.mockResolvedValue();
     rangeDayModel.clear();
     userModel.clear();
     await userModel.create({ id: 'admin', name: 'admin', role: 'superuser' });
@@ -145,9 +146,9 @@ describe('PUT /api/range-day', () => {
       rangeDayModel.answerNextWrite([day({ from: 12, to: 13, assigned: true })]);
       await write({ dates: [FUTURE], association_id: 13 });
 
-      expect(email.mock.calls).toEqual([
-        ['assigned', 13, { scheduleId: 7 }],
-        ['update', 12, { scheduleId: 7 }],
+      expect(emailShifts.mock.calls).toEqual([
+        [13, { assigned: [7], update: [] }],
+        [12, { assigned: [], update: [7] }],
       ]);
     });
 
@@ -157,24 +158,29 @@ describe('PUT /api/range-day', () => {
       rangeDayModel.answerNextWrite([day({ from: 12, to: 12, changed: false })]);
       await write({ dates: [FUTURE], open: '10:00', close: '15:00' });
 
-      expect(email.mock.calls).toEqual([['update', 12, { scheduleId: 7 }]]);
+      expect(emailShifts.mock.calls).toEqual([[12, { assigned: [], update: [7] }]]);
     });
 
     it('tells the previous holder when the shift is cleared', async () => {
       rangeDayModel.answerNextWrite([day({ from: 12, to: null })]);
       await write({ dates: [FUTURE], association_id: null });
 
-      expect(email.mock.calls).toEqual([['update', 12, { scheduleId: 7 }]]);
+      expect(emailShifts.mock.calls).toEqual([[12, { assigned: [], update: [7] }]]);
     });
 
-    it('sends one email per copied day', async () => {
+    it('gathers a copy\'s days into one email per association', async () => {
       rangeDayModel.answerNextWrite([
         day({ to: 12, assigned: true }),
-        day({ date: LATER, scheduleId: 8, from: 12, to: 12, changed: false }),
+        day({ date: LATER, scheduleId: 8, from: 13, to: 12, assigned: true }),
+        day({ date: '2099-06-09', scheduleId: 9, from: 12, to: 12 }),
+        day({ date: '2099-06-10', scheduleId: 10, from: 12, to: 12, changed: false }),
       ]);
-      await write({ dates: [FUTURE, LATER], association_id: 12 });
+      await write({ dates: [FUTURE, LATER, '2099-06-09', '2099-06-10'], association_id: 12 });
 
-      expect(email.mock.calls).toEqual([['assigned', 12, { scheduleId: 7 }]]);
+      expect(emailShifts.mock.calls).toEqual([
+        [12, { assigned: [7, 8], update: [9] }],
+        [13, { assigned: [], update: [8] }],
+      ]);
     });
   });
 });
