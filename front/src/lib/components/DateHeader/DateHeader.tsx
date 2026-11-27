@@ -34,7 +34,9 @@ export function DateHeader({
   const weekString = useMemo(() => {
     const year = moment(date).isoWeekYear();
     const weekNumber = moment(date).isoWeek();
-    return t`Week ${weekNumber} ${year}`;
+    // A separator between the two numbers, so "Week 48 · 2026" does not
+    // read as one figure.
+    return t`Week ${weekNumber} · ${year}`;
   }, [date, t]);
 
   const monthString = useMemo(() => {
