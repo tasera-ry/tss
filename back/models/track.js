@@ -1,7 +1,7 @@
 /* TODO
  * Replace validations with validator.js
  */
-const validate = require('validate.js');
+const _ = require('lodash');
 
 const path = require('path');
 const root = path.join(__dirname, '..');
@@ -24,7 +24,7 @@ const model = {
       short_description: {}
     };
 
-    const track = validate.cleanAttributes(trackInfo, trackConstraints);
+    const track = _.pick(trackInfo, Object.keys(trackConstraints));
 
     return await knex.transaction(trx => {
       return trx
@@ -74,7 +74,7 @@ const model = {
       short_description: {}
     };
 
-    const track = validate.cleanAttributes(update, trackConstraints);
+    const track = _.pick(update, Object.keys(trackConstraints));
 
     //exists
     const id = await model

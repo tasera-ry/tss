@@ -2,7 +2,6 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 const knex = require(path.join(root, 'knex', 'knex'));
 const _ = require('lodash');
-const validate = require('validate.js');
 
 const model = {
   /**
@@ -30,7 +29,7 @@ const model = {
       throw err;
     }
 
-    const general = validate.cleanAttributes(supVis, supervisionConstraints);
+    const general = _.pick(supVis, Object.keys(supervisionConstraints));
 
     return await knex.transaction((trx) => {
       return trx

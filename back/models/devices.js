@@ -1,4 +1,5 @@
-const validate = require('validate.js');
+const _ = require('lodash');
+
 const path = require('path');
 const root = path.join(__dirname, '..');
 const knex = require(path.join(root, 'knex', 'knex'));
@@ -19,7 +20,7 @@ const model = {
       status: {},
     };
 
-    const device = validate.cleanAttributes(deviceInfo, deviceConstraints);
+    const device = _.pick(deviceInfo, Object.keys(deviceConstraints));
 
     return await knex.transaction((trx) => {
       return trx
@@ -62,7 +63,7 @@ const model = {
       status: {},
     };
 
-    const device = validate.cleanAttributes(update, deviceConstraints);
+    const device = _.pick(update, Object.keys(deviceConstraints));
 
     const id = await model.read(current, ['id']).then((rows) => rows[0]);
 

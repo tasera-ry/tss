@@ -2,7 +2,6 @@
  * Replace validations with validator.js
  */
 const _ = require('lodash');
-const validate = require('validate.js');
 
 const path = require('path');
 const root = path.join(__dirname, '..');
@@ -38,7 +37,7 @@ const model = {
       throw err;
     }
 
-    const general = validate.cleanAttributes(supVis, supervisionConstraints);
+    const general = _.pick(supVis, Object.keys(supervisionConstraints));
 
     return await knex.transaction(trx => {
       return trx

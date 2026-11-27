@@ -2,7 +2,6 @@
  * Replace validations with validator.js
  */
 const _ = require('lodash');
-const validate = require('validate.js');
 
 const path = require('path');
 const root = path.join(__dirname, '..');
@@ -35,9 +34,9 @@ const model = {
       associationId: {},
     };
   
-    const general = validate.cleanAttributes(user, userConstraints);
-    const association = validate.cleanAttributes(user, associationConstraints);
-    const officer = validate.cleanAttributes(user, officerConstraints);
+    const general = _.pick(user, Object.keys(userConstraints));
+    const association = _.pick(user, Object.keys(associationConstraints));
+    const officer = _.pick(user, Object.keys(officerConstraints));
   
     return await knex.transaction((trx) => {
       return trx

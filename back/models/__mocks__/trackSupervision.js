@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const validate = require('validate.js');
 
 let trackSupervisions = []; 
 
@@ -24,7 +23,7 @@ const model = {
       throw err;
     }
 
-    const general = validate.cleanAttributes(supVis, supervisionConstraints);
+    const general = _.pick(supVis, Object.keys(supervisionConstraints));
     
     trackSupervisions.push(general);
 
