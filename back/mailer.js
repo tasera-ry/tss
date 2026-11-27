@@ -333,30 +333,4 @@ async function scheduleEmailReminder(emailSettings) {
 }
 scheduleEmailReminder();
 
-/**
- * Tell one association about the range officer shifts a single save gave it
- * or changed (#463): one email, not one per day. One shift gets its own
- * message; several get the summary ("collage") with the counts. When the
- * settings queue emails, each shift is queued as before: the queue sums them
- * up itself when it sends.
- *
- * @param {number} key - The association's user id
- * @param {object} shifts - { assigned: scheduleId[], update: scheduleId[] }
- */
-const emailShifts = async (key, { assigned = [], update = [] }) => {
-  const total = assigned.length + update.length;
-  if (!key || total === 0) return;
-
-  const emailSettings = await services.emailSettings.read();
-  if (total === 1 || emailSettings.shouldQueue === 'true') {
-    for (const scheduleId of assigned) await email('assigned', key, { scheduleId });
-    for (const scheduleId of update) await email('update', key, { scheduleId });
-    return;
-  }
-  await email('collage', key, {
-    assignedCount: String(assigned.length),
-    updateCount: String(update.length),
-  });
-};
-
-module.exports = { email, emailShifts, sendPending, verifyEmailCredentials, scheduleEmailReminder };
+module.exports = { email, sendPending, verifyEmailCredentials, scheduleEmailReminder };
