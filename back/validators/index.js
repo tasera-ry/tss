@@ -16,6 +16,7 @@ const raffleSupervisors = require(path.join(root, 'validators', 'raffleSuperviso
 const devices = require(path.join(root, 'validators', 'devices'));
 const trackSection = require(path.join(root, 'validators', 'trackSection'));
 const trackReservation = require(path.join(root, 'validators', 'trackReservation'));
+const rangeDay = require(path.join(root, 'validators', 'rangeDay'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -33,3 +34,4 @@ exports.raffle = raffle;
 exports.devices = devices;
 exports.trackSection = trackSection;
 exports.trackReservation = trackReservation;
+exports.rangeDay = rangeDay;

@@ -268,6 +268,18 @@ router
     controllers.trackReservation.create
   );
 
+// The range's settings for one or more days: open or closed, hours, range
+// officer shift. Saving the range card and copying it both use this (#463).
+router
+  .route('/range-day')
+  .put(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'),
+    validators.rangeDay.write,
+    middlewares.rangeDay.write,
+    controllers.rangeDay.write
+  );
+
 // A track's day copied to other days, all or nothing (#463).
 router
   .route('/track-day-copy')
