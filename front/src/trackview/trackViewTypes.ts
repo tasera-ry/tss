@@ -85,7 +85,10 @@ export interface LaneSection {
 export interface TrackDetail {
   id: number;
   name: string;
+  /** Finnish; the Swedish and English versions may be empty (#462). */
   description: string;
+  descriptionSv: string;
+  descriptionEn: string;
   shortDescription: string;
   /** Free-text notice from `track_supervision.notice`. May be null in the API. */
   notice: string | null;

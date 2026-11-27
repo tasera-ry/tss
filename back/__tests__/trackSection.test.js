@@ -75,7 +75,19 @@ describe(`${endpoint} writes (#462)`, () => {
 
       expect(res.status).toBe(201);
       expect(res.body).toEqual({ id: 4, track_id: 1, position: 3, lane_count: 20,
-        name: 'Oikeanpuoleisin', description: '' });
+        name: 'Oikeanpuoleisin', description: '', description_sv: null, description_en: null });
+    });
+
+    it('stores the Swedish and English descriptions', async () => {
+      const res = await request.post(endpoint).set('Cookie', admin).send({
+        track_id: 1, name: 'Oikea', lane_count: 20,
+        description: 'Oikea lohko', description_sv: 'Högra sektionen', description_en: '',
+      });
+
+      expect(res.status).toBe(201);
+      expect(res.body).toEqual(expect.objectContaining({
+        description: 'Oikea lohko', description_sv: 'Högra sektionen', description_en: '',
+      }));
     });
 
     it('refuses an unknown track, no lanes and an empty name', async () => {
@@ -100,11 +112,17 @@ describe(`${endpoint} writes (#462)`, () => {
     const put = (id, body, cookie = admin) =>
       request.put(`${endpoint}/${id}`).set('Cookie', cookie).send(body);
 
-    it('changes the name, lanes and description', async () => {
-      const res = await put(1, { name: 'Vasen', lane_count: 24, description: 'Uusi' });
+    it('changes the name, lanes and descriptions', async () => {
+      const res = await put(1, { name: 'Vasen', lane_count: 24, description: 'Uusi', description_en: 'Left' });
 
       expect(res.status).toBe(200);
-      expect(res.body).toEqual(expect.objectContaining({ id: 1, name: 'Vasen', lane_count: 24, description: 'Uusi' }));
+      expect(res.body).toEqual(expect.objectContaining({
+        id: 1, name: 'Vasen', lane_count: 24, description: 'Uusi', description_en: 'Left',
+      }));
+    });
+
+    it('refuses a translation longer than the column', async () => {
+      expect((await put(1, { description_sv: 'x'.repeat(256) })).status).toBe(400);
     });
 
     it('refuses fewer lanes than bookings from today on need, listing the days', async () => {

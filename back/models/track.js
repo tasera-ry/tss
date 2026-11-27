@@ -24,7 +24,11 @@ const model = {
       short_description: {},
       requires_range_officer: {},
       only_22lr: {},
-      daylight_only: {}
+      daylight_only: {},
+      description_sv: {},
+      description_en: {},
+      short_description_sv: {},
+      short_description_en: {}
     };
 
     const track = validate.cleanAttributes(trackInfo, trackConstraints);
@@ -77,7 +81,11 @@ const model = {
       short_description: {},
       requires_range_officer: {},
       only_22lr: {},
-      daylight_only: {}
+      daylight_only: {},
+      description_sv: {},
+      description_en: {},
+      short_description_sv: {},
+      short_description_en: {}
     };
 
     const track = validate.cleanAttributes(update, trackConstraints);

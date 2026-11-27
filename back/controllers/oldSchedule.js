@@ -167,7 +167,7 @@ exports.getScheduleDate = async (req, res) => {
         trackSupervision: 'absent',
         scheduled: false
       };
-      return _.pick(item, ['id', 'name', 'description', 'short_description', 'requires_range_officer', 'only_22lr', 'daylight_only', 'notice', 'trackSupervision', 'scheduled']);
+      return _.pick(item, ['id', 'name', 'description', 'description_sv', 'description_en', 'short_description', 'short_description_sv', 'short_description_en', 'requires_range_officer', 'only_22lr', 'daylight_only', 'notice', 'trackSupervision', 'scheduled']);
     });
 
     const trackSupervision = await getTracksupervision(scheduleId);
@@ -180,7 +180,7 @@ exports.getScheduleDate = async (req, res) => {
           trackSupervision: supervision ? supervision.track_supervisor : 'absent',
           scheduled: supervision
         };
-        return _.pick(item, ['id', 'name', 'description', 'short_description', 'requires_range_officer', 'only_22lr', 'daylight_only', 'notice', 'trackSupervision', 'scheduled']);
+        return _.pick(item, ['id', 'name', 'description', 'description_sv', 'description_en', 'short_description', 'short_description_sv', 'short_description_en', 'requires_range_officer', 'only_22lr', 'daylight_only', 'notice', 'trackSupervision', 'scheduled']);
       });
     }
 

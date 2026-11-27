@@ -26,7 +26,7 @@ const service = {
     const [track] = await models.track.read({ 'track.id': data.track_id });
     if (!track) throw clientError(400, `Unknown track ${data.track_id}`);
     return models.trackSection.create({
-      ..._.pick(data, 'track_id', 'name', 'lane_count'),
+      ..._.pick(data, 'track_id', 'name', 'lane_count', 'description_sv', 'description_en'),
       description: data.description ?? ''
     });
   },
@@ -39,7 +39,7 @@ const service = {
    */
   update: async function updateSection(id, changes) {
     const result = await models.trackSection.update(
-      id, _.pick(changes, 'name', 'lane_count', 'description'), today());
+      id, _.pick(changes, 'name', 'lane_count', 'description', 'description_sv', 'description_en'), today());
     if (result.refused) {
       throw clientError(409, 'Bookings need more lanes', { days: result.refused });
     }

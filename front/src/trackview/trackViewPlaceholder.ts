@@ -51,6 +51,9 @@ export interface ApiSection {
    */
   name: string;
   description: string | null;
+  /** Swedish and English; empty or null falls back to Finnish (#462). */
+  description_sv?: string | null;
+  description_en?: string | null;
 }
 
 /** One row of `GET /api/track-reservation?date=`. */
@@ -73,6 +76,8 @@ interface ApiTrack {
   id: number;
   name: string;
   description: string | null;
+  description_sv?: string | null;
+  description_en?: string | null;
   short_description: string | null;
   notice: string | null;
   trackSupervision: string | null;
@@ -288,6 +293,8 @@ export function toTrackViewDay(
     id: track.id,
     name: track.name,
     description: track.description ?? '',
+    descriptionSv: track.description_sv ?? '',
+    descriptionEn: track.description_en ?? '',
     shortDescription: track.short_description ?? '',
     notice: track.notice ?? null,
     officer: toTrackOfficer(track.trackSupervision),

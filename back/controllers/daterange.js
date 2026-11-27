@@ -40,6 +40,8 @@ const controller = {
         fieldModifiedQR[fieldModifiedQR.length - 1]['tracks'] = [
           {
             description: instance['description'],
+            description_sv: instance['description_sv'],
+            description_en: instance['description_en'],
             id: instance['track_id'],
             name: instance['name'],
             notice: instance['notice'],
@@ -47,6 +49,8 @@ const controller = {
             only_22lr: instance['only_22lr'],
             daylight_only: instance['daylight_only'],
             short_description: instance['short_description'],
+            short_description_sv: instance['short_description_sv'],
+            short_description_en: instance['short_description_en'],
             trackSupervision: instance['track_supervisor'],
             scheduled: {
               visitors: instance['visitors'],
@@ -64,6 +68,8 @@ const controller = {
 
       fieldModifiedQR[index]['tracks'].push({
         description: instance['description'],
+        description_sv: instance['description_sv'],
+        description_en: instance['description_en'],
         id: instance['track_id'],
         name: instance['name'],
         notice: instance['notice'],
@@ -71,6 +77,8 @@ const controller = {
         only_22lr: instance['only_22lr'],
         daylight_only: instance['daylight_only'],
         short_description: instance['short_description'],
+        short_description_sv: instance['short_description_sv'],
+        short_description_en: instance['short_description_en'],
         trackSupervision: instance['track_supervisor'],
         scheduled: {
           visitors: instance['visitors'],

@@ -19,7 +19,7 @@ const model = {
   read: async function readSection(key) {
     return knex('track_section')
       .where(key)
-      .select('id', 'track_id', 'position', 'lane_count', 'name', 'description')
+      .select('id', 'track_id', 'position', 'lane_count', 'name', 'description', 'description_sv', 'description_en')
       .orderBy(['track_id', 'position']);
   },
 
@@ -37,7 +37,7 @@ const model = {
         .first();
       const [row] = await trx('track_section')
         .insert({ ...section, position: (last ?? 0) + 1 })
-        .returning(['id', 'track_id', 'position', 'lane_count', 'name', 'description']);
+        .returning(['id', 'track_id', 'position', 'lane_count', 'name', 'description', 'description_sv', 'description_en']);
       return row;
     });
   },
@@ -65,7 +65,7 @@ const model = {
       const [section] = await trx('track_section')
         .where({ id })
         .update(changes)
-        .returning(['id', 'track_id', 'position', 'lane_count', 'name', 'description']);
+        .returning(['id', 'track_id', 'position', 'lane_count', 'name', 'description', 'description_sv', 'description_en']);
       return { section };
     });
   },

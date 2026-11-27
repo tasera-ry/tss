@@ -13,17 +13,28 @@ export interface ApiTrack {
   name: string;
   short_description: string;
   description: string;
+  /** Swedish and English versions; empty or null falls back to Finnish. */
+  short_description_sv: string | null;
+  short_description_en: string | null;
+  description_sv: string | null;
+  description_en: string | null;
   requires_range_officer: boolean;
   only_22lr: boolean;
   daylight_only: boolean;
 }
 
-const TRACK_FIELDS = ['name', 'short_description', 'description'] as const;
+const TRACK_FIELDS = [
+  'name',
+  'short_description',
+  'short_description_sv',
+  'short_description_en',
+  'description',
+  'description_sv',
+  'description_en',
+] as const;
 const RULES = ['requires_range_officer', 'only_22lr', 'daylight_only'] as const;
-type TrackDraft = Pick<
-  ApiTrack,
-  (typeof TRACK_FIELDS)[number] | (typeof RULES)[number]
->;
+type TrackDraft = Record<(typeof TRACK_FIELDS)[number], string> &
+  Pick<ApiTrack, (typeof RULES)[number]>;
 
 interface SectionDraft {
   /** Stable key: the id, or a made-up one for a section not yet saved. */
@@ -33,13 +44,19 @@ interface SectionDraft {
   /** As typed. */
   lanes: string;
   description: string;
+  descriptionSv: string;
+  descriptionEn: string;
   removed: boolean;
 }
 
 const trackDraft = (track: ApiTrack): TrackDraft => ({
   name: track.name,
   short_description: track.short_description,
+  short_description_sv: track.short_description_sv ?? '',
+  short_description_en: track.short_description_en ?? '',
   description: track.description,
+  description_sv: track.description_sv ?? '',
+  description_en: track.description_en ?? '',
   requires_range_officer: track.requires_range_officer,
   only_22lr: track.only_22lr,
   daylight_only: track.daylight_only,
@@ -54,6 +71,8 @@ const sectionDrafts = (sections: ApiSection[]): SectionDraft[] =>
       name: s.name,
       lanes: String(s.lane_count),
       description: s.description ?? '',
+      descriptionSv: s.description_sv ?? '',
+      descriptionEn: s.description_en ?? '',
       removed: false,
     }));
 
@@ -64,7 +83,9 @@ const sameSection = (a: SectionDraft, b?: SectionDraft) =>
   b !== undefined &&
   a.name.trim() === b.name &&
   Number(a.lanes) === Number(b.lanes) &&
-  a.description.trim() === b.description;
+  a.description.trim() === b.description &&
+  a.descriptionSv.trim() === b.descriptionSv &&
+  a.descriptionEn.trim() === b.descriptionEn;
 
 const validLanes = (lanes: string) =>
   /^\d+$/.test(lanes) && Number(lanes) >= 1 && Number(lanes) <= 1000;
@@ -175,9 +196,9 @@ export function TrackEditCard({
       try {
         await api.updateTrack(track.id, {
           ...draft,
-          name: draft.name.trim(),
-          short_description: draft.short_description.trim(),
-          description: draft.description.trim(),
+          ...Object.fromEntries(
+            TRACK_FIELDS.map((field) => [field, draft[field].trim()]),
+          ),
         });
       } catch {
         trackRefused = draft;
@@ -190,6 +211,8 @@ export function TrackEditCard({
         name: row.name.trim(),
         lane_count: Number(row.lanes),
         description: row.description.trim(),
+        description_sv: row.descriptionSv.trim(),
+        description_en: row.descriptionEn.trim(),
       };
       try {
         if (row.removed && row.id !== undefined) {
@@ -278,8 +301,8 @@ export function TrackEditCard({
         {track.name}
       </h2>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <label className="flex flex-col gap-1 text-sm">
+      <div className="grid grid-cols-1 gap-3">
+        <label className="flex flex-col gap-1 text-sm sm:max-w-sm">
           <span className="font-medium">{t`Name`}</span>
           <input
             type="text"
@@ -290,33 +313,37 @@ export function TrackEditCard({
             onChange={(e) => setDraft({ ...draft, name: e.target.value })}
           />
         </label>
-        <label className="flex flex-col gap-1 text-sm">
-          <span className="font-medium">{t`Short description`}</span>
-          <input
-            type="text"
-            className={field}
-            value={draft.short_description}
-            maxLength={25}
-            aria-invalid={draft.short_description.trim() === ''}
-            onChange={(e) =>
-              setDraft({ ...draft, short_description: e.target.value })
-            }
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-          <span className="font-medium">{t`Description`}</span>
-          <textarea
-            className={field}
-            rows={2}
-            value={draft.description}
-            maxLength={255}
-            aria-invalid={draft.description.trim() === ''}
-            onChange={(e) =>
-              setDraft({ ...draft, description: e.target.value })
-            }
-          />
-        </label>
       </div>
+      <LanguageFields
+        legend={t`Short description`}
+        values={[
+          draft.short_description,
+          draft.short_description_sv,
+          draft.short_description_en,
+        ]}
+        maxLength={25}
+        onChange={(language, value) =>
+          setDraft({
+            ...draft,
+            [language === 'fi'
+              ? 'short_description'
+              : `short_description_${language}`]: value,
+          })
+        }
+      />
+      <LanguageFields
+        legend={t`Description`}
+        values={[draft.description, draft.description_sv, draft.description_en]}
+        maxLength={255}
+        multiline
+        onChange={(language, value) =>
+          setDraft({
+            ...draft,
+            [language === 'fi' ? 'description' : `description_${language}`]:
+              value,
+          })
+        }
+      />
 
       <fieldset className="mt-4 text-sm">
         <legend className="mb-1 font-medium">{t`Rules`}</legend>
@@ -365,7 +392,7 @@ export function TrackEditCard({
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-[1fr_6rem] gap-2 text-sm sm:grid-cols-[1fr_6rem_2fr_auto] sm:items-end">
+              <div className="grid grid-cols-[1fr_6rem] gap-2 text-sm sm:grid-cols-[1fr_6rem_auto] sm:items-end">
                 <label className="flex flex-col gap-1">
                   <span className="text-grey">{t`Section name`}</span>
                   <input
@@ -389,18 +416,6 @@ export function TrackEditCard({
                     onChange={(e) => setRow(row.key, { lanes: e.target.value })}
                   />
                 </label>
-                <label className="col-span-2 flex flex-col gap-1 sm:col-span-1">
-                  <span className="text-grey">{t`Description`}</span>
-                  <input
-                    type="text"
-                    className={field}
-                    value={row.description}
-                    maxLength={255}
-                    onChange={(e) =>
-                      setRow(row.key, { description: e.target.value })
-                    }
-                  />
-                </label>
                 <button
                   type="button"
                   className="col-span-2 justify-self-start px-2 py-1.5 text-grey text-sm hover:text-black disabled:opacity-50 sm:col-span-1"
@@ -420,6 +435,27 @@ export function TrackEditCard({
                 >
                   {t`Remove`}
                 </button>
+                <div className="col-span-2 sm:col-span-3">
+                  <LanguageFields
+                    legend={t`Description`}
+                    values={[
+                      row.description,
+                      row.descriptionSv,
+                      row.descriptionEn,
+                    ]}
+                    maxLength={255}
+                    optional
+                    onChange={(language, value) =>
+                      setRow(row.key, {
+                        [language === 'fi'
+                          ? 'description'
+                          : language === 'sv'
+                            ? 'descriptionSv'
+                            : 'descriptionEn']: value,
+                      })
+                    }
+                  />
+                </div>
               </div>
             )}
             {rowErrors[row.key] && (
@@ -442,6 +478,8 @@ export function TrackEditCard({
               name: '',
               lanes: '',
               description: '',
+              descriptionSv: '',
+              descriptionEn: '',
               removed: false,
             },
           ]);
@@ -487,5 +525,72 @@ export function TrackEditCard({
         </p>
       )}
     </section>
+  );
+}
+
+const LANGUAGES = [
+  ['fi', 'Suomi'],
+  ['sv', 'Svenska'],
+  ['en', 'English'],
+] as const;
+
+/**
+ * One text in Finnish, Swedish and English (#462). The language names are
+ * written in their own language. Finnish is required unless `optional`; an
+ * empty translation falls back to Finnish where the text is shown.
+ */
+function LanguageFields({
+  legend,
+  values,
+  maxLength,
+  multiline = false,
+  optional = false,
+  onChange,
+}: {
+  legend: string;
+  values: readonly [string, string, string];
+  maxLength: number;
+  multiline?: boolean;
+  optional?: boolean;
+  onChange: (language: 'fi' | 'sv' | 'en', value: string) => void;
+}) {
+  const field =
+    'w-full rounded-md border border-black-tint-50 px-2 py-1.5 text-sm';
+  return (
+    <fieldset className="mt-3 text-sm">
+      <legend className="mb-1 font-medium">{legend}</legend>
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        {LANGUAGES.map(([language, name], i) => (
+          <label key={language} className="flex flex-col gap-1">
+            <span className="text-grey" lang={language}>
+              {name}
+            </span>
+            {multiline ? (
+              <textarea
+                className={field}
+                rows={2}
+                value={values[i]}
+                maxLength={maxLength}
+                aria-invalid={
+                  language === 'fi' && !optional && values[i].trim() === ''
+                }
+                onChange={(e) => onChange(language, e.target.value)}
+              />
+            ) : (
+              <input
+                type="text"
+                className={field}
+                value={values[i]}
+                maxLength={maxLength}
+                aria-invalid={
+                  language === 'fi' && !optional && values[i].trim() === ''
+                }
+                onChange={(e) => onChange(language, e.target.value)}
+              />
+            )}
+          </label>
+        ))}
+      </div>
+    </fieldset>
   );
 }

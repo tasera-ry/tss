@@ -64,6 +64,8 @@ module.exports = {
     text(body('name'), 1),
     lanes(body('lane_count')),
     text(body('description').optional(), 0),
+    text(body('description_sv').optional(), 0),
+    text(body('description_en').optional(), 0),
     handleValidationErrors,
     storeBody
   ],
@@ -73,6 +75,8 @@ module.exports = {
     text(body('name').optional(), 1),
     lanes(body('lane_count').optional()),
     text(body('description').optional(), 0),
+    text(body('description_sv').optional(), 0),
+    text(body('description_en').optional(), 0),
     handleValidationErrors,
     storeId,
     storeBody

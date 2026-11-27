@@ -18,6 +18,10 @@ const tracks = [
     name: 'Rata 2',
     description: '150m RK -rata',
     short_description: '150m RK',
+    short_description_sv: null,
+    short_description_en: null,
+    description_sv: null,
+    description_en: null,
     requires_range_officer: true,
     only_22lr: false,
     daylight_only: false,
@@ -28,6 +32,10 @@ const tracks = [
     name: 'Rata 1',
     description: '25m Pistoolirata',
     short_description: '25m pistooli',
+    short_description_sv: '25m pistol',
+    short_description_en: null,
+    description_sv: null,
+    description_en: null,
     requires_range_officer: true,
     only_22lr: false,
     daylight_only: true,
@@ -78,6 +86,11 @@ async function renderPage() {
 }
 
 const card = (name: string) => within(screen.getByRole('region', { name }));
+/** One language's field in a card's group, e.g. ('Short description', 'Svenska'). */
+const text = (track: string, group: string, language = 'Suomi', index = 0) =>
+  within(
+    card(track).getAllByRole('group', { name: group })[index],
+  ).getByLabelText(language);
 const save = (name: string) =>
   fireEvent.click(card(name).getByRole('button', { name: 'Save' }));
 
@@ -94,9 +107,11 @@ describe('EditTracksView', () => {
       'track-2',
     ]);
     const rata1 = card('Rata 1');
-    expect(rata1.getByLabelText('Short description')).toHaveValue(
-      '25m pistooli',
+    expect(text('Rata 1', 'Short description')).toHaveValue('25m pistooli');
+    expect(text('Rata 1', 'Short description', 'Svenska')).toHaveValue(
+      '25m pistol',
     );
+    expect(text('Rata 1', 'Short description', 'English')).toHaveValue('');
     expect(rata1.getByLabelText('No shooting in the dark')).toBeChecked();
     expect(rata1.getByLabelText('.22LR only')).not.toBeChecked();
     expect(
@@ -114,7 +129,7 @@ describe('EditTracksView', () => {
 
   it("saves the track's details and rules", async () => {
     await renderPage();
-    fireEvent.change(card('Rata 1').getByLabelText('Short description'), {
+    fireEvent.change(text('Rata 1', 'Short description'), {
       target: { value: '25m pist. ' },
     });
     fireEvent.click(card('Rata 1').getByLabelText('.22LR only'));
@@ -124,7 +139,11 @@ describe('EditTracksView', () => {
       expect(api.updateTrack).toHaveBeenCalledWith(1, {
         name: 'Rata 1',
         short_description: '25m pist.',
+        short_description_sv: '25m pistol',
+        short_description_en: '',
         description: '25m Pistoolirata',
+        description_sv: '',
+        description_en: '',
         requires_range_officer: true,
         only_22lr: true,
         daylight_only: true,
@@ -132,6 +151,32 @@ describe('EditTracksView', () => {
     );
     expect(await card('Rata 1').findByText('Saved')).toBeInTheDocument();
     expect(api.updateTrackSection).not.toHaveBeenCalled();
+  });
+
+  it('saves the Swedish and English texts of the track and its sections', async () => {
+    await renderPage();
+    fireEvent.change(text('Rata 1', 'Description', 'English'), {
+      target: { value: ' 25 m pistol range ' },
+    });
+    // Group 0 is the track's description; 1 and 2 are its sections'.
+    fireEvent.change(text('Rata 1', 'Description', 'Svenska', 1), {
+      target: { value: 'Vänstra' },
+    });
+    save('Rata 1');
+
+    await vi.waitFor(() =>
+      expect(api.updateTrack).toHaveBeenCalledWith(
+        1,
+        expect.objectContaining({ description_en: '25 m pistol range' }),
+      ),
+    );
+    expect(api.updateTrackSection).toHaveBeenCalledWith(11, {
+      name: 'Vasen',
+      lane_count: 20,
+      description: 'Lähin',
+      description_sv: 'Vänstra',
+      description_en: '',
+    });
   });
 
   it('saves only the sections that changed', async () => {
@@ -146,6 +191,8 @@ describe('EditTracksView', () => {
         name: 'Oikea',
         lane_count: 24,
         description: '',
+        description_sv: '',
+        description_en: '',
       }),
     );
     expect(api.updateTrackSection).toHaveBeenCalledTimes(1);
@@ -172,6 +219,8 @@ describe('EditTracksView', () => {
         name: 'Takaosa',
         lane_count: 10,
         description: '',
+        description_sv: '',
+        description_en: '',
       }),
     );
   });

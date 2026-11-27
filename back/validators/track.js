@@ -23,6 +23,19 @@ function validatorAdditions(validator, opts) {
   return validator;
 }
 
+/** An optional translation of up to `max` characters; may be empty. */
+function translation(name, max) {
+  return function translationValidation(requestObject, ...opts) {
+    const validator = requestObject(name)
+      .isString()
+      .withMessage('must be a string')
+      .isLength({ max })
+      .withMessage(`must be at most ${max} characters`);
+
+    return validatorAdditions(validator, opts);
+  };
+}
+
 const fields = {
   track_id: function idValidation(requestObject, ...opts) {
     const validator = requestObject('track_id')
@@ -82,6 +95,12 @@ const fields = {
     return validatorAdditions(validator, opts);
   }
 
+  // Swedish and English texts (#462); empty falls back to the Finnish.
+  , description_sv: translation('description_sv', 255)
+  , description_en: translation('description_en', 255)
+  , short_description_sv: translation('short_description_sv', 25)
+  , short_description_en: translation('short_description_en', 25)
+
   // Standing rules (B8, #455).
   , only_22lr: function only22lrValidation(requestObject, ...opts) {
     const validator = requestObject('only_22lr')
@@ -140,6 +159,10 @@ module.exports = {
     fields.requires_range_officer(body, 'optional'),
     fields.only_22lr(body, 'optional'),
     fields.daylight_only(body, 'optional'),
+    fields.description_sv(body, 'optional'),
+    fields.description_en(body, 'optional'),
+    fields.short_description_sv(body, 'optional'),
+    fields.short_description_en(body, 'optional'),
     handleValidationErrors,
     function storeCreationRequest(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['body'] });
@@ -154,6 +177,10 @@ module.exports = {
     fields.requires_range_officer(body, 'optional'),
     fields.only_22lr(body, 'optional'),
     fields.daylight_only(body, 'optional'),
+    fields.description_sv(body, 'optional'),
+    fields.description_en(body, 'optional'),
+    fields.short_description_sv(body, 'optional'),
+    fields.short_description_en(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
       response.locals.id = matchedData(request, { locations: ['params'] });

@@ -4,8 +4,8 @@ let sections = [];
 let peaks = {};
 let asked = [];
 
-const fields = ['id', 'track_id', 'position', 'lane_count', 'name', 'description'];
-const pick = section => Object.fromEntries(fields.map(f => [f, section[f]]));
+const fields = ['id', 'track_id', 'position', 'lane_count', 'name', 'description', 'description_sv', 'description_en'];
+const pick = section => Object.fromEntries(fields.map(f => [f, section[f] ?? null]));
 const peaksFrom = (id, from) => (peaks[id] || []).filter(day => day.date >= from);
 
 const model = {
