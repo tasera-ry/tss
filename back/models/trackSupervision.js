@@ -8,6 +8,43 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 const knex = require(path.join(root, 'knex', 'knex'));
 
+/**
+ * B10 (#464): a track officer may only be marked present while the range
+ * officer is on site, except on tracks with requires_range_officer = false
+ * (Pasi Autio, 8.10.2026). The effective range-officer state is derived the
+ * same way the day views derive it: a closed reservation means closed, a
+ * missing range_supervision row means absent, otherwise the stored enum.
+ *
+ * 'confirmed' and 'not confirmed' mean the officer is booked but not here,
+ * so they count as away for a write: the display rule lets future days show
+ * as usable (unavailableReason in trackViewTypes.ts), but a member cannot
+ * shoot before the officer arrives.
+ */
+async function assertRangeOfficerPresent(scheduledRangeSupervisionId, trackId) {
+  const track = await knex('track')
+    .where('id', trackId)
+    .first('requires_range_officer');
+
+  if (track && track.requires_range_officer === false) {
+    return;
+  }
+
+  const day = await knex({ srs: 'scheduled_range_supervision' })
+    .join('range_reservation as rr', 'rr.id', 'srs.range_reservation_id')
+    .leftJoin('range_supervision as rs', 'rs.scheduled_range_supervision_id', 'srs.id')
+    .where('srs.id', scheduledRangeSupervisionId)
+    .first('rr.available', 'rs.range_supervisor');
+
+  const officerPresent =
+    day && day.available !== false && day.range_supervisor === 'present';
+
+  if (!officerPresent) {
+    const err = Error('Track officer present requires the range officer to be present');
+    err.name = 'Range officer not present';
+    throw err;
+  }
+}
+
 const model = {
   /**
    * Create a new supervision event for track
@@ -39,6 +76,13 @@ const model = {
     }
 
     const general = validate.cleanAttributes(supVis, supervisionConstraints);
+
+    if (general.track_supervisor === 'present') {
+      await assertRangeOfficerPresent(
+        general.scheduled_range_supervision_id,
+        general.track_id
+      );
+    }
 
     return await knex.transaction(trx => {
       return trx
@@ -88,6 +132,22 @@ const model = {
       const err = Error('Didn\'t identify supervision(s) to update');
       err.name = 'Unknown supervision';
       throw err;
+    }
+
+    if(supVis.track_supervisor === 'present') {
+      // B10 (#464) gates a change into 'present', not every write that
+      // carries it: the scheduling view reads each stored status and sends
+      // it back when a day is saved, so re-saving a day whose track officer
+      // is already marked present must stay possible even once the range
+      // officer has left.
+      const [stored] = await model.read(current, ['track_supervisor']);
+
+      if (stored && stored.track_supervisor !== 'present') {
+        await assertRangeOfficerPresent(
+          current.scheduled_range_supervision_id,
+          current.track_id
+        );
+      }
     }
 
     return await knex.transaction(trx => {

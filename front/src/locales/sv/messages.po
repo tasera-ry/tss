@@ -15,11 +15,11 @@ msgstr ""
 msgid "{booked, plural, one {# lane booked} other {# lanes booked}}"
 msgstr "{booked, plural, one {# skjutplats bokad} other {# skjutplatser bokade}}"
 
-#: src/pages/SchedulesView/CopyPanel.tsx:257
+#: src/pages/SchedulesView/CopyPanel.tsx:260
 msgid "{chosen, plural, one {Copy to # day} other {Copy to # days}}"
 msgstr "{chosen, plural, one {Kopiera till # dag} other {Kopiera till # dagar}}"
 
-#: src/pages/SchedulesView/TrackCard.tsx:191
+#: src/pages/SchedulesView/TrackCard.tsx:192
 msgid "{copiedTo, plural, one {Copied to # day.} other {Copied to # days.}}"
 msgstr "{copiedTo, plural, one {Kopierat till # dag.} other {Kopierat till # dagar.}}"
 
@@ -34,6 +34,14 @@ msgstr "{free}/{total} lediga"
 #: src/pages/DayView/DayView.tsx:101
 msgid "{tracksCount, plural, one {# track} other {# tracks}}"
 msgstr "{tracksCount, plural, one {# bana} other {# banor}}"
+
+#: src/pages/MonthView/MonthView.tsx:347
+msgid "{weekCount} weeks · select a day to see the tracks"
+msgstr "{weekCount} veckor · välj en dag för att se banorna"
+
+#: src/pages/WeekView/WeekView.tsx:255
+msgid "7 days · select a day to see the tracks"
+msgstr "7 dagar · välj en dag för att se banorna"
 
 #: src/pages/SchedulesView/SchedulesView.tsx:91
 msgid "A track has unsaved changes. Leave without saving?"
@@ -60,7 +68,7 @@ msgstr "Funktioner"
 msgid "Add"
 msgstr "Lägg till"
 
-#: src/pages/SchedulesView/TrackCard.tsx:349
+#: src/pages/SchedulesView/TrackCard.tsx:352
 msgid "Add booking"
 msgstr "Lägg till bokning"
 
@@ -88,7 +96,7 @@ msgstr "Lägg till banofficer"
 msgid "Advanced options"
 msgstr "Avancerade alternativ"
 
-#: src/pages/SchedulesView/TrackCard.tsx:475
+#: src/pages/SchedulesView/TrackCard.tsx:479
 msgid "All lanes"
 msgstr "Alla platser"
 
@@ -136,10 +144,6 @@ msgstr ""
 msgid "Amount of supervisions"
 msgstr "Antalet av handledare skift"
 
-#: src/raffle/RaffleDatePicker.jsx:29
-#~ msgid "April"
-#~ msgstr "April"
-
 #. placeholder {0}: user.name
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:141
 msgid "Are you sure you want to delete {0}?"
@@ -153,9 +157,11 @@ msgstr "Är du säker på att du vill ta bort detta meddelande?"
 msgid "Are you sure you want to delete this track?"
 msgstr "Är du säker på att du vill ta bort denna rata?"
 
-#: src/usermanagement/UserManagementView.jsx:993
-#~ msgid "Are you sure?"
-#~ msgstr "Är du säker?"
+#: src/pages/WeekView/WeekView.tsx:336
+#: src/pages/MonthView/MonthView.tsx:468
+#: src/pages/MonthView/MonthView.tsx:600
+msgid "Arrival time unknown"
+msgstr "Ankomsttid okänd"
 
 #: src/profile/profilepages/supervisions.tsx:102
 msgid "Assigned officer"
@@ -192,10 +198,6 @@ msgstr "Föreningens kommande övervakningar"
 msgid "Associations"
 msgstr "Föreningar"
 
-#: src/raffle/RaffleDatePicker.jsx:33
-#~ msgid "August"
-#~ msgstr "Augusti"
-
 #: src/pages/SchedulesView/BookingForm.tsx:231
 msgid "Authority use takes the whole track: every section and lane."
 msgstr "Myndighetsbruk tar hela banan: alla sektioner och skjutplatser."
@@ -212,20 +214,12 @@ msgstr "Tillbaka"
 msgid "Back to day view"
 msgstr "Tillbaka till dagsvyn"
 
-#: src/trackview/Trackview.tsx:159
-#~ msgid "Back to dayview"
-#~ msgstr "Tillbaka till dagvy"
-
-#: src/pages/DayView/DayView.tsx:98
-#~ msgid "Back to weekview"
-#~ msgstr "Tillbaka till veckovy"
-
 #: src/pages/SchedulesView/BookingForm.tsx:274
 msgid "Booked by"
 msgstr "Bokad av"
 
-#: src/pages/SchedulesView/TrackCard.tsx:276
-#: src/pages/SchedulesView/CopyPanel.tsx:219
+#: src/pages/SchedulesView/TrackCard.tsx:277
+#: src/pages/SchedulesView/CopyPanel.tsx:222
 msgid "Bookings"
 msgstr "Bokningar"
 
@@ -235,8 +229,8 @@ msgstr "Bokningar"
 #: src/pages/UserManagement/components/dialogs/ChangeEmailSelfDialog.tsx:92
 #: src/pages/UserManagement/components/dialogs/AddUserDialog.tsx:167
 #: src/pages/TabletView/components/OpenHoursSection.tsx:145
-#: src/pages/SchedulesView/TrackCard.tsx:504
-#: src/pages/SchedulesView/CopyPanel.tsx:269
+#: src/pages/SchedulesView/TrackCard.tsx:508
+#: src/pages/SchedulesView/CopyPanel.tsx:272
 #: src/pages/SchedulesView/BookingForm.tsx:321
 #: src/lib/components/Navbar/FeedbackWindow.tsx:45
 msgid "Cancel"
@@ -257,10 +251,6 @@ msgstr "Ändra bokning"
 msgid "Change email address"
 msgstr "Ändra e-postadress"
 
-#: src/usermanagement/UserManagementView.jsx:1251
-#~ msgid "Change Email for user:"
-#~ msgstr "Ändra e-postadress för användare"
-
 #: src/profile/profilesettings.jsx:26
 #: src/profile/profilepages/changepassword.tsx:74
 #: src/profile/profilepages/changepassword.tsx:77
@@ -269,14 +259,6 @@ msgstr "Ändra e-postadress"
 #: src/pages/UserManagement/components/dialogs/ChangePasswordSelfDialog.tsx:72
 msgid "Change password"
 msgstr "Ändra lösenord"
-
-#: src/usermanagement/UserManagementView.jsx:1176
-#~ msgid "Change password for"
-#~ msgstr "Ändra lösenord för användare"
-
-#: src/usermanagement/UserManagementView.jsx:1298
-#~ msgid "Change role for user:"
-#~ msgstr "Ändra roll för användare"
 
 #: src/pages/TabletView/TabletView.tsx:157
 msgid "Change track officer status by choosing color. Change number of track users with buttons"
@@ -300,32 +282,28 @@ msgstr "Välj datum"
 msgid "Choose dates for the raffle"
 msgstr "Välj datum för tombola"
 
-#: src/pages/SchedulesView/CopyPanel.tsx:229
+#: src/pages/SchedulesView/CopyPanel.tsx:232
 msgid "Chosen: {chosen}"
 msgstr "Valda: {chosen}"
 
-#: src/VisitorLogging/VisitorLogging.jsx:136
-#~ msgid "Close"
-#~ msgstr "Stänga"
+#: src/pages/WeekView/WeekView.tsx:444
+msgid "Close"
+msgstr "Stäng"
 
 #: src/scheduling/Scheduling.jsx:1237
 msgid "Close All"
 msgstr "Stäng alla"
-
-#: src/usermanagement/UserManagementView.jsx:1505
-#~ msgid "Close editing mode"
-#~ msgstr "Stäng redigeringsläge"
 
 #: src/trackview/Trackview.tsx:466
 #: src/scheduling/Scheduling.jsx:980
 #: src/pages/TabletView/components/TrackCard.tsx:20
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:109
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:126
-#: src/pages/SchedulesView/TrackCard.tsx:124
-#: src/pages/SchedulesView/TrackCard.tsx:434
+#: src/pages/SchedulesView/TrackCard.tsx:125
+#: src/pages/SchedulesView/TrackCard.tsx:438
 #: src/pages/SchedulesView/SchedulesView.tsx:287
 #: src/pages/SchedulesView/CopyPanel.tsx:87
-#: src/pages/SchedulesView/CopyPanel.tsx:188
+#: src/pages/SchedulesView/CopyPanel.tsx:191
 #: src/pages/DayView/DayView.tsx:220
 msgid "Closed"
 msgstr "Stängd"
@@ -385,18 +363,23 @@ msgstr "Anslutning misslyckades. Kontrollera servern, porten och SSL-inställnin
 msgid "Connection timed out. Check network connectivity.!"
 msgstr "Anslutningen timeoutade. Kontrollera nätverksanslutningen."
 
-#: src/pages/SchedulesView/CopyPanel.tsx:195
+#: src/pages/SchedulesView/CopyPanel.tsx:198
 msgid "Copy"
 msgstr "Kopiera"
 
-#: src/pages/SchedulesView/TrackCard.tsx:359
-#: src/pages/SchedulesView/CopyPanel.tsx:175
+#: src/pages/SchedulesView/TrackCard.tsx:363
+#: src/pages/SchedulesView/CopyPanel.tsx:178
 msgid "Copy to other days"
 msgstr "Kopiera till andra dagar"
 
 #: src/raffle/raffle.tsx:77
 msgid "Could not load associations"
 msgstr "Kunde inte ladda föreningar"
+
+#: src/pages/WeekView/WeekView.tsx:213
+#: src/pages/MonthView/MonthView.tsx:224
+msgid "Could not load the schedule. Please try again later."
+msgstr "Det gick inte att ladda schemat. Försök igen senare."
 
 #: src/pages/UserManagement/components/dialogs/AddUserDialog.tsx:93
 #: src/pages/UserManagement/components/dialogs/AddUserDialog.tsx:103
@@ -422,13 +405,13 @@ msgstr "Datum"
 msgid "Day"
 msgstr "Dag"
 
-#: src/pages/SchedulesView/CopyPanel.tsx:226
+#: src/pages/MonthView/MonthView.tsx:630
+msgid "Day of the previous or next month"
+msgstr "Dag i föregående eller nästa månad"
+
+#: src/pages/SchedulesView/CopyPanel.tsx:229
 msgid "Days"
 msgstr "Dagar"
-
-#: src/raffle/RaffleDatePicker.jsx:37
-#~ msgid "December"
-#~ msgstr "December"
 
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:28
 msgid "Define range officer status by choosing color"
@@ -436,21 +419,17 @@ msgstr "Definiera status för banofficer genom att välja färg"
 
 #: src/profile/profilepages/officerform.jsx:69
 #: src/profile/profilepages/officerform.jsx:92
-#: src/pages/SchedulesView/TrackCard.tsx:494
-#: src/pages/SchedulesView/TrackCard.tsx:529
+#: src/pages/SchedulesView/TrackCard.tsx:498
+#: src/pages/SchedulesView/TrackCard.tsx:533
 #: src/pages/EditTracksView/components/TrackRow.tsx:189
 msgid "Delete"
 msgstr "Ta bort"
-
-#: src/usermanagement/UserManagementView.jsx:525
-#~ msgid "Delete profile"
-#~ msgstr "Ta bort användare"
 
 #: src/profile/profilepages/officerform.jsx:81
 msgid "Delete range officer"
 msgstr "Ta bort banofficer"
 
-#: src/pages/SchedulesView/TrackCard.tsx:485
+#: src/pages/SchedulesView/TrackCard.tsx:489
 msgid "Delete this booking?"
 msgstr "Ta bort bokningen?"
 
@@ -491,23 +470,14 @@ msgstr "Ange en e-postadress!"
 
 #: src/pages/UserManagement/UserManagementView.tsx:137
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:45
-#: src/pages/SchedulesView/TrackCard.tsx:514
+#: src/pages/SchedulesView/TrackCard.tsx:518
 #: src/pages/EditTracksView/components/TrackRow.tsx:181
 msgid "Edit"
 msgstr "Redigera"
 
-#: src/usermanagement/UserManagementView.jsx:1423
-#~ msgid "Edit email address"
-#~ msgstr "Redigera e-postadress"
-
 #: src/scheduling/Scheduling.jsx:1152
 msgid "Edit range officer status by choosing color"
 msgstr "Redigera status för banofficer genom att välja färg"
-
-#: src/usermanagement/UserManagementView.jsx:1439
-#: src/usermanagement/UserManagementView.jsx:1474
-#~ msgid "Edit role"
-#~ msgstr "Redigera roll"
 
 #: src/lib/components/Navbar/DrawerMenu.tsx:32
 msgid "Edit tracks"
@@ -617,18 +587,19 @@ msgstr "Fel vid att uppdatera rata"
 msgid "Error verifying token!"
 msgstr "Fel vid verifiering av token!"
 
-#: src/Devices/devices.jsx:64
-#~ msgid "Error: Device name cannot be empty"
-#~ msgstr "Fel: Enhetsnamnet får inte vara tomt."
-
-#: src/Devices/devices.jsx:69
-#~ msgid "Error: Device status must be either 'free' or 'reserved'"
-#~ msgstr "Fel: Enhetsstatusen måste vara antigen 'fri' eller 'reserverad'"
+#: src/pages/WeekView/WeekView.tsx:335
+#: src/pages/MonthView/MonthView.tsx:467
+msgid "Estimate {time}"
+msgstr "Beräknad {time}"
 
 #: src/trackview/Trackview.tsx:371
 #: src/pages/SchedulesView/SchedulesView.tsx:306
 msgid "Estimated arrival"
 msgstr "Beräknad ankomst"
+
+#: src/pages/MonthView/MonthView.tsx:600
+msgid "Estimated arrival {time}"
+msgstr "Beräknad ankomsttid {time}"
 
 #: src/scheduling/Scheduling.jsx:426
 msgid "Estimated time of arrival updated"
@@ -645,10 +616,6 @@ msgstr "Kunde inte ta bort användare, användaren kan vara valvoja för reserva
 #: src/scheduling/Scheduling.jsx:431
 msgid "Failed to update estimated time of arrival"
 msgstr "Uppdatering av beräknad ankomsttid misslyckades"
-
-#: src/raffle/RaffleDatePicker.jsx:27
-#~ msgid "February"
-#~ msgstr "Februari"
 
 #: src/lib/components/Navbar/DrawerMenu.tsx:109
 msgid "Feedback"
@@ -672,10 +639,6 @@ msgstr "Tvinga alla väntande e-postmeddelanden att skickas omedelbart."
 msgid "Forgot password?"
 msgstr "Glömt lösenord?"
 
-#: src/raffle/RaffleDatePicker.jsx:22
-#~ msgid "Fr"
-#~ msgstr "Fr"
-
 #: src/trackview/Trackview.tsx:706
 msgid "free"
 msgstr "lediga"
@@ -686,13 +649,13 @@ msgstr "lediga"
 msgid "Free"
 msgstr "Fri"
 
-#: src/pages/MonthView/MonthView.tsx:112
+#: src/pages/MonthView/MonthView.tsx:316
 msgid "Fri"
 msgstr "Fre"
 
-#: src/raffle/RaffleDatePicker.jsx:13
-#~ msgid "Friday"
-#~ msgstr "Fredag"
+#: src/pages/MonthView/MonthView.tsx:316
+msgid "Friday"
+msgstr "fredag"
 
 #: src/lib/components/Navbar/FeedbackWindow.tsx:26
 msgid "Give feedback"
@@ -713,10 +676,6 @@ msgstr "Vapenlicensägare"
 #: src/raffle/SupervisorsTable.jsx:52
 msgid "In raffle"
 msgstr "På tombola"
-
-#: src/trackview/Trackview.tsx:81
-#~ msgid "Info"
-#~ msgstr "Information"
 
 #: src/renewPW/RenewPassword.jsx:109
 msgid "Input new password"
@@ -746,21 +705,9 @@ msgstr "Ogiltigt valt tid"
 msgid "It is shown read-only; past days cannot be changed."
 msgstr "Uppgifterna visas skrivskyddade; tidigare dagar kan inte ändras."
 
-#: src/raffle/RaffleDatePicker.jsx:26
-#~ msgid "January"
-#~ msgstr "Januari"
-
-#: src/raffle/RaffleDatePicker.jsx:32
-#~ msgid "July"
-#~ msgstr "Juli"
-
-#: src/raffle/RaffleDatePicker.jsx:31
-#~ msgid "June"
-#~ msgstr "Juni"
-
 #: src/trackview/Trackview.tsx:391
 #: src/trackview/Trackview.tsx:744
-#: src/pages/SchedulesView/TrackCard.tsx:220
+#: src/pages/SchedulesView/TrackCard.tsx:221
 msgid "lanes"
 msgstr "skjutplatser"
 
@@ -771,6 +718,10 @@ msgstr "Skjutplatser"
 #: src/trackview/useTrackName.ts:33
 msgid "Leftmost"
 msgstr "Längst till vänster"
+
+#: src/pages/MonthView/MonthView.tsx:614
+msgid "Legend"
+msgstr "Teckenförklaring"
 
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:20
 msgid "Loading devices..."
@@ -792,27 +743,13 @@ msgstr "Laddar..."
 msgid "Log in"
 msgstr "Logga in"
 
-#: src/usermanagement/UserManagementView.jsx:930
-#: src/usermanagement/UserManagementView.jsx:1074
-#: src/usermanagement/UserManagementView.jsx:1197
-#~ msgid "lowercase letter"
-#~ msgstr "liten bokstav"
-
 #: src/scheduling/Scheduling.jsx:1212
 msgid "Manage shooting tracks"
 msgstr "Hantera skjutbanor"
 
-#: src/raffle/RaffleDatePicker.jsx:28
-#~ msgid "March"
-#~ msgstr "Mars"
-
 #: src/trackview/useTrackName.ts:39
 msgid "Marked lanes"
 msgstr "Markerade platser"
-
-#: src/raffle/RaffleDatePicker.jsx:30
-#~ msgid "May"
-#~ msgstr "Maj"
 
 #: src/trackview/Trackview.tsx:413
 msgid "Members may not enter a track without a track officer."
@@ -829,18 +766,6 @@ msgstr "Meddelande"
 #: src/trackview/useTrackName.ts:35
 msgid "Middle"
 msgstr "Mitten"
-
-#: src/usermanagement/UserManagementView.jsx:925
-#: src/usermanagement/UserManagementView.jsx:930
-#: src/usermanagement/UserManagementView.jsx:935
-#: src/usermanagement/UserManagementView.jsx:1069
-#: src/usermanagement/UserManagementView.jsx:1074
-#: src/usermanagement/UserManagementView.jsx:1079
-#: src/usermanagement/UserManagementView.jsx:1192
-#: src/usermanagement/UserManagementView.jsx:1197
-#: src/usermanagement/UserManagementView.jsx:1202
-#~ msgid "Minimum"
-#~ msgstr "Minst"
 
 #. placeholder {0}: 1
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:200
@@ -885,17 +810,13 @@ msgstr "Minst {5} stor bokstav"
 msgid "Minimum length of password is 6 characters"
 msgstr "Lösenord måste vara minst 6 tecken långt"
 
-#: src/raffle/RaffleDatePicker.jsx:18
-#~ msgid "Mo"
-#~ msgstr "Må"
-
-#: src/pages/MonthView/MonthView.tsx:108
+#: src/pages/MonthView/MonthView.tsx:312
 msgid "Mon"
 msgstr "Mån"
 
-#: src/raffle/RaffleDatePicker.jsx:9
-#~ msgid "Monday"
-#~ msgstr "Måndag"
+#: src/pages/MonthView/MonthView.tsx:312
+msgid "Monday"
+msgstr "måndag"
 
 #: src/trackview/Trackview.tsx:236
 #: src/pages/StatisticsView/StatisticsView.tsx:99
@@ -937,7 +858,7 @@ msgstr "Nytt lösenord"
 msgid "New password is required"
 msgstr "Nytt lösenord är obligatoriskt"
 
-#: src/lib/components/DateHeader/DateHeader.tsx:80
+#: src/lib/components/DateHeader/DateHeader.tsx:82
 msgid "Next"
 msgstr "Nästa"
 
@@ -959,20 +880,16 @@ msgstr "Nej"
 msgid "No association"
 msgstr "Ingen förening"
 
-#: src/pages/SchedulesView/TrackCard.tsx:279
+#: src/pages/SchedulesView/TrackCard.tsx:280
 msgid "No bookings"
 msgstr "Inga bokningar"
-
-#: src/trackview/Trackview.tsx:130
-#~ msgid "No defined track officer"
-#~ msgstr "Banhandledare odefinierad"
 
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusPanel.tsx:36
 msgid "No devices found"
 msgstr "Inga enheter hittades"
 
-#: src/pages/SchedulesView/TrackCard.tsx:269
-#: src/pages/SchedulesView/CopyPanel.tsx:210
+#: src/pages/SchedulesView/TrackCard.tsx:270
+#: src/pages/SchedulesView/CopyPanel.tsx:213
 msgid "No notice"
 msgstr "Inget meddelande"
 
@@ -991,10 +908,6 @@ msgstr "Ingen banofficer"
 #: src/pages/DayView/DayView.tsx:314
 msgid "No range officer present"
 msgstr "Ingen banofficer närvarande"
-
-#: src/VisitorLogging/VisitorLogging.jsx:125
-#~ msgid "No reservations found. Set reservation in Schedules page"
-#~ msgstr "Inga reservationer hittades. Ställ in reservation på Schemasidan"
 
 #: src/upcomingsupervisions/LoggedIn.jsx:144
 #: src/upcomingsupervisions/LoggedIn.jsx:201
@@ -1017,17 +930,13 @@ msgstr "Ingen bana kan användas förrän banofficeren anländer."
 msgid "No track officer"
 msgstr "Ingen banofficer"
 
-#: src/pages/DayView/DayView.tsx:194
-#~ msgid "No track officer available"
-#~ msgstr "Inte banhandledare tillgängliga"
-
 #: src/trackview/Trackview.tsx:410
 #: src/trackview/Trackview.tsx:630
 #: src/pages/DayView/DayView.tsx:257
 msgid "No track officer present"
 msgstr "Ingen banhandledare närvarande"
 
-#: src/pages/SchedulesView/TrackCard.tsx:123
+#: src/pages/SchedulesView/TrackCard.tsx:124
 #: src/pages/SchedulesView/CopyPanel.tsx:89
 msgid "Normal"
 msgstr "Normal"
@@ -1045,40 +954,31 @@ msgstr "Inte valt"
 msgid "Nothing to confirm"
 msgstr "Inget att bekräfta"
 
-#: src/pages/SchedulesView/CopyPanel.tsx:151
+#: src/pages/SchedulesView/CopyPanel.tsx:154
 msgid "Nothing was copied: the bookings do not fit on {days}. Remove those days or change the bookings, then try again."
 msgstr "Inget kopierades: bokningarna ryms inte följande dagar: {days}. Ta bort dem eller ändra bokningarna och försök igen."
 
-#: src/pages/SchedulesView/CopyPanel.tsx:154
+#: src/pages/SchedulesView/CopyPanel.tsx:157
 msgid "Nothing was copied: the copy could not be saved."
 msgstr "Inget kopierades: kopian kunde inte sparas."
 
 #: src/trackview/Trackview.tsx:419
-#: src/pages/SchedulesView/TrackCard.tsx:255
-#: src/pages/SchedulesView/TrackCard.tsx:262
-#: src/pages/SchedulesView/CopyPanel.tsx:210
+#: src/pages/SchedulesView/TrackCard.tsx:256
+#: src/pages/SchedulesView/TrackCard.tsx:263
+#: src/pages/SchedulesView/CopyPanel.tsx:213
 msgid "Notice for the day"
 msgstr "Dagens meddelande"
 
-#: src/raffle/RaffleDatePicker.jsx:36
-#~ msgid "November"
-#~ msgstr "November"
-
-#: src/usermanagement/UserManagementView.jsx:925
-#: src/usermanagement/UserManagementView.jsx:1069
-#: src/usermanagement/UserManagementView.jsx:1192
-#~ msgid "number"
-#~ msgstr "nummer"
+#: src/pages/WeekView/WeekView.tsx:381
+#: src/pages/WeekView/WeekView.tsx:427
+msgid "Notices for the day"
+msgstr "Dagens meddelanden"
 
 #: src/pages/StatisticsView/components/VisitorsTodayChart.tsx:63
 #: src/pages/StatisticsView/components/MonthlyVisitorsByTrackChart.tsx:88
 #: src/pages/StatisticsView/components/CurrentDayStatistics.tsx:85
 msgid "Number of visitors"
 msgstr "Antal besökare"
-
-#: src/raffle/RaffleDatePicker.jsx:35
-#~ msgid "October"
-#~ msgstr "Oktober"
 
 #: src/profile/profilepages/changepassword.tsx:53
 msgid "Old password"
@@ -1112,6 +1012,10 @@ msgstr "Öppet"
 msgid "Open All"
 msgstr "Öppna alla"
 
+#: src/pages/MonthView/MonthView.tsx:604
+msgid "Open day view"
+msgstr "Öppna dagsvy"
+
 #: src/scheduling/Scheduling.jsx:1083
 #: src/pages/SchedulesView/SchedulesView.tsx:290
 msgid "Opening hours"
@@ -1120,10 +1024,6 @@ msgstr "Öppettider"
 #: src/pages/DayView/DayView.tsx:336
 msgid "OPENING HOURS"
 msgstr "ÖPPETTIDER"
-
-#: src/pages/DayView/DayView.tsx:71
-#~ msgid "Opening hours: {opensAt}-{closesAt}"
-#~ msgstr "Öppettider: {opensAt}-{closesAt}"
 
 #: src/pages/DayView/DayView.tsx:235
 msgid "Opens at {time}"
@@ -1201,7 +1101,7 @@ msgstr "Lägg till din nya e-postadress"
 msgid "Present"
 msgstr "Närvarande"
 
-#: src/lib/components/DateHeader/DateHeader.tsx:66
+#: src/lib/components/DateHeader/DateHeader.tsx:68
 msgid "Previous"
 msgstr "Föregående"
 
@@ -1216,10 +1116,10 @@ msgstr "Föregående månad"
 
 #: src/trackview/Trackview.tsx:462
 #: src/scheduling/Scheduling.jsx:614
-#: src/pages/SchedulesView/TrackCard.tsx:125
-#: src/pages/SchedulesView/TrackCard.tsx:432
+#: src/pages/SchedulesView/TrackCard.tsx:126
+#: src/pages/SchedulesView/TrackCard.tsx:436
 #: src/pages/SchedulesView/CopyPanel.tsx:88
-#: src/pages/SchedulesView/CopyPanel.tsx:186
+#: src/pages/SchedulesView/CopyPanel.tsx:189
 #: src/pages/SchedulesView/BookingForm.tsx:222
 #: src/pages/DayView/DayView.tsx:227
 msgid "Private event"
@@ -1239,14 +1139,13 @@ msgid "Range"
 msgstr "Skjutbaneområde"
 
 #: src/trackview/Trackview.tsx:335
+#: src/pages/WeekView/WeekView.tsx:77
+#: src/pages/MonthView/MonthView.tsx:78
+#: src/pages/MonthView/MonthView.tsx:79
 #: src/pages/DayView/DayView.tsx:316
 #: src/lib/components/TableLegends.tsx:34
 msgid "Range closed"
 msgstr "Skjutbana stängd"
-
-#: src/usermanagement/UserManagementView.jsx:559
-#~ msgid "Range master"
-#~ msgstr "Banmästare"
 
 #: src/scheduling/Scheduling.jsx:1122
 #: src/pages/UserManagement/UserManagementView.tsx:152
@@ -1277,12 +1176,15 @@ msgstr "Banofficeren anländer kl. {0}"
 #: src/scheduling/Scheduling.jsx:384
 #: src/scheduling/Scheduling.jsx:389
 #: src/scheduling/Scheduling.jsx:983
+#: src/pages/WeekView/WeekView.tsx:59
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:130
 #: src/pages/SchedulesView/SchedulesView.tsx:273
+#: src/pages/MonthView/MonthView.tsx:60
 #: src/pages/DayView/DayView.tsx:310
 msgid "Range officer confirmed"
 msgstr "Banofficer bekräftat"
 
+#: src/pages/MonthView/MonthView.tsx:61
 #: src/lib/components/TableLegends.tsx:23
 msgid "Range officer confirmed, estimated time of arrival"
 msgstr "Banofficer bekräftat, beräknad ankomsttid"
@@ -1303,10 +1205,6 @@ msgstr "Banofficer borttagning misslyckades"
 msgid "Range officer management"
 msgstr "Banofficerhantering"
 
-#: src/trackview/Trackview.tsx:121
-#~ msgid "Range officer not present"
-#~ msgstr "Banofficer inte närvarande"
-
 #: src/trackview/Trackview.tsx:339
 #: src/trackview/Trackview.tsx:639
 #: src/scheduling/Scheduling.jsx:369
@@ -1318,6 +1216,9 @@ msgstr "Banofficerhantering"
 msgid "Range officer predefined"
 msgstr "Banofficer inte bekräftat"
 
+#: src/pages/WeekView/WeekView.tsx:65
+#: src/pages/MonthView/MonthView.tsx:66
+#: src/pages/MonthView/MonthView.tsx:67
 #: src/lib/components/TableLegends.tsx:17
 msgid "Range officer predefined, not confirmed"
 msgstr "Banofficer fördefinierad, men inte bekräftat"
@@ -1326,8 +1227,11 @@ msgstr "Banofficer fördefinierad, men inte bekräftat"
 #: src/scheduling/Scheduling.jsx:399
 #: src/scheduling/Scheduling.jsx:401
 #: src/scheduling/Scheduling.jsx:974
+#: src/pages/WeekView/WeekView.tsx:53
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:118
 #: src/pages/SchedulesView/SchedulesView.tsx:272
+#: src/pages/MonthView/MonthView.tsx:54
+#: src/pages/MonthView/MonthView.tsx:55
 #: src/pages/DayView/DayView.tsx:307
 #: src/lib/components/TableLegends.tsx:14
 msgid "Range officer present"
@@ -1343,7 +1247,10 @@ msgstr "Banofficerns status"
 
 #: src/scheduling/Scheduling.jsx:977
 #: src/scheduling/Scheduling.jsx:989
+#: src/pages/WeekView/WeekView.tsx:71
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:122
+#: src/pages/MonthView/MonthView.tsx:72
+#: src/pages/MonthView/MonthView.tsx:73
 #: src/lib/components/TableLegends.tsx:37
 msgid "Range officer undefined"
 msgstr "Banofficer odefinierad"
@@ -1368,11 +1275,11 @@ msgstr "Handledare"
 msgid "Recipients"
 msgstr "Mottagare"
 
-#: src/pages/SchedulesView/TrackCard.tsx:521
+#: src/pages/SchedulesView/TrackCard.tsx:525
 msgid "Repeat"
 msgstr "Upprepa"
 
-#: src/pages/SchedulesView/CopyPanel.tsx:175
+#: src/pages/SchedulesView/CopyPanel.tsx:178
 msgid "Repeat booking"
 msgstr "Upprepa bokning"
 
@@ -1394,8 +1301,8 @@ msgid "Reserved"
 msgstr "Reserverad"
 
 #: src/trackview/Trackview.tsx:464
-#: src/pages/SchedulesView/TrackCard.tsx:433
-#: src/pages/SchedulesView/CopyPanel.tsx:187
+#: src/pages/SchedulesView/TrackCard.tsx:437
+#: src/pages/SchedulesView/CopyPanel.tsx:190
 #: src/pages/SchedulesView/BookingForm.tsx:221
 msgid "Reserved for authority use"
 msgstr "Reserverad för myndighetsbruk"
@@ -1427,23 +1334,19 @@ msgstr "Roll"
 msgid "Role is required"
 msgstr "Roll är obligatorisk"
 
-#: src/raffle/RaffleDatePicker.jsx:23
-#~ msgid "Sa"
-#~ msgstr "Lö"
-
-#: src/pages/MonthView/MonthView.tsx:113
+#: src/pages/MonthView/MonthView.tsx:317
 msgid "Sat"
 msgstr "Lör"
 
-#: src/raffle/RaffleDatePicker.jsx:14
-#~ msgid "Saturday"
-#~ msgstr "Lördag"
+#: src/pages/MonthView/MonthView.tsx:317
+msgid "Saturday"
+msgstr "lördag"
 
 #: src/upcomingsupervisions/LoggedIn.jsx:530
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:184
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:264
 #: src/pages/TabletView/components/OpenHoursSection.tsx:151
-#: src/pages/SchedulesView/TrackCard.tsx:386
+#: src/pages/SchedulesView/TrackCard.tsx:390
 msgid "Save"
 msgstr "Spara"
 
@@ -1466,7 +1369,7 @@ msgstr "Spara resultat"
 msgid "Save settings"
 msgstr "Spara inställningar"
 
-#: src/pages/SchedulesView/TrackCard.tsx:160
+#: src/pages/SchedulesView/TrackCard.tsx:161
 msgid "Saved"
 msgstr "Sparat"
 
@@ -1533,10 +1436,6 @@ msgstr "Skickarens e-postadress"
 msgid "Sending pending messages failed!"
 msgstr "Skickning av väntande meddelanden misslyckades!"
 
-#: src/raffle/RaffleDatePicker.jsx:34
-#~ msgid "September"
-#~ msgstr "September"
-
 #: src/profile/profilepages/supervisions.tsx:221
 msgid "Set"
 msgstr "Spara"
@@ -1581,24 +1480,6 @@ msgstr "SMTP-inställningar"
 msgid "Something went wrong"
 msgstr "Uppdatering misslyckades"
 
-#: src/usermanagement/UserManagementView.jsx:1267
-#~ msgid "Something went wrong, email not saved"
-#~ msgstr "Något gick fel, e-postadress har inte sparats"
-
-#: src/usermanagement/UserManagementView.jsx:1094
-#: src/usermanagement/UserManagementView.jsx:1220
-#~ msgid "Something went wrong, remember that the password has to meet the listed requirements"
-#~ msgstr "Något gick fel, kom ihåg att lösenordet måste uppfylla de angivna kraven"
-
-#: src/usermanagement/UserManagementView.jsx:961
-#: src/usermanagement/UserManagementView.jsx:1145
-#~ msgid "Something went wrong, remember that the password has to meet the listed requirements and the name needs to be unique"
-#~ msgstr "Något gick fel, kom ihåg att lösenordet måste uppfylla de angivna kraven och att namnet måste vara unikt"
-
-#: src/usermanagement/UserManagementView.jsx:1304
-#~ msgid "Something went wrong, role not saved"
-#~ msgstr "Något gick fel, roll har inte sparats"
-
 #: src/EmailSettings/EmailSettings.tsx:210
 msgid "Something went wrong!"
 msgstr "Något gick fel!"
@@ -1628,14 +1509,6 @@ msgstr "Statistik"
 msgid "Status"
 msgstr "Status"
 
-#: src/Devices/devices.jsx:127
-#~ msgid "Status (free/reserved)"
-#~ msgstr "Status (fri/reserverad)"
-
-#: src/raffle/RaffleDatePicker.jsx:17
-#~ msgid "Su"
-#~ msgstr "Sö"
-
 #: src/renewPW/RenewPassword.jsx:165
 msgid "Submit"
 msgstr "Skicka in"
@@ -1644,13 +1517,13 @@ msgstr "Skicka in"
 msgid "Successfully updated!"
 msgstr "Uppdaterat!"
 
-#: src/pages/MonthView/MonthView.tsx:114
+#: src/pages/MonthView/MonthView.tsx:318
 msgid "Sun"
 msgstr "Sön"
 
-#: src/raffle/RaffleDatePicker.jsx:8
-#~ msgid "Sunday"
-#~ msgstr "Söndag"
+#: src/pages/MonthView/MonthView.tsx:318
+msgid "Sunday"
+msgstr "söndag"
 
 #: src/trackview/Trackview.tsx:135
 msgid "Sunset"
@@ -1661,10 +1534,6 @@ msgstr "Solnedgång"
 msgid "Superuser"
 msgstr "Superuser"
 
-#: src/profile/profilepages/supervisions.jsx:207
-#~ msgid "Supervision cleared for"
-#~ msgstr "Övervakning rensad för"
-
 #: src/profile/profilepages/supervisions.tsx:160
 msgid "Supervision cleared for {formatedDate}"
 msgstr "Övervakning rensad för {formatedDate}"
@@ -1672,10 +1541,6 @@ msgstr "Övervakning rensad för {formatedDate}"
 #: src/profile/profilepages/supervisions.tsx:176
 msgid "Supervision set for {formatedDate}"
 msgstr "Övervakning tilldelad för {formatedDate}"
-
-#: src/profile/profilepages/supervisions.jsx:179
-#~ msgid "Supervision updated for"
-#~ msgstr "Övervakning uppdaterad för"
 
 #: src/profile/profilesettings.jsx:34
 #: src/lib/components/Navbar/DrawerMenu.tsx:40
@@ -1692,11 +1557,7 @@ msgstr "Handledare tombola"
 msgid "Tablet view"
 msgstr "Surfplattavy"
 
-#: src/raffle/RaffleDatePicker.jsx:21
-#~ msgid "Th"
-#~ msgstr "To"
-
-#: src/pages/SchedulesView/TrackCard.tsx:450
+#: src/pages/SchedulesView/TrackCard.tsx:454
 msgid "The booking could not be deleted."
 msgstr "Bokningen kunde inte tas bort."
 
@@ -1737,7 +1598,7 @@ msgstr "Misslyckats att spara resultat"
 msgid "The section or the association no longer exists. Reload the page."
 msgstr "Sektionen eller föreningen finns inte längre. Ladda om sidan."
 
-#: src/pages/SchedulesView/TrackCard.tsx:163
+#: src/pages/SchedulesView/TrackCard.tsx:164
 msgid "The track could not be saved."
 msgstr "Banan kunde inte sparas."
 
@@ -1745,30 +1606,35 @@ msgstr "Banan kunde inte sparas."
 msgid "The track is not free for authority use at that time."
 msgstr "Banan är inte ledig för myndighetsbruk vid den tiden."
 
-#: src/usermanagement/UserManagementView.jsx:1000
-#~ msgid "This action will permanently remove user"
-#~ msgstr "Denna åtgärd kommer att ta bort användaren permanent"
-
 #: src/trackview/Trackview.tsx:113
 msgid "This track has no schedule for the selected day."
 msgstr "Banan har inget schema för den valda dagen."
 
-#: src/pages/MonthView/MonthView.tsx:111
+#: src/pages/MonthView/MonthView.tsx:315
 msgid "Thu"
 msgstr "Tor"
 
-#: src/raffle/RaffleDatePicker.jsx:12
-#~ msgid "Thursday"
-#~ msgstr "Torsdag"
+#: src/pages/MonthView/MonthView.tsx:315
+msgid "Thursday"
+msgstr "torsdag"
 
 #: src/EmailSettings/EmailSettings.tsx:349
 msgid "Time for sending emails"
 msgstr "Tid för att skicka e-post"
 
 #: src/utils/Utils.jsx:100
+#: src/pages/WeekView/WeekView.tsx:340
 #: src/pages/SchedulesView/SchedulesView.tsx:128
+#: src/pages/MonthView/MonthView.tsx:477
 msgid "Today"
 msgstr "Idag"
+
+#: src/pages/WeekView/WeekView.tsx:300
+#: src/pages/MonthView/MonthView.tsx:499
+#: src/pages/MonthView/MonthView.tsx:523
+#: src/pages/MonthView/MonthView.tsx:587
+msgid "TODAY"
+msgstr "IDAG"
 
 #: src/trackview/Trackview.tsx:243
 msgid "Track"
@@ -1782,28 +1648,14 @@ msgstr "Bana {number}"
 msgid "Track added successfully"
 msgstr "Rata tillagd"
 
-#: src/trackview/Trackview.tsx:63
-#~ msgid "Track cannot be found."
-#~ msgstr "Bana kan inte hittas"
-
 #: src/scheduling/Scheduling.jsx:604
 msgid "Track closed"
 msgstr "Bana stängd"
-
-#: src/edittracks/tracks.jsx:96
-#~ msgid "Track deleted"
-#~ msgstr "Bana borttagen"
 
 #: src/pages/EditTracksView/components/TrackRow.tsx:90
 msgid "Track deleted successfully"
 msgstr "Bana borttagen"
 
-#: src/edittracks/tracks.jsx:99
-#~ msgid "Track deletion failed"
-#~ msgstr "Bana borttagning misslyckades"
-
-#: src/pages/WeekView/WeekView.tsx:171
-#: src/pages/MonthView/MonthView.tsx:215
 #: src/pages/DayView/DayView.tsx:273
 #: src/lib/components/TableLegends.tsx:46
 #: src/lib/components/TableLegends.tsx:48
@@ -1815,7 +1667,7 @@ msgid "Track not found"
 msgstr "Banan hittades inte"
 
 #: src/trackview/Trackview.tsx:409
-#: src/pages/SchedulesView/TrackCard.tsx:222
+#: src/pages/SchedulesView/TrackCard.tsx:223
 msgid "Track officer present"
 msgstr "Banhandledare närvarande"
 
@@ -1823,26 +1675,14 @@ msgstr "Banhandledare närvarande"
 msgid "Track officers are marked present on the tablet. Here you set each track's status, notice and bookings."
 msgstr "Banhandledarnas närvaro markeras på surfplattan. Här ställer du in banans status, dagens meddelande och bokningar."
 
-#: src/pages/SchedulesView/TrackCard.tsx:232
-#: src/pages/SchedulesView/CopyPanel.tsx:202
+#: src/pages/SchedulesView/TrackCard.tsx:233
+#: src/pages/SchedulesView/CopyPanel.tsx:205
 msgid "Track status"
 msgstr "Banans status"
-
-#: src/edittracks/tracks.jsx:86
-#~ msgid "Track update failed"
-#~ msgstr "Bana uppdatering misslyckades"
-
-#: src/edittracks/tracks.jsx:81
-#~ msgid "Track updated"
-#~ msgstr "Bana uppdaterats"
 
 #: src/pages/EditTracksView/components/TrackRow.tsx:66
 msgid "Track updated successfully"
 msgstr "Bana uppdaterad"
-
-#: src/VisitorLogging/VisitorLogging.jsx:65
-#~ msgid "Track visitors successfully upded"
-#~ msgstr "Användarinformationen har loggats"
 
 #: src/trackview/Trackview.tsx:297
 #: src/pages/SchedulesView/SchedulesView.tsx:151
@@ -1859,17 +1699,18 @@ msgstr "Banorna kan användas under öppettiderna."
 msgid "Tracks can be used once the range officer arrives."
 msgstr "Banorna kan användas när banofficeren har anlänt."
 
-#: src/raffle/RaffleDatePicker.jsx:19
-#~ msgid "Tu"
-#~ msgstr "Ti"
+#: src/pages/WeekView/WeekView.tsx:222
+#: src/pages/MonthView/MonthView.tsx:233
+msgid "Try again"
+msgstr "Försök igen"
 
-#: src/pages/MonthView/MonthView.tsx:109
+#: src/pages/MonthView/MonthView.tsx:313
 msgid "Tue"
 msgstr "Tis"
 
-#: src/raffle/RaffleDatePicker.jsx:10
-#~ msgid "Tuesday"
-#~ msgstr "Tisdag"
+#: src/pages/MonthView/MonthView.tsx:313
+msgid "Tuesday"
+msgstr "tisdag"
 
 #: src/pages/SchedulesView/BookingForm.tsx:205
 msgid "Type"
@@ -1879,7 +1720,7 @@ msgstr "Typ"
 msgid "Unconfirmed shift reminder"
 msgstr "Påminnelse om obekräftat skift"
 
-#: src/pages/SchedulesView/TrackCard.tsx:378
+#: src/pages/SchedulesView/TrackCard.tsx:382
 msgid "Undo"
 msgstr "Ångra"
 
@@ -1887,19 +1728,13 @@ msgstr "Ångra"
 msgid "Unmarked lanes"
 msgstr "Omarkerade platser"
 
-#: src/pages/SchedulesView/TrackCard.tsx:366
+#: src/pages/SchedulesView/TrackCard.tsx:370
 msgid "Unsaved changes"
 msgstr "Osparade ändringar"
 
 #: src/scheduling/Scheduling.jsx:460
 msgid "Update successful"
 msgstr "Uppdatering lyckades"
-
-#: src/usermanagement/UserManagementView.jsx:935
-#: src/usermanagement/UserManagementView.jsx:1079
-#: src/usermanagement/UserManagementView.jsx:1202
-#~ msgid "uppercase letter"
-#~ msgstr "stor bokstav"
 
 #: src/EmailSettings/EmailSettings.tsx:274
 msgid "Use SSL"
@@ -1913,11 +1748,6 @@ msgstr "Användare"
 #: src/lib/components/Navbar/DrawerMenu.tsx:31
 msgid "User management"
 msgstr "Användarhantering"
-
-#: src/usermanagement/UserManagementView.jsx:1356
-#: src/usermanagement/UserManagementView.jsx:1360
-#~ msgid "User profiles"
-#~ msgstr "Användarprofiler"
 
 #: src/signin/SignIn.jsx:74
 #: src/signin/SignIn.jsx:75
@@ -1970,32 +1800,29 @@ msgstr "Besökare idag"
 msgid "Warning!"
 msgstr "Varning!"
 
-#: src/raffle/RaffleDatePicker.jsx:20
-#~ msgid "We"
-#~ msgstr "On"
-
-#: src/pages/MonthView/MonthView.tsx:110
+#: src/pages/MonthView/MonthView.tsx:314
 msgid "Wed"
 msgstr "Ons"
 
-#: src/raffle/RaffleDatePicker.jsx:11
-#~ msgid "Wednesday"
-#~ msgstr "Onsdag"
+#: src/pages/MonthView/MonthView.tsx:314
+msgid "Wednesday"
+msgstr "onsdag"
 
 #: src/trackview/Trackview.tsx:237
+#: src/pages/MonthView/MonthView.tsx:359
 #: src/lib/components/ViewChanger.jsx:42
 msgid "Week"
 msgstr "Vecka"
 
-#: src/lib/components/DateHeader/DateHeader.tsx:37
-msgid "Week {weekNumber} {year}"
-msgstr "Vecka {weekNumber} {year}"
+#: src/lib/components/DateHeader/DateHeader.tsx:39
+msgid "Week {weekNumber} · {year}"
+msgstr "Vecka {weekNumber} · {year}"
 
-#: src/pages/SchedulesView/TrackCard.tsx:286
+#: src/pages/SchedulesView/TrackCard.tsx:287
 msgid "Whole track"
 msgstr "Hela banan"
 
-#: src/pages/MonthView/MonthView.tsx:121
+#: src/pages/MonthView/MonthView.tsx:360
 msgid "Wk"
 msgstr "V"
 
@@ -2015,10 +1842,6 @@ msgstr "Fel användarnamn eller lösenord"
 #: src/EmailSettings/components/ToggleFIeld.tsx:41
 msgid "Yes"
 msgstr "Ja"
-
-#: src/usermanagement/UserManagementView.jsx:1330
-#~ msgid "You are logged in as"
-#~ msgstr "Du är inloggad som"
 
 #: src/pages/UserManagement/UserManagementView.tsx:101
 msgid "You are logged in as:"

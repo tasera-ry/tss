@@ -72,6 +72,15 @@ const fields = {
 
     return validatorAdditions(validator, opts);
   }
+
+  , requires_range_officer: function requiresRangeOfficerValidation(requestObject, ...opts) {
+    const validator = requestObject('requires_range_officer')
+      .isBoolean()
+      .withMessage('must be a boolean')
+      .toBoolean(true /* strict mode */);
+
+    return validatorAdditions(validator, opts);
+  }
 };
 
 function handleValidationErrors(request, response, next) {
@@ -109,6 +118,7 @@ module.exports = {
     fields.description(body, 'exists'),
     fields.short_description(body, 'exists'),
     fields.range_id(body, 'exists'),
+    fields.requires_range_officer(body, 'optional'),
     handleValidationErrors,
     function storeCreationRequest(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['body'] });
@@ -120,6 +130,7 @@ module.exports = {
     fields.name(body, 'optional'),
     fields.description(body, 'optional'),
     fields.short_description(body, 'optional'),
+    fields.requires_range_officer(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
       response.locals.id = matchedData(request, { locations: ['params'] });

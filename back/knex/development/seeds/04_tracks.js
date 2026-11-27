@@ -76,6 +76,8 @@ casual.define('range', async function(rangeId) {
     range_id: rangeId,
     // Same names as production (stable seed), numbered from 1.
     name: `Rata ${i + 1}`,
+    // Only track 6 may open without a range officer (Pasi Autio, 12.10.2026).
+    requires_range_officer: i !== 5,
     description: casual.track_description,
     short_description: shortDescriptions[i] ?? `s ${i}`
   }));

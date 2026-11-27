@@ -43,6 +43,7 @@ const controller = {
             id: instance['track_id'],
             name: instance['name'],
             notice: instance['notice'],
+            requires_range_officer: instance['requires_range_officer'],
             short_description: instance['short_description'],
             trackSupervision: instance['track_supervisor'],
             scheduled: {
@@ -64,6 +65,7 @@ const controller = {
         id: instance['track_id'],
         name: instance['name'],
         notice: instance['notice'],
+        requires_range_officer: instance['requires_range_officer'],
         short_description: instance['short_description'],
         trackSupervision: instance['track_supervisor'],
         scheduled: {
