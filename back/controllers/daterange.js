@@ -44,6 +44,8 @@ const controller = {
             name: instance['name'],
             notice: instance['notice'],
             requires_range_officer: instance['requires_range_officer'],
+            only_22lr: instance['only_22lr'],
+            daylight_only: instance['daylight_only'],
             short_description: instance['short_description'],
             trackSupervision: instance['track_supervisor'],
             scheduled: {
@@ -66,6 +68,8 @@ const controller = {
         name: instance['name'],
         notice: instance['notice'],
         requires_range_officer: instance['requires_range_officer'],
+        only_22lr: instance['only_22lr'],
+        daylight_only: instance['daylight_only'],
         short_description: instance['short_description'],
         trackSupervision: instance['track_supervisor'],
         scheduled: {

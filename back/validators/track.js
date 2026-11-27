@@ -81,6 +81,25 @@ const fields = {
 
     return validatorAdditions(validator, opts);
   }
+
+  // Standing rules (B8, #455).
+  , only_22lr: function only22lrValidation(requestObject, ...opts) {
+    const validator = requestObject('only_22lr')
+      .isBoolean()
+      .withMessage('must be a boolean')
+      .toBoolean(true /* strict mode */);
+
+    return validatorAdditions(validator, opts);
+  }
+
+  , daylight_only: function daylightOnlyValidation(requestObject, ...opts) {
+    const validator = requestObject('daylight_only')
+      .isBoolean()
+      .withMessage('must be a boolean')
+      .toBoolean(true /* strict mode */);
+
+    return validatorAdditions(validator, opts);
+  }
 };
 
 function handleValidationErrors(request, response, next) {
@@ -119,6 +138,8 @@ module.exports = {
     fields.short_description(body, 'exists'),
     fields.range_id(body, 'exists'),
     fields.requires_range_officer(body, 'optional'),
+    fields.only_22lr(body, 'optional'),
+    fields.daylight_only(body, 'optional'),
     handleValidationErrors,
     function storeCreationRequest(request, response, next) {
       response.locals.query = matchedData(request, { locations: ['body'] });
@@ -131,6 +152,8 @@ module.exports = {
     fields.description(body, 'optional'),
     fields.short_description(body, 'optional'),
     fields.requires_range_officer(body, 'optional'),
+    fields.only_22lr(body, 'optional'),
+    fields.daylight_only(body, 'optional'),
     handleValidationErrors,
     function storeUpdateRequest(request, response, next) {
       response.locals.id = matchedData(request, { locations: ['params'] });
