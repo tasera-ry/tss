@@ -126,25 +126,12 @@ function monthQueryKey(monthKey: string) {
 
 async function fetchMonth(monthKey: string): Promise<MonthWeek[]> {
   const { first, last } = calendarRange(monthKey);
-  let data: DaySchedule[];
-  try {
-    data = await api.getSchedulingFreeform(
-      first.format('YYYY-MM-DD'),
-      last.format('YYYY-MM-DD'),
-    );
-  } catch (error) {
-    // The API answers 404 rather than an empty list when no day in the range has a schedule.
-    if (isNotFound(error)) return buildCalendar(monthKey);
-    throw error;
-  }
-  return buildCalendar(monthKey, data.map(toMonthDay));
-}
-
-function isNotFound(error: unknown) {
-  return (
-    (error as { response?: { status?: number } } | null)?.response?.status ===
-    404
+  // The API returns every date in the range, with or without a schedule.
+  const data: DaySchedule[] = await api.getSchedulingFreeform(
+    first.format('YYYY-MM-DD'),
+    last.format('YYYY-MM-DD'),
   );
+  return buildCalendar(monthKey, data.map(toMonthDay));
 }
 
 function parseDateParam(dateParam?: string) {
@@ -305,6 +292,12 @@ function Calendar({
   const { t } = useLingui();
   const gridRef = useRef<HTMLDivElement>(null);
   const pendingFocus = useRef<string | null>(null);
+  // One Tab stop for the whole calendar: the day last focused, else the
+  // selected or URL day. The arrow keys move between days (roving tabindex).
+  const [activeDate, setActiveDate] = useState<string | null>(null);
+  const shown = (date: string | null) =>
+    date !== null && weeks.some((w) => w.days.some((d) => d.date === date));
+  const tabDate = shown(activeDate) ? activeDate : (selectedDate ?? targetDate);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: a prefetched month changes only `weeks`
   useEffect(() => {
@@ -327,6 +320,10 @@ function Calendar({
   const weekCount = weeks.length;
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    // Leave browser shortcuts such as Alt+Left (Back) alone.
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+      return;
+    }
     const offset = ARROW_KEY_DAYS[event.key];
     const from = (event.target as HTMLElement).dataset.date;
     if (offset == null || !from) return;
@@ -349,7 +346,15 @@ function Calendar({
       <p className={css.caption}>
         {t`${weekCount} weeks · select a day to see the tracks`}
       </p>
-      <div className={css.calendar} ref={gridRef} onKeyDown={handleKeyDown}>
+      <div
+        className={css.calendar}
+        ref={gridRef}
+        onKeyDown={handleKeyDown}
+        onFocus={(event) => {
+          const date = (event.target as HTMLElement).dataset.date;
+          if (date) setActiveDate(date);
+        }}
+      >
         <div className={css.headerCell}>
           <abbr title={t`Week`}>
             <Trans>Wk</Trans>
@@ -370,6 +375,7 @@ function Calendar({
             targetDate={targetDate}
             today={today}
             selectedDate={selectedDate}
+            tabDate={tabDate}
             isDesktop={isDesktop}
             onDayClick={onDayClick}
           />
@@ -386,6 +392,7 @@ interface WeekRowProps {
   targetDate: string;
   today: string;
   selectedDate?: string;
+  tabDate: string | null;
   isDesktop: boolean;
   onDayClick: (date: string) => void;
 }
@@ -397,6 +404,7 @@ function WeekRow({
   targetDate,
   today,
   selectedDate,
+  tabDate,
   isDesktop,
   onDayClick,
 }: WeekRowProps) {
@@ -411,6 +419,7 @@ function WeekRow({
           inCurrentMonth={moment(day.date).isSame(targetDate, 'month')}
           isToday={day.date === today}
           selected={selectedDate === day.date}
+          tabbable={tabDate === day.date}
           isDesktop={isDesktop}
           onClick={() => onDayClick(day.date)}
         />
@@ -425,6 +434,7 @@ interface DayCellProps {
   inCurrentMonth: boolean;
   isToday: boolean;
   selected: boolean;
+  tabbable: boolean;
   isDesktop: boolean;
   onClick: () => void;
 }
@@ -435,6 +445,7 @@ function DayCell({
   inCurrentMonth,
   isToday,
   selected,
+  tabbable,
   isDesktop,
   onClick,
 }: DayCellProps) {
@@ -520,6 +531,7 @@ function DayCell({
       <Link
         to={`/dayview/${day.date}`}
         data-date={day.date}
+        tabIndex={tabbable ? 0 : -1}
         aria-label={ariaLabel}
         aria-current={isToday ? 'date' : undefined}
         className={className}
@@ -535,6 +547,7 @@ function DayCell({
       onClick={onClick}
       disabled={!status}
       data-date={day.date}
+      tabIndex={tabbable ? 0 : -1}
       aria-label={ariaLabel}
       aria-current={isToday ? 'date' : undefined}
       aria-pressed={isDesktop ? undefined : selected}
@@ -566,9 +579,9 @@ function SelectedDayCard({ day, status, today }: SelectedDayCardProps) {
   return (
     <div className={css.detailCard} aria-live="polite">
       <div className={css.detailHeader}>
-        <h3 className={css.detailTitle}>
+        <h2 className={css.detailTitle}>
           {title.charAt(0).toUpperCase() + title.slice(1)}
-        </h3>
+        </h2>
         {day.date === today && (
           <span className={css.todayBadge}>
             <Trans>TODAY</Trans>
@@ -597,9 +610,9 @@ function SelectedDayCard({ day, status, today }: SelectedDayCardProps) {
 function Legend({ statuses }: { statuses: StatusConfigs }) {
   return (
     <div className={css.legendCard}>
-      <h3 className={css.legendTitle}>
+      <h2 className={css.legendTitle}>
         <Trans>Legend</Trans>
-      </h3>
+      </h2>
       <ul className={css.legendList}>
         {RANGE_SUPERVISIONS.map((key) => (
           <li key={key} className={css.legendItem}>

@@ -23,17 +23,36 @@ $desktop: 768px;
   }
 }
 
-// Today on the left, view tabs on the right, at every width.
+// As in the day view: Today in the middle, the view tabs on the right. Three
+// columns keep Today centred whatever the tabs' width. On phones there is no
+// room for a true middle, so Today goes left.
 .toolbar {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 12px;
   width: 100%;
   margin-bottom: 12px;
 
+  > :first-child {
+    grid-column: 2;
+  }
+
   > :last-child {
+    grid-column: 3;
     justify-self: end;
+  }
+
+  @media (max-width: 639px) {
+    grid-template-columns: auto 1fr;
+
+    > :first-child {
+      grid-column: 1;
+    }
+
+    > :last-child {
+      grid-column: 2;
+    }
   }
 }
 
@@ -181,7 +200,8 @@ $desktop: 768px;
 
 .otherMonth {
   background-color: var(--color-black-tint-05);
-  color: var(--color-black-tint-50);
+  // 7.5:1 on the grey fill; these are links, so they need 4.5:1 (WCAG 1.4.3).
+  color: var(--color-black-tint-70);
   border-color: var(--color-black-tint-05);
 }
 

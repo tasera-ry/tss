@@ -243,22 +243,6 @@ describe('testing monthview', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
-  it('shows an empty month when the API has no schedule for it', async () => {
-    setDateParam('2021-03-10');
-    vi.mocked(api.getSchedulingFreeform).mockRejectedValue({
-      response: { status: 404 },
-    });
-    const { container } = renderMonthview();
-
-    expect(
-      await screen.findByRole('button', {
-        name: 'Wednesday, March 10, Range officer undefined',
-      }),
-    ).toBeEnabled();
-    expect(container.querySelectorAll('[data-date]')).toHaveLength(35);
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-  });
-
   it('moves to the next month', async () => {
     setDateParam('2021-03-10');
     renderMonthview();
@@ -307,6 +291,39 @@ describe('testing monthview', () => {
     expect(document.activeElement).toHaveAttribute('data-date', '2021-03-11');
     fireEvent.keyDown(document.activeElement as Element, { key: 'ArrowUp' });
     expect(document.activeElement).toHaveAttribute('data-date', '2021-03-04');
+  });
+
+  it('gives the calendar one Tab stop, which follows the focused day', async () => {
+    setDateParam('2021-03-10');
+    const { container } = renderMonthview();
+    const tabStops = () =>
+      [...container.querySelectorAll('[data-date][tabindex="0"]')].map((cell) =>
+        cell.getAttribute('data-date'),
+      );
+
+    const day = await screen.findByRole('button', {
+      name: 'Wednesday, March 10, Range closed',
+    });
+    expect(tabStops()).toEqual(['2021-03-10']);
+
+    day.focus();
+    fireEvent.keyDown(day, { key: 'ArrowRight' });
+    expect(tabStops()).toEqual(['2021-03-11']);
+  });
+
+  it('leaves arrow keys with a modifier to the browser', async () => {
+    setDateParam('2021-03-10');
+    renderMonthview();
+
+    const day = await screen.findByRole('button', {
+      name: 'Wednesday, March 10, Range closed',
+    });
+    day.focus();
+    const hash = window.location.hash;
+    // Alt+Left is the browser's Back.
+    fireEvent.keyDown(day, { key: 'ArrowLeft', altKey: true });
+    expect(document.activeElement).toBe(day);
+    expect(window.location.hash).toBe(hash);
   });
 
   it('moves to the next month when the arrow keys leave the grid', async () => {
@@ -367,7 +384,10 @@ describe('testing monthview', () => {
 
       expect(day).toHaveAttribute('aria-pressed', 'true');
       expect(
-        screen.getByRole('heading', { name: 'Friday, 3/12/2021' }),
+        screen.getByRole('heading', { level: 2, name: 'Friday, 3/12/2021' }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { level: 2, name: 'Legend' }),
       ).toBeInTheDocument();
       expect(screen.getByText('Estimated arrival 17:30')).toBeInTheDocument();
       expect(
