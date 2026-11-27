@@ -1,4 +1,4 @@
-const validate = require('validate.js');
+const _ = require('lodash');
 
 const path = require('path');
 const root = path.join(__dirname, '..');
@@ -12,7 +12,7 @@ const model = {
       associations: {}
     };
 
-    const members = validate.cleanAttributes(membersInfo, membersConstraints);
+    const members = _.pick(membersInfo, Object.keys(membersConstraints));
 
     return await knex.transaction(trx => {
       return trx
@@ -42,7 +42,7 @@ const model = {
       raffle: {},
     };
 
-    const members = validate.cleanAttributes(update, membersConstraints);
+    const members = _.pick(update, Object.keys(membersConstraints));
 
     //exists
     const id = await model
