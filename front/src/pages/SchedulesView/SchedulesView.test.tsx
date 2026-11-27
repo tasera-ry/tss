@@ -1,0 +1,797 @@
+import { TestProviders } from '@/_TestUtils/TestProvides';
+import api from '@/api/api';
+import { fireEvent, render, screen, within } from '@testing-library/react';
+import moment from 'moment';
+import { useParams } from 'react-router-dom';
+import { SchedulesView } from './SchedulesView';
+
+vi.mock('@/api/api');
+vi.mock('react-router-dom', async (originalImport) => {
+  const actual = await originalImport();
+  return {
+    ...(actual as object),
+    useParams: vi.fn().mockReturnValue({}),
+  };
+});
+
+const FUTURE = moment().add(10, 'day').format('YYYY-MM-DD');
+const PAST = moment().subtract(10, 'day').format('YYYY-MM-DD');
+
+const day = {
+  date: FUTURE,
+  rangeId: 56,
+  reservationId: 300,
+  scheduleId: 251,
+  available: true,
+  open: '10:00:00',
+  close: '19:00:00',
+  rangeSupervisorId: 5,
+  rangeSupervision: 'confirmed',
+  arrivingAt: '09:45:00',
+  tracks: [
+    {
+      id: 1,
+      name: 'Rata 1',
+      description: 'Pistooli',
+      notice: '',
+      trackSupervision: 'absent',
+      scheduled: false,
+    },
+    {
+      id: 2,
+      name: 'Rata 2',
+      description: null,
+      notice: 'Taustavallin huolto',
+      trackSupervision: 'closed',
+      scheduled: { track_id: 2 },
+    },
+  ],
+};
+
+const sections = [
+  {
+    id: 11,
+    track_id: 1,
+    position: 1,
+    lane_count: 20,
+    name: 'Vasemmanpuoleisin',
+    description: null,
+  },
+  {
+    id: 12,
+    track_id: 1,
+    position: 2,
+    lane_count: 20,
+    name: 'Keskimmäinen',
+    description: null,
+  },
+  {
+    id: 21,
+    track_id: 2,
+    position: 1,
+    lane_count: 40,
+    name: 'Rata 2',
+    description: null,
+  },
+];
+
+const official = {
+  association_id: null,
+  association_name: null,
+  type: 'official',
+  start_time: '15:00:00',
+  end_time: '17:00:00',
+  lanes_used: 20,
+  description: null,
+};
+const reservations = [
+  { id: 1, ...official, track_section_id: 11 },
+  { id: 2, ...official, track_section_id: 12 },
+  {
+    id: 3,
+    track_section_id: 11,
+    association_id: 5,
+    association_name: 'Hirviseura',
+    type: 'private_event',
+    start_time: '12:00:00',
+    end_time: '14:00:00',
+    lanes_used: 10,
+    description: 'Harjoitus',
+  },
+];
+
+async function renderPage(
+  date = FUTURE,
+  overrides = {},
+  clubs = [{ id: 5, name: 'Hirviseura' }],
+) {
+  vi.mocked(useParams).mockReturnValue({ date });
+  vi.mocked(api.validateLogin).mockResolvedValue({} as never);
+  vi.mocked(api.getSchedulingDate).mockResolvedValue({
+    ...day,
+    date,
+    ...overrides,
+  });
+  vi.mocked(api.getTrackSections).mockResolvedValue(sections);
+  vi.mocked(api.getTrackReservations).mockResolvedValue(reservations);
+  vi.mocked(api.getAssociations).mockResolvedValue(clubs);
+  const result = render(<SchedulesView />, { wrapper: TestProviders });
+  await screen.findByRole('heading', { name: 'Track 1' }, { timeout: 5000 });
+  return result;
+}
+
+describe('SchedulesView', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("shows the day's range details read-only on a past day", async () => {
+    await renderPage(PAST);
+    const range = within(screen.getByRole('region', { name: 'Range' }));
+    expect(range.getByText('Open')).toBeInTheDocument();
+    expect(range.getByText('10.00–19.00')).toBeInTheDocument();
+    expect(range.getByText('Hirviseura')).toBeInTheDocument();
+    expect(range.getByText('Range officer confirmed')).toBeInTheDocument();
+    expect(range.getByText('09.45')).toBeInTheDocument();
+    expect(range.queryByRole('radio')).not.toBeInTheDocument();
+    expect(range.queryByRole('combobox')).not.toBeInTheDocument();
+  });
+
+  describe('editing the range', () => {
+    const range = () => within(screen.getByRole('region', { name: 'Range' }));
+    const save = () =>
+      fireEvent.click(range().getByRole('button', { name: 'Save' }));
+
+    async function renderWithClubs() {
+      vi.mocked(api.putRangeDay).mockResolvedValue({} as never);
+      return renderPage(FUTURE, {}, [
+        { id: 5, name: 'Hirviseura' },
+        { id: 6, name: 'Ampumaseura' },
+      ]);
+    }
+
+    it("shows the day's settings, the officer's status and arrival", async () => {
+      await renderPage();
+      expect(range().getByRole('radio', { name: 'Open' })).toBeChecked();
+      expect(range().getByLabelText('Opens')).toHaveValue('10:00');
+      expect(range().getByLabelText('Closes')).toHaveValue('19:00');
+      expect(range().getByLabelText('Range officer shift')).toHaveValue('5');
+      expect(range().getByText('Range officer confirmed')).toBeInTheDocument();
+      expect(range().getByText('09.45')).toBeInTheDocument();
+      expect(
+        range().queryByRole('button', { name: 'Save' }),
+      ).not.toBeInTheDocument();
+    });
+
+    it('reads a day without rows as closed, 17–20, without an officer', async () => {
+      await renderPage(FUTURE, {
+        reservationId: null,
+        scheduleId: null,
+        available: null,
+        open: null,
+        close: null,
+        rangeSupervisorId: null,
+        rangeSupervision: null,
+      });
+      expect(range().getByRole('radio', { name: 'Closed' })).toBeChecked();
+      fireEvent.click(range().getByRole('radio', { name: 'Open' }));
+      expect(range().getByLabelText('Opens')).toHaveValue('17:00');
+      expect(range().getByLabelText('Closes')).toHaveValue('20:00');
+      expect(range().getByLabelText('Range officer shift')).toHaveValue('');
+    });
+
+    it('saves only what changed, so the officer keeps their confirmation', async () => {
+      await renderWithClubs();
+      fireEvent.change(range().getByLabelText('Closes'), {
+        target: { value: '20:30' },
+      });
+      save();
+      await vi.waitFor(() =>
+        expect(api.putRangeDay).toHaveBeenCalledWith({
+          dates: [FUTURE],
+          open: '10:00',
+          close: '20:30',
+        }),
+      );
+    });
+
+    it('says who is emailed when the officer changes, and hides the old status', async () => {
+      await renderWithClubs();
+      fireEvent.change(range().getByLabelText('Range officer shift'), {
+        target: { value: '6' },
+      });
+      expect(
+        range().getByText(
+          'Saving asks Ampumaseura by email to confirm the shift. Hirviseura is told of the change.',
+        ),
+      ).toBeInTheDocument();
+      expect(
+        range().queryByText('Range officer confirmed'),
+      ).not.toBeInTheDocument();
+      save();
+      await vi.waitFor(() =>
+        expect(api.putRangeDay).toHaveBeenCalledWith({
+          dates: [FUTURE],
+          association_id: 6,
+        }),
+      );
+    });
+
+    it('clears the shift with null', async () => {
+      await renderWithClubs();
+      fireEvent.change(range().getByLabelText('Range officer shift'), {
+        target: { value: '' },
+      });
+      expect(
+        range().getByText('Hirviseura is told of the change.'),
+      ).toBeInTheDocument();
+      save();
+      await vi.waitFor(() =>
+        expect(api.putRangeDay).toHaveBeenCalledWith({
+          dates: [FUTURE],
+          association_id: null,
+        }),
+      );
+    });
+
+    it('closes the range on its own, hiding the hours and the officer', async () => {
+      await renderWithClubs();
+      fireEvent.click(range().getByRole('radio', { name: 'Closed' }));
+      expect(range().queryByLabelText('Opens')).not.toBeInTheDocument();
+      expect(
+        range().queryByLabelText('Range officer shift'),
+      ).not.toBeInTheDocument();
+      // The day as the server has it after the save.
+      vi.mocked(api.getSchedulingDate).mockResolvedValue({
+        ...day,
+        available: false,
+      });
+      save();
+      await vi.waitFor(() =>
+        expect(api.putRangeDay).toHaveBeenCalledWith({
+          dates: [FUTURE],
+          available: false,
+        }),
+      );
+      expect(await range().findByText('Saved')).toBeInTheDocument();
+    });
+
+    it('will not save hours that end before they start', async () => {
+      await renderWithClubs();
+      fireEvent.change(range().getByLabelText('Closes'), {
+        target: { value: '09:00' },
+      });
+      expect(
+        range().getByText('The range must close after it opens.', {
+          exact: false,
+        }),
+      ).toBeInTheDocument();
+      expect(range().getByLabelText('Closes')).toHaveAttribute(
+        'aria-invalid',
+        'true',
+      );
+      expect(range().getByRole('button', { name: 'Save' })).toBeDisabled();
+    });
+
+    it('undoes the edits, and says when saving fails', async () => {
+      await renderWithClubs();
+      fireEvent.change(range().getByLabelText('Opens'), {
+        target: { value: '11:00' },
+      });
+      fireEvent.click(range().getByRole('button', { name: 'Undo' }));
+      expect(range().getByLabelText('Opens')).toHaveValue('10:00');
+
+      vi.mocked(api.putRangeDay).mockRejectedValueOnce(new Error('network'));
+      fireEvent.change(range().getByLabelText('Opens'), {
+        target: { value: '11:00' },
+      });
+      save();
+      expect(await range().findByRole('alert')).toHaveTextContent(
+        'The range could not be saved.',
+      );
+    });
+
+    it('asks before leaving the day with unsaved range changes', async () => {
+      const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+      await renderPage();
+      const before = window.location.hash;
+      fireEvent.click(range().getByRole('radio', { name: 'Closed' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Next day' }));
+      expect(confirm).toHaveBeenCalledWith(
+        'The page has unsaved changes. Leave without saving?',
+      );
+      expect(window.location.hash).toBe(before);
+      confirm.mockRestore();
+    });
+
+    it('copies the saved settings, without what is unticked, to the chosen days', async () => {
+      await renderWithClubs();
+      fireEvent.click(
+        range().getByRole('button', { name: 'Copy to other days' }),
+      );
+      const panel = within(
+        screen.getByRole('region', { name: 'Copy to other days' }),
+      );
+      expect(panel.getByLabelText('Opening hours: 10.00–19.00')).toBeChecked();
+      fireEvent.click(panel.getByLabelText('Range officer shift: Hirviseura'));
+
+      const next = moment(FUTURE).add(1, 'month').startOf('month');
+      fireEvent.click(panel.getByRole('button', { name: 'Next month' }));
+      for (const offset of [0, 1]) {
+        fireEvent.click(
+          panel.getByRole('button', {
+            name: new Intl.DateTimeFormat('en', {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'numeric',
+              year: 'numeric',
+            }).format(next.clone().add(offset, 'day').toDate()),
+          }),
+        );
+      }
+      fireEvent.click(panel.getByRole('button', { name: 'Copy to 2 days' }));
+
+      await vi.waitFor(() =>
+        expect(api.putRangeDay).toHaveBeenCalledWith({
+          dates: [0, 1].map((offset) =>
+            next.clone().add(offset, 'day').format('YYYY-MM-DD'),
+          ),
+          available: true,
+          open: '10:00',
+          close: '19:00',
+        }),
+      );
+      expect(await range().findByText('Copied to 2 days.')).toBeInTheDocument();
+    });
+
+    it('copies only what is saved: no copying while there are edits', async () => {
+      await renderPage();
+      fireEvent.click(range().getByRole('radio', { name: 'Closed' }));
+      expect(
+        range().getByRole('button', { name: 'Copy to other days' }),
+      ).toBeDisabled();
+    });
+  });
+
+  it('marks a past day read-only, and only a past day', async () => {
+    const { unmount } = await renderPage(PAST);
+    expect(screen.getByTestId('past-day')).toBeInTheDocument();
+    unmount();
+    await renderPage(FUTURE);
+    expect(screen.queryByTestId('past-day')).not.toBeInTheDocument();
+  });
+
+  it('lists official use once for the whole track, and private events per section', async () => {
+    await renderPage();
+    expect(screen.getAllByText('Reserved for authority use')).toHaveLength(1);
+    expect(
+      screen.getByText('Whole track', { exact: false }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('10/20')).toBeInTheDocument();
+    expect(screen.getByText('Harjoitus')).toBeInTheDocument();
+  });
+
+  it("shows a track's status and the notice for the day", async () => {
+    await renderPage();
+    const track2 = within(screen.getByRole('region', { name: 'Track 2' }));
+    expect(track2.getByDisplayValue('Taustavallin huolto')).toBeInTheDocument();
+    expect(track2.getByRole('radio', { name: 'Closed' })).toBeChecked();
+  });
+
+  it('picks a date from the month calendar', async () => {
+    await renderPage();
+    fireEvent.click(
+      screen.getByRole('button', { expanded: false, name: /\d{4}/ }),
+    );
+    const dialog = within(screen.getByRole('dialog', { name: 'Choose date' }));
+    const target = moment(FUTURE).add(1, 'day');
+    fireEvent.click(
+      dialog.getByRole('button', {
+        name: new Intl.DateTimeFormat('en', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'numeric',
+          year: 'numeric',
+        }).format(target.toDate()),
+      }),
+    );
+    expect(window.location.hash).toBe(
+      `#/schedules/${target.format('YYYY-MM-DD')}`,
+    );
+  });
+
+  describe('editing a track', () => {
+    const track = (name: string) =>
+      within(screen.getByRole('region', { name }));
+
+    it('saves the notice on its own, without rewriting an unchanged status', async () => {
+      vi.mocked(api.patchScheduledSupervisionTrack).mockResolvedValue(
+        {} as never,
+      );
+      await renderPage();
+      fireEvent.change(track('Track 2').getByLabelText('Notice for the day'), {
+        target: { value: 'Huolto klo 12 asti' },
+      });
+      // The day as it reloads after the save.
+      vi.mocked(api.getSchedulingDate).mockResolvedValue({
+        ...day,
+        tracks: [
+          day.tracks[0],
+          { ...day.tracks[1], notice: 'Huolto klo 12 asti' },
+        ],
+      });
+      fireEvent.click(track('Track 2').getByRole('button', { name: 'Save' }));
+      await vi.waitFor(() =>
+        expect(api.patchScheduledSupervisionTrack).toHaveBeenCalledWith(
+          251,
+          2,
+          { notice: 'Huolto klo 12 asti' },
+        ),
+      );
+      expect(await track('Track 2').findByText('Saved')).toBeInTheDocument();
+    });
+
+    it('keeps a track officer the tablet marked present when the track goes back to normal', async () => {
+      vi.mocked(api.getScheduledSupervisionTrack).mockResolvedValue({
+        track_supervisor: 'present',
+      });
+      vi.mocked(api.patchScheduledSupervisionTrack).mockResolvedValue(
+        {} as never,
+      );
+      await renderPage();
+      fireEvent.click(track('Track 2').getByRole('radio', { name: 'Normal' }));
+      fireEvent.click(track('Track 2').getByRole('button', { name: 'Save' }));
+      await vi.waitFor(() =>
+        expect(api.patchScheduledSupervisionTrack).toHaveBeenCalledWith(
+          251,
+          2,
+          { notice: 'Taustavallin huolto' },
+        ),
+      );
+      expect(api.getScheduledSupervisionTrack).toHaveBeenCalledWith(251, 2);
+    });
+
+    it('asks before leaving a day with unsaved changes', async () => {
+      const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+      await renderPage();
+      const before = window.location.hash;
+      fireEvent.change(track('Track 2').getByLabelText('Notice for the day'), {
+        target: { value: 'Kesken' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Next day' }));
+      expect(confirm).toHaveBeenCalled();
+      expect(window.location.hash).toBe(before);
+      confirm.mockRestore();
+    });
+
+    it("creates the day's rows first on a day that has none, keeping it closed", async () => {
+      vi.mocked(api.createReservation).mockResolvedValue({ id: 900 });
+      vi.mocked(api.createSchedule).mockResolvedValue({ id: 901 });
+      vi.mocked(api.postScheduledSupervisionTrack).mockResolvedValue(
+        {} as never,
+      );
+      await renderPage(FUTURE, {
+        reservationId: null,
+        scheduleId: null,
+        available: null,
+      });
+      fireEvent.click(track('Track 1').getByRole('radio', { name: 'Closed' }));
+      fireEvent.click(track('Track 1').getByRole('button', { name: 'Save' }));
+      await vi.waitFor(() =>
+        expect(api.postScheduledSupervisionTrack).toHaveBeenCalledWith({
+          scheduled_range_supervision_id: 901,
+          track_id: 1,
+          track_supervisor: 'closed',
+          notice: '',
+        }),
+      );
+      expect(api.createReservation).toHaveBeenCalledWith({
+        range_id: 56,
+        date: FUTURE,
+        available: false,
+      });
+      expect(api.createSchedule).toHaveBeenCalledWith({
+        range_reservation_id: 900,
+        open: '17:00',
+        close: '20:00',
+      });
+    });
+
+    it("creates the day's rows once, even before the page has reloaded the day", async () => {
+      // A date of its own: the ids created here are remembered per date.
+      const date = moment().add(11, 'day').format('YYYY-MM-DD');
+      vi.mocked(api.createReservation).mockResolvedValue({ id: 900 });
+      vi.mocked(api.createSchedule).mockResolvedValue({ id: 901 });
+      vi.mocked(api.postScheduledSupervisionTrack).mockResolvedValue(
+        {} as never,
+      );
+      await renderPage(date, {
+        reservationId: null,
+        scheduleId: null,
+        available: null,
+        tracks: [day.tracks[0], { ...day.tracks[0], id: 2, name: 'Rata 2' }],
+      });
+      fireEvent.click(track('Track 1').getByRole('radio', { name: 'Closed' }));
+      fireEvent.click(track('Track 1').getByRole('button', { name: 'Save' }));
+      await vi.waitFor(() =>
+        expect(api.postScheduledSupervisionTrack).toHaveBeenCalledTimes(1),
+      );
+      fireEvent.click(track('Track 2').getByRole('radio', { name: 'Closed' }));
+      fireEvent.click(track('Track 2').getByRole('button', { name: 'Save' }));
+      await vi.waitFor(() =>
+        expect(api.postScheduledSupervisionTrack).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            scheduled_range_supervision_id: 901,
+            track_id: 2,
+          }),
+        ),
+      );
+      expect(api.createReservation).toHaveBeenCalledTimes(1);
+      expect(api.createSchedule).toHaveBeenCalledTimes(1);
+    });
+
+    it('offers no editing on a past day', async () => {
+      await renderPage(PAST);
+      expect(
+        screen.queryByLabelText('Notice for the day'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: /Add booking/ }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: 'Edit' }),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('copying to other days', () => {
+    const nextMonth = moment(FUTURE).add(1, 'month').startOf('month');
+    const dayName = (date: moment.Moment) =>
+      new Intl.DateTimeFormat('en', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'numeric',
+        year: 'numeric',
+      }).format(date.toDate());
+
+    function pickDays(region: HTMLElement, count: number) {
+      const panel = within(region);
+      fireEvent.click(panel.getByRole('button', { name: 'Next month' }));
+      for (let i = 0; i < count; i++) {
+        fireEvent.click(
+          panel.getByRole('button', {
+            name: dayName(nextMonth.clone().add(i, 'day')),
+          }),
+        );
+      }
+    }
+    // The open copy panel, whichever way it was opened.
+    const panelElement = () =>
+      screen.getByRole('region', { name: /Copy to other days|Repeat booking/ });
+    const dates = (count: number) =>
+      Array.from({ length: count }, (_, i) =>
+        nextMonth.clone().add(i, 'day').format('YYYY-MM-DD'),
+      );
+
+    it("copies the track's status and notice to the chosen days in one save", async () => {
+      vi.mocked(api.copyTrackDay).mockResolvedValue({} as never);
+      await renderPage();
+      const track2 = within(screen.getByRole('region', { name: 'Track 2' }));
+      fireEvent.click(
+        track2.getByRole('button', { name: 'Copy to other days' }),
+      );
+      const panel = within(
+        screen.getByRole('region', { name: 'Copy to other days' }),
+      );
+      pickDays(panelElement(), 2);
+      fireEvent.click(panel.getByRole('button', { name: 'Copy to 2 days' }));
+      await vi.waitFor(() =>
+        expect(api.copyTrackDay).toHaveBeenCalledWith({
+          track_id: 2,
+          dates: dates(2),
+          track_supervisor: 'closed',
+          notice: 'Taustavallin huolto',
+        }),
+      );
+      expect(await track2.findByText('Copied to 2 days.')).toBeInTheDocument();
+    });
+
+    it('repeats one booking, and nothing else', async () => {
+      vi.mocked(api.copyTrackDay).mockResolvedValue({} as never);
+      await renderPage();
+      const row = within(
+        within(screen.getByRole('region', { name: 'Track 1' }))
+          .getAllByRole('listitem')
+          .find((li) => li.textContent?.includes('Harjoitus')) as HTMLElement,
+      );
+      fireEvent.click(row.getByRole('button', { name: 'Repeat' }));
+      const panel = within(
+        screen.getByRole('region', { name: 'Repeat booking' }),
+      );
+      pickDays(panelElement(), 1);
+      fireEvent.click(panel.getByRole('button', { name: 'Copy to 1 day' }));
+      await vi.waitFor(() =>
+        expect(api.copyTrackDay).toHaveBeenCalledWith({
+          track_id: 1,
+          dates: dates(1),
+          reservations: [
+            {
+              type: 'private_event',
+              start_time: '12:00',
+              end_time: '14:00',
+              description: 'Harjoitus',
+              track_section_id: 11,
+              lanes_used: 10,
+              association_id: 5,
+            },
+          ],
+        }),
+      );
+    });
+
+    it('marks the days a booking does not fit on, with the lanes free, and copies nothing', async () => {
+      const [first, second] = dates(2);
+      vi.mocked(api.copyTrackDay).mockRejectedValue({
+        response: {
+          status: 409,
+          data: {
+            conflicts: [
+              { date: second, track_section_id: 11, free: 5, total: 20 },
+            ],
+          },
+        },
+      });
+      await renderPage();
+      fireEvent.click(
+        within(screen.getByRole('region', { name: 'Track 1' })).getByRole(
+          'button',
+          { name: 'Copy to other days' },
+        ),
+      );
+      const panel = within(
+        screen.getByRole('region', { name: 'Copy to other days' }),
+      );
+      fireEvent.click(panel.getByRole('checkbox', { name: /Bookings/ }));
+      pickDays(panelElement(), 2);
+      fireEvent.click(panel.getByRole('button', { name: 'Copy to 2 days' }));
+      expect(await panel.findByRole('alert')).toHaveTextContent(
+        'Nothing was copied',
+      );
+      expect(
+        panel.getByRole('button', {
+          name: `${dayName(moment(second))}: 5/20 free`,
+        }),
+      ).toBeInTheDocument();
+      expect(
+        panel.getByRole('button', { name: dayName(moment(first)) }),
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe('bookings', () => {
+    const track1 = () =>
+      within(screen.getByRole('region', { name: 'Track 1' }));
+
+    async function openForm() {
+      await renderPage();
+      fireEvent.click(track1().getByRole('button', { name: /Add booking/ }));
+      const form = within(screen.getByRole('form', { name: 'New booking' }));
+      fireEvent.change(form.getByLabelText('Starts'), {
+        target: { value: '15:00' },
+      });
+      fireEvent.change(form.getByLabelText('Ends'), {
+        target: { value: '16:00' },
+      });
+      return form;
+    }
+
+    it('creates a private event on a section, with lanes and a holder', async () => {
+      vi.mocked(api.createTrackReservation).mockResolvedValue([] as never);
+      const form = await openForm();
+      fireEvent.change(form.getByLabelText('Section'), {
+        target: { value: '12' },
+      });
+      fireEvent.change(form.getByLabelText('Lanes'), {
+        target: { value: '8' },
+      });
+      fireEvent.change(form.getByLabelText('Booked by'), {
+        target: { value: '5' },
+      });
+      fireEvent.click(form.getByRole('button', { name: 'Save booking' }));
+      await vi.waitFor(() =>
+        expect(api.createTrackReservation).toHaveBeenCalledWith({
+          date: FUTURE,
+          type: 'private_event',
+          start_time: '15:00',
+          end_time: '16:00',
+          description: null,
+          track_section_id: 12,
+          lanes_used: 8,
+          association_id: 5,
+        }),
+      );
+    });
+
+    it('says how many lanes are free when the database refuses', async () => {
+      vi.mocked(api.createTrackReservation).mockRejectedValue({
+        response: { status: 409, data: { free: 5, total: 20 } },
+      });
+      const form = await openForm();
+      fireEvent.change(form.getByLabelText('Lanes'), {
+        target: { value: '10' },
+      });
+      fireEvent.click(form.getByRole('button', { name: 'Save booking' }));
+      expect(await form.findByRole('alert')).toHaveTextContent(
+        'Only 5/20 lanes are free at that time.',
+      );
+    });
+
+    it("translates the server's reasons for refusing", async () => {
+      vi.mocked(api.createTrackReservation).mockRejectedValue({
+        response: { status: 400, data: { message: 'Past days are read-only' } },
+      });
+      const form = await openForm();
+      fireEvent.change(form.getByLabelText('Lanes'), {
+        target: { value: '2' },
+      });
+      fireEvent.click(form.getByRole('button', { name: 'Save booking' }));
+      expect(await form.findByRole('alert')).toHaveTextContent(
+        'Past days cannot be changed.',
+      );
+    });
+
+    it('books authority use for the whole track, without lanes or a holder', async () => {
+      vi.mocked(api.createTrackReservation).mockResolvedValue([] as never);
+      const form = await openForm();
+      fireEvent.click(
+        form.getByRole('radio', { name: 'Reserved for authority use' }),
+      );
+      expect(form.queryByLabelText('Lanes')).not.toBeInTheDocument();
+      fireEvent.click(form.getByRole('button', { name: 'Save booking' }));
+      await vi.waitFor(() =>
+        expect(api.createTrackReservation).toHaveBeenCalledWith({
+          date: FUTURE,
+          type: 'official',
+          track_section_id: 11,
+          start_time: '15:00',
+          end_time: '16:00',
+          description: null,
+        }),
+      );
+    });
+
+    it('deletes a booking after asking', async () => {
+      vi.mocked(api.deleteTrackReservation).mockResolvedValue({} as never);
+      await renderPage();
+      const rows = track1().getAllByRole('listitem');
+      const privateRow = within(
+        rows.find((row) =>
+          row.textContent?.includes('Harjoitus'),
+        ) as HTMLElement,
+      );
+      fireEvent.click(privateRow.getByRole('button', { name: 'Delete' }));
+      expect(api.deleteTrackReservation).not.toHaveBeenCalled();
+      fireEvent.click(privateRow.getByRole('button', { name: 'Delete' }));
+      await vi.waitFor(() =>
+        expect(api.deleteTrackReservation).toHaveBeenCalledWith(3),
+      );
+    });
+
+    it('says when a booking could not be deleted', async () => {
+      vi.mocked(api.deleteTrackReservation).mockRejectedValue({
+        response: { status: 500 },
+      });
+      await renderPage();
+      const row = within(
+        track1()
+          .getAllByRole('listitem')
+          .find((li) => li.textContent?.includes('Harjoitus')) as HTMLElement,
+      );
+      fireEvent.click(row.getByRole('button', { name: 'Delete' }));
+      fireEvent.click(row.getByRole('button', { name: 'Delete' }));
+      expect(await row.findByRole('alert')).toHaveTextContent(
+        'The booking could not be deleted.',
+      );
+    });
+  });
+});

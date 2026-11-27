@@ -1,0 +1,138 @@
+import { useLingui } from '@lingui/react/macro';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import classNames from 'classnames';
+import moment from 'moment';
+
+/**
+ * One month as a grid of day buttons, Monday first.
+ *
+ * Used to pick the day to edit, and the days to copy a track's details to, so
+ * selection is a list. Days before `disableBefore` cannot be chosen: past days
+ * are read-only (Pasi Autio, 13.11.2026). A refused day (a copy that did not
+ * fit) is outlined in red and says why in words, not by colour alone.
+ */
+export function MonthCalendar({
+  month,
+  onMonthChange,
+  today,
+  selected,
+  onSelect,
+  disableBefore,
+  disabledDates = [],
+  refused = {},
+}: {
+  /** Any date in the month to show, YYYY-MM-DD. */
+  month: string;
+  onMonthChange: (month: string) => void;
+  today: string;
+  selected: string[];
+  onSelect: (date: string) => void;
+  disableBefore?: string;
+  /** Further days that cannot be chosen. */
+  disabledDates?: string[];
+  /** Days refused, each with a short reason shown under its number. */
+  refused?: Record<string, string>;
+}) {
+  const { t, i18n } = useLingui();
+  // Intl through Lingui, so names follow the interface language.
+  const label = (date: string) =>
+    i18n.date(moment(date).toDate(), {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+    });
+  const first = moment(month).startOf('month');
+  const lead = first.isoWeekday() - 1;
+  const days = Array.from({ length: first.daysInMonth() }, (_, i) =>
+    first.clone().add(i, 'day').format('YYYY-MM-DD'),
+  );
+  const weekdays = Array.from({ length: 7 }, (_, i) =>
+    i18n.date(
+      first
+        .clone()
+        .isoWeekday(i + 1)
+        .toDate(),
+      { weekday: 'short' },
+    ),
+  );
+  const title = i18n.date(first.toDate(), { month: 'long', year: 'numeric' });
+
+  return (
+    <div className="w-80 max-w-full">
+      <div className="mb-2 flex items-center justify-between">
+        <button
+          type="button"
+          className="flex size-9 items-center justify-center rounded-lg border border-black-tint-20 bg-white text-grey hover:border-black-tint-40 hover:text-black"
+          onClick={() =>
+            onMonthChange(
+              first.clone().subtract(1, 'month').format('YYYY-MM-DD'),
+            )
+          }
+          aria-label={t`Previous month`}
+        >
+          <ChevronLeftIcon fontSize="small" />
+        </button>
+        <span className="font-semibold capitalize" aria-live="polite">
+          {title}
+        </span>
+        <button
+          type="button"
+          className="flex size-9 items-center justify-center rounded-lg border border-black-tint-20 bg-white text-grey hover:border-black-tint-40 hover:text-black"
+          onClick={() =>
+            onMonthChange(first.clone().add(1, 'month').format('YYYY-MM-DD'))
+          }
+          aria-label={t`Next month`}
+        >
+          <ChevronRightIcon fontSize="small" />
+        </button>
+      </div>
+      <div className="grid grid-cols-7 gap-0.5 text-center">
+        {weekdays.map((day) => (
+          <span key={day} className="py-1 text-grey text-xs" aria-hidden>
+            {day}
+          </span>
+        ))}
+        {days.map((date, i) => (
+          <button
+            key={date}
+            type="button"
+            // The first day starts in its weekday's column; Monday is 1.
+            style={i === 0 ? { gridColumnStart: lead + 1 } : undefined}
+            onClick={() => onSelect(date)}
+            disabled={
+              (disableBefore !== undefined && date < disableBefore) ||
+              disabledDates.includes(date)
+            }
+            aria-pressed={selected.includes(date)}
+            aria-current={date === today ? 'date' : undefined}
+            aria-label={
+              refused[date] ? `${label(date)}: ${refused[date]}` : label(date)
+            }
+            className={classNames(
+              'min-h-9 rounded-md text-sm tabular-nums leading-tight',
+              'disabled:cursor-not-allowed disabled:text-black-tint-30',
+              refused[date]
+                ? 'bg-[#f6d5d3] font-semibold text-black ring-2 ring-[#c23a3a] ring-inset'
+                : selected.includes(date)
+                  ? 'bg-black-tint-70 font-semibold text-white'
+                  : 'hover:bg-black-tint-10',
+              date === today &&
+                !selected.includes(date) &&
+                !refused[date] &&
+                'font-semibold ring-1 ring-black-tint-40 ring-inset',
+            )}
+          >
+            {moment(date).date()}
+            {refused[date] && (
+              <span className="block font-normal text-[10px]" aria-hidden>
+                {refused[date]}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}

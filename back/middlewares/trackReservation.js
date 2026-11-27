@@ -1,10 +1,7 @@
 const path = require('path');
 const root = path.join(__dirname, '..');
 const services = require(path.join(root, 'services'));
-
-// Raised by the enforce_section_lane_capacity trigger (#477).
-const LANE_CONFLICT =
-  /on section (\d+) on (\S+) overlaps reservations already using (\d+) of the section's (\d+) lane/;
+const laneConflict = require(path.join(root, 'knex', 'laneConflict'));
 
 /**
  * Turn the errors a write can meet into answers the scheduling view can show:
@@ -12,16 +9,12 @@ const LANE_CONFLICT =
  * own checks (which carry a status).
  */
 function sendWriteError(error, response, next) {
-  const conflict = error.code === 'P0001' && LANE_CONFLICT.exec(error.message);
+  const conflict = laneConflict(error);
   if (conflict) {
-    const [, section, date, used, total] = conflict;
     return response.status(409).send({
       success: false,
       message: 'Not enough free lanes',
-      free: Math.max(0, Number(total) - Number(used)),
-      total: Number(total),
-      track_section_id: Number(section),
-      date
+      ...conflict
     });
   }
   // Data the database could not take (SQLSTATE class 22): never echo its text.
@@ -82,6 +75,18 @@ const serviceCalls = {
         response.locals.id,
         response.locals.body
       );
+    }
+    catch(e) {
+      return sendWriteError(e, response, next);
+    }
+
+    return next();
+  },
+
+  copy: async function copyTrackDay(request, response, next) {
+    try {
+      response.locals.queryResult =
+        await services.trackReservation.copy(response.locals.body);
     }
     catch(e) {
       return sendWriteError(e, response, next);

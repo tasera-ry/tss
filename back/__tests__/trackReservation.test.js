@@ -385,4 +385,87 @@ describe(`${endpoint} writes`, () => {
       expect(res.status).toBe(403);
     });
   });
+
+  describe('POST /api/track-day-copy', () => {
+    const copyEndpoint = '/api/track-day-copy';
+    const LATER = '2099-06-08';
+    const copy = body => request.post(copyEndpoint).set('Cookie', admin).send(body);
+
+    it('copies the track status, notice and bookings to the chosen days, official use on every section', async () => {
+      const res = await copy({
+        track_id: 1,
+        dates: [LATER, FUTURE, LATER],
+        track_supervisor: 'closed',
+        notice: 'Kilpailu',
+        reservations: [
+          _.omit(privateEvent, 'date'),
+          { type: 'official', start_time: '15:00', end_time: '17:00' },
+        ],
+      });
+
+      expect(res.status).toBe(201);
+      expect(res.body).toEqual({ dates: [FUTURE, LATER] });
+      const [asked] = trackReservationModel.copies();
+      expect(asked.trackId).toBe(1);
+      expect(asked.dates).toEqual([FUTURE, LATER]);
+      expect(asked.supervision).toEqual({ track_supervisor: 'closed', notice: 'Kilpailu' });
+      expect(asked.reservations).toEqual([
+        expect.objectContaining({ track_section_id: 1, lanes_used: 10, association_id: 12, start_time: '12:00:00' }),
+        ...[1, 2, 3].map(id => expect.objectContaining({
+          type: 'official', track_section_id: id, lanes_used: 20, association_id: null, end_time: '17:00:00',
+        })),
+      ]);
+    });
+
+    it('copies only what is asked: a single booking leaves status and notice alone', async () => {
+      const res = await copy({ track_id: 1, dates: [FUTURE], reservations: [_.omit(privateEvent, 'date')] });
+
+      expect(res.status).toBe(201);
+      expect(trackReservationModel.copies()[0].supervision).toEqual({});
+    });
+
+    it('stores nothing and names every day that does not fit', async () => {
+      const conflicts = [
+        { date: FUTURE, track_section_id: 1, free: 5, total: 20 },
+        { date: LATER, track_section_id: 1, free: 0, total: 20 },
+      ];
+      trackReservationModel.conflictNextCopy(conflicts);
+
+      const res = await copy({ track_id: 1, dates: [FUTURE, LATER], reservations: [_.omit(privateEvent, 'date')] });
+
+      expect(res.status).toBe(409);
+      expect(res.body.conflicts).toEqual(conflicts);
+    });
+
+    it('refuses a past day among the chosen ones', async () => {
+      const res = await copy({ track_id: 1, dates: [FUTURE, PAST], notice: 'x' });
+
+      expect(res.status).toBe(400);
+      expect(trackReservationModel.copies()).toEqual([]);
+    });
+
+    it('refuses a booking on a section of another track', async () => {
+      const res = await copy({
+        track_id: 2,
+        dates: [FUTURE],
+        reservations: [_.omit(privateEvent, 'date')],
+      });
+
+      expect(res.status).toBe(400);
+      expect(trackReservationModel.copies()).toEqual([]);
+    });
+
+    it('refuses a copy of nothing, and a present track officer, which is the tablet\'s to mark', async () => {
+      expect((await copy({ track_id: 1, dates: [FUTURE] })).status).toBe(400);
+      expect((await copy({ track_id: 1, dates: [FUTURE], track_supervisor: 'present' })).status).toBe(400);
+      expect(trackReservationModel.copies()).toEqual([]);
+    });
+
+    it.each([['club'], ['tablet']])('refuses the %s account', async (who) => {
+      const res = await request.post(copyEndpoint).set('Cookie', as(who))
+        .send({ track_id: 1, dates: [FUTURE], notice: 'x' });
+
+      expect(res.status).toBe(403);
+    });
+  });
 });

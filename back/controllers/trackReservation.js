@@ -22,6 +22,12 @@ const controller = {
       .send(response.locals.queryResult);
   },
 
+  copy: async function copyTrackDay(request, response) {
+    return response
+      .status(201)
+      .send(response.locals.queryResult);
+  },
+
   delete: async function deleteReservation(request, response) {
     if (response.locals.queryResult === 0) {
       return response

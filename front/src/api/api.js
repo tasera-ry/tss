@@ -13,6 +13,45 @@ const getTrackSections = async () => {
   return response.data;
 };
 
+// Member associations, for the range officer shift and booking holders.
+const getAssociations = async () => {
+  const response = await axios.get('/api/user', {
+    params: { role: 'association' },
+  });
+  return response.data;
+};
+
+// A day's rows, created when a schedules card is first saved on a day that
+// has none: the range reservation, then its schedule.
+const createReservation = async (data) => {
+  const response = await axios.post('/api/reservation', data);
+  return response.data;
+};
+
+const createSchedule = async (data) => {
+  const response = await axios.post('/api/schedule', data);
+  return response.data;
+};
+
+// Part-day bookings (#492): superusers only.
+const createTrackReservation = async (data) => {
+  const response = await axios.post('/api/track-reservation', data);
+  return response.data;
+};
+
+const updateTrackReservation = async (id, data) => {
+  const response = await axios.put(`/api/track-reservation/${id}`, data);
+  return response.data;
+};
+
+const deleteTrackReservation = (id) =>
+  axios.delete(`/api/track-reservation/${id}`);
+
+const copyTrackDay = (data) => axios.post('/api/track-day-copy', data);
+
+// The range's settings for one or more days (#463).
+const putRangeDay = (data) => axios.put('/api/range-day', data);
+
 const getTrackReservations = async (date) => {
   const response = await axios.get('/api/track-reservation', {
     params: { date: dateToString(date) },
@@ -140,6 +179,13 @@ const postScheduledSupervisionTrack = (data) =>
 const patchScheduledSupervisionTrack = (scheduleId, trackId, data) =>
   axios.put(`/api/track-supervision/${scheduleId}/${trackId}`, data);
 
+const getScheduledSupervisionTrack = async (scheduleId, trackId) => {
+  const response = await axios.get(
+    `/api/track-supervision/${scheduleId}/${trackId}`,
+  );
+  return response.data[0];
+};
+
 const getMembers = async () => {
   const response = await axios.get('/api/members');
   return response.data;
@@ -243,6 +289,14 @@ export default {
   getSchedulingDate,
   getTrackSections,
   getTrackReservations,
+  getAssociations,
+  createReservation,
+  createSchedule,
+  createTrackReservation,
+  updateTrackReservation,
+  deleteTrackReservation,
+  copyTrackDay,
+  putRangeDay,
   getSchedulingWeek,
   getSchedulingFreeform,
   signIn,
@@ -265,6 +319,7 @@ export default {
   sendFeedback,
   postScheduledSupervisionTrack,
   patchScheduledSupervisionTrack,
+  getScheduledSupervisionTrack,
   getMembers,
   patchMembers,
   raffleSupervisors,

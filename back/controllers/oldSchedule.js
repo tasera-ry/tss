@@ -1,6 +1,7 @@
 // shouldn't this be deleted?
 
 const config = require('../config/config');
+const rangeModel = require('../models/range');
 const moment = require('moment-timezone');
 const _ = require('lodash');
 const getSunset = require('../services/sunset');
@@ -130,7 +131,16 @@ exports.getScheduleDate = async (req, res) => {
 
     let date = req.params.date;
     let tracks = await getTracks();
+    // There is only one range. Read its id, as the raffle does: the configured
+    // id is right only where the database happens to match it, and a new day's
+    // rows are created with this id.
     let rangeId = config.development.range_id;
+    try {
+      const [range] = await rangeModel.readAllRanges();
+      if (range) rangeId = range.id;
+    } catch (e) {
+      console.error('Could not read the range id', e);
+    }
     let reservationId = null;
     let available = null;
     let scheduleId = null;

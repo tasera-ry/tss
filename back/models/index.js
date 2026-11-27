@@ -15,6 +15,7 @@ const range = require(path.join(models, 'range'));
 const devices = require(path.join(models, 'devices'));
 const trackSection = require(path.join(models, 'trackSection'));
 const trackReservation = require(path.join(models, 'trackReservation'));
+const rangeDay = require(path.join(models, 'rangeDay'));
 
 exports.user = user;
 exports.trackSupervision = trackSupervision;
@@ -30,3 +31,4 @@ exports.range = range;
 exports.devices = devices;
 exports.trackSection = trackSection;
 exports.trackReservation = trackReservation;
+exports.rangeDay = rangeDay;
