@@ -16,9 +16,6 @@
  *   B7  `track.requires_range_officer` (boolean, default true). False only for
  *       track 6, which may open without a range officer (Pasi Autio,
  *       12.10.2026). Faked by list position in NO_RANGE_OFFICER_NEEDED.
- *   B8  Standing rules per track ("Vain .22LR", "Ei ammuntaa pimeällä"), as
- *       data an admin can edit, with a way to translate it. Faked as Finnish
- *       strings in TRACK_NOTES.
  *   B10 The supervisor rule enforced on write: "track officer present" must
  *       not be settable while the range officer is away, except on tracks
  *       with requires_range_officer = false. Today nothing stops the
@@ -54,6 +51,9 @@ export interface ApiSection {
    */
   name: string;
   description: string | null;
+  /** Swedish and English; empty or null falls back to Finnish (#462). */
+  description_sv?: string | null;
+  description_en?: string | null;
 }
 
 /** One row of `GET /api/track-reservation?date=`. */
@@ -76,9 +76,13 @@ interface ApiTrack {
   id: number;
   name: string;
   description: string | null;
+  description_sv?: string | null;
+  description_en?: string | null;
   short_description: string | null;
   notice: string | null;
   trackSupervision: string | null;
+  only_22lr?: boolean;
+  daylight_only?: boolean;
 }
 
 interface ApiDay {
@@ -107,30 +111,6 @@ export function formatTime(minutes: number): string {
   const m = minutes % 60;
   return `${String(h).padStart(2, '0')}.${String(m).padStart(2, '0')}`;
 }
-
-/**
- * PLACEHOLDER. Standing rules per track, from the customer 7.10.2026.
- * Keyed by position in the track list because the database has nowhere to keep
- * them yet. Replace with real data; do not extend this table.
- *
- * BACKEND(B8): notes.
- */
-const TRACK_NOTES: string[][] = [
-  [],
-  [],
-  [],
-  ['Soveltuu myös toiminnalliseen ammuntaan (SRA, IPSC, IDPA, CAS).'],
-  // Pasi Autio, review 10/2026: open on winter weekdays too, while it is light.
-  // Track 6 shares the rule; the customer's specs gave both the same note.
-  [
-    'Ei ammuntaa pimeällä. Talvikaudella rata on käytössä vain valoisaan aikaan.',
-  ],
-  [
-    'Vain .22LR.',
-    'Ei ammuntaa pimeällä. Talvikaudella rata on käytössä vain valoisaan aikaan.',
-  ],
-  ['Ensisijainen toiminnallisen ammunnan rata (SRA, IPSC, IDPA, CAS).'],
-];
 
 /**
  * PLACEHOLDER. Which tracks may be used without a range officer on site.
@@ -297,7 +277,7 @@ function buildSections(
  * Map the live payloads into what the redesigned view needs, filling the gaps.
  * Real: name, description, notice, both supervisor statuses, opening hours,
  * sections, lane counts, reservations, sunset.
- * Placeholder: notes, the range officer exception.
+ * Placeholder: the range officer exception.
  */
 export function toTrackViewDay(
   api: ApiDay | undefined,
@@ -313,6 +293,8 @@ export function toTrackViewDay(
     id: track.id,
     name: track.name,
     description: track.description ?? '',
+    descriptionSv: track.description_sv ?? '',
+    descriptionEn: track.description_en ?? '',
     shortDescription: track.short_description ?? '',
     notice: track.notice ?? null,
     officer: toTrackOfficer(track.trackSupervision),
@@ -325,7 +307,10 @@ export function toTrackViewDay(
       close,
       api.rangeSupervision === 'closed',
     ),
-    notes: TRACK_NOTES[index] ?? [],
+    rules: [
+      ...(track.only_22lr ? (['only_22lr'] as const) : []),
+      ...(track.daylight_only ? (['daylight_only'] as const) : []),
+    ],
   }));
 
   return {

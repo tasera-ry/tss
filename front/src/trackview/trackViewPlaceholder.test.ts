@@ -192,18 +192,18 @@ describe('toTrackViewDay', () => {
     ]);
   });
 
-  it('opens tracks 5 and 6 in winter while it is light, not only on Saturdays', () => {
-    // Pasi Autio, review 10/2026.
-    const tracks = Array.from({ length: 6 }, (_, i) => ({
-      ...apiDay.tracks[0],
-      id: i + 1,
-      name: `Rata ${i + 1}`,
-    }));
+  it("takes each track's standing rules from the API (B8, #455)", () => {
+    const tracks = [
+      { ...apiDay.tracks[0], id: 5, only_22lr: false, daylight_only: true },
+      { ...apiDay.tracks[0], id: 6, only_22lr: true, daylight_only: true },
+      { ...apiDay.tracks[0], id: 7 },
+    ];
     const day = toTrackViewDay({ ...apiDay, tracks });
-    const rule =
-      'Ei ammuntaa pimeällä. Talvikaudella rata on käytössä vain valoisaan aikaan.';
-    expect(day?.tracks[4].notes).toEqual([rule]);
-    expect(day?.tracks[5].notes).toEqual(['Vain .22LR.', rule]);
+    expect(day?.tracks.map((track) => track.rules)).toEqual([
+      ['daylight_only'],
+      ['only_22lr', 'daylight_only'],
+      [],
+    ]);
   });
 
   it('renders a closed track as closed for the whole day, whatever is booked', () => {

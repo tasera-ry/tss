@@ -253,7 +253,22 @@ router
  */
 router
   .route('/track-section')
-  .get(validators.trackSection.readFilter, middlewares.trackSection.read, controllers.trackSection.read);
+  .get(validators.trackSection.readFilter, middlewares.trackSection.read, controllers.trackSection.read)
+  .post(
+    middlewares.jwt.read,
+    middlewares.user.hasProperty('role', 'superuser'),
+    validators.trackSection.create,
+    middlewares.trackSection.create,
+    controllers.trackSection.create
+  );
+
+// Editing a track's sections (#462): admins only. Fewer lanes, or deleting,
+// is refused while bookings from today on need them.
+router
+  .route('/track-section/:id')
+  .all(middlewares.jwt.read, middlewares.user.hasProperty('role', 'superuser'))
+  .put(validators.trackSection.update, middlewares.trackSection.update, controllers.trackSection.update)
+  .delete(validators.trackSection.delete, middlewares.trackSection.delete, controllers.trackSection.delete);
 
 // Writes are for admins only: TASERA edits schedules itself (Pasi Autio,
 // 13.11.2026), so that every member is treated the same.

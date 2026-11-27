@@ -26,6 +26,7 @@ import api from '@/api/api';
 import { DateHeader } from '@/lib/components/DateHeader';
 import { InfoBox } from '@/lib/components/InfoBox';
 import { ViewChanger } from '@/lib/components/ViewChanger';
+import { useLocalized } from '@/lib/useLocalized';
 import { JumpToCurrent } from '@/utils/Utils';
 import { DeviceStatusList } from '../../DeviceStatusList/DeviceStatusList';
 
@@ -203,6 +204,7 @@ function TrackBox({
 }) {
   const { t } = useLingui();
   const trackName = useTrackName();
+  const localized = useLocalized();
 
   const { statusClass, borderClass, statusText, icon } = useMemo(() => {
     switch (status.kind) {
@@ -275,7 +277,16 @@ function TrackBox({
           )}
         </div>
         <div className={classes(css.trackDesc)}>
-          {track.description || track.short_description}
+          {localized(
+            track.description,
+            track.description_sv,
+            track.description_en,
+          ) ||
+            localized(
+              track.short_description,
+              track.short_description_sv,
+              track.short_description_en,
+            )}
         </div>
       </div>
 

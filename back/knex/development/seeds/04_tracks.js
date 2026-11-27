@@ -78,6 +78,9 @@ casual.define('range', async function(rangeId) {
     name: `Rata ${i + 1}`,
     // Only track 6 may open without a range officer (Pasi Autio, 12.10.2026).
     requires_range_officer: i !== 5,
+    // Standing rules (B8, #455): .22LR only on track 6, daylight on 5 and 6.
+    only_22lr: i === 5,
+    daylight_only: i === 4 || i === 5,
     description: casual.track_description,
     short_description: shortDescriptions[i] ?? `s ${i}`
   }));

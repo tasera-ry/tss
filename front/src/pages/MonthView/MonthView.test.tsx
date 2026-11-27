@@ -113,8 +113,11 @@ describe('testing monthview', () => {
   it('shows the current month when no date is given', async () => {
     vi.setSystemTime('2020-10-21T11:30:57.000Z');
     renderMonthview();
-    await waitFor(() =>
-      expect(screen.getByText('October 2020')).toBeInTheDocument(),
+    // The file's first render pays the cold start; in a full run it can take
+    // longer than waitFor's default second.
+    await waitFor(
+      () => expect(screen.getByText('October 2020')).toBeInTheDocument(),
+      { timeout: 5000 },
     );
   });
 

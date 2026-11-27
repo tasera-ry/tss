@@ -13,6 +13,13 @@ const getTrackSections = async () => {
   return response.data;
 };
 
+// Edit tracks (#462): a track's fields and rules, and its sections.
+const updateTrack = (id, data) => axios.put(`/api/track/${id}`, data);
+const createTrackSection = (data) => axios.post('/api/track-section', data);
+const updateTrackSection = (id, data) =>
+  axios.put(`/api/track-section/${id}`, data);
+const deleteTrackSection = (id) => axios.delete(`/api/track-section/${id}`);
+
 const getTrackReservations = async (date) => {
   const response = await axios.get('/api/track-reservation', {
     params: { date: dateToString(date) },
@@ -242,6 +249,10 @@ async function putSupervision(id, data) {
 export default {
   getSchedulingDate,
   getTrackSections,
+  updateTrack,
+  createTrackSection,
+  updateTrackSection,
+  deleteTrackSection,
   getTrackReservations,
   getSchedulingWeek,
   getSchedulingFreeform,

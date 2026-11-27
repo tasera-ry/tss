@@ -1,3 +1,4 @@
+import { useLocalized } from '@/lib/useLocalized';
 import { useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
@@ -379,13 +380,19 @@ function RangeOfficerBanner({ day }: { day: TrackViewDay }) {
 
 function TrackHeader({ track }: { track: TrackDetail }) {
   const { t } = useLingui();
+  const localized = useLocalized();
+  const description = localized(
+    track.description,
+    track.descriptionSv,
+    track.descriptionEn,
+  );
   const lanes = track.sections.reduce((sum, s) => sum + s.laneCount, 0);
   const officerPresent = track.officer === 'present';
 
   return (
     <div className="flex flex-col gap-2">
-      {track.description && (
-        <p className="whitespace-pre-wrap text-sm">{track.description}</p>
+      {description && (
+        <p className="whitespace-pre-wrap text-sm">{description}</p>
       )}
       <p className="text-grey text-sm tabular-nums">
         {lanes} {t`lanes`}
@@ -420,9 +427,14 @@ function TrackHeader({ track }: { track: TrackDetail }) {
           {track.notice}
         </p>
       )}
-      {track.notes.map((note) => (
-        <p key={note} className="text-grey text-sm">
-          {note}
+      {track.rules.map((rule) => (
+        <p key={rule} className="text-grey text-sm">
+          {
+            {
+              only_22lr: t`.22LR only.`,
+              daylight_only: t`No shooting in the dark. In winter the track is open only while it is light.`,
+            }[rule]
+          }
         </p>
       ))}
     </div>

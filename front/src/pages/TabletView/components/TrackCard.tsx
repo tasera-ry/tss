@@ -1,4 +1,5 @@
 import api from '@/api/api';
+import { useLocalized } from '@/lib/useLocalized';
 import { TrackStatistics } from '@/pages/TabletView/components/TrackStatistics/TrackStatistics';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
@@ -30,6 +31,7 @@ const toggleStates = ['present', 'closed', 'absent'] as const;
 
 export function TrackCard({ track, disabled, scheduleId, date, socket }) {
   const { i18n } = useLingui();
+  const localized = useLocalized();
   const queryClient = useQueryClient();
 
   const supervisionState = useMemo(() => {
@@ -114,7 +116,13 @@ export function TrackCard({ track, disabled, scheduleId, date, socket }) {
       <div className={classes(css.rangeStyle)}>
         <div className="text-center font-medium text-xl flex flex-col">
           <span>{track.name}</span>
-          <span className="text-sm">{track.short_description}</span>
+          <span className="text-sm">
+            {localized(
+              track.short_description,
+              track.short_description_sv,
+              track.short_description_en,
+            )}
+          </span>
         </div>
         <div className="flex flex-col gap-2">
           <Button

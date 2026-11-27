@@ -85,7 +85,10 @@ export interface LaneSection {
 export interface TrackDetail {
   id: number;
   name: string;
+  /** Finnish; the Swedish and English versions may be empty (#462). */
   description: string;
+  descriptionSv: string;
+  descriptionEn: string;
   shortDescription: string;
   /** Free-text notice from `track_supervision.notice`. May be null in the API. */
   notice: string | null;
@@ -104,9 +107,12 @@ export interface TrackDetail {
    */
   requiresRangeOfficer: boolean;
   sections: LaneSection[];
-  /** Standing rules, e.g. "no shooting after dark", ".22LR only". */
-  notes: string[];
+  /** Standing rules (B8, #455), set on the Edit tracks page. */
+  rules: TrackRule[];
 }
+
+/** A track's standing rule; the view shows its translated text. */
+export type TrackRule = 'only_22lr' | 'daylight_only';
 
 /** The day as a whole, shared by every track on it. */
 export interface TrackViewDay {
