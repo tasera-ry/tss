@@ -104,9 +104,12 @@ export interface TrackDetail {
    */
   requiresRangeOfficer: boolean;
   sections: LaneSection[];
-  /** Standing rules, e.g. "no shooting after dark", ".22LR only". */
-  notes: string[];
+  /** Standing rules (B8, #455), set on the Edit tracks page. */
+  rules: TrackRule[];
 }
+
+/** A track's standing rule; the view shows its translated text. */
+export type TrackRule = 'only_22lr' | 'daylight_only';
 
 /** The day as a whole, shared by every track on it. */
 export interface TrackViewDay {

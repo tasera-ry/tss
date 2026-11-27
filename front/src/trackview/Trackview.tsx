@@ -420,9 +420,14 @@ function TrackHeader({ track }: { track: TrackDetail }) {
           {track.notice}
         </p>
       )}
-      {track.notes.map((note) => (
-        <p key={note} className="text-grey text-sm">
-          {note}
+      {track.rules.map((rule) => (
+        <p key={rule} className="text-grey text-sm">
+          {
+            {
+              only_22lr: t`.22LR only.`,
+              daylight_only: t`No shooting in the dark. In winter the track is open only while it is light.`,
+            }[rule]
+          }
         </p>
       ))}
     </div>

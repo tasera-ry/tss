@@ -13,7 +13,15 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/trackview/Trackview.tsx:662
+#: src/pages/EditTracksView/TrackEditCard.tsx:260
+msgid ".22LR only"
+msgstr ".22LR only"
+
+#: src/trackview/Trackview.tsx:427
+msgid ".22LR only."
+msgstr ".22LR only."
+
+#: src/trackview/Trackview.tsx:667
 msgid "{booked, plural, one {# lane booked} other {# lanes booked}}"
 msgstr "{booked, plural, one {# lane booked} other {# lanes booked}}"
 
@@ -33,6 +41,10 @@ msgstr "{weekCount} weeks · select a day to see the tracks"
 msgid "7 days · select a day to see the tracks"
 msgstr "7 days · select a day to see the tracks"
 
+#: src/pages/EditTracksView/TrackEditCard.tsx:410
+msgid "A track needs at least one section."
+msgstr "A track needs at least one section."
+
 #: src/upcomingsupervisions/LoggedIn.jsx:75
 #: src/upcomingsupervisions/LoggedIn.jsx:131
 #: src/upcomingsupervisions/LoggedIn.jsx:179
@@ -46,13 +58,8 @@ msgstr "Account dashboard"
 
 #: src/profile/profilepages/supervisions.tsx:105
 #: src/profile/profilepages/officerform.jsx:53
-#: src/pages/EditTracksView/EditTracksView.tsx:72
 msgid "Actions"
 msgstr "Actions"
-
-#: src/pages/EditTracksView/components/NewTrackRow.tsx:121
-msgid "Add"
-msgstr "Add"
 
 #: src/scheduling/Scheduling.jsx:1182
 msgid "Add estimated time of arrival"
@@ -73,6 +80,10 @@ msgstr "Add new range officer"
 #: src/profile/profilepages/officerform.jsx:262
 msgid "Add range officer"
 msgstr "Add range officer"
+
+#: src/pages/EditTracksView/TrackEditCard.tsx:450
+msgid "Add section"
+msgstr "Add section"
 
 #: src/scheduling/Scheduling.jsx:1245
 msgid "Advanced options"
@@ -130,10 +141,6 @@ msgstr "Are you sure you want to delete {0}?"
 #: src/pages/InfoMessageManagementView/components/ActiveMessagesList.tsx:41
 msgid "Are you sure you want to delete this message?"
 msgstr "Are you sure you want to delete this message?"
-
-#: src/pages/EditTracksView/components/TrackRow.tsx:112
-msgid "Are you sure you want to delete this track?"
-msgstr "Are you sure you want to delete this track?"
 
 #: src/pages/WeekView/WeekView.tsx:336
 #: src/pages/MonthView/MonthView.tsx:468
@@ -246,7 +253,7 @@ msgstr "Close"
 msgid "Close All"
 msgstr "Close All"
 
-#: src/trackview/Trackview.tsx:466
+#: src/trackview/Trackview.tsx:471
 #: src/scheduling/Scheduling.jsx:980
 #: src/pages/TabletView/components/TrackCard.tsx:20
 #: src/pages/TabletView/components/RangeOfficerStatusSection.tsx:109
@@ -353,7 +360,6 @@ msgstr "Define range officer status by choosing color"
 
 #: src/profile/profilepages/officerform.jsx:69
 #: src/profile/profilepages/officerform.jsx:92
-#: src/pages/EditTracksView/components/TrackRow.tsx:189
 msgid "Delete"
 msgstr "Delete"
 
@@ -365,8 +371,8 @@ msgstr "Delete range officer"
 msgid "Delete user"
 msgstr "Delete user"
 
-#: src/pages/EditTracksView/EditTracksView.tsx:70
-#: src/pages/EditTracksView/components/NewTrackRow.tsx:92
+#: src/pages/EditTracksView/TrackEditCard.tsx:307
+#: src/pages/EditTracksView/TrackEditCard.tsx:393
 msgid "Description"
 msgstr "Description"
 
@@ -394,7 +400,6 @@ msgstr "E-mail address is required!"
 
 #: src/pages/UserManagement/UserManagementView.tsx:137
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:45
-#: src/pages/EditTracksView/components/TrackRow.tsx:181
 msgid "Edit"
 msgstr "Edit"
 
@@ -402,6 +407,7 @@ msgstr "Edit"
 msgid "Edit range officer status by choosing color"
 msgstr "Edit range officer status by choosing color"
 
+#: src/pages/EditTracksView/EditTracksView.tsx:55
 #: src/lib/components/Navbar/DrawerMenu.tsx:32
 msgid "Edit tracks"
 msgstr "Edit tracks"
@@ -474,15 +480,7 @@ msgstr "End repeat after"
 msgid "Error"
 msgstr "Error"
 
-#: src/pages/EditTracksView/components/NewTrackRow.tsx:60
-msgid "Error adding track"
-msgstr "Error adding track"
-
-#: src/pages/EditTracksView/components/TrackRow.tsx:97
-msgid "Error deleting track"
-msgstr "Error deleting track"
-
-#: src/pages/EditTracksView/EditTracksView.tsx:49
+#: src/pages/EditTracksView/EditTracksView.tsx:69
 msgid "Error fetching tracks"
 msgstr "Error fetching tracks"
 
@@ -497,10 +495,6 @@ msgstr "Error loading email settings"
 #: src/pages/InfoMessageManagementView/components/NewMessageForm.tsx:66
 msgid "Error sending message"
 msgstr "Error sending message"
-
-#: src/pages/EditTracksView/components/TrackRow.tsx:73
-msgid "Error updating track"
-msgstr "Error updating track"
 
 #: src/renewPW/RenewPassword.jsx:90
 msgid "Error verifying token!"
@@ -557,11 +551,11 @@ msgstr "Force all pending emails to be sent immediately."
 msgid "Forgot password?"
 msgstr "Forgot password?"
 
-#: src/trackview/Trackview.tsx:706
+#: src/trackview/Trackview.tsx:711
 msgid "free"
 msgstr "free"
 
-#: src/trackview/Trackview.tsx:460
+#: src/trackview/Trackview.tsx:465
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusCard.tsx:11
 #: src/DeviceStatusList/DeviceStatusList.tsx:50
 msgid "Free"
@@ -620,9 +614,13 @@ msgid "Invalid time selected."
 msgstr "Invalid time selected."
 
 #: src/trackview/Trackview.tsx:391
-#: src/trackview/Trackview.tsx:744
+#: src/trackview/Trackview.tsx:749
 msgid "lanes"
 msgstr "lanes"
+
+#: src/pages/EditTracksView/TrackEditCard.tsx:381
+msgid "Lanes"
+msgstr "Lanes"
 
 #: src/trackview/useTrackName.ts:33
 msgid "Leftmost"
@@ -739,8 +737,7 @@ msgid "Monthly visitors per track"
 msgstr "Monthly visitors per track"
 
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:160
-#: src/pages/EditTracksView/EditTracksView.tsx:69
-#: src/pages/EditTracksView/components/NewTrackRow.tsx:78
+#: src/pages/EditTracksView/TrackEditCard.tsx:283
 msgid "Name"
 msgstr "Name"
 
@@ -785,7 +782,7 @@ msgid "No pending messages to send."
 msgstr "No pending messages to send."
 
 #: src/trackview/Trackview.tsx:334
-#: src/trackview/Trackview.tsx:631
+#: src/trackview/Trackview.tsx:636
 #: src/pages/DayView/DayView.tsx:250
 #: src/pages/DayView/DayView.tsx:314
 msgid "No range officer present"
@@ -796,9 +793,17 @@ msgstr "No range officer present"
 msgid "No selection"
 msgstr "No selection"
 
-#: src/trackview/Trackview.tsx:468
+#: src/trackview/Trackview.tsx:473
 msgid "No shooting"
 msgstr "No shooting"
+
+#: src/pages/EditTracksView/TrackEditCard.tsx:261
+msgid "No shooting in the dark"
+msgstr "No shooting in the dark"
+
+#: src/trackview/Trackview.tsx:428
+msgid "No shooting in the dark. In winter the track is open only while it is light."
+msgstr "No shooting in the dark. In winter the track is open only while it is light."
 
 #: src/trackview/Trackview.tsx:363
 msgid "No track can be used on this day."
@@ -813,7 +818,7 @@ msgid "No track officer"
 msgstr "No track officer"
 
 #: src/trackview/Trackview.tsx:410
-#: src/trackview/Trackview.tsx:630
+#: src/trackview/Trackview.tsx:635
 #: src/pages/DayView/DayView.tsx:257
 msgid "No track officer present"
 msgstr "No track officer present"
@@ -822,6 +827,16 @@ msgstr "No track officer present"
 #: src/profile/profilepages/supervisions.tsx:258
 msgid "Not confirmed"
 msgstr "Not confirmed"
+
+#. placeholder {0}: formatDays(days)
+#: src/pages/EditTracksView/TrackEditCard.tsx:211
+msgid "Not removed: the section has bookings on {0}."
+msgstr "Not removed: the section has bookings on {0}."
+
+#. placeholder {1}: formatDays(days)
+#: src/pages/EditTracksView/TrackEditCard.tsx:215
+msgid "Not saved: the bookings need more lanes at once on {1}."
+msgstr "Not saved: the bookings need more lanes at once on {1}."
 
 #: src/profile/profilepages/supervisions.tsx:279
 msgid "Not selected"
@@ -893,8 +908,8 @@ msgstr "Opens at {time}"
 msgid "Organization updated"
 msgstr "Organization updated"
 
-#: src/trackview/Trackview.tsx:579
-#: src/trackview/Trackview.tsx:699
+#: src/trackview/Trackview.tsx:584
+#: src/trackview/Trackview.tsx:704
 msgid "Partially available"
 msgstr "Partially available"
 
@@ -961,7 +976,7 @@ msgstr "Previous"
 msgid "Previous day"
 msgstr "Previous day"
 
-#: src/trackview/Trackview.tsx:462
+#: src/trackview/Trackview.tsx:467
 #: src/scheduling/Scheduling.jsx:614
 #: src/pages/DayView/DayView.tsx:227
 msgid "Private event"
@@ -1004,13 +1019,13 @@ msgid "Range officer addition failed"
 msgstr "Range officer addition failed"
 
 #. placeholder {0}: formatTime(arrivingAt)
-#: src/trackview/Trackview.tsx:624
+#: src/trackview/Trackview.tsx:629
 #: src/pages/DayView/DayView.tsx:328
 msgid "Range officer arriving at {0}"
 msgstr "Range officer arriving at {0}"
 
 #: src/trackview/Trackview.tsx:337
-#: src/trackview/Trackview.tsx:637
+#: src/trackview/Trackview.tsx:642
 #: src/scheduling/Scheduling.jsx:384
 #: src/scheduling/Scheduling.jsx:389
 #: src/scheduling/Scheduling.jsx:983
@@ -1043,7 +1058,7 @@ msgid "Range officer management"
 msgstr "Range officer management"
 
 #: src/trackview/Trackview.tsx:339
-#: src/trackview/Trackview.tsx:639
+#: src/trackview/Trackview.tsx:644
 #: src/scheduling/Scheduling.jsx:369
 #: src/scheduling/Scheduling.jsx:374
 #: src/scheduling/Scheduling.jsx:986
@@ -1098,6 +1113,14 @@ msgstr "Rangeofficers"
 msgid "Recipients"
 msgstr "Recipients"
 
+#: src/pages/EditTracksView/TrackEditCard.tsx:421
+msgid "Remove"
+msgstr "Remove"
+
+#: src/pages/EditTracksView/TrackEditCard.tsx:356
+msgid "Removed on save, with its past bookings."
+msgstr "Removed on save, with its past bookings."
+
 #: src/scheduling/Scheduling.jsx:1250
 msgid "Repeat daily"
 msgstr "Repeat daily"
@@ -1110,12 +1133,16 @@ msgstr "Repeat monthly"
 msgid "Repeat weekly"
 msgstr "Repeat weekly"
 
+#: src/pages/EditTracksView/TrackEditCard.tsx:259
+msgid "Requires a range officer on site"
+msgstr "Requires a range officer on site"
+
 #: src/pages/TabletView/components/DeviceStatusPanel/DeviceStatusCard.tsx:15
 #: src/DeviceStatusList/DeviceStatusList.tsx:50
 msgid "Reserved"
 msgstr "Reserved"
 
-#: src/trackview/Trackview.tsx:464
+#: src/trackview/Trackview.tsx:469
 msgid "Reserved for authority use"
 msgstr "Reserved for authority use"
 
@@ -1146,6 +1173,10 @@ msgstr "Role"
 msgid "Role is required"
 msgstr "Role is required"
 
+#: src/pages/EditTracksView/TrackEditCard.tsx:322
+msgid "Rules"
+msgstr "Rules"
+
 #: src/pages/MonthView/MonthView.tsx:317
 msgid "Sat"
 msgstr "Sat"
@@ -1158,6 +1189,7 @@ msgstr "Saturday"
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:184
 #: src/pages/UserManagement/components/dialogs/EditUserDialog.tsx:264
 #: src/pages/TabletView/components/OpenHoursSection.tsx:151
+#: src/pages/EditTracksView/TrackEditCard.tsx:476
 msgid "Save"
 msgstr "Save"
 
@@ -1176,18 +1208,34 @@ msgstr "Save results"
 msgid "Save settings"
 msgstr "Save settings"
 
+#: src/pages/EditTracksView/TrackEditCard.tsx:250
+msgid "Saved"
+msgstr "Saved"
+
 #: src/scheduling/Scheduling.jsx:1026
 #: src/lib/components/Navbar/DrawerMenu.tsx:30
 msgid "Schedules"
 msgstr "Schedules"
 
-#: src/trackview/Trackview.tsx:436
+#: src/trackview/Trackview.tsx:441
 msgid "Section {number}"
 msgstr "Section {number}"
+
+#: src/pages/EditTracksView/TrackEditCard.tsx:370
+msgid "Section name"
+msgstr "Section name"
 
 #: src/trackview/Trackview.tsx:395
 msgid "sections"
 msgstr "sections"
+
+#: src/pages/EditTracksView/TrackEditCard.tsx:340
+msgid "Sections"
+msgstr "Sections"
+
+#: src/pages/EditTracksView/EditTracksView.tsx:61
+msgid "Sections are the parts of a track that bookings take lanes from."
+msgstr "Sections are the parts of a track that bookings take lanes from."
 
 #: src/pages/UserManagement/components/SelectAssociation.tsx:10
 #: src/pages/UserManagement/components/SelectAssociation.tsx:14
@@ -1254,8 +1302,7 @@ msgstr "Shift declined"
 msgid "Shift updated"
 msgstr "Shift updated"
 
-#: src/pages/EditTracksView/EditTracksView.tsx:71
-#: src/pages/EditTracksView/components/NewTrackRow.tsx:105
+#: src/pages/EditTracksView/TrackEditCard.tsx:294
 msgid "Short description"
 msgstr "Short description"
 
@@ -1363,9 +1410,21 @@ msgstr "The execution of the raffle failed"
 msgid "The link is incorrect or it has expired. Please send a new reset link!"
 msgstr "The link is incorrect or it has expired. Please send a new reset link!"
 
+#: src/pages/EditTracksView/EditTracksView.tsx:58
+msgid "The page has unsaved changes. Leave without saving?"
+msgstr "The page has unsaved changes. Leave without saving?"
+
 #: src/raffle/raffle.tsx:169
 msgid "The saving of the results failed"
 msgstr "The saving of the results failed"
+
+#: src/pages/EditTracksView/TrackEditCard.tsx:218
+msgid "The section could not be saved."
+msgstr "The section could not be saved."
+
+#: src/pages/EditTracksView/TrackEditCard.tsx:248
+msgid "The track could not be saved."
+msgstr "The track could not be saved."
 
 #: src/trackview/Trackview.tsx:113
 msgid "This track has no schedule for the selected day."
@@ -1404,17 +1463,9 @@ msgstr "Track"
 msgid "Track {number}"
 msgstr "Track {number}"
 
-#: src/pages/EditTracksView/components/NewTrackRow.tsx:53
-msgid "Track added successfully"
-msgstr "Track added successfully"
-
 #: src/scheduling/Scheduling.jsx:604
 msgid "Track closed"
 msgstr "Track closed"
-
-#: src/pages/EditTracksView/components/TrackRow.tsx:90
-msgid "Track deleted successfully"
-msgstr "Track deleted successfully"
 
 #: src/pages/DayView/DayView.tsx:273
 #: src/lib/components/TableLegends.tsx:46
@@ -1430,12 +1481,7 @@ msgstr "Track not found"
 msgid "Track officer present"
 msgstr "Track officer present"
 
-#: src/pages/EditTracksView/components/TrackRow.tsx:66
-msgid "Track updated successfully"
-msgstr "Track updated successfully"
-
 #: src/trackview/Trackview.tsx:297
-#: src/pages/EditTracksView/EditTracksView.tsx:64
 #: src/pages/DayView/DayView.tsx:116
 msgid "Tracks"
 msgstr "Tracks"
@@ -1465,9 +1511,18 @@ msgstr "Tuesday"
 msgid "Unconfirmed shift reminder"
 msgstr "Unconfirmed shift reminder"
 
+#: src/pages/EditTracksView/TrackEditCard.tsx:364
+#: src/pages/EditTracksView/TrackEditCard.tsx:468
+msgid "Undo"
+msgstr "Undo"
+
 #: src/trackview/useTrackName.ts:41
 msgid "Unmarked lanes"
 msgstr "Unmarked lanes"
+
+#: src/pages/EditTracksView/TrackEditCard.tsx:455
+msgid "Unsaved changes"
+msgstr "Unsaved changes"
 
 #: src/scheduling/Scheduling.jsx:460
 msgid "Update successful"
