@@ -167,7 +167,7 @@ exports.getScheduleDate = async (req, res) => {
         trackSupervision: 'absent',
         scheduled: false
       };
-      return _.pick(item, ['id', 'name', 'description', 'short_description', 'notice', 'trackSupervision', 'scheduled']);
+      return _.pick(item, ['id', 'name', 'description', 'short_description', 'requires_range_officer', 'notice', 'trackSupervision', 'scheduled']);
     });
 
     const trackSupervision = await getTracksupervision(scheduleId);
@@ -180,7 +180,7 @@ exports.getScheduleDate = async (req, res) => {
           trackSupervision: supervision ? supervision.track_supervisor : 'absent',
           scheduled: supervision
         };
-        return _.pick(item, ['id', 'name', 'description', 'short_description', 'notice', 'trackSupervision', 'scheduled']);
+        return _.pick(item, ['id', 'name', 'description', 'short_description', 'requires_range_officer', 'notice', 'trackSupervision', 'scheduled']);
       });
     }
 
