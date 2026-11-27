@@ -27,14 +27,32 @@ const buttonStates = {
 } as const;
 
 const toggleStates = ['present', 'closed', 'absent'] as const;
+// B10 (#464): without the range officer on site the server refuses 'present'.
+const toggleStatesWithoutPresent = ['closed', 'absent'] as const;
 
-export function TrackCard({ track, disabled, scheduleId, date, socket }) {
+const officerAwayMsg = msg`The range officer is not present, so the track officer cannot be marked present.`;
+const saveFailedMsg = msg`The track status could not be saved.`;
+
+export function TrackCard({
+  track,
+  disabled,
+  scheduleId,
+  date,
+  socket,
+  rangeOfficerPresent,
+  setNotification,
+}) {
   const { i18n } = useLingui();
   const queryClient = useQueryClient();
 
   const supervisionState = useMemo(() => {
     return track.scheduled ? track.scheduled.track_supervisor : 'absent';
   }, [track]);
+
+  // Rata 6 needs no range officer (requires_range_officer false); unknown
+  // counts as needed, as on the server.
+  const canBePresent =
+    rangeOfficerPresent || track.requires_range_officer === false;
 
   const buttonState = useMemo(() => {
     return buttonStates?.[supervisionState] ?? buttonStates.absent;
@@ -82,6 +100,17 @@ export function TrackCard({ track, disabled, scheduleId, date, socket }) {
         track_supervisor: status,
       });
     },
+    onError: (error: { response?: { data?: { error?: string } } }) => {
+      const refused =
+        error.response?.data?.error === 'Range officer not present';
+      setNotification({
+        open: true,
+        type: 'error',
+        message: i18n._(refused ? officerAwayMsg : saveFailedMsg),
+      });
+      // The range officer's status may have changed elsewhere: read it again.
+      if (refused) queryClient.invalidateQueries(['schedule', date]);
+    },
     onSuccess: (_, status) => {
       queryClient.setQueryData(['schedule', date], (old: any) => {
         return {
@@ -103,11 +132,15 @@ export function TrackCard({ track, disabled, scheduleId, date, socket }) {
   });
 
   const onStatusClick = useCallback(() => {
-    const newStateIndex =
-      (toggleStates.indexOf(supervisionState) + 1) % toggleStates.length;
-    const nextState = toggleStates[newStateIndex];
-    trackMutation.mutate(nextState);
-  }, [supervisionState, trackMutation]);
+    const states: readonly string[] = canBePresent
+      ? toggleStates
+      : toggleStatesWithoutPresent;
+    // From 'present' (marked before the officer left), indexOf is -1: the
+    // next is 'closed', and the track cannot be set back to present.
+    trackMutation.mutate(
+      states[(states.indexOf(supervisionState) + 1) % states.length],
+    );
+  }, [canBePresent, supervisionState, trackMutation]);
 
   return (
     <div className={classes(css.rangediv)}>

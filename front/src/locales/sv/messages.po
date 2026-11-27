@@ -1361,9 +1361,18 @@ msgstr "Genomförandet av tombola misslyckades"
 msgid "The link is incorrect or it has expired. Please send a new reset link!"
 msgstr "Länken är felaktig eller så har den gått ut. Skicka en ny återställningslänk, tack!"
 
+#: src/pages/TabletView/TabletView.tsx:162
+#: src/pages/TabletView/components/TrackCard.tsx:33
+msgid "The range officer is not present, so the track officer cannot be marked present."
+msgstr "Banofficeren är inte på plats, så banhandledaren kan inte markeras närvarande."
+
 #: src/raffle/raffle.tsx:169
 msgid "The saving of the results failed"
 msgstr "Misslyckats att spara resultat"
+
+#: src/pages/TabletView/components/TrackCard.tsx:34
+msgid "The track status could not be saved."
+msgstr "Banans status kunde inte sparas."
 
 #: src/trackview/Trackview.tsx:113
 msgid "This track has no schedule for the selected day."

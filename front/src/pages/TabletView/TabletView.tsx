@@ -156,6 +156,12 @@ export function TabletView() {
       <span className={classes(css.Text)}>
         {t`Change track officer status by choosing color. Change number of track users with buttons`}
       </span>
+      {/* B10 (#464): said once for all tracks; the cards skip 'present'. */}
+      {!areTracksDisabled && rangeSupervision !== 'present' && (
+        <p className="text-center font-medium" data-testid="officerAway">
+          {t`The range officer is not present, so the track officer cannot be marked present.`}
+        </p>
+      )}
 
       <div className={classes(css.trackRowStyle)}>
         {scheduleQuery.data?.tracks?.map((track) => (
@@ -166,6 +172,8 @@ export function TabletView() {
             scheduleId={scheduleId}
             date={date}
             socket={socket}
+            rangeOfficerPresent={rangeSupervision === 'present'}
+            setNotification={setNotification}
           />
         ))}
       </div>
