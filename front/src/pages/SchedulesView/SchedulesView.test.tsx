@@ -100,7 +100,11 @@ const reservations = [
   },
 ];
 
-async function renderPage(date = FUTURE, overrides = {}) {
+async function renderPage(
+  date = FUTURE,
+  overrides = {},
+  clubs = [{ id: 5, name: 'Hirviseura' }],
+) {
   vi.mocked(useParams).mockReturnValue({ date });
   vi.mocked(api.validateLogin).mockResolvedValue({} as never);
   vi.mocked(api.getSchedulingDate).mockResolvedValue({
@@ -110,9 +114,7 @@ async function renderPage(date = FUTURE, overrides = {}) {
   });
   vi.mocked(api.getTrackSections).mockResolvedValue(sections);
   vi.mocked(api.getTrackReservations).mockResolvedValue(reservations);
-  vi.mocked(api.getAssociations).mockResolvedValue([
-    { id: 5, name: 'Hirviseura' },
-  ]);
+  vi.mocked(api.getAssociations).mockResolvedValue(clubs);
   const result = render(<SchedulesView />, { wrapper: TestProviders });
   await screen.findByRole('heading', { name: 'Track 1' }, { timeout: 5000 });
   return result;
@@ -123,23 +125,232 @@ describe('SchedulesView', () => {
     vi.clearAllMocks();
   });
 
-  it("shows the day's range details", async () => {
-    await renderPage();
+  it("shows the day's range details read-only on a past day", async () => {
+    await renderPage(PAST);
     const range = within(screen.getByRole('region', { name: 'Range' }));
     expect(range.getByText('Open')).toBeInTheDocument();
     expect(range.getByText('10.00–19.00')).toBeInTheDocument();
     expect(range.getByText('Hirviseura')).toBeInTheDocument();
     expect(range.getByText('Range officer confirmed')).toBeInTheDocument();
     expect(range.getByText('09.45')).toBeInTheDocument();
+    expect(range.queryByRole('radio')).not.toBeInTheDocument();
+    expect(range.queryByRole('combobox')).not.toBeInTheDocument();
   });
 
-  it('says when no range officer is assigned', async () => {
-    await renderPage(FUTURE, {
-      rangeSupervisorId: null,
-      rangeSupervision: 'absent',
+  describe('editing the range', () => {
+    const range = () => within(screen.getByRole('region', { name: 'Range' }));
+    const save = () =>
+      fireEvent.click(range().getByRole('button', { name: 'Save' }));
+
+    async function renderWithClubs() {
+      vi.mocked(api.putRangeDay).mockResolvedValue({} as never);
+      return renderPage(FUTURE, {}, [
+        { id: 5, name: 'Hirviseura' },
+        { id: 6, name: 'Ampumaseura' },
+      ]);
+    }
+
+    it("shows the day's settings, the officer's status and arrival", async () => {
+      await renderPage();
+      expect(range().getByRole('radio', { name: 'Open' })).toBeChecked();
+      expect(range().getByLabelText('Opens')).toHaveValue('10:00');
+      expect(range().getByLabelText('Closes')).toHaveValue('19:00');
+      expect(range().getByLabelText('Range officer shift')).toHaveValue('5');
+      expect(range().getByText('Range officer confirmed')).toBeInTheDocument();
+      expect(range().getByText('09.45')).toBeInTheDocument();
+      expect(
+        range().queryByRole('button', { name: 'Save' }),
+      ).not.toBeInTheDocument();
     });
-    const range = within(screen.getByRole('region', { name: 'Range' }));
-    expect(range.getByText('No range officer')).toBeInTheDocument();
+
+    it('reads a day without rows as closed, 17–20, without an officer', async () => {
+      await renderPage(FUTURE, {
+        reservationId: null,
+        scheduleId: null,
+        available: null,
+        open: null,
+        close: null,
+        rangeSupervisorId: null,
+        rangeSupervision: null,
+      });
+      expect(range().getByRole('radio', { name: 'Closed' })).toBeChecked();
+      fireEvent.click(range().getByRole('radio', { name: 'Open' }));
+      expect(range().getByLabelText('Opens')).toHaveValue('17:00');
+      expect(range().getByLabelText('Closes')).toHaveValue('20:00');
+      expect(range().getByLabelText('Range officer shift')).toHaveValue('');
+    });
+
+    it('saves only what changed, so the officer keeps their confirmation', async () => {
+      await renderWithClubs();
+      fireEvent.change(range().getByLabelText('Closes'), {
+        target: { value: '20:30' },
+      });
+      save();
+      await vi.waitFor(() =>
+        expect(api.putRangeDay).toHaveBeenCalledWith({
+          dates: [FUTURE],
+          open: '10:00',
+          close: '20:30',
+        }),
+      );
+    });
+
+    it('says who is emailed when the officer changes, and hides the old status', async () => {
+      await renderWithClubs();
+      fireEvent.change(range().getByLabelText('Range officer shift'), {
+        target: { value: '6' },
+      });
+      expect(
+        range().getByText(
+          'Saving asks Ampumaseura by email to confirm the shift. Hirviseura is told of the change.',
+        ),
+      ).toBeInTheDocument();
+      expect(
+        range().queryByText('Range officer confirmed'),
+      ).not.toBeInTheDocument();
+      save();
+      await vi.waitFor(() =>
+        expect(api.putRangeDay).toHaveBeenCalledWith({
+          dates: [FUTURE],
+          association_id: 6,
+        }),
+      );
+    });
+
+    it('clears the shift with null', async () => {
+      await renderWithClubs();
+      fireEvent.change(range().getByLabelText('Range officer shift'), {
+        target: { value: '' },
+      });
+      expect(
+        range().getByText('Hirviseura is told of the change.'),
+      ).toBeInTheDocument();
+      save();
+      await vi.waitFor(() =>
+        expect(api.putRangeDay).toHaveBeenCalledWith({
+          dates: [FUTURE],
+          association_id: null,
+        }),
+      );
+    });
+
+    it('closes the range on its own, hiding the hours and the officer', async () => {
+      await renderWithClubs();
+      fireEvent.click(range().getByRole('radio', { name: 'Closed' }));
+      expect(range().queryByLabelText('Opens')).not.toBeInTheDocument();
+      expect(
+        range().queryByLabelText('Range officer shift'),
+      ).not.toBeInTheDocument();
+      // The day as the server has it after the save.
+      vi.mocked(api.getSchedulingDate).mockResolvedValue({
+        ...day,
+        available: false,
+      });
+      save();
+      await vi.waitFor(() =>
+        expect(api.putRangeDay).toHaveBeenCalledWith({
+          dates: [FUTURE],
+          available: false,
+        }),
+      );
+      expect(await range().findByText('Saved')).toBeInTheDocument();
+    });
+
+    it('will not save hours that end before they start', async () => {
+      await renderWithClubs();
+      fireEvent.change(range().getByLabelText('Closes'), {
+        target: { value: '09:00' },
+      });
+      expect(
+        range().getByText('The range must close after it opens.', {
+          exact: false,
+        }),
+      ).toBeInTheDocument();
+      expect(range().getByLabelText('Closes')).toHaveAttribute(
+        'aria-invalid',
+        'true',
+      );
+      expect(range().getByRole('button', { name: 'Save' })).toBeDisabled();
+    });
+
+    it('undoes the edits, and says when saving fails', async () => {
+      await renderWithClubs();
+      fireEvent.change(range().getByLabelText('Opens'), {
+        target: { value: '11:00' },
+      });
+      fireEvent.click(range().getByRole('button', { name: 'Undo' }));
+      expect(range().getByLabelText('Opens')).toHaveValue('10:00');
+
+      vi.mocked(api.putRangeDay).mockRejectedValueOnce(new Error('network'));
+      fireEvent.change(range().getByLabelText('Opens'), {
+        target: { value: '11:00' },
+      });
+      save();
+      expect(await range().findByRole('alert')).toHaveTextContent(
+        'The range could not be saved.',
+      );
+    });
+
+    it('asks before leaving the day with unsaved range changes', async () => {
+      const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+      await renderPage();
+      const before = window.location.hash;
+      fireEvent.click(range().getByRole('radio', { name: 'Closed' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Next day' }));
+      expect(confirm).toHaveBeenCalledWith(
+        'The page has unsaved changes. Leave without saving?',
+      );
+      expect(window.location.hash).toBe(before);
+      confirm.mockRestore();
+    });
+
+    it('copies the saved settings, without what is unticked, to the chosen days', async () => {
+      await renderWithClubs();
+      fireEvent.click(
+        range().getByRole('button', { name: 'Copy to other days' }),
+      );
+      const panel = within(
+        screen.getByRole('region', { name: 'Copy to other days' }),
+      );
+      expect(panel.getByLabelText('Opening hours: 10.00–19.00')).toBeChecked();
+      fireEvent.click(panel.getByLabelText('Range officer shift: Hirviseura'));
+
+      const next = moment(FUTURE).add(1, 'month').startOf('month');
+      fireEvent.click(panel.getByRole('button', { name: 'Next month' }));
+      for (const offset of [0, 1]) {
+        fireEvent.click(
+          panel.getByRole('button', {
+            name: new Intl.DateTimeFormat('en', {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'numeric',
+              year: 'numeric',
+            }).format(next.clone().add(offset, 'day').toDate()),
+          }),
+        );
+      }
+      fireEvent.click(panel.getByRole('button', { name: 'Copy to 2 days' }));
+
+      await vi.waitFor(() =>
+        expect(api.putRangeDay).toHaveBeenCalledWith({
+          dates: [0, 1].map((offset) =>
+            next.clone().add(offset, 'day').format('YYYY-MM-DD'),
+          ),
+          available: true,
+          open: '10:00',
+          close: '19:00',
+        }),
+      );
+      expect(await range().findByText('Copied to 2 days.')).toBeInTheDocument();
+    });
+
+    it('copies only what is saved: no copying while there are edits', async () => {
+      await renderPage();
+      fireEvent.click(range().getByRole('radio', { name: 'Closed' }));
+      expect(
+        range().getByRole('button', { name: 'Copy to other days' }),
+      ).toBeDisabled();
+    });
   });
 
   it('marks a past day read-only, and only a past day', async () => {

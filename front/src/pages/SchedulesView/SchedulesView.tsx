@@ -10,21 +10,20 @@ import { useQuery } from 'react-query';
 import { Prompt, useHistory, useParams } from 'react-router-dom';
 
 import api from '@/api/api';
-import {
-  type ApiReservation,
-  type ApiSection,
-  formatTime,
-  toMinutes,
+import type {
+  ApiReservation,
+  ApiSection,
 } from '@/trackview/trackViewPlaceholder';
 import { validateLogin } from '@/utils/Utils';
 import { MonthCalendar } from './MonthCalendar';
+import { RangeCard } from './RangeCard';
 import { TrackCard } from './TrackCard';
-import type { ApiScheduleDay, ApiTrackDay, Association } from './types';
+import type { ApiTrackDay, Association } from './types';
 
 /**
- * Schedules (#463): the admin page for one day of the range. A first part:
- * date navigation, the month calendar, and the day shown read-only. Editing
- * comes card by card; past days stay read-only (Pasi Autio, 13.11.2026).
+ * Schedules (#463): the admin page for one day of the range: date navigation,
+ * the month calendar, the range card and one card per track, each saved on
+ * its own. Past days stay read-only (Pasi Autio, 13.11.2026).
  */
 export function SchedulesView() {
   const { t, i18n } = useLingui();
@@ -54,7 +53,8 @@ export function SchedulesView() {
     api.getAssociations(),
   );
 
-  // Cards with unsaved changes: leaving the day would lose them.
+  // Cards with unsaved changes (0 is the range card): leaving the day would
+  // lose them.
   const [unsaved, setUnsaved] = useState<number[]>([]);
   const onDirtyChange = useCallback((trackId: number, dirty: boolean) => {
     setUnsaved((ids) => {
@@ -62,6 +62,10 @@ export function SchedulesView() {
       return dirty ? [...ids, trackId] : ids.filter((id) => id !== trackId);
     });
   }, []);
+  const onRangeDirtyChange = useCallback(
+    (dirty: boolean) => onDirtyChange(0, dirty),
+    [onDirtyChange],
+  );
   useEffect(() => {
     if (unsaved.length === 0) return;
     const warn = (event: BeforeUnloadEvent) => {
@@ -88,7 +92,7 @@ export function SchedulesView() {
       <h1 className="font-semibold text-2xl">{t`Schedules`}</h1>
       <Prompt
         when={unsaved.length > 0}
-        message={t`A track has unsaved changes. Leave without saving?`}
+        message={t`The page has unsaved changes. Leave without saving?`}
       />
 
       <div className="flex flex-wrap items-center justify-center gap-2">
@@ -147,7 +151,13 @@ export function SchedulesView() {
         <p role="alert">{t`The day could not be loaded.`}</p>
       ) : (
         <>
-          <RangeCard day={day.data} associations={associations.data ?? []} />
+          <RangeCard
+            key={date}
+            day={day.data}
+            associations={associations.data ?? []}
+            past={past}
+            onDirtyChange={onRangeDirtyChange}
+          />
           <h2 className="mt-2 font-semibold text-xl">{t`Tracks`}</h2>
           <p className="-mt-3 text-grey text-sm">
             {t`Track officers are marked present on the tablet. Here you set each track's status, notice and bookings.`}
@@ -252,62 +262,5 @@ function DatePicker({
         </dialog>
       )}
     </div>
-  );
-}
-
-function RangeCard({
-  day,
-  associations,
-}: {
-  day: ApiScheduleDay;
-  associations: Association[];
-}) {
-  const { t } = useLingui();
-  const open = toMinutes(day.open);
-  const close = toMinutes(day.close);
-  const holder = associations.find((a) => a.id === day.rangeSupervisorId);
-  const arriving = toMinutes(day.arrivingAt);
-
-  const status = {
-    present: t`Range officer present`,
-    confirmed: t`Range officer confirmed`,
-    'not confirmed': t`Range officer predefined`,
-  }[day.rangeSupervision ?? ''];
-
-  return (
-    <section
-      className="rounded-xl border border-black-tint-20 bg-white p-4 sm:p-5"
-      aria-labelledby="range-card"
-    >
-      <h2 id="range-card" className="mb-3 font-semibold text-lg">
-        {t`Range`}
-      </h2>
-      <dl className="grid grid-cols-1 gap-x-6 gap-y-2 text-sm sm:grid-cols-[auto_1fr]">
-        <dt className="text-grey">{t`Range today`}</dt>
-        <dd>{day.available ? t`Open` : t`Closed`}</dd>
-        {open !== null && close !== null && (
-          <>
-            <dt className="text-grey">{t`Opening hours`}</dt>
-            <dd className="tabular-nums">
-              {formatTime(open)}–{formatTime(close)}
-            </dd>
-          </>
-        )}
-        <dt className="text-grey">{t`Range officer shift`}</dt>
-        <dd>{holder?.name ?? t`No range officer`}</dd>
-        {holder && (
-          <>
-            <dt className="text-grey">{t`Range officer status`}</dt>
-            <dd>{status ?? '—'}</dd>
-          </>
-        )}
-        {day.rangeSupervision === 'confirmed' && arriving !== null && (
-          <>
-            <dt className="text-grey">{t`Estimated arrival`}</dt>
-            <dd className="tabular-nums">{formatTime(arriving)}</dd>
-          </>
-        )}
-      </dl>
-    </section>
   );
 }

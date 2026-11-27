@@ -49,6 +49,9 @@ const deleteTrackReservation = (id) =>
 
 const copyTrackDay = (data) => axios.post('/api/track-day-copy', data);
 
+// The range's settings for one or more days (#463).
+const putRangeDay = (data) => axios.put('/api/range-day', data);
+
 const getTrackReservations = async (date) => {
   const response = await axios.get('/api/track-reservation', {
     params: { date: dateToString(date) },
@@ -293,6 +296,7 @@ export default {
   updateTrackReservation,
   deleteTrackReservation,
   copyTrackDay,
+  putRangeDay,
   getSchedulingWeek,
   getSchedulingFreeform,
   signIn,
