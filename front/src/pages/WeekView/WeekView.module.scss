@@ -344,10 +344,17 @@ $wide: 922px;
 .noticesList {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+/* One card per track, so several notices read as separate items. */
+.notice {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--color-black-tint-05);
 }
 
 .noticeTrack {

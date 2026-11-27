@@ -430,7 +430,7 @@ function NoticesDialog({
       <DialogContent>
         <ul className={css.noticesList}>
           {tracks.map((track) => (
-            <li key={String(track.id)}>
+            <li key={String(track.id)} className={css.notice}>
               <h3 className={css.noticeTrack}>
                 {trackName(String(track.name))}
               </h3>
