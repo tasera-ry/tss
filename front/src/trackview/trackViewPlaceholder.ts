@@ -18,7 +18,8 @@
  *       12.10.2026). Faked by list position in NO_RANGE_OFFICER_NEEDED.
  *   B8  Standing rules per track ("Vain .22LR", "Ei ammuntaa pimeällä"), as
  *       data an admin can edit, with a way to translate it. Faked as Finnish
- *       strings in TRACK_NOTES.
+ *       strings in TRACK_NOTES, and "no shooting after dark" as a flag in
+ *       DAYLIGHT_ONLY.
  *   B10 The supervisor rule enforced on write: "track officer present" must
  *       not be settable while the range officer is away, except on tracks
  *       with requires_range_officer = false. Today nothing stops the
@@ -142,6 +143,15 @@ const TRACK_NOTES: string[][] = [
  * BACKEND(B7): track.requires_range_officer.
  */
 const NO_RANGE_OFFICER_NEEDED = new Set([5]);
+
+/**
+ * PLACEHOLDER. Tracks with no shooting after dark: 5 and 6, by position in the
+ * list, the two whose notes in TRACK_NOTES say so. Their timelines shade the
+ * hours after sunset.
+ *
+ * BACKEND(B8): the rule as data on the track.
+ */
+const DAYLIGHT_ONLY = new Set([4, 5]);
 
 /** The existing `track_supervisor` enum maps straight onto the new type. */
 function toTrackOfficer(value: string | null): TrackOfficerState {
@@ -317,6 +327,7 @@ export function toTrackViewDay(
     notice: track.notice ?? null,
     officer: toTrackOfficer(track.trackSupervision),
     requiresRangeOfficer: !NO_RANGE_OFFICER_NEEDED.has(index),
+    daylightOnly: DAYLIGHT_ONLY.has(index),
     sections: buildSections(
       track,
       sections,

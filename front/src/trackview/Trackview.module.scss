@@ -28,6 +28,16 @@
   color: #000;
 }
 
+/**
+ * The hours after sunset on tracks with no shooting after dark, laid over the
+ * segments so their colour still shows through. White text on it is at least
+ * 5.5:1 over every status colour (lowest over free).
+ */
+.afterSunset {
+  background-color: rgb(30 36 51 / 0.6);
+  color: #fff;
+}
+
 /** Small keys beside each row of the list, in the same colours. */
 .markPrivate {
   background-color: var(--color-status-private);
